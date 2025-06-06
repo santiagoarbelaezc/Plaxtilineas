@@ -1,0 +1,125 @@
+/* Estilos para pie de página optimizado */
+.footer {
+  background-color: #1c1c1c;
+  color: #b2b2b2;
+  padding: 20px 0;
+}
+
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.contacto-info,
+.compania-info {
+  flex-basis: 45%;
+  text-align: justify;
+}
+
+.contacto-info h3,
+.compania-info h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.compania-info p {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  text-align: justify;
+}
+
+.contacto-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.contacto-info li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.contacto-info li svg {
+  margin-right: 10px;
+}
+
+.contacto-info a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.contacto-info a:hover {
+  text-decoration: underline;
+  color: #4caf50;
+}
+
+.copyright {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  width: 100%;
+}
+
+/* --- Ajustes Responsivos --- */
+
+/* Tablets y móviles grandes */
+@media (max-width: 768px) {
+  .contacto-info,
+  .compania-info {
+    flex-basis: 100%;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .contacto-info h3,
+  .compania-info h3 {
+    font-size: 22px;
+  }
+
+  .contacto-info li {
+    justify-content: center;
+  }
+
+  .compania-info p {
+    text-align: center;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  .footer {
+    padding: 15px 0;
+  }
+
+  .footer-content {
+    padding: 0 10px;
+  }
+
+  .contacto-info h3,
+  .compania-info h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .contacto-info li {
+    font-size: 14px;
+  }
+
+  .copyright {
+    font-size: 12px;
+  }
+}
+
+/* Pantallas muy grandes */
+@media (min-width: 1400px) {
+  .footer-content {
+    max-width: 1400px;
+  }
+}
