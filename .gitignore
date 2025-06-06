@@ -60,4 +60,5 @@ Desktop.ini
 .AppleDouble
 .LSOverride
 
-Este es mi git ignore
+# Evitar subir imágenes
+frontend/src/assets/img/
