@@ -1,0 +1,228 @@
+/* === AJUSTES GENERALES === */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+/* === ANIMACIÓN === */
+@keyframes balanceo {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  50% { transform: rotate(10deg); }
+}
+
+/* === CONTENEDOR === */
+.social-buttons-container {
+  position: relative;
+  z-index: 999;
+}
+
+/* === BOTONES FLOTANTES === */
+.social-button {
+  position: fixed;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  z-index: 1000;
+}
+
+.social-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* WhatsApp */
+.whatsapp-button {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: #25D366;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: balanceo 2s infinite ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.whatsapp-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.whatsapp-button img,
+.whatsapp-button svg {
+  width: 35px;
+  height: 35px;
+  display: block;
+}
+
+/* Notificación de WhatsApp */
+.whatsapp-button .notification {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #ff3b30;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Facebook */
+.facebook-button {
+  bottom: 100px;
+  background-color: #1877F2;
+}
+
+.facebook-button img {
+  width: 35px;
+  height: 35px;
+}
+
+/* Instagram */
+.instagram-button {
+  bottom: 180px;
+  background: radial-gradient(circle at 30% 30%, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5);
+}
+
+.instagram-button img {
+  width: 35px;
+  height: 35px;
+}
+
+/* === MENSAJE EMERGENTE === */
+.help-message {
+  position: fixed;
+  bottom: 35px;
+  right: 100px;
+  background-color: #25D366;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  z-index: 1000;
+}
+
+.help-message.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .social-button,
+  .whatsapp-button {
+    width: 50px;
+    height: 50px;
+    right: 15px;
+  }
+
+  .facebook-button {
+    bottom: 85px;
+  }
+
+  .instagram-button {
+    bottom: 150px;
+  }
+
+  .whatsapp-button .notification {
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+  }
+
+  .facebook-button img,
+  .instagram-button img,
+  .whatsapp-button img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .help-message {
+    font-size: 14px;
+    bottom: 35px;
+    padding: 8px 12px;
+    right: 75px;
+  }
+}
+
+@media (max-width: 480px) {
+  .social-button,
+  .whatsapp-button {
+    width: 45px;
+    height: 45px;
+    right: 10px;
+  }
+
+  .facebook-button {
+    bottom: 70px;
+  }
+
+  .instagram-button {
+    bottom: 135px;
+  }
+
+  .facebook-button img,
+  .instagram-button img,
+  .whatsapp-button img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .help-message {
+    font-size: 13px;
+    padding: 6px 10px;
+    bottom: 35px;
+    right: 60px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .social-button,
+  .whatsapp-button {
+    width: 70px;
+    height: 70px;
+  }
+
+  .facebook-button {
+    bottom: 110px;
+  }
+
+  .instagram-button {
+    bottom: 200px;
+  }
+
+  .facebook-button img,
+  .instagram-button img,
+  .whatsapp-button img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .help-message {
+    font-size: 17px;
+    padding: 10px 16px;
+    bottom: 35px;
+    right: 100px;
+  }
+}
