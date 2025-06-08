@@ -1,0 +1,68 @@
+.marcas-aliadas {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #f4f4f4;
+}
+
+.marcas-aliadas h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.brands-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
+}
+
+.brand-logo {
+    max-width: 150px; /* Mantiene el tamaño original sin distorsión */
+    height: auto;
+    filter: grayscale(100%);
+    transition: filter 0.4s ease-in-out;
+    object-fit: contain; /* Asegura que la imagen no se deforme */
+}
+
+.brand-logo:hover {
+    filter: grayscale(0%);
+}
+/* --- Ajustes Responsivos --- */
+/* Tablets y móviles grandes */
+@media (max-width: 768px) {
+    .marcas-aliadas {
+        padding: 30px 15px;
+    }
+    .marcas-aliadas h2 {
+        font-size: 20px;
+    }
+    .brand-logo {
+        max-width: 120px;
+    }
+}
+/* Móviles pequeños */
+@media (max-width: 480px) {
+    .marcas-aliadas {
+        padding: 20px 10px;
+    }
+    .marcas-aliadas h2 {
+        font-size: 18px;
+    }
+    .brands-container {
+        gap: 15px;
+    }
+    .brand-logo {
+        max-width: 100px;
+    }
+}
+/* Pantallas muy grandes */
+@media (min-width: 1400px) {
+    .marcas-aliadas h2 {
+        font-size: 28px;
+    }
+    .brand-logo {
+        max-width: 180px;
+    }
+}

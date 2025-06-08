@@ -4,6 +4,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { Footer } from './components/footer/footer.component';
 import { SocialButtonsComponent } from './components/social-buttons/social-buttons.component';
 import { HeaderComponent } from './components/header/header.component';
+import { Partners } from "./components/partners/partners.component";
+import { SquareMap } from "./components/square-map/square-map.component";
 
 @Component({
   selector: 'app-root',
@@ -12,9 +14,11 @@ import { HeaderComponent } from './components/header/header.component';
     RouterModule,
     NavbarComponent,
     Footer,
-    SocialButtonsComponent ,
-    HeaderComponent
-  ],
+    SocialButtonsComponent,
+    HeaderComponent,
+    Partners,
+    SquareMap
+],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
