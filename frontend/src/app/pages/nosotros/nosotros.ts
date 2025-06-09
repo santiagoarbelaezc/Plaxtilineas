@@ -1,8 +1,14 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { Footer } from '../../components/footer/footer.component';
+import { SocialButtonsComponent } from "../../components/social-buttons/social-buttons.component";
+
 
 @Component({
   selector: 'app-nosotros',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, NavbarComponent, Footer, SocialButtonsComponent], // agrega otros si los usas
   templateUrl: './nosotros.html',
   styleUrl: './nosotros.css'
 })

@@ -1,11 +1,16 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { Footer } from '../../components/footer/footer.component';
+import { SocialButtonsComponent } from "../../components/social-buttons/social-buttons.component";
+import { ContactoAsistente } from "../../components/contacto-asistente/contacto-asistente.component";
+import { ImageMap } from "../../components/image-map/image-map.component";
 
 @Component({
   selector: 'app-contacto',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, NavbarComponent, Footer, SocialButtonsComponent, ContactoAsistente, ImageMap], // agrega otros si los usas
   templateUrl: './contacto.html',
-  styleUrl: './contacto.css'
+  styleUrls: ['./contacto.css']
 })
-export class Contacto {
-
-}
+export class Contacto {}

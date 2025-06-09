@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-square-map',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './square-map.component.html',
-  styleUrl: './square-map.component.css'
+  styleUrls: ['./square-map.component.css'] // ✅ corregido: styleUrls en plural
 })
-export class SquareMap {
-
-}
+export class SquareMap {}
