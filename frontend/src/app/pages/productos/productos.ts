@@ -9,8 +9,8 @@ import { SocialButtonsComponent } from "../../components/social-buttons/social-b
   standalone: true,
   imports: [CommonModule, NavbarComponent, Footer, SocialButtonsComponent],
   templateUrl: './productos.html',
-  styleUrl: './productos.css'
+  styleUrls: ['./productos.css']  // ← corregido aquí
 })
-export class Productos {
+export class Productos {  
 
 }

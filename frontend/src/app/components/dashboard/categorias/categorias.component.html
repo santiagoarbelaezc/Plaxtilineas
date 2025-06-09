@@ -1,0 +1,67 @@
+<div class="main-container">
+  <header class="header">
+    <img src="assets/img/logo.png" alt="Plaxtilineas" class="logo" />
+    <h1>Categorías</h1>
+  </header>
+
+  <section class="card">
+    <h2>Crear Nueva Categoría</h2>
+    <form #categoriaForm="ngForm" (ngSubmit)="crearCategoria()">
+      <input
+        type="text"
+        name="nombre"
+        [(ngModel)]="categoria.nombre"
+        placeholder="Nombre de la categoría"
+        required
+      />
+
+      <input
+        type="file"
+        name="icono"
+        (change)="onArchivoSeleccionado($event)"
+        accept="image/*"
+      />
+
+      <button type="submit" [disabled]="!categoriaForm.valid">
+        Agregar
+      </button>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>Lista de Categorías</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Ícono</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cat of categorias">
+          <td>{{ cat.id }}</td>
+          <td>{{ cat.nombre }}</td>
+          <td>
+            <img
+              *ngIf="cat.iconoUrl"
+              [src]="cat.iconoUrl"
+              alt="Ícono"
+              width="32"
+              height="32"
+            />
+          </td>
+          <td>
+            <button (click)="editarCategoria(cat)">✏️</button>
+            <button (click)="eliminarCategoria(cat.id)">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="acciones">
+    <a routerLink="/admin" class="btn-regresar">← Volver al Dashboard</a>
+  </div>
+</div>

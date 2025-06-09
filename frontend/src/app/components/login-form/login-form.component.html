@@ -1,0 +1,14 @@
+<div class="login-container">
+  <div class="login-card">
+    <img src="assets/img/logo.png" alt="Logo Plaxtilineas" class="logo" />
+    <h2>Iniciar Sesión</h2>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <input formControlName="correo" type="email" placeholder="Correo electrónico" required>
+      <input formControlName="password" type="password" placeholder="Contraseña" required>
+      <button type="submit">Ingresar</button>
+    </form>
+
+    <a routerLink="/productos" class="btn-secondary">Regresar a Productos</a>
+  </div>
+</div>

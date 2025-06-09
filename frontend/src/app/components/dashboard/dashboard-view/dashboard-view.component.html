@@ -1,0 +1,42 @@
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <img src="assets/img/logo.png" alt="Logo" class="logo" />
+    <h1>Panel de Administración</h1>
+    <button (click)="logout()" title="Cerrar sesión">
+      <fa-icon [icon]="'sign-out-alt'"></fa-icon> Cerrar Sesión
+    </button>
+  </header>
+
+  <!-- ✅ Solo muestra esto si estamos exactamente en /admin -->
+  <main class="dashboard-main" *ngIf="estaEnInicio">
+    <section class="card">
+      <h2>
+        <fa-icon [icon]="'user-shield'"></fa-icon> Bienvenido, administrador
+      </h2>
+      <p>Gestiona productos, categorías y subcategorías de forma rápida y eficiente.</p>
+    </section>
+
+    <section class="card">
+      <ul>
+        <li>
+          <a routerLink="/admin/categorias">
+            <fa-icon [icon]="'folder-open'"></fa-icon> Gestionar categorías
+          </a>
+        </li>
+        <li>
+          <a routerLink="/admin/subcategorias">
+            <fa-icon [icon]="'folder'"></fa-icon> Gestionar subcategorías
+          </a>
+        </li>
+        <li>
+          <a routerLink="/admin/productos">
+            <fa-icon [icon]="'boxes'"></fa-icon> Gestionar productos
+          </a>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- Aquí cargan las vistas hijas como /admin/categorias -->
+  <router-outlet></router-outlet>
+</div>

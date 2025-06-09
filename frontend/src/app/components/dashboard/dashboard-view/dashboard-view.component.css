@@ -1,0 +1,113 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f4f4; /* fondo general */
+  color: #333333;            /* texto general */
+}
+
+.dashboard-container {
+  max-width: 960px;
+  margin: 60px auto;
+  padding: 30px 20px;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 30px;
+  background-color: #ffffff; /* fondo blanco */
+  border-radius: 16px;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.08);
+  color: #333333;
+}
+
+.dashboard-header .logo {
+  height: 50px;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 24px;
+  flex-grow: 1;
+  text-align: center;
+  color: #333333;
+}
+
+.dashboard-header button {
+  background-color: #c0392b; /* 🔴 rojo visible */
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 16px;
+  cursor: pointer;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.08);
+  transition: background-color 0.3s ease;
+}
+
+.dashboard-header button:hover {
+  background-color: #922b21; /* 🔴 rojo más oscuro */
+}
+
+.dashboard-main {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.08);
+  padding: 30px;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+.card h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 20px;
+  color: #333333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card p {
+  margin: 0;
+  font-size: 15px;
+  color: #555555;
+}
+
+.card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.card ul li {
+  margin: 16px 0;
+}
+
+.card ul li a {
+  text-decoration: none;
+  color: #333333;
+  font-weight: 600;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s ease;
+}
+
+.card ul li a:hover {
+  color: #4f7339; /* tono verde más oscuro */
+}

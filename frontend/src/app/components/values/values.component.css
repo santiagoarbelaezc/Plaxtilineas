@@ -1,0 +1,161 @@
+/* Estilos para la sección Nosotros con íconos */
+.seccion-nosotros {
+  background-color: #f4f4f4;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.seccion-nosotros h2 {
+  font-size: 32px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.seccion-nosotros p {
+  font-size: 18px;
+  color: #666;
+  max-width: 800px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+}
+
+.valores-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.valor {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+  text-align: left;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.valor:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Ajustes para fa-icon */
+.valor fa-icon {
+  font-size: 44px;
+  color: #4caf50;
+  margin-right: 18px;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+}
+
+/* Títulos y texto */
+.valor h3 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.valor p {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.4;
+}
+
+/* --- Ajustes Responsivos --- */
+
+/* Tablets y móviles grandes */
+@media (max-width: 768px) {
+  .seccion-nosotros {
+    padding: 40px 15px;
+  }
+
+  .seccion-nosotros h2 {
+    font-size: 26px;
+  }
+
+  .seccion-nosotros p {
+    font-size: 16px;
+  }
+
+  .valor {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .valor fa-icon {
+    margin-right: 0;
+    margin-bottom: 10px;
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .valor h3 {
+    font-size: 18px;
+  }
+
+  .valor p {
+    font-size: 15px;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  .seccion-nosotros {
+    padding: 30px 10px;
+  }
+
+  .seccion-nosotros h2 {
+    font-size: 22px;
+  }
+
+  .seccion-nosotros p {
+    font-size: 15px;
+  }
+
+  .valor {
+    padding: 15px;
+  }
+
+  .valor fa-icon {
+    font-size: 30px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .valor h3 {
+    font-size: 16px;
+  }
+
+  .valor p {
+    font-size: 14px;
+  }
+}
+
+/* Pantallas muy grandes */
+@media (min-width: 1400px) {
+  .seccion-nosotros {
+    padding: 80px 20px;
+  }
+
+  .seccion-nosotros h2 {
+    font-size: 36px;
+  }
+
+  .valor {
+    max-width: 700px;
+  }
+
+  .valor fa-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+  }
+}
