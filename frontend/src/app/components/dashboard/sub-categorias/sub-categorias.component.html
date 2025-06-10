@@ -1,1 +1,97 @@
-<p>sub-categorias works!</p>
+<div class="main-container">
+  <header class="header">
+    <img src="/img/logo.png" alt="Plaxtilineas" class="logo" />
+    <h1>Subcategorías</h1>
+  </header>
+
+  <!-- Crear subcategoría -->
+  <section class="card">
+    <h2>Crear Subcategoría</h2>
+    <form #formSubcategoria="ngForm" (ngSubmit)="crearSubcategoria()">
+      <select
+        name="categoria_id"
+        [(ngModel)]="subcategoria.categoria_id"
+        required
+      >
+        <option value="">Selecciona una categoría</option>
+        <option *ngFor="let cat of categorias" [value]="cat.id">
+          {{ cat.nombre }}
+        </option>
+      </select>
+
+      <input
+        type="text"
+        name="nombre"
+        [(ngModel)]="subcategoria.nombre"
+        placeholder="Nombre de la subcategoría"
+        required
+      />
+
+      <button type="submit" [disabled]="!formSubcategoria.valid" class="agregar">
+        <fa-icon [icon]="'plus'"></fa-icon> Crear
+      </button>
+    </form>
+  </section>
+
+  <!-- Lista de subcategorías -->
+  <section class="card">
+    <h2>Lista de Subcategorías</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let sub of subcategorias">
+          <td>{{ sub.id }}</td>
+
+          <td>
+            <input
+              type="text"
+              [(ngModel)]="sub.nombre"
+              [disabled]="!sub.editando"
+            />
+          </td>
+
+          <td>
+            <select [(ngModel)]="sub.categoria_id" [disabled]="!sub.editando">
+              <option *ngFor="let cat of categorias" [value]="cat.id">
+                {{ cat.nombre }}
+              </option>
+            </select>
+          </td>
+
+          <td class="actions">
+            <ng-container *ngIf="!sub.editando">
+              <button class="edit" (click)="sub.editando = true" title="Editar">
+                <fa-icon [icon]="'edit'"></fa-icon>
+              </button>
+              <button class="delete" (click)="eliminarSubcategoria(sub.id)" title="Eliminar">
+                <fa-icon [icon]="'trash-alt'"></fa-icon>
+              </button>
+            </ng-container>
+
+            <ng-container *ngIf="sub.editando">
+              <button class="edit" (click)="actualizarSubcategoria(sub)" title="Guardar">
+                <fa-icon [icon]="'save'"></fa-icon>
+              </button>
+              <button class="delete" (click)="cancelarEdicion(sub)" title="Cancelar">
+                <fa-icon [icon]="'times'"></fa-icon>
+              </button>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="acciones">
+    <button (click)="volverAlDashboard()" class="btn-regresar">
+      <fa-icon [icon]="'arrow-left'"></fa-icon> Volver al Dashboard
+    </button>
+  </div>
+</div>

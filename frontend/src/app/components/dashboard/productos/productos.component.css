@@ -1,0 +1,189 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 40px;
+  color: #333;
+}
+
+/* Encabezado */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+.header img.logo {
+  height: 50px;
+}
+.header h1 {
+  color: #4f7b34;
+}
+
+/* Tarjeta */
+.card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+}
+.card h2 {
+  color: #4f7b34;
+  margin-bottom: 20px;
+}
+
+/* Formularios */
+.card form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.card form input[type="text"],
+.card form input[type="number"],
+.card form input[type="file"],
+.card form select,
+.card form textarea {
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  flex: 1 1 250px;
+}
+
+.card form textarea {
+  flex: 1 1 100%;
+  min-height: 60px;
+  resize: vertical;
+}
+
+.card form button {
+  background-color: #648a4c;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.card form button:hover {
+  background-color: #4f703b;
+}
+
+/* Tabla productos */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+table th, table td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  vertical-align: middle;
+}
+
+table th {
+  background-color: #dff0d8;
+  color: #3c763d;
+}
+
+/* Ajustar ancho por columna */
+table th:nth-child(1), table td:nth-child(1) { width: 4%; }     /* ID */
+table th:nth-child(2), table td:nth-child(2) { width: 10%; }    /* Imagen */
+table th:nth-child(3), table td:nth-child(3) { width: 16%; }    /* Nombre */
+table th:nth-child(4), table td:nth-child(4) { width: 12%; }    /* Precio */
+table th:nth-child(5), table td:nth-child(5) { width: 22%; }    /* Descripción */
+table th:nth-child(6), table td:nth-child(6) { width: 15%; }    /* Subcategoría */
+table th:nth-child(7), table td:nth-child(7) { width: 10%; }    /* Unidad */
+table th:nth-child(8), table td:nth-child(8) { width: 11%; }    /* Acciones */
+
+/* Inputs y selects dentro de celdas */
+table input[type="text"],
+table input[type="number"],
+table select {
+  width: 100%;
+  padding: 6px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.producto-img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+/* Botones de acciones */
+.actions button {
+  margin-right: 6px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Botón editar */
+button.edit {
+  background-color: #3498db;
+  color: white;
+}
+button.edit:hover {
+  background-color: #2c80b4;
+}
+
+/* Botón guardar */
+button.save {
+  background-color: #27ae60;
+  color: white;
+}
+button.save:hover {
+  background-color: #219150;
+}
+
+/* Botón eliminar */
+button.delete {
+  background-color: #e74c3c;
+  color: white;
+}
+button.delete:hover {
+  background-color: #c0392b;
+}
+
+/* Botón de retorno */
+.btn-regresar {
+  background-color: #888;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.acciones {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Label para subir imagen con FontAwesome */
+.img-edit-label {
+  cursor: pointer;
+  font-size: 18px;
+  margin-left: 6px;
+  color: #3498db;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.img-edit-label:hover {
+  color: #1d6fa5;
+}

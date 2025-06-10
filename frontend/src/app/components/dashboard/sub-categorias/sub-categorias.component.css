@@ -1,0 +1,124 @@
+/* Estilo general heredado */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 40px;
+  color: #333;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  font-size: 28px;
+  color: #4f7b34;
+}
+
+.header img {
+  height: 50px;
+}
+
+.card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.card h2 {
+  color: #4f7b34;
+  margin-bottom: 20px;
+}
+
+input[type='text'],
+select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+button.agregar {
+  background-color: #4f7b34;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button.agregar:hover {
+  background-color: #3d6128;
+}
+
+/* Tabla de subcategorías */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #dff0d8;
+  color: #3c763d;
+}
+
+.actions button {
+  margin-right: 8px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+button.edit {
+  background-color: #3498db;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+button.edit:hover {
+  background-color: #2d7ebc;
+}
+
+button.delete {
+  background-color: #e74c3c;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+button.delete:hover {
+  background-color: #c0392b;
+}
+
+.acciones {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.btn-regresar {
+  background-color: #888;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-block;
+}

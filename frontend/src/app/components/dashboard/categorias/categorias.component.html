@@ -1,9 +1,9 @@
 <div class="main-container">
   <header class="header">
-    <img src="assets/img/logo.png" alt="Plaxtilineas" class="logo" />
     <h1>Categorías</h1>
   </header>
 
+  <!-- Crear nueva categoría -->
   <section class="card">
     <h2>Crear Nueva Categoría</h2>
     <form #categoriaForm="ngForm" (ngSubmit)="crearCategoria()">
@@ -23,11 +23,12 @@
       />
 
       <button type="submit" [disabled]="!categoriaForm.valid">
-        Agregar
+        <fa-icon [icon]="'plus'"></fa-icon> Agregar
       </button>
     </form>
   </section>
 
+  <!-- Lista editable de categorías -->
   <section class="card">
     <h2>Lista de Categorías</h2>
     <table>
@@ -42,19 +43,49 @@
       <tbody>
         <tr *ngFor="let cat of categorias">
           <td>{{ cat.id }}</td>
-          <td>{{ cat.nombre }}</td>
+
+          <!-- Nombre editable -->
+          <td>
+            <input
+              type="text"
+              [(ngModel)]="cat.nombre"
+              [disabled]="!cat.editando"
+              class="input-editable"
+            />
+          </td>
+
+          <!-- Ícono editable -->
           <td>
             <img
-              *ngIf="cat.iconoUrl"
-              [src]="cat.iconoUrl"
+              *ngIf="cat.icono_url"
+              [src]="cat.icono_url"
               alt="Ícono"
               width="32"
               height="32"
             />
+            <div *ngIf="cat.editando">
+              <input type="file" (change)="onCambiarIcono(cat, $event)" accept="image/*" />
+            </div>
           </td>
-          <td>
-            <button (click)="editarCategoria(cat)">✏️</button>
-            <button (click)="eliminarCategoria(cat.id)">🗑️</button>
+
+          <!-- Acciones -->
+          <td class="actions">
+            <ng-container *ngIf="!cat.editando">
+              <button (click)="cat.editando = true" title="Editar">
+                <fa-icon [icon]="'edit'"></fa-icon>
+              </button>
+              <button (click)="eliminarCategoria(cat.id)" title="Eliminar">
+                <fa-icon [icon]="'trash-alt'"></fa-icon>
+              </button>
+            </ng-container>
+            <ng-container *ngIf="cat.editando">
+              <button (click)="actualizarCategoria(cat)" title="Guardar">
+                <fa-icon [icon]="'save'"></fa-icon>
+              </button>
+              <button (click)="cancelarEdicion(cat)" title="Cancelar">
+                <fa-icon [icon]="'times'"></fa-icon>
+              </button>
+            </ng-container>
           </td>
         </tr>
       </tbody>
@@ -62,6 +93,8 @@
   </section>
 
   <div class="acciones">
-    <a routerLink="/admin" class="btn-regresar">← Volver al Dashboard</a>
+    <button (click)="volverAlDashboard()" class="btn-regresar">
+      <fa-icon [icon]="'arrow-left'"></fa-icon> Volver al Dashboard
+    </button>
   </div>
 </div>

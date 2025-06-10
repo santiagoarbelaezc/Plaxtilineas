@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SubCategoriasComponent } from '../../../components/dashboard/sub-categorias/sub-categorias.component';
+import { SubcategoriasComponent } from '../../../components/dashboard/sub-categorias/sub-categorias.component';
 
 @Component({
   selector: 'app-sub-categorias',
   standalone: true,
-  imports: [CommonModule, SubCategoriasComponent],
+  imports: [CommonModule, SubcategoriasComponent],
   templateUrl: './sub-categorias.html',
   styleUrls: ['./sub-categorias.css']
 })

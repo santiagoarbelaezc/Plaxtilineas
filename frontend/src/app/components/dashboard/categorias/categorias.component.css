@@ -22,10 +22,6 @@ body {
   color: #4f7b34;
 }
 
-.header img {
-  height: 50px;
-}
-
 .main-container {
   width: 100%;
   max-width: 900px;
@@ -35,7 +31,7 @@ body {
   background-color: white;
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
   text-align: center;
 }
@@ -45,13 +41,8 @@ body {
   margin-bottom: 20px;
 }
 
-.categoria-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-input[type="text"], input[type="file"] {
+input[type="text"],
+input[type="file"] {
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -59,8 +50,10 @@ input[type="text"], input[type="file"] {
   width: 80%;
   max-width: 400px;
   font-size: 16px;
+  box-sizing: border-box;
 }
 
+button,
 button[type="submit"] {
   background-color: #4f7b34;
   color: white;
@@ -69,71 +62,87 @@ button[type="submit"] {
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-button[type="submit"]:hover {
+button:hover {
   background-color: #3d6128;
+  transform: translateY(-2px);
 }
 
-#tablaCategorias {
+/* Tabla */
+table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
 }
 
-#tablaCategorias th,
-#tablaCategorias td {
-  padding: 12px 15px;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
-}
-
-#tablaCategorias th {
+th {
   background-color: #dff0d8;
   color: #3c763d;
+  padding: 12px;
+  text-align: center;
+}
+
+td {
+  padding: 14px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Fila alterna */
+tbody tr:nth-child(even) {
+  background-color: #eef4ec;
+}
+
+/* Input en tabla */
+td input[type="text"] {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+/* Imagen */
+td img {
+  height: 40px;
+  width: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* Acciones */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 .actions button {
-  margin-right: 8px;
-  padding: 6px 12px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
   border-radius: 6px;
+  background-color: #4f7b34;
   border: none;
   cursor: pointer;
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-button.edit {
-  background-color: #3498db;
+.actions button:hover {
+  background-color: #3d6128;
+}
+
+.actions fa-icon {
   color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-button.edit:hover {
-  background-color: #2d7ebc;
-  transform: translateY(-2px);
+  font-size: 18px;
 }
 
-button.delete {
-  background-color: #e74c3c;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-button.delete:hover {
-  background-color: #c0392b;
-  transform: translateY(-2px);
-}
-
+/* Volver */
 .acciones {
   text-align: center;
   margin-top: 20px;
@@ -146,19 +155,21 @@ button.delete:hover {
   border-radius: 8px;
   text-decoration: none;
   display: inline-block;
+  transition: background-color 0.3s ease;
 }
+
+.btn-regresar:hover {
+  background-color: #666;
+}
+
+/* Icono input label */
 .icono-label {
   cursor: pointer;
   font-size: 18px;
   margin-left: 10px;
   color: #3498db;
 }
+
 .icono-label:hover {
   color: #2d7ebc;
-}
-.input-nombre {
-  width: 90%;
-  padding: 6px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
 }

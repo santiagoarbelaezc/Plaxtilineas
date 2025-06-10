@@ -101,8 +101,24 @@ exports.actualizarProducto = async (req, res) => {
 exports.eliminarProducto = async (req, res) => {
   const { id } = req.params;
   try {
+    // 🔍 1. Obtener el public_id del producto antes de eliminarlo
+    const [rows] = await db.query('SELECT public_id FROM productos WHERE id = ?', [id]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Producto no encontrado' });
+    }
+
+    const publicId = rows[0].public_id;
+
+    // 🗑️ 2. Eliminar la imagen de Cloudinary si existe public_id
+    if (publicId) {
+      await cloudinary.uploader.destroy(publicId);
+    }
+
+    // 🗃️ 3. Eliminar el producto de la base de datos
     await db.query('DELETE FROM productos WHERE id = ?', [id]);
-    res.json({ mensaje: 'Producto eliminado' });
+
+    res.json({ mensaje: 'Producto eliminado exitosamente y su imagen fue removida de Cloudinary' });
   } catch (err) {
     console.error('❌ Error al eliminar producto:', err);
     res.status(500).json({ error: 'No se pudo eliminar el producto' });

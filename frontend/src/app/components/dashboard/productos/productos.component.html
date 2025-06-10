@@ -1,1 +1,96 @@
-<p>productos works!</p>
+<main class="main-container">
+  <!-- Crear Producto -->
+  <section class="card">
+    <h2>Crear Producto</h2>
+    <form (ngSubmit)="crearProducto()" [formGroup]="formProducto" enctype="multipart/form-data">
+      <input type="text" placeholder="Nombre del producto" formControlName="nombre" required />
+      <input type="number" placeholder="Precio" formControlName="precio" required min="0" step="0.01" />
+      <textarea placeholder="Descripción (opcional)" formControlName="descripcion"></textarea>
+
+      <select formControlName="subcategoria_id" required>
+        <option value="">Seleccione subcategoría</option>
+        <option *ngFor="let sub of subcategorias" [value]="sub.id">{{ sub.nombre }} ({{ sub.categoria }})</option>
+      </select>
+
+      <select formControlName="unidad" required>
+        <option value="">Seleccione unidad</option>
+        <option value="1">Metro</option>
+        <option value="0">Unidad</option>
+      </select>
+
+      <input type="file" (change)="onFileChange($event)" accept="image/*" />
+      <button type="submit" class="agregar">Crear Producto</button>
+    </form>
+  </section>
+
+  <!-- Filtro por Subcategoría -->
+  <section class="card">
+    <h2>Filtrar por Subcategoría</h2>
+    <select [(ngModel)]="filtroSubcategoriaId" (change)="filtrarPorSubcategoria()" name="filtroSub" required>
+      <option value="">Seleccione una subcategoría</option>
+      <option *ngFor="let sub of subcategorias" [value]="sub.id">{{ sub.nombre }}</option>
+    </select>
+  </section>
+
+  <!-- Lista de Productos -->
+  <section class="card">
+    <h2>Lista de Productos</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Imagen</th>
+          <th>Nombre</th>
+          <th>Precio</th>
+          <th>Descripción</th>
+          <th>Subcategoría</th>
+          <th>Unidad</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let prod of productos; trackBy: trackByProductoId">
+          <td>{{ prod.id }}</td>
+          <td>
+            <img [src]="prod.imagen_url" alt="{{ prod.nombre }}" width="60" />
+            <label *ngIf="prod.editando">
+              <i class="fas fa-image"></i>
+              <input type="file" (change)="seleccionarNuevaImagen($event, prod)" accept="image/*" style="display: none;" />
+            </label>
+          </td>
+          <td><input type="text" [(ngModel)]="prod.nombre" [disabled]="!prod.editando" /></td>
+          <td><input type="number" [(ngModel)]="prod.precio" [disabled]="!prod.editando" /></td>
+          <td><input type="text" [(ngModel)]="prod.descripcion" [disabled]="!prod.editando" /></td>
+          <td>
+            <select [(ngModel)]="prod.subcategoria_id" [disabled]="!prod.editando">
+              <option *ngFor="let s of subcategorias" [value]="s.id">{{ s.nombre }}</option>
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="prod.cantidad" [disabled]="!prod.editando">
+              <option value="1">Metro</option>
+              <option value="0">Unidad</option>
+            </select>
+          </td>
+          <td class="actions">
+            <button *ngIf="!prod.editando" (click)="editarProducto(prod)">
+              <i class="fas fa-edit"></i> Editar
+            </button>
+            <button *ngIf="prod.editando" (click)="actualizarProducto(prod)">
+              <i class="fas fa-save"></i> Guardar
+            </button>
+            <button (click)="eliminarProducto(prod.id)">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="acciones">
+    <a routerLink="/dashboard" class="btn-regresar">
+      <i class="fas fa-arrow-left"></i> Volver al Dashboard
+    </a>
+  </div>
+</main>
