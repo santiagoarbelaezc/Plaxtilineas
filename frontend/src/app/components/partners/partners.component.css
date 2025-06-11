@@ -1,6 +1,6 @@
 .marcas-aliadas {
     text-align: center;
-    padding: 40px 20px;
+    padding: 0px 20px 40px 20px; /* Menos espacio arriba */
     background-color: #f4f4f4;
 }
 

@@ -1,0 +1,29 @@
+.product-card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  width: 220px;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+.product-card:hover {
+  transform: scale(1.03);
+}
+.product-card img {
+  width: 100%;
+  border-radius: 12px;
+}
+.product-card .precio {
+  margin: 8px 0;
+  color: #648a4c;
+  font-weight: bold;
+}
+button {
+  background-color: #648a4c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+}

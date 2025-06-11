@@ -7,7 +7,8 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { Partners } from '../../components/partners/partners.component';
 import { Footer } from '../../components/footer/footer.component';
 import { SocialButtonsComponent } from '../../components/social-buttons/social-buttons.component';
-import { LongMap } from "../../components/long-map/long-map.component";
+import { LongMap } from '../../components/long-map/long-map.component';
+import { CategoriasIndexComponent } from '../../components/categorias-destacadas/categorias-destacadas.component';
 
 @Component({
   selector: 'app-inicio',
@@ -19,7 +20,8 @@ import { LongMap } from "../../components/long-map/long-map.component";
     Partners,
     Footer,
     SocialButtonsComponent,
-    LongMap
+    LongMap,
+    CategoriasIndexComponent
 ],
   templateUrl: './inicio.html',
   styleUrls: ['./inicio.css']

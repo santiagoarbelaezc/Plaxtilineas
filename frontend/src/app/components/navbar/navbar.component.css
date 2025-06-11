@@ -191,7 +191,7 @@ body {
     width: 240px;
     background: white;
     box-shadow: 0px 4px 10px var(--shadow-color);
-    border-radius: 12px;
+    border-radius: var(--border-radius);
     padding: 20px 10px;
     z-index: 999;
     transform: translateX(100%);
@@ -218,54 +218,38 @@ body {
 
   .btn2,
   .btn-contact {
-    min-width: unset;
-    width: 90%;
+    width: 100%;
     max-width: 200px;
-    height: auto;
     margin: 10px auto;
-    font-size: 16px;
-    padding: 12px 20px;
-    border-radius: 10px;
+    font-size: 18px; /* mismo tamaño que desktop */
+    padding: 12px 25px; /* igual que base */
+    height: 50px; /* mismo alto */
+    border-radius: 10px; /* igual que base */
     justify-content: center;
-    position: relative;
-    overflow: hidden;
   }
 
   .navbar .btn2:last-of-type {
-    min-width: unset;
-    width: 90%;
+    width: 100%;
     max-width: 200px;
-    height: auto;
-    padding: 12px 20px;
     margin: 10px auto;
-  }
-
-  .btn-contact p {
-    margin: 0;
-    transition: transform 0.3s ease;
-    color: #58813e;
-    z-index: 1;
+    font-size: 18px;
+    padding: 12px 25px;
+    height: 50px;
   }
 
   .btn-contact svg {
-    position: absolute;
+    height: 20px;
+    width: 20px;
     right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 18px;
-    width: 18px;
     opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 0;
+    transform: translateY(-50%);
   }
 
-  .btn-contact:hover p,
-  .btn-contact:focus p {
+  .btn-contact:hover p {
     transform: translateX(-10px);
   }
 
-  .btn-contact:hover svg,
-  .btn-contact:focus svg {
+  .btn-contact:hover svg {
     opacity: 1;
   }
 }

@@ -1,0 +1,15 @@
+<section id="categoriasDestacadas" class="categorias-grid">
+  <h2>Soluciones para cada sector</h2>
+
+  <div class="categoria-carousel">
+    <a *ngFor="let cat of categorias"
+       [routerLink]="['/productos']"
+       [queryParams]="{ categoria_id: cat.id }"
+       class="categoria-card">
+      <div class="icono">
+        <img [src]="cat.icono_url" [alt]="cat.nombre">
+      </div>
+      <h4>{{ cat.nombre }}</h4>
+    </a>
+  </div>
+</section>

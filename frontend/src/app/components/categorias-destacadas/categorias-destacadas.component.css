@@ -1,0 +1,73 @@
+/* Contenedor general de la sección */
+#categoriasDestacadas {
+  padding: 40px 20px;
+  background-color: #f4f4f4;
+  text-align: center;
+}
+
+/* Título */
+#categoriasDestacadas > h2 {
+  width: 100%;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 1rem;
+}
+
+/* Carrusel horizontal de tarjetas */
+.categoria-carousel {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  overflow-x: auto;
+  justify-content: center; /* ✅ Centra horizontalmente */
+  padding-bottom: 10px;
+  scrollbar-width: thin;
+}
+
+.categoria-carousel::-webkit-scrollbar {
+  height: 6px;
+}
+.categoria-carousel::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
+/* Tarjeta de categoría */
+.categoria-card {
+  min-width: 140px;
+  text-align: center;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 16px;
+  text-decoration: none;
+  color: #648a4c;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.2s ease, color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.categoria-card:hover {
+  transform: scale(1.05);
+  color: #4f703b;
+}
+
+/* Imagen del icono */
+.categoria-card img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+.categoria-carousel {
+  -ms-overflow-style: none; /* IE 10+ */
+  scrollbar-width: none;    /* Firefox */
+}
+.categoria-carousel::-webkit-scrollbar {
+  display: none;            /* Chrome, Safari, Opera */
+}
