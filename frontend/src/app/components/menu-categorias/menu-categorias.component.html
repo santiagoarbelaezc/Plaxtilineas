@@ -1,0 +1,16 @@
+<div class="menu-categorias">
+  <div *ngFor="let cat of categorias" class="categoria" [id]="'cat-' + cat.id">
+    <button (click)="toggle(cat)">
+      {{ cat.nombre }}
+      <span class="flecha">{{ cat.expanded ? '▾' : '▸' }}</span>
+    </button>
+
+    <ul [ngClass]="{ 'subcategorias': true, 'abierta': cat.expanded }">
+      <li *ngFor="let sub of cat.subcategorias">
+        <span (click)="seleccionarSubcategoria(sub.id)">
+          {{ sub.nombre }} ({{ sub.cantidad }})
+        </span>
+      </li>
+    </ul>
+  </div>
+</div>

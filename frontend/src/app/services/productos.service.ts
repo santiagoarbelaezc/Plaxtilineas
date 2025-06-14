@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ProductoEditable } from '../models/producto.model';
 
@@ -7,7 +7,7 @@ import { ProductoEditable } from '../models/producto.model';
   providedIn: 'root'
 })
 export class ProductosService {
-  private apiUrl = 'http://localhost:3000/api/productos'; // Cambia si usas otra URL
+  private apiUrl = '/api/productos';
 
   constructor(private http: HttpClient) {}
 
@@ -19,15 +19,21 @@ export class ProductosService {
     return this.http.get<ProductoEditable[]>(this.apiUrl, { params });
   }
 
-  crearProducto(data: FormData): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, data);
+  crearProducto(token: string, data: FormData): Observable<any> {
+    return this.http.post(this.apiUrl, data, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
+    });
   }
 
-  actualizarProducto(id: number, data: FormData): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, data);
+  actualizarProducto(token: string, id: number, data: FormData): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, data, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
+    });
   }
 
-  eliminarProducto(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  eliminarProducto(token: string, id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
+    });
   }
 }

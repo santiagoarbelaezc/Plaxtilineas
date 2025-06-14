@@ -1,7 +1,11 @@
-<main class="main-container">
-  <!-- Crear Producto -->
+<div class="main-container">
+  <header class="header">
+    <h1>Productos</h1>
+  </header>
+
+  <!-- Crear nuevo producto -->
   <section class="card">
-    <h2>Crear Producto</h2>
+    <h2>Crear Nuevo Producto</h2>
     <form (ngSubmit)="crearProducto()" [formGroup]="formProducto" enctype="multipart/form-data">
       <input type="text" placeholder="Nombre del producto" formControlName="nombre" required />
       <input type="number" placeholder="Precio" formControlName="precio" required min="0" step="0.01" />
@@ -19,21 +23,23 @@
       </select>
 
       <input type="file" (change)="onFileChange($event)" accept="image/*" />
-      <button type="submit" class="agregar">Crear Producto</button>
+      <button type="submit" class="agregar" [disabled]="formProducto.invalid">
+        <fa-icon [icon]="'plus'"></fa-icon> Agregar Producto
+      </button>
     </form>
   </section>
 
-  <!-- Filtro por Subcategoría -->
+  <!-- Filtro por subcategoría -->
   <section class="card">
     <h2>Filtrar por Subcategoría</h2>
-    <select [(ngModel)]="filtroSubcategoriaId" (change)="filtrarPorSubcategoria()" name="filtroSub" required>
+    <select [(ngModel)]="filtroSubcategoriaId" (change)="filtrarPorSubcategoria()" name="filtroSub">
       <option value="">Seleccione una subcategoría</option>
       <option *ngFor="let sub of subcategorias" [value]="sub.id">{{ sub.nombre }}</option>
     </select>
   </section>
 
-  <!-- Lista de Productos -->
-  <section class="card">
+  <!-- Lista editable de productos -->
+  <section class="card tabla-productos">
     <h2>Lista de Productos</h2>
     <table>
       <thead>
@@ -53,14 +59,20 @@
           <td>{{ prod.id }}</td>
           <td>
             <img [src]="prod.imagen_url" alt="{{ prod.nombre }}" width="60" />
-            <label *ngIf="prod.editando">
-              <i class="fas fa-image"></i>
+            <label *ngIf="prod.editando" class="icono-label">
+              <fa-icon [icon]="'image'"></fa-icon>
               <input type="file" (change)="seleccionarNuevaImagen($event, prod)" accept="image/*" style="display: none;" />
             </label>
           </td>
-          <td><input type="text" [(ngModel)]="prod.nombre" [disabled]="!prod.editando" /></td>
-          <td><input type="number" [(ngModel)]="prod.precio" [disabled]="!prod.editando" /></td>
-          <td><input type="text" [(ngModel)]="prod.descripcion" [disabled]="!prod.editando" /></td>
+          <td>
+            <input type="text" [(ngModel)]="prod.nombre" [disabled]="!prod.editando" />
+          </td>
+          <td>
+            <input type="number" [(ngModel)]="prod.precio" [disabled]="!prod.editando" />
+          </td>
+          <td>
+            <input type="text" [(ngModel)]="prod.descripcion" [disabled]="!prod.editando" />
+          </td>
           <td>
             <select [(ngModel)]="prod.subcategoria_id" [disabled]="!prod.editando">
               <option *ngFor="let s of subcategorias" [value]="s.id">{{ s.nombre }}</option>
@@ -73,24 +85,32 @@
             </select>
           </td>
           <td class="actions">
-            <button *ngIf="!prod.editando" (click)="editarProducto(prod)">
-              <i class="fas fa-edit"></i> Editar
-            </button>
-            <button *ngIf="prod.editando" (click)="actualizarProducto(prod)">
-              <i class="fas fa-save"></i> Guardar
-            </button>
-            <button (click)="eliminarProducto(prod.id)">
-              <i class="fas fa-trash-alt"></i>
-            </button>
+            <ng-container *ngIf="!prod.editando">
+              <button class="edit" (click)="activarEdicion(prod)" title="Editar">
+                <fa-icon [icon]="'edit'"></fa-icon>
+              </button>
+              <button class="delete" (click)="eliminarProducto(prod.id)" title="Eliminar">
+                <fa-icon [icon]="'trash-alt'"></fa-icon>
+              </button>
+            </ng-container>
+            <ng-container *ngIf="prod.editando">
+              <button type="button" class="edit" (click)="actualizarProducto(prod)" title="Guardar">
+                <fa-icon [icon]="'save'"></fa-icon>
+              </button>
+              <button type="button" class="delete" (click)="cancelarEdicion(prod)" title="Cancelar">
+                <fa-icon [icon]="'times'"></fa-icon>
+              </button>
+            </ng-container>
           </td>
         </tr>
       </tbody>
     </table>
   </section>
 
+  <!-- Botón de regreso -->
   <div class="acciones">
-    <a routerLink="/dashboard" class="btn-regresar">
-      <i class="fas fa-arrow-left"></i> Volver al Dashboard
-    </a>
+    <button (click)="volverAlDashboard()" class="btn-regresar">
+      <fa-icon [icon]="'arrow-left'"></fa-icon> Volver al Dashboard
+    </button>
   </div>
-</main>
+</div>

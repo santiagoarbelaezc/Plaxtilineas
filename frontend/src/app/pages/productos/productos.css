@@ -1,0 +1,19 @@
+.productos-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  padding: 24px;
+  width: 100%;
+  max-width: 1600px;
+  margin-left: 40px;  /* ❗ fuerza alineación a la izquierda */
+}
+
+app-menu-categorias-component {
+  flex: 0 0 240px;
+  align-self: flex-start;
+}
+
+app-product-list-component {
+  flex: 1;
+  min-width: 300px;
+}

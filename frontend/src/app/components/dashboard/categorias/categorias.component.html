@@ -22,7 +22,7 @@
         accept="image/*"
       />
 
-      <button type="submit" [disabled]="!categoriaForm.valid">
+      <button type="submit" class="agregar" [disabled]="!categoriaForm.valid">
         <fa-icon [icon]="'plus'"></fa-icon> Agregar
       </button>
     </form>
@@ -44,7 +44,6 @@
         <tr *ngFor="let cat of categorias">
           <td>{{ cat.id }}</td>
 
-          <!-- Nombre editable -->
           <td>
             <input
               type="text"
@@ -54,7 +53,6 @@
             />
           </td>
 
-          <!-- Ícono editable -->
           <td>
             <img
               *ngIf="cat.icono_url"
@@ -68,21 +66,20 @@
             </div>
           </td>
 
-          <!-- Acciones -->
           <td class="actions">
             <ng-container *ngIf="!cat.editando">
-              <button (click)="cat.editando = true" title="Editar">
+              <button class="edit" (click)="cat.editando = true" title="Editar">
                 <fa-icon [icon]="'edit'"></fa-icon>
               </button>
-              <button (click)="eliminarCategoria(cat.id)" title="Eliminar">
+              <button class="delete" (click)="eliminarCategoria(cat.id)" title="Eliminar">
                 <fa-icon [icon]="'trash-alt'"></fa-icon>
               </button>
             </ng-container>
             <ng-container *ngIf="cat.editando">
-              <button (click)="actualizarCategoria(cat)" title="Guardar">
+              <button class="edit" (click)="actualizarCategoria(cat)" title="Guardar">
                 <fa-icon [icon]="'save'"></fa-icon>
               </button>
-              <button (click)="cancelarEdicion(cat)" title="Cancelar">
+              <button class="delete" (click)="cancelarEdicion(cat)" title="Cancelar">
                 <fa-icon [icon]="'times'"></fa-icon>
               </button>
             </ng-container>

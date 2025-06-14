@@ -1,0 +1,12 @@
+<section id="productos-seccion">
+  <h2 *ngIf="productos.length">Productos disponibles</h2>
+  <p *ngIf="!productos.length && !cargando">No hay productos para esta subcategoría.</p>
+  <p *ngIf="cargando">Cargando productos...</p>
+
+  <div class="product-grid" *ngIf="productos.length">
+    <app-product-card-component
+      *ngFor="let producto of productos"
+      [producto]="producto">
+    </app-product-card-component>
+  </div>
+</section>

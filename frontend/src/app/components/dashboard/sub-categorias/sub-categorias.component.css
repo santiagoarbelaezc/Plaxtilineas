@@ -1,17 +1,32 @@
-/* Estilo general heredado */
+/* Estilo general */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f4f4f4;
   margin: 0;
-  padding: 40px;
+  padding: 40px 16px;
   color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
+/* Contenedor principal centrado y responsive */
+.main-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Encabezado */
 .header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 30px;
+  gap: 20px;
+  flex-wrap: wrap;
+  text-align: center;
 }
 
 .header h1 {
@@ -19,16 +34,20 @@ body {
   color: #4f7b34;
 }
 
-.header img {
-  height: 50px;
-}
-
+/* Tarjetas */
 .card {
   background-color: white;
   border-radius: 12px;
   padding: 25px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
+  text-align: center;
+}
+
+/* Ancho extendido para secciones grandes */
+.card.tabla-productos {
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .card h2 {
@@ -36,79 +55,147 @@ body {
   margin-bottom: 20px;
 }
 
-input[type='text'],
-select {
+/* Inputs */
+input[type="text"],
+input[type="file"],
+input[type="number"],
+select,
+textarea {
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
-  margin-right: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  width: 100%;
+  max-width: 600px;
   font-size: 16px;
+  box-sizing: border-box;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  resize: vertical;
 }
 
+/* Textarea alto mínimo */
+textarea {
+  min-height: 80px;
+}
+
+/* Botones estándar */
+button,
+button[type="submit"],
 button.agregar {
   background-color: #4f7b34;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 10px 30px;
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+button:hover,
 button.agregar:hover {
   background-color: #3d6128;
+  transform: translateY(-2px);
 }
 
-/* Tabla de subcategorías */
+/* Tabla */
 table {
   width: 100%;
   border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 12px 15px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
+  margin-top: 10px;
 }
 
 th {
   background-color: #dff0d8;
   color: #3c763d;
+  padding: 12px;
+  text-align: center;
 }
 
-.actions button {
-  margin-right: 8px;
-  padding: 6px 12px;
+td {
+  padding: 14px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Fila alterna */
+tbody tr:nth-child(even) {
+  background-color: #eef4ec;
+}
+
+/* Inputs en tabla */
+td input[type="text"],
+td input[type="number"],
+td select {
+  width: 100%;
+  padding: 6px 8px;
   border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+/* Imagen en tabla */
+td img {
+  height: 40px;
+  width: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* Acciones: contenedor */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Botones en acciones */
+.actions button {
+  padding: 6px 12px;
+  margin-right: 8px;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
   font-size: 14px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
 }
 
+.actions button fa-icon,
+.actions button i {
+  color: white;
+  font-size: 16px;
+  margin-right: 6px;
+}
+
+/* Botón editar */
 button.edit {
   background-color: #3498db;
   color: white;
-  padding: 6px 12px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
 }
+
 button.edit:hover {
   background-color: #2d7ebc;
 }
 
+/* Botón eliminar */
 button.delete {
   background-color: #e74c3c;
   color: white;
-  padding: 6px 12px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
 }
+
 button.delete:hover {
   background-color: #c0392b;
 }
 
+/* Botón regresar */
 .acciones {
   text-align: center;
   margin-top: 20px;
@@ -121,4 +208,30 @@ button.delete:hover {
   border-radius: 8px;
   text-decoration: none;
   display: inline-block;
+  font-weight: bold;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.btn-regresar:hover {
+  background-color: #666;
+  transform: translateY(-2px);
+}
+
+/* Icono junto a label */
+.icono-label {
+  cursor: pointer;
+  font-size: 18px;
+  margin-left: 10px;
+  color: #3498db;
+  transition: color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+.icono-label:hover {
+  color: #2d7ebc;
 }

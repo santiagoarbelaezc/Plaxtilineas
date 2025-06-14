@@ -1,0 +1,109 @@
+.menu-categorias {
+  width: 100%;
+  max-width: 280px;
+  background-color: #f4f4f4;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+.categoria {
+  margin-bottom: 15px;
+}
+
+.categoria button {
+  width: 100%;
+  background: none;
+  border: none;
+  font-weight: 600;
+  font-size: 16px;
+  text-align: left;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  color: #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.categoria button:hover {
+  background-color: #e0e0e0;
+}
+
+.flecha {
+  font-size: 12px;
+  transition: transform 0.3s ease;
+}
+
+.flecha.abierta {
+  transform: rotate(90deg);
+}
+
+.subcategorias {
+  list-style: none;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  padding-left: 18px;
+  margin: 0;
+  transition: all 0.4s ease;
+}
+
+.subcategorias.abierta {
+  max-height: 500px;
+  opacity: 1;
+  margin-top: 8px;
+}
+
+.subcategorias li {
+  margin: 4px 0;
+}
+
+.subcategorias li span {
+  cursor: pointer;
+  color: #4f7b34;
+  transition: font-weight 0.2s ease;
+}
+
+.subcategorias li span:hover {
+  font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .menu-categorias {
+    max-width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .categoria button {
+    font-size: 15px;
+    padding: 6px 10px;
+  }
+
+  .subcategorias {
+    padding-left: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .categoria button {
+    font-size: 14px;
+    padding: 6px 8px;
+  }
+
+  .flecha {
+    font-size: 10px;
+  }
+
+  .subcategorias li span {
+    font-size: 14px;
+  }
+}
