@@ -1,5 +1,5 @@
 const db = require('../config/db');
-const { cloudinary } = require('../config/cloudinary'); 
+const { cloudinary } = require('../config/cloudinary');
 
 // 🔍 Obtener todas las categorías
 exports.obtenerCategorias = async (req, res) => {
@@ -15,43 +15,54 @@ exports.obtenerCategorias = async (req, res) => {
 // ✅ Crear categoría sin ícono
 exports.crearCategoria = async (req, res) => {
   const { nombre } = req.body;
-  if (!nombre) {
-    return res.status(400).json({ error: 'El nombre es obligatorio' });
-  }
+  if (!nombre) return res.status(400).json({ error: 'El nombre es obligatorio' });
 
   try {
     const [result] = await db.query('INSERT INTO categorias (nombre) VALUES (?)', [nombre]);
-    res.status(201).json({ mensaje: 'Categoría creada con éxito', id: result.insertId });
+    res.status(201).json({
+      mensaje: 'Categoría creada con éxito',
+      id: result.insertId
+    });
   } catch (err) {
-    console.error('❌ Error al crear categoría:', err);
-    res.status(500).json({ error: 'No se pudo crear la categoría' });
+    console.error('❌ Error al crear categoría:', err.message);
+    console.dir(err, { depth: null });
+    res.status(500).json({ error: err.message || 'No se pudo crear la categoría' });
   }
 };
 
 // ✅ Crear categoría con ícono (Cloudinary)
 exports.crearCategoriaConIcono = async (req, res) => {
   const { nombre } = req.body;
-  const icono_url = req.file?.path || null;
-  const icono_public_id = req.file?.filename || null;
-
-  if (!nombre) {
-    return res.status(400).json({ error: 'El nombre es obligatorio' });
-  }
+  if (!nombre) return res.status(400).json({ error: 'El nombre es obligatorio' });
 
   try {
+    if (!req.file?.path) {
+      return res.status(400).json({ error: 'No se recibió ningún archivo de imagen' });
+    }
+
+    // 📤 Subir imagen a la carpeta "plaxtilineas_categoria"
+    const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'plaxtilineas_categoria',
+      public_id: `${Date.now()}-${req.file.originalname.split('.')[0]}`,
+    });
+
+    const icono_url = uploadResult.secure_url;
+    const icono_public_id = uploadResult.public_id;
+
     const [result] = await db.query(
       'INSERT INTO categorias (nombre, icono_url, icono_public_id) VALUES (?, ?, ?)',
       [nombre, icono_url, icono_public_id]
     );
 
     res.status(201).json({
-      mensaje: 'Categoría creada con icono con éxito',
+      mensaje: 'Categoría creada con ícono con éxito',
       id: result.insertId,
       icono_url
     });
   } catch (err) {
-    console.error('❌ Error al crear categoría con icono:', err);
-    res.status(500).json({ error: 'No se pudo crear la categoría' });
+    console.error('❌ Error al crear categoría con icono:', err.message);
+    console.dir(err, { depth: null });
+    res.status(500).json({ error: err.message || 'No se pudo crear la categoría con icono' });
   }
 };
 
@@ -59,32 +70,37 @@ exports.crearCategoriaConIcono = async (req, res) => {
 exports.actualizarCategoria = async (req, res) => {
   const { id } = req.params;
   const { nombre } = req.body;
-  const nuevoIcono = req.file?.path;
-  const nuevoPublicId = req.file?.filename;
+  const nuevoArchivo = req.file?.path;
 
-  if (!nombre) {
-    return res.status(400).json({ error: 'El nombre es obligatorio' });
-  }
+  if (!nombre) return res.status(400).json({ error: 'El nombre es obligatorio' });
 
   try {
-    // Obtener el public_id anterior
     const [rows] = await db.query('SELECT icono_public_id FROM categorias WHERE id = ?', [id]);
     if (!rows.length) return res.status(404).json({ error: 'Categoría no encontrada' });
 
-    const oldPublicId = rows[0].icono_public_id;
+    let icono_url = null;
+    let icono_public_id = rows[0].icono_public_id;
 
-    // Si hay nuevo ícono, elimina el anterior
-    if (nuevoIcono && oldPublicId) {
-      await cloudinary.uploader.destroy(oldPublicId);
+    // 🖼️ Si hay un nuevo ícono, subirlo y eliminar el anterior
+    if (nuevoArchivo) {
+      if (icono_public_id) await cloudinary.uploader.destroy(icono_public_id);
+
+      const result = await cloudinary.uploader.upload(nuevoArchivo, {
+        folder: 'plaxtilineas_categoria',
+        public_id: `${Date.now()}-${req.file.originalname.split('.')[0]}`
+      });
+
+      icono_url = result.secure_url;
+      icono_public_id = result.public_id;
     }
 
-    // Armar query dinámica
+    // Construir query dinámica
     let query = 'UPDATE categorias SET nombre = ?';
     const values = [nombre];
 
-    if (nuevoIcono) {
+    if (icono_url) {
       query += ', icono_url = ?, icono_public_id = ?';
-      values.push(nuevoIcono, nuevoPublicId);
+      values.push(icono_url, icono_public_id);
     }
 
     query += ' WHERE id = ?';
@@ -94,17 +110,16 @@ exports.actualizarCategoria = async (req, res) => {
 
     res.json({ mensaje: '✅ Categoría actualizada correctamente' });
   } catch (err) {
-    console.error('❌ Error al actualizar categoría:', err);
-    res.status(500).json({ error: 'No se pudo actualizar la categoría' });
+    console.error('❌ Error al actualizar categoría:', err.message);
+    res.status(500).json({ error: err.message || 'No se pudo actualizar la categoría' });
   }
 };
 
-// 🗑️ Eliminar categoría (NO elimina imagen aún)
+// 🗑️ Eliminar categoría (elimina también el ícono de Cloudinary)
 exports.eliminarCategoria = async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Obtener el public_id para eliminar imagen
     const [rows] = await db.query('SELECT icono_public_id FROM categorias WHERE id = ?', [id]);
     const iconoPublicId = rows[0]?.icono_public_id;
 
@@ -113,14 +128,14 @@ exports.eliminarCategoria = async (req, res) => {
     }
 
     await db.query('DELETE FROM categorias WHERE id = ?', [id]);
-    res.json({ mensaje: 'Categoría eliminada' });
+    res.json({ mensaje: 'Categoría eliminada correctamente' });
   } catch (err) {
-    console.error('❌ Error al eliminar categoría:', err);
+    console.error('❌ Error al eliminar categoría:', err.message);
     res.status(500).json({ error: 'No se pudo eliminar la categoría' });
   }
 };
 
-//Funcion para crear el arbol del menu principal de forma dinamica
+// 🌳 Construir árbol de categorías + subcategorías
 exports.obtenerCategoriasConSubcategorias = async (req, res) => {
   const sql = `
     SELECT 
@@ -138,8 +153,7 @@ exports.obtenerCategoriasConSubcategorias = async (req, res) => {
   `;
 
   try {
-    const [results] = await db.query(sql); // 👈 importante el [results]
-
+    const [results] = await db.query(sql);
     const categorias = {};
 
     results.forEach(row => {
@@ -163,7 +177,7 @@ exports.obtenerCategoriasConSubcategorias = async (req, res) => {
 
     res.json(Object.values(categorias));
   } catch (err) {
-    console.error('❌ Error en consulta:', err);
+    console.error('❌ Error en consulta:', err.message);
     res.status(500).json({ error: 'Error al obtener categorías' });
   }
 };

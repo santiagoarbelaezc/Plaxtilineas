@@ -9,13 +9,15 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => ({
-    folder: 'plaxtilineas_productos',
-    public_id: `${Date.now()}-${file.originalname.split('.')[0]}`
-  })
-});
+const createStorage = (folderName = 'plaxtilineas_general') => {
+  return new CloudinaryStorage({
+    cloudinary,
+    params: async (req, file) => ({
+      folder: folderName,
+      public_id: `${Date.now()}-${file.originalname.split('.')[0]}`
+    })
+  });
+};
 
 const fileFilter = (req, file, cb) => {
   const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
@@ -26,10 +28,12 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const upload = multer({ storage, fileFilter });
+const createUploader = (folderName) => multer({
+  storage: createStorage(folderName),
+  fileFilter
+});
 
 module.exports = {
   cloudinary,
-  storage,
-  upload
+  createUploader
 };
