@@ -1,19 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterModule], // ✅ necesario para routerLink y el uso de Router
+  imports: [RouterModule],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {
-  mostrarHeader: boolean = true;
+export class HeaderComponent implements AfterViewInit {
+  mostrarHeader = true;
 
   constructor(private router: Router) {
     this.router.events.subscribe(() => {
       this.mostrarHeader = !['/login', '/admin'].includes(this.router.url);
     });
+  }
+
+  ngAfterViewInit() {
+    const video = document.querySelector('video.video-background') as HTMLVideoElement;
+    if (video) {
+      video.muted = true;
+      video.play().catch(err => console.warn('🎥 Autoplay bloqueado:', err));
+    }
   }
 }

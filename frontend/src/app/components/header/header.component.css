@@ -53,7 +53,7 @@
 }
 
 .logo-container img {
-  height: 120px;
+  height: 500px;
   width: auto;
 }
 
@@ -215,9 +215,9 @@
 @media (min-width: 1200px) {
   .logo-container img {
     width: auto;
-    height: auto;
-    max-width: 650px;
-    max-height: 100px;
+    height: 250px;
+    max-width: none;
+    max-height: none;
     object-fit: contain;
   }
 
@@ -231,7 +231,7 @@
 /* Pantallas muy grandes */
 @media (min-width: 1400px) {
   .logo-container img {
-    height: 150px;
+    height: 300px;
   }
 
   .text-container p {
