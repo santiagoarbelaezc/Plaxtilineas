@@ -1,15 +1,92 @@
-<section id="categoriasDestacadas" class="categorias-grid">
-  <h2>Soluciones para cada sector</h2>
+<section id="categoriasDestacadas" class="categorias-section">
+  <!-- 🔹 Encabezado de la sección -->
+  <div class="section-header">
+    <h2 class="section-title">Soluciones para cada sector</h2>
+    <p class="section-subtitle">Explora nuestras categorías destacadas</p>
+  </div>
 
-  <div class="categoria-carousel">
-    <a *ngFor="let cat of categorias"
-       [routerLink]="['/productos']"
-       [queryParams]="{ categoria_id: cat.id }"
-       class="categoria-card">
-      <div class="icono">
-        <img [src]="cat.icono_url" [alt]="cat.nombre">
+  <!-- 🔹 Contenedor del carrusel -->
+  <div class="carousel-container">
+    <!-- Botón de navegación anterior -->
+    <button class="carousel-nav prev" 
+            (click)="scrollCarousel('prev')" 
+            [disabled]="!isPrevEnabled()"
+            aria-label="Categorías anteriores"
+            [class.disabled]="!isPrevEnabled()">
+      ‹
+    </button>
+
+    <!-- Wrapper del carrusel -->
+    <div class="carousel-wrapper">
+      <div class="carousel" [id]="carouselId">
+        <!-- Items del carrusel -->
+        <div class="carousel-item" 
+             *ngFor="let cat of categorias; let i = index"
+             [ngClass]="getCategoriaClass(i)">
+          
+          <a [routerLink]="['/productos']"
+             [queryParams]="{ categoria_id: cat.id }"
+             class="categoria-card">
+            
+            <!-- Contenedor del icono -->
+            <div class="categoria-icon-container">
+              <div class="icon-wrapper">
+                <img [src]="cat.icono_url" 
+                     [alt]="cat.nombre"
+                     class="categoria-icon"
+                     (error)="handleImageError($event, cat)">
+                <div class="icon-glow"></div>
+              </div>
+            </div>
+
+            <!-- Contenido de la categoría -->
+            <div class="categoria-content">
+              <h3 class="categoria-title">{{ cat.nombre }}</h3>
+              
+              <!-- Información adicional -->
+              <div class="categoria-meta">
+                <span class="explore-badge">
+                  Explorar productos
+                </span>
+              </div>
+
+              <!-- Enlace para explorar -->
+              <div class="categoria-actions">
+                <span class="explore-link">
+                  Ver más
+                  <span class="arrow">→</span>
+                </span>
+              </div>
+            </div>
+          </a>
+        </div>
       </div>
-      <h4>{{ cat.nombre }}</h4>
-    </a>
+    </div>
+
+    <!-- Botón de navegación siguiente -->
+    <button class="carousel-nav next" 
+            (click)="scrollCarousel('next')" 
+            [disabled]="!isNextEnabled()"
+            aria-label="Siguientes categorías"
+            [class.disabled]="!isNextEnabled()">
+      ›
+    </button>
+  </div>
+
+  <!-- 🔹 Indicadores del carrusel (por grupos) -->
+  <div class="carousel-indicators" *ngIf="categorias.length > itemsPerGroup">
+    <span class="carousel-indicator" 
+          *ngFor="let group of getIndicatorGroups(); let groupIndex = index"
+          [class.active]="groupIndex === getCurrentGroupIndex()"
+          (click)="scrollToIndex(group[0])"
+          [attr.aria-label]="'Ir al grupo ' + (groupIndex + 1)">
+    </span>
+  </div>
+
+  <!-- 🔹 Mensaje si no hay categorías -->
+  <div class="no-categorias" *ngIf="categorias.length === 0">
+    <div class="no-categorias-icon">📁</div>
+    <h3>No hay categorías disponibles</h3>
+    <p>Pronto agregaremos nuevas categorías para explorar.</p>
   </div>
 </section>

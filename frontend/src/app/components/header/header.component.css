@@ -74,64 +74,123 @@
   margin-bottom: 20px;
   line-height: 1.5;
 }
-
-/* Botón alineado debajo del texto */
+/* Botón alineado debajo del texto - DISEÑO MEJORADO */
 .btn-home {
   display: flex;
   justify-content: center;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 25px;
 }
 
-.btn2 {
-  min-width: 140px;
-  height: 50px;
+/* Botón mejorado - CONSISTENTE CON EL DISEÑO DEL NAVBAR */
+.btn-home .btn2 {
+  min-width: 160px;
+  height: 48px;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 12px 25px;
-  border: 2px solid #58813e;
-  color: #58813e;
+  padding: 0 32px;
+  border: 1px solid rgba(54, 140, 68, 0.3);
+  color: var(--primary-color);
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 18px;
   text-align: center;
   overflow: hidden;
-  transition: all 0.3s ease;
-  background-color: transparent;
+  transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   z-index: 1;
   border-radius: 10px;
+  font-family: 'Segoe UI', sans-serif;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1),
+              0 2px 8px rgba(54, 140, 68, 0.15);
 }
 
-.btn2::before {
+/* Efecto hover elegante */
+.btn-home .btn2::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #ffffff13;
-  transform: scaleY(0);
-  transform-origin: top;
-  transition: transform 0.3s ease-out;
+  background: var(--gradient-primary);
+  opacity: 0;
+  transition: opacity var(--transition-speed) ease;
   z-index: -1;
+  border-radius: 10px;
 }
 
-.btn2:hover::before {
-  transform: scaleY(1);
+.btn-home .btn2:hover::before {
+  opacity: 1;
 }
 
-.btn2:hover {
+.btn-home .btn2:hover {
   color: #ffffff;
-  background-color: #58813e;
+  border-color: transparent;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(54, 140, 68, 0.3),
+              0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.btn2 span {
+.btn-home .btn2 span {
   position: relative;
   z-index: 2;
+  transition: all var(--transition-speed) ease;
 }
 
+/* Efecto adicional para el texto en hover */
+.btn-home .btn2:hover span {
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+/* Animación sutil de pulso para llamar la atención */
+@keyframes gentlePulse {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1),
+                0 2px 8px rgba(54, 140, 68, 0.15);
+  }
+  50% {
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12),
+                0 3px 10px rgba(54, 140, 68, 0.2);
+  }
+}
+
+.btn-home .btn2 {
+  animation: gentlePulse 3s infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .btn-home {
+    margin-top: 20px;
+  }
+  
+  .btn-home .btn2 {
+    min-width: 150px;
+    height: 46px;
+    padding: 0 28px;
+    font-size: 14.5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn-home {
+    margin-top: 18px;
+  }
+  
+  .btn-home .btn2 {
+    min-width: 140px;
+    height: 44px;
+    padding: 0 24px;
+    font-size: 14px;
+  }
+}
 
 /* --- Ajustes Responsivos --- */
 @media (max-width: 768px) {

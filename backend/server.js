@@ -3,6 +3,12 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
+// Importar la base de datos (esto ejecutará testConnection automáticamente)
+const db = require('./config/db');
+
+// Importar Cloudinary con funciones de test
+const { testCloudinaryConnection, testCloudinaryConfig } = require('./config/cloudinary');
+
 // 🔌 Inicializar app
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -43,7 +49,41 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message || 'Error interno del servidor' });
 });
 
-// 🚀 Iniciar servidor
-app.listen(PORT, () => {
-  console.log(`✅ Backend escuchando en http://localhost:${PORT}`);
+// 🚀 Iniciar servidor con verificaciones
+async function startServer() {
+  try {
+    // Verificar Cloudinary (opcional, solo si tienes las variables configuradas)
+    if (process.env.CLOUDINARY_CLOUD_NAME) {
+      console.log('\n☁️  Verificando Cloudinary...');
+      await testCloudinaryConfig();
+      // Si quieres prueba completa, descomenta:
+      // await testCloudinaryConnection();
+    } else {
+      console.log('ℹ️  Cloudinary no configurado (opcional para desarrollo)');
+    }
+    
+    // Iniciar servidor
+    app.listen(PORT, () => {
+      console.log(`\n🚀 Servidor iniciado:`);
+      console.log(`✅ Backend escuchando en http://localhost:${PORT}`);
+      console.log(`📊 Entorno: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`💾 Base de datos: ${process.env.DB_NAME || 'plaxtilineas'}`);
+    });
+    
+  } catch (error) {
+    console.error('❌ Error al iniciar servidor:', error.message);
+    process.exit(1);
+  }
+}
+
+// Iniciar el servidor
+startServer();
+
+// Manejo de errores no capturados
+process.on('unhandledRejection', (err) => {
+  console.error('🔥 Error no manejado en promesa:', err);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('💥 Excepción no capturada:', err);
 });

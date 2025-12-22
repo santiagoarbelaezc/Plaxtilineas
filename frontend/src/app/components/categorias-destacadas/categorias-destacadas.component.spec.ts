@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CategoriasIndexComponent } from './categorias-destacadas.component';
+import { CategoriasDestacadasComponent } from './categorias-destacadas.component';
 
 describe('CategoriasDestacadas', () => {
-  let component: CategoriasIndexComponent;
-  let fixture: ComponentFixture<CategoriasIndexComponent>;
+  let component: CategoriasDestacadasComponent;
+  let fixture: ComponentFixture<CategoriasDestacadasComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CategoriasIndexComponent]
+      imports: [CategoriasDestacadasComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(CategoriasIndexComponent);
+    fixture = TestBed.createComponent(CategoriasDestacadasComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,8 +1,7 @@
-require('dotenv').config(); // Cargar variables del archivo .env
+require('dotenv').config();
 
-const mysql = require('mysql2/promise'); // Cliente MySQL con promesas
+const mysql = require('mysql2/promise');
 
-// Crear un pool de conexiones reutilizables
 const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -12,5 +11,15 @@ const db = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0
 });
+
+// Prueba de conexión simple
+db.getConnection()
+  .then(connection => {
+    console.log('✅ Conexión a MySQL establecida correctamente');
+    connection.release();
+  })
+  .catch(error => {
+    console.error('❌ Error conectando a MySQL:', error.message);
+  });
 
 module.exports = db;

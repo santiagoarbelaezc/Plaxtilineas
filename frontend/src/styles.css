@@ -18,3 +18,34 @@ app-root {
   display: block;
   min-height: 100vh;
 }
+
+
+/* Paleta de colores actualizada para diseño elegante */
+:root {
+  --primary-color: #368C44;
+  --primary-dark: #2C7539;
+  --primary-darker: #1E4A26;
+  --primary-light: rgba(54, 140, 68, 0.08);
+  --primary-lighter: rgba(54, 140, 68, 0.04);
+  --gradient-primary: linear-gradient(135deg, #368C44 0%, #2C7539 50%, #1E4A26 100%);
+  --gradient-subtle: linear-gradient(135deg, rgba(54, 140, 68, 0.9) 0%, rgba(44, 117, 57, 0.9) 100%);
+  
+  --secondary-color: #ffffff;
+  --background-color: #f4f4f4;
+  --text-color: #333333;
+  --shadow-color: rgba(0, 0, 0, 0.08);
+  --shadow-strong: rgba(0, 0, 0, 0.12);
+  --border-radius: 10px;
+  --transition-speed: 0.4s;
+  --navbar-height: 80px;
+  
+  --whatsapp-green: #25D366;
+  --whatsapp-dark: #075E54;
+  --whatsapp-light: rgba(37, 211, 102, 0.1);
+  --whatsapp-gradient: linear-gradient(135deg, #25D366 0%, #1DA851 50%, #128C7E 100%);
+  
+  --selection-glow: rgba(54, 140, 68, 0.15);
+  --hover-glow: rgba(54, 140, 68, 0.08);
+}
+
+

@@ -1,73 +1,332 @@
-/* Contenedor general de la sección */
-#categoriasDestacadas {
-  padding: 40px 20px;
-  background-color: #f4f4f4;
-  text-align: center;
+/* ===========================
+   🔹 SECCIÓN DE CATEGORÍAS - SIMPLIFICADA
+   =========================== */
+.categorias-section {
+  padding: 3rem 1rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
 }
 
-/* Título */
-#categoriasDestacadas > h2 {
-  width: 100%;
-  font-size: 2rem;
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 2.5rem;
   font-weight: 700;
-  color: var(--text-color);
-  margin-bottom: 1rem;
+  color: #1e293b;
+  margin-bottom: 0.75rem;
 }
 
-/* Carrusel horizontal de tarjetas */
-.categoria-carousel {
+.section-subtitle {
+  color: #64748b;
+  font-size: 1.125rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Carrusel simplificado */
+.carousel-container {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
-  flex-wrap: nowrap;
-  gap: 20px;
+  align-items: center;
+  gap: 1rem;
+}
+
+.carousel-nav {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.carousel-nav:hover:not(.disabled) {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.carousel-nav.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Wrapper del carrusel */
+.carousel-wrapper {
+  overflow: hidden;
+  flex: 1;
+  border-radius: 16px;
+}
+
+/* Carrusel principal */
+.carousel {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1rem;
   overflow-x: auto;
-  justify-content: center; /* ✅ Centra horizontalmente */
-  padding-bottom: 10px;
-  scrollbar-width: thin;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
 }
 
-.categoria-carousel::-webkit-scrollbar {
-  height: 6px;
-}
-.categoria-carousel::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 4px;
+.carousel::-webkit-scrollbar {
+  display: none;
 }
 
-/* Tarjeta de categoría */
+/* Items del carrusel */
+.carousel-item {
+  flex: 0 0 auto;
+  transition: transform 0.3s ease;
+}
+
+.carousel-item:hover {
+  transform: translateY(-5px);
+}
+
+/* Tarjeta de categoría simplificada */
 .categoria-card {
-  min-width: 140px;
-  text-align: center;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  padding: 16px;
-  text-decoration: none;
-  color: #648a4c;
-  font-weight: 600;
-  font-size: 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: transform 0.2s ease, color 0.3s ease;
-  flex-shrink: 0;
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
+  min-width: 280px;
+  height: 280px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .categoria-card:hover {
-  transform: scale(1.05);
-  color: #4f703b;
+  border-color: #3b82f6;
+  box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.2);
 }
 
-/* Imagen del icono */
-.categoria-card img {
-  width: 70px;
-  height: 70px;
+/* Contenedor del icono */
+.categoria-icon-container {
+  margin-bottom: 1.5rem;
+}
+
+.icon-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.categoria-icon {
+  width: 80px;
+  height: 80px;
   object-fit: contain;
-  margin-bottom: 10px;
+  transition: transform 0.3s ease;
 }
-.categoria-carousel {
-  -ms-overflow-style: none; /* IE 10+ */
-  scrollbar-width: none;    /* Firefox */
+
+.categoria-card:hover .categoria-icon {
+  transform: scale(1.1);
 }
-.categoria-carousel::-webkit-scrollbar {
-  display: none;            /* Chrome, Safari, Opera */
+
+.icon-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.categoria-card:hover .icon-glow {
+  opacity: 1;
+}
+
+/* Contenido simplificado */
+.categoria-content {
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.categoria-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+/* Badge para explorar */
+.explore-badge {
+  display: inline-block;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+/* Enlace para explorar */
+.explore-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #3b82f6;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.explore-link .arrow {
+  transition: transform 0.3s ease;
+}
+
+.categoria-card:hover .explore-link {
+  color: #2563eb;
+}
+
+.categoria-card:hover .explore-link .arrow {
+  transform: translateX(4px);
+}
+
+/* Indicadores */
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.carousel-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-indicator:hover {
+  background: #94a3b8;
+}
+
+.carousel-indicator.active {
+  background: #3b82f6;
+  transform: scale(1.3);
+}
+
+/* Mensaje sin categorías */
+.no-categorias {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #64748b;
+}
+
+.no-categorias-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.no-categorias h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #475569;
+}
+
+.no-categorias p {
+  font-size: 1rem;
+  max-width: 400px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* ===========================
+   🔹 RESPONSIVE DESIGN
+   =========================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .categoria-card {
+    min-width: 240px;
+    height: 260px;
+    padding: 1.5rem;
+  }
+  
+  .categoria-icon {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .categorias-section {
+    padding: 2rem 0.5rem;
+  }
+  
+  .section-title {
+    font-size: 1.75rem;
+  }
+  
+  .section-subtitle {
+    font-size: 1rem;
+  }
+  
+  .carousel-nav {
+    display: none;
+  }
+  
+  .categoria-card {
+    min-width: 280px;
+    height: 250px;
+  }
+  
+  .categoria-icon {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+/* ===========================
+   🔹 VARIANTES DE COLOR
+   =========================== */
+.categoria-primary .categoria-card:hover {
+  border-color: #3b82f6;
+}
+
+.categoria-secondary .categoria-card:hover {
+  border-color: #10b981;
+}
+
+.categoria-accent .categoria-card:hover {
+  border-color: #8b5cf6;
+}
+
+/* Accesibilidad */
+.categoria-card:focus-visible,
+.carousel-nav:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
 }
