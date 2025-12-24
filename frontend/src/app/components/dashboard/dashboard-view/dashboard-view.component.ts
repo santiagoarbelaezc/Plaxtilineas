@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router'; // 👈 Router agregado
+import { Router, RouterModule } from '@angular/router';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import {
   faBoxes,
   faFolderOpen,
   faFolder,
   faSignOutAlt,
-  faUserShield
+  faUserShield,
+  faHome,
+  faBolt
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -18,8 +20,17 @@ import {
   styleUrls: ['./dashboard-view.component.css']
 })
 export class DashboardViewComponent {
+  // Definir las propiedades públicas para los iconos
+  faBoxes = faBoxes;
+  faFolderOpen = faFolderOpen;
+  faFolder = faFolder;
+  faSignOutAlt = faSignOutAlt;
+  faUserShield = faUserShield;
+  faHome = faHome;
+  faBolt = faBolt;
+
   constructor(private router: Router, library: FaIconLibrary) {
-    library.addIcons(faBoxes, faFolderOpen, faFolder, faSignOutAlt, faUserShield);
+    library.addIcons(faBoxes, faFolderOpen, faFolder, faSignOutAlt, faUserShield, faHome, faBolt);
   }
 
   logout(): void {

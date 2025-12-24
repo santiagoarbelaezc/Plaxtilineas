@@ -1,5 +1,7 @@
+// src/app/app.routes.ts
 import { Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
 
 export const routes: Routes = [
   {
@@ -13,6 +15,10 @@ export const routes: Routes = [
   {
     path: 'productos',
     loadComponent: () => import('./pages/productos/productos').then(m => m.Productos)
+  },
+  {
+    path: 'producto/:id',
+    loadComponent: () => import('./components/description-producto/description-producto').then(m => m.DescriptionProducto)
   },
   {
     path: 'contacto',
@@ -40,5 +46,18 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/dashboard/productos/productos').then(m => m.Productos)
       }
     ]
+  },
+  {
+    path: '**',
+    redirectTo: ''
   }
 ];
+
+// Configuración del router con scroll al top
+export const routerConfig = {
+  scrollPositionRestoration: 'top' as const, // ⭐ Esto hace que siempre empiece desde el top
+  anchorScrolling: 'enabled' as const
+};
+
+// Exportar el proveedor del router configurado
+export const provideAppRouter = () => provideRouter(routes, withInMemoryScrolling(routerConfig));

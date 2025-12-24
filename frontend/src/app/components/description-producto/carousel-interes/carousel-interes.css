@@ -1,0 +1,689 @@
+/* ===========================
+   🔹 SECCIÓN DE PRODUCTOS DE INTERÉS - PALETA VERDE
+   =========================== */
+.productos-interes-section {
+  padding: 3rem 1rem;
+  background: linear-gradient(135deg, var(--primary-lighter) 0%, #ffffff 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border-top: 1px solid var(--primary-light);
+  margin-top: 2rem;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--primary-darker);
+  margin-bottom: 0.75rem;
+  font-family: 'Segoe UI', sans-serif;
+  letter-spacing: -0.5px;
+}
+
+.section-subtitle {
+  color: #64748b;
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* Carrusel simplificado */
+.carousel-container {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.carousel-nav {
+  background: var(--secondary-color);
+  border: 2px solid var(--primary-light);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--primary-darker);
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  flex-shrink: 0;
+  z-index: 10;
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 600;
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.carousel-nav:hover:not(.disabled) {
+  background: var(--primary-color);
+  color: var(--secondary-color);
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px var(--selection-glow);
+}
+
+.carousel-nav.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Wrapper del carrusel */
+.carousel-wrapper {
+  overflow: hidden;
+  flex: 1;
+  border-radius: 16px;
+}
+
+/* Carrusel principal */
+.carousel {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* Items del carrusel */
+.carousel-item {
+  flex: 0 0 auto;
+  transition: transform var(--transition-speed) ease;
+}
+
+.carousel-item:hover {
+  transform: translateY(-5px);
+}
+
+/* ===========================
+   🔹 TARJETA DE PRODUCTO (VERSIÓN INTERÉS) - PALETA VERDE
+   =========================== */
+.producto-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--secondary-color);
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  color: var(--text-color);
+  transition: all var(--transition-speed) ease;
+  border: 1px solid var(--primary-light);
+  min-width: 280px;
+  height: 380px;
+  box-shadow: 0 4px 6px -1px var(--shadow-color);
+  overflow: hidden;
+  position: relative;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.producto-card:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 20px 25px -5px var(--selection-glow);
+  transform: translateY(-5px);
+}
+
+/* Contenedor de la imagen */
+.producto-image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  z-index: 1;
+  background: linear-gradient(135deg, var(--primary-lighter) 0%, #f8fafc 100%);
+}
+
+.image-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.producto-image {
+  width: 100%;
+  height: 100%;
+  max-width: 200px;
+  max-height: 200px;
+  object-fit: contain;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-origin: center center;
+}
+
+.producto-card:hover .producto-image {
+  transform: scale(1.1);
+}
+
+.image-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, 
+              var(--primary-light) 0%, 
+              rgba(54, 140, 68, 0.05) 40%,
+              transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.producto-card:hover .image-glow {
+  opacity: 1;
+}
+
+/* Contenedor del texto */
+.producto-text-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1.5rem;
+  background: var(--secondary-color);
+  border-top: 1px solid var(--primary-light);
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+  z-index: 2;
+  height: 40%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.producto-content {
+  text-align: center;
+  width: 100%;
+}
+
+/* ===========================
+   🔹 NOMBRE DEL PRODUCTO - UNA SOLA LÍNEA
+   =========================== */
+.producto-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary-darker);
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+  
+  /* UNA SOLA LÍNEA con puntos suspensivos */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  max-width: 100%;
+  display: block;
+  position: relative;
+}
+
+/* Tooltip para nombres muy largos */
+.producto-title:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30, 74, 38, 0.95); /* primary-darker con opacidad */
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  z-index: 1000;
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 250px;
+  word-wrap: break-word;
+  white-space: normal;
+  text-align: center;
+}
+
+/* Flecha del tooltip */
+.producto-title:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(30, 74, 38, 0.95);
+  margin-bottom: -0.3rem;
+  z-index: 1000;
+}
+
+/* Badge de subcategoría */
+.subcategoria-badge {
+  display: inline-block;
+  background: var(--primary-lighter);
+  color: var(--primary-dark);
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  transition: all var(--transition-speed) ease;
+  border: 1px solid rgba(54, 140, 68, 0.2);
+}
+
+.producto-card:hover .subcategoria-badge {
+  background: var(--primary-color);
+  color: var(--secondary-color);
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+/* Precio */
+.producto-precio {
+  margin-bottom: 1rem;
+}
+
+.precio-actual {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  display: inline-block;
+}
+
+/* Enlace para ver producto */
+.ver-producto-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all var(--transition-speed) ease;
+  padding: 0.5rem 1rem;
+  background: var(--primary-lighter);
+  border-radius: 8px;
+  border: 1px solid rgba(54, 140, 68, 0.2);
+}
+
+.ver-producto-link .arrow {
+  transition: transform var(--transition-speed) ease;
+  font-weight: 700;
+}
+
+.producto-card:hover .ver-producto-link {
+  background: var(--primary-color);
+  color: var(--secondary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px var(--selection-glow);
+  border-color: var(--primary-color);
+}
+
+.producto-card:hover .ver-producto-link .arrow {
+  transform: translateX(6px);
+}
+
+/* ===========================
+   🔹 ESTADOS DE CARGA Y ERROR
+   =========================== */
+.loading-state {
+  text-align: center;
+  padding: 3rem;
+  color: #64748b;
+}
+
+.loading-state .spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--primary-light);
+  border-top: 3px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-state {
+  text-align: center;
+  padding: 3rem;
+  color: #dc2626;
+  background: #fef2f2;
+  border-radius: 12px;
+  margin: 2rem auto;
+  max-width: 500px;
+}
+
+.error-state .error-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.error-state h3 {
+  color: #dc2626;
+  margin-bottom: 0.5rem;
+}
+
+.error-state p {
+  color: #7f1d1d;
+  margin-bottom: 1.5rem;
+}
+
+.retry-btn {
+  background: var(--primary-color);
+  color: var(--secondary-color);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+
+.retry-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px var(--selection-glow);
+}
+
+/* Mensaje sin productos */
+.no-productos {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #64748b;
+  font-family: 'Segoe UI', sans-serif;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.no-productos-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.no-productos h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary-darker);
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 600;
+}
+
+.no-productos p {
+  font-size: 1rem;
+  line-height: 1.5;
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 400;
+}
+
+/* Debug info */
+.debug-info {
+  background: var(--primary-lighter);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 2rem;
+  font-size: 0.875rem;
+  color: var(--primary-dark);
+}
+
+.debug-info h4 {
+  margin-bottom: 0.5rem;
+  color: var(--primary-darker);
+}
+
+/* ===========================
+   🔹 RESPONSIVE DESIGN
+   =========================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .section-title {
+    font-size: 1.8rem;
+  }
+  
+  .producto-card {
+    min-width: 240px;
+    height: 360px;
+  }
+  
+  .producto-image {
+    max-width: 180px;
+    max-height: 180px;
+  }
+  
+  .producto-text-container {
+    padding: 1.25rem;
+  }
+  
+  .producto-title {
+    font-size: 1rem;
+  }
+  
+  .precio-actual {
+    font-size: 1.2rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .productos-interes-section {
+    padding: 2rem 0.5rem;
+  }
+  
+  .section-title {
+    font-size: 1.6rem;
+  }
+  
+  .section-subtitle {
+    font-size: 1rem;
+  }
+  
+  .carousel-nav {
+    display: none;
+  }
+  
+  .producto-card {
+    min-width: 280px;
+    height: 340px;
+  }
+  
+  .producto-image {
+    max-width: 160px;
+    max-height: 160px;
+  }
+  
+  .producto-text-container {
+    padding: 1rem;
+  }
+  
+  .producto-title {
+    font-size: 0.95rem;
+  }
+  
+  .subcategoria-badge {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.7rem;
+  }
+  
+  .precio-actual {
+    font-size: 1.1rem;
+  }
+  
+  .ver-producto-link {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+  }
+  
+  /* Ocultar tooltip en móviles */
+  .producto-title:hover::after,
+  .producto-title:hover::before {
+    display: none;
+  }
+}
+
+/* Pantallas muy pequeñas */
+@media (max-width: 480px) {
+  .producto-card {
+    min-width: 260px;
+    height: 320px;
+  }
+  
+  .producto-image {
+    max-width: 150px;
+    max-height: 150px;
+  }
+  
+  .producto-text-container {
+    padding: 0.9rem;
+  }
+  
+  .producto-title {
+    font-size: 0.9rem;
+  }
+  
+  .ver-producto-link {
+    font-size: 0.8rem;
+  }
+}
+
+/* Animación sutil al cargar */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.carousel-item {
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
+}
+
+.carousel-item:nth-child(1) { animation-delay: 0.1s; }
+.carousel-item:nth-child(2) { animation-delay: 0.2s; }
+.carousel-item:nth-child(3) { animation-delay: 0.3s; }
+.carousel-item:nth-child(4) { animation-delay: 0.4s; }
+
+/* Efecto de onda al hacer clic */
+.producto-card:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+/* Accesibilidad */
+.producto-card:focus-visible,
+.carousel-nav:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Para navegadores que no soportan backdrop-filter */
+@supports not (backdrop-filter: blur(12px)) {
+  .producto-card:hover .ver-producto-link {
+    background: var(--primary-color);
+    color: var(--secondary-color);
+  }
+  
+  .producto-text-container {
+    background: var(--secondary-color);
+    box-shadow: 0 -2px 10px var(--shadow-color);
+  }
+}
+
+/* Estilo para productos sin imagen */
+.producto-image-container img[src*="default-product.png"] {
+  opacity: 0.7;
+}
+
+/* Mejorar contraste en hover */
+.producto-card:hover .producto-title {
+  color: var(--primary-color);
+}
+
+/* Sombra interna para mejor contraste de texto */
+.producto-text-container::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.9));
+  pointer-events: none;
+}
+
+/* ===========================
+   🔹 MEJORAS VISUALES ESPECIALES
+   =========================== */
+
+/* Efecto de brillo especial para productos de interés */
+.productos-interes-section .producto-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-primary);
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  opacity: 0.7;
+  z-index: 3;
+}
+
+/* Efecto especial de etiqueta "Destacado" */
+.productos-interes-section .producto-card::after {
+  content: '🌟 Destacado';
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--gradient-primary);
+  color: var(--secondary-color);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  z-index: 3;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all var(--transition-speed) ease;
+}
+
+.productos-interes-section .producto-card:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Animación de pulso para destacar la sección */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(54, 140, 68, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(54, 140, 68, 0);
+  }
+}
+
+.productos-interes-section {
+  animation: pulseGlow 3s ease-in-out infinite;
+}

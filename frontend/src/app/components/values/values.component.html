@@ -1,55 +1,64 @@
 <section id="nosotros" class="seccion-nosotros" aria-label="Sección sobre los valores de Plaxtilineas">
-  <h2>Sobre Nosotros</h2>
-  <p>
-    En <strong>PLAXTILINEAS</strong>, nos esforzamos cada día para ofrecer a nuestros clientes productos de la más alta calidad,
-    mientras rompemos paradigmas en la industria y trabajamos de la mano con ellos para garantizar su éxito.
-    Conoce los valores que nos mueven:
-  </p>
-
-  <div class="valores-container">
-    <!-- Valor 1 -->
-    <div class="valor">
-      <fa-icon [icon]="['fas', 'clock']" aria-hidden="true"></fa-icon>
-      <div>
-        <h3>Eficiencia con el dinero y el tiempo de nuestros clientes</h3>
-        <p>En PLAXTILINEAS valoramos profundamente el tiempo y el dinero de nuestros clientes...</p>
-      </div>
+  <div class="nosotros-container">
+    
+    <!-- Header -->
+    <div class="nosotros-header">
+      <h2 class="nosotros-title">Sobre Nosotros</h2>
+      <p class="nosotros-subtitle">
+        En <strong>PLAXTILINEAS</strong>, nos esforzamos cada día para ofrecer a nuestros clientes productos de la más alta calidad,
+        mientras rompemos paradigmas en la industria y trabajamos de la mano con ellos para garantizar su éxito.
+      </p>
     </div>
 
-    <!-- Valor 2 -->
-    <div class="valor">
-      <fa-icon [icon]="['fas', 'lightbulb']" aria-hidden="true"></fa-icon>
-      <div>
-        <h3>Rompemos paradigmas en la industria donde estamos</h3>
-        <p>No estamos aquí solo para seguir las normas establecidas, sino para romperlas cuando sea necesario...</p>
+    <!-- Valores en grid -->
+    <div class="valores-grid">
+      
+      <!-- Valor 1 -->
+      <div class="valor-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="valor-icono-container">
+          <fa-icon [icon]="['fas', 'clock']" class="valor-icono"></fa-icon>
+        </div>
+        <h3 class="valor-titulo">Eficiencia con el dinero y el tiempo</h3>
+        <p class="valor-descripcion">En PLAXTILINEAS valoramos profundamente el tiempo y el dinero de nuestros clientes, optimizando cada proceso para garantizar la mejor relación costo-beneficio en cada proyecto.</p>
       </div>
+
+      <!-- Valor 2 -->
+      <div class="valor-card" data-aos="fade-up" data-aos-delay="200">
+        <div class="valor-icono-container">
+          <fa-icon [icon]="['fas', 'lightbulb']" class="valor-icono"></fa-icon>
+        </div>
+        <h3 class="valor-titulo">Rompemos paradigmas en la industria</h3>
+        <p class="valor-descripcion">No estamos aquí solo para seguir las normas establecidas, sino para romperlas cuando sea necesario. Innovamos constantemente para ofrecer soluciones disruptivas.</p>
+      </div>
+
+      <!-- Valor 3 -->
+      <div class="valor-card" data-aos="fade-up" data-aos-delay="300">
+        <div class="valor-icono-container">
+          <fa-icon [icon]="['fas', 'users']" class="valor-icono"></fa-icon>
+        </div>
+        <h3 class="valor-titulo">Equipos que funcionan como un reloj suizo</h3>
+        <p class="valor-descripcion">La precisión, la coordinación y la confianza entre nosotros permiten ser eficientes y entregar resultados excepcionales en cada proyecto que emprendemos.</p>
+      </div>
+
+      <!-- Valor 4 -->
+      <div class="valor-card" data-aos="fade-up" data-aos-delay="400">
+        <div class="valor-icono-container">
+          <fa-icon [icon]="['fas', 'graduation-cap']" class="valor-icono"></fa-icon>
+        </div>
+        <h3 class="valor-titulo">Aprendizaje continuo para ser líderes</h3>
+        <p class="valor-descripcion">Creemos en la importancia de la capacitación constante para ser los mejores en cada área, manteniéndonos siempre a la vanguardia de nuestra industria.</p>
+      </div>
+
+      <!-- Valor 5 -->
+      <div class="valor-card" data-aos="fade-up" data-aos-delay="500">
+        <div class="valor-icono-container">
+          <fa-icon [icon]="['fas', 'handshake']" class="valor-icono"></fa-icon>
+        </div>
+        <h3 class="valor-titulo">Nos importa el éxito de nuestros clientes</h3>
+        <p class="valor-descripcion">Trabajamos como socios cercanos de nuestros clientes, asegurándonos de que obtengan productos de calidad que impulsen su crecimiento y éxito empresarial.</p>
+      </div>
+
     </div>
 
-    <!-- Valor 3 -->
-    <div class="valor">
-      <fa-icon [icon]="['fas', 'users']" aria-hidden="true"></fa-icon>
-      <div>
-        <h3>Nuestros equipos funcionan como un reloj suizo</h3>
-        <p>La precisión, la coordinación y la confianza entre nosotros permiten ser eficientes...</p>
-      </div>
-    </div>
-
-    <!-- Valor 4 -->
-    <div class="valor">
-      <fa-icon [icon]="['fas', 'graduation-cap']" aria-hidden="true"></fa-icon>
-      <div>
-        <h3>Aprendemos continuamente para ser líderes en lo que hacemos</h3>
-        <p>Creemos en la importancia de la capacitación para ser los mejores en cada área...</p>
-      </div>
-    </div>
-
-    <!-- Valor 5 -->
-    <div class="valor">
-      <fa-icon [icon]="['fas', 'handshake']" aria-hidden="true"></fa-icon>
-      <div>
-        <h3>Nos importa el éxito de nuestros clientes</h3>
-        <p>Trabajamos como socios cercanos de nuestros clientes, asegurándonos de que obtengan productos de calidad...</p>
-      </div>
-    </div>
   </div>
 </section>

@@ -1,0 +1,122 @@
+/* Variables CSS */
+:root {
+  --navbar-height: 80px;
+  --navbar-spacing: 100px;
+  --sticky-image-top: calc(var(--navbar-spacing) + 30px);
+  --transition-speed: 0.3s;
+}
+
+/* Resetear scroll del body */
+html {
+  overflow-y: scroll; /* Fuerza que siempre aparezca el scrollbar */
+  scrollbar-gutter: stable; /* Reserva espacio para el scrollbar */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden; /* Solo evita scroll horizontal */
+}
+
+/* Wrapper principal - NO padding-top aquí */
+.page-wrapper {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Contenido principal con padding para el navbar */
+.main-content {
+  padding-top: var(--navbar-spacing);
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* Espaciado entre componentes */
+app-description-producto-select,
+app-carousel-relacionados,
+app-carousel-interes,
+app-social-buttons {
+  display: block;
+  margin-bottom: 50px;
+}
+
+/* Imagen sticky en el componente de detalles */
+.producto-imagen-col {
+  position: sticky;
+  top: var(--sticky-image-top);
+  align-self: start;
+}
+
+/* Footer sin padding extra */
+app-footer {
+  display: block;
+  margin-top: 80px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  :root {
+    --navbar-height: 70px;
+    --navbar-spacing: 90px;
+    --sticky-image-top: calc(var(--navbar-spacing) + 30px);
+  }
+  
+  .main-content {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  app-description-producto-select,
+  app-carousel-relacionados,
+  app-carousel-interes,
+  app-social-buttons {
+    margin-bottom: 40px;
+  }
+  
+  app-footer {
+    margin-top: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --navbar-height: 65px;
+    --navbar-spacing: 85px;
+  }
+  
+  .main-content {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  
+  .producto-imagen-col {
+    position: relative; /* Sin sticky en móvil */
+    top: 0;
+  }
+  
+  app-description-producto-select,
+  app-carousel-relacionados,
+  app-carousel-interes,
+  app-social-buttons {
+    margin-bottom: 30px;
+  }
+  
+  app-footer {
+    margin-top: 40px;
+  }
+}
+
+/* Ajuste adicional para el navbar - actualizar en tu CSS del navbar */
+/* Agregar esto al .head existente */
+.head {
+  /* ... tus estilos actuales ... */
+  width: 100%; /* Cambiado a 100% en lugar de 100vw */
+  left: 0;
+  right: 0;
+  /* Esto permite que respete el scrollbar del navegador */
+}

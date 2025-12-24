@@ -28,6 +28,51 @@ exports.obtenerProductos = async (req, res) => {
   }
 };
 
+exports.obtenerProductoPorId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Validar que el ID sea un número
+    const productoId = parseInt(id, 10);
+    if (isNaN(productoId)) {
+      return res.status(400).json({ error: 'ID de producto inválido' });
+    }
+    
+    // Consulta corregida según el modelo
+    const query = `
+      SELECT 
+        p.id, 
+        p.nombre, 
+        p.descripcion, 
+        p.cantidad, 
+        p.precio, 
+        p.imagen_url,
+        p.public_id,  -- Agregado: public_id para Cloudinary
+        p.subcategoria_id,
+        p.creado_en,  -- Agregado: timestamp de creación
+        s.nombre AS subcategoria,
+        c.nombre AS categoria,
+        c.icono_url AS categoria_icono  -- Opcional: si quieres el icono de la categoría
+      FROM productos p
+      JOIN subcategorias s ON p.subcategoria_id = s.id
+      JOIN categorias c ON s.categoria_id = c.id
+      WHERE p.id = ?
+    `;
+    
+    const [rows] = await db.query(query, [productoId]);
+    
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Producto no encontrado' });
+    }
+    
+    console.log('✅ Producto obtenido por ID:', rows[0]);
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('❌ Error al obtener producto por ID:', err);
+    res.status(500).json({ error: 'No se pudo obtener el producto' });
+  }
+};
+
 exports.crearProductoDesdeRuta = async (req, res) => {
   try {
     const nombre = req.body.nombre?.trim() || '';
@@ -122,5 +167,84 @@ exports.eliminarProducto = async (req, res) => {
   } catch (err) {
     console.error('❌ Error al eliminar producto:', err);
     res.status(500).json({ error: 'No se pudo eliminar el producto' });
+  }
+};
+
+// Obtener productos por subcategoría (todos los productos de una subcategoría específica)
+exports.obtenerProductosPorSubcategoria = async (req, res) => {
+  try {
+    const { subcategoria_id } = req.params;
+    
+    // Validar que el subcategoria_id sea un número
+    const subcatId = parseInt(subcategoria_id, 10);
+    if (isNaN(subcatId)) {
+      return res.status(400).json({ error: 'ID de subcategoría inválido' });
+    }
+    
+    const query = `
+      SELECT 
+        p.id, 
+        p.nombre, 
+        p.descripcion, 
+        p.cantidad, 
+        p.precio, 
+        p.imagen_url,
+        p.subcategoria_id,
+        s.nombre AS subcategoria,
+        c.nombre AS categoria,
+        c.icono_url AS categoria_icono
+      FROM productos p
+      JOIN subcategorias s ON p.subcategoria_id = s.id
+      JOIN categorias c ON s.categoria_id = c.id
+      WHERE p.subcategoria_id = ?
+      ORDER BY p.creado_en DESC
+    `;
+    
+    const [rows] = await db.query(query, [subcatId]);
+    
+    console.log(`✅ Productos obtenidos para subcategoría ${subcatId}:`, rows.length);
+    res.json(rows);
+  } catch (err) {
+    console.error('❌ Error al obtener productos por subcategoría:', err);
+    res.status(500).json({ error: 'No se pudieron obtener los productos' });
+  }
+};
+// Obtener productos aleatorios (productos de interés) - TODOS los productos
+exports.obtenerProductosAleatorios = async (req, res) => {
+  try {
+    const { limite = 8 } = req.query;
+    
+    // Convertir límite a número
+    const limit = parseInt(limite, 10);
+    if (isNaN(limit) || limit <= 0) {
+      return res.status(400).json({ error: 'Límite inválido. Debe ser un número positivo.' });
+    }
+    
+    const query = `
+      SELECT 
+        p.id, 
+        p.nombre, 
+        p.descripcion, 
+        p.cantidad, 
+        p.precio, 
+        p.imagen_url,
+        p.subcategoria_id,
+        s.nombre AS subcategoria,
+        c.nombre AS categoria,
+        c.icono_url AS categoria_icono
+      FROM productos p
+      JOIN subcategorias s ON p.subcategoria_id = s.id
+      JOIN categorias c ON s.categoria_id = c.id
+      ORDER BY RAND()  -- Orden aleatorio
+      LIMIT ?
+    `;
+    
+    const [rows] = await db.query(query, [limit]);
+    
+    console.log(`✅ ${rows.length} productos aleatorios obtenidos (solicitados: ${limit})`);
+    res.json(rows);
+  } catch (err) {
+    console.error('❌ Error al obtener productos aleatorios:', err);
+    res.status(500).json({ error: 'No se pudieron obtener los productos aleatorios' });
   }
 };

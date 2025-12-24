@@ -1,12 +1,114 @@
 <section id="productos-seccion">
-  <h2 *ngIf="productos.length">Productos disponibles</h2>
-  <p *ngIf="!productos.length && !cargando">No hay productos para esta subcategoría.</p>
-  <p *ngIf="cargando">Cargando productos...</p>
+  <!-- Encabezado elegante -->
+  <div class="section-header">
+    <h2 *ngIf="productos.length && !cargando">
+      <span class="title-text">Productos disponibles</span>
+      <span class="product-count">({{productos.length}})</span>
+    </h2>
+  </div>
 
-  <div class="product-grid" *ngIf="productos.length">
-    <app-product-card-component
-      *ngFor="let producto of productos"
-      [producto]="producto">
-    </app-product-card-component>
+  <!-- Estados de carga -->
+  <div *ngIf="cargando" class="loading-state">
+    <div class="loading-animation">
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+    </div>
+    <p class="loading-text">Cargando productos...</p>
+  </div>
+
+  <!-- Estado sin productos -->
+  <div *ngIf="!productos.length && !cargando" class="empty-state">
+    <div class="empty-icon">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <path d="M16 10a4 4 0 0 1-8 0"></path>
+      </svg>
+    </div>
+    <p class="empty-text">No hay productos para esta categoría</p>
+    <p class="empty-subtext">Intenta con otra subcategoría</p>
+  </div>
+
+  <!-- Grid de productos -->
+  <div class="products-grid-container" 
+       [class.productos-cambiando]="cargando"
+       *ngIf="productos.length && !cargando">
+    
+    <div class="products-grid">
+      <div class="product-card-wrapper"
+           *ngFor="let producto of productos; let i = index"
+           [@fadeInUp]>
+        
+        <!-- Tarjeta de producto con click en toda la card -->
+        <div class="product-card-container" (click)="verDetalles(producto)" tabindex="0" role="button">
+          
+          <!-- Contenedor superior: Imagen -->
+          <div class="product-image-section">
+            <div class="product-image-wrapper">
+              <div class="product-image-container">
+                <img [src]="producto.imagen_url" [alt]="producto.nombre" class="product-image">
+                <div class="image-overlay"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Contenedor medio: Información -->
+          <div class="product-info-section">
+            
+            <!-- Contenedor de texto -->
+            <div class="product-text-container">
+              <div class="product-title-wrapper">
+                <h3 class="product-title">{{producto.nombre}}</h3>
+                <div class="product-subtitle">{{producto.subcategoria}}</div>
+              </div>
+              
+              <div class="product-description-container">
+                <p class="product-description">
+                  {{producto.descripcion || 'Descripción no disponible'}}
+                </p>
+              </div>
+            </div>
+            
+            <!-- Contenedor de detalles - Solo precio -->
+            <div class="product-details-container">
+              
+              <!-- Solo precio, sin información de disponibilidad -->
+              <div class="product-price-section">
+                <div class="price-display">
+                  <div class="price-label-area">
+                    <span class="price-label">Precio:</span>
+                  </div>
+                  <div class="price-value-area">
+                    <span class="price-value">${{producto.precio | number:'1.2-2'}}</span>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+            
+          </div>
+          
+          <!-- Contenedor inferior: Acción principal -->
+          <div class="product-actions-section">
+            <div class="main-action-container">
+              <button class="main-action-button" (click)="$event.stopPropagation(); verDetalles(producto)">
+                <span class="button-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </span>
+                <span class="button-text">
+                  Ver detalles del producto
+                </span>
+              </button>
+            </div>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
   </div>
 </section>

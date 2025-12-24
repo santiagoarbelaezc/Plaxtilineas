@@ -7,6 +7,11 @@ const uploadProducto = createUploader('plaxtilineas_productos');
 
 // Rutas públicas
 router.get('/', controller.obtenerProductos);
+router.get('/:id', controller.obtenerProductoPorId);
+
+// Nuevas rutas públicas para productos relacionados y de interés
+router.get('/subcategoria/:subcategoria_id', controller.obtenerProductosPorSubcategoria);
+router.get('/interes/aleatorios', controller.obtenerProductosAleatorios);
 
 // Rutas protegidas con imagen enviada desde Angular como FormData
 router.post('/', verifyToken, uploadProducto.single('imagen'), controller.crearProductoDesdeRuta);

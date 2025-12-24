@@ -1,125 +1,278 @@
-/* Estilos para pie de página optimizado */
+/* Footer sutil y compacto - VERSIÓN ACTUALIZADA */
 .footer {
-  background-color: #1c1c1c;
-  color: #b2b2b2;
-  padding: 20px 0;
+  background: #0f0f0f;
+  color: #fff;
+  padding: 35px 0 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(54, 140, 68, 0.3), transparent);
 }
 
 .footer-content {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 40px;
+  position: relative;
 }
 
+/* Secciones compactas */
 .contacto-info,
 .compania-info {
-  flex-basis: 45%;
-  text-align: justify;
+  position: relative;
 }
 
+/* Títulos sutiles */
 .contacto-info h3,
 .compania-info h3 {
-  font-size: 24px;
-  margin-bottom: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1.3rem; /* Tamaño aumentado ligeramente */
+  font-weight: 600; /* Peso aumentado para mejor legibilidad */
+  color: #fff;
+  margin-bottom: 22px; /* Aumentado para más espacio */
+  padding-bottom: 8px;
+  letter-spacing: 0.3px;
 }
 
-.compania-info p {
-  margin: 0;
-  padding: 0;
-  line-height: 1.5;
-  text-align: justify;
+.contacto-info h3::after,
+.compania-info h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 45px; /* Un poco más ancho */
+  height: 2px; /* Un poco más grueso */
+  background: linear-gradient(90deg, #368c44, #25d366);
+  opacity: 0.8;
 }
 
+/* Lista de contacto más sutil */
 .contacto-info ul {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: grid;
+  gap: 16px; /* Aumentado ligeramente */
 }
 
 .contacto-info li {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
-  font-size: 16px;
+  gap: 12px;
+  padding: 8px 0;
+  transition: all 0.2s ease;
 }
 
-.contacto-info li svg {
-  margin-right: 10px;
+.contacto-info li:hover {
+  transform: translateX(4px);
+}
+
+.contacto-info svg {
+  width: 18px; /* Aumentado de 16px */
+  height: 18px; /* Aumentado de 16px */
+  flex-shrink: 0;
+  opacity: 0.9; /* Aumentada opacidad */
+  transition: opacity 0.2s ease;
+}
+
+.contacto-info li:hover svg {
+  opacity: 1;
 }
 
 .contacto-info a {
-  color: inherit;
+  color: #d1d5db;
   text-decoration: none;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 15px; /* Aumentado de 14px */
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  transition: all 0.2s ease;
 }
 
 .contacto-info a:hover {
-  text-decoration: underline;
-  color: #4caf50;
+  color: #fff;
 }
 
+/* ====================================================
+   INFORMACIÓN DE LA COMPAÑÍA CON TEXTO MÁS GRANDE
+   ==================================================== */
+.compania-info p {
+  color: #dbeafe; /* Color más claro para mejor contraste */
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 15.5px; /* Aumentado de 14px - 1.5px más grande */
+  line-height: 1.7; /* Aumentado de 1.6 para mejor legibilidad */
+  margin: 0;
+  text-align: justify;
+  letter-spacing: 0.2px; /* Aumentado ligeramente */
+  font-weight: 400;
+}
+
+.compania-info strong {
+  color: #fff;
+  font-weight: 600; /* Un poco más fuerte */
+  font-size: 16px; /* Tamaño específico para el nombre */
+}
+
+.compania-info em {
+  color: #a7f3d0;
+  font-style: italic;
+  font-weight: 500; /* Un poco más pesado */
+  font-size: 14.5px; /* Aumentado de 13px */
+  display: block;
+  margin-top: 15px; /* Aumentado de 12px */
+  padding: 10px 0 0 0; /* Aumentado padding superior */
+  border-top: 1px solid rgba(255, 255, 255, 0.08); /* Un poco más visible */
+  line-height: 1.6;
+}
+
+/* Copyright más sutil */
 .copyright {
+  grid-column: 1 / -1;
   text-align: center;
-  margin-top: 20px;
-  font-size: 14px;
-  width: 100%;
+  margin-top: 35px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
 }
 
-/* --- Ajustes Responsivos --- */
+.copyright::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #368c44, transparent);
+}
 
-/* Tablets y móviles grandes */
+.copyright p {
+  color: #9ca3af;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 13px; /* Aumentado de 12px */
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  margin: 0;
+  padding: 0 20px;
+}
+
+/* Responsive Design Compacto */
 @media (max-width: 768px) {
-  .contacto-info,
-  .compania-info {
-    flex-basis: 100%;
-    margin-bottom: 20px;
-    text-align: center;
+  .footer {
+    padding: 30px 0 15px;
   }
-
+  
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 0 25px;
+  }
+  
   .contacto-info h3,
   .compania-info h3 {
-    font-size: 22px;
+    font-size: 1.2rem; /* Tamaño responsive ajustado */
+    margin-bottom: 20px; /* Aumentado */
   }
-
+  
+  .contacto-info ul {
+    gap: 14px; /* Aumentado */
+  }
+  
   .contacto-info li {
-    justify-content: center;
+    padding: 7px 0; /* Aumentado */
   }
-
+  
+  /* TEXTO RESPONSIVE MÁS GRANDE */
   .compania-info p {
-    text-align: center;
+    font-size: 15px; /* Aumentado de 13.5px */
+    line-height: 1.65; /* Aumentado */
+  }
+  
+  .compania-info strong {
+    font-size: 15.5px; /* Tamaño responsive */
+  }
+  
+  .compania-info em {
+    font-size: 14px; /* Aumentado de 13px */
+    margin-top: 14px; /* Aumentado */
+  }
+  
+  .copyright {
+    margin-top: 30px;
+    padding-top: 18px;
   }
 }
 
-/* Móviles pequeños */
 @media (max-width: 480px) {
   .footer {
-    padding: 15px 0;
+    padding: 25px 0 12px;
   }
-
+  
   .footer-content {
-    padding: 0 10px;
+    padding: 0 20px;
+    gap: 25px;
   }
-
+  
   .contacto-info h3,
   .compania-info h3 {
-    font-size: 20px;
-    margin-bottom: 15px;
+    font-size: 1.1rem; /* Tamaño responsive ajustado */
+    margin-bottom: 18px; /* Aumentado */
   }
-
-  .contacto-info li {
-    font-size: 14px;
+  
+  .contacto-info svg {
+    width: 16px; /* Aumentado de 14px */
+    height: 16px; /* Aumentado de 14px */
   }
-
+  
+  .contacto-info a {
+    font-size: 14px; /* Aumentado de 13px */
+  }
+  
+  /* TEXTO MÓVIL MÁS LEGIBLE */
+  .compania-info p {
+    font-size: 14.5px; /* Aumentado de 13px */
+    line-height: 1.65; /* Mejorado */
+  }
+  
+  .compania-info strong {
+    font-size: 15px; /* Tamaño móvil */
+  }
+  
+  .compania-info em {
+    font-size: 13.5px; /* Aumentado de 12px */
+    margin-top: 12px; /* Aumentado */
+  }
+  
   .copyright {
-    font-size: 12px;
+    margin-top: 25px;
+    padding-top: 15px;
+  }
+  
+  .copyright p {
+    font-size: 12px; /* Aumentado de 11px */
   }
 }
 
-/* Pantallas muy grandes */
-@media (min-width: 1400px) {
-  .footer-content {
-    max-width: 1400px;
-  }
+/* Efectos de color muy sutiles */
+.contacto-info a[href^="tel:"]:hover {
+  color: #86efac;
+}
+
+.contacto-info a[href^="mailto:"]:hover {
+  color: #93c5fd;
+}
+
+.contacto-info a[href*="maps"]:hover {
+  color: #fdba74;
 }

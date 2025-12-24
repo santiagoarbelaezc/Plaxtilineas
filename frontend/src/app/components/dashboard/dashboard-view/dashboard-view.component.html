@@ -1,42 +1,99 @@
-<div class="dashboard-container">
-  <header class="dashboard-header">
-    <img src="assets/img/logo.png" alt="Logo" class="logo" />
-    <h1>Panel de Administración</h1>
-    <button (click)="logout()" title="Cerrar sesión">
-      <fa-icon [icon]="'sign-out-alt'"></fa-icon> Cerrar Sesión
+<div class="admin-dashboard-container">
+  <!-- Header del Dashboard -->
+  <header class="admin-dashboard-header">
+    <div class="admin-header-content">
+      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766438846/plaxtilineas_mujcoh.png" alt="Logo" class="admin-logo" />
+      <div class="admin-header-text">
+        <h1 class="admin-title">Panel de Administración</h1>
+        <p class="admin-subtitle">Gestiona productos, categorías y subcategorías de forma rápida y eficiente.
+              Accede a todas las herramientas desde el menú lateral</p>
+      </div>
+    </div>
+    <button class="admin-logout-btn" (click)="logout()" title="Cerrar sesión">
+      <fa-icon [icon]="faSignOutAlt" class="logout-icon"></fa-icon>
+      <span>Cerrar Sesión</span>
     </button>
   </header>
 
-  <!-- ✅ Solo muestra esto si estamos exactamente en /admin -->
-  <main class="dashboard-main" *ngIf="estaEnInicio">
-    <section class="card">
-      <h2>
-        <fa-icon [icon]="'user-shield'"></fa-icon> Bienvenido, administrador
-      </h2>
-      <p>Gestiona productos, categorías y subcategorías de forma rápida y eficiente.</p>
-    </section>
-
-    <section class="card">
-      <ul>
-        <li>
-          <a routerLink="/admin/categorias">
-            <fa-icon [icon]="'folder-open'"></fa-icon> Gestionar categorías
+  <!-- Contenido principal -->
+  <div class="admin-content-wrapper">
+    <!-- Menú de navegación lateral -->
+    <nav class="admin-sidebar">
+      <ul class="admin-menu">
+        <li class="menu-item" [class.active]="estaEnInicio">
+          <a routerLink="/admin" class="menu-link">
+            <fa-icon [icon]="faHome" class="menu-icon"></fa-icon>
+            <span>Inicio</span>
           </a>
         </li>
-        <li>
-          <a routerLink="/admin/subcategorias">
-            <fa-icon [icon]="'folder'"></fa-icon> Gestionar subcategorías
+        <li class="menu-item">
+          <a routerLink="/admin/categorias" class="menu-link">
+            <fa-icon [icon]="faFolderOpen" class="menu-icon"></fa-icon>
+            <span>Categorías</span>
           </a>
         </li>
-        <li>
-          <a routerLink="/admin/productos">
-            <fa-icon [icon]="'boxes'"></fa-icon> Gestionar productos
+        <li class="menu-item">
+          <a routerLink="/admin/subcategorias" class="menu-link">
+            <fa-icon [icon]="faFolder" class="menu-icon"></fa-icon>
+            <span>Subcategorías</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a routerLink="/admin/productos" class="menu-link">
+            <fa-icon [icon]="faBoxes" class="menu-icon"></fa-icon>
+            <span>Productos</span>
           </a>
         </li>
       </ul>
-    </section>
-  </main>
+    </nav>
 
-  <!-- Aquí cargan las vistas hijas como /admin/categorias -->
-  <router-outlet></router-outlet>
+    <!-- Área de contenido -->
+    <main class="admin-main-content">
+      <!-- Bienvenida (solo visible en /admin) -->
+      <div *ngIf="estaEnInicio" class="admin-welcome-section">
+      
+        <section class="admin-card quick-access-card">
+          <h2 class="card-title">
+            <fa-icon [icon]="faBolt" class="section-icon"></fa-icon>
+            Acceso rápido
+          </h2>
+          <p class="card-subtitle">Navega rápidamente a las secciones principales</p>
+          
+          <div class="quick-access-grid">
+            <a routerLink="/admin/categorias" class="access-card">
+              <div class="access-icon-container">
+                <fa-icon [icon]="faFolderOpen"></fa-icon>
+              </div>
+              <h3 class="access-title">Gestionar categorías</h3>
+              <p class="access-description">Organiza las categorías principales del catálogo</p>
+              <span class="access-link">Ir a categorías →</span>
+            </a>
+            
+            <a routerLink="/admin/subcategorias" class="access-card">
+              <div class="access-icon-container">
+                <fa-icon [icon]="faFolder"></fa-icon>
+              </div>
+              <h3 class="access-title">Gestionar subcategorías</h3>
+              <p class="access-description">Administra las subdivisiones de cada categoría</p>
+              <span class="access-link">Ir a subcategorías →</span>
+            </a>
+            
+            <a routerLink="/admin/productos" class="access-card">
+              <div class="access-icon-container">
+                <fa-icon [icon]="faBoxes"></fa-icon>
+              </div>
+              <h3 class="access-title">Gestionar productos</h3>
+              <p class="access-description">Administra el inventario completo de productos</p>
+              <span class="access-link">Ir a productos →</span>
+            </a>
+          </div>
+        </section>
+      </div>
+
+      <!-- Router outlet para vistas hijas -->
+      <div class="router-outlet-container">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
 </div>

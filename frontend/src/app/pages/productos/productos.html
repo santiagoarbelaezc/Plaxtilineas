@@ -1,10 +1,21 @@
 <app-navbar></app-navbar>
-<app-header></app-header>
+<app-header-product></app-header-product>
+
 <div class="productos-layout">
-  <app-menu-categorias-component></app-menu-categorias-component>
+  <app-menu-categorias-component #menuCategorias></app-menu-categorias-component>
   <app-product-list-component></app-product-list-component>
 </div>
+
+<!-- Flecha desplegable para móvil -->
+<button class="menu-toggle-categorias" (click)="toggleMenu()">
+  <div class="toggle-arrow"></div>
+</button>
+
+<!-- Overlay para cerrar menú tocando fuera -->
+<div class="menu-overlay" 
+     [class.visible]="menuVisible" 
+     (click)="closeMenu()"></div>
+
 <app-social-buttons></app-social-buttons>
 <app-footer></app-footer>
-
 <app-modal-producto-component></app-modal-producto-component>

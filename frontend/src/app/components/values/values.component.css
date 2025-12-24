@@ -1,161 +1,284 @@
-/* Estilos para la sección Nosotros con íconos */
+/* ===========================
+   SECCIÓN NOSOTROS - DISEÑO LIMPIO Y PROFESIONAL
+   =========================== */
+
 .seccion-nosotros {
-  background-color: #f4f4f4;
-  padding: 60px 20px;
+  padding: 100px 20px;
+  background: rgba(255, 255, 255, 0.98);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  position: relative;
+}
+
+.nosotros-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header estilo limpio */
+.nosotros-header {
   text-align: center;
+  margin-bottom: 70px;
+  padding: 0 20px;
 }
 
-.seccion-nosotros h2 {
-  font-size: 32px;
-  color: #333;
-  margin-bottom: 20px;
+.nosotros-title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--primary-darker, #1a202c);
+  margin-bottom: 25px;
+  position: relative;
+  display: inline-block;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
 }
 
-.seccion-nosotros p {
-  font-size: 18px;
-  color: #666;
-  max-width: 800px;
-  margin: 0 auto 40px;
-  line-height: 1.6;
+.nosotros-title::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #368c44, #25d366);
+  border-radius: 2px;
 }
 
-.valores-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
+.nosotros-subtitle {
+  color: #4a5568;
+  font-size: 1.2rem;
+  line-height: 1.7;
+  max-width: 700px;
+  margin: 40px auto 0;
+  font-weight: 400;
 }
 
-.valor {
+.nosotros-subtitle strong {
+  color: #368c44;
+  font-weight: 600;
+}
+
+/* Grid de valores */
+.valores-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+  padding: 0 20px;
+}
+
+.valor-card {
+  background: white;
+  border-radius: 12px;
+  padding: 40px 30px;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.valor-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #368c44, #25d366);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.valor-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(54, 140, 68, 0.2);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.valor-card:hover::before {
+  opacity: 1;
+}
+
+/* Contenedor del icono */
+.valor-icono-container {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, rgba(54, 140, 68, 0.1), rgba(37, 211, 102, 0.1));
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
-  width: 100%;
-  text-align: left;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  justify-content: center;
+  margin: 0 auto 25px;
+  transition: all 0.3s ease;
 }
 
-.valor:hover {
-  transform: translateY(-5px);
-  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+.valor-card:hover .valor-icono-container {
+  transform: scale(1.1);
+  background: linear-gradient(135deg, rgba(54, 140, 68, 0.15), rgba(37, 211, 102, 0.15));
 }
 
-/* Ajustes para fa-icon */
-.valor fa-icon {
-  font-size: 44px;
-  color: #4caf50;
-  margin-right: 18px;
-  flex-shrink: 0;
-  width: 44px;
-  height: 44px;
+.valor-icono {
+  font-size: 2rem;
+  color: #368c44;
+  transition: all 0.3s ease;
 }
 
-/* Títulos y texto */
-.valor h3 {
-  font-size: 20px;
-  color: #333;
-  margin-bottom: 8px;
+.valor-card:hover .valor-icono {
+  transform: scale(1.05);
 }
 
-.valor p {
-  font-size: 16px;
-  color: #555;
+/* Texto de la tarjeta */
+.valor-titulo {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--primary-darker, #1a202c);
+  margin-bottom: 20px;
   line-height: 1.4;
+  transition: color 0.3s ease;
 }
 
-/* --- Ajustes Responsivos --- */
+.valor-card:hover .valor-titulo {
+  color: #368c44;
+}
 
-/* Tablets y móviles grandes */
+.valor-descripcion {
+  color: #64748b;
+  line-height: 1.7;
+  font-size: 1.05rem;
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* Efectos de fondo sutiles */
+.seccion-nosotros::before {
+  content: '';
+  position: absolute;
+  top: 10%;
+  right: 5%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(54, 140, 68, 0.02) 0%, transparent 70%);
+  z-index: 0;
+}
+
+.seccion-nosotros::after {
+  content: '';
+  position: absolute;
+  bottom: 10%;
+  left: 5%;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(37, 211, 102, 0.02) 0%, transparent 70%);
+  z-index: 0;
+}
+
+/* ===========================
+   ANIMACIONES SUAVES AOS
+   =========================== */
+
+[data-aos] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-aos].aos-animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+
+@media (max-width: 1024px) {
+  .valores-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+}
+
 @media (max-width: 768px) {
-  .seccion-nosotros {
-    padding: 40px 15px;
-  }
-
-  .seccion-nosotros h2 {
-    font-size: 26px;
-  }
-
-  .seccion-nosotros p {
-    font-size: 16px;
-  }
-
-  .valor {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .valor fa-icon {
-    margin-right: 0;
-    margin-bottom: 10px;
-    font-size: 36px;
-    width: 36px;
-    height: 36px;
-  }
-
-  .valor h3 {
-    font-size: 18px;
-  }
-
-  .valor p {
-    font-size: 15px;
-  }
-}
-
-/* Móviles pequeños */
-@media (max-width: 480px) {
-  .seccion-nosotros {
-    padding: 30px 10px;
-  }
-
-  .seccion-nosotros h2 {
-    font-size: 22px;
-  }
-
-  .seccion-nosotros p {
-    font-size: 15px;
-  }
-
-  .valor {
-    padding: 15px;
-  }
-
-  .valor fa-icon {
-    font-size: 30px;
-    width: 30px;
-    height: 30px;
-  }
-
-  .valor h3 {
-    font-size: 16px;
-  }
-
-  .valor p {
-    font-size: 14px;
-  }
-}
-
-/* Pantallas muy grandes */
-@media (min-width: 1400px) {
   .seccion-nosotros {
     padding: 80px 20px;
   }
-
-  .seccion-nosotros h2 {
-    font-size: 36px;
+  
+  .nosotros-header {
+    margin-bottom: 50px;
   }
-
-  .valor {
-    max-width: 700px;
+  
+  .nosotros-title {
+    font-size: 2.2rem;
   }
+  
+  .nosotros-subtitle {
+    font-size: 1.1rem;
+    margin-top: 30px;
+  }
+  
+  .valores-grid {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+    margin: 0 auto;
+    gap: 25px;
+  }
+  
+  .valor-card {
+    padding: 35px 25px;
+  }
+  
+  .valor-icono-container {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 20px;
+  }
+  
+  .valor-icono {
+    font-size: 1.8rem;
+  }
+  
+  .valor-titulo {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+  }
+  
+  .valor-descripcion {
+    font-size: 1rem;
+  }
+}
 
-  .valor fa-icon {
-    font-size: 48px;
-    width: 48px;
-    height: 48px;
+@media (max-width: 480px) {
+  .seccion-nosotros {
+    padding: 60px 15px;
+  }
+  
+  .nosotros-title {
+    font-size: 2rem;
+  }
+  
+  .nosotros-subtitle {
+    font-size: 1rem;
+  }
+  
+  .valor-card {
+    padding: 30px 20px;
+  }
+  
+  .valor-icono-container {
+    width: 65px;
+    height: 65px;
+  }
+  
+  .valor-icono {
+    font-size: 1.6rem;
+  }
+  
+  .valor-titulo {
+    font-size: 1.2rem;
+  }
+  
+  .valor-descripcion {
+    font-size: 0.95rem;
   }
 }

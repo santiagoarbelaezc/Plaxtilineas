@@ -1,14 +1,24 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { routes } from './app.routes';
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient } from '@angular/common/http';
+import { routes } from './app.routes';
+import { ScrollService } from './services/scroll.service';
+import { MenuStateService } from './services/menu-state.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
-    provideHttpClient() // ✅ Esto es lo que faltaba
+   
+    // ⭐⭐ IMPORTANTE: Deshabilitar el scroll de Angular ⭐⭐
+    provideRouter(routes, withInMemoryScrolling({
+      scrollPositionRestoration: 'disabled', // DESHABILITADO - Nuestro servicio maneja el scroll
+      anchorScrolling: 'disabled'            // DESHABILITADO - Nuestro servicio maneja los anclas
+    })),
+    
+    provideAnimations(),
+    provideHttpClient(),
+    ScrollService, 
+    MenuStateService
   ]
 };
-

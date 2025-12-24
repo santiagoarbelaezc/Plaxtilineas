@@ -1,358 +1,224 @@
 
-/* Formato general */
+
+/* Reset básico */
 * {
   margin: 0;
   padding: 0;
-  border: 0;
-  font-size: 100%;
-  vertical-align: baseline;
   box-sizing: border-box;
 }
 
-/* Formato del cuerpo */
-body {
-  margin: 0 auto;
-  text-align: center;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: var(--background-color);
-}
-
-/* Cabecera y navegación - ELEGANTE Y SUTIL */
 .head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: var(--navbar-height);
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
+  right: 0; /* Cambiado de width: 100% */
   z-index: 1000;
-  padding: 0 35px;
+  padding: 0 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 40px rgba(0, 0, 0, 0.06);
   transition: all var(--transition-speed) ease;
-  box-shadow: 0 1px 20px rgba(0, 0, 0, 0.04);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .logo-img {
-  height: 60px;
+  height: 55px;
   width: auto;
-  max-width: 250px; /* Limita el ancho máximo */
-  min-width: 150px; /* Ancho mínimo */
+  max-width: 220px;
+  min-width: 140px;
   transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
-  filter: brightness(0.92);
-  object-fit: contain; /* Asegura que mantenga proporción */
+  filter: brightness(0.95);
+  object-fit: contain;
 }
 
 .logo-img:hover {
-  transform: scale(1.03);
+  transform: scale(1.02);
   filter: brightness(1);
 }
 
-/* Botón hamburguesa elegante */
+/* Hamburguesa mejorada */
 .menu-toggle {
   display: none;
   flex-direction: column;
   justify-content: space-between;
-  width: 28px;
-  height: 20px;
+  width: 30px;
+  height: 22px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0;
-  position: relative;
-  margin-right: 8px;
+  padding: 4px;
   z-index: 1001;
 }
 
 .hamburger-line {
   display: block;
-  height: 2px;
+  height: 2.5px;
   width: 100%;
-  background-color: var(--primary-color);
+  background: linear-gradient(135deg, #368c44, #25d366);
   border-radius: 2px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
+  transform: rotate(45deg) translate(6px, 6px);
 }
 
 .menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(2) {
   opacity: 0;
+  transform: scale(0);
 }
 
 .menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(3) {
-  transform: rotate(-45deg) translate(5px, -5px);
+  transform: rotate(-45deg) translate(7px, -6px);
 }
 
-/* Navegación */
+/* Navegación principal - LÍNEAS DEBAJO */
 .navbar {
   display: flex;
-  gap: 14px;
-  padding: 0 8px;
+  gap: 8px;
   align-items: center;
+  position: relative;
 }
 
-/* Botón base - ELEGANTE Y SUTIL (SIN DEGRADADO POR DEFECTO) */
-.btn2 {
-  min-width: 140px;
-  height: 42px;
+.nav-link {
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0 26px;
-  border: 1px solid rgba(54, 140, 68, 0.3);
-  color: var(--primary-color);
+  padding: 12px 24px;
+  color: #4a5568;
   text-decoration: none;
   font-weight: 500;
+  font-size: 16px;
+  font-family: 'Segoe UI', -apple-system, sans-serif;
+  letter-spacing: 0.3px;
+  transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* Línea animada debajo del enlace activo */
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #368c44, #25d366);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-50%);
+  box-shadow: 0 2px 12px rgba(54, 140, 68, 0.4);
+}
+
+.nav-link.active::after,
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Efectos hover elegantes */
+.nav-link:hover {
+  color: #368c44;
+  transform: translateY(-1px);
+}
+
+/* WhatsApp especial */
+.whatsapp-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  font-weight: 600;
+}
+
+.whatsapp-link::after {
+  background: linear-gradient(90deg, #25d366, #128C7E);
+}
+
+.whatsapp-link:hover {
+  color: #25d366 !important;
+}
+
+.whatsapp-icon {
+  width: 20px;
+  height: 20px;
+  color: #25d366;
+  transition: all var(--transition-speed) ease;
+}
+
+.whatsapp-link:hover .whatsapp-icon {
+  transform: scale(1.1) rotate(10deg);
+}
+
+/* Login icono */
+.login-link {
+  padding: 12px 16px;
+  min-width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-icon {
   font-size: 18px;
-  text-align: center;
-  overflow: hidden;
-  transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
-  background-color: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  z-index: 1;
-  border-radius: 8px;
-  font-family: 'Segoe UI', sans-serif;
-  letter-spacing: 0.3px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
-}
-
-/* Efecto hover sutil */
-.btn2::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--primary-light);
-  opacity: 0;
-  transition: opacity var(--transition-speed) ease;
-  z-index: -1;
-  border-radius: 8px;
-}
-
-.btn2:hover::before {
-  opacity: 1;
-}
-
-.btn2:hover {
-  color: var(--primary-dark);
-  border-color: rgba(54, 140, 68, 0.5);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 20px var(--hover-glow);
-}
-
-/* Estado activo/seleccionado - CON DEGRADADO ELEGANTE */
-.btn2.active {
-  background: var(--gradient-primary);
-  border: none;
-  color: #ffffff;
-  font-weight: 600;
-  box-shadow: 0 4px 25px var(--selection-glow),
-              0 2px 4px rgba(0, 0, 0, 0.1);
-  position: relative;
-  transform: translateY(-1px);
-}
-
-/* Efecto de brillo sutil en el estado activo */
-.btn2.active::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, 
-              transparent, 
-              rgba(255, 255, 255, 0.15), 
-              transparent);
-  transition: left 0.8s ease;
-  z-index: 1;
-}
-
-.btn2.active:hover::after {
-  left: 100%;
-}
-
-.btn2 span {
-  position: relative;
-  z-index: 2;
+  color: #4a5568;
   transition: all var(--transition-speed) ease;
 }
 
-/* Botón de contacto - SOFISTICADO Y ELEGANTE */
-.btn-contact {
-  background-color: rgba(223, 224, 223, 0.6);
-  border: 1px solid rgba(37, 211, 102, 0.3);
-  padding: 0 28px;
-  width: auto;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: none;
-  border-radius: 8px;
-  color: #208f82;
-  position: relative;
-  overflow: hidden;
-  font-family: 'Segoe UI', sans-serif;
-  letter-spacing: 0.3px;
-  box-shadow: 0 2px 12px rgba(37, 211, 102, 0.08);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+.login-link:hover .login-icon {
+  color: #368c44;
+  transform: rotate(-15deg) scale(1.1);
 }
 
-/* Efecto hover elegante para WhatsApp */
-.btn-contact::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--whatsapp-gradient);
-  opacity: 0;
-  transition: opacity var(--transition-speed) ease;
-  z-index: 1;
-  border-radius: 8px;
+/* RESPONSIVE - MEJORADO */
+@media (max-width: 1024px) {
+  .head {
+    padding: 0 30px;
+  }
+  
+  .nav-link {
+    font-size: 15px;
+    padding: 10px 20px;
+  }
+}
+/* RESPONSIVE - MEJORADO (REEMPLAZA desde @media (max-width: 768px)) */
+@media (max-width: 1024px) {
+  .head {
+    padding: 0 30px;
+  }
+  
+  .nav-link {
+    font-size: 15px;
+    padding: 10px 20px;
+  }
 }
 
-.btn-contact:hover::before {
-  opacity: 1;
-}
-
-.btn-contact p {
-  margin: 0;
-  padding: 0;
-  line-height: 1;
-  color: #128C7E;
-  position: relative;
-  z-index: 2;
-  transition: all var(--transition-speed) ease;
-  font-weight: 500;
-}
-
-.btn-contact svg {
-  height: 16px;
-  width: 16px;
-  fill: #128C7E;
-  transition: all var(--transition-speed) ease;
-  position: relative;
-  z-index: 2;
-}
-
-.btn-contact:hover {
-  border-color: transparent;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 25px rgba(37, 211, 102, 0.2);
-}
-
-.btn-contact:hover p {
-  color: #ffffff;
-  font-weight: 600;
-}
-
-.btn-contact:hover svg {
-  fill: #ffffff;
-  transform: scale(1.05);
-}
-
-/* Botón de login especial - ELEGANTE */
-.login-btn {
-  min-width: 42px !important;
-  width: 42px;
-  height: 42px;
-  padding: 0;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(54, 140, 68, 0.3);
-  color: var(--primary-color);
-  transition: all var(--transition-speed) ease;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
-  position: relative;
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.login-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--primary-light);
-  opacity: 0;
-  transition: opacity var(--transition-speed) ease;
-  z-index: 1;
-  border-radius: 8px;
-}
-
-.login-btn:hover::before {
-  opacity: 1;
-}
-
-.login-btn fa-icon {
-  font-size: 15px;
-  transition: all var(--transition-speed) ease;
-  color: var(--primary-color);
-  position: relative;
-  z-index: 2;
-}
-
-.login-btn:hover {
-  border-color: rgba(54, 140, 68, 0.5);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 20px var(--hover-glow);
-}
-
-.login-btn:hover fa-icon {
-  transform: rotate(-10deg) scale(1.05);
-  color: var(--primary-dark);
-}
-
-/* --- Ajustes Responsivos --- */
 @media (max-width: 768px) {
   .head {
-    height: 68px;
-    padding: 0 20px;
+    height: 70px;
+    padding: 0 25px;
   }
   
   .navbar {
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     position: fixed;
     top: 0;
     right: 0;
-    width: 280px;
+    width: 340px;
+    max-width: 92vw;
     height: 100vh;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    box-shadow: -4px 0 30px var(--shadow-strong);
-    padding: 90px 25px 40px;
-    z-index: 999;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    box-shadow: -10px 0 60px rgba(0, 0, 0, 0.18);
+    padding: 110px 35px 50px;
     transform: translateX(100%);
     opacity: 0;
     pointer-events: none;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
-                opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
   .navbar.active {
@@ -361,131 +227,152 @@ body {
     pointer-events: auto;
   }
 
-  .navbar::before {
+  /* MEJORA ESPECIAL: Cada enlace como tarjeta elegante */
+  .nav-link {
+    width: 100%;
+    padding: 20px 28px;
+    border-radius: 16px;
+    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .nav-link::before {
     content: '';
     position: absolute;
     top: 0;
-    left: 0;
+    left: -100%;
     width: 100%;
-    height: 68px;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
-    z-index: -1;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.6s;
   }
 
-  .navbar a {
+  .nav-link:hover::before {
+    left: 100%;
+  }
+
+  .nav-link::after {
+    left: 28px;
+    right: 28px;
+    bottom: 12px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .nav-link.active::after,
+  .nav-link:hover::after {
+    width: calc(100% - 56px);
+    background: linear-gradient(90deg, #368c44, #25d366);
+  }
+
+  .nav-link.active {
+    background: linear-gradient(135deg, rgba(54, 140, 68, 0.15), rgba(37, 211, 102, 0.1));
+    border-color: rgba(54, 140, 68, 0.3);
+    transform: translateX(8px);
+    box-shadow: 0 8px 32px rgba(54, 140, 68, 0.2);
+  }
+
+  /* WHATSAPP MEJORADO */
+  .whatsapp-link {
+    padding: 20px 28px;
+    gap: 12px;
+    color: #128C7E;
+  }
+
+  .whatsapp-icon {
+    width: 24px;
+    height: 24px;
+    filter: drop-shadow(0 2px 4px rgba(37, 211, 102, 0.3));
+  }
+
+  .whatsapp-link:hover {
+    background: linear-gradient(135deg, rgba(37, 211, 102, 0.2), rgba(18, 140, 126, 0.15));
+    border-color: rgba(37, 211, 102, 0.4);
+    transform: translateX(8px);
+    box-shadow: 0 8px 32px rgba(37, 211, 102, 0.25);
+  }
+
+  /* ICONO LOGIN - ULTRA MEJORADO ✨ */
+  .login-link {
+    padding: 20px 28px;
+    min-width: auto;
     display: flex;
-    width: 100%;
-    text-align: center;
-    animation: slideIn 0.5s ease forwards;
-    opacity: 0;
-    transform: translateX(20px);
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
+    position: relative;
   }
 
-  .navbar a:nth-child(1) { animation-delay: 0.1s; }
-  .navbar a:nth-child(2) { animation-delay: 0.2s; }
-  .navbar a:nth-child(3) { animation-delay: 0.3s; }
-  .navbar a:nth-child(4) { animation-delay: 0.4s; }
-  .navbar a:nth-child(5) { animation-delay: 0.5s; }
+  .login-link::before {
+    content: '🔐';
+    position: absolute;
+    right: 24px;
+    font-size: 20px;
+    opacity: 0;
+    transform: scale(0.5) rotate(-180deg);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
-  @keyframes slideIn {
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+  .login-link:hover::before {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+
+  .login-icon {
+    font-size: 24px;
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, rgba(54, 140, 68, 0.2), rgba(37, 211, 102, 0.1));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    box-shadow: 0 4px 16px rgba(54, 140, 68, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .login-link:hover .login-icon {
+    transform: rotate(360deg) scale(1.15);
+    background: linear-gradient(135deg, #368c44, #25d366);
+    box-shadow: 0 8px 24px rgba(54, 140, 68, 0.35);
   }
 
   .menu-toggle {
     display: flex;
   }
 
-  .btn2,
-  .btn-contact {
-    width: 100%;
-    max-width: 220px;
-    margin: 8px auto;
-    font-size: 14px;
-    padding: 0 22px;
-    height: 44px;
-    border-radius: 8px;
-    justify-content: center;
-    min-width: auto;
-  }
-
-  .login-btn {
-    width: 100%;
-    max-width: 220px;
-    margin: 8px auto;
-    height: 44px;
-    min-width: auto !important;
-    width: 100%;
+  .logo-img {
+    height: 48px;
   }
 }
 
 @media (max-width: 480px) {
   .head {
-    height: 62px;
-    padding: 0 15px;
-  }
-
-  .logo-img {
-    height: 38px;
-  }
-
-  .menu-toggle {
-    width: 24px;
-    height: 18px;
-  }
-
-  .hamburger-line {
-    height: 1.5px;
-  }
-
-  .navbar {
-    width: 250px;
-  }
-
-  .btn2,
-  .btn-contact {
-    font-size: 13.5px;
+    height: 65px;
     padding: 0 20px;
-    height: 42px;
-    max-width: 200px;
   }
-}
-
-@media (min-width: 1400px) {
-  .head {
-    padding: 0 45px;
-  }
-
+  
   .navbar {
-    gap: 16px;
+    width: 300px;
+    padding: 95px 25px 40px;
   }
-
-  .btn2,
-  .btn-contact {
-    font-size: 14px;
-    padding: 0 28px;
-    height: 44px;
-    min-width: 150px;
+  
+  .logo-img {
+    height: 42px;
   }
-}
-
-/* Añade espacio al body para compensar el navbar fijo */
-body {
-  padding-top: var(--navbar-height);
-}
-
-/* Efecto de foco para accesibilidad */
-.btn2:focus-visible,
-.btn-contact:focus-visible,
-.login-btn:focus-visible {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(54, 140, 68, 0.1);
-}
-
-/* Transición suave para efectos globales */
-* {
-  scroll-behavior: smooth;
+  
+  .nav-link {
+    padding: 18px 24px;
+    font-size: 17px;
+  }
 }

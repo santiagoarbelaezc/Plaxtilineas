@@ -1,97 +1,254 @@
-<div class="main-container">
-  <header class="header">
-    <h1>Categorías</h1>
-  </header>
+<div class="admin-content-wrapper">
+  <!-- Menú lateral (opcional) -->
+  
 
-  <!-- Crear nueva categoría -->
-  <section class="card">
-    <h2>Crear Nueva Categoría</h2>
-    <form #categoriaForm="ngForm" (ngSubmit)="crearCategoria()">
-      <input
-        type="text"
-        name="nombre"
-        [(ngModel)]="categoria.nombre"
-        placeholder="Nombre de la categoría"
-        required
-      />
-
-      <input
-        type="file"
-        name="icono"
-        (change)="onArchivoSeleccionado($event)"
-        accept="image/*"
-      />
-
-      <button type="submit" class="agregar" [disabled]="!categoriaForm.valid">
-        <fa-icon [icon]="'plus'"></fa-icon> Agregar
+  <!-- Contenido principal -->
+  <main class="admin-main-content">
+    <!-- Header -->
+    <div class="admin-content-header">
+      <div class="header-content">
+        <h1 class="page-title">
+          <fa-icon [icon]="faFolderOpen" class="title-icon"></fa-icon>
+          Gestión de Categorías
+        </h1>
+        <p class="page-subtitle">Administra las categorías principales del catálogo</p>
+      </div>
+      <button class="back-to-dashboard" (click)="volverAlDashboard()">
+        <fa-icon [icon]="faArrowLeft"></fa-icon>
+        <span>Volver al Dashboard</span>
       </button>
-    </form>
-  </section>
+    </div>
 
-  <!-- Lista editable de categorías -->
-  <section class="card">
-    <h2>Lista de Categorías</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Ícono</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let cat of categorias">
-          <td>{{ cat.id }}</td>
-
-          <td>
+    <!-- Card: Crear nueva categoría -->
+    <section class="admin-card create-card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <fa-icon [icon]="faPlus" class="card-icon"></fa-icon>
+          Crear Nueva Categoría
+        </h2>
+      </div>
+      <div class="card-body">
+        <form #categoriaForm="ngForm" (ngSubmit)="crearCategoria()" class="category-form">
+          <div class="form-group">
+            <label for="nombre" class="form-label">
+              <fa-icon [icon]="faTag"></fa-icon>
+              Nombre de la categoría
+            </label>
             <input
               type="text"
-              [(ngModel)]="cat.nombre"
-              [disabled]="!cat.editando"
-              class="input-editable"
+              id="nombre"
+              name="nombre"
+              [(ngModel)]="categoria.nombre"
+              placeholder="Ej: Electrónica, Ropa, Hogar..."
+              required
+              class="form-input"
             />
-          </td>
+          </div>
 
-          <td>
-            <img
-              *ngIf="cat.icono_url"
-              [src]="cat.icono_url"
-              alt="Ícono"
-              width="32"
-              height="32"
-            />
-            <div *ngIf="cat.editando">
-              <input type="file" (change)="onCambiarIcono(cat, $event)" accept="image/*" />
+          <div class="form-group">
+            <label for="icono" class="form-label">
+              <fa-icon [icon]="faImage"></fa-icon>
+              Ícono de la categoría
+            </label>
+            <div class="file-upload">
+              <input
+                type="file"
+                id="icono"
+                name="icono"
+                (change)="onArchivoSeleccionado($event)"
+                accept="image/*"
+                class="file-input"
+              />
+              <label for="icono" class="file-label">
+                <fa-icon [icon]="faUpload"></fa-icon>
+                Seleccionar archivo
+              </label>
+              <span class="file-name" *ngIf="categoria.icono">
+                {{ categoria.icono.name }}
+              </span>
             </div>
-          </td>
+            <p class="form-hint">Formatos aceptados: JPG, PNG, SVG. Tamaño máximo: 2MB</p>
+          </div>
 
-          <td class="actions">
-            <ng-container *ngIf="!cat.editando">
-              <button class="edit" (click)="cat.editando = true" title="Editar">
-                <fa-icon [icon]="'edit'"></fa-icon>
-              </button>
-              <button class="delete" (click)="eliminarCategoria(cat.id)" title="Eliminar">
-                <fa-icon [icon]="'trash-alt'"></fa-icon>
-              </button>
-            </ng-container>
-            <ng-container *ngIf="cat.editando">
-              <button class="edit" (click)="actualizarCategoria(cat)" title="Guardar">
-                <fa-icon [icon]="'save'"></fa-icon>
-              </button>
-              <button class="delete" (click)="cancelarEdicion(cat)" title="Cancelar">
-                <fa-icon [icon]="'times'"></fa-icon>
-              </button>
-            </ng-container>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary" [disabled]="!categoriaForm.valid">
+              <fa-icon [icon]="faPlus"></fa-icon>
+              Crear Categoría
+            </button>
+            <button type="button" class="btn-secondary" (click)="limpiarFormulario()">
+              <fa-icon [icon]="faEraser"></fa-icon>
+              Limpiar
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
 
-  <div class="acciones">
-    <button (click)="volverAlDashboard()" class="btn-regresar">
-      <fa-icon [icon]="'arrow-left'"></fa-icon> Volver al Dashboard
-    </button>
-  </div>
+    <!-- Card: Lista de categorías -->
+    <section class="admin-card list-card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <fa-icon [icon]="faList" class="card-icon"></fa-icon>
+          Lista de Categorías
+          <span class="badge">{{ totalCategorias }}</span>
+        </h2>
+        
+        <!-- Controles de búsqueda y paginación superior -->
+        <div class="table-controls">
+          <div class="search-box">
+            <fa-icon [icon]="faSearch" class="search-icon"></fa-icon>
+            <input
+              type="text"
+              [(ngModel)]="searchTerm"
+              (ngModelChange)="filtrarCategorias()"
+              placeholder="Buscar categoría..."
+              class="search-input"
+            />
+          </div>
+          
+          <div class="pagination-info">
+            Mostrando {{ getItemsMostrados() }} de {{ totalCategorias }} categorías
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th width="80">ID</th>
+                <th>Nombre</th>
+                <th width="120">Ícono</th>
+                <th width="180">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let cat of categoriasPaginadas" [class.editing]="cat.editando">
+                <td class="id-cell">
+                  <span class="badge-id">#{{ cat.id }}</span>
+                </td>
+
+                <td>
+                  <div class="name-cell" *ngIf="!cat.editando">
+                    {{ cat.nombre }}
+                  </div>
+                  <input
+                    *ngIf="cat.editando"
+                    type="text"
+                    [(ngModel)]="cat.nombre"
+                    class="edit-input"
+                    placeholder="Nombre de categoría"
+                  />
+                </td>
+
+                <td>
+                  <div class="icon-cell">
+                    <div class="icon-preview" *ngIf="cat.icono_url">
+                      <img [src]="cat.icono_url" alt="Ícono" class="category-icon" />
+                    </div>
+                    <div *ngIf="!cat.icono_url" class="icon-placeholder">
+                      <fa-icon [icon]="faImage"></fa-icon>
+                    </div>
+                    
+                    <div *ngIf="cat.editando" class="icon-upload">
+                      <input
+                        type="file"
+                        id="icono-{{cat.id}}"
+                        (change)="onCambiarIcono(cat, $event)"
+                        accept="image/*"
+                        class="hidden-file-input"
+                      />
+                      <label for="icono-{{cat.id}}" class="upload-btn">
+                        <fa-icon [icon]="faSyncAlt"></fa-icon>
+                        Cambiar
+                      </label>
+                    </div>
+                  </div>
+                </td>
+
+                <td>
+                  <div class="action-buttons">
+                    <ng-container *ngIf="!cat.editando">
+                      <button class="btn-action edit" (click)="cat.editando = true" title="Editar">
+                        <fa-icon [icon]="faEdit"></fa-icon>
+                      </button>
+                      <button class="btn-action delete" (click)="eliminarCategoria(cat.id)" title="Eliminar">
+                        <fa-icon [icon]="faTrashAlt"></fa-icon>
+                      </button>
+                    </ng-container>
+                    <ng-container *ngIf="cat.editando">
+                      <button class="btn-action save" (click)="actualizarCategoria(cat)" title="Guardar">
+                        <fa-icon [icon]="faSave"></fa-icon>
+                      </button>
+                      <button class="btn-action cancel" (click)="cancelarEdicion(cat)" title="Cancelar">
+                        <fa-icon [icon]="faTimes"></fa-icon>
+                      </button>
+                    </ng-container>
+                  </div>
+                </td>
+              </tr>
+              
+              <tr *ngIf="categoriasPaginadas.length === 0">
+                <td colspan="4" class="no-data">
+                  <fa-icon [icon]="faInbox" class="no-data-icon"></fa-icon>
+                  <p>No se encontraron categorías</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Paginación -->
+        <div class="pagination" *ngIf="totalPaginas > 1">
+          <button 
+            class="pagination-btn" 
+            (click)="cambiarPagina(paginaActual - 1)"
+            [disabled]="paginaActual === 1"
+          >
+            <fa-icon [icon]="faChevronLeft"></fa-icon>
+          </button>
+          
+          <div class="pagination-numbers">
+            <button
+              *ngFor="let pagina of getRangoPaginas()"
+              class="pagination-number"
+              [class.active]="pagina === paginaActual"
+              (click)="cambiarPagina(pagina)"
+            >
+              {{ pagina }}
+            </button>
+          </div>
+          
+          <button 
+            class="pagination-btn" 
+            (click)="cambiarPagina(paginaActual + 1)"
+            [disabled]="paginaActual === totalPaginas"
+          >
+            <fa-icon [icon]="faChevronRight"></fa-icon>
+          </button>
+        </div>
+
+        <!-- Selector de items por página -->
+        <div class="page-size-selector">
+          <label for="pageSize">
+            <fa-icon [icon]="faListAlt"></fa-icon>
+            Mostrar:
+          </label>
+          <select 
+            id="pageSize" 
+            [(ngModel)]="itemsPorPagina" 
+            (ngModelChange)="cambiarItemsPorPagina()"
+            class="page-size-select"
+          >
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+          </select>
+          <span class="selector-label">categorías por página</span>
+        </div>
+      </div>
+    </section>
+  </main>
 </div>

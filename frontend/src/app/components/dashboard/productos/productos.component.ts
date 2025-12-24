@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
@@ -11,7 +11,23 @@ import {
   faTimes,
   faPlus,
   faArrowLeft,
-  faImage
+  faImage,
+  faBoxes,
+  faTag,
+  faDollarSign,
+  faFolder,
+  faRuler,
+  faAlignLeft,
+  faUpload,
+  faEraser,
+  faFilter,
+  faList,
+  faSearch,
+  faInbox,
+  faChevronLeft,
+  faChevronRight,
+  faListAlt,
+  faSyncAlt
 } from '@fortawesome/free-solid-svg-icons';
 
 import { ProductosService } from '../../../services/productos.service';
@@ -22,18 +38,52 @@ import { Subcategoria } from '../../../models/subcategoria.model';
 @Component({
   selector: 'app-productos-component',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, FontAwesomeModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, FontAwesomeModule, CurrencyPipe],
   templateUrl: './productos.component.html',
   styleUrls: ['./productos.component.css']
 })
 export class ProductosComponent implements OnInit {
+  // Propiedades para iconos
+  faEdit = faEdit;
+  faTrashAlt = faTrashAlt;
+  faSave = faSave;
+  faTimes = faTimes;
+  faPlus = faPlus;
+  faArrowLeft = faArrowLeft;
+  faImage = faImage;
+  faBoxes = faBoxes;
+  faTag = faTag;
+  faDollarSign = faDollarSign;
+  faFolder = faFolder;
+  faRuler = faRuler;
+  faAlignLeft = faAlignLeft;
+  faUpload = faUpload;
+  faEraser = faEraser;
+  faFilter = faFilter;
+  faList = faList;
+  faSearch = faSearch;
+  faInbox = faInbox;
+  faChevronLeft = faChevronLeft;
+  faChevronRight = faChevronRight;
+  faListAlt = faListAlt;
+  faSyncAlt = faSyncAlt;
+
+  // Propiedades del componente
   token: string | null = null;
 
   formProducto!: FormGroup;
   productos: ProductoEditable[] = [];
+  productosFiltrados: ProductoEditable[] = [];
+  productosPaginadas: ProductoEditable[] = [];
   subcategorias: Subcategoria[] = [];
   imagenSeleccionada: File | null = null;
   filtroSubcategoriaId: string = '';
+  
+  // Propiedades para paginación
+  paginaActual: number = 1;
+  itemsPorPagina: number = 10;
+  totalPaginas: number = 1;
+  searchTerm: string = '';
 
   constructor(
     private router: Router,
@@ -42,7 +92,12 @@ export class ProductosComponent implements OnInit {
     private subcategoriasService: SubcategoriasService,
     library: FaIconLibrary
   ) {
-    library.addIcons(faEdit, faTrashAlt, faSave, faTimes, faPlus, faArrowLeft, faImage);
+    library.addIcons(
+      faEdit, faTrashAlt, faSave, faTimes, faPlus, faArrowLeft, faImage,
+      faBoxes, faTag, faDollarSign, faFolder, faRuler, faAlignLeft,
+      faUpload, faEraser, faFilter, faList, faSearch, faInbox,
+      faChevronLeft, faChevronRight, faListAlt, faSyncAlt
+    );
   }
 
   ngOnInit(): void {
@@ -84,6 +139,7 @@ export class ProductosComponent implements OnInit {
           editando: false,
           nuevaImagen: undefined
         }));
+        this.filtrarProductos();
       },
       error: err => {
         console.error('Error al cargar productos:', err);
@@ -91,9 +147,98 @@ export class ProductosComponent implements OnInit {
     });
   }
 
+  // Métodos para filtrado y paginación
+  filtrarProductos(): void {
+    if (this.searchTerm.trim() === '') {
+      this.productosFiltrados = [...this.productos];
+    } else {
+      const termino = this.searchTerm.toLowerCase();
+      this.productosFiltrados = this.productos.filter(prod =>
+        prod.nombre.toLowerCase().includes(termino) ||
+        prod.descripcion?.toLowerCase().includes(termino) ||
+        prod.id.toString().includes(termino)
+      );
+    }
+    
+    this.paginaActual = 1; // Volver a la primera página al filtrar
+    this.calcularPaginacion();
+    this.actualizarDatosPaginados();
+  }
+
+  calcularPaginacion(): void {
+    this.totalPaginas = Math.ceil(this.productosFiltrados.length / this.itemsPorPagina);
+    if (this.paginaActual > this.totalPaginas && this.totalPaginas > 0) {
+      this.paginaActual = this.totalPaginas;
+    }
+  }
+
+  actualizarDatosPaginados(): void {
+    const inicio = (this.paginaActual - 1) * this.itemsPorPagina;
+    const fin = inicio + this.itemsPorPagina;
+    this.productosPaginadas = this.productosFiltrados.slice(inicio, fin);
+  }
+
+  cambiarPagina(pagina: number): void {
+    if (pagina >= 1 && pagina <= this.totalPaginas) {
+      this.paginaActual = pagina;
+      this.actualizarDatosPaginados();
+    }
+  }
+
+  cambiarItemsPorPagina(): void {
+    this.paginaActual = 1;
+    this.calcularPaginacion();
+    this.actualizarDatosPaginados();
+  }
+
+  getRangoPaginas(): number[] {
+    const paginas: number[] = [];
+    const maxPaginasVisibles = 5;
+    
+    let inicio = Math.max(1, this.paginaActual - Math.floor(maxPaginasVisibles / 2));
+    let fin = Math.min(this.totalPaginas, inicio + maxPaginasVisibles - 1);
+    
+    // Ajustar si estamos cerca del inicio
+    if (fin - inicio + 1 < maxPaginasVisibles) {
+      inicio = Math.max(1, fin - maxPaginasVisibles + 1);
+    }
+    
+    for (let i = inicio; i <= fin; i++) {
+      paginas.push(i);
+    }
+    
+    return paginas;
+  }
+
+  get totalProductos(): number {
+    return this.productosFiltrados.length;
+  }
+
+  getItemsMostrados(): string {
+    const inicio = (this.paginaActual - 1) * this.itemsPorPagina + 1;
+    const fin = Math.min(this.paginaActual * this.itemsPorPagina, this.totalProductos);
+    return `${inicio}-${fin}`;
+  }
+
+  getNombreSubcategoria(subcategoriaId: number): string {
+    const subcategoria = this.subcategorias.find(sub => sub.id === subcategoriaId);
+    return subcategoria ? subcategoria.nombre : 'Subcategoría no encontrada';
+  }
+
+  getNombreSubcategoriaFiltro(): string {
+    if (!this.filtroSubcategoriaId) return '';
+    const subcategoria = this.subcategorias.find(sub => sub.id.toString() === this.filtroSubcategoriaId);
+    return subcategoria ? subcategoria.nombre : '';
+  }
+
+  // Métodos existentes (actualizados)
   onFileChange(event: any): void {
     const file = event.target.files?.[0];
     if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB
+        Swal.fire('Archivo muy grande', 'La imagen debe ser menor a 5MB', 'warning');
+        return;
+      }
       this.imagenSeleccionada = file;
     }
   }
@@ -114,8 +259,7 @@ export class ProductosComponent implements OnInit {
 
     this.productosService.crearProducto(this.token, formData).subscribe({
       next: () => {
-        this.formProducto.reset();
-        this.imagenSeleccionada = null;
+        this.limpiarFormulario();
         this.cargarProductos();
         Swal.fire('✅ Producto creado', 'El producto fue registrado correctamente.', 'success');
       },
@@ -126,9 +270,14 @@ export class ProductosComponent implements OnInit {
     });
   }
 
+  limpiarFormulario(): void {
+    this.formProducto.reset();
+    this.imagenSeleccionada = null;
+  }
+
   activarEdicion(prod: ProductoEditable): void {
     prod.editando = true;
-    this.productos = [...this.productos]; // Forzar redetección
+    this.productosFiltrados = [...this.productosFiltrados]; // Forzar redetección
   }
 
   cancelarEdicion(prod: ProductoEditable): void {
@@ -144,7 +293,8 @@ export class ProductosComponent implements OnInit {
     }).then(result => {
       if (result.isConfirmed) {
         prod.editando = false;
-        prod['nuevaImagen'] = undefined;        this.cargarProductos(); // recarga desde BD
+        prod.nuevaImagen = undefined;
+        this.cargarProductos(); // recarga desde BD
       }
     });
   }
@@ -176,7 +326,8 @@ export class ProductosComponent implements OnInit {
         this.productosService.actualizarProducto(this.token!, prod.id, formData).subscribe({
           next: () => {
             prod.editando = false;
-            prod['nuevaImagen'] = undefined;            this.cargarProductos();
+            prod.nuevaImagen = undefined;
+            this.cargarProductos();
             Swal.fire('✅ Actualizado', 'El producto fue actualizado correctamente.', 'success');
           },
           error: err => {
@@ -218,6 +369,10 @@ export class ProductosComponent implements OnInit {
   seleccionarNuevaImagen(event: any, prod: ProductoEditable): void {
     const archivo = event.target.files?.[0];
     if (archivo) {
+      if (archivo.size > 5 * 1024 * 1024) { // 5MB
+        Swal.fire('Archivo muy grande', 'La imagen debe ser menor a 5MB', 'warning');
+        return;
+      }
       prod.nuevaImagen = archivo;
     }
   }

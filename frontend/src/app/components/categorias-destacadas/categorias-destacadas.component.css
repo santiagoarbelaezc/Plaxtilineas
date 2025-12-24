@@ -1,80 +1,107 @@
 /* ===========================
-   🔹 SECCIÓN DE CATEGORÍAS - SIMPLIFICADA
+   🔹 SECCIÓN DE CATEGORÍAS - DISEÑO ELEGANTE Y REFINADO
    =========================== */
 .categorias-section {
-  padding: 3rem 1rem;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  padding: 5rem 1rem;
+  background: #ffffff;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  position: relative;
+  overflow: hidden;
 }
 
+/* Línea decorativa sutil */
+.categorias-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, #368c44, #25d366);
+}
+
+/* Header elegante */
 .section-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 3.5rem;
 }
 
 .section-title {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   font-weight: 700;
-  color: #1e293b;
-  margin-bottom: 0.75rem;
+  color: #1a202c;
+  margin-bottom: 1rem;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
 }
 
 .section-subtitle {
   color: #64748b;
-  font-size: 1.125rem;
+  font-size: 1.2rem;
   max-width: 600px;
   margin: 0 auto;
+  font-weight: 400;
+  line-height: 1.6;
+  opacity: 0.9;
 }
 
-/* Carrusel simplificado */
+/* Contenedor del carrusel - más compacto */
 .carousel-container {
   position: relative;
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
+/* Navegación elegante */
 .carousel-nav {
   background: white;
-  border: 2px solid #e2e8f0;
+  border: 1.5px solid #e2e8f0;
   border-radius: 50%;
   width: 48px;
   height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  color: #475569;
+  font-size: 1.3rem;
+  color: #4a5568;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
   z-index: 10;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .carousel-nav:hover:not(.disabled) {
-  background: #3b82f6;
+  background: #368c44;
   color: white;
-  border-color: #3b82f6;
+  border-color: #368c44;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(54, 140, 68, 0.15);
 }
 
 .carousel-nav.disabled {
-  opacity: 0.5;
+  opacity: 0.3;
   cursor: not-allowed;
+  background: #f8fafc;
 }
 
-/* Wrapper del carrusel */
+/* Wrapper del carrusel compacto */
 .carousel-wrapper {
   overflow: hidden;
   flex: 1;
   border-radius: 16px;
 }
 
-/* Carrusel principal */
+/* Carrusel elegante */
 .carousel {
   display: flex;
   gap: 1.5rem;
-  padding: 1rem;
+  padding: 1rem 0.5rem;
   overflow-x: auto;
   scroll-behavior: smooth;
   scrollbar-width: none;
@@ -84,210 +111,311 @@
   display: none;
 }
 
-/* Items del carrusel */
+/* Items del carrusel - más compactos */
 .carousel-item {
   flex: 0 0 auto;
   transition: transform 0.3s ease;
+  width: 320px;
 }
 
-.carousel-item:hover {
-  transform: translateY(-5px);
-}
-
-/* Tarjeta de categoría simplificada */
+/* ===========================
+   🔹 TARJETA ELEGANTE CON IMAGEN GRANDE
+   =========================== */
 .categoria-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
   background: white;
-  border-radius: 16px;
-  padding: 2rem;
+  border-radius: 14px;
   text-decoration: none;
-  color: inherit;
-  transition: all 0.3s ease;
+  color: #4a5568;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid #e2e8f0;
-  min-width: 280px;
-  height: 280px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  height: 420px; /* Compacto pero con imagen grande */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  position: relative;
 }
 
 .categoria-card:hover {
-  border-color: #3b82f6;
-  box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.2);
+  border-color: #368c44;
+  box-shadow: 0 12px 24px rgba(54, 140, 68, 0.12);
+  transform: translateY(-4px);
 }
 
-/* Contenedor del icono */
-.categoria-icon-container {
-  margin-bottom: 1.5rem;
+/* Contenedor de la imagen - gran tamaño dentro de tarjeta compacta */
+.categoria-image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70%; /* Aún grande pero con espacio para texto */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  z-index: 1;
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
 }
 
 .icon-wrapper {
   position: relative;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
+/* Icono grande pero elegante */
 .categoria-icon {
-  width: 80px;
-  height: 80px;
+  width: 100%;
+  height: 100%;
+  max-width: 160px; /* Grande pero no exagerado */
+  max-height: 160px; /* Grande pero no exagerado */
   object-fit: contain;
-  transition: transform 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.08));
 }
 
 .categoria-card:hover .categoria-icon {
-  transform: scale(1.1);
+  transform: scale(1.08);
+  filter: drop-shadow(0 6px 16px rgba(54, 140, 68, 0.15));
 }
 
-.icon-glow {
+/* Overlay sutil en lugar de glow */
+.icon-overlay {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100px;
-  height: 100px;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, 
+              rgba(54, 140, 68, 0.08) 0%, 
+              transparent 60%);
   border-radius: 50%;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
 }
 
-.categoria-card:hover .icon-glow {
+.categoria-card:hover .icon-overlay {
   opacity: 1;
 }
 
-/* Contenido simplificado */
-.categoria-content {
-  text-align: center;
-  flex: 1;
+/* Contenedor del texto - elegante y compacto */
+.categoria-text-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1.75rem;
+  background: white;
+  border-top: 1px solid #f1f5f9;
+  z-index: 2;
+  height: 30%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  text-align: center;
 }
 
+.categoria-content {
+  width: 100%;
+}
+
+/* Título elegante */
 .categoria-title {
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   font-weight: 600;
-  color: #1e293b;
-  margin-bottom: 1rem;
+  color: #1a202c;
+  margin-bottom: 1.25rem;
   line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  padding: 0 0.5rem;
+  position: relative;
 }
 
-/* Badge para explorar */
-.explore-badge {
-  display: inline-block;
-  background: #f1f5f9;
-  color: #475569;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  margin-bottom: 1rem;
+/* Línea decorativa sutil bajo el título */
+.categoria-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, #368c44, #25d366);
+  opacity: 0.5;
+  transition: width 0.3s ease;
 }
 
-/* Enlace para explorar */
+.categoria-card:hover .categoria-title::after {
+  width: 60px;
+}
+
+/* Enlace elegante y sutil */
 .explore-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  color: #3b82f6;
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
+  gap: 0.6rem;
+  color: #368c44;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0.6rem 1.2rem;
+  background: rgba(54, 140, 68, 0.06);
+  border-radius: 8px;
+  border: 1px solid rgba(54, 140, 68, 0.15);
 }
 
 .explore-link .arrow {
   transition: transform 0.3s ease;
+  font-weight: 500;
 }
 
 .categoria-card:hover .explore-link {
-  color: #2563eb;
+  background: #368c44;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(54, 140, 68, 0.12);
+  border-color: #368c44;
 }
 
 .categoria-card:hover .explore-link .arrow {
   transform: translateX(4px);
 }
 
-/* Indicadores */
-.carousel-indicators {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 2rem;
+/* ===========================
+   🔹 EFECTOS ELEGANTES Y SUTILES
+   =========================== */
+
+/* Borde superior sutil */
+.categoria-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #368c44, #25d366);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 3;
 }
 
-.carousel-indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #cbd5e1;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.categoria-card:hover::before {
+  opacity: 1;
 }
 
-.carousel-indicator:hover {
-  background: #94a3b8;
+/* Fondo sutil en hover */
+.categoria-image-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+              rgba(54, 140, 68, 0.02) 0%, 
+              rgba(37, 211, 102, 0.01) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
 
-.carousel-indicator.active {
-  background: #3b82f6;
-  transform: scale(1.3);
+.categoria-card:hover .categoria-image-container::after {
+  opacity: 1;
 }
 
-/* Mensaje sin categorías */
-.no-categorias {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: #64748b;
-}
-
-.no-categorias-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  opacity: 0.5;
-}
-
-.no-categorias h3 {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: #475569;
-}
-
-.no-categorias p {
-  font-size: 1rem;
-  max-width: 400px;
-  margin: 0 auto;
-  line-height: 1.5;
+/* Degradado sutil en el texto */
+.categoria-text-container::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.9));
+  pointer-events: none;
 }
 
 /* ===========================
-   🔹 RESPONSIVE DESIGN
+   🔹 ANIMACIONES ELEGANTES
+   =========================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.carousel-item {
+  animation: fadeIn 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+/* Delay progresivo pero sutil */
+.carousel-item:nth-child(1) { animation-delay: 0.1s; }
+.carousel-item:nth-child(2) { animation-delay: 0.2s; }
+.carousel-item:nth-child(3) { animation-delay: 0.3s; }
+.carousel-item:nth-child(4) { animation-delay: 0.4s; }
+
+/* ===========================
+   🔹 RESPONSIVE DESIGN ELEGANTE
    =========================== */
 
 /* Tablet */
 @media (max-width: 1024px) {
+  .categorias-section {
+    padding: 4rem 1rem;
+  }
+  
   .section-title {
-    font-size: 2rem;
+    font-size: 2.4rem;
+  }
+  
+  .section-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .carousel-item {
+    width: 300px;
   }
   
   .categoria-card {
-    min-width: 240px;
-    height: 260px;
-    padding: 1.5rem;
+    height: 400px;
   }
   
   .categoria-icon {
-    width: 70px;
-    height: 70px;
+    max-width: 140px;
+    max-height: 140px;
+  }
+  
+  .categoria-text-container {
+    padding: 1.5rem;
+  }
+  
+  .categoria-title {
+    font-size: 1.3rem;
   }
 }
 
 /* Mobile */
 @media (max-width: 768px) {
   .categorias-section {
-    padding: 2rem 0.5rem;
+    padding: 3.5rem 0.75rem;
   }
   
   .section-title {
-    font-size: 1.75rem;
+    font-size: 2rem;
   }
   
   .section-subtitle {
@@ -295,38 +423,150 @@
   }
   
   .carousel-nav {
-    display: none;
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
+  }
+  
+  .carousel {
+    gap: 1rem;
+  }
+  
+  .carousel-item {
+    width: 280px;
   }
   
   .categoria-card {
-    min-width: 280px;
-    height: 250px;
+    height: 380px;
+  }
+  
+  .categoria-image-container {
+    padding: 2rem;
+    height: 65%;
   }
   
   .categoria-icon {
-    width: 60px;
-    height: 60px;
+    max-width: 130px;
+    max-height: 130px;
+  }
+  
+  .categoria-text-container {
+    height: 35%;
+    padding: 1.25rem;
+  }
+  
+  .categoria-title {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .explore-link {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Pantallas pequeñas */
+@media (max-width: 480px) {
+  .categorias-section {
+    padding: 3rem 0.5rem;
+  }
+  
+  .section-title {
+    font-size: 1.8rem;
+  }
+  
+  .carousel-item {
+    width: 260px;
+  }
+  
+  .categoria-card {
+    height: 360px;
+  }
+  
+  .categoria-icon {
+    max-width: 120px;
+    max-height: 120px;
+  }
+  
+  .categoria-title {
+    font-size: 1.1rem;
+  }
+  
+  .explore-link {
+    font-size: 0.85rem;
   }
 }
 
 /* ===========================
-   🔹 VARIANTES DE COLOR
+   🔹 ACCESIBILIDAD Y DETALLES FINOS
    =========================== */
-.categoria-primary .categoria-card:hover {
-  border-color: #3b82f6;
-}
 
-.categoria-secondary .categoria-card:hover {
-  border-color: #10b981;
-}
-
-.categoria-accent .categoria-card:hover {
-  border-color: #8b5cf6;
-}
-
-/* Accesibilidad */
-.categoria-card:focus-visible,
-.carousel-nav:focus-visible {
-  outline: 2px solid #3b82f6;
+.categoria-card:focus-visible {
+  outline: 2px solid #368c44;
   outline-offset: 2px;
+}
+
+.carousel-nav:focus-visible {
+  outline: 2px solid #368c44;
+  outline-offset: 2px;
+}
+
+/* Efecto de presión sutil */
+.categoria-card:active {
+  transform: scale(0.99);
+  transition: transform 0.1s ease;
+}
+
+/* Suavizar transiciones */
+.categoria-card * {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Cursor elegante */
+.categoria-card,
+.carousel-nav:not(.disabled) {
+  cursor: pointer;
+}
+
+/* Estado de carga sutil */
+.categoria-icon[src*="loading"] {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Mensaje sin categorías - elegante */
+.no-categorias {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #64748b;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.no-categorias-icon {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.6;
+}
+
+.no-categorias h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #1a202c;
+  font-weight: 600;
+}
+
+.no-categorias p {
+  font-size: 1rem;
+  line-height: 1.6;
+  opacity: 0.8;
 }

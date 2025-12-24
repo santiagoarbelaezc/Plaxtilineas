@@ -1,19 +1,168 @@
 .productos-layout {
   display: flex;
-  align-items: flex-start;
-  gap: 32px;
-  padding: 24px;
+  flex-direction: column;
+  gap: 20px;
+  padding: 16px;
   width: 100%;
   max-width: 1600px;
-  margin-left: 40px;  /* ❗ fuerza alineación a la izquierda */
+  margin: 0 auto;
+  box-sizing: border-box;
+  position: relative;
 }
 
-app-menu-categorias-component {
-  flex: 0 0 240px;
-  align-self: flex-start;
+/* Móvil: menú oculto por defecto, se muestra con botón */
+@media (max-width: 767px) {
+  app-menu-categorias-component {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    height: 100vh;
+    width: 80%;
+    max-width: 300px;
+    z-index: 1000;
+    transition: left 0.3s ease;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    overflow: visible !important; /* Cambiado de auto a visible */
+  }
+  
+  app-menu-categorias-component.menu-visible {
+    left: 0;
+  }
+  
+  /* Elimina el background y padding del componente */
+  app-menu-categorias-component .menu-categorias {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100% !important;
+  }
+  
+  /* Aplica el estilo al contenedor interno */
+  app-menu-categorias-component .menu-categorias::before {
+    display: none !important;
+  }
+  
+ 
+  app-product-list-component {
+    width: 100%;
+  }
+  
+  /* Botón flecha para mostrar/ocultar menú en móvil */
+  .menu-toggle-categorias {
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    z-index: 999;
+    background: #007bff;
+    border: none;
+    border-radius: 0 50% 50% 0;
+    width: 40px;
+    height: 60px;
+    cursor: pointer;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+    transition: left 0.3s ease;
+  }
+  
+  .menu-toggle-categorias:focus {
+    outline: none;
+  }
+  
+  /* Cuando el menú está visible, mover la flecha junto al menú */
+  app-menu-categorias-component.menu-visible ~ .menu-toggle-categorias {
+    left: 80%;
+    max-left: 300px;
+  }
+  
+  /* Flecha dentro del botón */
+  .toggle-arrow {
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid white;
+    margin: auto;
+    transition: transform 0.3s ease;
+  }
+  
+  /* Cuando el menú está visible, girar la flecha */
+  app-menu-categorias-component.menu-visible ~ .menu-toggle-categorias .toggle-arrow {
+    transform: rotate(180deg);
+  }
+  
+  /* Overlay para cerrar menú tocando fuera */
+  .menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+  
+  .menu-overlay.visible {
+    display: block;
+  }
 }
 
-app-product-list-component {
-  flex: 1;
-  min-width: 300px;
+/* Ocultar botón y overlay en tablet y escritorio */
+@media (min-width: 768px) {
+  .menu-toggle-categorias,
+  .menu-overlay {
+    display: none !important;
+  }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .productos-layout {
+    flex-direction: row;
+    gap: 30px;
+    padding: 20px;
+  }
+  
+  app-menu-categorias-component {
+    flex: 0 0 250px;
+    position: sticky;
+    top: 100px;
+    align-self: flex-start;
+    height: fit-content;
+  }
+  
+  app-product-list-component {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/* Escritorio */
+@media (min-width: 1024px) {
+  .productos-layout {
+    flex-direction: row;
+    gap: 40px;
+    padding: 24px 40px;
+  }
+  
+  app-menu-categorias-component {
+    flex: 0 0 300px;
+    position: sticky;
+    top: 100px;
+    align-self: flex-start;
+    height: fit-content;
+  }
+  
+  app-product-list-component {
+    flex: 1;
+    margin-left: 20px;
+    min-width: 0;
+    max-width: calc(100% - 340px);
+  }
 }

@@ -1,0 +1,399 @@
+.product-header {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  margin-top: var(--navbar-height);
+  padding: 0 60px;
+}
+
+/* BACKGROUND DINÁMICO - LIMPIO Y CLARO */
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: brightness(0.85);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+.background-image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.15); /* 10% de opacidad negra */
+  z-index: 2;
+}
+
+
+/* Overlay TRANSPARENTE (sin blur) */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  z-index: 2;
+}
+
+/* CONTENIDO IZQUIERDO */
+.header-left-content {
+  position: relative;
+  z-index: 5;
+  width: 50%;
+  max-width: 600px;
+  padding-left: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.logo-container {
+  margin-bottom: 0; /* Eliminamos el margen inferior */
+}
+
+.main-logo {
+  max-width: 320px;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2));
+  transition: transform 0.3s ease;
+}
+
+.main-logo:hover {
+  transform: scale(1.02);
+}
+
+/* INDICADOR INFERIOR - AHORA RELATIVO DEBAJO DEL LOGO */
+.scroll-indicator {
+  position: relative; /* Cambiado de absolute a relative */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 6;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: 20px;
+  margin-top: 30px; /* 30px de separación del logo */
+  left: 0; /* Eliminamos left y bottom */
+  align-self: flex-start; /* Alineado a la izquierda */
+}
+
+.scroll-indicator:hover {
+  transform: translateY(5px);
+}
+
+.scroll-indicator:hover .scroll-arrow {
+  border-top-color: #000000;
+}
+
+.scroll-arrow {
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 20px solid rgba(0, 0, 0, 0.7);
+  animation: arrowBounce 2s infinite ease-in-out;
+  transition: border-top-color 0.3s ease;
+}
+
+.scroll-text {
+  color: #000000;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: 0.8;
+  text-align: center;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  margin-top: 5px;
+  transition: opacity 0.3s ease;
+}
+
+.scroll-indicator:hover .scroll-text {
+  opacity: 1;
+}
+
+@keyframes arrowBounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* CARRUSEL DE MINIATURAS */
+.images-carousel {
+  position: absolute;
+  top: 50%;
+  right: 60px;
+  transform: translateY(-50%);
+  width: 420px;
+  height: 200px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+}
+
+.images-track {
+  display: flex;
+  gap: 24px;
+  padding: 20px 0;
+}
+
+.image-wrapper {
+  position: relative;
+  width: 100px;
+  height: 140px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 16px;
+  overflow: hidden;
+  opacity: 0.7;
+  transform: translateY(10px);
+}
+
+.image-wrapper:hover,
+.image-wrapper.selected {
+  width: 140px;
+  height: 190px;
+  opacity: 1;
+  transform: translateY(0) scale(1.02);
+  z-index: 5;
+}
+
+/* Estado para la imagen activa automáticamente */
+.image-wrapper.auto-active {
+  width: 140px;
+  height: 190px;
+  opacity: 1;
+  transform: translateY(0) scale(1.02);
+  z-index: 5;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  border: 3px solid transparent;
+}
+
+.image-wrapper:hover .product-image,
+.image-wrapper.selected .product-image,
+.image-wrapper.auto-active .product-image {
+  box-shadow: 0 20px 60px rgba(54, 140, 68, 0.3);
+  border-color: rgba(54, 140, 68, 0.4);
+  transform: scale(1.05);
+}
+
+.image-glow {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, transparent, rgba(54, 140, 68, 0.3), transparent);
+  border-radius: 18px;
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+
+.image-wrapper:hover .image-glow,
+.image-wrapper.selected .image-glow,
+.image-wrapper.auto-active .image-glow {
+  opacity: 1;
+}
+
+/* Indicador visual de imagen activa */
+.image-wrapper.selected::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  background: linear-gradient(45deg, var(--primary-color), #25d366);
+  border-radius: 20px;
+  z-index: -1;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+  .product-header {
+    padding: 0 40px;
+  }
+  
+  .header-left-content {
+    width: 45%;
+  }
+  
+  .main-logo {
+    max-width: 280px;
+  }
+  
+  .images-carousel {
+    right: 40px;
+    width: 380px;
+  }
+}
+
+@media (max-width: 992px) {
+  .product-header {
+    height: 90vh;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 30px;
+  }
+  
+  .header-left-content {
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
+    padding-left: 0;
+    margin-bottom: 50px;
+    align-items: center; /* Centramos todo en móvil */
+  }
+  
+  .main-logo {
+    max-width: 250px;
+    margin: 0 auto 0 auto; /* Solo margen inferior si queremos */
+  }
+  
+  .scroll-indicator {
+    margin-top: 40px; /* Un poco más de separación en móvil */
+    align-self: center; /* Centrado en móvil */
+  }
+  
+  .scroll-text {
+    writing-mode: horizontal-tb;
+    transform: none;
+    margin-top: 0;
+  }
+  
+  .images-carousel {
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-header {
+    height: 85vh;
+    padding: 0 20px;
+  }
+  
+  .main-logo {
+    max-width: 220px;
+  }
+  
+  .scroll-indicator {
+    margin-top: 35px;
+  }
+  
+  .scroll-arrow {
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 18px solid rgba(0, 0, 0, 0.7);
+  }
+  
+  .scroll-text {
+    font-size: 12px;
+    letter-spacing: 2px;
+  }
+  
+  .images-carousel {
+    height: 180px;
+  }
+  
+  .images-track {
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .image-wrapper {
+    width: 90px;
+    height: 130px;
+  }
+  
+  .image-wrapper:hover,
+  .image-wrapper.selected,
+  .image-wrapper.auto-active {
+    width: 120px;
+    height: 170px;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-header {
+    height: 80vh;
+    min-height: 500px;
+  }
+  
+  .main-logo {
+    max-width: 200px;
+  }
+  
+  .scroll-indicator {
+    margin-top: 30px;
+  }
+  
+  .scroll-arrow {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 15px solid rgba(0, 0, 0, 0.7);
+  }
+  
+  .scroll-text {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+  }
+  
+  .images-carousel {
+    height: 160px;
+  }
+  
+  .image-wrapper {
+    width: 80px;
+    height: 120px;
+  }
+  
+  .image-wrapper:hover,
+  .image-wrapper.selected,
+  .image-wrapper.auto-active {
+    width: 100px;
+    height: 150px;
+  }
+}

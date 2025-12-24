@@ -1,0 +1,112 @@
+<section class="productos-interes-section">
+  <!-- 🔹 Encabezado de la sección -->
+  <div class="section-header" *ngIf="productos.length > 0">
+    <h2 class="section-title">{{ titulo }}</h2>
+    <p class="section-subtitle">{{ subtitulo }}</p>
+  </div>
+
+  <!-- 🔹 Estado de carga -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Cargando productos de interés...</p>
+  </div>
+
+  <!-- 🔹 Estado de error -->
+  <div class="error-state" *ngIf="error && !isLoading">
+    <div class="error-icon">⚠️</div>
+    <h3>No se pudieron cargar productos de interés</h3>
+    <p>{{ error }}</p>
+    <button class="retry-btn" (click)="recargar()">Reintentar</button>
+  </div>
+
+  <!-- 🔹 Contenedor del carrusel -->
+  <div class="carousel-container" *ngIf="productos.length > 0 && !isLoading">
+    <!-- Botón de navegación anterior -->
+    <button class="carousel-nav prev" 
+            (click)="scrollCarousel('prev')" 
+            [disabled]="!isPrevEnabled()"
+            aria-label="Productos anteriores"
+            [class.disabled]="!isPrevEnabled()">
+      ‹
+    </button>
+
+    <!-- Wrapper del carrusel -->
+    <div class="carousel-wrapper">
+      <div class="carousel" [id]="carouselId">
+        <!-- Items del carrusel -->
+        <div class="carousel-item" 
+             *ngFor="let producto of productos; let i = index">
+          
+          <a [routerLink]="['/producto', producto.id]" class="producto-card">
+            
+            <!-- Contenedor de la imagen del producto -->
+            <div class="producto-image-container">
+              <div class="image-wrapper">
+                <img [src]="getProductoImagen(producto)" 
+                     [alt]="producto.nombre"
+                     class="producto-image"
+                     (error)="handleImageError($event, producto)">
+                <div class="image-glow"></div>
+              </div>
+            </div>
+
+            <!-- Contenedor del texto -->
+            <div class="producto-text-container">
+              <div class="producto-content">
+                <!-- Nombre del producto - UNA SOLA LÍNEA -->
+                <h3 class="producto-title" [title]="producto.nombre">
+                  {{ producto.nombre }}
+                </h3>
+                
+                <!-- Subcategoría -->
+                <div class="producto-subcategoria">
+                  <span class="subcategoria-badge">
+                    {{ producto.subcategoria || 'Sin categoría' }}
+                  </span>
+                </div>
+
+                <!-- Precio -->
+                <div class="producto-precio" *ngIf="producto.precio">
+                  <span class="precio-actual">
+                    {{ producto.precio | currency:'USD':'symbol':'1.2-2' }}
+                  </span>
+                </div>
+
+                <!-- Enlace para ver más -->
+                <div class="producto-actions">
+                  <span class="ver-producto-link">
+                    Ver producto
+                    <span class="arrow">→</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón de navegación siguiente -->
+    <button class="carousel-nav next" 
+            (click)="scrollCarousel('next')" 
+            [disabled]="!isNextEnabled()"
+            aria-label="Siguientes productos"
+            [class.disabled]="!isNextEnabled()">
+      ›
+    </button>
+  </div>
+  
+  <!-- 🔹 Mensaje si no hay productos de interés -->
+  <div class="no-productos" *ngIf="productos.length === 0 && !isLoading && !error">
+    <div class="no-productos-icon">📦</div>
+    <h3>No hay productos de interés disponibles</h3>
+    <p>Pronto agregaremos más productos para explorar.</p>
+  </div>
+
+  <!-- 🔹 Información de depuración (solo en desarrollo) -->
+  <div class="debug-info" *ngIf="false">
+    <h4>Información de depuración:</h4>
+    <p>Límite: {{ limite }}</p>
+    <p>Productos cargados: {{ productos.length }}</p>
+  </div>
+</section>

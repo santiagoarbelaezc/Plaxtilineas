@@ -1,46 +1,773 @@
+/* ====== TIPOGRAFÍA ELEGANTE ====== */
+#productos-seccion {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif;
+  letter-spacing: -0.01em;
+  line-height: 1.5;
+}
+
+/* Sección principal - estilo elegante */
 section#productos-seccion {
-  padding: 40px 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-  text-align: center;
-  box-sizing: border-box;
+  padding: 40px 30px;
+  flex: 1;
+  min-height: calc(100vh - var(--navbar-height));
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(248, 250, 252, 0.96) 100%);
+  border-radius: 20px 0 0 20px;
+  margin-left: 0;
+  box-shadow: -15px 0 30px rgba(0, 0, 0, 0.04),
+              inset 1px 0 0 rgba(255, 255, 255, 0.8);
 }
 
-.product-grid {
+/* Títulos mejorados - elegantes como navbar */
+#productos-seccion .section-header {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
   flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  padding-top: 20px;
+  gap: 15px;
 }
 
-/* Responsive para tamaños medianos */
-@media (max-width: 992px) {
-  .product-grid {
-    gap: 16px;
+#productos-seccion h2 {
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #2d3748;
+  font-family: 'Segoe UI', -apple-system, sans-serif;
+  letter-spacing: -0.02em;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.title-text {
+  position: relative;
+  padding-bottom: 6px;
+  font-weight: 600;
+}
+
+.title-text::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #368c44, #25d366);
+  border-radius: 1px;
+  transform: scaleX(0.7);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(54, 140, 68, 0.3);
+}
+
+#productos-seccion:hover .title-text::after {
+  transform: scaleX(1);
+}
+
+.product-count {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #368c44;
+  background: rgba(54, 140, 68, 0.08);
+  padding: 4px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(54, 140, 68, 0.15);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Contenedor del grid de productos */
+.products-grid-container {
+  border-radius: 16px;
+  margin-top: 15px;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columnas por defecto */
+  gap: 40px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 8px 30px rgba(0, 0, 0, 0.04),
+    0 1px 0 rgba(255, 255, 255, 0.8) inset;
+}
+
+/* Estados de carga y vacío */
+.loading-state,
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 8px 30px rgba(0, 0, 0, 0.04),
+    0 1px 0 rgba(255, 255, 255, 0.8) inset;
+  margin-top: 15px;
+}
+
+.loading-animation {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.loading-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #368c44, #25d366);
+  animation: pulse 1.4s infinite ease-in-out;
+  box-shadow: 0 0 15px rgba(54, 140, 68, 0.2);
+}
+
+@keyframes pulse {
+  0%, 80%, 100% { 
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% { 
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
-/* Responsive para tablets */
+.empty-icon {
+  color: #368c44;
+  opacity: 0.6;
+  margin-bottom: 20px;
+}
+
+.empty-icon svg {
+  stroke-width: 1.5;
+}
+
+.empty-text {
+  font-size: 1.2rem;
+  color: #2d3748;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.empty-subtext {
+  font-size: 1rem;
+  color: #666;
+  opacity: 0.7;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Efecto de transición */
+.productos-cambiando {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ========== ESTRUCTURA DE TARJETAS MÁS COMPACTAS ========== */
+
+.product-card-wrapper {
+  width: 100%;
+  height: 100%;
+  min-height: 380px; /* Reducido de 480px */
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+.product-card-container:hover {
+  transform: translateY(-5px); /* Reducido de -10px */
+  box-shadow: 0 12px 32px rgba(54, 140, 68, 0.1);
+  border-color: rgba(54, 140, 68, 0.15);
+  z-index: 5;
+}
+
+/* Contenedor de imagen más compacto */
+.product-image-section {
+  position: relative;
+  height: 300px; /* Reducido de 220px */
+  min-height: 180px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.product-image-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.product-image-container {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  overflow: hidden;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent 70%, rgba(0,0,0,0.08));
+  pointer-events: none;
+}
+
+/* Contenedor de información más compacto */
+.product-info-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 18px; /* Reducido de 24px */
+  gap: 14px; /* Reducido de 20px */
+}
+
+/* Contenedor de texto más compacto */
+.product-text-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Reducido de 12px */
+}
+
+.product-title-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 3px; /* Reducido de 4px */
+}
+
+.product-title {
+  font-size: 1.1rem; /* Reducido de 1.3rem */
+  font-weight: 600; /* Reducido de 700 */
+  color: #2d3748;
+  line-height: 1.3;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.4em; /* Reducido de 2.6em */
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.product-subtitle {
+  font-size: 0.85rem; /* Reducido de 0.9rem */
+  color: #368c44;
+  font-weight: 500;
+  opacity: 0.8;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.product-description-container {
+  flex: 1;
+}
+
+.product-description {
+  font-size: 0.9rem; /* Reducido de 0.95rem */
+  color: #666;
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Reducido de 3 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.8em; /* Reducido de 4.8em */
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Contenedor de detalles más compacto */
+.product-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Reducido de 20px */
+  margin-top: auto;
+}
+
+/* Contenedor de precio más sutil */
+.product-price-section {
+  margin-top: 12px; /* Reducido de 16px */
+}
+
+.price-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px; /* Reducido de 16px */
+  background: white;
+  border-radius: 10px; /* Reducido de 12px */
+  border: 1px solid rgba(54, 140, 68, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.price-label-area {
+  display: flex;
+  align-items: center;
+}
+
+.price-label {
+  font-size: 0.95rem; /* Reducido de 1rem */
+  color: #666;
+  font-weight: 500;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.price-value-area {
+  display: flex;
+  align-items: center;
+}
+
+.price-value {
+  font-size: 1.5rem; /* Reducido de 1.8rem */
+  font-weight: 700; /* Reducido de 800 */
+  color: #368c44;
+  background: linear-gradient(135deg, #368c44, #25d366);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 1px 3px rgba(54, 140, 68, 0.08);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Contenedor de acción principal más sutil */
+.product-actions-section {
+  padding: 0 18px 18px; /* Reducido de 24px */
+}
+
+.main-action-container {
+  width: 100%;
+}
+
+.main-action-button {
+  width: 100%;
+  padding: 14px 20px; /* Reducido de 18px 24px */
+  background: rgba(54, 140, 68, 0.05);
+  color: #368c44;
+  border: 1px solid rgba(54, 140, 68, 0.2);
+  border-radius: 10px; /* Reducido de 12px */
+  font-size: 0.95rem; /* Reducido de 1rem */
+  font-weight: 500; /* Reducido de 600 */
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* Reducido de 12px */
+  box-shadow: 0 2px 8px rgba(54, 140, 68, 0.1);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.main-action-button:hover {
+  background: rgba(54, 140, 68, 0.1);
+  color: #2d6a4f;
+  border-color: rgba(54, 140, 68, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(54, 140, 68, 0.15);
+}
+
+.main-action-button:active {
+  transform: translateY(0);
+}
+
+.button-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+}
+
+.button-icon svg {
+  stroke: currentColor;
+  stroke-width: 1.5; /* Reducido de 2 */
+  width: 18px; /* Añadido para más control */
+  height: 18px;
+}
+
+.button-text {
+  text-align: center;
+  flex: 1;
+  font-weight: 500;
+}
+
+/* Efectos hover sutiles como navbar */
+.product-card-container:hover .product-image {
+  transform: scale(1.05); /* Reducido de 1.1 */
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Efectos de línea como navbar */
+.product-card-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px; /* Reducido de 4px */
+  background: linear-gradient(90deg, #368c44, #25d366);
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card-container:hover::before {
+  opacity: 1;
+}
+
+/* Efecto de brillo sutil en la imagen */
+.product-image-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.7s ease;
+}
+
+.product-card-container:hover .product-image-container::after {
+  left: 100%;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* Responsive para el layout con menú lateral */
+@media (min-width: 992px) {
+  .productos-layout {
+    display: flex;
+    min-height: calc(100vh - var(--navbar-height));
+  }
+  
+  app-menu-categorias-component {
+    width: 280px;
+    min-width: 280px;
+    flex-shrink: 0;
+  }
+  
+  section#productos-seccion {
+    margin-left: -15px;
+    padding-left: 45px;
+  }
+}
+
+/* ========== MEDIA QUERIES GENERALES ========== */
+
+/* Tablet grande (1200px y menos) - 2 columnas */
+@media (max-width: 1200px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 15px;
+  }
+  
+  section#productos-seccion {
+    padding: 35px 25px;
+  }
+  
+  #productos-seccion h2 {
+    font-size: 2rem;
+  }
+  
+  .product-card-wrapper {
+    min-height: 360px;
+  }
+  
+  .product-image-section {
+    height: 160px;
+    min-height: 160px;
+  }
+}
+
+/* Tablet (992px y menos) */
+@media (max-width: 992px) {
+  .productos-layout {
+    flex-direction: column;
+  }
+  
+  section#productos-seccion {
+    border-radius: 16px;
+    margin: 15px;
+    padding: 30px 20px;
+    margin-left: 20px;
+  }
+  
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    padding: 15px;
+  }
+  
+  #productos-seccion h2 {
+    font-size: 1.8rem;
+  }
+  
+  .product-card-wrapper {
+    min-height: 340px;
+  }
+  
+  .product-image-section {
+    height: 150px;
+    min-height: 150px;
+  }
+}
+
+/* Tablet pequeña (768px y menos) - 1 columna */
 @media (max-width: 768px) {
   section#productos-seccion {
-    padding: 30px 16px;
+    padding: 25px 15px;
+    margin: 12px;
+    border-radius: 14px;
   }
-
-  .product-grid {
-    gap: 12px;
+  
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 12px;
+  }
+  
+  #productos-seccion h2 {
+    font-size: 1.6rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  
+  .product-count {
+    font-size: 1.2rem;
+    padding: 3px 10px;
+  }
+  
+  .product-card-wrapper {
+    min-height: 320px;
+  }
+  
+  .product-image-section {
+    height: 140px;
+    min-height: 140px;
+  }
+  
+  .product-info-section {
+    padding: 16px;
+  }
+  
+  .price-value {
+    font-size: 1.3rem;
+  }
+  
+  .main-action-button {
+    padding: 12px 16px;
+    font-size: 0.9rem;
   }
 }
 
-/* Responsive para móviles */
-@media (max-width: 480px) {
+/* Móvil (576px y menos) */
+@media (max-width: 576px) {
   section#productos-seccion {
     padding: 20px 12px;
+    margin: 10px;
   }
+  
+  .products-grid {
+    gap: 14px;
+    padding: 10px;
+  }
+  
+  #productos-seccion h2 {
+    font-size: 1.4rem;
+  }
+  
+  .product-card-wrapper {
+    min-height: 300px;
+  }
+  
+  .product-image-section {
+    height: 130px;
+    min-height: 130px;
+  }
+  
+  .product-info-section {
+    padding: 14px;
+    gap: 12px;
+  }
+  
+  .product-title {
+    font-size: 1rem;
+  }
+  
+  .product-description {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 2;
+    min-height: 2.4em;
+  }
+  
+  .price-display {
+    padding: 12px;
+  }
+  
+  .price-value {
+    font-size: 1.2rem;
+  }
+  
+  .main-action-button {
+    padding: 11px 14px;
+    font-size: 0.85rem;
+  }
+}
 
-  .product-grid {
-    gap: 10px;
-    flex-direction: column;
-    align-items: center;
+/* Móvil muy pequeño (400px y menos) */
+@media (max-width: 400px) {
+  section#productos-seccion {
+    padding: 16px 10px;
+    margin: 8px;
   }
+  
+  .products-grid {
+    gap: 12px;
+    padding: 8px;
+  }
+  
+  #productos-seccion h2 {
+    font-size: 1.3rem;
+  }
+  
+  .product-card-wrapper {
+    min-height: 280px;
+  }
+  
+  .product-image-section {
+    height: 120px;
+    min-height: 120px;
+  }
+  
+  .product-info-section {
+    padding: 12px;
+    gap: 10px;
+  }
+  
+  .product-title {
+    font-size: 0.95rem;
+  }
+  
+  .product-description {
+    font-size: 0.8rem;
+    -webkit-line-clamp: 2;
+    min-height: 2.2em;
+  }
+  
+  .price-display {
+    padding: 10px;
+  }
+  
+  .price-value {
+    font-size: 1.1rem;
+  }
+  
+  .main-action-button {
+    padding: 10px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+
+/* ====== ESTILOS PARA TARJETA COMPLETA CLICKEABLE ====== */
+
+.product-card-container {
+  cursor: pointer; /* Cambia el cursor a mano */
+  outline: none; /* Elimina el outline por defecto */
+  user-select: none; /* Evita seleccionar texto al hacer click */
+}
+
+/* Mejorar la accesibilidad del foco */
+.product-card-container:focus {
+  outline: 2px solid rgba(54, 140, 68, 0.5);
+  outline-offset: 2px;
+}
+
+/* Desactivar efectos de texto seleccionable en elementos internos */
+.product-title,
+.product-subtitle,
+.product-description,
+.price-label,
+.price-value {
+  user-select: none;
+}
+
+/* Prevenir que los clicks en el botón propaguen al contenedor */
+.main-action-button {
+  position: relative;
+  z-index: 2;
+}
+
+/* Efecto de "presionado" para toda la tarjeta */
+.product-card-container:active {
+  transform: translateY(-3px) scale(0.995);
+  transition: transform 0.1s ease;
+}
+
+/* Indicador visual de que es clickeable */
+.product-card-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: box-shadow 0.2s ease;
+  pointer-events: none;
+}
+
+.product-card-container:hover::after {
+  box-shadow: inset 0 0 0 2px rgba(54, 140, 68, 0.1);
+}
+
+/* Asegurar que los botones mantengan su funcionalidad independiente */
+.main-action-button:hover {
+  z-index: 3; /* Asegura que el botón esté por encima */
 }
