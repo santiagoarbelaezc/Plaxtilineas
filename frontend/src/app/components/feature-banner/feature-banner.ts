@@ -1,10 +1,7 @@
-import { Component, Input, OnInit, OnDestroy, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import AOS from 'aos';
 import { MenuStateService } from '../../services/menu-state.service';
-// Asegúrate de importar el servicio - ajusta la ruta según tu proyecto
-
 
 @Component({
   selector: 'app-feature-banner',
@@ -13,7 +10,7 @@ import { MenuStateService } from '../../services/menu-state.service';
   templateUrl: './feature-banner.html',
   styleUrls: ['./feature-banner.css']
 })
-export class FeatureBanner implements OnInit, OnDestroy {
+export class FeatureBanner implements OnInit {
   @Input() imageUrl: string = '';
   @Input() title: string = '';
   @Input() subtitle: string = '';
@@ -35,54 +32,9 @@ export class FeatureBanner implements OnInit, OnDestroy {
   @Output() primaryClick = new EventEmitter<void>();
   @Output() imageLoaded = new EventEmitter<void>();
 
-  private aosInitialized = false;
-  private resizeObserver: ResizeObserver | null = null;
-  isMobile: boolean = false;
-
-  // 1. INYECTAR EL SERVICIO EN EL CONSTRUCTOR
   constructor(private menuStateService: MenuStateService) {}
 
-  ngOnInit(): void {
-    this.checkIfMobile();
-    this.initAOS();
-    this.setupResizeObserver();
-  }
-
-  ngOnDestroy(): void {
-    if (this.aosInitialized) {
-      AOS.refreshHard();
-    }
-    if (this.resizeObserver) {
-      this.resizeObserver.disconnect();
-    }
-  }
-
-  @HostListener('window:resize')
-  onWindowResize(): void {
-    this.checkIfMobile();
-    if (this.aosInitialized) {
-      AOS.refresh();
-    }
-  }
-
-  private checkIfMobile(): void {
-    this.isMobile = window.innerWidth < 768;
-  }
-
-  private setupResizeObserver(): void {
-    if ('ResizeObserver' in window) {
-      this.resizeObserver = new ResizeObserver(() => {
-        if (this.aosInitialized) {
-          AOS.refresh();
-        }
-      });
-      
-      const container = document.querySelector('.feature-banner-container');
-      if (container) {
-        this.resizeObserver.observe(container);
-      }
-    }
-  }
+  ngOnInit(): void {}
 
   getQueryString(): string {
     if (!this.queryParams) return '';
@@ -94,32 +46,6 @@ export class FeatureBanner implements OnInit, OnDestroy {
       }
     }
     return params.toString();
-  }
-
-  private initAOS(): void {
-    if (typeof window !== 'undefined') {
-      AOS.init({
-        duration: 800,
-        once: true,
-        offset: 100,
-        easing: 'ease-in-out-cubic',
-        disable: this.isMobile ? 'phone' : false,
-        startEvent: 'DOMContentLoaded',
-        initClassName: 'aos-init',
-        animatedClassName: 'aos-animate',
-        useClassNames: false,
-        disableMutationObserver: false,
-        debounceDelay: 50,
-        throttleDelay: 99,
-        mirror: false,
-        anchorPlacement: 'top-bottom'
-      });
-      this.aosInitialized = true;
-      
-      setTimeout(() => {
-        AOS.refreshHard();
-      }, 300);
-    }
   }
 
   getButtonStyles(): any {
@@ -179,53 +105,34 @@ export class FeatureBanner implements OnInit, OnDestroy {
     return color;
   }
 
-  // 2. MODIFICAR EL MÉTODO onPrimaryClick() EXPLÍCITAMENTE
   onPrimaryClick(): void {
     // Emitir el evento primero
     this.primaryClick.emit();
     
     // GUARDAR EXPLÍCITAMENTE LA SUBCATEGORÍA 6 EN EL SERVICIO
     if (this.queryParams && this.queryParams.subcategoria_id) {
-      // Extraer el valor de subcategoria_id del queryParams
       const subcategoriaId = this.queryParams.subcategoria_id;
-      
-      // Guardarlo en el servicio
       this.menuStateService.saveLastSelectedSubcategory(subcategoriaId);
-      
-      console.log(`📌 SUBCATEGORÍA EXPLÍCITA GUARDADA: ID ${subcategoriaId}`);
-      console.log(`📍 Este es el banner de Mallas Plásticas que usa subcategoría 6`);
     }
     
     // Si no hay enlace configurado, solo emitir el evento
     if (!this.buttonLink) {
-      console.log('Primary button clicked - no link configured');
       return;
     }
-    
-    console.log(`Primary button clicked - link: ${this.buttonLink}`);
   }
 
   onImageLoad(): void {
     this.imageLoaded.emit();
-    if (this.aosInitialized) {
-      AOS.refresh();
-    }
   }
 
   onButtonHover(isHovering: boolean): void {
     const button = document.querySelector('.feature-btn.primary') as HTMLElement;
     if (button) {
       if (isHovering) {
-        button.style.transform = 'translateY(-4px) translateZ(20px)';
+        button.style.transform = 'translateY(-4px)';
       } else {
-        button.style.transform = 'translateY(0) translateZ(0)';
+        button.style.transform = 'translateY(0)';
       }
-    }
-  }
-
-  refreshAOS(): void {
-    if (this.aosInitialized) {
-      AOS.refreshHard();
     }
   }
 }

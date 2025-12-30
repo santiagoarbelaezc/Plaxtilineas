@@ -6,13 +6,7 @@
   <div class="feature-banner-container">
     <div class="feature-banner-card" [class.reverse]="reverse">
       <!-- Contenedor de imagen -->
-      <div
-        class="feature-banner-image-container"
-        data-aos="fade-left"
-        data-aos-delay="100"
-        data-aos-duration="800"
-        data-aos-easing="ease-in-out-cubic"
-      >
+      <div class="feature-banner-image-container">
         <div class="feature-banner-image-wrapper">
           <img 
             [src]="imageUrl" 
@@ -25,23 +19,12 @@
       </div>
 
       <!-- Contenedor de contenido -->
-      <div
-        class="feature-banner-content"
-        data-aos="fade-right"
-        data-aos-delay="200"
-        data-aos-duration="800"
-        data-aos-easing="ease-in-out-cubic"
-      >
+      <div class="feature-banner-content">
         <h2 class="feature-banner-title">
           {{ title }}
         </h2>
         
-        <div
-          class="feature-banner-subtitle"
-          data-aos="fade-up"
-          data-aos-delay="300"
-          data-aos-duration="800"
-        >
+        <div class="feature-banner-subtitle">
           {{ subtitle }}
         </div>
 
