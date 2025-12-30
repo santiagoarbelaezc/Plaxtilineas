@@ -1,7 +1,7 @@
 <section id="categoriasDestacadas" class="categorias-section">
   <!-- 🔹 Encabezado de la sección -->
   <div class="section-header">
-    <h2 class="section-title">Soluciones para cada sector</h2>
+    <h2 class="section-title">Categorías</h2>
     <p class="section-subtitle">Explora nuestras categorías destacadas</p>
   </div>
 
@@ -23,9 +23,11 @@
         <div class="carousel-item" 
              *ngFor="let cat of categorias; let i = index">
           
+          <!-- ⭐ ACTUALIZADO: Redirigir a productos con subcategoría -->
           <a [routerLink]="['/productos']"
-             [queryParams]="{ categoria_id: cat.id }"
-             class="categoria-card">
+             [queryParams]="{ subcategoria_id: obtenerPrimeraSubcategoria(cat.id) }"
+             class="categoria-card"
+             (click)="onCategoriaClick(cat)">
             
             <!-- Contenedor principal de la imagen -->
             <div class="categoria-image-container">

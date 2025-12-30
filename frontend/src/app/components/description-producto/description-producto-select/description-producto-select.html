@@ -50,11 +50,34 @@
             <span class="categoria-badge">{{producto.categoria}}</span>
             <span class="subcategoria-badge">{{producto.subcategoria}}</span>
           </div>
-          <h1 class="producto-nombre">{{producto.nombre}}</h1>
+          <h1 class="producto-nombre">{{productoBaseNombre}}</h1>
           <div class="producto-meta">
             <span class="producto-id">ID: {{producto.id}}</span>
-            <!-- Verificar si el producto tiene el campo creado_en (viene del backend) -->
-            
+          </div>
+        </div>
+
+        <!-- Selección de opciones -->
+        <div *ngIf="opcionesProducto.length > 0" class="opciones-container">
+          <h3 class="section-title">Seleccionar tipo</h3>
+          <div class="opciones-grid">
+            <div 
+              *ngFor="let opcion of opcionesProducto" 
+              class="opcion-item"
+              [class.opcion-seleccionada]="opcionSeleccionada === opcion"
+              (click)="seleccionarOpcion(opcion)">
+              <div class="opcion-contenido">
+                <span class="opcion-texto">{{opcion}}</span>
+                <div class="opcion-checkbox">
+                  <div class="opcion-checkmark" *ngIf="opcionSeleccionada === opcion">✓</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Precio actualizado por opción (si aplica) -->
+          <div *ngIf="precioPorOpcion[opcionSeleccionada]" class="precio-opcion">
+            <span class="precio-opcion-label">Precio seleccionado:</span>
+            <span class="precio-opcion-valor">${{formatearPrecio(precioPorOpcion[opcionSeleccionada])}}</span>
           </div>
         </div>
 
@@ -62,7 +85,7 @@
         <div class="producto-descripcion-section">
           <h3 class="section-title">Descripción</h3>
           <p class="producto-descripcion">
-            {{producto.descripcion || 'Descripción no disponible'}}
+            {{descripcionBase || 'Descripción no disponible'}}
           </p>
         </div>
 
@@ -78,7 +101,10 @@
               <span class="detalle-label">Categoría:</span>
               <span class="detalle-valor">{{producto.categoria}}</span>
             </div>
-            
+            <div class="detalle-item" *ngIf="opcionSeleccionada">
+              <span class="detalle-label">Tipo seleccionado:</span>
+              <span class="detalle-valor">{{opcionSeleccionada}}</span>
+            </div>
           </div>
         </div>
 
@@ -88,9 +114,8 @@
             <span class="precio-label">Precio:</span>
             <div class="precio-valor">
               <span class="precio-simbolo">$</span>
-              <span class="precio-numero">{{formatearPrecio(producto.precio)}}</span>
+              <span class="precio-numero">{{formatearPrecio(precioActual)}}</span>
             </div>
-            
           </div>
 
           <div class="acciones-container">
@@ -128,8 +153,5 @@
         </div>
       </div>
     </div>
-
-    <!-- Historial de productos vistos (si hay) -->
-    
   </div>
 </div>

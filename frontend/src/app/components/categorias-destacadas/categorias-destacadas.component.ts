@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CategoriaIndex } from '../../models/categoriaIndex.model';
 import { CategoriasService } from '../../services/categorias.service';
+import { CategoriaMenuService } from '../../services/categoria-menu.service';
+import { MenuStateService } from '../../services/menu-state.service';
 
 @Component({
   selector: 'app-categorias-destacadas',
@@ -13,6 +15,7 @@ import { CategoriasService } from '../../services/categorias.service';
 })
 export class CategoriasDestacadasComponent implements OnInit, AfterViewInit {
   categorias: CategoriaIndex[] = [];
+  categoriasConSubcategorias: any[] = []; // Para almacenar categorías con sus subcategorías
   public carouselId = 'categorias-carousel';
   
   // Variables para el carrusel
@@ -20,9 +23,14 @@ export class CategoriasDestacadasComponent implements OnInit, AfterViewInit {
   visibleItems = 3;
   itemsPerGroup = 3;
 
-  constructor(private categoriasService: CategoriasService) {}
+  constructor(
+    private categoriasService: CategoriasService,
+    private categoriaMenuService: CategoriaMenuService,
+    private menuStateService: MenuStateService
+  ) {}
 
   ngOnInit(): void {
+    // Cargar categorías simples primero
     this.categoriasService.getCategorias().subscribe({
       next: data => {
         this.categorias = data;
@@ -33,8 +41,28 @@ export class CategoriasDestacadasComponent implements OnInit, AfterViewInit {
         
         // Calcular grupos para los indicadores
         this.calculateItemsPerGroup();
+        
+        // Ahora cargar las categorías con subcategorías
+        this.cargarCategoriasConSubcategorias();
       },
       error: err => console.error('❌ Error al cargar categorías destacadas:', err)
+    });
+  }
+
+  /**
+   * Carga las categorías con sus subcategorías
+   */
+  private cargarCategoriasConSubcategorias(): void {
+    this.categoriaMenuService.obtenerCategorias().subscribe({
+      next: (categoriasCompletas) => {
+        this.categoriasConSubcategorias = categoriasCompletas;
+        console.log('📂 Categorías con subcategorías cargadas:', categoriasCompletas);
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar categorías con subcategorías:', err);
+        // Aún podemos funcionar sin las subcategorías
+        this.categoriasConSubcategorias = [];
+      }
     });
   }
 
@@ -145,6 +173,59 @@ export class CategoriasDestacadasComponent implements OnInit, AfterViewInit {
     }
     
     return groups;
+  }
+
+  /**
+   * Obtener la primera subcategoría de una categoría
+   */
+  obtenerPrimeraSubcategoria(categoriaId: number): number | null {
+    if (this.categoriasConSubcategorias.length === 0) {
+      console.warn('⚠️ No se han cargado las subcategorías aún');
+      return null;
+    }
+
+    // Buscar la categoría en las categorías con subcategorías
+    const categoriaCompleta = this.categoriasConSubcategorias.find(
+      cat => cat.id === categoriaId
+    );
+
+    if (!categoriaCompleta) {
+      console.warn(`⚠️ No se encontró la categoría ${categoriaId} en las categorías completas`);
+      return null;
+    }
+
+    // Verificar si tiene subcategorías
+    if (!categoriaCompleta.subcategorias || categoriaCompleta.subcategorias.length === 0) {
+      console.warn(`⚠️ La categoría ${categoriaId} no tiene subcategorías`);
+      return null;
+    }
+
+    // Obtener el ID de la primera subcategoría
+    const primeraSubcategoriaId = categoriaCompleta.subcategorias[0].id;
+    console.log(`📌 Categoría ${categoriaId}: primera subcategoría ID = ${primeraSubcategoriaId}`);
+    
+    return primeraSubcategoriaId;
+  }
+
+  /**
+   * Manejar clic en una categoría
+   */
+  onCategoriaClick(categoria: CategoriaIndex): void {
+    console.log(`🖱️ Categoría clickeada: ${categoria.nombre} (ID: ${categoria.id})`);
+    
+    // Obtener la primera subcategoría
+    const subcategoriaId = this.obtenerPrimeraSubcategoria(categoria.id);
+    
+    if (subcategoriaId) {
+      // Guardar la subcategoría seleccionada en el estado
+      this.menuStateService.saveLastSelectedSubcategory(subcategoriaId);
+      console.log(`✅ Subcategoría ${subcategoriaId} guardada en estado`);
+    } else {
+      console.warn(`⚠️ No se pudo obtener subcategoría para categoría ${categoria.id}`);
+      // Podrías redirigir solo por categoría o mostrar un mensaje
+    }
+    
+    // La redirección se manejará a través del routerLink en el HTML
   }
 
   // Método para manejar errores en las imágenes

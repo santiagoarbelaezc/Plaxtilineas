@@ -1,0 +1,90 @@
+<section class="feature-new-products-section">
+  <div class="feature-new-products-container">
+    <div class="section-header">
+      <h2 class="section-title">Nuevos Productos</h2>
+      <p class="section-subtitle">Descubre nuestras últimas incorporaciones</p>
+    </div>
+
+    <div class="products-grid" *ngIf="productos.length > 0; else loadingTemplate">
+      <!-- Producto 1 -->
+      <div 
+        class="product-card" 
+        *ngFor="let producto of productos; let i = index"
+        [ngClass]="{'reverse': i % 2 === 1}"
+        data-aos="fade-up"
+        [attr.data-aos-delay]="i * 100"
+      >
+        <!-- Imagen del producto -->
+        <div class="product-image-container">
+          <div class="product-image-wrapper">
+            <img 
+              [src]="producto.imagen_url || 'assets/placeholder.jpg'" 
+              [alt]="producto.nombre"
+              class="product-image"
+              loading="lazy"
+            />
+            <!-- Etiqueta de nuevo -->
+            <div class="product-badge new-badge">NUEVO</div>
+            <!-- Badge de categoría -->
+            <div class="product-badge category-badge">
+              {{producto.categoria}}
+            </div>
+          </div>
+        </div>
+
+        <!-- Contenido del producto -->
+        <div class="product-content">
+          <div class="product-meta">
+            <span class="product-subcategory">{{producto.subcategoria}}</span>
+            <span class="product-stock in-stock">
+              ¡Disponible!
+            </span>
+          </div>
+          
+          <h3 class="product-title">{{producto.nombre}}</h3>
+          
+          <p class="product-description">{{producto.descripcion}}</p>
+          
+          <div class="product-details">
+            <div class="product-price">
+              <span class="price-amount">{{producto.precio | currency:'USD':'symbol':'1.2-2'}}</span>
+              <span class="price-unit">c/u</span>
+            </div>
+            
+          </div>
+
+          <div class="product-actions">
+            <button 
+              class="product-btn primary"
+              (click)="verDetalles(producto.id)"
+            >
+              Ver Detalles
+              <span class="btn-icon">→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading template -->
+    <ng-template #loadingTemplate>
+      <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>Cargando nuevos productos...</p>
+      </div>
+    </ng-template>
+
+    <!-- Botón para ver todos los productos -->
+    <div class="view-all-container">
+      <a 
+        routerLink="/productos" 
+        class="view-all-btn"
+        data-aos="fade-up"
+        data-aos-delay="300"
+      >
+        Ver Todos los Productos
+        <span class="arrow-icon">⟶</span>
+      </a>
+    </div>
+  </div>
+</section>

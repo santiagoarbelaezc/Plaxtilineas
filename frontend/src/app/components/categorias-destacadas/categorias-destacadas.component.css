@@ -1,160 +1,343 @@
 /* ===========================
-   🔹 SECCIÓN DE CATEGORÍAS - DISEÑO ELEGANTE Y REFINADO
+   🔹 SECCIÓN DE CATEGORÍAS - DISEÑO TRANSPARENTE CON TEXTO NEGRO
    =========================== */
 .categorias-section {
-  padding: 5rem 1rem;
-  background: #ffffff;
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  padding: 30px 20px;
+  background: rgba(255, 255, 255, 0.98);
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   position: relative;
   overflow: hidden;
 }
 
-/* Línea decorativa sutil */
+/* Efectos de fondo sútiles */
 .categorias-section::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 2px;
-  background: linear-gradient(90deg, #368c44, #25d366);
+  top: 10%;
+  right: 5%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(54, 140, 68, 0.02) 0%, transparent 70%);
+  z-index: 0;
 }
 
-/* Header elegante */
+.categorias-section::after {
+  content: '';
+  position: absolute;
+  bottom: 10%;
+  left: 5%;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(37, 211, 102, 0.02) 0%, transparent 70%);
+  z-index: 0;
+}
+
+/* Header elegante al estilo PlaxtiLineas */
 .section-header {
   text-align: center;
-  margin-bottom: 3.5rem;
+  margin-bottom: 10px;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .section-title {
   font-size: 2.8rem;
   font-weight: 700;
   color: #1a202c;
-  margin-bottom: 1rem;
+  margin-bottom: 5px;
+  position: relative;
+  display: inline-block;
   letter-spacing: -0.5px;
   line-height: 1.2;
 }
 
-.section-subtitle {
-  color: #64748b;
-  font-size: 1.2rem;
-  max-width: 600px;
-  margin: 0 auto;
-  font-weight: 400;
-  line-height: 1.6;
-  opacity: 0.9;
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #368c44, #25d366);
+  border-radius: 2px;
 }
 
-/* Contenedor del carrusel - más compacto */
+.section-subtitle {
+  color: #4a5568;
+  font-size: 1.2rem;
+  line-height: 1.7;
+  max-width: 700px;
+  margin: 40px auto 0;
+  font-weight: 400;
+}
+
+.section-subtitle strong {
+  color: #368c44;
+  font-weight: 600;
+}
+
+/* Contenedor del carrusel - mejorado */
 .carousel-container {
   position: relative;
-  max-width: 1300px;
-  margin: 0 auto;
+  max-width: 1400px;
+  margin: 40px auto 0;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 25px;
+  z-index: 1;
+  padding: 0 15px;
 }
 
-/* Navegación elegante */
+/* ===========================
+   🔹 BOTONES DE NAVEGACIÓN DEL CARRUSEL - MEJORADOS Y ELEGANTES
+   =========================== */
+
 .carousel-nav {
   background: white;
-  border: 1.5px solid #e2e8f0;
+  border: 2px solid rgba(54, 140, 68, 0.8);
   border-radius: 50%;
-  width: 48px;
-  height: 48px;
+  width: 60px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
-  color: #4a5568;
+  font-size: 1.8rem;
+  color: #368c44;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
-  z-index: 10;
-  font-weight: 500;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  z-index: 20;
+  font-weight: 700;
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.15),
+    0 0 0 4px rgba(255, 255, 255, 0.9),
+    inset 0 2px 10px rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
 }
 
+/* Remover las pseudo-flechas CSS ya que usamos caracteres */
+.carousel-nav.prev::after,
+.carousel-nav.next::after {
+  display: none;
+}
+
+/* Restaurar los caracteres de flecha */
+.carousel-nav.prev::before,
+.carousel-nav.next::before {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 2px solid currentColor;
+  border-left: 0;
+  border-bottom: 0;
+  transition: all 0.3s ease;
+}
+
+.carousel-nav.prev::before {
+  transform: rotate(-135deg) translate(1px, -1px);
+  margin-left: 4px;
+}
+
+.carousel-nav.next::before {
+  transform: rotate(45deg) translate(-1px, -1px);
+  margin-left: -4px;
+}
+
+/* Ocultar los caracteres HTML y usar solo las pseudo-flechas */
+.carousel-nav.prev span,
+.carousel-nav.next span {
+  display: none;
+}
+
+/* Efecto de brillo interno */
+.carousel-nav::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.4) 0%,
+    transparent 70%
+  );
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Efecto hover - Más impactante */
 .carousel-nav:hover:not(.disabled) {
-  background: #368c44;
+  background: linear-gradient(135deg, #368c44, #25d366);
   color: white;
   border-color: #368c44;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(54, 140, 68, 0.15);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 
+    0 10px 30px rgba(54, 140, 68, 0.4),
+    0 0 0 4px rgba(255, 255, 255, 0.95),
+    inset 0 2px 15px rgba(255, 255, 255, 0.9);
 }
 
+.carousel-nav:hover:not(.disabled)::before {
+  opacity: 1;
+}
+
+/* Efecto de presión */
+.carousel-nav:active:not(.disabled) {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 
+    0 4px 15px rgba(54, 140, 68, 0.3),
+    0 0 0 4px rgba(255, 255, 255, 0.9);
+  transition: all 0.1s ease;
+}
+
+/* Botón disabled */
 .carousel-nav.disabled {
-  opacity: 0.3;
+  opacity: 0.4;
   cursor: not-allowed;
   background: #f8fafc;
+  transform: none;
+  color: #94a3b8;
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-/* Wrapper del carrusel compacto */
+/* Efecto de enfoque para accesibilidad */
+.carousel-nav:focus-visible {
+  outline: 3px solid rgba(54, 140, 68, 0.6);
+  outline-offset: 3px;
+  border-color: #368c44;
+  box-shadow: 
+    0 0 0 6px rgba(54, 140, 68, 0.2),
+    0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Animación de entrada sutil */
+@keyframes fadeInButtons {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.carousel-nav {
+  animation: fadeInButtons 0.5s ease-out forwards;
+}
+
+.carousel-nav.next {
+  animation-delay: 0.1s;
+}
+
+/* Efecto de sombra flotante */
+.carousel-nav:not(.disabled)::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: -10px;
+  bottom: -10px;
+  background: rgba(54, 140, 68, 0.1);
+  border-radius: 50%;
+  z-index: -2;
+  filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.carousel-nav:hover:not(.disabled)::after {
+  opacity: 1;
+}
+
+/* Wrapper del carrusel */
 .carousel-wrapper {
   overflow: hidden;
   flex: 1;
-  border-radius: 16px;
+  border-radius: 20px;
 }
 
-/* Carrusel elegante */
+/* Carrusel */
 .carousel {
   display: flex;
-  gap: 1.5rem;
-  padding: 1rem 0.5rem;
+  gap: 30px;
+  padding: 25px 15px;
   overflow-x: auto;
   scroll-behavior: smooth;
   scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .carousel::-webkit-scrollbar {
   display: none;
 }
 
-/* Items del carrusel - más compactos */
+/* Items del carrusel - TARJETAS MÁS GRANDES */
 .carousel-item {
   flex: 0 0 auto;
   transition: transform 0.3s ease;
-  width: 320px;
+  width: 360px;
+  min-width: 360px;
 }
 
 /* ===========================
-   🔹 TARJETA ELEGANTE CON IMAGEN GRANDE
+   🔹 TARJETA TRANSPARENTE CON TEXTO NEGRO
    =========================== */
 .categoria-card {
   display: flex;
   flex-direction: column;
-  background: white;
-  border-radius: 14px;
+  background: transparent;
+  border-radius: 16px;
   text-decoration: none;
-  color: #4a5568;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid #e2e8f0;
-  height: 420px; /* Compacto pero con imagen grande */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  color: #1a202c;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  height: 480px;
   overflow: hidden;
   position: relative;
 }
 
 .categoria-card:hover {
-  border-color: #368c44;
-  box-shadow: 0 12px 24px rgba(54, 140, 68, 0.12);
-  transform: translateY(-4px);
+  border-color: rgba(54, 140, 68, 0.8);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.8);
 }
 
-/* Contenedor de la imagen - gran tamaño dentro de tarjeta compacta */
+/* Contenedor de la imagen - MUCHO MÁS GRANDE Y TRANSPARENTE */
 .categoria-image-container {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100%;
-  height: 70%; /* Aún grande pero con espacio para texto */
+  height: 65%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2.5rem;
-  z-index: 1;
-  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+  padding: 40px;
+  background: transparent;
+  overflow: hidden;
+}
+
+/* Línea divisoria superior - sutil */
+.categoria-image-container::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(0, 0, 0, 0.1), 
+    transparent
+  );
 }
 
 .icon-wrapper {
@@ -164,192 +347,186 @@
   justify-content: center;
   width: 100%;
   height: 100%;
+  z-index: 2;
 }
 
-/* Icono grande pero elegante */
+/* IMAGEN MUCHO MÁS GRANDE Y ELEGANTE */
 .categoria-icon {
-  width: 100%;
-  height: 100%;
-  max-width: 160px; /* Grande pero no exagerado */
-  max-height: 160px; /* Grande pero no exagerado */
+  width: auto;
+  height: auto;
+  max-width: 220px;
+  max-height: 220px;
   object-fit: contain;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.08));
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15));
+  transform: translateZ(0);
 }
 
 .categoria-card:hover .categoria-icon {
-  transform: scale(1.08);
-  filter: drop-shadow(0 6px 16px rgba(54, 140, 68, 0.15));
+  transform: scale(1.1) translateZ(20px);
+  filter: 
+    drop-shadow(0 12px 35px rgba(0, 0, 0, 0.2))
+    drop-shadow(0 4px 10px rgba(54, 140, 68, 0.15));
 }
 
-/* Overlay sutil en lugar de glow */
-.icon-overlay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 180px;
-  height: 180px;
-  background: radial-gradient(circle, 
-              rgba(54, 140, 68, 0.08) 0%, 
-              transparent 60%);
-  border-radius: 50%;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-}
-
-.categoria-card:hover .icon-overlay {
-  opacity: 1;
-}
-
-/* Contenedor del texto - elegante y compacto */
+/* Contenedor del texto - elegante y transparente */
 .categoria-text-container {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: 1.75rem;
-  background: white;
-  border-top: 1px solid #f1f5f9;
+  padding: 30px;
+  background: linear-gradient(
+    to top, 
+    rgba(255, 255, 255, 0.95) 0%, 
+    rgba(255, 255, 255, 0.85) 50%,
+    rgba(255, 255, 255, 0.7) 100%
+  );
   z-index: 2;
-  height: 30%;
+  height: 35%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   text-align: center;
+  backdrop-filter: blur(5px);
+}
+
+/* Efecto de sombra para mejorar el contraste */
+.categoria-text-container::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.9), transparent);
+  z-index: 1;
 }
 
 .categoria-content {
   width: 100%;
 }
 
-/* Título elegante */
+/* ===========================
+   🔹 TÍTULO DE CATEGORÍA - ELEGANTE Y DELGADO
+   =========================== */
 .categoria-title {
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: #1a202c;
-  margin-bottom: 1.25rem;
-  line-height: 1.3;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 100%;
-  padding: 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #141414 !important;
+  line-height: 1.5;
   position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
+  text-align: center;
+  width: 100%;
+  letter-spacing: 0.2px;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* Línea decorativa sutil bajo el título */
+/* Línea decorativa bajo el título - más sutil */
 .categoria-title::after {
   content: '';
   position: absolute;
-  bottom: -8px;
+  bottom: -10px;
   left: 50%;
   transform: translateX(-50%);
   width: 40px;
-  height: 2px;
-  background: linear-gradient(90deg, #368c44, #25d366);
-  opacity: 0.5;
-  transition: width 0.3s ease;
+  height: 1.2px;
+  background: rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  opacity: 0.7;
 }
 
 .categoria-card:hover .categoria-title::after {
   width: 60px;
+  background: #25d366;
+  opacity: 1;
+  height: 1.5px;
 }
 
-/* Enlace elegante y sutil */
+/* Asegurar que el texto sea negro incluso en hover */
+.categoria-card:hover .categoria-title {
+  color: #141414 !important;
+  font-weight: 450;
+}
+
+/* Botón elegante al estilo PlaxtiLineas - TRANSPARENTE CON TEXTO NEGRO */
+.categoria-actions {
+  margin-top: 15px;
+}
+
 .explore-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  color: #368c44;
+  gap: 8px;
+  color: #1a202c;
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: 1rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 0.6rem 1.2rem;
-  background: rgba(54, 140, 68, 0.06);
-  border-radius: 8px;
-  border: 1px solid rgba(54, 140, 68, 0.15);
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 25px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  backdrop-filter: blur(10px);
 }
 
 .explore-link .arrow {
   transition: transform 0.3s ease;
   font-weight: 500;
+  font-size: 1.1rem;
+  color: #1a202c;
 }
 
 .categoria-card:hover .explore-link {
-  background: #368c44;
-  color: white;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(54, 140, 68, 0.12);
-  border-color: #368c44;
+  background: rgba(54, 140, 68, 0.1);
+  color: #1a202c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(54, 140, 68, 0.1);
+  border-color: rgba(54, 140, 68, 0.3);
 }
 
 .categoria-card:hover .explore-link .arrow {
   transform: translateX(4px);
+  color: #25d366;
 }
 
 /* ===========================
-   🔹 EFECTOS ELEGANTES Y SUTILES
+   🔹 EFECTOS ELEGANTES ADICIONALES
    =========================== */
 
-/* Borde superior sutil */
-.categoria-card::before {
+/* Efecto de brillo sutil en hover */
+.categoria-card::after {
   content: '';
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #368c44, #25d366);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 3;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.6s ease;
+  z-index: 2;
 }
 
-.categoria-card:hover::before {
-  opacity: 1;
+.categoria-card:hover::after {
+  left: 100%;
 }
 
-/* Fondo sutil en hover */
-.categoria-image-container::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, 
-              rgba(54, 140, 68, 0.02) 0%, 
-              rgba(37, 211, 102, 0.01) 100%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.categoria-card:hover .categoria-image-container::after {
-  opacity: 1;
-}
-
-/* Degradado sutil en el texto */
-.categoria-text-container::before {
-  content: '';
-  position: absolute;
-  top: -20px;
-  left: 0;
-  right: 0;
-  height: 20px;
-  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.9));
-  pointer-events: none;
-}
-
-/* ===========================
-   🔹 ANIMACIONES ELEGANTES
-   =========================== */
-
-@keyframes fadeIn {
+/* Animaciones de entrada */
+@keyframes slideInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(40px);
   }
   to {
     opacity: 1;
@@ -358,24 +535,56 @@
 }
 
 .carousel-item {
-  animation: fadeIn 0.6s ease-out forwards;
+  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   opacity: 0;
 }
 
-/* Delay progresivo pero sutil */
+/* Delay progresivo */
 .carousel-item:nth-child(1) { animation-delay: 0.1s; }
 .carousel-item:nth-child(2) { animation-delay: 0.2s; }
 .carousel-item:nth-child(3) { animation-delay: 0.3s; }
 .carousel-item:nth-child(4) { animation-delay: 0.4s; }
+.carousel-item:nth-child(5) { animation-delay: 0.5s; }
 
 /* ===========================
-   🔹 RESPONSIVE DESIGN ELEGANTE
+   🔹 RESPONSIVE DESIGN
    =========================== */
+
+/* Tablet grande */
+@media (max-width: 1200px) {
+  .carousel-container {
+    max-width: 1100px;
+  }
+  
+  .carousel-item {
+    width: 320px;
+    min-width: 320px;
+  }
+  
+  .categoria-card {
+    height: 440px;
+  }
+  
+  .categoria-icon {
+    max-width: 200px;
+    max-height: 200px;
+  }
+  
+  .categoria-text-container {
+    padding: 25px;
+  }
+  
+  .carousel-nav {
+    width: 55px;
+    height: 55px;
+    font-size: 1.6rem;
+  }
+}
 
 /* Tablet */
 @media (max-width: 1024px) {
   .categorias-section {
-    padding: 4rem 1rem;
+    padding: 80px 20px;
   }
   
   .section-title {
@@ -384,34 +593,63 @@
   
   .section-subtitle {
     font-size: 1.1rem;
+    margin-top: 30px;
+  }
+  
+  .carousel-container {
+    max-width: 900px;
+    margin-top: 30px;
   }
   
   .carousel-item {
     width: 300px;
+    min-width: 300px;
   }
   
   .categoria-card {
-    height: 400px;
+    height: 420px;
+  }
+  
+  .categoria-image-container {
+    padding: 35px;
+    height: 60%;
   }
   
   .categoria-icon {
-    max-width: 140px;
-    max-height: 140px;
+    max-width: 180px;
+    max-height: 180px;
   }
   
   .categoria-text-container {
-    padding: 1.5rem;
+    height: 40%;
+    padding: 22px;
   }
   
   .categoria-title {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
+    margin-bottom: 18px;
+  }
+  
+  .explore-link {
+    padding: 9px 18px;
+    font-size: 0.95rem;
+  }
+  
+  .carousel-nav {
+    width: 52px;
+    height: 52px;
+    font-size: 1.5rem;
   }
 }
 
-/* Mobile */
+/* Mobile grande */
 @media (max-width: 768px) {
   .categorias-section {
-    padding: 3.5rem 0.75rem;
+    padding: 60px 15px;
+  }
+  
+  .section-header {
+    margin-bottom: 50px;
   }
   
   .section-title {
@@ -420,20 +658,83 @@
   
   .section-subtitle {
     font-size: 1rem;
+    margin-top: 25px;
+  }
+  
+  .carousel-container {
+    padding: 0 10px;
+    gap: 15px;
+    margin-top: 25px;
   }
   
   .carousel-nav {
-    width: 44px;
-    height: 44px;
-    font-size: 1.2rem;
+    width: 48px;
+    height: 48px;
+    font-size: 1.4rem;
   }
   
   .carousel {
-    gap: 1rem;
+    gap: 20px;
+    padding: 20px 10px;
   }
   
   .carousel-item {
     width: 280px;
+    min-width: 280px;
+  }
+  
+  .categoria-card {
+    height: 400px;
+  }
+  
+  .categoria-image-container {
+    padding: 30px;
+    height: 60%;
+  }
+  
+  .categoria-icon {
+    max-width: 160px;
+    max-height: 160px;
+  }
+  
+  .categoria-text-container {
+    height: 40%;
+    padding: 20px;
+  }
+  
+  .categoria-title {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+  }
+  
+  .explore-link {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile pequeño */
+@media (max-width: 480px) {
+  .categorias-section {
+    padding: 50px 10px;
+  }
+  
+  .section-title {
+    font-size: 1.8rem;
+  }
+  
+  .section-subtitle {
+    font-size: 0.95rem;
+  }
+  
+  .carousel-container {
+    padding: 0 5px;
+    gap: 10px;
+  }
+  
+  .carousel-item {
+    width: 260px;
+    min-width: 260px;
   }
   
   .categoria-card {
@@ -441,132 +742,171 @@
   }
   
   .categoria-image-container {
-    padding: 2rem;
-    height: 65%;
+    padding: 25px;
   }
   
   .categoria-icon {
-    max-width: 130px;
-    max-height: 130px;
+    max-width: 140px;
+    max-height: 140px;
   }
   
   .categoria-text-container {
-    height: 35%;
-    padding: 1.25rem;
+    padding: 18px;
   }
   
   .categoria-title {
     font-size: 1.2rem;
-    margin-bottom: 1rem;
   }
   
   .explore-link {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-  }
-}
-
-/* Pantallas pequeñas */
-@media (max-width: 480px) {
-  .categorias-section {
-    padding: 3rem 0.5rem;
-  }
-  
-  .section-title {
-    font-size: 1.8rem;
-  }
-  
-  .carousel-item {
-    width: 260px;
-  }
-  
-  .categoria-card {
-    height: 360px;
-  }
-  
-  .categoria-icon {
-    max-width: 120px;
-    max-height: 120px;
-  }
-  
-  .categoria-title {
-    font-size: 1.1rem;
-  }
-  
-  .explore-link {
+    padding: 7px 14px;
     font-size: 0.85rem;
+  }
+  
+  .carousel-nav {
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
+    border-width: 1.5px;
   }
 }
 
 /* ===========================
-   🔹 ACCESIBILIDAD Y DETALLES FINOS
+   🔹 ACCESIBILIDAD Y EFECTOS
    =========================== */
 
 .categoria-card:focus-visible {
-  outline: 2px solid #368c44;
-  outline-offset: 2px;
+  outline: 2px solid rgba(54, 140, 68, 0.8);
+  outline-offset: 4px;
+  border-radius: 16px;
 }
 
 .carousel-nav:focus-visible {
-  outline: 2px solid #368c44;
-  outline-offset: 2px;
+  outline: 3px solid rgba(54, 140, 68, 0.6);
+  outline-offset: 3px;
+  border-color: #368c44;
+  box-shadow: 
+    0 0 0 6px rgba(54, 140, 68, 0.2),
+    0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Efecto de presión sutil */
-.categoria-card:active {
-  transform: scale(0.99);
+/* Efecto de presión */
+.categoria-card:active:not(:focus-visible) {
+  transform: scale(0.98);
   transition: transform 0.1s ease;
 }
 
-/* Suavizar transiciones */
-.categoria-card * {
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Cursor elegante */
-.categoria-card,
-.carousel-nav:not(.disabled) {
-  cursor: pointer;
-}
-
-/* Estado de carga sutil */
+/* Efecto de carga */
 .categoria-icon[src*="loading"] {
-  animation: pulse 2s infinite;
+  animation: pulse 1.5s infinite ease-in-out;
 }
 
 @keyframes pulse {
   0%, 100% {
     opacity: 1;
+    transform: scale(1);
   }
   50% {
     opacity: 0.7;
+    transform: scale(1.05);
   }
 }
 
-/* Mensaje sin categorías - elegante */
+/* Mensaje sin categorías */
 .no-categorias {
   text-align: center;
-  padding: 3rem 1rem;
-  color: #64748b;
+  padding: 60px 20px;
   max-width: 500px;
-  margin: 0 auto;
+  margin: 40px auto 0;
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
 }
 
 .no-categorias-icon {
-  font-size: 3rem;
-  margin-bottom: 1.5rem;
+  font-size: 48px;
+  margin-bottom: 20px;
   opacity: 0.6;
+  display: inline-block;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .no-categorias h3 {
   font-size: 1.5rem;
-  margin-bottom: 0.75rem;
-  color: #1a202c;
   font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 10px;
 }
 
 .no-categorias p {
+  color: #4a5568;
   font-size: 1rem;
   line-height: 1.6;
   opacity: 0.8;
+}
+
+/* Efectos de performance */
+.categoria-icon,
+.categoria-card {
+  will-change: transform, filter, box-shadow;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ajustes para mejor contraste con fondo transparente */
+.categoria-title,
+.categoria-actions .explore-link {
+  font-weight: 600;
+}
+
+/* ===========================
+   🔹 ESTILOS DE TEXTO CONFLICTIVOS
+   =========================== */
+
+.categoria-card h3 {
+  color: #141414 !important;
+  font-weight: 400 !important;
+  text-align: center;
+  width: 100%;
+}
+
+.categoria-content h3,
+.categoria-text-container h3 {
+  color: #141414 !important;
+  font-weight: 400 !important;
+}
+
+/* Asegurar contraste suficiente para texto negro */
+.categoria-title {
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* Ajustar para mejor legibilidad con texto delgado */
+.categoria-title {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+/* ===========================
+   🔹 EFECTO DE TRANSICIÓN SUAVE PARA EL PESO DE LA FUENTE
+   =========================== */
+.categoria-title {
+  transition: font-weight 0.2s ease, color 0.3s ease;
+}
+
+.categoria-card:hover .categoria-title {
+  transition: font-weight 0.3s ease, color 0.3s ease;
 }

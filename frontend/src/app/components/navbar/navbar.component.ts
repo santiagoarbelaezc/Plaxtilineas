@@ -2,27 +2,34 @@ import { Component, OnInit, AfterViewInit, HostListener, ViewEncapsulation } fro
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faKey } from '@fortawesome/free-solid-svg-icons';
+import { faKey, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FormsModule } from '@angular/forms';
 import { AosService } from '../../services/aos.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule, FontAwesomeModule],
+  imports: [CommonModule, RouterModule, FontAwesomeModule, FormsModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
-  encapsulation: ViewEncapsulation.None  // ⚠️ AGREGAR ESTA LÍNEA
+  encapsulation: ViewEncapsulation.None
 })
 export class NavbarComponent implements OnInit, AfterViewInit {
   menuAbierto = false;
   private activeLinkIndex = 0;
   private linkPositions: number[] = [];
+  
+  // Variables para el buscador
+  searchQuery: string = '';
+  showSuggestions: boolean = false;
 
   constructor(
     library: FaIconLibrary,
-    private aosService: AosService
+    private aosService: AosService,
+    private router: Router
   ) {
-    library.addIcons(faKey);
+    library.addIcons(faKey, faSearch, faTimes);
   }
 
   ngOnInit(): void {
@@ -58,7 +65,33 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   onLinkClick(index: number): void {
     this.activeLinkIndex = index;
-    this.closeMenu(); // Cierra el menú al hacer clic
+    this.closeMenu();
+  }
+
+  // Métodos para el buscador
+  onSearch(): void {
+    if (this.searchQuery.trim()) {
+      this.router.navigate(['/productos'], {
+        queryParams: { q: this.searchQuery.trim() }
+      });
+      this.showSuggestions = false;
+      this.searchQuery = '';
+    }
+  }
+
+  onSearchFocus(): void {
+    this.showSuggestions = true;
+  }
+
+  onSearchBlur(): void {
+    setTimeout(() => {
+      this.showSuggestions = false;
+    }, 200);
+  }
+
+  clearSearch(): void {
+    this.searchQuery = '';
+    this.showSuggestions = false;
   }
 
   @HostListener('window:resize')

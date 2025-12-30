@@ -1,0 +1,100 @@
+<!-- feature-banner.html -->
+<section
+  class="feature-banner-section"
+  [ngStyle]="{ 'background-color': backgroundColor, color: textColor }"
+>
+  <div class="feature-banner-container">
+    <div class="feature-banner-card" [class.reverse]="reverse">
+      <!-- Contenedor de imagen -->
+      <div
+        class="feature-banner-image-container"
+        data-aos="fade-left"
+        data-aos-delay="100"
+        data-aos-duration="800"
+        data-aos-easing="ease-in-out-cubic"
+      >
+        <div class="feature-banner-image-wrapper">
+          <img 
+            [src]="imageUrl" 
+            [alt]="title" 
+            class="feature-banner-image"
+            loading="lazy"
+            (load)="onImageLoad()"
+          />
+        </div>
+      </div>
+
+      <!-- Contenedor de contenido -->
+      <div
+        class="feature-banner-content"
+        data-aos="fade-right"
+        data-aos-delay="200"
+        data-aos-duration="800"
+        data-aos-easing="ease-in-out-cubic"
+      >
+        <h2 class="feature-banner-title">
+          {{ title }}
+        </h2>
+        
+        <div
+          class="feature-banner-subtitle"
+          data-aos="fade-up"
+          data-aos-delay="300"
+          data-aos-duration="800"
+        >
+          {{ subtitle }}
+        </div>
+
+        <div class="feature-banner-actions">
+          <!-- Si hay un enlace configurado -->
+          <ng-container *ngIf="buttonLink">
+            <!-- Enlace externo -->
+            <a 
+              *ngIf="isExternalLink"
+              [href]="buttonLink + (queryParams ? '?' + getQueryString() : '')"
+              [target]="linkTarget"
+              [rel]="linkTarget === '_blank' ? 'noopener noreferrer' : null"
+              class="feature-btn primary"
+              [ngStyle]="getButtonStyles()"
+              (click)="onPrimaryClick()"
+              (mouseenter)="onButtonHover(true)"
+              (mouseleave)="onButtonHover(false)"
+            >
+              {{ primaryText }}
+              <span class="btn-arrow">→</span>
+            </a>
+            
+            <!-- Enlace interno de Angular Router -->
+            <a 
+              *ngIf="!isExternalLink"
+              [routerLink]="[buttonLink]"
+              [queryParams]="queryParams"
+              [target]="linkTarget"
+              class="feature-btn primary"
+              [ngStyle]="getButtonStyles()"
+              (click)="onPrimaryClick()"
+              (mouseenter)="onButtonHover(true)"
+              (mouseleave)="onButtonHover(false)"
+            >
+              {{ primaryText }}
+              <span class="btn-arrow">→</span>
+            </a>
+          </ng-container>
+          
+          <!-- Si no hay enlace configurado, usar botón normal -->
+          <button 
+            *ngIf="!buttonLink"
+            class="feature-btn primary" 
+            [ngStyle]="getButtonStyles()"
+            (click)="onPrimaryClick()"
+            (mouseenter)="onButtonHover(true)"
+            (mouseleave)="onButtonHover(false)"
+          >
+            {{ primaryText }}
+            <span class="btn-arrow">→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

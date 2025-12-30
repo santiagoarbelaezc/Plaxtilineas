@@ -12,6 +12,8 @@ router.get('/:id', controller.obtenerProductoPorId);
 // Nuevas rutas públicas para productos relacionados y de interés
 router.get('/subcategoria/:subcategoria_id', controller.obtenerProductosPorSubcategoria);
 router.get('/interes/aleatorios', controller.obtenerProductosAleatorios);
+router.get('/novedades/ultimos', controller.obtenerUltimosProductos); 
+router.get('/:producto_id/variantes', controller.verificarVariantesProducto); // Nueva ruta
 
 // Rutas protegidas con imagen enviada desde Angular como FormData
 router.post('/', verifyToken, uploadProducto.single('imagen'), controller.crearProductoDesdeRuta);

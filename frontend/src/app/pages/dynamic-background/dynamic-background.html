@@ -1,0 +1,214 @@
+<section class="dynamic-presentation" id="dynamic-presentation">
+  <!-- Contenedor principal con efecto de fondo dinámico progresivo -->
+  <div class="dynamic-background-container" #dynamicBackground>
+    
+    <!-- Sección 0: Feature Banner 1 (Blanco) -->
+    <div class="color-section" id="section-0" data-color="#FFFFFF">
+      <app-feature-banner
+  imageUrl="https://res.cloudinary.com/dsv1gdgya/image/upload/v1767037087/ChatGPT_Image_Dec_28_2025_08_26_03_PM_xbvkxn.png"
+  title="PLAXTILINEAS Mallas Plasticas Multifuncionales"
+  subtitle="Perfecta para una amplia variedad de aplicaciones en jardinería, construcción, cerramiento agricolas, entre otros Especificaciones: 
+  • 1 m ancho x 30 m lienales • 1.50 m ancho x 30 m lineales • Tamaño de abertura: 15 X 15 mm"
+  primaryText="Explorar Mallas Plasticas"
+  
+  [buttonLink]="'/productos'"
+  [queryParams]="{subcategoria_id: 6}"
+  
+  [reverse]="false"
+  backgroundColor="transparent"
+  textColor="#191919"
+  buttonColor="#368c44"
+  buttonHoverColor="#2a6b35">
+</app-feature-banner>
+    </div>
+
+    <!-- Sección 1: Feature Banner 2 (Blanco) -->
+    <div class="color-section" id="section-1" data-color="#FFFFFF">
+      <app-feature-banner
+    imageUrl="https://res.cloudinary.com/dsv1gdgya/image/upload/v1767036864/ChatGPT_Image_28_dic_2025_23_23_14_iunybe.png"
+    title="PLAXTILINEAS Sogas Pisadoras"
+    subtitle="También conocida como cuerda de amarre, es un componente versátil y resistente utilizado en una variedad de aplicaciones. La Soga pisadora viene de 5 mm color azul y negra carretes por 400 y 800 metros con protección UV, esta cuerda ofrece una solución confiable para una amplia gama de necesidades. Su diseño robusto y duradero la convierte en una opción ideal para actividades agrícolas, como la sujeción de cultivos o la construcción de cercas temporales, entre otros."
+    primaryText="Explorar Sogas Pisadoras"
+    
+    
+    buttonLink="/productos"
+    [queryParams]="{subcategoria_id: 2}"
+    
+    
+    [reverse]="true"
+    backgroundColor="transparent"
+    textColor="#191919"
+    buttonColor="#368c44"
+    buttonHoverColor="#2a6b35">
+    </app-feature-banner>
+    </div>
+
+    <!-- Sección 4: Categorías Destacadas (Negro #000000) -->
+    <div class="color-section" id="section-4">
+      <app-categorias-destacadas></app-categorias-destacadas>
+    </div>
+
+    <!-- Sección 2: Plaxti Banner (Verde #368c44) -->
+    <div class="color-section full-width-section" id="section-2" data-color="#368c44">
+      <app-plaxti-banner
+        [images]="bannerImages"
+        [height]="'600px'"
+        [hoverScale]="1.25"
+        [minScale]="0.9">
+      </app-plaxti-banner>
+    </div>
+
+
+    <div class="color-section" id="section-1" data-color="#FFFFFF">
+      <app-feature-banner
+        imageUrl="https://res.cloudinary.com/dsv1gdgya/image/upload/v1767044431/ChatGPT_Image_28_dic_2025_23_28-29_rnywtv.png"
+        title="PLAXTILINEAS Vinipel Negro"
+        subtitle="El “stretch film” es un tipo de película plástica estirable y transparente que se utiliza comúnmente para envolver y proteger objetos. 
+        Es muy utilizado en la industria para asegurar pallets y embalar productos. También se conoce como film stretch, film estirable o film para embalar."
+        primaryText="Explorar Vinipel"
+        [buttonLink]="'/productos'"
+        [queryParams]="{subcategoria_id: 7}"
+        [reverse]="true"
+        backgroundColor="#FFFFFF"
+        textColor="#191919"
+        buttonColor="#368c44"
+        buttonHoverColor="#2a6b35">
+      </app-feature-banner>
+    </div>
+
+    <div class="color-section" id="section-1" data-color="#FFFFFF">
+      <app-feature-banner
+        imageUrl="https://res.cloudinary.com/dsv1gdgya/image/upload/v1767045347/ChatGPT_Image_29_dic_2025_16_54_18_ch7o3j.png"
+        title="PLAXTILINEAS Espuma Naranja"
+        subtitle="Las espumas de poliuretano se utilizan en una amplia gama de aplicaciones; tapicería y colchones, aislamiento acústico, industria automotriz. PLAXTILINEAS distribuye espumas en diferentes
+densidades y espesores, desde 0.05 cm hasta 15 cm de
+espesor, las medidas de espuma como insumo vienen de 1.00 m ancho x 2.00 m largo. Esto significa que PLAXTILINEAS tiene una amplia variedad de opciones para satisfacer las necesidades de cada cliente.
+Las espumas de alta densidad son ideales para aplicaciones que requieren mayor soporte y durabilidad, mientras que las espumas de baja densidad son perfectas para aplicaciones más suaves y cómodas.."
+        primaryText="Explorar Espumas"
+
+        [buttonLink]="'/productos'"
+        [queryParams]="{subcategoria_id: 5}"
+
+        [reverse]="false"
+        backgroundColor="#FFFFFF"
+        textColor="#191919"
+        buttonColor="#368c44"
+        buttonHoverColor="#2a6b35">
+        
+      </app-feature-banner>
+    </div>
+
+    <!-- En tu app.component.html o donde lo necesites -->
+<app-feature-new-products></app-feature-new-products>
+
+    <div class="color-section" id="section-6" data-color="#FFFFFF">
+  <div class="content-container">
+    <div class="final-section">
+      <div class="final-content">
+        <h2 class="final-title">Fiabilidad en Cada Proyecto</h2>
+        <p class="final-text">
+          En PlaxtiLineas nos hemos ganado la confianza de nuestros clientes a través de 
+          entregas puntuales y un compromiso genuino con cada proyecto. Nuestra prioridad 
+          es brindar un servicio confiable y productos de calidad, adaptándonos a las 
+          necesidades específicas de cada sector con responsabilidad y atención al detalle.
+        </p>
+        <div class="stats-grid">
+          
+          <div class="stat-item">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Compromiso</span>
+          </div>
+        </div>
+      </div>
+      <div class="final-image">
+        <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1767051165/logo-grande_j6k111.png" 
+             alt="PlaxtiLineas - Servicio Confiable" 
+             loading="lazy"
+             class="store-image">
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+    <!-- Sección 5: Trio Presentation Servicios (Negro #000000) -->
+    <div class="color-section" id="section-5" data-color="#000000">
+      <app-plaxti-trio-presentation
+        [cards]="serviciosCards"
+        [showHeader]="true"
+        [headerTitle]="'Nuestros Servicios'"
+        [headerSubtitle]="'Soluciones integrales diseñadas para impulsar el crecimiento de tu empresa'"
+        [backgroundColor]="'transparent'"
+        [cardHeight]="'450px'"
+        [gap]="'30px'"
+        [hoverEffect]="true"
+        [layout]="'alternate'">
+      </app-plaxti-trio-presentation>
+    </div>
+
+
+    <!-- Sección 6: Sección de texto y estadísticas (Blanco #FFFFFF) -->
+    <div class="color-section" id="section-6" data-color="#FFFFFF">
+      <div class="content-container">
+        <div class="final-section">
+          <div class="final-content">
+            <h2 class="final-title">Sectores Especializados</h2>
+            <p class="final-text">
+              En PlaxtiLineas atendemos diferentes industrias con soluciones personalizadas. 
+              Desde manufactura hasta construcción, brindamos productos y servicios adaptados 
+              a las necesidades específicas de cada sector.
+            </p>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <span class="stat-number">+15</span>
+                <span class="stat-label">Sectores</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">+500</span>
+                <span class="stat-label">Clientes</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">Satisfacción</span>
+              </div>
+            </div>
+          </div>
+          <div class="final-image">
+            <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1767048469/ChatGPT_Image_29_dic_2025_17_43_40_kyuefe.png" 
+                 alt="PlaxtiLineas Industria" 
+                 loading="lazy"
+                 class="store-image2">
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <!-- COMPONENTES DE ANCHO COMPLETO - FUERA DEL CONTENEDOR DINÁMICO -->
+  
+  <!-- Long Map - Componente de ancho completo -->
+  <div class="full-width-component">
+    <app-long-map></app-long-map>
+  </div>
+
+  <!-- Social Buttons - Componente de ancho completo -->
+  <div class="full-width-component">
+    <app-social-buttons></app-social-buttons>
+  </div>
+
+  <!-- Partners - Componente de ancho completo -->
+  <div class="full-width-component">
+    <app-partners></app-partners>
+  </div>
+
+  <!-- Footer - Componente de ancho completo -->
+  <div class="full-width-component">
+    <app-footer></app-footer>
+  </div>
+
+  <!-- Indicador de progreso del color -->
+  
+</section>

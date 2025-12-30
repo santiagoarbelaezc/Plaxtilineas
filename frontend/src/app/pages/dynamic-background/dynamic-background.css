@@ -1,0 +1,323 @@
+/* ===========================
+   FONDO DINÁMICO PLAXTILINEAS
+   =========================== */
+
+.dynamic-presentation {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--dynamic-bg-color);
+  transition: background-color var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--dynamic-text-color);
+}
+
+/* Contenedor de fondo dinámico */
+.dynamic-background-container {
+  position: relative;
+  transition: background-color var(--transition-speed) ease;
+}
+
+/* Secciones de color */
+.color-section {
+  position: relative;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0;
+  
+}
+
+/* Contenedor de contenido */
+.content-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* Sección de texto e imagen */
+.text-image-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  margin-bottom: 4rem;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, var(--dynamic-text-color) 0%, 
+              var(--dynamic-text-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-description {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  opacity: 0.9;
+  margin-bottom: 2.5rem;
+  color: var(--dynamic-text-color);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.feature-item {
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--dynamic-text-color);
+}
+
+.feature-item:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.feature-item h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.feature-item p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+/* Imagen de sección */
+.section-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Sección final */
+.final-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  padding: 6rem 0;
+  
+}
+
+.final-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--dynamic-text-color);
+  line-height: 1.2;
+}
+
+.final-text {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  opacity: 0.9;
+  margin-bottom: 2.5rem;
+  color: var(--dynamic-text-color);
+  max-width: 600px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--dynamic-text-color);
+}
+
+.stat-item:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.stat-number {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #368c44;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.store-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 16px;
+  
+}
+
+.store-image2 {
+  width: 100%;
+  height: 600px;
+  object-fit: cover;
+  border-radius: 16px;
+  
+}
+
+
+/* Componentes finales */
+.final-components {
+  width: 100%;
+}
+
+/* Estilos para componentes dentro de secciones de color */
+.color-section app-feature-banner,
+.color-section app-plaxti-trio-presentation,
+.color-section app-categorias-destacadas,
+.color-section app-plaxti-banner {
+  width: 100%;
+  display: block;
+}
+
+/* Ajustar el color de texto en componentes según el fondo */
+.color-section[data-color="#000000"] ::ng-deep .section-title,
+.color-section[data-color="#000000"] ::ng-deep .section-subtitle,
+.color-section[data-color="#000000"] ::ng-deep h2,
+.color-section[data-color="#000000"] ::ng-deep h3,
+.color-section[data-color="#000000"] ::ng-deep p {
+  color: #FFFFFF !important;
+}
+
+.color-section[data-color="#368c44"] ::ng-deep .section-title,
+.color-section[data-color="#368c44"] ::ng-deep .section-subtitle,
+.color-section[data-color="#368c44"] ::ng-deep h2,
+.color-section[data-color="#368c44"] ::ng-deep h3,
+.color-section[data-color="#368c44"] ::ng-deep p {
+  color: #FFFFFF !important;
+}
+
+.color-section[data-color="#2a6b35"] ::ng-deep .section-title,
+.color-section[data-color="#2a6b35"] ::ng-deep .section-subtitle,
+.color-section[data-color="#2a6b35"] ::ng-deep h2,
+.color-section[data-color="#2a6b35"] ::ng-deep h3,
+.color-section[data-color="#2a6b35"] ::ng-deep p {
+  color: #FFFFFF !important;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .text-image-section,
+  .final-section {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .section-title,
+  .final-title {
+    font-size: 2.2rem;
+  }
+  
+  
+}
+
+@media (max-width: 768px) {
+  .content-container {
+    padding: 0 1.5rem;
+  }
+  
+  .color-section {
+    min-height: auto;
+    
+  }
+  
+  .section-title,
+  .final-title {
+    font-size: 2rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .color-progress-indicator {
+    right: 10px;
+    padding: 10px 6px;
+    gap: 10px;
+  }
+  
+  .color-dot {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .color-section {
+    padding: 15px 0;
+  }
+  
+  .section-title,
+  .final-title {
+    font-size: 1.8rem;
+  }
+  
+  .section-description,
+  .final-text {
+    font-size: 1rem;
+  }
+  
+  .feature-item,
+  .stat-item {
+    padding: 1.2rem;
+  }
+  
+  .color-progress-indicator {
+    display: none;
+  }
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .dynamic-presentation,
+  .dynamic-background-container,
+  .color-dot,
+  .feature-item,
+  .stat-item {
+    transition: none !important;
+  }
+}
+
+/* Efectos de scroll suave */
+html {
+  scroll-behavior: smooth;
+}

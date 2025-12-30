@@ -1,0 +1,56 @@
+<div class="plaxti-banner">
+  <!-- Contenedor del banner -->
+  <div 
+    class="plaxti-banner-container"
+    [style.height]="height"
+  >
+    <!-- Grid de imágenes sin separación -->
+    <div class="plaxti-banner-grid">
+      <!-- Imágenes -->
+      <div 
+        *ngFor="let image of images; let i = index"
+        class="plaxti-image-wrapper"
+        [style]="getImageStyle(i)"
+        (mouseenter)="onMouseEnter(i)"
+        (mouseleave)="onMouseLeave()"
+        (click)="onClick(image)"
+        [class.clickable]="image.link"
+      >
+        <div class="plaxti-image-container">
+          <img 
+            [src]="image.url" 
+            [alt]="image.alt"
+            class="plaxti-banner-image"
+            loading="eager"
+          />
+          <div class="plaxti-image-overlay"></div>
+          
+          <!-- Contenido superpuesto -->
+          <div *ngIf="image.title || image.description" class="plaxti-image-content">
+            <div class="content-wrapper">
+              <!-- Título -->
+              <h3 *ngIf="image.title" class="plaxti-image-title">{{ image.title }}</h3>
+              
+              <!-- Descripción -->
+              <p *ngIf="image.description" class="plaxti-image-description">{{ image.description }}</p>
+              
+              <!-- Botón de acción si hay enlace -->
+              <div *ngIf="image.link" class="plaxti-image-actions">
+                <button class="plaxti-action-btn">
+                  <span>Ver más</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Efecto de gradiente superior -->
+          <div class="plaxti-gradient-overlay"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

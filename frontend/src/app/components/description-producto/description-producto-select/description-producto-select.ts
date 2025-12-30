@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -17,6 +17,13 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   producto: ProductoMenu | null = null;
   cargando = true;
   error = false;
+  
+  // Variables para manejo de opciones
+  opcionesProducto: string[] = [];
+  opcionSeleccionada: string = '';
+  descripcionBase: string = '';
+  productoBaseNombre: string = '';
+  precioPorOpcion: { [key: string]: number } = {};
   
   private subscriptions: Subscription[] = [];
 
@@ -43,8 +50,8 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
       this.productSelectService.productoSeleccionado$.subscribe(
         (producto) => {
           if (producto) {
-            // Convertir los datos al tipo ProductoMenu, manteniendo campos extra como any
             this.producto = producto as any;
+            this.procesarDescripcion();
             this.cargando = false;
             this.error = false;
           }
@@ -68,14 +75,12 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state?.['producto']) {
       this.producto = navigation.extras.state['producto'] as ProductoMenu;
+      this.procesarDescripcion();
       this.cargando = false;
-      console.log('Producto obtenido del estado de navegación:', this.producto);
       return;
     }
     
     // 2. Usar fetch directamente para obtener el producto
-    console.log('Buscando producto por ID:', id);
-    
     fetch(`/api/productos/${id}`)
       .then(response => {
         if (!response.ok) {
@@ -84,9 +89,7 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
         return response.json();
       })
       .then(data => {
-        console.log('Producto obtenido de API:', data);
-        
-        // Convertir datos del backend al tipo ProductoMenu, manteniendo campos extra
+        // Convertir datos del backend al tipo ProductoMenu
         const productoConvertido: any = {
           id: data.id,
           nombre: data.nombre,
@@ -105,6 +108,8 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
         if (data.categoria_icono) productoConvertido.categoria_icono = data.categoria_icono;
         
         this.producto = productoConvertido;
+        this.procesarDescripcion();
+        
         if (this.producto) {
           this.productSelectService.seleccionarProducto(this.producto);
         }
@@ -117,19 +122,131 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
       });
   }
 
-  // Método para generar el enlace de WhatsApp
+  /**
+   * Procesa la descripción para extraer opciones basadas en guiones
+   */
+  private procesarDescripcion() {
+    if (!this.producto) return;
+    
+    const descripcion = this.producto.descripcion || '';
+    const nombre = this.producto.nombre || '';
+    
+    // Procesar nombre para extraer opciones
+    const nombrePartes = nombre.split(' -');
+    if (nombrePartes.length > 1) {
+      this.productoBaseNombre = nombrePartes[0].trim();
+      this.opcionesProducto = nombrePartes.slice(1).map(opcion => `-${opcion.trim()}`);
+      
+      // Seleccionar la primera opción por defecto
+      if (this.opcionesProducto.length > 0) {
+        this.opcionSeleccionada = this.opcionesProducto[0];
+      }
+    } else {
+      this.productoBaseNombre = nombre;
+      this.opcionesProducto = [];
+      this.opcionSeleccionada = '';
+    }
+    
+    // Procesar descripción para extraer opciones y precios
+    this.extraerOpcionesYpreciosDesdeDescripcion(descripcion);
+    
+    // Establecer descripción base (sin las opciones específicas)
+    this.descripcionBase = this.obtenerDescripcionBase(descripcion);
+  }
+
+  /**
+   * Extrae opciones y precios desde la descripción
+   */
+  private extraerOpcionesYpreciosDesdeDescripcion(descripcion: string) {
+    const lineas = descripcion.split('\n');
+    let encontroOpciones = false;
+    
+    for (const linea of lineas) {
+      const lineaTrim = linea.trim();
+      
+      // Buscar patrones como "-1mm: $1000" o "-2mm - $1500"
+      const match = lineaTrim.match(/^(-[\w\d\s\/]+)[:\-]\s*\$\s*([\d.,]+)/i);
+      if (match) {
+        const opcion = match[1].trim();
+        const precioTexto = match[2].replace(',', '.');
+        const precio = parseFloat(precioTexto);
+        
+        if (!isNaN(precio)) {
+          this.precioPorOpcion[opcion] = precio;
+          
+          // Si esta opción no está en la lista, añadirla
+          if (!this.opcionesProducto.includes(opcion)) {
+            this.opcionesProducto.push(opcion);
+          }
+          
+          encontroOpciones = true;
+        }
+      } else if (lineaTrim.startsWith('-') && !encontroOpciones) {
+        // Si no tiene precio explícito, usar el precio base
+        const opcion = lineaTrim;
+        if (!this.opcionesProducto.includes(opcion)) {
+          this.opcionesProducto.push(opcion);
+          this.precioPorOpcion[opcion] = this.producto?.precio || 0;
+        }
+      }
+    }
+  }
+
+  /**
+   * Obtiene la descripción base sin las líneas de opciones
+   */
+  private obtenerDescripcionBase(descripcion: string): string {
+    const lineas = descripcion.split('\n');
+    const lineasBase = lineas.filter(linea => {
+      const lineaTrim = linea.trim();
+      // Excluir líneas que comienzan con guion (opciones)
+      return !lineaTrim.startsWith('-') || 
+             !this.opcionesProducto.some(opcion => lineaTrim.includes(opcion));
+    });
+    
+    return lineasBase.join('\n').trim();
+  }
+
+  /**
+   * Selecciona una opción del producto
+   */
+  seleccionarOpcion(opcion: string) {
+    this.opcionSeleccionada = opcion;
+  }
+
+  /**
+   * Obtiene el precio actual basado en la opción seleccionada
+   */
+  get precioActual(): number {
+    if (this.opcionSeleccionada && this.precioPorOpcion[this.opcionSeleccionada]) {
+      return this.precioPorOpcion[this.opcionSeleccionada];
+    }
+    return this.producto?.precio || 0;
+  }
+
+  // Método para generar el enlace de WhatsApp con la opción seleccionada
   generarWhatsAppLink(): string {
     if (!this.producto) return '';
     
     const numeroWhatsApp = '+573006680125';
-    const mensaje = `Hola, estoy interesado en el siguiente producto de Plaxtilineas:\n\n` +
-                   `*${this.producto.nombre}*\n` +
-                   `Código: ${this.producto.id}\n` +
-                   `Descripción: ${this.producto.descripcion}\n` +
-                   `Categoría: ${this.producto.categoria}\n` +
-                   `Subcategoría: ${this.producto.subcategoria}\n` +
-                   `Precio: $${this.formatearPrecio(this.producto.precio)}\n\n` +
-                   `¿Podrían darme más información sobre disponibilidad y características?`;
+    const nombreCompleto = this.opcionSeleccionada 
+      ? `${this.productoBaseNombre} ${this.opcionSeleccionada}`
+      : this.producto.nombre;
+    
+    let mensaje = `Hola, estoy interesado en el siguiente producto de Plaxtilineas:\n\n` +
+                 `*${nombreCompleto}*\n` +
+                 `Código: ${this.producto.id}\n`;
+    
+    // Añadir información de la opción seleccionada
+    if (this.opcionSeleccionada) {
+      mensaje += `Tipo seleccionado: ${this.opcionSeleccionada}\n`;
+    }
+    
+    mensaje += `Descripción: ${this.descripcionBase}\n` +
+               `Categoría: ${this.producto.categoria}\n` +
+               `Subcategoría: ${this.producto.subcategoria}\n` +
+               `Precio: $${this.formatearPrecio(this.precioActual)}\n\n` +
+               `¿Podrían darme más información sobre disponibilidad y características?`;
     
     const mensajeCodificado = encodeURIComponent(mensaje);
     return `https://wa.me/${numeroWhatsApp}?text=${mensajeCodificado}`;

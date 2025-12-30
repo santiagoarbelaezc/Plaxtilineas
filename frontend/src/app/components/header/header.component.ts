@@ -1,5 +1,6 @@
 import { Component, AfterViewInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { FeatureBanner } from '../feature-banner/feature-banner';
 
 @Component({
   selector: 'app-header',

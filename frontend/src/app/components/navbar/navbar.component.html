@@ -7,6 +7,34 @@
     </a>
   </div>
 
+  <!-- Buscador -->
+ <!-- Solo el buscador simplificado -->
+<div class="search-container">
+  <form class="search-form" (ngSubmit)="onSearch()">
+    <div class="search-input-wrapper">
+      <fa-icon [icon]="['fas', 'search']" class="search-icon"></fa-icon>
+      <input 
+        type="text" 
+        class="search-input" 
+        [(ngModel)]="searchQuery"
+        name="searchQuery"
+        placeholder="¿Qué estás buscando?"
+        aria-label="Buscar productos"
+        (keydown.enter)="onSearch()"
+      >
+      <button 
+        type="button" 
+        class="search-clear" 
+        *ngIf="searchQuery"
+        (click)="clearSearch()"
+        aria-label="Limpiar búsqueda"
+      >
+        <fa-icon [icon]="['fas', 'times']"></fa-icon>
+      </button>
+    </div>
+  </form>
+</div>
+
   <!-- Botón de Menú Hamburguesa -->
   <button class="menu-toggle" aria-label="Abrir menú" (click)="toggleMenu()" [attr.aria-expanded]="menuAbierto">
     <span class="hamburger-line"></span>

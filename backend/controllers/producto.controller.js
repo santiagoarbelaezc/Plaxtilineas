@@ -5,22 +5,43 @@ exports.obtenerProductos = async (req, res) => {
   try {
     const { subcategoria_id } = req.query;
     let query = `
-      SELECT p.id, p.nombre, p.descripcion, p.cantidad, p.precio, p.imagen_url,
-             p.subcategoria_id,
-             s.nombre AS subcategoria,
-             c.nombre AS categoria
+      SELECT 
+        p.id, 
+        p.nombre, 
+        p.descripcion, 
+        p.cantidad, 
+        p.precio, 
+        p.imagen_url,
+        p.subcategoria_id,
+        s.nombre AS subcategoria,
+        c.nombre AS categoria,
+        -- Subconsulta para verificar si tiene variantes
+        EXISTS (
+          SELECT 1 FROM variantes v WHERE v.producto_id = p.id
+        ) AS tiene_variantes,
+        -- Obtener el precio mínimo de las variantes (si existen)
+        COALESCE((
+          SELECT MIN(v.precio) FROM variantes v WHERE v.producto_id = p.id
+        ), p.precio) AS precio_minimo,
+        -- Obtener el precio máximo de las variantes (si existen)
+        COALESCE((
+          SELECT MAX(v.precio) FROM variantes v WHERE v.producto_id = p.id
+        ), p.precio) AS precio_maximo
       FROM productos p
       JOIN subcategorias s ON p.subcategoria_id = s.id
       JOIN categorias c ON s.categoria_id = c.id
     `;
+    
     const params = [];
-    // Si se incluye un subcategoria_id, se agrega a la query
     if (subcategoria_id) {
       query += ' WHERE p.subcategoria_id = ?';
       params.push(subcategoria_id);
     }
+    
+    query += ' ORDER BY p.creado_en DESC';
+    
     const [rows] = await db.query(query, params);
-    console.log('🧪 Productos desde MySQL:', rows);
+    console.log('🧪 Productos desde MySQL:', rows.length);
     res.json(rows);
   } catch (err) {
     console.error('❌ Error al obtener productos:', err);
@@ -32,14 +53,13 @@ exports.obtenerProductoPorId = async (req, res) => {
   try {
     const { id } = req.params;
     
-    // Validar que el ID sea un número
     const productoId = parseInt(id, 10);
     if (isNaN(productoId)) {
       return res.status(400).json({ error: 'ID de producto inválido' });
     }
     
-    // Consulta corregida según el modelo
-    const query = `
+    // Consulta para obtener el producto principal
+    const productoQuery = `
       SELECT 
         p.id, 
         p.nombre, 
@@ -47,26 +67,45 @@ exports.obtenerProductoPorId = async (req, res) => {
         p.cantidad, 
         p.precio, 
         p.imagen_url,
-        p.public_id,  -- Agregado: public_id para Cloudinary
+        p.public_id,
         p.subcategoria_id,
-        p.creado_en,  -- Agregado: timestamp de creación
+        p.creado_en,
         s.nombre AS subcategoria,
         c.nombre AS categoria,
-        c.icono_url AS categoria_icono  -- Opcional: si quieres el icono de la categoría
+        c.icono_url AS categoria_icono
       FROM productos p
       JOIN subcategorias s ON p.subcategoria_id = s.id
       JOIN categorias c ON s.categoria_id = c.id
       WHERE p.id = ?
     `;
     
-    const [rows] = await db.query(query, [productoId]);
+    const [productoRows] = await db.query(productoQuery, [productoId]);
     
-    if (rows.length === 0) {
+    if (productoRows.length === 0) {
       return res.status(404).json({ error: 'Producto no encontrado' });
     }
     
-    console.log('✅ Producto obtenido por ID:', rows[0]);
-    res.json(rows[0]);
+    const producto = productoRows[0];
+    
+    // Consulta para obtener las variantes (si existen)
+    const variantesQuery = `
+      SELECT id, nombre, precio 
+      FROM variantes 
+      WHERE producto_id = ? 
+      ORDER BY precio ASC
+    `;
+    
+    const [variantesRows] = await db.query(variantesQuery, [productoId]);
+    
+    // Estructura de respuesta
+    const respuesta = {
+      ...producto,
+      variantes: variantesRows,
+      tiene_variantes: variantesRows.length > 0
+    };
+    
+    console.log('✅ Producto obtenido por ID:', productoId);
+    res.json(respuesta);
   } catch (err) {
     console.error('❌ Error al obtener producto por ID:', err);
     res.status(500).json({ error: 'No se pudo obtener el producto' });
@@ -160,10 +199,15 @@ exports.eliminarProducto = async (req, res) => {
       await cloudinary.uploader.destroy(publicId);
     }
 
-    // 🗃️ 3. Eliminar el producto de la base de datos
+    // 💥 3. IMPORTANTE: Las variantes se eliminarán automáticamente
+    // debido al ON DELETE CASCADE en la foreign key
+    // 🗃️ 4. Eliminar el producto de la base de datos
     await db.query('DELETE FROM productos WHERE id = ?', [id]);
 
-    res.json({ mensaje: 'Producto eliminado exitosamente y su imagen fue removida de Cloudinary' });
+    res.json({ 
+      mensaje: 'Producto eliminado exitosamente. Las variantes asociadas también fueron eliminadas.',
+      eliminado: true 
+    });
   } catch (err) {
     console.error('❌ Error al eliminar producto:', err);
     res.status(500).json({ error: 'No se pudo eliminar el producto' });
@@ -246,5 +290,73 @@ exports.obtenerProductosAleatorios = async (req, res) => {
   } catch (err) {
     console.error('❌ Error al obtener productos aleatorios:', err);
     res.status(500).json({ error: 'No se pudieron obtener los productos aleatorios' });
+  }
+};
+
+// Obtener los dos últimos productos creados (novedades o más recientes)
+exports.obtenerUltimosProductos = async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        p.id, 
+        p.nombre, 
+        p.descripcion, 
+        p.cantidad, 
+        p.precio, 
+        p.imagen_url,
+        p.creado_en,
+        p.subcategoria_id,
+        s.nombre AS subcategoria,
+        c.nombre AS categoria,
+        c.icono_url AS categoria_icono
+      FROM productos p
+      JOIN subcategorias s ON p.subcategoria_id = s.id
+      JOIN categorias c ON s.categoria_id = c.id
+      WHERE p.creado_en IS NOT NULL  -- Solo productos con fecha de creación
+      ORDER BY p.creado_en DESC      -- Ordenar del más reciente al más antiguo
+      LIMIT 2                        -- Limitar a 2 productos
+    `;
+    
+    const [rows] = await db.query(query);
+    
+    console.log(`✅ Últimos 2 productos obtenidos:`, rows.length);
+    res.json(rows);
+  } catch (err) {
+    console.error('❌ Error al obtener los últimos productos:', err);
+    res.status(500).json({ error: 'No se pudieron obtener los últimos productos' });
+  }
+};
+
+
+// Verificar si un producto tiene variantes
+exports.verificarVariantesProducto = async (req, res) => {
+  try {
+    const { producto_id } = req.params;
+    
+    const query = `
+      SELECT 
+        p.id,
+        p.nombre,
+        COUNT(v.id) AS cantidad_variantes,
+        CASE 
+          WHEN COUNT(v.id) > 0 THEN TRUE 
+          ELSE FALSE 
+        END AS tiene_variantes
+      FROM productos p
+      LEFT JOIN variantes v ON p.id = v.producto_id
+      WHERE p.id = ?
+      GROUP BY p.id, p.nombre
+    `;
+    
+    const [rows] = await db.query(query, [producto_id]);
+    
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Producto no encontrado' });
+    }
+    
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('❌ Error al verificar variantes:', err);
+    res.status(500).json({ error: 'No se pudo verificar las variantes' });
   }
 };

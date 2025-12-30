@@ -1,0 +1,724 @@
+/* ===========================
+   BANNER PLAXTILINEAS - DISEÑO ELEGANTE
+   =========================== */
+
+.plaxti-banner {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Contenedor principal */
+.plaxti-banner-container {
+  width: 100%;
+  position: relative;
+}
+
+/* Grid sin separación */
+.plaxti-banner-grid {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  background: rgba(255, 255, 255, 0.98);
+}
+
+/* Contenedor de cada imagen */
+.plaxti-image-wrapper {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  cursor: pointer;
+  transition-property: width, transform, z-index;
+  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: width, transform;
+  backface-visibility: hidden;
+  transform-origin: center;
+}
+
+/* Efecto de hover */
+.plaxti-image-wrapper:hover {
+  z-index: 20 !important;
+}
+
+/* Contenedor de imagen */
+.plaxti-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Imagen principal */
+.plaxti-banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Efecto de zoom sutil en hover */
+.plaxti-image-wrapper:hover .plaxti-banner-image {
+  transform: scale(1.05);
+}
+
+/* Overlay degradado elegante */
+.plaxti-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.4) 30%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.4) 70%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  opacity: 0.6;
+  transition: opacity 0.4s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.plaxti-image-wrapper:hover .plaxti-image-overlay {
+  opacity: 0.8;
+}
+
+/* Overlay de gradiente verde (característico PlaxtiLineas) */
+.plaxti-gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    rgba(54, 140, 68, 0.1) 0%,
+    rgba(37, 211, 102, 0.05) 50%,
+    transparent 100%
+  );
+  opacity: 0.4;
+  transition: opacity 0.4s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.plaxti-image-wrapper:hover .plaxti-gradient-overlay {
+  opacity: 0.6;
+}
+
+/* Contenido superpuesto */
+.plaxti-image-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 40px;
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  pointer-events: none;
+}
+
+.plaxti-image-wrapper:hover .plaxti-image-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.content-wrapper {
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Título de la imagen */
+.plaxti-image-title {
+  color: white;
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0 0 15px 0;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+  line-height: 1.3;
+  letter-spacing: -0.5px;
+}
+
+/* Descripción de la imagen */
+.plaxti-image-description {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin: 0 0 25px 0;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
+  font-weight: 400;
+}
+
+/* Botón de acción estilo PlaxtiLineas */
+.plaxti-image-actions {
+  display: inline-block;
+  pointer-events: auto;
+}
+
+.plaxti-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 25px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.plaxti-action-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.plaxti-action-btn svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease;
+}
+
+.plaxti-action-btn:hover svg {
+  transform: translateX(3px);
+}
+
+/* Efecto de borde verde en hover */
+.plaxti-image-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 3px solid transparent;
+  background: linear-gradient(90deg, #368c44, #25d366) border-box;
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) padding-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.plaxti-image-wrapper:hover::before {
+  opacity: 1;
+}
+
+/* Efecto de brillo sutil */
+.plaxti-image-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(255, 255, 255, 0) 20%,
+    rgba(255, 255, 255, 0.01) 80%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.plaxti-image-wrapper:hover::after {
+  opacity: 1;
+}
+
+/* Si la imagen es clickable */
+.plaxti-image-wrapper.clickable {
+  cursor: pointer;
+}
+
+/* Efecto de línea decorativa en hover */
+.plaxti-image-wrapper:hover .content-wrapper::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(90deg, #368c44, #25d366);
+  border-radius: 2px;
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+
+@media (max-width: 1200px) {
+  .plaxti-image-title {
+    font-size: 1.75rem;
+  }
+  
+  .plaxti-image-description {
+    font-size: 1rem;
+  }
+  
+  .plaxti-image-content {
+    padding: 30px;
+  }
+}
+
+@media (max-width: 992px) {
+  .plaxti-banner-grid {
+    flex-direction: column;
+  }
+  
+  .plaxti-image-wrapper {
+    width: 100% !important;
+    flex: 1 0 auto;
+  }
+  
+  .plaxti-image-title {
+    font-size: 1.5rem;
+  }
+  
+  .plaxti-image-description {
+    font-size: 0.95rem;
+  }
+  
+  .content-wrapper {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .plaxti-banner-container {
+    height: 500px !important;
+  }
+  
+  .plaxti-image-content {
+    padding: 25px;
+    transform: translateY(20px);
+  }
+  
+  .plaxti-image-wrapper:hover .plaxti-image-content {
+    transform: translateY(0);
+  }
+  
+  .plaxti-action-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .plaxti-banner-container {
+    height: 400px !important;
+  }
+  
+  .plaxti-image-content {
+    padding: 20px;
+  }
+  
+  .plaxti-image-title {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+  }
+  
+  .plaxti-image-description {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+  
+  .plaxti-action-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Mejora de rendimiento */
+.plaxti-banner-grid,
+.plaxti-image-wrapper,
+.plaxti-banner-image,
+.plaxti-image-overlay {
+  will-change: transform, width;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Suavizado de animaciones */
+.plaxti-banner-grid {
+  perspective: 1000px;
+}
+
+.plaxti-image-wrapper {
+  transform-style: preserve-3d;
+}
+
+/* Animación de entrada */
+@keyframes fadeInBanner {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.plaxti-banner {
+  animation: fadeInBanner 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+
+/* Para tablets grandes y laptops pequeñas */
+@media (max-width: 1200px) {
+  .plaxti-image-title {
+    font-size: 1.75rem;
+    margin-bottom: 12px;
+  }
+  
+  .plaxti-image-description {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  
+  .plaxti-image-content {
+    padding: 30px;
+  }
+  
+  .content-wrapper {
+    max-width: 400px;
+  }
+  
+  .plaxti-action-btn {
+    padding: 0.65rem 1.3rem;
+    font-size: 0.92rem;
+  }
+}
+
+/* Para tablets */
+@media (max-width: 992px) {
+  .plaxti-banner-grid {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .plaxti-image-wrapper {
+    width: 100% !important;
+    height: 350px;
+    flex: 1 0 auto;
+  }
+  
+  .plaxti-image-title {
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+  }
+  
+  .plaxti-image-description {
+    font-size: 0.98rem;
+    line-height: 1.5;
+    margin-bottom: 18px;
+  }
+  
+  .content-wrapper {
+    max-width: 100%;
+    padding: 0 20px;
+  }
+  
+  .plaxti-image-content {
+    padding: 25px 30px;
+    transform: translateY(15px);
+  }
+  
+  .plaxti-image-wrapper:hover .plaxti-image-content {
+    transform: translateY(0);
+  }
+  
+  /* Ajuste para hover en móviles */
+  .plaxti-image-wrapper:hover .plaxti-banner-image {
+    transform: scale(1.03);
+  }
+  
+  .plaxti-action-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Para tablets pequeñas y móviles grandes */
+@media (max-width: 768px) {
+  .plaxti-banner-container {
+    height: auto !important;
+  }
+  
+  .plaxti-image-wrapper {
+    height: 320px;
+    min-height: 320px;
+  }
+  
+  .plaxti-image-content {
+    padding: 20px 25px;
+    transform: translateY(10px);
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.8) 0%,
+      rgba(0, 0, 0, 0.4) 60%,
+      transparent 100%
+    );
+  }
+  
+  .plaxti-image-title {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+  
+  .plaxti-image-description {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    color: rgba(255, 255, 255, 0.95);
+  }
+  
+  .content-wrapper {
+    padding: 0;
+  }
+  
+  .plaxti-action-btn {
+    padding: 0.55rem 1.1rem;
+    font-size: 0.88rem;
+    backdrop-filter: blur(5px);
+  }
+  
+  /* Optimización de efectos para móviles */
+  .plaxti-image-wrapper:hover::before,
+  .plaxti-image-wrapper:hover::after {
+    opacity: 0.5;
+  }
+  
+  .plaxti-image-wrapper:hover .plaxti-image-overlay {
+    opacity: 0.85;
+  }
+  
+  .plaxti-image-wrapper:hover .content-wrapper::before {
+    width: 30px;
+    top: -15px;
+  }
+}
+
+/* Para móviles pequeños */
+@media (max-width: 576px) {
+  .plaxti-image-wrapper {
+    height: 280px;
+    min-height: 280px;
+  }
+  
+  .plaxti-image-content {
+    padding: 18px 20px;
+  }
+  
+  .plaxti-image-title {
+    font-size: 1.4rem;
+    margin-bottom: 6px;
+  }
+  
+  .plaxti-image-description {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .plaxti-action-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    gap: 0.4rem;
+  }
+  
+  .plaxti-action-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  /* Reduce animaciones para mejor rendimiento en móviles */
+  .plaxti-banner-image {
+    transition: transform 0.5s ease;
+  }
+  
+  .plaxti-image-content {
+    transition: all 0.4s ease;
+  }
+}
+
+/* Para móviles muy pequeños */
+@media (max-width: 480px) {
+  .plaxti-image-wrapper {
+    height: 250px;
+    min-height: 250px;
+  }
+  
+  .plaxti-image-content {
+    padding: 15px;
+  }
+  
+  .plaxti-image-title {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+  }
+  
+  .plaxti-image-description {
+    font-size: 0.85rem;
+    line-height: 1.3;
+    margin-bottom: 10px;
+    -webkit-line-clamp: 2;
+  }
+  
+  .plaxti-action-btn {
+    padding: 0.45rem 0.9rem;
+    font-size: 0.8rem;
+  }
+  
+  /* Desactiva algunos efectos para mejor rendimiento */
+  .plaxti-image-wrapper::before,
+  .plaxti-image-wrapper::after {
+    display: none;
+  }
+  
+  .plaxti-gradient-overlay {
+    opacity: 0.3;
+  }
+}
+
+/* Para dispositivos con altura reducida (landscape móviles) */
+@media (max-height: 500px) and (orientation: landscape) {
+  .plaxti-banner-container {
+    height: 300px !important;
+  }
+  
+  .plaxti-image-wrapper {
+    height: 300px;
+  }
+  
+  .plaxti-image-content {
+    padding: 15px 20px;
+  }
+  
+  .plaxti-image-title {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+  }
+  
+  .plaxti-image-description {
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+    -webkit-line-clamp: 1;
+  }
+  
+  .plaxti-action-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Para pantallas extra grandes */
+@media (min-width: 1600px) {
+  .plaxti-image-title {
+    font-size: 2.2rem;
+  }
+  
+  .plaxti-image-description {
+    font-size: 1.15rem;
+  }
+  
+  .content-wrapper {
+    max-width: 550px;
+  }
+  
+  .plaxti-image-content {
+    padding: 50px;
+  }
+}
+
+/* Optimización de rendimiento para móviles */
+@media (max-width: 768px) {
+  .plaxti-banner-grid,
+  .plaxti-image-wrapper,
+  .plaxti-banner-image,
+  .plaxti-image-overlay {
+    will-change: auto;
+  }
+  
+  .plaxti-banner-grid {
+    perspective: none;
+  }
+  
+  .plaxti-image-wrapper {
+    transform-style: flat;
+  }
+}
+
+/* Soporte para touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .plaxti-image-wrapper {
+    cursor: default;
+  }
+  
+  .plaxti-image-content {
+    opacity: 1;
+    transform: translateY(0);
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.7) 0%,
+      rgba(0, 0, 0, 0.3) 50%,
+      transparent 100%
+    );
+  }
+  
+  .plaxti-image-overlay {
+    opacity: 0.7;
+  }
+  
+  .plaxti-action-btn {
+    backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Ajusta efectos de hover para touch */
+  .plaxti-image-wrapper:active .plaxti-banner-image {
+    transform: scale(1.02);
+  }
+  
+  .plaxti-image-wrapper:active .plaxti-image-overlay {
+    opacity: 0.85;
+  }
+}

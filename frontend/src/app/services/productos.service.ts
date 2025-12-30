@@ -83,4 +83,13 @@ export class ProductosService {
       })
     );
   }
+  // Versión simple (siempre 2 productos)
+obtenerUltimosProductos(): Observable<ProductoEditable[]> {
+  return this.http.get<ProductoEditable[]>(`${this.apiUrl}/novedades/ultimos`).pipe(
+    catchError(error => {
+      console.error('Error al obtener los últimos productos:', error);
+      return of([]);
+    })
+  );
+}
 }
