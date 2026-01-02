@@ -1,10 +1,14 @@
-/* Footer sutil y compacto - VERSIÓN ACTUALIZADA */
+/* ============================================
+   FOOTER - ESTILOS PRINCIPALES
+   ============================================ */
+
 .footer {
-  background: #0f0f0f;
+  background: linear-gradient(180deg, #0f0f0f 0%, #1a1a1a 100%);
   color: #fff;
-  padding: 35px 0 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 40px 0 25px;
+  border-top: 1px solid rgba(54, 140, 68, 0.2);
   position: relative;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
 .footer::before {
@@ -14,12 +18,16 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(54, 140, 68, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(54, 140, 68, 0.4), transparent);
 }
+
+/* ============================================
+   CONTENEDOR PRINCIPAL
+   ============================================ */
 
 .footer-content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 40px;
   max-width: 1200px;
   margin: 0 auto;
@@ -27,43 +35,44 @@
   position: relative;
 }
 
-/* Secciones compactas */
-.contacto-info,
-.compania-info {
+/* ============================================
+   SECCIÓN DE CONTACTO
+   ============================================ */
+
+.contacto-info {
   position: relative;
 }
 
-/* Títulos sutiles */
-.contacto-info h3,
-.compania-info h3 {
-  font-family: 'Segoe UI', sans-serif;
-  font-size: 1.3rem; /* Tamaño aumentado ligeramente */
-  font-weight: 600; /* Peso aumentado para mejor legibilidad */
+.contacto-info h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
   color: #fff;
-  margin-bottom: 22px; /* Aumentado para más espacio */
+  margin-bottom: 22px;
   padding-bottom: 8px;
   letter-spacing: 0.3px;
+  position: relative;
+  display: inline-block;
 }
 
-.contacto-info h3::after,
-.compania-info h3::after {
+.contacto-info h3::after {
   content: '';
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 45px; /* Un poco más ancho */
-  height: 2px; /* Un poco más grueso */
+  width: 45px;
+  height: 2px;
   background: linear-gradient(90deg, #368c44, #25d366);
   opacity: 0.8;
 }
 
-/* Lista de contacto más sutil */
+/* Lista de Contacto */
 .contacto-info ul {
   list-style: none;
   padding: 0;
   margin: 0;
   display: grid;
-  gap: 16px; /* Aumentado ligeramente */
+  gap: 16px;
+  margin-bottom: 30px;
 }
 
 .contacto-info li {
@@ -79,10 +88,10 @@
 }
 
 .contacto-info svg {
-  width: 18px; /* Aumentado de 16px */
-  height: 18px; /* Aumentado de 16px */
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
-  opacity: 0.9; /* Aumentada opacidad */
+  opacity: 0.9;
   transition: opacity 0.2s ease;
 }
 
@@ -93,178 +102,13 @@
 .contacto-info a {
   color: #d1d5db;
   text-decoration: none;
-  font-family: 'Segoe UI', sans-serif;
-  font-size: 15px; /* Aumentado de 14px */
+  font-size: 15px;
   font-weight: 400;
   letter-spacing: 0.2px;
   transition: all 0.2s ease;
 }
 
-.contacto-info a:hover {
-  color: #fff;
-}
-
-/* ====================================================
-   INFORMACIÓN DE LA COMPAÑÍA CON TEXTO MÁS GRANDE
-   ==================================================== */
-.compania-info p {
-  color: #dbeafe; /* Color más claro para mejor contraste */
-  font-family: 'Segoe UI', sans-serif;
-  font-size: 15.5px; /* Aumentado de 14px - 1.5px más grande */
-  line-height: 1.7; /* Aumentado de 1.6 para mejor legibilidad */
-  margin: 0;
-  text-align: justify;
-  letter-spacing: 0.2px; /* Aumentado ligeramente */
-  font-weight: 400;
-}
-
-.compania-info strong {
-  color: #fff;
-  font-weight: 600; /* Un poco más fuerte */
-  font-size: 16px; /* Tamaño específico para el nombre */
-}
-
-.compania-info em {
-  color: #a7f3d0;
-  font-style: italic;
-  font-weight: 500; /* Un poco más pesado */
-  font-size: 14.5px; /* Aumentado de 13px */
-  display: block;
-  margin-top: 15px; /* Aumentado de 12px */
-  padding: 10px 0 0 0; /* Aumentado padding superior */
-  border-top: 1px solid rgba(255, 255, 255, 0.08); /* Un poco más visible */
-  line-height: 1.6;
-}
-
-/* Copyright más sutil */
-.copyright {
-  grid-column: 1 / -1;
-  text-align: center;
-  margin-top: 35px;
-  padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  position: relative;
-}
-
-.copyright::before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, #368c44, transparent);
-}
-
-.copyright p {
-  color: #9ca3af;
-  font-family: 'Segoe UI', sans-serif;
-  font-size: 13px; /* Aumentado de 12px */
-  font-weight: 400;
-  letter-spacing: 0.3px;
-  margin: 0;
-  padding: 0 20px;
-}
-
-/* Responsive Design Compacto */
-@media (max-width: 768px) {
-  .footer {
-    padding: 30px 0 15px;
-  }
-  
-  .footer-content {
-    grid-template-columns: 1fr;
-    gap: 30px;
-    padding: 0 25px;
-  }
-  
-  .contacto-info h3,
-  .compania-info h3 {
-    font-size: 1.2rem; /* Tamaño responsive ajustado */
-    margin-bottom: 20px; /* Aumentado */
-  }
-  
-  .contacto-info ul {
-    gap: 14px; /* Aumentado */
-  }
-  
-  .contacto-info li {
-    padding: 7px 0; /* Aumentado */
-  }
-  
-  /* TEXTO RESPONSIVE MÁS GRANDE */
-  .compania-info p {
-    font-size: 15px; /* Aumentado de 13.5px */
-    line-height: 1.65; /* Aumentado */
-  }
-  
-  .compania-info strong {
-    font-size: 15.5px; /* Tamaño responsive */
-  }
-  
-  .compania-info em {
-    font-size: 14px; /* Aumentado de 13px */
-    margin-top: 14px; /* Aumentado */
-  }
-  
-  .copyright {
-    margin-top: 30px;
-    padding-top: 18px;
-  }
-}
-
-@media (max-width: 480px) {
-  .footer {
-    padding: 25px 0 12px;
-  }
-  
-  .footer-content {
-    padding: 0 20px;
-    gap: 25px;
-  }
-  
-  .contacto-info h3,
-  .compania-info h3 {
-    font-size: 1.1rem; /* Tamaño responsive ajustado */
-    margin-bottom: 18px; /* Aumentado */
-  }
-  
-  .contacto-info svg {
-    width: 16px; /* Aumentado de 14px */
-    height: 16px; /* Aumentado de 14px */
-  }
-  
-  .contacto-info a {
-    font-size: 14px; /* Aumentado de 13px */
-  }
-  
-  /* TEXTO MÓVIL MÁS LEGIBLE */
-  .compania-info p {
-    font-size: 14.5px; /* Aumentado de 13px */
-    line-height: 1.65; /* Mejorado */
-  }
-  
-  .compania-info strong {
-    font-size: 15px; /* Tamaño móvil */
-  }
-  
-  .compania-info em {
-    font-size: 13.5px; /* Aumentado de 12px */
-    margin-top: 12px; /* Aumentado */
-  }
-  
-  .copyright {
-    margin-top: 25px;
-    padding-top: 15px;
-  }
-  
-  .copyright p {
-    font-size: 12px; /* Aumentado de 11px */
-  }
-}
-
-/* Efectos de color muy sutiles */
+/* Efectos de color específicos por tipo de enlace */
 .contacto-info a[href^="tel:"]:hover {
   color: #86efac;
 }
@@ -275,4 +119,588 @@
 
 .contacto-info a[href*="maps"]:hover {
   color: #fdba74;
+}
+
+.contacto-info a:hover {
+  color: #fff;
+}
+
+/* ============================================
+   REDES SOCIALES
+   ============================================ */
+
+.redes-sociales {
+  margin-top: 25px;
+}
+
+.redes-sociales h4 {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  opacity: 0.9;
+}
+
+.social-icons {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.social-icons a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: #d1d5db;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.social-icons a:hover {
+  background: rgba(54, 140, 68, 0.2);
+  color: #fff;
+  transform: translateY(-2px);
+  border-color: #368c44;
+}
+
+.social-icons svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Efectos específicos por red social */
+.social-icons a[aria-label*="Facebook"]:hover {
+  background: rgba(24, 119, 242, 0.2);
+  border-color: #1877f2;
+}
+
+.social-icons a[aria-label*="Instagram"]:hover {
+  background: linear-gradient(45deg, rgba(225, 48, 108, 0.2), rgba(131, 58, 180, 0.2));
+  border-color: #e1306c;
+}
+
+.social-icons a[aria-label*="WhatsApp"]:hover {
+  background: rgba(37, 211, 102, 0.2);
+  border-color: #25d366;
+}
+
+.social-icons a[aria-label*="LinkedIn"]:hover {
+  background: rgba(10, 102, 194, 0.2);
+  border-color: #0a66c2;
+}
+
+/* ============================================
+   SECCIÓN DE LA COMPAÑÍA
+   ============================================ */
+
+.compania-info {
+  position: relative;
+}
+
+.compania-info h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 22px;
+  padding-bottom: 8px;
+  letter-spacing: 0.3px;
+  position: relative;
+  display: inline-block;
+}
+
+.compania-info h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 45px;
+  height: 2px;
+  background: linear-gradient(90deg, #368c44, #25d366);
+  opacity: 0.8;
+}
+
+.compania-info p {
+  color: #dbeafe;
+  font-size: 15.5px;
+  line-height: 1.7;
+  margin: 0;
+  text-align: justify;
+  letter-spacing: 0.2px;
+  font-weight: 400;
+}
+
+.compania-info strong {
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.compania-info em {
+  color: #a7f3d0;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 14.5px;
+  display: block;
+  margin-top: 15px;
+  padding: 10px 0 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  line-height: 1.6;
+}
+
+/* ============================================
+   SECCIÓN LEGAL
+   ============================================ */
+
+.legal-info {
+  position: relative;
+  margin-left: 110px;
+}
+
+.legal-info h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 22px;
+  padding-bottom: 8px;
+  letter-spacing: 0.3px;
+  position: relative;
+  display: inline-block;
+}
+
+.legal-info h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 45px;
+  height: 2px;
+  background: linear-gradient(90deg, #368c44, #25d366);
+  opacity: 0.8;
+}
+
+.legal-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.legal-info li {
+  padding: 6px 0;
+}
+
+.legal-info a {
+  color: #d1d5db;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 400;
+  transition: all 0.2s ease;
+  display: inline-block;
+  padding: 4px 0;
+  position: relative;
+}
+
+.legal-info a::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, #368c44, #25d366);
+  transition: width 0.3s ease;
+}
+
+.legal-info a:hover {
+  color: #fff;
+  transform: translateX(5px);
+}
+
+.legal-info a:hover::before {
+  width: 100%;
+}
+
+/* ============================================
+   COPYRIGHT Y CERTIFICACIONES
+   ============================================ */
+
+.copyright {
+  grid-column: 1 / -1;
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 25px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+}
+
+.copyright::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #368c44, transparent);
+}
+
+/* Certificaciones */
+.certificaciones {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.cert-badge {
+  background: rgba(54, 140, 68, 0.15);
+  color: #a7f3d0;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(54, 140, 68, 0.3);
+  transition: all 0.3s ease;
+}
+
+.cert-badge:hover {
+  background: rgba(54, 140, 68, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(54, 140, 68, 0.15);
+}
+
+/* Texto de Copyright */
+.copyright p {
+  color: #9ca3af;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.copyright .legal-text {
+  font-size: 12px;
+  color: #8b8b8b;
+  max-width: 800px;
+  margin: 15px auto;
+  line-height: 1.4;
+}
+
+/* Logos de Seguridad */
+.security-logos {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.security-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #d1d5db;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.security-badge:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.security-badge svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ============================================
+   DISEÑO RESPONSIVE
+   ============================================ */
+
+/* Tablet - 1024px */
+@media (max-width: 1024px) {
+  .footer-content {
+    grid-template-columns: 1fr 1fr;
+    gap: 35px;
+  }
+  
+  .legal-info {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+}
+
+/* Tablet - 768px */
+@media (max-width: 768px) {
+  .footer {
+    padding: 30px 0 20px;
+  }
+  
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 0 25px;
+  }
+  
+  .legal-info {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+  
+  .contacto-info h3,
+  .compania-info h3,
+  .legal-info h3 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+  
+  .compania-info p {
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  
+  .compania-info strong {
+    font-size: 15.5px;
+  }
+  
+  .compania-info em {
+    font-size: 14px;
+    margin-top: 14px;
+  }
+  
+  .social-icons a {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .social-icons svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .copyright {
+    margin-top: 30px;
+    padding-top: 20px;
+  }
+  
+  .certificaciones {
+    gap: 8px;
+  }
+  
+  .security-logos {
+    gap: 15px;
+  }
+}
+
+/* Móvil - 480px */
+@media (max-width: 480px) {
+  .footer {
+    padding: 25px 0 15px;
+  }
+  
+  .footer-content {
+    padding: 0 20px;
+    gap: 25px;
+  }
+  
+  .contacto-info h3,
+  .compania-info h3,
+  .legal-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 18px;
+  }
+  
+  .contacto-info svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .contacto-info a {
+    font-size: 14px;
+  }
+  
+  .compania-info p {
+    font-size: 14.5px;
+    line-height: 1.65;
+  }
+  
+  .compania-info strong {
+    font-size: 15px;
+  }
+  
+  .compania-info em {
+    font-size: 13.5px;
+    margin-top: 12px;
+  }
+  
+  .social-icons {
+    gap: 12px;
+  }
+  
+  .social-icons a {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .social-icons svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .legal-info a {
+    font-size: 13px;
+  }
+  
+  .copyright {
+    margin-top: 25px;
+    padding-top: 20px;
+  }
+  
+  .copyright p {
+    font-size: 12px;
+  }
+  
+  .copyright .legal-text {
+    font-size: 11px;
+  }
+  
+  .cert-badge {
+    font-size: 10px;
+    padding: 5px 10px;
+  }
+  
+  .security-badge {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+  
+  .security-badge svg {
+    width: 14px;
+    height: 14px;
+  }
+  .legal-info {
+    margin-left: 0px;
+  }
+}
+
+/* Móvil Pequeño - 360px */
+@media (max-width: 360px) {
+  .footer-content {
+    padding: 0 15px;
+    gap: 20px;
+  }
+  
+  .social-icons {
+    gap: 8px;
+  }
+  
+  .social-icons a {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .social-icons svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .certificaciones {
+    gap: 6px;
+  }
+  
+  .cert-badge {
+    font-size: 9px;
+    padding: 4px 8px;
+  }
+  
+  .security-logos {
+    gap: 10px;
+  }
+  
+  .security-badge {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+  .legal-info {
+    margin-left: 0px;
+  }
+}
+
+/* ============================================
+   ANIMACIONES Y EFECTOS ESPECIALES
+   ============================================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.footer-content > * {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.footer-content > *:nth-child(1) { animation-delay: 0.1s; }
+.footer-content > *:nth-child(2) { animation-delay: 0.2s; }
+.footer-content > *:nth-child(3) { animation-delay: 0.3s; }
+.copyright { animation-delay: 0.4s; }
+
+/* ============================================
+   ESTILOS DE ACCESIBILIDAD
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Mejora contraste para modo alto contraste */
+@media (prefers-contrast: high) {
+  .footer {
+    background: #000;
+    border-top: 2px solid #368c44;
+  }
+  
+  .contacto-info a,
+  .legal-info a,
+  .copyright p {
+    color: #fff;
+  }
+  
+  .social-icons a {
+    border: 2px solid #fff;
+  }
+}
+
+/* Modo oscuro nativo */
+@media (prefers-color-scheme: dark) {
+  .footer {
+    background: #0a0a0a;
+  }
 }

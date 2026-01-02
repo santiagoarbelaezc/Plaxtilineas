@@ -1,0 +1,288 @@
+/* Contenedor principal del banner */
+.banner-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  height: auto;
+  background-color: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* Nueva altura basada en la proporción de 1536x544 ≈ 2.82:1 */
+  aspect-ratio: 1000 / 354; /* 1000 ÷ 2.82 ≈ 354 */
+}
+
+.banner-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+}
+
+/* Contenedor de la imagen */
+.banner-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Imagen del banner - MODIFICADO PARA 1536x544 */
+.banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top; /* Enfoca la parte superior que suele tener más contenido */
+  transition: transform 0.5s ease;
+}
+
+.banner-card:hover .banner-image {
+  transform: scale(1.05);
+}
+
+/* Overlay para mejorar legibilidad del texto */
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.2) 40%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+  z-index: 1;
+}
+
+/* Contenedor del contenido de texto */
+.banner-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  padding: 30px 35px;
+  color: white;
+}
+
+/* Título del banner */
+.banner-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 15px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  position: relative;
+  display: inline-block;
+}
+
+.banner-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #358A43, #4cc76a);
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(54, 140, 68, 0.3);
+}
+
+/* Descripción del banner */
+.banner-description {
+  max-width: 600px;
+}
+
+.banner-description p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin: 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  font-weight: 300;
+  letter-spacing: 0.3px;
+}
+
+/* Efecto de línea decorativa que aparece al hacer hover */
+.banner-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #358A43, #25d366);
+  opacity: 0;
+  z-index: 3;
+  transition: opacity 0.3s ease;
+}
+
+.banner-card:hover::before {
+  opacity: 1;
+}
+
+/* Efecto de brillo sutil al hacer hover */
+.banner-image-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.7s ease;
+  z-index: 1;
+}
+
+.banner-card:hover .banner-image-container::after {
+  left: 100%;
+}
+
+/* Responsive Design - ACTUALIZADO */
+@media (max-width: 900px) {
+  .banner-card {
+    max-width: 700px;
+    border-radius: 14px;
+    aspect-ratio: 700 / 248; /* Manteniendo proporción 2.82:1 */
+  }
+  
+  .banner-content {
+    padding: 25px 30px;
+  }
+  
+  .banner-title {
+    font-size: 2.2rem;
+  }
+  
+  .banner-description p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .banner-card {
+    max-width: 600px;
+    border-radius: 12px;
+    aspect-ratio: 600 / 213;
+  }
+  
+  .banner-content {
+    padding: 20px 25px;
+  }
+  
+  .banner-title {
+    font-size: 1.9rem;
+    margin-bottom: 12px;
+  }
+  
+  .banner-title::after {
+    height: 2px;
+    bottom: -6px;
+  }
+  
+  .banner-description p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 576px) {
+  .banner-card {
+    max-width: 100%;
+    border-radius: 10px;
+    /* Para móviles puedes usar una proporción un poco más alta para mejor visibilidad */
+    aspect-ratio: 400 / 180;
+  }
+  
+  .banner-content {
+    padding: 15px 20px;
+  }
+  
+  .banner-title {
+    font-size: 1.6rem;
+    letter-spacing: 0.5px;
+  }
+  
+  .banner-description p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 400px) {
+  .banner-card {
+    aspect-ratio: 350 / 160;
+  }
+  
+  .banner-content {
+    padding: 12px 15px;
+  }
+  
+  .banner-title {
+    font-size: 1.4rem;
+  }
+  
+  .banner-description p {
+    font-size: 0.85rem;
+  }
+}
+
+/* Fallback para navegadores que no soportan aspect-ratio */
+@supports not (aspect-ratio: 1 / 1) {
+  .banner-card {
+    height: 354px; /* Altura para 1000px de ancho */
+  }
+  
+  .banner-image-container {
+    height: 354px;
+  }
+  
+  @media (max-width: 900px) {
+    .banner-card {
+      height: 248px;
+    }
+    
+    .banner-image-container {
+      height: 248px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .banner-card {
+      height: 213px;
+    }
+    
+    .banner-image-container {
+      height: 213px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .banner-card {
+      height: 180px;
+    }
+    
+    .banner-image-container {
+      height: 180px;
+    }
+  }
+  
+  @media (max-width: 400px) {
+    .banner-card {
+      height: 160px;
+    }
+    
+    .banner-image-container {
+      height: 160px;
+    }
+  }
+}

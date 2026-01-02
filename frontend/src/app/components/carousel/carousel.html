@@ -1,0 +1,119 @@
+<div class="carousel-container" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+  
+  <!-- Título de la categoría -->
+  <div class="categoria-header" *ngIf="categoriaNombre">
+    <h2 class="categoria-titulo">{{ categoriaNombre }}</h2>
+  </div>
+  
+  <!-- Estado de carga -->
+  <div *ngIf="cargando" class="estado-mensaje">
+    <div class="spinner"></div>
+    <p>Cargando productos de {{ categoriaNombre }}...</p>
+  </div>
+  
+  <!-- Error -->
+  <div *ngIf="error && !cargando" class="estado-mensaje error">
+    <p>{{ error }}</p>
+  </div>
+  
+  <!-- Carrusel de productos -->
+  <div *ngIf="!cargando && !error && productos.length > 0" class="carousel-content">
+    
+    <!-- Botón anterior -->
+    <button 
+      *ngIf="productos.length > itemsPerView"
+      class="nav-btn prev-btn" 
+      (click)="prev()"
+      aria-label="Productos anteriores">
+      ‹
+    </button>
+    
+    <!-- Contenedor de productos -->
+    <div class="productos-container">
+      <div 
+        class="productos-slide"
+        [style.transform]="'translateX(-' + (currentIndex * (100 / itemsPerView)) + '%)'">
+        
+        <div 
+          *ngFor="let producto of productos" 
+          class="producto-item">
+          
+          <!-- Tarjeta de producto directa (sin usar componente card) -->
+          <div class="producto-card">
+            <!-- Logo de la empresa -->
+            <div class="producto-logo">
+              <img 
+                src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1767224962/logo-peque%C3%B1o_mrokec.png" 
+                alt="Logo empresa" 
+                class="logo">
+            </div>
+            
+            <!-- Imagen del producto -->
+            <div class="producto-imagen">
+              <img 
+                [src]="producto.imagen_url" 
+                [alt]="producto.nombre"
+                class="imagen"
+                (error)="producto.imagen_url = 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Producto'">
+            </div>
+            
+            <!-- Información del producto -->
+            <div class="producto-info">
+              <div class="green-container">
+                <div class="price-section">
+                  
+                  <span class="price">{{ formatearPrecio(producto.precio) }}</span>
+                </div>
+                
+                <div class="white-container">
+                  <!-- Nombre del producto -->
+                  <span class="product-name">{{ producto.nombre }}</span>
+                  
+                  <!-- Subcategoría -->
+                  <div *ngIf="producto.subcategoria" class="product-subcategory">
+                    <span class="subcategory-label">Tipo:</span>
+                    <span class="subcategory-value">{{ producto.subcategoria }}</span>
+                  </div>
+                  
+                  <!-- Descripción -->
+                  <div *ngIf="producto.descripcion" class="product-description">
+                    <span class="description-label">Descripción:</span>
+                    <span class="description-value">{{ truncarDescripcion(producto.descripcion) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    
+    <!-- Botón siguiente -->
+    <button 
+      *ngIf="productos.length > itemsPerView"
+      class="nav-btn next-btn" 
+      (click)="next()"
+      aria-label="Siguientes productos">
+      ›
+    </button>
+    
+    <!-- Indicadores de página -->
+    <div *ngIf="productos.length > itemsPerView" class="indicadores">
+      <button 
+        *ngFor="let index of getSlideIndices()"
+        class="indicador" 
+        [class.active]="currentIndex === index"
+        (click)="goToSlide(index)"
+        [attr.aria-label]="'Ir a página ' + (index + 1)">
+      </button>
+    </div>
+    
+  </div>
+  
+  <!-- Mensaje si no hay productos -->
+  <div *ngIf="!cargando && !error && productos.length === 0" class="estado-mensaje">
+    <p>No hay productos disponibles en "{{ categoriaNombre }}"</p>
+  </div>
+  
+</div>

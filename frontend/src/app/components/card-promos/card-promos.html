@@ -1,0 +1,28 @@
+<div class="card-container">
+  <!-- Logo superpuesto en la parte superior (opcional) -->
+  <div *ngIf="logoUrl" class="logo-section">
+    <img [src]="logoUrl" alt="Logo" class="logo" />
+  </div>
+
+  <!-- Imagen de fondo -->
+  <div class="product-image-section">
+    <img 
+      [src]="imagen" 
+      [alt]="titulo" 
+      class="product-image"
+      onerror="this.src='https://via.placeholder.com/300x450/f0f0f0/666?text=Promo+Image'" 
+    />
+  </div>
+
+  <!-- Sección de información -->
+  <div class="product-info-section">
+    <div class="green-container">
+      <!-- Contenido promocional -->
+      <div class="promo-content">
+        <div class="promo-title">{{ titulo }}</div>
+        <div class="promo-description">{{ descripcion }}</div>
+        <button class="promo-button">COMPRA AHORA</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -5,69 +5,32 @@
     <p class="section-subtitle">Explora nuestras categorías destacadas</p>
   </div>
 
-  <!-- 🔹 Contenedor del carrusel -->
-  <div class="carousel-container">
-    <!-- Botón de navegación anterior -->
-    <button class="carousel-nav prev" 
-            (click)="scrollCarousel('prev')" 
-            [disabled]="!isPrevEnabled()"
-            aria-label="Categorías anteriores"
-            [class.disabled]="!isPrevEnabled()">
-      ‹
-    </button>
-
-    <!-- Wrapper del carrusel -->
-    <div class="carousel-wrapper">
-      <div class="carousel" [id]="carouselId">
-        <!-- Items del carrusel -->
-        <div class="carousel-item" 
-             *ngFor="let cat of categorias; let i = index">
-          
-          <!-- ⭐ ACTUALIZADO: Redirigir a productos con subcategoría -->
-          <a [routerLink]="['/productos']"
-             [queryParams]="{ subcategoria_id: obtenerPrimeraSubcategoria(cat.id) }"
-             class="categoria-card"
-             (click)="onCategoriaClick(cat)">
-            
-            <!-- Contenedor principal de la imagen -->
-            <div class="categoria-image-container">
-              <div class="icon-wrapper">
-                <img [src]="cat.icono_url" 
-                     [alt]="cat.nombre"
-                     class="categoria-icon"
-                     (error)="handleImageError($event, cat)">
-                <div class="icon-overlay"></div>
-              </div>
-            </div>
-
-            <!-- Contenedor del texto -->
-            <div class="categoria-text-container">
-              <!-- Contenido de la categoría -->
-              <div class="categoria-content">
-                <h3 class="categoria-title">{{ cat.nombre }}</h3>
-                
-                <!-- Enlace elegante -->
-                <div class="categoria-actions">
-                  <span class="explore-link">
-                    Ver productos
-                    <span class="arrow">→</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </a>
+  <!-- 🔹 Contenedor de categorías en grid -->
+  <div class="categorias-grid">
+    <!-- Items de categorías -->
+    <div class="categoria-item" 
+         *ngFor="let cat of categorias; let i = index">
+      
+      <!-- ⭐ Redirigir a productos con subcategoría -->
+      <a [routerLink]="['/productos']"
+         [queryParams]="{ subcategoria_id: obtenerPrimeraSubcategoria(cat.id) }"
+         class="categoria-card"
+         (click)="onCategoriaClick(cat)">
+        
+        <!-- Contenedor de la imagen -->
+        <div class="categoria-image-container">
+          <img [src]="cat.icono_url" 
+               [alt]="cat.nombre"
+               class="categoria-icon"
+               (error)="handleImageError($event, cat)">
         </div>
-      </div>
-    </div>
 
-    <!-- Botón de navegación siguiente -->
-    <button class="carousel-nav next" 
-            (click)="scrollCarousel('next')" 
-            [disabled]="!isNextEnabled()"
-            aria-label="Siguientes categorías"
-            [class.disabled]="!isNextEnabled()">
-      ›
-    </button>
+        <!-- Nombre de la categoría -->
+        <div class="categoria-name">
+          <h3>{{ cat.nombre }}</h3>
+        </div>
+      </a>
+    </div>
   </div>
   
   <!-- 🔹 Mensaje si no hay categorías -->

@@ -1027,3 +1027,529 @@
     justify-content: center;
   }
 }
+
+/* ===========================
+   ESTILOS PARA VARIANTES
+   =========================== */
+
+/* Sección de variantes en formulario de creación */
+.variantes-section {
+  margin: 25px 0;
+  padding: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(54, 140, 68, 0.02), rgba(37, 211, 102, 0.01));
+  position: relative;
+  overflow: hidden;
+}
+
+.variantes-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #8b5cf6, #4f46e5);
+  opacity: 0.7;
+}
+
+.variantes-header {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.variantes-header h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary-darker, #1a202c);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.variantes-header h3 fa-icon {
+  color: #8b5cf6;
+}
+
+.variantes-count {
+  background: linear-gradient(135deg, #8b5cf6, #4f46e5);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.variantes-subtitle {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin: 5px 0 0 0;
+  line-height: 1.5;
+}
+
+/* Botón para alternar variantes */
+.btn-sm {
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-sm .badge {
+  background: #ef4444;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin-left: 8px;
+}
+
+/* Formulario de variantes */
+.variantes-form {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.variantes-form .form-row {
+  grid-template-columns: 1fr 1fr auto;
+  gap: 15px;
+  align-items: flex-end;
+}
+
+.variantes-form .form-group {
+  margin-bottom: 0;
+}
+
+.variantes-form .form-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #4a5568;
+}
+
+.variantes-form .form-input {
+  padding: 12px 16px;
+  font-size: 0.95rem;
+}
+
+.variantes-form .btn-primary {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #8b5cf6, #4f46e5);
+  white-space: nowrap;
+}
+
+.variantes-form .btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
+}
+
+/* Tabla de variantes temporales */
+.variantes-list {
+  margin-top: 15px;
+}
+
+.variantes-table {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.variantes-table .data-table {
+  min-width: auto;
+  margin: 0;
+}
+
+.variantes-table th {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(79, 70, 229, 0.03));
+  font-size: 0.85rem;
+  padding: 15px 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #8b5cf6;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.variantes-table td {
+  padding: 15px 20px;
+  color: #4a5568;
+  font-size: 0.95rem;
+}
+
+.variantes-table td:first-child {
+  font-weight: 500;
+  color: var(--primary-darker, #1a202c);
+}
+
+.variantes-table td:nth-child(2) {
+  font-weight: 600;
+  color: #368c44;
+}
+
+.variantes-table tbody tr {
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+  transition: background-color 0.2s ease;
+}
+
+.variantes-table tbody tr:hover {
+  background: rgba(139, 92, 246, 0.03);
+}
+
+.variantes-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* Botón eliminar variante temporal */
+.btn-action.delete {
+  width: 36px;
+  height: 36px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.btn-action.delete:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+/* Fila expandida de variantes existentes */
+.variantes-expanded-row {
+  padding: 0 !important;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.02), rgba(79, 70, 229, 0.01));
+  border-bottom: 2px solid rgba(139, 92, 246, 0.1);
+  position: relative;
+}
+
+.variantes-expanded-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.3), transparent);
+}
+
+.variantes-container {
+  padding: 30px 40px;
+}
+
+.variantes-container h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary-darker, #1a202c);
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.variantes-container h4 fa-icon {
+  color: #8b5cf6;
+}
+
+/* Tabla de variantes existentes */
+.variantes-list-existing {
+  margin-top: 20px;
+}
+
+.variantes-list-existing .data-table {
+  min-width: auto;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.variantes-list-existing th {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(79, 70, 229, 0.03));
+  font-size: 0.85rem;
+  padding: 15px 20px;
+  color: #8b5cf6;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.variantes-list-existing td {
+  padding: 15px 20px;
+  font-size: 0.95rem;
+}
+
+.variantes-list-existing td:nth-child(1) {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.variantes-list-existing td:nth-child(2) {
+  font-weight: 500;
+  color: var(--primary-darker, #1a202c);
+}
+
+.variantes-list-existing td:nth-child(3) {
+  font-weight: 600;
+  color: #368c44;
+}
+
+.variantes-list-existing td:nth-child(4) {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.variantes-list-existing .btn-action.delete {
+  margin: 0 auto;
+}
+
+/* Sin variantes */
+.no-variantes {
+  text-align: center;
+  padding: 40px 20px;
+  color: #94a3b8;
+}
+
+.no-variantes .no-data-icon {
+  font-size: 2.5rem;
+  color: #cbd5e1;
+  margin-bottom: 15px;
+}
+
+.no-variantes p {
+  color: #94a3b8;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Cargando variantes */
+.loading-variantes {
+  text-align: center;
+  padding: 30px;
+  color: #64748b;
+  font-style: italic;
+  background: rgba(248, 250, 252, 0.8);
+  border-radius: 8px;
+  border: 1px dashed #e2e8f0;
+}
+
+/* Botón de toggle para variantes */
+.toggle-variantes {
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  color: #8b5cf6;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: 10px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.toggle-variantes::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.6s;
+}
+
+.toggle-variantes:hover::before {
+  left: 100%;
+}
+
+.toggle-variantes:hover {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+}
+
+/* Ajuste para celda de ID con botón de toggle */
+.id-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.badge-id {
+  min-width: 50px;
+}
+
+/* Botón secundario para agregar variantes */
+.btn-secondary.btn-sm {
+  background: rgba(139, 92, 246, 0.1);
+  color: #8b5cf6;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.btn-secondary.btn-sm:hover {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+}
+
+/* Animación para expandir/contraer */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    max-height: 500px;
+  }
+  to {
+    opacity: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+.variantes-section,
+.variantes-expanded-row {
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+.variantes-section.collapsing,
+.variantes-expanded-row.collapsing {
+  animation: slideUp 0.3s ease-out forwards;
+}
+
+/* Ajuste para formularios en edición dentro de la tabla */
+.variantes-expanded-row .form-row {
+  grid-template-columns: 1fr 1fr auto;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.variantes-expanded-row .form-group {
+  margin-bottom: 0;
+}
+
+.variantes-expanded-row .form-input {
+  padding: 10px 12px;
+  font-size: 0.9rem;
+}
+
+/* Indicador visual para productos con variantes */
+.has-variantes .badge-id {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(79, 70, 229, 0.05));
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  color: #8b5cf6;
+  position: relative;
+}
+
+.has-variantes .badge-id::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  background: #8b5cf6;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+/* ===========================
+   RESPONSIVE PARA VARIANTES
+   =========================== */
+
+@media (max-width: 1024px) {
+  .variantes-container {
+    padding: 25px 30px;
+  }
+  
+  .variantes-form .form-row {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .variantes-form .btn-primary {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .variantes-section {
+    padding: 15px;
+  }
+  
+  .variantes-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .variantes-container {
+    padding: 20px;
+  }
+  
+  .variantes-container h4 {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .variantes-list-existing .data-table {
+    min-width: 800px;
+  }
+  
+  .variantes-table .data-table {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 480px) {
+  .variantes-container {
+    padding: 15px;
+  }
+  
+  .variantes-section {
+    padding: 12px;
+  }
+  
+  .variantes-form {
+    padding: 15px;
+  }
+  
+  .toggle-variantes {
+    width: 24px;
+    height: 24px;
+    font-size: 0.8rem;
+  }
+  
+  .badge-id {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    min-width: 40px;
+  }
+}

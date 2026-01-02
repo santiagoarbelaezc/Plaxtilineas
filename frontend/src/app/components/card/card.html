@@ -1,0 +1,32 @@
+<div class="card-container">
+  <!-- Logo de la empresa en la parte superior -->
+  <div class="logo-section">
+    <img [src]="logoUrl" alt="Logo de la empresa" class="logo">
+  </div>
+
+  <!-- Espacio para la imagen del producto (centro) -->
+  <div class="product-image-section">
+    <!-- Imagen del producto -->
+    <img 
+      [src]="imagenProducto" 
+      [alt]="nombreProducto" 
+      class="product-image"
+      (error)="handleImageError($event)">
+  </div>
+
+  <!-- Contenedor verde con información del producto -->
+  <div class="product-info-section">
+    <!-- Contenedor verde principal -->
+    <div class="green-container">
+      <div class="price-section">
+        <span class="desde-text">Desde:</span>
+        <span class="price">{{ precio }}</span>
+      </div>
+      
+      <!-- Contenedor blanco pequeño para el nombre del producto -->
+      <div class="white-container">
+        <span class="product-name">{{ nombreProducto }}</span>
+      </div>
+    </div>
+  </div>
+</div>

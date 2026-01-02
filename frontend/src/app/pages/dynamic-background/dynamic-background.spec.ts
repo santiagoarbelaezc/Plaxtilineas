@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DynamicBackground } from './dynamic-background';
+import { DynamicBackgroundComponent } from './dynamic-background';
 
 describe('DynamicBackground', () => {
-  let component: DynamicBackground;
-  let fixture: ComponentFixture<DynamicBackground>;
+  let component: DynamicBackgroundComponent;
+  let fixture: ComponentFixture<DynamicBackgroundComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DynamicBackground]
+      imports: [DynamicBackgroundComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(DynamicBackground);
+    fixture = TestBed.createComponent(DynamicBackgroundComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

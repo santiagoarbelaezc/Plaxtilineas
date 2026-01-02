@@ -1,32 +1,40 @@
 /* ===========================
-   FONDO DINÁMICO PLAXTILINEAS
+   PRESENTACIÓN PRINCIPAL
    =========================== */
 
 .dynamic-presentation {
   position: relative;
   min-height: 100vh;
   overflow-x: hidden;
-  background: var(--dynamic-bg-color);
-  transition: background-color var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
-  color: var(--dynamic-text-color);
+  background: #FFFFFF; /* Fondo blanco fijo */
+  color: #191919; /* Texto oscuro por defecto */
 }
 
-/* Contenedor de fondo dinámico */
+/* Contenedor principal */
 .dynamic-background-container {
   position: relative;
-  transition: background-color var(--transition-speed) ease;
 }
 
-/* Secciones de color */
+/* Secciones */
 .color-section {
   position: relative;
-  
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   padding: 0;
-  
+  background-color: #FFFFFF; /* Fondo blanco por defecto */
+  color: #191919; /* Texto negro por defecto */
+}
+
+/* Sección con ancho completo */
+.full-width-section {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
 }
 
 /* Contenedor de contenido */
@@ -36,6 +44,7 @@
   width: 100%;
   position: relative;
   z-index: 1;
+  padding: 0 2rem;
 }
 
 /* Sección de texto e imagen */
@@ -52,11 +61,7 @@
   font-weight: 700;
   line-height: 1.2;
   margin-bottom: 1.5rem;
-  background: linear-gradient(135deg, var(--dynamic-text-color) 0%, 
-              var(--dynamic-text-color) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #191919;
 }
 
 .section-description {
@@ -64,7 +69,7 @@
   line-height: 1.7;
   opacity: 0.9;
   margin-bottom: 2.5rem;
-  color: var(--dynamic-text-color);
+  color: #333333;
 }
 
 .features-grid {
@@ -75,29 +80,31 @@
 
 .feature-item {
   padding: 2rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.03); /* Fondo más suave */
   border-radius: 12px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  color: var(--dynamic-text-color);
+  color: #191919;
 }
 
 .feature-item:hover {
   transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .feature-item h3 {
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
+  color: #191919;
 }
 
 .feature-item p {
   font-size: 0.95rem;
   line-height: 1.6;
   opacity: 0.9;
+  color: #333333;
 }
 
 /* Imagen de sección */
@@ -116,14 +123,13 @@
   gap: 4rem;
   align-items: center;
   padding: 6rem 0;
-  
 }
 
 .final-title {
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  color: var(--dynamic-text-color);
+  color: #191919;
   line-height: 1.2;
 }
 
@@ -132,7 +138,7 @@
   line-height: 1.7;
   opacity: 0.9;
   margin-bottom: 2.5rem;
-  color: var(--dynamic-text-color);
+  color: #333333;
   max-width: 600px;
 }
 
@@ -146,23 +152,24 @@
 .stat-item {
   text-align: center;
   padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.03);
   border-radius: 12px;
   transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: var(--dynamic-text-color);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #191919;
 }
 
 .stat-item:hover {
   transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.05);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
 }
 
 .stat-number {
   display: block;
   font-size: 1.8rem;
   font-weight: 700;
-  color: #368c44;
+  color: #368c44; /* Verde de PlaxtiLineas */
   margin-bottom: 0.5rem;
   line-height: 1;
 }
@@ -171,62 +178,45 @@
   font-size: 0.9rem;
   opacity: 0.9;
   font-weight: 500;
+  color: #333333;
 }
 
+/* Imágenes de tienda */
 .store-image {
   width: 100%;
-  height: 300px;
-  object-fit: cover;
+  height: 400px;
+  object-fit: contain; /* Cambiado de cover a contain para mostrar logo completo */
   border-radius: 16px;
-  
+  padding: 1rem;
 }
 
 .store-image2 {
   width: 100%;
-  height: 600px;
+  height: 500px;
   object-fit: cover;
   border-radius: 16px;
-  
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-
-/* Componentes finales */
-.final-components {
+/* Componentes de ancho completo */
+.full-width-component {
   width: 100%;
+  background-color: #FFFFFF;
 }
 
-/* Estilos para componentes dentro de secciones de color */
+/* ESTILOS ESPECÍFICOS PARA LA SECCIÓN 7 (ELIMINAMOS LOS ESTILOS NEGROS) */
+/* Ahora la sección 7 tendrá los mismos estilos que el resto */
+.color-section#section-7 {
+  /* Hereda automáticamente los estilos de .color-section */
+}
+
+/* Estilos para componentes dentro de secciones */
 .color-section app-feature-banner,
 .color-section app-plaxti-trio-presentation,
 .color-section app-categorias-destacadas,
 .color-section app-plaxti-banner {
   width: 100%;
   display: block;
-}
-
-/* Ajustar el color de texto en componentes según el fondo */
-.color-section[data-color="#000000"] ::ng-deep .section-title,
-.color-section[data-color="#000000"] ::ng-deep .section-subtitle,
-.color-section[data-color="#000000"] ::ng-deep h2,
-.color-section[data-color="#000000"] ::ng-deep h3,
-.color-section[data-color="#000000"] ::ng-deep p {
-  color: #FFFFFF !important;
-}
-
-.color-section[data-color="#368c44"] ::ng-deep .section-title,
-.color-section[data-color="#368c44"] ::ng-deep .section-subtitle,
-.color-section[data-color="#368c44"] ::ng-deep h2,
-.color-section[data-color="#368c44"] ::ng-deep h3,
-.color-section[data-color="#368c44"] ::ng-deep p {
-  color: #FFFFFF !important;
-}
-
-.color-section[data-color="#2a6b35"] ::ng-deep .section-title,
-.color-section[data-color="#2a6b35"] ::ng-deep .section-subtitle,
-.color-section[data-color="#2a6b35"] ::ng-deep h2,
-.color-section[data-color="#2a6b35"] ::ng-deep h3,
-.color-section[data-color="#2a6b35"] ::ng-deep p {
-  color: #FFFFFF !important;
 }
 
 /* Responsive Design */
@@ -246,17 +236,15 @@
     font-size: 2.2rem;
   }
   
-  
-}
-
-@media (max-width: 768px) {
   .content-container {
     padding: 0 1.5rem;
   }
-  
+}
+
+@media (max-width: 768px) {
   .color-section {
     min-height: auto;
-    
+    padding: 2rem 0;
   }
   
   .section-title,
@@ -269,21 +257,18 @@
     gap: 1.5rem;
   }
   
-  .color-progress-indicator {
-    right: 10px;
-    padding: 10px 6px;
-    gap: 10px;
+  .store-image {
+    height: 300px;
   }
   
-  .color-dot {
-    width: 8px;
-    height: 8px;
+  .store-image2 {
+    height: 400px;
   }
 }
 
 @media (max-width: 480px) {
   .color-section {
-    padding: 15px 0;
+    padding: 1.5rem 0;
   }
   
   .section-title,
@@ -301,23 +286,28 @@
     padding: 1.2rem;
   }
   
-  .color-progress-indicator {
-    display: none;
+  .store-image {
+    height: 250px;
   }
-}
-
-/* Mejoras de accesibilidad */
-@media (prefers-reduced-motion: reduce) {
-  .dynamic-presentation,
-  .dynamic-background-container,
-  .color-dot,
-  .feature-item,
-  .stat-item {
-    transition: none !important;
+  
+  .store-image2 {
+    height: 300px;
   }
 }
 
 /* Efectos de scroll suave */
 html {
   scroll-behavior: smooth;
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .feature-item,
+  .stat-item {
+    transition: none !important;
+  }
+  
+  html {
+    scroll-behavior: auto;
+  }
 }

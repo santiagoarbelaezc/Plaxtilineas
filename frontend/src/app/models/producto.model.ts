@@ -1,3 +1,5 @@
+import { Variante } from "./variante.model";
+
 export interface Producto {
   id: number;
   nombre: string;
@@ -8,10 +10,10 @@ export interface Producto {
   subcategoria_id: number;
   subcategoria: string; // nombre de la subcategoría
   categoria: string;    // nombre de la categoría (viene del JOIN)
-  nuevaImagen?: File; // ✅ añadimos esta línea
-
+  nuevaImagen?: File;
 }
 
 export interface ProductoEditable extends Producto {
   editando: boolean;
+  variantes?: Variante[]; // Agregar variantes al producto
 }

@@ -44,7 +44,8 @@ export const routes: Routes = [
       {
         path: 'productos',
         loadComponent: () => import('./pages/dashboard/productos/productos').then(m => m.Productos)
-      }
+      },
+      
     ]
   },
   {

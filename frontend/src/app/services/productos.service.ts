@@ -29,6 +29,15 @@ export class ProductosService {
     );
   }
 
+  obtenerProductosPorCategoriaId(categoriaId: number): Observable<ProductoEditable[]> {
+    return this.http.get<ProductoEditable[]>(`${this.apiUrl}/categoria/${categoriaId}`).pipe(
+      catchError(error => {
+        console.error('Error al obtener productos por categoría ID:', error);
+        return of([]); // Retorna un array vacío en caso de error
+      })
+    );
+  }
+
   // NUEVO: Obtener productos aleatorios (productos de interés)
   obtenerProductosAleatorios(limite: number = 8): Observable<ProductoEditable[]> {
     let params = new HttpParams();

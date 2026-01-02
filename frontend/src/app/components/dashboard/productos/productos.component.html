@@ -23,6 +23,11 @@
           <fa-icon [icon]="faPlus" class="card-icon"></fa-icon>
           Crear Nuevo Producto
         </h2>
+        <button class="btn-secondary btn-sm" (click)="toggleVariantesForm()">
+          <fa-icon [icon]="faLayerGroup"></fa-icon>
+          {{ mostrarVariantesForm ? 'Ocultar' : 'Agregar' }} Variantes
+          <span *ngIf="variantesTemporales.length > 0" class="badge">{{ variantesTemporales.length }}</span>
+        </button>
       </div>
       <div class="card-body">
         <form (ngSubmit)="crearProducto()" [formGroup]="formProducto" enctype="multipart/form-data" class="product-form">
@@ -48,7 +53,7 @@
             <div class="form-group">
               <label for="precio" class="form-label">
                 <fa-icon [icon]="faDollarSign"></fa-icon>
-                Precio
+                Precio Base
               </label>
               <input
                 type="number"
@@ -150,10 +155,81 @@
             <p class="form-hint">Formatos aceptados: JPG, PNG. Tamaño máximo: 5MB</p>
           </div>
 
+          <!-- Sección de Variantes (durante creación) -->
+          <div *ngIf="mostrarVariantesForm" class="variantes-section">
+            <div class="variantes-header">
+              <h3>
+                <fa-icon [icon]="faLayerGroup"></fa-icon>
+                Variantes del Producto
+                <span class="variantes-count">({{ variantesTemporales.length }})</span>
+              </h3>
+              <p class="variantes-subtitle">Agrega diferentes versiones o presentaciones del producto</p>
+            </div>
+
+            <div class="variantes-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Nombre de la variante</label>
+                  <input
+                    type="text"
+                    [(ngModel)]="varianteTemporal.nombre"
+                    placeholder="Ej: Color rojo, Talla M, Pack de 3..."
+                    class="form-input"
+                    [ngModelOptions]="{standalone: true}"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Precio</label>
+                  <input
+                    type="number"
+                    [(ngModel)]="varianteTemporal.precio"
+                    placeholder="0.00"
+                    min="0"
+                    step="0.01"
+                    class="form-input"
+                    [ngModelOptions]="{standalone: true}"
+                  />
+                </div>
+                <div class="form-group">
+                  <button type="button" class="btn-primary" (click)="agregarVarianteTemporal()">
+                    <fa-icon [icon]="faPlus"></fa-icon>
+                    Agregar Variante
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lista de variantes temporales -->
+            <div *ngIf="variantesTemporales.length > 0" class="variantes-list">
+              <div class="variantes-table">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Precio</th>
+                      <th width="80">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let variante of variantesTemporales; let i = index">
+                      <td>{{ variante.nombre }}</td>
+                      <td>{{ variante.precio | currency:'USD':'symbol':'1.2-2' }}</td>
+                      <td>
+                        <button type="button" class="btn-action delete" (click)="eliminarVarianteTemporal(i)">
+                          <fa-icon [icon]="faMinus"></fa-icon>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
           <div class="form-actions">
             <button type="submit" class="btn-primary" [disabled]="formProducto.invalid">
               <fa-icon [icon]="faPlus"></fa-icon>
-              Crear Producto
+              Crear Producto {{ variantesTemporales.length > 0 ? 'con Variantes' : '' }}
             </button>
             <button type="button" class="btn-secondary" (click)="limpiarFormulario()">
               <fa-icon [icon]="faEraser"></fa-icon>
@@ -248,132 +324,299 @@
                 <th width="180">Acciones</th>
               </tr>
             </thead>
-            <tbody>
-              <tr *ngFor="let prod of productosPaginadas" [class.editing]="prod.editando">
-                <td class="id-cell">
-                  <span class="badge-id">#{{ prod.id }}</span>
-                </td>
+            <!-- Reemplaza desde la línea 469 hasta el final de la tabla con esto: -->
 
-                <td>
-                  <div class="image-cell">
-                    <div class="image-preview">
-                      <img [src]="prod.imagen_url" alt="{{ prod.nombre }}" class="product-image" />
-                    </div>
-                    <div *ngIf="prod.editando" class="image-upload">
-                      <input
-                        type="file"
-                        id="imagen-{{prod.id}}"
-                        (change)="seleccionarNuevaImagen($event, prod)"
-                        accept="image/*"
-                        class="hidden-file-input"
-                      />
-                      <label for="imagen-{{prod.id}}" class="upload-btn">
-                        <fa-icon [icon]="faSyncAlt"></fa-icon>
-                        Cambiar
-                      </label>
-                    </div>
-                  </div>
-                </td>
+<tbody>
+  <ng-container *ngFor="let prod of productosPaginadas; let i = index">
+    <!-- Fila del producto -->
+    <tr [class.editing]="prod.editando">
+      <td class="id-cell">
+        <span class="badge-id">#{{ prod.id }}</span>
+        <button 
+          class="toggle-variantes" 
+          (click)="toggleVariantesProducto(prod.id)"
+          [title]="productoMostrandoVariantes === prod.id ? 'Ocultar variantes' : 'Ver variantes'"
+        >
+          <fa-icon [icon]="productoMostrandoVariantes === prod.id ? faCaretUp : faCaretDown"></fa-icon>
+        </button>
+      </td>
 
-                <td>
-                  <div class="name-cell" *ngIf="!prod.editando">
-                    {{ prod.nombre }}
-                  </div>
+      <td>
+        <div class="image-cell">
+          <div class="image-preview">
+            <img [src]="prod.imagen_url" alt="{{ prod.nombre }}" class="product-image" />
+          </div>
+          <div *ngIf="prod.editando" class="image-upload">
+            <input
+              type="file"
+              id="imagen-{{prod.id}}"
+              (change)="seleccionarNuevaImagen($event, prod)"
+              accept="image/*"
+              class="hidden-file-input"
+            />
+            <label for="imagen-{{prod.id}}" class="upload-btn">
+              <fa-icon [icon]="faSyncAlt"></fa-icon>
+              Cambiar
+            </label>
+          </div>
+        </div>
+      </td>
+
+      <td>
+        <div class="name-cell" *ngIf="!prod.editando">
+          {{ prod.nombre }}
+        </div>
+        <input
+          *ngIf="prod.editando"
+          type="text"
+          [(ngModel)]="prod.nombre"
+          class="edit-input"
+          placeholder="Nombre del producto"
+        />
+      </td>
+
+      <td>
+        <div class="price-cell" *ngIf="!prod.editando">
+          {{ prod.precio | currency:'USD':'symbol':'1.2-2' }}
+        </div>
+        <input
+          *ngIf="prod.editando"
+          type="number"
+          [(ngModel)]="prod.precio"
+          class="edit-input"
+          min="0"
+          step="0.01"
+        />
+      </td>
+
+      <td>
+        <div class="description-cell" *ngIf="!prod.editando">
+          {{ prod.descripcion || 'Sin descripción' }}
+        </div>
+        <textarea
+          *ngIf="prod.editando"
+          [(ngModel)]="prod.descripcion"
+          class="edit-textarea"
+          placeholder="Descripción del producto"
+          rows="2"
+        ></textarea>
+      </td>
+
+      <td>
+        <div class="subcategory-cell" *ngIf="!prod.editando">
+          {{ prod.subcategoria }}
+        </div>
+        <select
+          *ngIf="prod.editando"
+          [(ngModel)]="prod.subcategoria_id"
+          class="edit-select"
+        >
+          <option *ngFor="let s of subcategorias" [value]="s.id">{{ s.nombre }}</option>
+        </select>
+      </td>
+
+      <td>
+        <div class="unit-cell" *ngIf="!prod.editando">
+          {{ prod.cantidad === 1 ? 'Metro' : 'Unidad' }}
+        </div>
+        <select
+          *ngIf="prod.editando"
+          [(ngModel)]="prod.cantidad"
+          class="edit-select"
+        >
+          <option value="1">Metro</option>
+          <option value="0">Unidad</option>
+        </select>
+      </td>
+
+      <td>
+        <div class="action-buttons">
+          <ng-container *ngIf="!prod.editando">
+            <button class="btn-action edit" (click)="activarEdicion(prod)" title="Editar">
+              <fa-icon [icon]="faEdit"></fa-icon>
+            </button>
+            <button class="btn-action delete" (click)="eliminarProducto(prod.id)" title="Eliminar">
+              <fa-icon [icon]="faTrashAlt"></fa-icon>
+            </button>
+          </ng-container>
+          <ng-container *ngIf="prod.editando">
+            <button class="btn-action save" (click)="actualizarProducto(prod)" title="Guardar">
+              <fa-icon [icon]="faSave"></fa-icon>
+            </button>
+            <button class="btn-action cancel" (click)="cancelarEdicion(prod)" title="Cancelar">
+              <fa-icon [icon]="faTimes"></fa-icon>
+            </button>
+          </ng-container>
+        </div>
+      </td>
+    </tr>
+    
+    <!-- Fila expandida para variantes (solo si este producto está expandido) -->
+    <tr *ngIf="productoMostrandoVariantes === prod.id" class="variantes-expanded-row">
+      <td colspan="8">
+        <div class="variantes-container">
+          <div *ngIf="variantesProductos[productoMostrandoVariantes]">
+            <div class="variantes-header">
+              <h4>
+                <fa-icon [icon]="faLayerGroup"></fa-icon>
+                Variantes del Producto #{{productoMostrandoVariantes}}
+                <span class="variantes-count">({{ variantesProductos[productoMostrandoVariantes].length }})</span>
+              </h4>
+            </div>
+            
+            <!-- Formulario para agregar nueva variante -->
+            <div class="variantes-form nueva-variante-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Nueva Variante</label>
                   <input
-                    *ngIf="prod.editando"
                     type="text"
-                    [(ngModel)]="prod.nombre"
-                    class="edit-input"
-                    placeholder="Nombre del producto"
+                    [(ngModel)]="nuevaVarianteProducto[productoMostrandoVariantes].nombre"
+                    placeholder="Ej: Color azul, Talla L..."
+                    class="form-input"
+                    [ngModelOptions]="{standalone: true}"
                   />
-                </td>
-
-                <td>
-                  <div class="price-cell" *ngIf="!prod.editando">
-                    {{ prod.precio | currency:'USD':'symbol':'1.2-2' }}
-                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Precio</label>
                   <input
-                    *ngIf="prod.editando"
                     type="number"
-                    [(ngModel)]="prod.precio"
-                    class="edit-input"
+                    [(ngModel)]="nuevaVarianteProducto[productoMostrandoVariantes].precio"
+                    placeholder="0.00"
                     min="0"
                     step="0.01"
+                    class="form-input"
+                    [ngModelOptions]="{standalone: true}"
                   />
-                </td>
+                </div>
+                <div class="form-group">
+                  <button type="button" class="btn-primary" 
+                          (click)="crearVarianteEnTabla(productoMostrandoVariantes)">
+                    <fa-icon [icon]="faPlus"></fa-icon>
+                    Agregar Variante
+                  </button>
+                </div>
+              </div>
+            </div>
 
-                <td>
-                  <div class="description-cell" *ngIf="!prod.editando">
-                    {{ prod.descripcion || 'Sin descripción' }}
-                  </div>
-                  <textarea
-                    *ngIf="prod.editando"
-                    [(ngModel)]="prod.descripcion"
-                    class="edit-textarea"
-                    placeholder="Descripción del producto"
-                    rows="2"
-                  ></textarea>
-                </td>
-
-                <td>
-                  <div class="subcategory-cell" *ngIf="!prod.editando">
-                    {{ getNombreSubcategoria(prod.subcategoria_id) }}
-                  </div>
-                  <select
-                    *ngIf="prod.editando"
-                    [(ngModel)]="prod.subcategoria_id"
-                    class="edit-select"
-                  >
-                    <option *ngFor="let s of subcategorias" [value]="s.id">{{ s.nombre }}</option>
-                  </select>
-                </td>
-
-                <td>
-                  <div class="unit-cell" *ngIf="!prod.editando">
-                    {{ prod.cantidad === 1 ? 'Metro' : 'Unidad' }}
-                  </div>
-                  <select
-                    *ngIf="prod.editando"
-                    [(ngModel)]="prod.cantidad"
-                    class="edit-select"
-                  >
-                    <option value="1">Metro</option>
-                    <option value="0">Unidad</option>
-                  </select>
-                </td>
-
-                <td>
-                  <div class="action-buttons">
-                    <ng-container *ngIf="!prod.editando">
-                      <button class="btn-action edit" (click)="activarEdicion(prod)" title="Editar">
-                        <fa-icon [icon]="faEdit"></fa-icon>
-                      </button>
-                      <button class="btn-action delete" (click)="eliminarProducto(prod.id)" title="Eliminar">
-                        <fa-icon [icon]="faTrashAlt"></fa-icon>
-                      </button>
-                    </ng-container>
-                    <ng-container *ngIf="prod.editando">
-                      <button class="btn-action save" (click)="actualizarProducto(prod)" title="Guardar">
-                        <fa-icon [icon]="faSave"></fa-icon>
-                      </button>
-                      <button class="btn-action cancel" (click)="cancelarEdicion(prod)" title="Cancelar">
-                        <fa-icon [icon]="faTimes"></fa-icon>
-                      </button>
-                    </ng-container>
-                  </div>
-                </td>
-              </tr>
-              
-              <tr *ngIf="productosPaginadas.length === 0">
-                <td colspan="8" class="no-data">
-                  <fa-icon [icon]="faInbox" class="no-data-icon"></fa-icon>
-                  <p>No se encontraron productos</p>
-                  <p class="no-data-subtitle" *ngIf="filtroSubcategoriaId">
-                    Intenta con otro filtro o crea un nuevo producto
-                  </p>
-                </td>
-              </tr>
-            </tbody>
+            <!-- Lista de variantes existentes -->
+            <div *ngIf="variantesProductos[productoMostrandoVariantes].length > 0" 
+                 class="variantes-list-existing">
+              <table class="data-table variantes-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Creado</th>
+                    <th width="150">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let variante of variantesProductos[productoMostrandoVariantes]; 
+                               trackBy: trackByVarianteId"
+                      [class.editing]="variante.editando">
+                    <td>#{{ variante.id }}</td>
+                    
+                    <!-- Nombre (editable) -->
+                    <td>
+                      <div *ngIf="!variante.editando" class="variante-nombre">
+                        {{ variante.nombre }}
+                      </div>
+                      <input
+                        *ngIf="variante.editando"
+                        type="text"
+                        [(ngModel)]="variante.nombre"
+                        class="edit-input variante-edit-input"
+                        placeholder="Nombre de la variante"
+                      />
+                    </td>
+                    
+                    <!-- Precio (editable) -->
+                    <td>
+                      <div *ngIf="!variante.editando" class="variante-precio">
+                        {{ variante.precio | currency:'USD':'symbol':'1.2-2' }}
+                      </div>
+                      <input
+                        *ngIf="variante.editando"
+                        type="number"
+                        [(ngModel)]="variante.precio"
+                        class="edit-input variante-edit-input"
+                        min="0"
+                        step="0.01"
+                        placeholder="0.00"
+                      />
+                    </td>
+                    
+                    <td>
+                      <div class="variante-fecha">
+                        {{ variante.creado_en | date:'short' }}
+                      </div>
+                    </td>
+                    
+                    <!-- Acciones para variantes -->
+                    <td>
+                      <div class="action-buttons variante-actions">
+                        <ng-container *ngIf="!variante.editando">
+                          <button class="btn-action edit" 
+                                  (click)="activarEdicionVariante(productoMostrandoVariantes, variante)" 
+                                  title="Editar variante">
+                            <fa-icon [icon]="faPen"></fa-icon>
+                          </button>
+                          <button class="btn-action delete" 
+                                  (click)="eliminarVariante(productoMostrandoVariantes, variante.id)" 
+                                  title="Eliminar variante">
+                            <fa-icon [icon]="faTrashAlt"></fa-icon>
+                          </button>
+                        </ng-container>
+                        <ng-container *ngIf="variante.editando">
+                          <button class="btn-action save" 
+                                  (click)="guardarEdicionVariante(productoMostrandoVariantes, variante)" 
+                                  title="Guardar cambios">
+                            <fa-icon [icon]="faCheck"></fa-icon>
+                          </button>
+                          <button class="btn-action cancel" 
+                                  (click)="cancelarEdicionVariante(variante)" 
+                                  title="Cancelar edición">
+                            <fa-icon [icon]="faXmark"></fa-icon>
+                          </button>
+                        </ng-container>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <div *ngIf="variantesProductos[productoMostrandoVariantes].length === 0" class="no-variantes">
+              <div class="no-variantes-content">
+                <fa-icon [icon]="faInbox" class="no-data-icon"></fa-icon>
+                <p>Este producto no tiene variantes</p>
+                <p class="no-variantes-subtitle">Usa el formulario arriba para agregar la primera variante</p>
+              </div>
+            </div>
+          </div>
+          
+          <div *ngIf="!variantesProductos[productoMostrandoVariantes]" class="loading-variantes">
+            <div class="loading-spinner"></div>
+            <p>Cargando variantes...</p>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </ng-container>
+  
+  <!-- Mensaje cuando no hay productos -->
+  <tr *ngIf="productosPaginadas.length === 0">
+    <td colspan="8" class="no-data">
+      <fa-icon [icon]="faInbox" class="no-data-icon"></fa-icon>
+      <p>No se encontraron productos</p>
+      <p class="no-data-subtitle" *ngIf="filtroSubcategoriaId">
+        Intenta con otro filtro o crea un nuevo producto
+      </p>
+    </td>
+  </tr>
+</tbody>
           </table>
         </div>
 

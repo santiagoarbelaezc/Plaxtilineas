@@ -1,0 +1,25 @@
+<div class="banner-card">
+  <!-- Contenedor de imagen -->
+  <div class="banner-image-container">
+    <!-- Imagen del banner -->
+    <img 
+      [src]="imagenUrl" 
+      [alt]="altText || titulo"
+      class="banner-image"
+      (error)="imagenUrl = 'https://via.placeholder.com/800x400/358A43/ffffff?text=Banner'">
+    
+    <!-- Overlay oscuro para mejor legibilidad del texto -->
+    <div class="image-overlay"></div>
+    
+    <!-- Contenido de texto superpuesto -->
+    <div class="banner-content">
+      <!-- Título del banner -->
+      <h2 class="banner-title">{{ titulo }}</h2>
+      
+      <!-- Descripción del banner -->
+      <div class="banner-description">
+        <p>{{ descripcion }}</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -27,11 +27,20 @@ import {
   faChevronLeft,
   faChevronRight,
   faListAlt,
-  faSyncAlt
+  faSyncAlt,
+  faLayerGroup,
+  faMinus,
+  faCaretDown,
+  faCaretUp,
+  faPen,
+  faCheck,
+  faXmark
 } from '@fortawesome/free-solid-svg-icons';
 
 import { ProductosService } from '../../../services/productos.service';
 import { SubcategoriasService } from '../../../services/subcategorias.service';
+import { VariantesService } from '../../../services/variantes.service';
+import { CrearVarianteDTO, ActualizarVarianteDTO, Variante, VarianteEditable } from '../../../models/variante.model';
 import { ProductoEditable } from '../../../models/producto.model';
 import { Subcategoria } from '../../../models/subcategoria.model';
 
@@ -67,6 +76,13 @@ export class ProductosComponent implements OnInit {
   faChevronRight = faChevronRight;
   faListAlt = faListAlt;
   faSyncAlt = faSyncAlt;
+  faLayerGroup = faLayerGroup;
+  faMinus = faMinus;
+  faCaretDown = faCaretDown;
+  faCaretUp = faCaretUp;
+  faPen = faPen;
+  faCheck = faCheck;
+  faXmark = faXmark;
 
   // Propiedades del componente
   token: string | null = null;
@@ -79,6 +95,20 @@ export class ProductosComponent implements OnInit {
   imagenSeleccionada: File | null = null;
   filtroSubcategoriaId: string = '';
   
+  // Propiedades para variantes
+  mostrarVariantesForm: boolean = false;
+  variantesTemporales: CrearVarianteDTO[] = [];
+  varianteTemporal: CrearVarianteDTO = {
+    nombre: '',
+    precio: 0,
+    producto_id: 0
+  };
+  
+  // Nuevas propiedades para gestión de variantes en tabla
+  variantesProductos: { [productoId: number]: VarianteEditable[] } = {}; // Variantes editables por producto
+  productoMostrandoVariantes: number | null = null; // Producto que está mostrando sus variantes
+  nuevaVarianteProducto: { [productoId: number]: CrearVarianteDTO } = {}; // Nueva variante por producto
+
   // Propiedades para paginación
   paginaActual: number = 1;
   itemsPorPagina: number = 10;
@@ -90,13 +120,15 @@ export class ProductosComponent implements OnInit {
     private fb: FormBuilder,
     private productosService: ProductosService,
     private subcategoriasService: SubcategoriasService,
+    private variantesService: VariantesService,
     library: FaIconLibrary
   ) {
     library.addIcons(
       faEdit, faTrashAlt, faSave, faTimes, faPlus, faArrowLeft, faImage,
       faBoxes, faTag, faDollarSign, faFolder, faRuler, faAlignLeft,
       faUpload, faEraser, faFilter, faList, faSearch, faInbox,
-      faChevronLeft, faChevronRight, faListAlt, faSyncAlt
+      faChevronLeft, faChevronRight, faListAlt, faSyncAlt,
+      faLayerGroup, faMinus, faCaretDown, faCaretUp, faPen, faCheck, faXmark
     );
   }
 
@@ -147,7 +179,298 @@ export class ProductosComponent implements OnInit {
     });
   }
 
-  // Métodos para filtrado y paginación
+  // MÉTODOS PARA VARIANTES (CREACIÓN EN FORMULARIO)
+  toggleVariantesForm(): void {
+    this.mostrarVariantesForm = !this.mostrarVariantesForm;
+    if (this.mostrarVariantesForm) {
+      this.limpiarFormularioVariante();
+    }
+  }
+
+  agregarVarianteTemporal(): void {
+    if (!this.varianteTemporal.nombre.trim()) {
+      Swal.fire('Error', 'El nombre de la variante es requerido', 'warning');
+      return;
+    }
+    
+    if (this.varianteTemporal.precio <= 0) {
+      Swal.fire('Error', 'El precio debe ser mayor a 0', 'warning');
+      return;
+    }
+
+    this.variantesTemporales.push({...this.varianteTemporal});
+    this.limpiarFormularioVariante();
+  }
+
+  eliminarVarianteTemporal(index: number): void {
+    this.variantesTemporales.splice(index, 1);
+  }
+
+  limpiarFormularioVariante(): void {
+    this.varianteTemporal = {
+      nombre: '',
+      precio: 0,
+      producto_id: 0
+    };
+  }
+
+  // MÉTODOS PARA VARIANTES (GESTIÓN EN TABLA)
+  toggleVariantesProducto(productoId: number): void {
+    if (this.productoMostrandoVariantes === productoId) {
+      this.productoMostrandoVariantes = null;
+      // Limpiar formulario de nueva variante
+      delete this.nuevaVarianteProducto[productoId];
+    } else {
+      this.productoMostrandoVariantes = productoId;
+      // Inicializar formulario de nueva variante para este producto
+      this.nuevaVarianteProducto[productoId] = {
+        nombre: '',
+        precio: 0,
+        producto_id: productoId
+      };
+      
+      if (!this.variantesProductos[productoId]) {
+        this.cargarVariantesProducto(productoId);
+      }
+    }
+  }
+
+  cargarVariantesProducto(productoId: number): void {
+    this.variantesService.getVariantesPorProducto(productoId).subscribe({
+      next: (variantes) => {
+        // Convertir a VarianteEditable para poder editar
+        this.variantesProductos[productoId] = variantes.map(v => ({
+          ...v,
+          editando: false,
+          precioOriginal: v.precio
+        }));
+      },
+      error: (err) => {
+        console.error('Error al cargar variantes:', err);
+        Swal.fire('Error', 'No se pudieron cargar las variantes', 'error');
+      }
+    });
+  }
+
+  // Métodos para nueva variante en tabla
+  inicializarNuevaVariante(productoId: number): void {
+    this.nuevaVarianteProducto[productoId] = {
+      nombre: '',
+      precio: 0,
+      producto_id: productoId
+    };
+  }
+
+  crearVarianteEnTabla(productoId: number): void {
+    if (!this.token) return;
+
+    const nuevaVariante = this.nuevaVarianteProducto[productoId];
+    
+    if (!nuevaVariante.nombre.trim()) {
+      Swal.fire('Error', 'El nombre de la variante es requerido', 'warning');
+      return;
+    }
+    
+    if (nuevaVariante.precio <= 0) {
+      Swal.fire('Error', 'El precio debe ser mayor a 0', 'warning');
+      return;
+    }
+
+    this.variantesService.crearVariante(this.token, nuevaVariante).subscribe({
+      next: (response) => {
+        Swal.fire('Éxito', 'Variante creada correctamente', 'success');
+        // Limpiar formulario y recargar variantes
+        this.inicializarNuevaVariante(productoId);
+        this.cargarVariantesProducto(productoId);
+      },
+      error: (err) => {
+        console.error('Error creando variante:', err);
+        Swal.fire('Error', err.error?.error || 'No se pudo crear la variante', 'error');
+      }
+    });
+  }
+
+  // Métodos para editar variante en tabla
+  activarEdicionVariante(productoId: number, variante: VarianteEditable): void {
+    // Cancelar cualquier otra edición en curso
+    if (this.variantesProductos[productoId]) {
+      this.variantesProductos[productoId].forEach(v => {
+        if (v.id !== variante.id) {
+          v.editando = false;
+        }
+      });
+    }
+    
+    variante.editando = true;
+    variante.precioOriginal = variante.precio;
+  }
+
+  cancelarEdicionVariante(variante: VarianteEditable): void {
+    if (variante.precioOriginal !== undefined) {
+      variante.precio = variante.precioOriginal;
+    }
+    variante.editando = false;
+    variante.precioOriginal = undefined;
+  }
+
+  guardarEdicionVariante(productoId: number, variante: VarianteEditable): void {
+    if (!this.token) return;
+
+    const datosActualizar: ActualizarVarianteDTO = {
+      nombre: variante.nombre,
+      precio: variante.precio
+    };
+
+    // Validaciones
+    if (!variante.nombre.trim()) {
+      Swal.fire('Error', 'El nombre de la variante es requerido', 'warning');
+      return;
+    }
+    
+    if (variante.precio <= 0) {
+      Swal.fire('Error', 'El precio debe ser mayor a 0', 'warning');
+      return;
+    }
+
+    this.variantesService.actualizarVariante(this.token, variante.id, datosActualizar).subscribe({
+      next: (response) => {
+        variante.editando = false;
+        variante.precioOriginal = undefined;
+        Swal.fire('Éxito', 'Variante actualizada correctamente', 'success');
+        
+        // Actualizar con los datos del servidor
+        if (response.variante) {
+          variante.nombre = response.variante.nombre;
+          variante.precio = response.variante.precio;
+          variante.creado_en = response.variante.creado_en;
+        }
+      },
+      error: (err) => {
+        console.error('Error actualizando variante:', err);
+        Swal.fire('Error', err.error?.error || 'No se pudo actualizar la variante', 'error');
+        this.cancelarEdicionVariante(variante);
+      }
+    });
+  }
+
+  eliminarVariante(productoId: number, varianteId: number): void {
+    if (!this.token) return;
+
+    Swal.fire({
+      title: '¿Eliminar variante?',
+      text: 'Esta acción no se puede deshacer',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e74c3c',
+      cancelButtonColor: '#aaa',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.variantesService.eliminarVariante(this.token!, varianteId).subscribe({
+          next: () => {
+            Swal.fire('Éxito', 'Variante eliminada correctamente', 'success');
+            this.cargarVariantesProducto(productoId);
+          },
+          error: (err) => {
+            console.error('Error eliminando variante:', err);
+            Swal.fire('Error', 'No se pudo eliminar la variante', 'error');
+          }
+        });
+      }
+    });
+  }
+
+  // CREAR PRODUCTO CON VARIANTES
+  crearProducto(): void {
+    if (this.formProducto.invalid || !this.token) return;
+
+    Swal.fire({
+      title: 'Crear producto',
+      text: this.variantesTemporales.length > 0 
+        ? `Se creará el producto con ${this.variantesTemporales.length} variante(s)` 
+        : 'Se creará el producto sin variantes',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#4f7b34',
+      cancelButtonColor: '#aaa',
+      confirmButtonText: 'Crear',
+      cancelButtonText: 'Cancelar'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.crearProductoConVariantes();
+      }
+    });
+  }
+
+  private crearProductoConVariantes(): void {
+    const formValues = this.formProducto.value;
+    const formData = new FormData();
+    formData.append('nombre', formValues.nombre);
+    formData.append('precio', formValues.precio);
+    formData.append('descripcion', formValues.descripcion || '');
+    formData.append('cantidad', formValues.unidad);
+    formData.append('subcategoria_id', formValues.subcategoria_id);
+    if (this.imagenSeleccionada) {
+      formData.append('imagen', this.imagenSeleccionada);
+    }
+
+    this.productosService.crearProducto(this.token!, formData).subscribe({
+      next: (response) => {
+        const productoId = response.id;
+        
+        // Crear variantes si hay
+        if (this.variantesTemporales.length > 0) {
+          this.crearVariantesParaNuevoProducto(productoId);
+        } else {
+          this.finalizarCreacionProducto();
+        }
+      },
+      error: err => {
+        Swal.fire('❌ Error', err.error?.error || 'No se pudo crear el producto.', 'error');
+        console.error(err);
+      }
+    });
+  }
+
+  private crearVariantesParaNuevoProducto(productoId: number): void {
+    // Crear cada variante
+    const promesas = this.variantesTemporales.map(variante => {
+      const varianteDTO: CrearVarianteDTO = {
+        ...variante,
+        producto_id: productoId
+      };
+      
+      return new Promise<void>((resolve, reject) => {
+        this.variantesService.crearVariante(this.token!, varianteDTO).subscribe({
+          next: () => resolve(),
+          error: (err) => reject(err)
+        });
+      });
+    });
+
+    // Ejecutar todas las promesas
+    Promise.all(promesas)
+      .then(() => {
+        this.finalizarCreacionProducto();
+      })
+      .catch(err => {
+        Swal.fire('⚠️ Producto creado con errores', 
+          'El producto se creó pero algunas variantes no pudieron guardarse. ' + 
+          'Puedes agregarlas manualmente.', 'warning');
+        this.finalizarCreacionProducto();
+      });
+  }
+
+  private finalizarCreacionProducto(): void {
+    this.limpiarFormulario();
+    this.variantesTemporales = [];
+    this.mostrarVariantesForm = false;
+    this.cargarProductos();
+    Swal.fire('✅ Producto creado', 'El producto fue registrado correctamente.', 'success');
+  }
+
+  // Métodos para productos (sin cambios)
   filtrarProductos(): void {
     if (this.searchTerm.trim() === '') {
       this.productosFiltrados = [...this.productos];
@@ -160,7 +483,7 @@ export class ProductosComponent implements OnInit {
       );
     }
     
-    this.paginaActual = 1; // Volver a la primera página al filtrar
+    this.paginaActual = 1;
     this.calcularPaginacion();
     this.actualizarDatosPaginados();
   }
@@ -198,7 +521,6 @@ export class ProductosComponent implements OnInit {
     let inicio = Math.max(1, this.paginaActual - Math.floor(maxPaginasVisibles / 2));
     let fin = Math.min(this.totalPaginas, inicio + maxPaginasVisibles - 1);
     
-    // Ajustar si estamos cerca del inicio
     if (fin - inicio + 1 < maxPaginasVisibles) {
       inicio = Math.max(1, fin - maxPaginasVisibles + 1);
     }
@@ -231,11 +553,10 @@ export class ProductosComponent implements OnInit {
     return subcategoria ? subcategoria.nombre : '';
   }
 
-  // Métodos existentes (actualizados)
   onFileChange(event: any): void {
     const file = event.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB
+      if (file.size > 5 * 1024 * 1024) {
         Swal.fire('Archivo muy grande', 'La imagen debe ser menor a 5MB', 'warning');
         return;
       }
@@ -243,41 +564,16 @@ export class ProductosComponent implements OnInit {
     }
   }
 
-  crearProducto(): void {
-    if (this.formProducto.invalid || !this.token) return;
-
-    const formValues = this.formProducto.value;
-    const formData = new FormData();
-    formData.append('nombre', formValues.nombre);
-    formData.append('precio', formValues.precio);
-    formData.append('descripcion', formValues.descripcion || '');
-    formData.append('cantidad', formValues.unidad);
-    formData.append('subcategoria_id', formValues.subcategoria_id);
-    if (this.imagenSeleccionada) {
-      formData.append('imagen', this.imagenSeleccionada);
-    }
-
-    this.productosService.crearProducto(this.token, formData).subscribe({
-      next: () => {
-        this.limpiarFormulario();
-        this.cargarProductos();
-        Swal.fire('✅ Producto creado', 'El producto fue registrado correctamente.', 'success');
-      },
-      error: err => {
-        Swal.fire('❌ Error', err.error?.error || 'No se pudo crear el producto.', 'error');
-        console.error(err);
-      }
-    });
-  }
-
   limpiarFormulario(): void {
     this.formProducto.reset();
     this.imagenSeleccionada = null;
+    this.variantesTemporales = [];
+    this.mostrarVariantesForm = false;
   }
 
   activarEdicion(prod: ProductoEditable): void {
     prod.editando = true;
-    this.productosFiltrados = [...this.productosFiltrados]; // Forzar redetección
+    this.productosFiltrados = [...this.productosFiltrados];
   }
 
   cancelarEdicion(prod: ProductoEditable): void {
@@ -294,7 +590,7 @@ export class ProductosComponent implements OnInit {
       if (result.isConfirmed) {
         prod.editando = false;
         prod.nuevaImagen = undefined;
-        this.cargarProductos(); // recarga desde BD
+        this.cargarProductos();
       }
     });
   }
@@ -343,7 +639,7 @@ export class ProductosComponent implements OnInit {
     if (!this.token) return;
     Swal.fire({
       title: '¿Eliminar producto?',
-      text: 'Esta acción no se puede deshacer.',
+      text: 'Esta acción eliminará también todas sus variantes.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#e74c3c',
@@ -355,7 +651,7 @@ export class ProductosComponent implements OnInit {
         this.productosService.eliminarProducto(this.token!, id).subscribe({
           next: () => {
             this.cargarProductos();
-            Swal.fire('✅ Eliminado', 'El producto ha sido eliminado.', 'success');
+            Swal.fire('✅ Eliminado', 'El producto y sus variantes han sido eliminados.', 'success');
           },
           error: err => {
             Swal.fire('❌ Error', 'No se pudo eliminar el producto.', 'error');
@@ -369,7 +665,7 @@ export class ProductosComponent implements OnInit {
   seleccionarNuevaImagen(event: any, prod: ProductoEditable): void {
     const archivo = event.target.files?.[0];
     if (archivo) {
-      if (archivo.size > 5 * 1024 * 1024) { // 5MB
+      if (archivo.size > 5 * 1024 * 1024) {
         Swal.fire('Archivo muy grande', 'La imagen debe ser menor a 5MB', 'warning');
         return;
       }
@@ -383,6 +679,10 @@ export class ProductosComponent implements OnInit {
 
   trackByProductoId(index: number, prod: ProductoEditable): number {
     return prod.id;
+  }
+
+  trackByVarianteId(index: number, variante: VarianteEditable): number {
+    return variante.id;
   }
 
   volverAlDashboard(): void {

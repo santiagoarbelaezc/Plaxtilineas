@@ -12,6 +12,12 @@ export class CategoriasService {
     return this.http.get<any[]>(this.apiUrl);
   }
 
+   getIdCategoriaPorNombre(nombre: string): Observable<{ id: number, nombre: string }> {
+    return this.http.get<{ id: number, nombre: string }>(
+      `${this.apiUrl}/id-por-nombre/${encodeURIComponent(nombre)}`
+    );
+  }
+
   crearCategoria(token: string, formData: FormData): Observable<any> {
     return this.http.post(this.apiUrl, formData, {
       headers: new HttpHeaders({ Authorization: `Bearer ${token}` })

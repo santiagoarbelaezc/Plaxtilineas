@@ -1,0 +1,50 @@
+<div class="container-wrapper">
+  <!-- Layout principal -->
+  <div class="layout-container">
+    
+    <!-- Sección izquierda: Card y Promos -->
+    <div class="left-section">
+      <!-- Card principal -->
+      <div class="card-section">
+        <app-card 
+          [precio]="precio" 
+          [nombreProducto]="nombreProducto"
+          [imagenProducto]="imagenProducto">
+        </app-card>
+      </div>
+      
+      <!-- Card de promociones (debajo del card principal) -->
+      <div class="promo-section">
+        <app-card-promos
+          [titulo]="promoTitulo"
+          [descripcion]="promoDescripcion"
+          [imagen]="promoImagen"
+          [logoUrl]="promoLogoUrl">
+        </app-card-promos>
+      </div>
+    </div>
+    
+    <!-- Sección derecha: Contenido principal -->
+    <div class="content-section">
+      
+      <!-- Banner superior -->
+      <div class="banner-section">
+        <app-card-banner
+          [imagenUrl]="bannerImagenUrl"
+          [titulo]="bannerTitulo"
+          [descripcion]="bannerDescripcion"
+          [altText]="bannerAltText || bannerTitulo">
+        </app-card-banner>
+      </div>
+      
+      <!-- Carousel inferior -->
+      <div class="carousel-section">
+        <app-carousel 
+          [categoriaNombre]="categoriaNombre">
+        </app-carousel>
+      </div>
+      
+    </div>
+    
+  </div>
+</div>

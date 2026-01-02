@@ -44,6 +44,12 @@
             <span>Productos</span>
           </a>
         </li>
+        <li class="menu-item">
+          <a routerLink="/admin/inventario" class="menu-link">
+            <fa-icon [icon]="faBoxes" class="menu-icon"></fa-icon>
+            <span>Inventario</span>
+          </a>
+        </li>
       </ul>
     </nav>
 
@@ -83,8 +89,17 @@
                 <fa-icon [icon]="faBoxes"></fa-icon>
               </div>
               <h3 class="access-title">Gestionar productos</h3>
-              <p class="access-description">Administra el inventario completo de productos</p>
+              <p class="access-description">Administra los productos del catálogo</p>
               <span class="access-link">Ir a productos →</span>
+            </a>
+
+            <a routerLink="/admin/inventario" class="access-card">
+              <div class="access-icon-container">
+                <fa-icon [icon]="faBoxes"></fa-icon>
+              </div>
+              <h3 class="access-title">Gestionar inventario</h3>
+              <p class="access-description">Administra el inventario</p>
+              <span class="access-link">Ir a inventario →</span>
             </a>
           </div>
         </section>

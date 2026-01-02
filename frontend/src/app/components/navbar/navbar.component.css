@@ -1,4 +1,11 @@
-
+/* Variables CSS */
+:root {
+  --navbar-height: 80px;
+  --transition-speed: 0.3s;
+  --primary-green: #368c44;
+  --whatsapp-green: #25d366;
+  --dark-green: #128C7E;
+}
 
 /* Reset básico */
 * {
@@ -10,20 +17,25 @@
 .head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   height: var(--navbar-height);
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   position: fixed;
   top: 0;
   left: 0;
-  right: 0; /* Cambiado de width: 100% */
+  right: 0;
   z-index: 1000;
   padding: 0 40px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 2px 40px rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   transition: all var(--transition-speed) ease;
+  gap: 30px;
+}
+
+.logo {
+  flex-shrink: 0;
 }
 
 .logo-img {
@@ -41,62 +53,173 @@
   filter: brightness(1);
 }
 
-/* Hamburguesa mejorada */
-.menu-toggle {
-  display: none;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 30px;
-  height: 22px;
+/* Buscador - Reubicado más a la izquierda */
+.search-container {
+  position: relative;
+  flex: 0 1 400px;
+  margin-left: 0;
+  margin-right: auto;
+  transition: all var(--transition-speed) ease;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+}
+
+.search-input-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 45px 12px 45px;
+  border: 2px solid rgba(54, 140, 68, 0.15);
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: 'Segoe UI', -apple-system, sans-serif;
+  background: rgba(255, 255, 255, 0.95);
+  color: #2d3748;
+  transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 3px 15px rgba(54, 140, 68, 0.08);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: rgba(54, 140, 68, 0.4);
+  box-shadow: 0 5px 25px rgba(54, 140, 68, 0.15);
+  background: white;
+  transform: translateY(-1px);
+}
+
+.search-input::placeholder {
+  color: #a0aec0;
+  font-weight: 400;
+}
+
+.search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #718096;
+  font-size: 15px;
+  pointer-events: none;
+  transition: color var(--transition-speed) ease;
+}
+
+.search-input:focus + .search-icon {
+  color: var(--primary-green);
+}
+
+.search-clear {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
   background: none;
   border: none;
+  color: #cbd5e0;
   cursor: pointer;
-  padding: 4px;
-  z-index: 1001;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all var(--transition-speed) ease;
+  width: 28px;
+  height: 28px;
 }
 
-.hamburger-line {
-  display: block;
-  height: 2.5px;
-  width: 100%;
-  background: linear-gradient(135deg, #368c44, #25d366);
-  border-radius: 2px;
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+.search-clear:hover {
+  color: #718096;
+  background: rgba(0, 0, 0, 0.05);
 }
 
-.menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(1) {
-  transform: rotate(45deg) translate(6px, 6px);
+/* Sugerencias de búsqueda */
+.search-suggestions {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+  margin-top: 0;
+  overflow: hidden;
+  z-index: 1000;
+  animation: slideDown 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(2) {
-  opacity: 0;
-  transform: scale(0);
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(3) {
-  transform: rotate(-45deg) translate(7px, -6px);
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 22px;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 14.5px;
 }
 
-/* Navegación principal - LÍNEAS DEBAJO */
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  background: linear-gradient(to right, rgba(54, 140, 68, 0.05), rgba(37, 211, 102, 0.05));
+  color: var(--primary-green);
+  padding-left: 26px;
+}
+
+.suggestion-item fa-icon {
+  font-size: 13px;
+  color: #a0aec0;
+  transition: all var(--transition-speed) ease;
+}
+
+.suggestion-item:hover fa-icon {
+  color: var(--primary-green);
+  transform: scale(1.1);
+}
+
+/* Navegación principal */
 .navbar {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   align-items: center;
   position: relative;
+  flex-shrink: 0;
 }
 
 .nav-link {
   position: relative;
-  padding: 12px 24px;
+  padding: 14px 20px;
   color: #4a5568;
   text-decoration: none;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 15px;
   font-family: 'Segoe UI', -apple-system, sans-serif;
-  letter-spacing: 0.3px;
   transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 6px;
+  border-radius: 8px;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* Línea animada debajo del enlace activo */
@@ -106,101 +229,264 @@
   bottom: 0;
   left: 50%;
   width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #368c44, #25d366);
+  height: 2.5px;
+  background: linear-gradient(90deg, var(--primary-green), var(--whatsapp-green));
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateX(-50%);
-  box-shadow: 0 2px 12px rgba(54, 140, 68, 0.4);
+  border-radius: 2px;
+  box-shadow: 0 2px 10px rgba(54, 140, 68, 0.3);
 }
 
 .nav-link.active::after,
 .nav-link:hover::after {
-  width: 100%;
+  width: 80%;
 }
 
 /* Efectos hover elegantes */
 .nav-link:hover {
-  color: #368c44;
-  transform: translateY(-1px);
+  color: var(--primary-green);
+  background: rgba(54, 140, 68, 0.05);
+  transform: translateY(-2px);
+}
+
+/* Iconos en enlaces */
+.location-icon,
+.whatsapp-icon,
+.login-icon {
+  transition: all var(--transition-speed) ease;
+}
+
+/* Enlace de ubicación */
+.location-link .location-icon {
+  color: #e53e3e;
+  font-size: 16px;
+}
+
+.location-link:hover .location-icon {
+  color: #c53030;
+  transform: scale(1.1) rotate(-5deg);
 }
 
 /* WhatsApp especial */
 .whatsapp-link {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 28px;
+  
+  padding: 14px 24px;
   font-weight: 600;
 }
 
 .whatsapp-link::after {
-  background: linear-gradient(90deg, #25d366, #128C7E);
+  background: linear-gradient(90deg, var(--whatsapp-green), var(--dark-green));
 }
 
 .whatsapp-link:hover {
-  color: #25d366 !important;
+  color: var(--whatsapp-green) !important;
+  background: linear-gradient(135deg, rgba(37, 211, 102, 0.2), rgba(18, 140, 126, 0.1));
 }
 
 .whatsapp-icon {
   width: 20px;
   height: 20px;
-  color: #25d366;
-  transition: all var(--transition-speed) ease;
+  color: var(--whatsapp-green);
 }
 
 .whatsapp-link:hover .whatsapp-icon {
   transform: scale(1.1) rotate(10deg);
+  filter: drop-shadow(0 2px 8px rgba(37, 211, 102, 0.4));
 }
 
-/* Login icono */
+/* Login icono - Versión sutil y elegante */
 .login-link {
   padding: 12px 16px;
   min-width: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: transparent;
+  border-radius: 10px;
+  border: 1px solid rgba(54, 140, 68, 0.15);
+  transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.login-link:hover {
+  background: rgba(54, 140, 68, 0.05);
+  border-color: rgba(54, 140, 68, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(54, 140, 68, 0.1);
 }
 
 .login-icon {
-  font-size: 18px;
-  color: #4a5568;
-  transition: all var(--transition-speed) ease;
+  font-size: 17px;
+  color: var(--primary-green);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .login-link:hover .login-icon {
-  color: #368c44;
-  transform: rotate(-15deg) scale(1.1);
+  color: var(--primary-green);
+  transform: rotate(15deg) scale(1.1);
+  text-shadow: 0 2px 8px rgba(54, 140, 68, 0.3);
 }
 
-/* RESPONSIVE - MEJORADO */
-@media (max-width: 1024px) {
+/* Hamburguesa mejorada */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 32px;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 1001;
+  transition: all var(--transition-speed) ease;
+}
+
+.hamburger-line {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background: linear-gradient(135deg, var(--primary-green), var(--whatsapp-green));
+  border-radius: 3px;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menu-toggle:hover .hamburger-line {
+  background: linear-gradient(135deg, var(--whatsapp-green), var(--primary-green));
+}
+
+.menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(1) {
+  transform: rotate(45deg) translate(7px, 7px);
+}
+
+.menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(2) {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(3) {
+  transform: rotate(-45deg) translate(8px, -7px);
+}
+
+/* RESPONSIVE PARA EL BUSCADOR Y NAVBAR */
+
+/* Tablets grandes */
+@media (max-width: 1200px) {
   .head {
     padding: 0 30px;
+    gap: 20px;
+  }
+  
+  .search-container {
+    flex: 0 1 400px;
   }
   
   .nav-link {
-    font-size: 15px;
-    padding: 10px 20px;
-  }
-}
-/* RESPONSIVE - MEJORADO (REEMPLAZA desde @media (max-width: 768px)) */
-@media (max-width: 1024px) {
-  .head {
-    padding: 0 30px;
+    padding: 12px 18px;
+    font-size: 14.5px;
   }
   
-  .nav-link {
-    font-size: 15px;
-    padding: 10px 20px;
+  .logo-img {
+    height: 50px;
   }
 }
 
+/* Tablets */
+@media (max-width: 1024px) {
+  .head {
+    padding: 0 25px;
+    gap: 15px;
+  }
+  
+  .search-container {
+    flex: 0 1 350px;
+  }
+  
+  .navbar {
+    gap: 2px;
+  }
+  
+  .nav-link {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+  
+  .logo-img {
+    height: 48px;
+  }
+}
+
+/* Móviles grandes - Muy importante para el buscador */
 @media (max-width: 768px) {
   .head {
-    height: 70px;
-    padding: 0 25px;
+    height: 75px;
+    padding: 0 20px;
+    justify-content: space-between;
+    gap: 0;
   }
   
+  /* Buscador responsivo */
+  .search-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    flex: none;
+    margin: 0;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    z-index: 999;
+  }
+  
+  .search-container.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  
+  /* Botón para mostrar buscador en móvil */
+  .search-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--primary-green);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    margin-left: auto;
+    margin-right: 10px;
+    transition: all var(--transition-speed) ease;
+  }
+  
+  .search-toggle:hover {
+    background: rgba(54, 140, 68, 0.1);
+  }
+  
+  .search-toggle fa-icon {
+    font-size: 18px;
+  }
+  
+  .logo {
+    order: 1;
+  }
+  
+  .menu-toggle {
+    display: flex;
+    order: 3;
+  }
+  
+  /* Menú de navegación móvil */
   .navbar {
     flex-direction: column;
     align-items: flex-start;
@@ -214,11 +500,13 @@
     backdrop-filter: blur(40px);
     -webkit-backdrop-filter: blur(40px);
     box-shadow: -10px 0 60px rgba(0, 0, 0, 0.18);
-    padding: 110px 35px 50px;
+    padding: 120px 35px 50px;
     transform: translateX(100%);
     opacity: 0;
     pointer-events: none;
     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 1000;
+    gap: 0;
   }
 
   .navbar.active {
@@ -227,13 +515,13 @@
     pointer-events: auto;
   }
 
-  /* MEJORA ESPECIAL: Cada enlace como tarjeta elegante */
+  /* Enlaces como tarjetas elegantes */
   .nav-link {
     width: 100%;
     padding: 20px 28px;
     border-radius: 16px;
     margin-bottom: 12px;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 600;
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(25px);
@@ -271,7 +559,7 @@
   .nav-link.active::after,
   .nav-link:hover::after {
     width: calc(100% - 56px);
-    background: linear-gradient(90deg, #368c44, #25d366);
+    background: linear-gradient(90deg, var(--primary-green), var(--whatsapp-green));
   }
 
   .nav-link.active {
@@ -281,11 +569,16 @@
     box-shadow: 0 8px 32px rgba(54, 140, 68, 0.2);
   }
 
-  /* WHATSAPP MEJORADO */
+  /* Ubicación en móvil */
+  .location-link .location-icon {
+    font-size: 22px;
+  }
+
+  /* WhatsApp en móvil */
   .whatsapp-link {
     padding: 20px 28px;
     gap: 12px;
-    color: #128C7E;
+    color: var(--dark-green);
   }
 
   .whatsapp-icon {
@@ -301,7 +594,7 @@
     box-shadow: 0 8px 32px rgba(37, 211, 102, 0.25);
   }
 
-  /* ICONO LOGIN - ULTRA MEJORADO ✨ */
+  /* Login en móvil */
   .login-link {
     padding: 20px 28px;
     min-width: auto;
@@ -310,21 +603,6 @@
     justify-content: flex-start;
     gap: 16px;
     position: relative;
-  }
-
-  .login-link::before {
-    content: '🔐';
-    position: absolute;
-    right: 24px;
-    font-size: 20px;
-    opacity: 0;
-    transform: scale(0.5) rotate(-180deg);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .login-link:hover::before {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
   }
 
   .login-icon {
@@ -343,131 +621,87 @@
 
   .login-link:hover .login-icon {
     transform: rotate(360deg) scale(1.15);
-    background: linear-gradient(135deg, #368c44, #25d366);
+    background: linear-gradient(135deg, var(--primary-green), var(--whatsapp-green));
     box-shadow: 0 8px 24px rgba(54, 140, 68, 0.35);
-  }
-
-  .menu-toggle {
-    display: flex;
-  }
-
-  .logo-img {
-    height: 48px;
   }
 }
 
+/* Móviles pequeños */
 @media (max-width: 480px) {
   .head {
-    height: 65px;
-    padding: 0 20px;
+    height: 70px;
+    padding: 0 15px;
   }
   
   .navbar {
     width: 300px;
-    padding: 95px 25px 40px;
+    padding: 100px 25px 40px;
   }
   
   .logo-img {
-    height: 42px;
+    height: 44px;
   }
   
   .nav-link {
     padding: 18px 24px;
-    font-size: 17px;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .search-container {
+    padding: 12px 15px;
+  }
+  
+  .search-input {
+    padding: 14px 45px 14px 45px;
+    font-size: 16px;
+  }
+  
+  .search-suggestions {
+    border-radius: 10px;
+  }
+  
+  .suggestion-item {
+    padding: 12px 20px;
+    font-size: 15px;
   }
 }
 
-/* Buscador */
-.search-container {
-  position: relative;
-  flex: 1;
-  max-width: 500px;
-  margin: 0 40px;
+/* Para pantallas muy pequeñas */
+@media (max-width: 360px) {
+  .head {
+    padding: 0 12px;
+  }
+  
+  .navbar {
+    width: 280px;
+    padding: 90px 20px 30px;
+  }
+  
+  .nav-link {
+    padding: 16px 20px;
+    font-size: 15.5px;
+  }
+  
+  .logo-img {
+    height: 40px;
+  }
 }
 
-.search-form {
-  display: flex;
-  align-items: center;
-}
-
-.search-input-wrapper {
-  position: relative;
-  flex: 1;
-}
-
-.search-input {
-  width: 100%;
-  padding: 12px 45px 12px 45px;
-  border: 2px solid rgba(54, 140, 68, 0.1);
-  border-radius: 8px;
-  font-size: 15px;
-  font-family: 'Segoe UI', -apple-system, sans-serif;
-  background: rgba(255, 255, 255, 0.95);
-  color: #4a5568;
-  transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: rgba(54, 140, 68, 0.3);
-  box-shadow: 0 4px 20px rgba(54, 140, 68, 0.15);
-  background: white;
-}
-
-.search-input::placeholder {
-  color: #a0aec0;
-}
-
-.search-icon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #718096;
-  font-size: 14px;
-  pointer-events: none;
-}
-
-.search-clear {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #cbd5e0;
-  cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color var(--transition-speed) ease;
-}
-
-.search-clear:hover {
-  color: #718096;
-}
-
-/* Sugerencias de búsqueda */
-.search-suggestions {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  margin-top: 8px;
+/* Estilos para cuando el buscador está activo en móvil */
+.search-active {
   overflow: hidden;
-  z-index: 1000;
-  animation: slideDown 0.2s ease;
 }
 
-@keyframes slideDown {
+.search-active .head {
+  border-bottom-color: transparent;
+}
+
+/* Animación de entrada del buscador móvil */
+@keyframes searchSlideDown {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-30px);
   }
   to {
     opacity: 1;
@@ -475,86 +709,51 @@
   }
 }
 
-.suggestion-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 20px;
-  color: #4a5568;
-  cursor: pointer;
-  transition: all var(--transition-speed) ease;
-  border-bottom: 1px solid #f7fafc;
+.search-container.active {
+  animation: searchSlideDown 0.3s ease-out;
 }
 
-.suggestion-item:last-child {
-  border-bottom: none;
+/* Mejora de accesibilidad para enfoque */
+.search-input:focus,
+.nav-link:focus,
+.menu-toggle:focus,
+.search-clear:focus {
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
 }
 
-.suggestion-item:hover {
-  background: #f7fafc;
-  color: #368c44;
-}
-
-.suggestion-item fa-icon {
-  font-size: 12px;
-  color: #cbd5e0;
-}
-
-.suggestion-item:hover fa-icon {
-  color: #368c44;
-}
-
-/* Responsive para el buscador */
-@media (max-width: 1200px) {
-  .search-container {
-    max-width: 400px;
-    margin: 0 20px;
-  }
-}
-
-@media (max-width: 992px) {
-  .search-container {
-    max-width: 300px;
-    margin: 0 15px;
-  }
-}
-
-@media (max-width: 768px) {
-  .search-container {
-    order: 3;
-    width: 100%;
-    max-width: 100%;
-    margin: 15px 0 0 0;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    padding: 0 20px;
-    display: none;
-  }
-  
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
   .head {
-    padding: 0 20px;
-    flex-wrap: wrap;
+    background: rgba(26, 32, 44, 0.95);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
   }
   
-  /* Mostrar buscador cuando el menú está abierto */
-  .navbar.active + .search-container {
-    display: block;
-  }
-}
-
-@media (max-width: 480px) {
   .search-input {
-    font-size: 14px;
-    padding: 10px 40px 10px 40px;
+    background: rgba(45, 55, 72, 0.95);
+    color: #e2e8f0;
+    border-color: rgba(74, 85, 104, 0.3);
   }
   
-  .search-icon {
-    left: 12px;
-    font-size: 13px;
+  .search-suggestions {
+    background: #2d3748;
+    border-color: #4a5568;
   }
   
-  .search-clear {
-    right: 10px;
+  .suggestion-item {
+    color: #cbd5e0;
+    border-bottom-color: #4a5568;
+  }
+  
+  .suggestion-item:hover {
+    background: rgba(54, 140, 68, 0.1);
+  }
+  
+  .nav-link {
+    color: #cbd5e0;
+  }
+  
+  .nav-link:hover {
+    background: rgba(54, 140, 68, 0.1);
   }
 }
