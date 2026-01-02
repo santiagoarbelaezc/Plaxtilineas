@@ -160,78 +160,304 @@
   font-size: 1rem;
   line-height: 1.5;
 }
+/* ============================================
+   VERSIÓN COMPACTA PARA CATEGORÍAS
+   ============================================ */
 
-/* Responsive para móviles */
-@media (max-width: 767px) {
-  .categorias-section {
-    padding: 2.5rem 1rem;
-  }
-  
-  .section-header {
-    margin-bottom: 2.5rem;
-  }
-  
-  .section-title {
-    font-size: 1.75rem;
-  }
-  
+/* Estilos generales de la sección - COMPACTO */
+.categorias-section {
+  padding: 1rem 0.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: var(--white);
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-darker);
+  margin-bottom: 0.25rem;
+}
+
+.section-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0;
+  font-weight: 400;
+}
+
+/* Grid de categorías - DISEÑO SUPER COMPACTO */
+.categorias-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 0.75rem;
+  justify-content: center;
+  align-items: start;
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 0 0.5rem;
+}
+
+@media (min-width: 480px) {
   .categorias-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-  }
-  
-  .categoria-image-container {
-    width: 130px;
-    height: 130px;
-    margin-bottom: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 1rem;
   }
 }
 
-@media (max-width: 480px) {
+@media (min-width: 640px) {
   .categorias-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .categorias-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 1.5rem;
   }
-  
-  .categoria-image-container {
-    width: 120px;
-    height: 120px;
-  }
-  
-  .section-title {
-    font-size: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .categorias-grid {
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1rem;
+    max-width: 900px;
   }
 }
 
-/* Ajustes para pantallas grandes */
+@media (min-width: 1200px) {
+  .categorias-grid {
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+/* Items de categoría - VERSIÓN COMPACTA */
+.categoria-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Tarjeta minimalista - COMPACTA */
+.categoria-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  border: none;
+  transition: transform 0.2s ease;
+}
+
+.categoria-card:hover {
+  transform: translateY(-3px);
+  text-decoration: none;
+}
+
+/* Contenedor de imagen cuadrada - MÁS PEQUEÑO */
+.categoria-image-container {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.4rem;
+  border-radius: 6px;
+  background: var(--white);
+  overflow: hidden;
+  border: 1px solid #f0f0f0;
+  transition: all 0.2s ease;
+}
+
+@media (min-width: 480px) {
+  .categoria-image-container {
+    width: 85px;
+    height: 85px;
+  }
+}
+
+@media (min-width: 640px) {
+  .categoria-image-container {
+    width: 90px;
+    height: 90px;
+  }
+}
+
+@media (min-width: 768px) {
+  .categoria-image-container {
+    width: 100px;
+    height: 100px;
+  }
+}
+
 @media (min-width: 1024px) {
   .categoria-image-container {
-    width: 150px;
-    height: 150px;
+    width: 110px;
+    height: 110px;
   }
 }
 
-@media (min-width: 1400px) {
-  
-  
+.categoria-card:hover .categoria-image-container {
+  border-color: var(--primary-color);
+  box-shadow: 0 3px 8px rgba(54, 140, 68, 0.1);
+}
+
+.categoria-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 15px;
+  transition: transform 0.2s ease;
+}
+
+@media (min-width: 768px) {
+  .categoria-icon {
+    padding: 18px;
+  }
+}
+
+.categoria-card:hover .categoria-icon {
+  transform: scale(1.08);
+}
+
+/* Nombre de la categoría - COMPACTO */
+.categoria-name {
+  text-align: center;
+  width: 100%;
+  padding: 0 2px;
+}
+
+.categoria-name h3 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--primary-darker);
+  margin: 0;
+  line-height: 1.2;
+  transition: color 0.2s ease;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+@media (min-width: 480px) {
+  .categoria-name h3 {
+    font-size: 0.85rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .categoria-name h3 {
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .categoria-name h3 {
+    font-size: 0.95rem;
+  }
+}
+
+.categoria-card:hover .categoria-name h3 {
+  color: var(--primary-color);
+}
+
+/* Estado sin categorías - COMPACTO */
+.no-categorias {
+  text-align: center;
+  padding: 2rem 1rem;
+  background-color: #fafafa;
+  border-radius: 6px;
+  margin: 2rem auto;
+  max-width: 400px;
+  border: 1px solid #eee;
+}
+
+.no-categorias-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.no-categorias h3 {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.no-categorias p {
+  color: #777;
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* ============================================
+   MEDIA QUERIES ESPECÍFICAS PARA MÓVIL
+   ============================================ */
+
+/* Para móviles muy pequeños (hasta 359px) */
+@media screen and (max-width: 359px) {
   .categorias-grid {
-    gap: 2.5rem;
-    max-width: 1100px;
+    grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
+    gap: 0.5rem;
   }
   
   .categoria-image-container {
-    width: 160px;
-    height: 160px;
+    width: 70px;
+    height: 70px;
+    margin-bottom: 0.3rem;
+  }
+  
+  .categoria-icon {
+    padding: 12px;
   }
   
   .categoria-name h3 {
-    font-size: 1.05rem;
+    font-size: 0.75rem;
   }
 }
 
-/* Ajuste especial para pantallas medianas */
-@media (min-width: 768px) and (max-width: 1023px) {
+/* Para orientación landscape en móviles */
+@media screen and (max-width: 767px) and (orientation: landscape) {
   .categorias-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 1rem;
+  }
+  
+  .categoria-image-container {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+/* Optimización para dispositivos táctiles */
+@media (hover: none) and (pointer: coarse) {
+  .categoria-card:hover {
+    transform: none;
+  }
+  
+  .categoria-card:hover .categoria-image-container {
+    border-color: #f0f0f0;
+    box-shadow: none;
+  }
+  
+  .categoria-card:active .categoria-image-container {
+    border-color: var(--primary-color);
+    box-shadow: 0 3px 8px rgba(54, 140, 68, 0.1);
+  }
+  
+  .categoria-card:active .categoria-name h3 {
+    color: var(--primary-color);
   }
 }

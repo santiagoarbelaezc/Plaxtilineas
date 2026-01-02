@@ -1,31 +1,41 @@
-/* Versión ultra ancha */
+/* card-container.css - Versión completamente responsive */
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* Versión ultra ancha - Base responsive */
 .container-wrapper {
   width: 100%;
-  max-width: 1500px; /* Aún más ancho */
+  max-width: 1500px;
   margin: 0 auto;
-  padding: 50px;
+  padding: 30px 20px;
   font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+  box-sizing: border-box;
 }
 
 .layout-container {
   display: flex;
-  gap: 40px; /* Más espacio entre las secciones izquierda y derecha */
+  gap: 30px;
   align-items: flex-start;
   width: 100%;
+  box-sizing: border-box;
 }
 
-/* Sección izquierda que contiene Card y Promos */
+/* Sección izquierda: Card y Promos */
 .left-section {
   flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 50px; /* Espacio entre Card y Promos */
-  width: 350px; /* Ancho fijo para la sección izquierda */
+  gap: 30px;
+  width: 350px;
   min-width: 300px;
+  box-sizing: border-box;
 }
 
 .card-section {
   width: 100%;
+  box-sizing: border-box;
 }
 
 .promo-section {
@@ -33,6 +43,7 @@
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
 }
 
 /* Sección derecha con Banner y Carousel */
@@ -40,16 +51,18 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 40px;
-  min-width: 0; /* Permite que se reduzca si es necesario */
+  gap: 30px;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .banner-section {
   width: 100%;
-  min-height: 300px; /* Banner aún más alto */
+  min-height: 250px;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  box-sizing: border-box;
 }
 
 .carousel-section {
@@ -58,45 +71,332 @@
     rgba(255, 255, 255, 0.98) 0%,
     rgba(248, 250, 252, 0.96) 100%);
   border-radius: 16px;
-  padding: 30px; /* Más padding */
+  
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(229, 231, 235, 0.6);
+  box-sizing: border-box;
+}
+/* ========================================= */
+/* MÓVIL - AQUÍ ES DONDE CAMBIA EL DISEÑO */
+/* ========================================= */
+
+/* Tablet (sm) - 768px a 899px */
+@media (max-width: 899px) {
+  .container-wrapper {
+    padding: 15px 10px;
+  }
+  
+  /* Cambiar a diseño vertical */
+  .layout-container {
+    flex-direction: column;
+    gap: 20px;
+    
+  }
+  
+  /* La sección izquierda se expande al 100% */
+  .left-section {
+    width: 100%;
+    min-width: 100%;
+  }
+  
+  /* Reducir ancho del banner y carrusel en móvil - MÁS PEQUEÑO */
+  .banner-section {
+    min-height: 180px;
+    border-radius: 12px;
+    width: 85%; /* Reducido de 95% */
+    
+    padding: 0;
+  }
+  
+  .carousel-section {
+    padding: 15px;
+    border-radius: 12px;
+    width: 85%; /* Reducido de 95% */
+    
+  }
 }
 
-/* Responsive para versión ultra ancha */
-@media (max-width: 1200px) {
+/* Tablet pequeña/Móvil grande (xs) - 640px a 767px */
+@media (max-width: 767px) {
   .container-wrapper {
-    max-width: 1100px;
-    padding: 25px;
+    padding: 12px 8px;
   }
   
   .layout-container {
-    gap: 30px;
-  }
-  
-  .left-section {
-    width: 320px;
+    gap: 18px;
   }
   
   .banner-section {
-    min-height: 280px;
+    min-height: 160px;
+    border-radius: 10px;
+    width: 82%; /* Reducido de 92% */
+   
+    padding: 0;
+  }
+  
+  .carousel-section {
+    padding: 12px;
+    border-radius: 10px;
+    width: 82%; /* Reducido de 92% */
+    
   }
 }
 
-/* Para pantallas más pequeñas */
-@media (max-width: 900px) {
+/* Móvil grande (sm) - 540px a 639px */
+@media (max-width: 639px) {
+  .container-wrapper {
+    padding: 10px 6px;
+  }
+  
   .layout-container {
-    flex-direction: column;
-    gap: 30px;
+    gap: 15px;
+  }
+  
+  .banner-section {
+    min-height: 140px;
+    border-radius: 8px;
+    width: 80%; /* Reducido de 90% */
+    
+    padding: 0;
+  }
+  
+  .carousel-section {
+    padding: 10px;
+    border-radius: 8px;
+    width: 60%; /* Reducido de 90% */
+    
+  }
+}
+
+/* Móvil estándar (base) - 480px a 539px */
+@media (max-width: 539px) {
+  .container-wrapper {
+    padding: 8px 5px;
+  }
+  
+  .layout-container {
+    gap: 12px;
+  }
+  
+  .banner-section {
+    min-height: 130px;
+    border-radius: 6px;
+    width: 78%; /* Reducido de 88% */
+   
+    padding: 0;
+  }
+  
+  .carousel-section {
+    padding: 8px;
+    border-radius: 6px;
+    width: 65%; /* Reducido de 88% */
+   
+  }
+  
+  /* Ajustar sombras para móvil */
+  .carousel-section,
+  .banner-section,
+  .promo-section {
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+  }
+}
+
+/* Móvil pequeño (xs) - 360px a 479px */
+@media (max-width: 479px) {
+  .container-wrapper {
+    padding: 6px 4px;
+  }
+  
+  .layout-container {
+    gap: 10px;
+  }
+  
+  .banner-section {
+    min-height: 120px;
+    border-radius: 5px;
+    width: 75%; /* Reducido de 85% */
+   
+    padding: 0;
+  }
+  
+  .carousel-section {
+    padding: 6px;
+    border-radius: 5px;
+    width: 65%; /* Reducido de 85% */
+    
+  }
+}
+
+/* Móvil muy pequeño (2xs) - menos de 360px */
+@media (max-width: 359px) {
+  .container-wrapper {
+    padding: 5px 3px;
+  }
+  
+  .layout-container {
+    gap: 8px;
+  }
+  
+  .banner-section {
+    min-height: 110px;
+    border-radius: 4px;
+    width: 72%; /* Reducido de 82% */
+    margin: 0 auto;
+    padding: 0;
+  }
+  
+  .carousel-section {
+    padding: 5px;
+    border-radius: 4px;
+    width: 72%; /* Reducido de 82% */
+    margin: 0 auto;
+  }
+}
+
+/* ========================================= */
+/* ORIENTACIÓN HORIZONTAL EN MÓVILES */
+/* ========================================= */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  .container-wrapper {
+    padding: 8px;
+  }
+  
+  /* En landscape mantener diseño original (dos columnas) */
+  .layout-container {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 12px;
   }
   
   .left-section {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
+    flex: 0 0 40%;
+    flex-direction: column;
   }
   
   .content-section {
+    flex: 0 0 60%;
+    gap: 12px;
+  }
+  
+  .banner-section {
+    min-height: 100px;
+    max-height: 130px;
+    width: 90%; /* En landscape también reducir */
+    margin: 0 auto;
+  }
+  
+  .carousel-section {
+    padding: 8px;
+    max-height: 160px;
+    width: 90%; /* En landscape también reducir */
+    margin: 0 auto;
+  }
+}
+
+/* ========================================= */
+/* MEJORAS PARA DISPOSITIVOS TÁCTILES */
+/* ========================================= */
+@media (hover: none) and (pointer: coarse) {
+  /* Aumentar áreas táctiles */
+  .left-section,
+  .content-section {
+    gap: 15px; /* Reducido de 20px */
+  }
+}
+
+/* ========================================= */
+/* MEJORAS DE ACCESIBILIDAD */
+/* ========================================= */
+@media (prefers-reduced-motion: reduce) {
+  .layout-container,
+  .left-section,
+  .content-section {
+    transition: none !important;
+  }
+}
+
+/* ========================================= */
+/* PREVENCIÓN DE ZOOM EN IOS */
+/* ========================================= */
+@media screen and (max-width: 768px) {
+  .container-wrapper {
+    font-size: 16px; /* Previene zoom automático en iOS */
+  }
+  
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* ========================================= */
+/* MEJORAS DE RENDIMIENTO PARA MÓVILES */
+/* ========================================= */
+@media (max-width: 768px) {
+  /* Optimizar para dispositivos móviles */
+  .container-wrapper {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Reducir efectos en móviles */
+  .carousel-section,
+  .banner-section,
+  .promo-section {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+}
+
+/* ========================================= */
+/* PANTALLAS ULTRA ANCHAS (FUTURO) */
+/* ========================================= */
+@media screen and (min-width: 1920px) {
+  .container-wrapper {
+    max-width: 1800px;
+    padding: 50px 40px;
+  }
+  
+  .layout-container {
+    gap: 50px;
+  }
+  
+  .left-section {
+    width: 420px;
+  }
+  
+  .banner-section {
+    min-height: 350px;
+  }
+  
+  .carousel-section {
+    padding: 40px 35px;
+  }
+}
+
+/* ========================================= */
+/* PRINT STYLES */
+/* ========================================= */
+@media print {
+  .container-wrapper {
+    padding: 0;
+    max-width: 100%;
+  }
+  
+  .layout-container {
+    display: block;
+  }
+  
+  .left-section,
+  .content-section {
     width: 100%;
+    page-break-inside: avoid;
+  }
+  
+  .carousel-section,
+  .banner-section,
+  .promo-section {
+    box-shadow: none;
+    border: 1px solid #ddd;
   }
 }

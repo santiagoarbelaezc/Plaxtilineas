@@ -72,6 +72,27 @@
   color: #333333;
 }
 
+
+.full-banner-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 20px 10px;
+  background-color: #ffffff;
+  
+}
+
+.full-banner-wrapper::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e0e0e0, transparent);
+  margin-top: -10px;
+}
+
+
 .features-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

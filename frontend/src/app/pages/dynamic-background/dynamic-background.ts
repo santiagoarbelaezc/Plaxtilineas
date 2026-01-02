@@ -19,6 +19,7 @@ import { CarouselComponent } from '../../components/carousel/carousel';
 import { CardBannerComponent } from '../../components/card-banner/card-banner';
 import { CardContainerComponent } from '../../components/card-container/card-container';
 import { CardPromos } from '../../components/card-promos/card-promos';
+import { FullBanner } from '../../components/full-banner/full-banner';
 
 @Component({
   selector: 'app-dynamic-background',
@@ -34,7 +35,8 @@ import { CardPromos } from '../../components/card-promos/card-promos';
     PlaxtiTrioPresentationComponent,
     PlaxtiBannerComponent,
     FeatureNewProducts,
-    CardContainerComponent
+    CardContainerComponent,
+    FullBanner
   ],
   templateUrl: './dynamic-background.html',
   styleUrls: ['./dynamic-background.css']

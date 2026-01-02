@@ -1,4 +1,9 @@
-<div class="carousel-container" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+<div class="carousel-container" 
+     (mouseenter)="onMouseEnter()" 
+     (mouseleave)="onMouseLeave()"
+     (touchstart)="onTouchStart($event)"
+     (touchmove)="onTouchMove($event)"
+     (touchend)="onTouchEnd()">
   
   <!-- Título de la categoría -->
   <div class="categoria-header" *ngIf="categoriaNombre">
@@ -24,6 +29,7 @@
       *ngIf="productos.length > itemsPerView"
       class="nav-btn prev-btn" 
       (click)="prev()"
+      [disabled]="!hasPrev()"
       aria-label="Productos anteriores">
       ‹
     </button>
@@ -32,13 +38,14 @@
     <div class="productos-container">
       <div 
         class="productos-slide"
-        [style.transform]="'translateX(-' + (currentIndex * (100 / itemsPerView)) + '%)'">
+        [style.transform]="getTransformValue()">
         
         <div 
-          *ngFor="let producto of productos" 
-          class="producto-item">
+          *ngFor="let producto of productos; trackBy: trackByProductId" 
+          class="producto-item"
+          [style.flex-basis]="'calc(100% / ' + itemsPerView + ')'">
           
-          <!-- Tarjeta de producto directa (sin usar componente card) -->
+          <!-- Tarjeta de producto directa -->
           <div class="producto-card">
             <!-- Logo de la empresa -->
             <div class="producto-logo">
@@ -54,6 +61,7 @@
                 [src]="producto.imagen_url" 
                 [alt]="producto.nombre"
                 class="imagen"
+                loading="lazy"
                 (error)="producto.imagen_url = 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Producto'">
             </div>
             
@@ -61,7 +69,6 @@
             <div class="producto-info">
               <div class="green-container">
                 <div class="price-section">
-                  
                   <span class="price">{{ formatearPrecio(producto.precio) }}</span>
                 </div>
                 
@@ -94,20 +101,12 @@
       *ngIf="productos.length > itemsPerView"
       class="nav-btn next-btn" 
       (click)="next()"
+      [disabled]="!hasNext()"
       aria-label="Siguientes productos">
       ›
     </button>
     
-    <!-- Indicadores de página -->
-    <div *ngIf="productos.length > itemsPerView" class="indicadores">
-      <button 
-        *ngFor="let index of getSlideIndices()"
-        class="indicador" 
-        [class.active]="currentIndex === index"
-        (click)="goToSlide(index)"
-        [attr.aria-label]="'Ir a página ' + (index + 1)">
-      </button>
-    </div>
+    
     
   </div>
   

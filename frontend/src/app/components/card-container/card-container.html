@@ -4,16 +4,7 @@
     
     <!-- Sección izquierda: Card y Promos -->
     <div class="left-section">
-      <!-- Card principal -->
-      <div class="card-section">
-        <app-card 
-          [precio]="precio" 
-          [nombreProducto]="nombreProducto"
-          [imagenProducto]="imagenProducto">
-        </app-card>
-      </div>
-      
-      <!-- Card de promociones (debajo del card principal) -->
+      <!-- Card de promociones (arriba en móvil) -->
       <div class="promo-section">
         <app-card-promos
           [titulo]="promoTitulo"
@@ -21,6 +12,15 @@
           [imagen]="promoImagen"
           [logoUrl]="promoLogoUrl">
         </app-card-promos>
+      </div>
+      
+      <!-- Card principal (abajo en móvil) -->
+      <div class="card-section">
+        <app-card 
+          [precio]="precio" 
+          [nombreProducto]="nombreProducto"
+          [imagenProducto]="imagenProducto">
+        </app-card>
       </div>
     </div>
     

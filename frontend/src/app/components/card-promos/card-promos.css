@@ -133,42 +133,265 @@
   transform: scale(0.98);
   background-color: #e9ecef;
 }
+/* ============================================
+   MEDIA QUERIES PARA CARD RESPONSIVE
+   ============================================ */
 
-/* Ajustes para pantallas pequeñas */
-@media (max-width: 480px) {
+/* Para tablets y pantallas medianas (768px - 1024px) */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
   .card-container {
-    width: 300px;
-    height: 420px;
+    width: 90vw;
+    max-width: 500px;
+    height: 280px;
+    flex-direction: row;
+    border-radius: 12px;
   }
   
   .logo-section {
-    height: 85px;
-    padding: 12px;
+    height: 80px;
+    padding: 10px;
+    left: auto;
+    width: 40%;
   }
   
   .logo {
-    max-width: 220px;
+    max-height: 80px;
+    max-width: 200px;
+  }
+  
+  .product-image-section {
+    width: 60%;
+    height: 100%;
   }
   
   .product-info-section {
+    position: absolute;
+    right: 0;
+    left: auto;
+    width: 40%;
+    height: 100%;
     padding: 15px;
+    top: 0;
+    bottom: 0;
   }
   
   .green-container {
+    height: 100%;
+    border-radius: 0 12px 12px 0;
     padding: 20px 15px;
+    border-top: none;
+    border-left: 3px solid #ffffff;
+  }
+  
+  .promo-content {
+    height: 100%;
+    justify-content: center;
+    gap: 12px;
   }
   
   .promo-title {
-    font-size: 20px;
-    letter-spacing: 1.2px;
+    font-size: 18px;
+    letter-spacing: 1px;
   }
   
   .promo-description {
     font-size: 16px;
+    max-width: 95%;
   }
   
   .promo-button {
-    padding: 14px 35px;
+    padding: 8px 25px;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+}
+
+/* Para móviles grandes (576px - 767px) */
+@media screen and (max-width: 767px) {
+  .card-container {
+    width: 90vw;
+    max-width: 400px;
+    height: 220px;
+    flex-direction: row;
+    border-radius: 10px;
+    margin: 0 auto;
+  }
+  
+  .logo-section {
+    display: none; /* Ocultamos logo en móvil para ahorrar espacio */
+  }
+  
+  .product-image-section {
+    width: 50%;
+    height: 100%;
+  }
+  
+  .product-info-section {
+    position: absolute;
+    right: 0;
+    left: auto;
+    width: 50%;
+    height: 100%;
+    padding: 12px;
+    top: 0;
+    bottom: 0;
+  }
+  
+  .green-container {
+    height: 100%;
+    border-radius: 0 10px 10px 0;
+    padding: 15px 10px;
+    border-top: none;
+    border-left: 2px solid #ffffff;
+  }
+  
+  .promo-content {
+    height: 100%;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .promo-title {
     font-size: 16px;
+    letter-spacing: 0.8px;
+  }
+  
+  .promo-description {
+    font-size: 14px;
+    line-height: 1.3;
+    max-width: 98%;
+    margin-bottom: 5px;
+  }
+  
+  .promo-button {
+    padding: 6px 20px;
+    font-size: 13px;
+    border-width: 2px;
+  }
+}
+
+/* Para móviles pequeños (hasta 575px) */
+@media screen and (max-width: 575px) {
+  .card-container {
+    width: 95vw;
+    max-width: 350px;
+    height: 200px;
+    border-radius: 8px;
+  }
+  
+  .product-image-section {
+    width: 45%;
+  }
+  
+  .product-info-section {
+    width: 55%;
+    padding: 10px;
+  }
+  
+  .green-container {
+    padding: 12px 8px;
+    border-radius: 0 8px 8px 0;
+  }
+  
+  .promo-title {
+    font-size: 15px;
+    letter-spacing: 0.5px;
+  }
+  
+  .promo-description {
+    font-size: 13px;
+    line-height: 1.2;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .promo-button {
+    padding: 5px 15px;
+    font-size: 12px;
+    letter-spacing: 0.8px;
+    margin-top: 3px;
+  }
+}
+
+/* Para móviles muy pequeños (hasta 375px) */
+@media screen and (max-width: 375px) {
+  .card-container {
+    height: 180px;
+    max-width: 320px;
+  }
+  
+  .promo-title {
+    font-size: 14px;
+  }
+  
+  .promo-description {
+    font-size: 12px;
+    -webkit-line-clamp: 2;
+  }
+  
+  .promo-button {
+    padding: 4px 12px;
+    font-size: 11px;
+  }
+}
+
+/* Ajustes para orientación landscape en móviles */
+@media screen and (max-width: 767px) and (orientation: landscape) {
+  .card-container {
+    height: 180px;
+    max-width: 450px;
+  }
+  
+  .product-image-section {
+    width: 55%;
+  }
+  
+  .product-info-section {
+    width: 45%;
+  }
+  
+  .promo-description {
+    -webkit-line-clamp: 1;
+  }
+}
+
+/* Optimizaciones para dispositivos táctiles */
+@media (hover: none) and (pointer: coarse) {
+  .promo-button:hover {
+    transform: none;
+  }
+  
+  .promo-button:active {
+    transform: scale(0.95);
+    background-color: #e9ecef;
+  }
+}
+
+/* Mejoras de rendimiento para móviles */
+@media screen and (max-width: 767px) {
+  .card-container {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  .green-container {
+    box-shadow: 0 -3px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .promo-button {
+    transition: transform 0.2s ease;
+  }
+}
+
+/* Ajustes de texto para pantallas pequeñas */
+@media screen and (max-width: 767px) {
+  .promo-title {
+    word-break: break-word;
+    hyphens: auto;
+  }
+  
+  .promo-description {
+    word-break: break-word;
   }
 }

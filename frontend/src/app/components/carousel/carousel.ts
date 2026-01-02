@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, HostListener, AfterViewInit } from '@angular/core';
 import { ProductoEditable } from '../../models/producto.model';
 import { CategoriasService } from '../../services/categorias.service';
 import { ProductosService } from '../../services/productos.service';
@@ -11,33 +11,105 @@ import { ProductosService } from '../../services/productos.service';
   templateUrl: './carousel.html',
   styleUrls: ['./carousel.css']
 })
-export class CarouselComponent implements OnInit, OnDestroy {
+export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() categoriaNombre: string = 'Pisos'; // Valor por defecto
   
   productos: ProductoEditable[] = [];
   cargando: boolean = true;
   error: string | null = null;
   
-  // Configuración del carrusel - CAMBIADO A 4
+  // Configuración del carrusel
   currentIndex: number = 0;
-  itemsPerView: number = 4; // Cambiado de 3 a 4
+  itemsPerView: number = 4; // Por defecto para desktop
   autoSlideInterval: any;
   
   // Configuración de truncado de descripción
-  maxDescLength: number = 80; // Reducido un poco para acomodar 4 productos
+  maxDescLength: number = 120;
+  
+  // Variables para responsive
+  screenWidth: number = window.innerWidth;
+  isMobile: boolean = false;
+  isTablet: boolean = false;
   
   constructor(
     private categoriasService: CategoriasService,
     private productosService: ProductosService
-  ) {}
+  ) {
+    this.detectDeviceType();
+    this.updateItemsPerView();
+  }
   
   ngOnInit(): void {
     this.cargarProductosPorCategoria();
     this.iniciarAutoSlide();
   }
   
+  ngAfterViewInit(): void {
+    // Asegurar que el responsive se aplique después de la renderización inicial
+    setTimeout(() => {
+      this.updateItemsPerView();
+      this.adjustCurrentIndex();
+    }, 100);
+  }
+  
   ngOnDestroy(): void {
     this.detenerAutoSlide();
+  }
+  
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    this.screenWidth = window.innerWidth;
+    this.detectDeviceType();
+    this.updateItemsPerView();
+    // Resetear el índice actual si es necesario
+    this.adjustCurrentIndex();
+  }
+  
+  // Detectar tipo de dispositivo
+  detectDeviceType(): void {
+    this.isMobile = this.screenWidth < 768;
+    this.isTablet = this.screenWidth >= 768 && this.screenWidth < 1024;
+  }
+  
+  // Método para actualizar itemsPerView según el tamaño de pantalla
+  updateItemsPerView(): void {
+    if (this.screenWidth < 480) {
+      this.itemsPerView = 1; // Móvil pequeño (xs)
+    } else if (this.screenWidth < 640) {
+      this.itemsPerView = 1; // Móvil (sm)
+    } else if (this.screenWidth < 768) {
+      this.itemsPerView = 2; // Móvil grande/Tablet pequeña (md)
+    } else if (this.screenWidth < 1024) {
+      this.itemsPerView = 3; // Tablet (lg)
+    } else if (this.screenWidth < 1280) {
+      this.itemsPerView = 4; // Desktop (xl)
+    } else {
+      this.itemsPerView = 4; // Desktop grande (2xl)
+    }
+    
+    // Actualizar el máximo de caracteres según tamaño
+    if (this.screenWidth < 480) {
+      this.maxDescLength = 60;
+    } else if (this.screenWidth < 640) {
+      this.maxDescLength = 80;
+    } else if (this.screenWidth < 768) {
+      this.maxDescLength = 100;
+    } else if (this.screenWidth < 1024) {
+      this.maxDescLength = 120;
+    } else {
+      this.maxDescLength = 140;
+    }
+  }
+  
+  // Ajustar currentIndex para que no exceda el máximo
+  adjustCurrentIndex(): void {
+    const maxIndex = this.productos.length > this.itemsPerView 
+      ? Math.max(0, this.productos.length - this.itemsPerView)
+      : 0;
+    
+    if (this.currentIndex > maxIndex) {
+      this.currentIndex = maxIndex;
+    }
   }
   
   cargarProductosPorCategoria(): void {
@@ -45,11 +117,9 @@ export class CarouselComponent implements OnInit, OnDestroy {
     this.error = null;
     this.productos = [];
     
-    // 1. Obtener el ID de la categoría por su nombre
     this.categoriasService.getIdCategoriaPorNombre(this.categoriaNombre)
       .subscribe({
         next: (categoria) => {
-          // 2. Con el ID, cargar los productos de esa categoría usando el nuevo método
           this.cargarProductosDeCategoria(categoria.id);
         },
         error: (error) => {
@@ -61,27 +131,25 @@ export class CarouselComponent implements OnInit, OnDestroy {
   }
   
   cargarProductosDeCategoria(categoriaId: number): void {
-    // Usar el nuevo método que filtra por categoría ID
     this.productosService.obtenerProductosPorCategoriaId(categoriaId)
       .subscribe({
         next: (productos) => {
           this.productos = productos || [];
           this.cargando = false;
           
-          console.log(`Productos cargados para categoría ${this.categoriaNombre} (ID: ${categoriaId}):`, this.productos.length);
+          // Ajustar índice después de cargar productos
+          this.adjustCurrentIndex();
           
-          // Verificar si realmente son de la categoría correcta
+          console.log(`Productos cargados: ${this.productos.length}, itemsPerView: ${this.itemsPerView}`);
+          
           if (this.productos.length > 0) {
-            // Opcional: verificar que los productos pertenezcan a la categoría
             const productosFiltrados = this.filtrarProductosPorCategoria(this.productos, this.categoriaNombre);
             
             if (productosFiltrados.length < this.productos.length) {
-              console.warn(`Algunos productos no pertenecen a la categoría "${this.categoriaNombre}"`);
               this.productos = productosFiltrados;
             }
           }
           
-          // Si no hay productos, mostrar mensaje
           if (this.productos.length === 0) {
             this.error = `No hay productos disponibles en la categoría "${this.categoriaNombre}"`;
           }
@@ -94,20 +162,21 @@ export class CarouselComponent implements OnInit, OnDestroy {
       });
   }
   
-  // Método auxiliar para filtrar productos por categoría (por si el backend no filtra correctamente)
   filtrarProductosPorCategoria(productos: ProductoEditable[], nombreCategoria: string): ProductoEditable[] {
-    // Verificar si los productos tienen la propiedad 'categoria' para filtrar
     return productos.filter(producto => {
-      // Si el producto tiene la propiedad 'categoria', compararla
       if (producto.categoria) {
         return producto.categoria.toLowerCase() === nombreCategoria.toLowerCase();
       }
-      // Si no tiene la propiedad, asumimos que sí pertenece
       return true;
     });
   }
   
-  // Navegación del carrusel - Actualizado para 4 productos
+  // TrackBy para mejorar performance en ngFor
+  trackByProductId(index: number, producto: ProductoEditable): number {
+    return producto.id || index;
+  }
+  
+  // Navegación del carrusel
   next(): void {
     if (this.productos.length <= this.itemsPerView) return;
     
@@ -116,7 +185,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
     if (this.currentIndex + 1 <= maxIndex) {
       this.currentIndex++;
     } else {
-      this.currentIndex = 0; // Volver al inicio
+      this.currentIndex = 0;
     }
   }
   
@@ -126,7 +195,6 @@ export class CarouselComponent implements OnInit, OnDestroy {
     if (this.currentIndex > 0) {
       this.currentIndex--;
     } else {
-      // Ir al final
       const maxIndex = Math.max(0, this.productos.length - this.itemsPerView);
       this.currentIndex = maxIndex;
     }
@@ -139,19 +207,22 @@ export class CarouselComponent implements OnInit, OnDestroy {
     }
   }
   
-  // Auto-slide
+  // Auto-slide (solo en desktop)
   iniciarAutoSlide(): void {
     this.detenerAutoSlide();
-    this.autoSlideInterval = setInterval(() => {
-      if (this.productos.length > this.itemsPerView) {
+    
+    // Solo activar auto-slide en desktop
+    if (this.screenWidth >= 768 && this.productos.length > this.itemsPerView) {
+      this.autoSlideInterval = setInterval(() => {
         this.next();
-      }
-    }, 5000); // Cambia cada 5 segundos
+      }, 5000);
+    }
   }
   
   detenerAutoSlide(): void {
     if (this.autoSlideInterval) {
       clearInterval(this.autoSlideInterval);
+      this.autoSlideInterval = null;
     }
   }
   
@@ -161,11 +232,28 @@ export class CarouselComponent implements OnInit, OnDestroy {
   }
   
   get totalSlides(): number {
-    return Math.max(1, this.productos.length - this.itemsPerView + 1);
+    return Math.max(1, Math.ceil(this.productos.length / this.itemsPerView));
   }
   
   getSlideIndices(): number[] {
-    return Array.from({ length: this.totalSlides }, (_, i) => i);
+    const total = this.totalSlides;
+    const maxIndicesToShow = this.isMobile ? 3 : 5; // Mostrar menos indicadores en móvil
+    const indices = [];
+    
+    // Calcular rango de índices a mostrar
+    let start = Math.max(0, this.currentIndex - Math.floor(maxIndicesToShow / 2));
+    let end = Math.min(total - 1, start + maxIndicesToShow - 1);
+    
+    // Ajustar si estamos cerca del inicio
+    if (end - start + 1 < maxIndicesToShow) {
+      start = Math.max(0, end - maxIndicesToShow + 1);
+    }
+    
+    for (let i = start; i <= end && i < total; i++) {
+      indices.push(i);
+    }
+    
+    return indices;
   }
   
   onMouseEnter(): void {
@@ -176,15 +264,42 @@ export class CarouselComponent implements OnInit, OnDestroy {
     this.iniciarAutoSlide();
   }
   
- // Método para formatear precio sin decimales (versión concisa)
-formatearPrecio(precio: number): string {
-  return '$ ' + Math.round(precio).toLocaleString('es-ES', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  });
-}
+  // Manejo de touch para móviles
+  touchStartX: number = 0;
+  touchEndX: number = 0;
   
-  // Método para truncar la descripción
+  onTouchStart(event: TouchEvent): void {
+    this.touchStartX = event.touches[0].clientX;
+    this.detenerAutoSlide();
+  }
+  
+  onTouchMove(event: TouchEvent): void {
+    this.touchEndX = event.touches[0].clientX;
+  }
+  
+  onTouchEnd(): void {
+    const threshold = 50; // Mínimo desplazamiento para considerar un swipe
+    
+    if (this.touchStartX - this.touchEndX > threshold) {
+      // Swipe izquierda -> siguiente
+      this.next();
+    } else if (this.touchEndX - this.touchStartX > threshold) {
+      // Swipe derecha -> anterior
+      this.prev();
+    }
+    
+    this.touchStartX = 0;
+    this.touchEndX = 0;
+    this.iniciarAutoSlide();
+  }
+  
+  formatearPrecio(precio: number): string {
+    return '$ ' + Math.round(precio).toLocaleString('es-ES', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    });
+  }
+  
   truncarDescripcion(descripcion: string): string {
     if (!descripcion) return '';
     
@@ -193,5 +308,25 @@ formatearPrecio(precio: number): string {
     }
     
     return descripcion.substring(0, this.maxDescLength) + '...';
+  }
+  
+  // Método para calcular el porcentaje de transformación
+  getTransformValue(): string {
+    if (this.productos.length <= this.itemsPerView) {
+      return 'translateX(0%)';
+    }
+    
+    const slideWidth = 100 / this.itemsPerView;
+    return `translateX(-${this.currentIndex * slideWidth}%)`;
+  }
+  
+  // Método para verificar si hay más productos por mostrar
+  hasNext(): boolean {
+    return this.productos.length > this.itemsPerView && 
+           this.currentIndex < this.productos.length - this.itemsPerView;
+  }
+  
+  hasPrev(): boolean {
+    return this.productos.length > this.itemsPerView && this.currentIndex > 0;
   }
 }
