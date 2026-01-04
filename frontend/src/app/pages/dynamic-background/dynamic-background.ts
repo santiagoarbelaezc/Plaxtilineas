@@ -31,7 +31,6 @@ import { FullBanner } from '../../components/full-banner/full-banner';
     SocialButtonsComponent,
     LongMap,
     CategoriasDestacadasComponent,
-    FeatureBanner,
     PlaxtiTrioPresentationComponent,
     PlaxtiBannerComponent,
     FeatureNewProducts,
@@ -81,7 +80,7 @@ export class DynamicBackgroundComponent implements OnInit {
 
   serviciosCards: ContentCard[] = [
     {
-      imageUrl: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767030291/ChatGPT_Image_Dec_29_2025_12_10_23_AM_msuluw.png',
+      imageUrl: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767456920/tienda_ry4isp.jpg',
       altText: 'Venta de insumos industriales',
       title: 'Venta de Insumos',
       description: 'Amplio catálogo de productos esenciales para la industria con calidad garantizada.',
@@ -89,7 +88,7 @@ export class DynamicBackgroundComponent implements OnInit {
       textPosition: 'bottom'
     },
     {
-      imageUrl: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767035836/ChatGPT_Image_29_dic_2025_14_14_51_kgzzi5.png',
+      imageUrl: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767456929/envio5_pa3o2m.jpg',
       altText: 'Distribución logística',
       title: 'Logística y Distribución',
       description: 'Servicio de distribución eficiente y puntual a lo largo de todo el territorio nacional.',
@@ -97,9 +96,9 @@ export class DynamicBackgroundComponent implements OnInit {
       textPosition: 'center'
     },
     {
-      imageUrl: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767035505/banner1_qz3b3m.png',
+      imageUrl: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767456923/contactanos_bvuiud.jpg',
       altText: 'Asesoramiento técnico',
-      title: 'Asesoría Técnica',
+      title: 'Asesoría',
       description: 'Expertos disponibles para brindar soluciones personalizadas a tus necesidades.',
       link: '/contacto',
       textPosition: 'bottom'

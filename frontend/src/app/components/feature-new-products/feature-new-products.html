@@ -6,13 +6,10 @@
     </div>
 
     <div class="products-grid" *ngIf="productos.length > 0; else loadingTemplate">
-      <!-- Producto 1 -->
+      <!-- Producto -->
       <div 
         class="product-card" 
-        *ngFor="let producto of productos; let i = index"
-        [ngClass]="{'reverse': i % 2 === 1}"
-        data-aos="fade-up"
-        [attr.data-aos-delay]="i * 100"
+        *ngFor="let producto of productos"
       >
         <!-- Imagen del producto -->
         <div class="product-image-container">
@@ -25,40 +22,31 @@
             />
             <!-- Etiqueta de nuevo -->
             <div class="product-badge new-badge">NUEVO</div>
-            <!-- Badge de categoría -->
-            <div class="product-badge category-badge">
-              {{producto.categoria}}
-            </div>
           </div>
         </div>
 
         <!-- Contenido del producto -->
         <div class="product-content">
           <div class="product-meta">
-            <span class="product-subcategory">{{producto.subcategoria}}</span>
-            <span class="product-stock in-stock">
-              ¡Disponible!
-            </span>
+            <span class="product-subcategory">{{producto.categoria}}</span>
+            <span class="product-stock in-stock">¡Disponible!</span>
           </div>
           
           <h3 class="product-title">{{producto.nombre}}</h3>
           
           <p class="product-description">{{producto.descripcion}}</p>
           
-          <div class="product-details">
+          <div class="product-bottom">
             <div class="product-price">
-              <span class="price-amount">{{producto.precio | currency:'USD':'symbol':'1.2-2'}}</span>
-              <span class="price-unit">c/u</span>
+            <span class="price-amount">{{ formatearPrecio(producto.precio) }}</span>
+            
             </div>
             
-          </div>
-
-          <div class="product-actions">
             <button 
-              class="product-btn primary"
+              class="product-btn"
               (click)="verDetalles(producto.id)"
             >
-              Ver Detalles
+              Ver
               <span class="btn-icon">→</span>
             </button>
           </div>
@@ -76,14 +64,9 @@
 
     <!-- Botón para ver todos los productos -->
     <div class="view-all-container">
-      <a 
-        routerLink="/productos" 
-        class="view-all-btn"
-        data-aos="fade-up"
-        data-aos-delay="300"
-      >
+      <a routerLink="/productos" class="view-all-btn">
         Ver Todos los Productos
-        <span class="arrow-icon">⟶</span>
+        <span class="arrow-icon">→</span>
       </a>
     </div>
   </div>

@@ -425,6 +425,37 @@
   opacity: 1;
 }
 
+
+/* Estilos para hacer que las tarjetas sean clickeables */
+.producto-item {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.producto-item:hover {
+  transform: translateY(-5px);
+}
+
+.producto-item .producto-card.clickable {
+  cursor: pointer;
+}
+
+/* Indicador visual de que es clickeable */
+.producto-item:hover .producto-card {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Evitar que el logo sea clickeable directamente */
+.producto-logo {
+  pointer-events: none;
+}
+
+/* Para dispositivos táctiles */
+@media (max-width: 768px) {
+  .producto-item:active {
+    transform: scale(0.98);
+  }
+}
 /* ========================================= */
 /* MEDIA QUERIES - DISEÑO COMPLETAMENTE RESPONSIVE */
 /* ========================================= */

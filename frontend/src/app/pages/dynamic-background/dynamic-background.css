@@ -79,6 +79,7 @@
   width: 100%;
   padding: 20px 10px;
   background-color: #ffffff;
+  margin-bottom: 10px;
   
 }
 
@@ -212,7 +213,7 @@
 }
 
 .store-image2 {
-  width: 100%;
+  width: 760px;
   height: 500px;
   object-fit: cover;
   border-radius: 16px;

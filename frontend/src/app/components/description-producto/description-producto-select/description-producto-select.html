@@ -23,7 +23,7 @@
     <nav class="breadcrumb">
       <a routerLink="/productos" class="breadcrumb-link">Productos</a>
       <span class="breadcrumb-separator">›</span>
-      <span class="breadcrumb-current">{{producto.nombre}}</span>
+      <span class="breadcrumb-current">{{nombreCompleto}}</span>
     </nav>
 
     <!-- Contenedor principal -->
@@ -34,7 +34,7 @@
         <div class="producto-imagen-container">
           <img 
             [src]="producto.imagen_url" 
-            [alt]="producto.nombre" 
+            [alt]="nombreCompleto" 
             class="producto-imagen"
             (error)="producto.imagen_url = 'assets/images/producto-default.jpg'">
           <div class="imagen-overlay"></div>
@@ -53,31 +53,33 @@
           <h1 class="producto-nombre">{{productoBaseNombre}}</h1>
           <div class="producto-meta">
             <span class="producto-id">ID: {{producto.id}}</span>
+            <!-- Verificar si el producto tiene el campo creado_en (viene del backend) -->
+            
           </div>
         </div>
 
-        <!-- Selección de opciones -->
-        <div *ngIf="opcionesProducto.length > 0" class="opciones-container">
-          <h3 class="section-title">Seleccionar tipo</h3>
+        <!-- Selección de variantes -->
+        <div *ngIf="variantes.length > 0" class="opciones-container">
+          <h3 class="section-title">Seleccionar variante</h3>
           <div class="opciones-grid">
             <div 
-              *ngFor="let opcion of opcionesProducto" 
+              *ngFor="let variante of variantes" 
               class="opcion-item"
-              [class.opcion-seleccionada]="opcionSeleccionada === opcion"
-              (click)="seleccionarOpcion(opcion)">
+              [class.opcion-seleccionada]="varianteSeleccionada?.id === variante.id"
+              (click)="seleccionarVariante(variante)">
               <div class="opcion-contenido">
-                <span class="opcion-texto">{{opcion}}</span>
+                <span class="opcion-texto">{{variante.nombre}}</span>
                 <div class="opcion-checkbox">
-                  <div class="opcion-checkmark" *ngIf="opcionSeleccionada === opcion">✓</div>
+                  <div class="opcion-checkmark" *ngIf="varianteSeleccionada?.id === variante.id">✓</div>
                 </div>
               </div>
             </div>
           </div>
           
-          <!-- Precio actualizado por opción (si aplica) -->
-          <div *ngIf="precioPorOpcion[opcionSeleccionada]" class="precio-opcion">
+          <!-- Precio actualizado por variante -->
+          <div *ngIf="varianteSeleccionada" class="precio-opcion">
             <span class="precio-opcion-label">Precio seleccionado:</span>
-            <span class="precio-opcion-valor">${{formatearPrecio(precioPorOpcion[opcionSeleccionada])}}</span>
+            <span class="precio-opcion-valor">{{formatearPrecio(varianteSeleccionada.precio)}}</span>
           </div>
         </div>
 
@@ -101,9 +103,13 @@
               <span class="detalle-label">Categoría:</span>
               <span class="detalle-valor">{{producto.categoria}}</span>
             </div>
-            <div class="detalle-item" *ngIf="opcionSeleccionada">
-              <span class="detalle-label">Tipo seleccionado:</span>
-              <span class="detalle-valor">{{opcionSeleccionada}}</span>
+            <div class="detalle-item" *ngIf="varianteSeleccionada">
+              <span class="detalle-label">Variante seleccionada:</span>
+              <span class="detalle-valor">{{varianteSeleccionada.nombre}}</span>
+            </div>
+            <div class="detalle-item" *ngIf="varianteSeleccionada">
+              <span class="detalle-label">ID de variante:</span>
+              <span class="detalle-valor">{{varianteSeleccionada.id}}</span>
             </div>
           </div>
         </div>
@@ -113,8 +119,11 @@
           <div class="precio-container">
             <span class="precio-label">Precio:</span>
             <div class="precio-valor">
-              <span class="precio-simbolo">$</span>
+              
               <span class="precio-numero">{{formatearPrecio(precioActual)}}</span>
+            </div>
+            <div *ngIf="variantes.length > 0" class="precio-note">
+              <small>Selecciona una variante para ver su precio específico</small>
             </div>
           </div>
 
@@ -153,5 +162,8 @@
         </div>
       </div>
     </div>
+
+    <!-- Historial de productos vistos (si hay) -->
+    
   </div>
 </div>

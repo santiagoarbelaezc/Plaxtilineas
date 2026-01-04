@@ -75,15 +75,15 @@
               
               <!-- Solo precio, sin información de disponibilidad -->
               <div class="product-price-section">
-                <div class="price-display">
-                  <div class="price-label-area">
-                    <span class="price-label">Precio:</span>
-                  </div>
-                  <div class="price-value-area">
-                    <span class="price-value">${{producto.precio | number:'1.2-2'}}</span>
-                  </div>
-                </div>
-              </div>
+    <div class="price-display">
+        <div class="price-label-area">
+            <span class="price-label">Precio:</span>
+        </div>
+        <div class="price-value-area">
+            <span class="price-value">{{formatearPrecio(producto.precio)}}</span>
+        </div>
+    </div>
+</div>
               
             </div>
             

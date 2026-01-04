@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CategoriaIndex } from '../../models/categoriaIndex.model';
@@ -14,8 +14,14 @@ import { MenuStateService } from '../../services/menu-state.service';
   styleUrls: ['./categorias-destacadas.component.css']
 })
 export class CategoriasDestacadasComponent implements OnInit {
+  @ViewChild('categoriasGrid') categoriasGrid!: ElementRef;
+  
   categorias: CategoriaIndex[] = [];
   categoriasConSubcategorias: any[] = [];
+  currentPage = 0;
+  itemsPerPage = 11;
+  pagesArray: number[] = [];
+  isMobile = false;
 
   // 🔹 Categorías con imágenes fijas
   categoriasFijas = [
@@ -35,42 +41,117 @@ export class CategoriasDestacadasComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Opción 1: Usar categorías del servicio
+    this.checkIfMobile();
+    this.loadCategorias();
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.checkIfMobile();
+    this.updateItemsPerPage();
+  }
+
+  private checkIfMobile(): void {
+    this.isMobile = window.innerWidth < 1024;
+  }
+
+  private updateItemsPerPage(): void {
+    const width = window.innerWidth;
+    
+    if (width < 360) {
+      this.itemsPerPage = 2;
+    } else if (width < 480) {
+      this.itemsPerPage = 3;
+    } else if (width < 640) {
+      this.itemsPerPage = 4;
+    } else if (width < 768) {
+      this.itemsPerPage = 5;
+    } else if (width < 1024) {
+      this.itemsPerPage = 6;
+    } else if (width < 1200) {
+      this.itemsPerPage = 8;
+    } else {
+      this.itemsPerPage = 11;
+    }
+    
+    this.updatePagesArray();
+  }
+
+  private updatePagesArray(): void {
+    const totalPages = Math.ceil(this.categorias.length / this.itemsPerPage);
+    this.pagesArray = Array.from({ length: totalPages }, (_, i) => i);
+  }
+
+  /**
+   * Cargar categorías
+   */
+  private loadCategorias(): void {
     this.categoriasService.getCategorias().subscribe({
       next: data => {
-        // 🔹 Combinar datos del servicio con imágenes fijas
-        this.categorias = data.map(cat => {
-          const categoriaFija = this.categoriasFijas.find(f => 
-            f.nombre.toLowerCase() === cat.nombre.toLowerCase()
-          );
-          
-          return {
-            ...cat,
-            icono_url: categoriaFija?.icono_url || cat.icono_url
-          };
-        });
-        
-        console.log(`✅ Categorías cargadas: ${data.length}`);
-        
-        // Cargar las categorías con subcategorías
+        this.categorias = this.combineCategoriasWithFixedImages(data);
+        this.updateItemsPerPage();
         this.cargarCategoriasConSubcategorias();
       },
       error: err => {
         console.error('❌ Error al cargar categorías:', err);
-        // 🔹 Opción 2: Usar categorías fijas si falla el servicio
         this.cargarCategoriasFijas();
       }
     });
   }
 
+  private combineCategoriasWithFixedImages(data: CategoriaIndex[]): CategoriaIndex[] {
+    return data.map(cat => {
+      const categoriaFija = this.categoriasFijas.find(f => 
+        f.nombre.toLowerCase() === cat.nombre.toLowerCase()
+      );
+      
+      return {
+        ...cat,
+        icono_url: categoriaFija?.icono_url || cat.icono_url
+      };
+    });
+  }
+
   /**
-   * Carga las categorías con sus subcategorías
+   * Navegar en el carrusel
+   */
+  scrollCarrusel(direction: 'prev' | 'next'): void {
+    const grid = this.categoriasGrid.nativeElement;
+    const itemWidth = grid.scrollWidth / this.categorias.length;
+    const scrollAmount = itemWidth * this.itemsPerPage;
+    
+    if (direction === 'prev') {
+      grid.scrollLeft -= scrollAmount;
+      this.currentPage = Math.max(0, this.currentPage - 1);
+    } else {
+      grid.scrollLeft += scrollAmount;
+      this.currentPage = Math.min(this.pagesArray.length - 1, this.currentPage + 1);
+    }
+  }
+
+  /**
+   * Ir a una página específica
+   */
+  goToPage(page: number): void {
+    const grid = this.categoriasGrid.nativeElement;
+    const itemWidth = grid.scrollWidth / this.categorias.length;
+    const scrollAmount = itemWidth * this.itemsPerPage * page;
+    
+    grid.scrollTo({
+      left: scrollAmount,
+      behavior: 'smooth'
+    });
+    
+    this.currentPage = page;
+  }
+
+  /**
+   * El resto de los métodos se mantienen igual...
    */
   private cargarCategoriasConSubcategorias(): void {
     this.categoriaMenuService.obtenerCategorias().subscribe({
       next: (categoriasCompletas) => {
         this.categoriasConSubcategorias = categoriasCompletas;
-        console.log('📂 Categorías con subcategorías cargadas:', categoriasCompletas);
       },
       error: (err) => {
         console.error('❌ Error al cargar categorías con subcategorías:', err);
@@ -79,9 +160,6 @@ export class CategoriasDestacadasComponent implements OnInit {
     });
   }
 
-  /**
-   * Cargar categorías fijas como fallback
-   */
   private cargarCategoriasFijas(): void {
     this.categorias = this.categoriasFijas.map((cat, index) => ({
       id: index + 1,
@@ -92,15 +170,11 @@ export class CategoriasDestacadasComponent implements OnInit {
       orden: index + 1
     }));
     
-    console.log('📋 Usando categorías fijas:', this.categorias);
+    this.updateItemsPerPage();
   }
 
-  /**
-   * Obtener la primera subcategoría de una categoría
-   */
   obtenerPrimeraSubcategoria(categoriaId: number): number | null {
     if (this.categoriasConSubcategorias.length === 0) {
-      console.warn('⚠️ No se han cargado las subcategorías aún');
       return null;
     }
 
@@ -109,40 +183,22 @@ export class CategoriasDestacadasComponent implements OnInit {
     );
 
     if (!categoriaCompleta || !categoriaCompleta.subcategorias || categoriaCompleta.subcategorias.length === 0) {
-      console.warn(`⚠️ La categoría ${categoriaId} no tiene subcategorías`);
       return null;
     }
 
-    const primeraSubcategoriaId = categoriaCompleta.subcategorias[0].id;
-    console.log(`📌 Categoría ${categoriaId}: primera subcategoría ID = ${primeraSubcategoriaId}`);
-    
-    return primeraSubcategoriaId;
+    return categoriaCompleta.subcategorias[0].id;
   }
 
-  /**
-   * Manejar clic en una categoría
-   */
   onCategoriaClick(categoria: CategoriaIndex): void {
-    console.log(`🖱️ Categoría clickeada: ${categoria.nombre} (ID: ${categoria.id})`);
-    
     const subcategoriaId = this.obtenerPrimeraSubcategoria(categoria.id);
     
     if (subcategoriaId) {
       this.menuStateService.saveLastSelectedSubcategory(subcategoriaId);
-      console.log(`✅ Subcategoría ${subcategoriaId} guardada en estado`);
-    } else {
-      console.warn(`⚠️ No se pudo obtener subcategoría para categoría ${categoria.id}`);
     }
   }
 
-  /**
-   * Manejar errores en las imágenes
-   */
   handleImageError(event: Event, categoria: CategoriaIndex): void {
     const imgElement = event.target as HTMLImageElement;
-    console.warn(`⚠️ Error cargando imagen para ${categoria.nombre}`);
-    
-    // Buscar imagen alternativa en las categorías fijas
     const categoriaFija = this.categoriasFijas.find(
       f => f.nombre.toLowerCase() === categoria.nombre.toLowerCase()
     );

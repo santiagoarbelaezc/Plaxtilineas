@@ -1,10 +1,12 @@
-import { Component, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ProductoMenu } from '../../../models/productoMenu.model';
+import { Variante } from '../../../models/variante.model';
 import { ProductSelectService } from '../../../services/product-select.service';
 import { ProductosService } from '../../../services/productos.service';
+import { VariantesService } from '../../../services/variantes.service'; // Añadir import
 
 @Component({
   selector: 'app-description-producto-select',
@@ -18,12 +20,11 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   cargando = true;
   error = false;
   
-  // Variables para manejo de opciones
-  opcionesProducto: string[] = [];
-  opcionSeleccionada: string = '';
+  // Variables para manejo de variantes
+  variantes: Variante[] = []; // Cambiar opcionesProducto por variantes
+  varianteSeleccionada: Variante | null = null; // Cambiar opcionSeleccionada por varianteSeleccionada
   descripcionBase: string = '';
   productoBaseNombre: string = '';
-  precioPorOpcion: { [key: string]: number } = {};
   
   private subscriptions: Subscription[] = [];
 
@@ -31,7 +32,8 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     public productSelectService: ProductSelectService,
     private route: ActivatedRoute,
     private router: Router,
-    private productosService: ProductosService
+    private productosService: ProductosService,
+    private variantesService: VariantesService // Añadir servicio de variantes
   ) {}
 
   ngOnInit() {
@@ -51,7 +53,7 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
         (producto) => {
           if (producto) {
             this.producto = producto as any;
-            this.procesarDescripcion();
+            this.procesarProducto();
             this.cargando = false;
             this.error = false;
           }
@@ -75,7 +77,7 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state?.['producto']) {
       this.producto = navigation.extras.state['producto'] as ProductoMenu;
-      this.procesarDescripcion();
+      this.procesarProducto();
       this.cargando = false;
       return;
     }
@@ -108,7 +110,7 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
         if (data.categoria_icono) productoConvertido.categoria_icono = data.categoria_icono;
         
         this.producto = productoConvertido;
-        this.procesarDescripcion();
+        this.procesarProducto();
         
         if (this.producto) {
           this.productSelectService.seleccionarProducto(this.producto);
@@ -123,123 +125,86 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   }
 
   /**
-   * Procesa la descripción para extraer opciones basadas en guiones
+   * Procesa el producto para cargar variantes y establecer información base
    */
-  private procesarDescripcion() {
+  private procesarProducto() {
     if (!this.producto) return;
     
-    const descripcion = this.producto.descripcion || '';
-    const nombre = this.producto.nombre || '';
+    // Establecer nombre base
+    this.productoBaseNombre = this.producto.nombre || '';
     
-    // Procesar nombre para extraer opciones
-    const nombrePartes = nombre.split(' -');
-    if (nombrePartes.length > 1) {
-      this.productoBaseNombre = nombrePartes[0].trim();
-      this.opcionesProducto = nombrePartes.slice(1).map(opcion => `-${opcion.trim()}`);
-      
-      // Seleccionar la primera opción por defecto
-      if (this.opcionesProducto.length > 0) {
-        this.opcionSeleccionada = this.opcionesProducto[0];
-      }
-    } else {
-      this.productoBaseNombre = nombre;
-      this.opcionesProducto = [];
-      this.opcionSeleccionada = '';
-    }
+    // Establecer descripción base
+    this.descripcionBase = this.producto.descripcion || '';
     
-    // Procesar descripción para extraer opciones y precios
-    this.extraerOpcionesYpreciosDesdeDescripcion(descripcion);
-    
-    // Establecer descripción base (sin las opciones específicas)
-    this.descripcionBase = this.obtenerDescripcionBase(descripcion);
+    // Cargar variantes del producto
+    this.cargarVariantesProducto(this.producto.id);
   }
 
   /**
-   * Extrae opciones y precios desde la descripción
+   * Carga las variantes del producto usando el servicio
    */
-  private extraerOpcionesYpreciosDesdeDescripcion(descripcion: string) {
-    const lineas = descripcion.split('\n');
-    let encontroOpciones = false;
-    
-    for (const linea of lineas) {
-      const lineaTrim = linea.trim();
-      
-      // Buscar patrones como "-1mm: $1000" o "-2mm - $1500"
-      const match = lineaTrim.match(/^(-[\w\d\s\/]+)[:\-]\s*\$\s*([\d.,]+)/i);
-      if (match) {
-        const opcion = match[1].trim();
-        const precioTexto = match[2].replace(',', '.');
-        const precio = parseFloat(precioTexto);
-        
-        if (!isNaN(precio)) {
-          this.precioPorOpcion[opcion] = precio;
+  private cargarVariantesProducto(productoId: number) {
+    this.variantesService.getVariantesPorProducto(productoId)
+      .subscribe({
+        next: (variantes) => {
+          this.variantes = variantes;
           
-          // Si esta opción no está en la lista, añadirla
-          if (!this.opcionesProducto.includes(opcion)) {
-            this.opcionesProducto.push(opcion);
+          // Seleccionar la primera variante por defecto si existe
+          if (this.variantes.length > 0) {
+            this.varianteSeleccionada = this.variantes[0];
+          } else {
+            this.varianteSeleccionada = null;
           }
-          
-          encontroOpciones = true;
+        },
+        error: (error) => {
+          console.error('Error al cargar variantes:', error);
+          this.variantes = [];
+          this.varianteSeleccionada = null;
         }
-      } else if (lineaTrim.startsWith('-') && !encontroOpciones) {
-        // Si no tiene precio explícito, usar el precio base
-        const opcion = lineaTrim;
-        if (!this.opcionesProducto.includes(opcion)) {
-          this.opcionesProducto.push(opcion);
-          this.precioPorOpcion[opcion] = this.producto?.precio || 0;
-        }
-      }
-    }
+      });
   }
 
   /**
-   * Obtiene la descripción base sin las líneas de opciones
+   * Selecciona una variante del producto
    */
-  private obtenerDescripcionBase(descripcion: string): string {
-    const lineas = descripcion.split('\n');
-    const lineasBase = lineas.filter(linea => {
-      const lineaTrim = linea.trim();
-      // Excluir líneas que comienzan con guion (opciones)
-      return !lineaTrim.startsWith('-') || 
-             !this.opcionesProducto.some(opcion => lineaTrim.includes(opcion));
-    });
-    
-    return lineasBase.join('\n').trim();
+  seleccionarVariante(variante: Variante) {
+    this.varianteSeleccionada = variante;
   }
 
   /**
-   * Selecciona una opción del producto
-   */
-  seleccionarOpcion(opcion: string) {
-    this.opcionSeleccionada = opcion;
-  }
-
-  /**
-   * Obtiene el precio actual basado en la opción seleccionada
+   * Obtiene el precio actual basado en la variante seleccionada
    */
   get precioActual(): number {
-    if (this.opcionSeleccionada && this.precioPorOpcion[this.opcionSeleccionada]) {
-      return this.precioPorOpcion[this.opcionSeleccionada];
+    if (this.varianteSeleccionada) {
+      return this.varianteSeleccionada.precio;
     }
     return this.producto?.precio || 0;
   }
 
-  // Método para generar el enlace de WhatsApp con la opción seleccionada
+  /**
+   * Obtiene el nombre completo (producto + variante)
+   */
+  get nombreCompleto(): string {
+    if (this.varianteSeleccionada) {
+      return `${this.productoBaseNombre} - ${this.varianteSeleccionada.nombre}`;
+    }
+    return this.productoBaseNombre;
+  }
+
+  // Método para generar el enlace de WhatsApp con la variante seleccionada
   generarWhatsAppLink(): string {
     if (!this.producto) return '';
     
     const numeroWhatsApp = '+573006680125';
-    const nombreCompleto = this.opcionSeleccionada 
-      ? `${this.productoBaseNombre} ${this.opcionSeleccionada}`
-      : this.producto.nombre;
+    const nombreCompleto = this.nombreCompleto;
     
     let mensaje = `Hola, estoy interesado en el siguiente producto de Plaxtilineas:\n\n` +
                  `*${nombreCompleto}*\n` +
                  `Código: ${this.producto.id}\n`;
     
-    // Añadir información de la opción seleccionada
-    if (this.opcionSeleccionada) {
-      mensaje += `Tipo seleccionado: ${this.opcionSeleccionada}\n`;
+    // Añadir información de la variante seleccionada
+    if (this.varianteSeleccionada) {
+      mensaje += `Variante: ${this.varianteSeleccionada.nombre}\n`;
     }
     
     mensaje += `Descripción: ${this.descripcionBase}\n` +
@@ -284,13 +249,16 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   }
 
   formatearPrecio(precio: number): string {
-    if (!precio && precio !== 0) return '0.00';
+    if (precio === null || precio === undefined) return '$ 0';
     
-    return precio.toLocaleString('es-ES', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-  }
+    // Redondear el precio a entero si tiene decimales
+    const precioEntero = Math.round(precio);
+    
+    // Formatear sin decimales
+    const precioFormateado = precioEntero.toLocaleString('es-ES');
+    
+    return `$ ${precioFormateado}`;
+}
 
   getHistorialProductos(): ProductoMenu[] {
     return this.productSelectService.getHistorial();

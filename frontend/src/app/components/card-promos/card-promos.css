@@ -56,6 +56,35 @@
   right: 0;
   z-index: 10;
   padding: 20px;
+  transition: all 0.3s ease;
+}
+
+/* Clase para sección transparente - IMPORTANTE: Aumentar especificidad */
+.product-info-section.transparent-section {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.product-info-section.transparent-section .green-container {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.product-info-section.transparent-section .promo-content {
+  display: none !important;
+}
+
+.product-info-section.transparent-section .promo-title,
+.product-info-section.transparent-section .promo-description,
+.product-info-section.transparent-section .promo-button {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* Contenedor principal */
@@ -73,6 +102,7 @@
   box-sizing: border-box;
   text-align: center;
   border-top: 3px solid #ffffff;
+  transition: all 0.3s ease;
 }
 
 /* Contenido promocional */
@@ -82,6 +112,7 @@
   align-items: center;
   gap: 15px;
   width: 100%;
+  transition: all 0.3s ease;
 }
 
 .promo-title {
@@ -92,6 +123,7 @@
   color: #ffffff;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   margin: 0;
+  transition: opacity 0.3s ease;
 }
 
 .promo-description {
@@ -102,6 +134,7 @@
   max-width: 90%;
   color: #f8f9fa;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.3s ease;
 }
 
 /* Botón de compra - Estilo prominente */
@@ -118,9 +151,10 @@
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-  
   border: 3px solid #ffffff;
   font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+  opacity: 1;
+  visibility: visible;
 }
 
 .promo-button:hover {
@@ -133,6 +167,7 @@
   transform: scale(0.98);
   background-color: #e9ecef;
 }
+
 /* ============================================
    MEDIA QUERIES PARA CARD RESPONSIVE
    ============================================ */
@@ -181,6 +216,11 @@
     padding: 20px 15px;
     border-top: none;
     border-left: 3px solid #ffffff;
+  }
+  
+  .product-info-section.transparent-section .green-container {
+    border-left: none !important;
+    background-color: transparent !important;
   }
   
   .promo-content {
@@ -243,6 +283,11 @@
     padding: 15px 10px;
     border-top: none;
     border-left: 2px solid #ffffff;
+  }
+  
+  .product-info-section.transparent-section .green-container {
+    border-left: none !important;
+    background-color: transparent !important;
   }
   
   .promo-content {

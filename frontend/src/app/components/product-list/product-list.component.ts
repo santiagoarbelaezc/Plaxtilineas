@@ -121,4 +121,16 @@ export class ProductListComponent implements OnInit {
   verDetalles(producto: ProductoMenu) {
     this.productSelectService.verDetallesProducto(producto);
   }
+
+  formatearPrecio(precio: number): string {
+    if (precio === null || precio === undefined) return '$ 0';
+    
+    // Redondear el precio a entero si tiene decimales
+    const precioEntero = Math.round(precio);
+    
+    // Formatear sin decimales
+    const precioFormateado = precioEntero.toLocaleString('es-ES');
+    
+    return `$ ${precioFormateado}`;
+}
 }

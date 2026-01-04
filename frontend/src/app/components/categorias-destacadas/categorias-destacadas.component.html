@@ -5,32 +5,53 @@
     <p class="section-subtitle">Explora nuestras categorías destacadas</p>
   </div>
 
-  <!-- 🔹 Contenedor de categorías en grid -->
-  <div class="categorias-grid">
-    <!-- Items de categorías -->
-    <div class="categoria-item" 
-         *ngFor="let cat of categorias; let i = index">
-      
-      <!-- ⭐ Redirigir a productos con subcategoría -->
-      <a [routerLink]="['/productos']"
-         [queryParams]="{ subcategoria_id: obtenerPrimeraSubcategoria(cat.id) }"
-         class="categoria-card"
-         (click)="onCategoriaClick(cat)">
-        
-        <!-- Contenedor de la imagen -->
-        <div class="categoria-image-container">
-          <img [src]="cat.icono_url" 
-               [alt]="cat.nombre"
-               class="categoria-icon"
-               (error)="handleImageError($event, cat)">
-        </div>
+  <!-- 🔹 Contenedor principal -->
+  <div class="categorias-wrapper">
+    <!-- Botón anterior -->
+    <button class="carrusel-btn prev-btn" (click)="scrollCarrusel('prev')">
+      <span class="btn-icon">‹</span>
+    </button>
+    
+    <!-- Contenedor del carrusel -->
+    <div class="categorias-container">
+      <!-- Grid de categorías -->
+      <div class="categorias-grid" #categoriasGrid>
+        <!-- Items de categorías -->
+        <div class="categoria-item" 
+             *ngFor="let cat of categorias; let i = index">
+          
+          <a [routerLink]="['/productos']"
+             [queryParams]="{ subcategoria_id: obtenerPrimeraSubcategoria(cat.id) }"
+             class="categoria-card"
+             (click)="onCategoriaClick(cat)">
+            
+            <div class="categoria-image-container">
+              <img [src]="cat.icono_url" 
+                   [alt]="cat.nombre"
+                   class="categoria-icon"
+                   (error)="handleImageError($event, cat)">
+            </div>
 
-        <!-- Nombre de la categoría -->
-        <div class="categoria-name">
-          <h3>{{ cat.nombre }}</h3>
+            <div class="categoria-name">
+              <h3>{{ cat.nombre }}</h3>
+            </div>
+          </a>
         </div>
-      </a>
+      </div>
     </div>
+    
+    <!-- Botón siguiente -->
+    <button class="carrusel-btn next-btn" (click)="scrollCarrusel('next')">
+      <span class="btn-icon">›</span>
+    </button>
+  </div>
+  
+  <!-- Indicadores -->
+  <div class="carrusel-indicators">
+    <div class="carrusel-indicator" 
+         *ngFor="let page of pagesArray"
+         [class.active]="currentPage === page"
+         (click)="goToPage(page)"></div>
   </div>
   
   <!-- 🔹 Mensaje si no hay categorías -->

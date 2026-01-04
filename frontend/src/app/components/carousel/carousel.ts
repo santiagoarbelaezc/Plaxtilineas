@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit, OnDestroy, HostListener, AfterViewInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ProductoEditable } from '../../models/producto.model';
 import { CategoriasService } from '../../services/categorias.service';
 import { ProductosService } from '../../services/productos.service';
@@ -33,7 +34,8 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
   
   constructor(
     private categoriasService: CategoriasService,
-    private productosService: ProductosService
+    private productosService: ProductosService,
+    private router: Router // Añadido para la navegación
   ) {
     this.detectDeviceType();
     this.updateItemsPerView();
@@ -328,5 +330,13 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
   
   hasPrev(): boolean {
     return this.productos.length > this.itemsPerView && this.currentIndex > 0;
+  }
+  
+  // NUEVO MÉTODO: Redirigir a detalles del producto
+  verDetalles(productoId: number): void {
+    console.log('Navegando a detalles del producto:', productoId);
+    
+    // Navegar a la ruta /producto/{id}
+    this.router.navigate(['/producto', productoId]);
   }
 }

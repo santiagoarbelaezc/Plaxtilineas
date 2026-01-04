@@ -54,6 +54,7 @@ export class FeatureNewProducts implements OnInit {
     this.router.navigate(['/producto', productoId]);
   }
 
+
   inicializarAOS(): void {
     // Inicializar AOS (Animate On Scroll) si está disponible
     if (typeof (window as any).AOS !== 'undefined') {
@@ -65,6 +66,18 @@ export class FeatureNewProducts implements OnInit {
       });
     }
   }
+
+   formatearPrecio(precio: number): string {
+    if (precio === null || precio === undefined) return '$ 0';
+    
+    // Redondear el precio a entero si tiene decimales
+    const precioEntero = Math.round(precio);
+    
+    // Formatear sin decimales
+    const precioFormateado = precioEntero.toLocaleString('es-ES');
+    
+    return `$ ${precioFormateado}`;
+}
 
   reload(): void {
     this.cargarUltimosProductos();

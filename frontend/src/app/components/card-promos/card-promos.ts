@@ -12,4 +12,12 @@ export class CardPromos {
   @Input() descripcion: string = '';
   @Input() imagen: string = '';
   @Input() logoUrl: string = '';
+
+  shouldBeTransparent(): boolean {
+    // Verifica si descripción Y logo están vacíos (imagen puede tener valor)
+    const isDescripcionEmpty = !this.descripcion || this.descripcion.trim() === '';
+    const isLogoUrlEmpty = !this.logoUrl || this.logoUrl.trim() === '';
+    
+    return isDescripcionEmpty && isLogoUrlEmpty;
+  }
 }
