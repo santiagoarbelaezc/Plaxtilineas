@@ -23,13 +23,15 @@ const authRoutes = require('./routes/auth.routes');
 const productoRoutes = require('./routes/producto.routes');
 const subcategoriaRoutes = require('./routes/subcategoria.routes');
 const categoriaRoutes = require('./routes/categoria.routes');
-const varianteRoutes = require('./routes/variante.routes'); // ✅ AÑADIR ESTO
+const varianteRoutes = require('./routes/variante.routes');
+const pqrsRoutes = require('./routes/pqrs.routes'); // ✅ NUEVA RUTA PQRS
 
 app.use('/api/auth', authRoutes);
 app.use('/api/subcategorias', subcategoriaRoutes);
 app.use('/api/productos', productoRoutes);
 app.use('/api/categorias', categoriaRoutes);
-app.use('/api/variantes', varianteRoutes); // ✅ AÑADIR ESTO
+app.use('/api/variantes', varianteRoutes);
+app.use('/api/pqrs', pqrsRoutes); // ✅ AGREGAR AQUÍ
 
 // 🌐 Servir Angular compilado solo si existe (evita errores en desarrollo)
 const angularPath = path.join(__dirname, '../frontend/dist/frontend');
@@ -70,12 +72,13 @@ async function startServer() {
       console.log(`✅ Backend escuchando en http://localhost:${PORT}`);
       console.log(`📊 Entorno: ${process.env.NODE_ENV || 'development'}`);
       console.log(`💾 Base de datos: ${process.env.DB_NAME || 'plaxtilineas'}`);
-      console.log(`🎯 Rutas disponibles:`);
-      console.log(`   • /api/auth`);
-      console.log(`   • /api/categorias`);
-      console.log(`   • /api/subcategorias`);
-      console.log(`   • /api/productos`);
-      console.log(`   • /api/variantes ✅ NUEVA`);
+      console.log(`🎯 Rutas API disponibles:`);
+      console.log(`   • /api/auth ✅ Autenticación`);
+      console.log(`   • /api/pqrs ✅ NUEVO SISTEMA PQRS`);
+      console.log(`\n📋 Endpoints PQRS:`);
+      console.log(`   🔓 POST   /api/pqrs              → Crear nueva PQR (público)`);
+      console.log(`   🔓 GET    /api/pqrs/consulta/:id → Consultar PQR (público)`);
+      
     });
     
   } catch (error) {
