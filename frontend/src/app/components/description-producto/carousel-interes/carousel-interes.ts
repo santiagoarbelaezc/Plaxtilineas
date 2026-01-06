@@ -1,8 +1,10 @@
 import { Component, OnInit, Input, AfterViewInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { ProductosService } from '../../../services/productos.service';
 import { ProductoEditable } from '../../../models/producto.model';
+import { CarouselSignalService } from '../../../services/carousel-signal.service';
 
 @Component({
   selector: 'app-carousel-interes',
@@ -14,9 +16,9 @@ import { ProductoEditable } from '../../../models/producto.model';
 export class CarouselInteres implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   @Input() titulo: string = 'Productos que podrían interesarte';
   @Input() subtitulo: string = 'Descubre productos seleccionados especialmente para ti';
-  @Input() limite: number = 8;
+  @Input() limite: number = 16;
   @Input() excluirProductoId?: number;
-  @Input() forzarRecarga: boolean = false; // Nueva opción para forzar recarga
+  @Input() forzarRecarga: boolean = false;
   
   productos: ProductoEditable[] = [];
   public carouselId = 'productos-interes-carousel';
@@ -25,13 +27,22 @@ export class CarouselInteres implements OnInit, AfterViewInit, OnDestroy, OnChan
   
   // Variables para el carrusel
   currentIndex = 0;
-  visibleItems = 3;
+  visibleItems = 4;
 
   // Para almacenar timestamp de última carga y evitar cargas muy frecuentes
   private ultimaCarga: number = 0;
   private readonly MIN_TIEMPO_ENTRE_CARGAS = 30000; // 30 segundos mínimo entre recargas automáticas
 
-  constructor(private productosService: ProductosService) {}
+  // Suscripción a las señales
+  private signalSubscription?: Subscription;
+
+  // Flag interno para controlar recargas forzadas
+  private recargaForzadaInterna = false;
+
+  constructor(
+    private productosService: ProductosService,
+    private carouselSignalService: CarouselSignalService
+  ) {}
 
   ngOnInit(): void {
     console.log('🔄 Iniciando CarouselInteres...');
@@ -44,13 +55,16 @@ export class CarouselInteres implements OnInit, AfterViewInit, OnDestroy, OnChan
     });
 
     this.cargarProductosAleatorios();
+    
+    // 🎯 SUSCRIBIRSE a las señales de producto seleccionado
+    this.suscribirASeñales();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     // Si cambia el parámetro forzarRecarga o excluirProductoId, recargar
     if (changes['forzarRecarga'] || changes['excluirProductoId'] || changes['limite']) {
       console.log('🔄 Cambio detectado en inputs, recargando productos...');
-      this.cargarProductosAleatorios();
+      this.recargarProductos();
     }
   }
 
@@ -61,15 +75,65 @@ export class CarouselInteres implements OnInit, AfterViewInit, OnDestroy, OnChan
   }
 
   ngOnDestroy(): void {
-    // Limpiar recursos
+    // Limpiar suscripciones
+    if (this.signalSubscription) {
+      this.signalSubscription.unsubscribe();
+    }
+  }
+
+  /**
+   * Suscribirse a las señales de producto seleccionado
+   */
+  private suscribirASeñales(): void {
+    this.signalSubscription = this.carouselSignalService.productoSeleccionado$
+      .subscribe((productoId: number) => {
+        console.log(`🎯 Señal recibida: Producto ${productoId} seleccionado`);
+        
+        // Actualizar el producto a excluir
+        if (productoId > 0) {
+          this.excluirProductoId = productoId;
+        }
+        
+        // Forzar recarga del carrusel
+        this.recargarProductos();
+      });
+  }
+
+  /**
+   * Método para recargar productos cuando se recibe una señal
+   */
+  private recargarProductos(): void {
+    console.log('🔄 Recargando carrusel por señal...');
+    
+    // Activar flag de recarga forzada
+    this.recargaForzadaInterna = true;
+    
+    // Resetear estado
+    this.isLoading = true;
+    this.productos = [];
+    this.error = null;
+    this.currentIndex = 0;
+    
+    // Cargar nuevos productos
+    this.cargarProductosAleatorios();
   }
 
   private cargarProductosAleatorios(): void {
     const ahora = Date.now();
     
-    // Evitar cargas demasiado frecuentes (excepto si se fuerza)
-    if (!this.forzarRecarga && (ahora - this.ultimaCarga) < this.MIN_TIEMPO_ENTRE_CARGAS) {
+    // Aplicar condición de tiempo solo si NO es una recarga forzada
+    const esRecargaForzada = this.forzarRecarga || this.recargaForzadaInterna;
+    
+    if (!esRecargaForzada && (ahora - this.ultimaCarga) < this.MIN_TIEMPO_ENTRE_CARGAS) {
       console.log('⏱️  Carga evitada: tiempo mínimo entre cargas no alcanzado');
+      console.log(`⏰ Última carga: ${new Date(this.ultimaCarga).toLocaleTimeString()}`);
+      console.log(`⏰ Ahora: ${new Date(ahora).toLocaleTimeString()}`);
+      console.log(`⏳ Diferencia: ${(ahora - this.ultimaCarga) / 1000} segundos`);
+      
+      // Si ya tenemos productos, no mostrar estado de carga
+      if (this.productos.length > 0) {
+        this.isLoading = false;
+      }
       return;
     }
 
@@ -79,6 +143,8 @@ export class CarouselInteres implements OnInit, AfterViewInit, OnDestroy, OnChan
     
     console.log('🎲 Cargando productos aleatorios...');
     console.log(`🔗 Límite solicitado: ${this.limite}`);
+    console.log(`🚫 Producto a excluir: ${this.excluirProductoId || 'ninguno'}`);
+    console.log(`🚀 Recarga forzada: ${esRecargaForzada ? 'SÍ' : 'NO'}`);
     
     // Aumentar el límite para tener más productos para aleatorizar
     const limiteParaSolicitud = Math.max(this.limite * 2, 16);
@@ -89,19 +155,31 @@ export class CarouselInteres implements OnInit, AfterViewInit, OnDestroy, OnChan
         
         // Procesar los productos
         this.procesarProductos(productos);
+        
+        // Resetear flag de recarga forzada después de cargar
+        this.recargaForzadaInterna = false;
       },
       error: (err) => {
         console.error('❌ Error al cargar productos aleatorios:', err);
         this.manejarError('Error al cargar productos de interés');
+        
+        // Resetear flag de recarga forzada en caso de error también
+        this.recargaForzadaInterna = false;
+      },
+      complete: () => {
+        console.log('✅ Carga de productos completada');
       }
     });
   }
 
   private procesarProductos(productos: any[]): void {
+    console.log(`🔍 Procesando ${productos.length} productos...`);
+    
     // 1. Excluir producto específico si se especificó
     if (this.excluirProductoId && productos.length > 0) {
+      const productosAntes = productos.length;
       productos = productos.filter(p => p.id !== this.excluirProductoId);
-      console.log(`🔍 Productos después de excluir ID ${this.excluirProductoId}: ${productos.length}`);
+      console.log(`🔍 Productos después de excluir ID ${this.excluirProductoId}: ${productosAntes} → ${productos.length}`);
     }
     
     // 2. Aleatorizar los productos
@@ -124,6 +202,30 @@ export class CarouselInteres implements OnInit, AfterViewInit, OnDestroy, OnChan
       this.intentarCargaAlternativa();
     }
   }
+
+  private finalizarCarga(): void {
+    this.calculateVisibleItems();
+    this.isLoading = false;
+    
+    if (this.productos.length > 0) {
+      console.log(`🎉 ${this.productos.length} productos cargados exitosamente`);
+      
+      // Inicializar carrusel después de cargar
+      setTimeout(() => {
+        this.initCarousel();
+      }, 100);
+    } else {
+      console.log('ℹ️ Carrusel vacío después de finalizar carga');
+    }
+  }
+
+  private manejarError(mensaje: string): void {
+    console.error('❌ Error:', mensaje);
+    this.error = mensaje;
+    this.isLoading = false;
+    this.productos = [];
+  }
+
 
   /**
    * Mezcla un array de forma aleatoria usando el algoritmo Fisher-Yates
@@ -249,27 +351,12 @@ export class CarouselInteres implements OnInit, AfterViewInit, OnDestroy, OnChan
     return mezclado;
   }
 
-  private finalizarCarga(): void {
-    this.calculateVisibleItems();
-    this.isLoading = false;
-    
-    if (this.productos.length > 0) {
-      console.log(`🎉 ${this.productos.length} productos cargados exitosamente`);
-      
-      // Inicializar carrusel después de cargar
-      setTimeout(() => {
-        this.initCarousel();
-      }, 100);
-    }
+ // Métodos públicos
+  recargar(): void {
+    console.log('🔄 Recargando productos de interés...');
+    this.recargaForzadaInterna = true;
+    this.cargarProductosAleatorios();
   }
-
-  private manejarError(mensaje: string): void {
-    console.error('❌ Error:', mensaje);
-    this.error = mensaje;
-    this.isLoading = false;
-    this.productos = [];
-  }
-
   // Método para convertir cualquier producto a ProductoEditable
   private convertirAProductoEditable(producto: any): ProductoEditable {
     return {
@@ -315,12 +402,7 @@ export class CarouselInteres implements OnInit, AfterViewInit, OnDestroy, OnChan
     console.log('🎠 Carrusel de productos de interés inicializado');
   }
 
-  // Métodos públicos
-  recargar(): void {
-    console.log('🔄 Recargando productos de interés...');
-    this.forzarRecarga = true;
-    this.cargarProductosAleatorios();
-  }
+  
 
   recargarConRotacion(): void {
     console.log('🔄 Recargando con rotación...');

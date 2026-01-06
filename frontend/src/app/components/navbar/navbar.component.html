@@ -19,7 +19,9 @@
           name="searchQuery"
           placeholder="¿Qué estás buscando?"
           aria-label="Buscar productos"
-          (keydown.enter)="onSearch()"
+          (keydown)="onSearchKeydown($event)"  
+          (focus)="onSearchFocus()"
+          (blur)="onSearchBlur()"
         >
         <button 
           type="button" 
@@ -31,20 +33,34 @@
           <fa-icon [icon]="['fas', 'times']"></fa-icon>
         </button>
       </div>
+      <!-- Botón de búsqueda oculto para submit del formulario -->
+      <button type="submit" style="display: none;"></button>
     </form>
     <!-- Sugerencias de búsqueda -->
     <div class="search-suggestions" *ngIf="showSuggestions">
-      <div class="suggestion-item">
+      <div class="suggestion-item" (click)="navigateToSearch('Piso')">
         <fa-icon [icon]="['fas', 'search']"></fa-icon>
-        <span>Productos de construcción</span>
+        <span>Piso</span>
       </div>
-      <div class="suggestion-item">
+      <div class="suggestion-item" (click)="navigateToSearch('Espuma')">
         <fa-icon [icon]="['fas', 'search']"></fa-icon>
-        <span>Materiales eléctricos</span>
+        <span>Espuma</span>
       </div>
-      <div class="suggestion-item">
+      <div class="suggestion-item" (click)="navigateToSearch('Yumbolon')">
         <fa-icon [icon]="['fas', 'search']"></fa-icon>
-        <span>Herramientas industriales</span>
+        <span>Yumbolon</span>
+      </div>
+      <div class="suggestion-item" (click)="navigateToSearch('Malla')">
+        <fa-icon [icon]="['fas', 'search']"></fa-icon>
+        <span>Malla</span>
+      </div>
+      <div class="suggestion-item" (click)="navigateToSearch('Pegante')">
+        <fa-icon [icon]="['fas', 'search']"></fa-icon>
+        <span>Pegante</span>
+      </div>
+      <div class="suggestion-item" (click)="navigateToSearch('Mimbre')">
+        <fa-icon [icon]="['fas', 'search']"></fa-icon>
+        <span>Mimbre</span>
       </div>
     </div>
   </div>

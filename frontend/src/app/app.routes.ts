@@ -13,6 +13,14 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/nosotros/nosotros').then(m => m.Nosotros)
   },
   {
+    path: 'privacidad',
+    loadComponent: () => import('./pages/privacidad/privacidad').then(m => m.Privacidad)
+  },
+  {
+    path: 'pqrs-crear',
+    loadComponent: () => import('./pages/pqr/pqr').then(m => m.Pqr)
+  },
+  {
     path: 'productos',
     loadComponent: () => import('./pages/productos/productos').then(m => m.Productos)
   },
@@ -23,6 +31,10 @@ export const routes: Routes = [
   {
     path: 'contacto',
     loadComponent: () => import('./pages/contacto/contacto').then(m => m.Contacto)
+  },
+   {
+    path: 'busqueda',
+    loadComponent: () => import('./pages/buscar/buscar').then(m => m.Buscar)
   },
   {
     path: 'login',
@@ -45,6 +57,11 @@ export const routes: Routes = [
         path: 'productos',
         loadComponent: () => import('./pages/dashboard/productos/productos').then(m => m.Productos)
       },
+      {
+        path: 'inventario',
+        loadComponent: () => import('./pages/dashboard/inventario/inventario').then(m => m.Inventario)
+      },
+      
       
     ]
   },

@@ -1,11 +1,13 @@
-import { Component, OnInit, AfterViewInit, HostListener, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, AfterViewInit, HostListener, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faKey, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FormsModule } from '@angular/forms';
 import { AosService } from '../../services/aos.service';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter, takeUntil, Subject } from 'rxjs';
+import { SearchStateService } from '../../services/search-state.service';
 
 @Component({
   selector: 'app-navbar',
@@ -15,7 +17,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./navbar.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class NavbarComponent implements OnInit, AfterViewInit {
+export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   menuAbierto = false;
   private activeLinkIndex = 0;
   private linkPositions: number[] = [];
@@ -23,23 +25,71 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   // Variables para el buscador
   searchQuery: string = '';
   showSuggestions: boolean = false;
+  isSearchRoute: boolean = false;
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     library: FaIconLibrary,
     private aosService: AosService,
-    private router: Router
+    private router: Router,
+    private searchStateService: SearchStateService
   ) {
     library.addIcons(faKey, faSearch, faTimes);
   }
 
   ngOnInit(): void {
     this.calculateLinkPositions();
+    this.setupRouterListener();
+    this.setupSearchStateListener();
   }
 
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.aosService.refresh();
     }, 100);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private setupRouterListener(): void {
+    // Escuchar cambios en la ruta
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.destroy$)
+    ).subscribe((event: NavigationEnd) => {
+      this.isSearchRoute = event.url.includes('/busqueda');
+      
+      // Si estamos en la ruta de búsqueda, extraer el término de búsqueda
+      if (this.isSearchRoute) {
+        const urlParams = new URLSearchParams(event.url.split('?')[1]);
+        const searchTerm = urlParams.get('q');
+        if (searchTerm) {
+          this.searchQuery = searchTerm;
+          // Sincronizar con el servicio
+          this.searchStateService.setSearchTerm(searchTerm);
+        }
+      } else {
+        // Si salimos de la ruta de búsqueda, limpiar el campo
+        this.searchQuery = '';
+        this.searchStateService.clearSearch();
+      }
+    });
+  }
+
+  private setupSearchStateListener(): void {
+    // Escuchar cambios en el término de búsqueda desde otros componentes
+    this.searchStateService.searchTerm$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(term => {
+      // Solo actualizar si es diferente al valor actual
+      if (term !== this.searchQuery && term !== null && term !== undefined) {
+        this.searchQuery = term;
+      }
+    });
   }
 
   toggleMenu(): void {
@@ -70,12 +120,28 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   // Métodos para el buscador
   onSearch(): void {
-    if (this.searchQuery.trim()) {
-      this.router.navigate(['/productos'], {
-        queryParams: { q: this.searchQuery.trim() }
+    const trimmedQuery = this.searchQuery.trim();
+    if (trimmedQuery) {
+      // Notificar al servicio que se está realizando una búsqueda
+      this.searchStateService.triggerSearchFromNavbar(trimmedQuery);
+      
+      // Navegar a la página de búsqueda con el término
+      this.router.navigate(['/busqueda'], {
+        queryParams: { q: trimmedQuery },
+        replaceUrl: true
+      }).then(() => {
+        this.showSuggestions = false;
+      }).catch(error => {
+        console.error('Error al navegar a búsqueda:', error);
       });
-      this.showSuggestions = false;
-      this.searchQuery = '';
+    }
+  }
+
+  // Método para manejar Enter en el input
+  onSearchKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.onSearch();
     }
   }
 
@@ -92,7 +158,22 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   clearSearch(): void {
     this.searchQuery = '';
     this.showSuggestions = false;
+    this.searchStateService.clearSearch();
+    
+    // Si estamos en la ruta de búsqueda, navegar sin término
+    if (this.isSearchRoute) {
+      this.router.navigate(['/busqueda']);
+    }
   }
+
+  // Método para navegar directamente a la página de búsqueda al hacer clic en sugerencias
+navigateToSearch(term: string): void {
+  this.searchQuery = term;
+  // Forzar el enfoque y luego hacer la búsqueda
+  setTimeout(() => {
+    this.onSearch();
+  }, 50);
+}
 
   @HostListener('window:resize')
   onResize(): void {

@@ -101,4 +101,76 @@ obtenerUltimosProductos(): Observable<ProductoEditable[]> {
     })
   );
 }
+
+// Agrega este método en tu servicio:
+
+// NUEVO: Buscar productos por nombre
+buscarProductosPorNombre(nombre: string): Observable<{ resultados: ProductoEditable[], total: number, termino_buscado: string, mensaje?: string, sugerencias?: ProductoEditable[] }> {
+  if (!nombre || nombre.trim() === '') {
+    return of({
+      resultados: [],
+      total: 0,
+      termino_buscado: '',
+      mensaje: 'Por favor ingresa un término de búsqueda'
+    });
+  }
+
+  const params = new HttpParams().set('nombre', nombre.trim());
+  
+  return this.http.get<{ 
+    resultados: ProductoEditable[], 
+    total: number, 
+    termino_buscado: string,
+    mensaje?: string,
+    sugerencias?: ProductoEditable[] 
+  }>(`${this.apiUrl}/buscar`, { params }).pipe(
+    catchError(error => {
+      console.error('Error al buscar productos:', error);
+      return of({
+        resultados: [],
+        total: 0,
+        termino_buscado: nombre,
+        mensaje: 'Error al realizar la búsqueda'
+      });
+    })
+  );
+}
+
+// OPCIONAL: Búsqueda avanzada con filtros
+busquedaAvanzada(filtros: {
+  nombre?: string;
+  categoria_id?: number;
+  precio_min?: number;
+  precio_max?: number;
+  orden?: 'relevancia' | 'precio_asc' | 'precio_desc' | 'nombre';
+  limite?: number;
+}): Observable<ProductoEditable[]> {
+  let params = new HttpParams();
+  
+  if (filtros.nombre) {
+    params = params.set('nombre', filtros.nombre);
+  }
+  if (filtros.categoria_id) {
+    params = params.set('categoria_id', filtros.categoria_id.toString());
+  }
+  if (filtros.precio_min !== undefined) {
+    params = params.set('precio_min', filtros.precio_min.toString());
+  }
+  if (filtros.precio_max !== undefined) {
+    params = params.set('precio_max', filtros.precio_max.toString());
+  }
+  if (filtros.orden) {
+    params = params.set('orden', filtros.orden);
+  }
+  if (filtros.limite) {
+    params = params.set('limite', filtros.limite.toString());
+  }
+
+  return this.http.get<ProductoEditable[]>(`${this.apiUrl}/buscar`, { params }).pipe(
+    catchError(error => {
+      console.error('Error en búsqueda avanzada:', error);
+      return of([]);
+    })
+  );
+}
 }

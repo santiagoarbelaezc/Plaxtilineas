@@ -121,8 +121,13 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
     
     this.categoriasService.getIdCategoriaPorNombre(this.categoriaNombre)
       .subscribe({
-        next: (categoria) => {
-          this.cargarProductosDeCategoria(categoria.id);
+        next: (response: any) => {
+          if (response && response.success && response.categoria) {
+            this.cargarProductosDeCategoria(response.categoria.id);
+          } else {
+            this.error = `Categoría "${this.categoriaNombre}" no encontrada`;
+            this.cargando = false;
+          }
         },
         error: (error) => {
           console.error('Error al obtener ID de categoría:', error);

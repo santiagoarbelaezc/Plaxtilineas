@@ -1,3 +1,4 @@
+// description-producto-select.component.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -6,7 +7,8 @@ import { ProductoMenu } from '../../../models/productoMenu.model';
 import { Variante } from '../../../models/variante.model';
 import { ProductSelectService } from '../../../services/product-select.service';
 import { ProductosService } from '../../../services/productos.service';
-import { VariantesService } from '../../../services/variantes.service'; // Añadir import
+import { VariantesService } from '../../../services/variantes.service';
+import { CarouselSignalService } from '../../../services/carousel-signal.service'; // Importar el nuevo servicio
 
 @Component({
   selector: 'app-description-producto-select',
@@ -20,9 +22,8 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   cargando = true;
   error = false;
   
-  // Variables para manejo de variantes
-  variantes: Variante[] = []; // Cambiar opcionesProducto por variantes
-  varianteSeleccionada: Variante | null = null; // Cambiar opcionSeleccionada por varianteSeleccionada
+  variantes: Variante[] = [];
+  varianteSeleccionada: Variante | null = null;
   descripcionBase: string = '';
   productoBaseNombre: string = '';
   
@@ -33,7 +34,8 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private productosService: ProductosService,
-    private variantesService: VariantesService // Añadir servicio de variantes
+    private variantesService: VariantesService,
+    private carouselSignalService: CarouselSignalService // Inyectar el servicio
   ) {}
 
   ngOnInit() {
@@ -56,6 +58,9 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
             this.procesarProducto();
             this.cargando = false;
             this.error = false;
+            
+            // 🚨 EMITIR SEÑAL cuando se selecciona un producto desde el servicio
+            this.carouselSignalService.notificarProductoSeleccionado(producto.id);
           }
         }
       )
@@ -79,6 +84,9 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
       this.producto = navigation.extras.state['producto'] as ProductoMenu;
       this.procesarProducto();
       this.cargando = false;
+      
+      // 🚨 EMITIR SEÑAL cuando se carga un producto desde el estado de navegación
+      this.carouselSignalService.notificarProductoSeleccionado(this.producto.id);
       return;
     }
     
@@ -114,6 +122,9 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
         
         if (this.producto) {
           this.productSelectService.seleccionarProducto(this.producto);
+          
+          // 🚨 EMITIR SEÑAL después de seleccionar el producto
+          this.carouselSignalService.notificarProductoSeleccionado(this.producto.id);
         }
         this.cargando = false;
       })
@@ -269,8 +280,11 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     return historial.filter(p => p.id !== this.producto?.id).length > 0;
   }
   
-  // Método para el template
   verDetallesProducto(producto: ProductoMenu) {
+    // 🚨 EMITIR SEÑAL antes de navegar
+    this.carouselSignalService.notificarProductoSeleccionado(producto.id);
+    
+    // Llamar al servicio para manejar la navegación
     this.productSelectService.verDetallesProducto(producto);
   }
 }
