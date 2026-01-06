@@ -1,29 +1,28 @@
-/* MENÚ DE CATEGORÍAS - ESTILO SUTIL Y ELEGANTE (COHERENTE CON NAVBAR) */
+/* MENÚ DE CATEGORÍAS - VERSIÓN COMPACTA Y ELEGANTE */
 
-/* Estilos base para el componente */
 :host {
   display: block;
 }
 
 .menu-categorias {
   width: 100%;
-  max-width: 380px;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
+  max-width: 320px; /* Reducido de 380px */
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 16px; /* Reducido de 20px */
+  border-radius: 10px; /* Reducido de 12px */
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.03);
   font-family: 'Segoe UI', -apple-system, sans-serif;
-  color: #4a5568; /* Mismo color que el navbar */
+  color: #4a5568;
   box-sizing: border-box;
   margin: 0 auto;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.04);
   position: relative;
   overflow: hidden;
 }
 
-/* Efecto de borde sutil */
+/* Efecto de borde sutil más compacto */
 .menu-categorias::before {
   content: '';
   position: absolute;
@@ -32,197 +31,201 @@
   right: -1px;
   bottom: -1px;
   background: linear-gradient(135deg, 
-    rgba(54, 140, 68, 0.05), 
-    rgba(37, 211, 102, 0.03), 
-    rgba(54, 140, 68, 0.05));
-  border-radius: 13px;
+    rgba(54, 140, 68, 0.04), 
+    rgba(37, 211, 102, 0.02), 
+    rgba(54, 140, 68, 0.04));
+  border-radius: 11px;
   z-index: -1;
   opacity: 0.5;
 }
 
 .categoria {
-  margin-bottom: 8px;
+  margin-bottom: 6px; /* Reducido de 8px */
   position: relative;
 }
 
-/* Botones de categoría - Mismo estilo que navbar */
+/* Botones de categoría - Versión compacta */
 .categoria button {
   width: 100%;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  font-weight: 500; /* Mismo peso que navbar */
-  font-size: 16px; /* Mismo tamaño que navbar desktop */
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  font-weight: 500;
+  font-size: 15px; /* Reducido de 16px */
   text-align: left;
-  padding: 14px 18px;
-  border-radius: 10px;
+  padding: 12px 16px; /* Reducido de 14px 18px */
+  border-radius: 8px; /* Reducido de 10px */
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  color: #4a5568; /* Mismo color que navbar */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #4a5568;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-  letter-spacing: 0.3px; /* Mismo que navbar */
-  touch-action: manipulation; /* Mejora la respuesta táctil en móvil */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.015);
+  letter-spacing: 0.2px;
+  touch-action: manipulation;
+  min-height: 44px; /* Altura mínima consistente */
 }
 
-/* Efecto hover sutil (similar al navbar) */
+/* Efecto hover más sutil */
 .categoria button:hover {
-  background: rgba(255, 255, 255, 0.95);
-  transform: translateY(-1px); /* Mismo que navbar */
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
-  border-color: rgba(54, 140, 68, 0.1);
-  color: #368c44; /* Mismo color hover que navbar */
+  background: rgba(255, 255, 255, 0.98);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+  border-color: rgba(54, 140, 68, 0.08);
+  color: #368c44;
 }
 
-/* Línea animada sutil (similar al navbar) */
+/* Línea animada más fina */
 .categoria button::after {
   content: '';
   position: absolute;
   bottom: 0;
   left: 50%;
   width: 0;
-  height: 2px; /* Misma altura que navbar */
-  background: linear-gradient(90deg, #368c44, #25d366); /* Mismo gradiente */
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Misma transición */
+  height: 1.5px; /* Reducido de 2px */
+  background: linear-gradient(90deg, #368c44, #25d366);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateX(-50%);
   border-radius: 1px;
-  box-shadow: 0 2px 12px rgba(54, 140, 68, 0.4); /* Misma sombra */
+  box-shadow: 0 1px 8px rgba(54, 140, 68, 0.3);
 }
 
 .categoria button:hover::after {
-  width: 80%; /* Un poco menos ancho para ser sutil */
+  width: 70%; /* Reducido de 80% */
 }
 
-/* Flecha sutil */
+/* Flecha más pequeña y sutil */
 .flecha {
-  font-size: 12px;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  color: #4a5568; /* Mismo gris del navbar */
-  background: rgba(255, 255, 255, 0.8);
-  width: 20px;
-  height: 20px;
+  font-size: 11px; /* Reducido de 12px */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #4a5568;
+  background: rgba(255, 255, 255, 0.85);
+  width: 18px; /* Reducido de 20px */
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  border-radius: 3px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.02);
+  flex-shrink: 0;
+  margin-left: 8px;
 }
 
 .flecha.abierta {
   transform: rotate(90deg);
-  color: #368c44; /* Mismo color activo del navbar */
-  background: rgba(54, 140, 68, 0.08);
-  box-shadow: 0 1px 4px rgba(54, 140, 68, 0.1);
+  color: #368c44;
+  background: rgba(54, 140, 68, 0.06);
+  box-shadow: 0 1px 3px rgba(54, 140, 68, 0.08);
 }
 
-/* Subcategorías - Estilo sutil */
+/* Subcategorías más compactas */
 .subcategorias {
   list-style: none;
   overflow: hidden;
   max-height: 0;
   opacity: 0;
-  padding-left: 20px;
+  padding-left: 18px; /* Reducido de 20px */
   margin: 0;
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .subcategorias.abierta {
-  max-height: 500px;
+  max-height: 400px; /* Reducido de 500px */
   opacity: 1;
-  margin-top: 8px;
+  margin-top: 6px; /* Reducido de 8px */
 }
 
 .subcategorias li {
-  margin: 6px 0;
+  margin: 4px 0; /* Reducido de 6px */
   position: relative;
-  padding-left: 10px;
+  padding-left: 8px; /* Reducido de 10px */
 }
 
-/* Línea decorativa sutil */
+/* Punto decorativo más pequeño */
 .subcategorias li::before {
   content: '';
   position: absolute;
-  left: -6px;
+  left: -4px; /* Ajustado */
   top: 50%;
   transform: translateY(-50%);
-  width: 3px;
-  height: 3px;
-  background: rgba(54, 140, 68, 0.4);
+  width: 2.5px; /* Reducido de 3px */
+  height: 2.5px;
+  background: rgba(54, 140, 68, 0.3);
   border-radius: 50%;
   opacity: 0;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .subcategorias li:hover::before {
   opacity: 1;
 }
 
-/* Enlaces de subcategoría - Estilo similar al navbar */
+/* Enlaces de subcategoría compactos */
 .subcategorias li span {
   cursor: pointer;
-  color: #4a5568; /* Mismo color base del navbar */
-  font-size: 15px; /* Similar al responsive del navbar */
-  font-weight: 400; /* Un poco menos que el navbar */
-  padding: 8px 14px;
-  border-radius: 8px;
+  color: #4a5568;
+  font-size: 14px; /* Reducido de 15px */
+  font-weight: 400;
+  padding: 6px 12px; /* Reducido de 8px 14px */
+  border-radius: 6px; /* Reducido de 8px */
   display: block;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.7);
   border: 1px solid transparent;
-  letter-spacing: 0.2px;
-  touch-action: manipulation; /* Mejora la respuesta táctil en móvil */
+  letter-spacing: 0.1px;
+  touch-action: manipulation;
+  min-height: 36px; /* Altura mínima consistente */
+  display: flex;
+  align-items: center;
 }
 
-/* Efecto hover sutil para subcategorías (similar al navbar) */
+/* Efecto hover más compacto */
 .subcategorias li span:hover {
-  background: rgba(255, 255, 255, 0.8);
-  color: #368c44; /* Mismo color hover del navbar */
-  transform: translateX(4px);
-  box-shadow: 0 2px 8px rgba(54, 140, 68, 0.05);
-  border-color: rgba(54, 140, 68, 0.08);
+  background: rgba(255, 255, 255, 0.85);
+  color: #368c44;
+  transform: translateX(3px); /* Reducido de 4px */
+  box-shadow: 0 1px 6px rgba(54, 140, 68, 0.04);
+  border-color: rgba(54, 140, 68, 0.06);
 }
 
-/* Contador de productos sutil */
+/* Contador más pequeño y sutil */
 .subcategorias li span::after {
   content: attr(data-count);
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 11px;
-  font-weight: 500; /* Similar al navbar */
-  color: #4a5568; /* Mismo gris del navbar */
-  background: rgba(255, 255, 255, 0.8);
-  padding: 3px 6px;
-  border-radius: 10px;
-  min-width: 20px;
+  position: relative;
+  margin-left: auto;
+  font-size: 10px; /* Reducido de 11px */
+  font-weight: 500;
+  color: #4a5568;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 2px 5px; /* Reducido de 3px 6px */
+  border-radius: 8px; /* Reducido de 10px */
+  min-width: 18px; /* Reducido de 20px */
   text-align: center;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-  transition: all 0.2s ease;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.02);
+  transition: all 0.15s ease;
+  flex-shrink: 0;
 }
 
 .subcategorias li span:hover::after {
-  background: rgba(54, 140, 68, 0.1);
-  color: #368c44; /* Mismo color del navbar */
-  transform: translateY(-50%);
+  background: rgba(54, 140, 68, 0.08);
+  color: #368c44;
 }
 
-/* Animación para categoría activa sutil */
+/* Categoría activa más sutil */
 .categoria.active button {
-  background: rgba(54, 140, 68, 0.05);
-  border-color: rgba(54, 140, 68, 0.15);
-  box-shadow: 0 4px 16px rgba(54, 140, 68, 0.08);
+  background: rgba(54, 140, 68, 0.04);
+  border-color: rgba(54, 140, 68, 0.12);
+  box-shadow: 0 2px 12px rgba(54, 140, 68, 0.06);
 }
 
 .categoria.active .flecha {
   color: #368c44;
-  background: rgba(54, 140, 68, 0.12);
-  box-shadow: 0 2px 8px rgba(54, 140, 68, 0.15);
+  background: rgba(54, 140, 68, 0.1);
+  box-shadow: 0 1px 6px rgba(54, 140, 68, 0.12);
 }
 
 /* ====== RESPONSIVE DESIGN ====== */
@@ -234,45 +237,71 @@
     height: auto;
     overflow-y: visible;
     max-height: none;
+    max-width: 280px; /* Más compacto en escritorio */
   }
   
-  .categoria button:hover {
-    transform: translateY(-1px);
+  .categoria button {
+    padding: 10px 14px; /* Más compacto */
+    font-size: 14px;
+    min-height: 40px;
   }
   
-  .subcategorias li span:hover {
-    transform: translateX(4px);
+  .flecha {
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+  }
+  
+  .subcategorias {
+    padding-left: 16px;
+  }
+  
+  .subcategorias li span {
+    padding: 5px 10px;
+    font-size: 13px;
+    min-height: 34px;
+  }
+  
+  .subcategorias li span::after {
+    font-size: 9px;
+    padding: 1px 4px;
+    min-width: 16px;
   }
 }
 
 /* TABLET ESPECÍFICO */
 @media (min-width: 768px) and (max-width: 1023px) {
   .menu-categorias {
-    max-width: 300px;
-    padding: 18px;
+    max-width: 260px;
+    padding: 14px;
   }
   
   .categoria button {
-    font-size: 15px;
-    padding: 12px 16px;
+    font-size: 13px;
+    padding: 10px 14px;
+    min-height: 38px;
   }
   
   .subcategorias li span {
-    font-size: 14px;
-    padding: 7px 12px;
+    font-size: 12px;
+    padding: 5px 10px;
+    min-height: 32px;
+  }
+  
+  .flecha {
+    width: 16px;
+    height: 16px;
   }
 }
 
 /* ====== MÓVIL (767px o menos) ====== */
 @media (max-width: 767px) {
-  /* IMPORTANTE: Reset de estilos para móvil */
   .menu-categorias {
     width: 100% !important;
-    height: 100% !important;
     max-width: 100% !important;
     border-radius: 0 !important;
     box-shadow: none !important;
-    padding: 20px !important;
+    padding: 16px !important;
     margin: 0 !important;
     background: white !important;
     backdrop-filter: none !important;
@@ -282,19 +311,15 @@
     border: none !important;
   }
   
-  /* Ocultar efecto de borde en móvil */
   .menu-categorias::before {
     display: none !important;
   }
   
-  /* Ajustes específicos para móvil */
   .categoria button {
-    padding: 16px 20px;
-    font-size: 16px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.95);
-    min-height: 52px;
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 14px 18px;
+    font-size: 15px;
+    border-radius: 10px;
+    min-height: 46px;
   }
   
   .categoria button:active {
@@ -303,79 +328,34 @@
   }
   
   .flecha {
-    width: 24px;
-    height: 24px;
-    font-size: 13px;
-    background: rgba(255, 255, 255, 0.9);
-  }
-  
-  .subcategorias {
-    padding-left: 24px;
-  }
-  
-  .subcategorias li span {
-    padding: 12px 18px;
-    font-size: 15px;
-    background: rgba(255, 255, 255, 0.7);
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-  }
-  
-  .subcategorias li span:active {
-    transform: translateX(3px) scale(0.98);
-    transition: transform 0.1s;
-  }
-  
-  .subcategorias li span::after {
-    right: 16px;
-    padding: 4px 8px;
+    width: 20px;
+    height: 20px;
     font-size: 12px;
-    position: relative;
-    top: auto;
-    transform: none;
-    margin-left: auto;
-  }
-  
-  /* Asegurar que el contenido no se desborde */
-  .subcategorias li span {
-    word-break: break-word;
-    white-space: normal;
-  }
-}
-
-/* MÓVIL PEQUEÑO */
-@media (max-width: 480px) {
-  .menu-categorias {
-    padding: 16px !important;
-  }
-  
-  .categoria button {
-    padding: 14px 18px;
-    font-size: 15px;
-    min-height: 48px;
   }
   
   .subcategorias {
-    padding-left: 20px;
+    padding-left: 22px;
   }
   
   .subcategorias li span {
     padding: 10px 16px;
     font-size: 14px;
-    min-height: 42px;
+    min-height: 40px;
   }
   
-  .flecha {
-    width: 22px;
-    height: 22px;
-    font-size: 12px;
+  .subcategorias li span:active {
+    transform: translateX(2px) scale(0.98);
+    transition: transform 0.1s;
+  }
+  
+  .subcategorias li span::after {
+    padding: 3px 6px;
+    font-size: 11px;
   }
 }
 
-/* MÓVIL MUY PEQUEÑO */
-@media (max-width: 360px) {
+/* MÓVIL PEQUEÑO */
+@media (max-width: 480px) {
   .menu-categorias {
     padding: 14px !important;
   }
@@ -383,11 +363,82 @@
   .categoria button {
     padding: 12px 16px;
     font-size: 14px;
+    min-height: 42px;
+  }
+  
+  .subcategorias {
+    padding-left: 18px;
   }
   
   .subcategorias li span {
     padding: 8px 14px;
     font-size: 13px;
+    min-height: 38px;
+  }
+  
+  .flecha {
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
   }
 }
 
+/* MÓVIL MUY PEQUEÑO */
+@media (max-width: 360px) {
+  .menu-categorias {
+    padding: 12px !important;
+  }
+  
+  .categoria button {
+    padding: 10px 14px;
+    font-size: 13px;
+    min-height: 40px;
+  }
+  
+  .subcategorias li span {
+    padding: 7px 12px;
+    font-size: 12px;
+    min-height: 36px;
+  }
+  
+  .flecha {
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+  }
+}
+
+/* Clase adicional para versión ultra-compacta */
+.menu-categorias.compact {
+  max-width: 280px;
+  padding: 12px;
+}
+
+.menu-categorias.compact .categoria button {
+  padding: 8px 12px;
+  font-size: 13px;
+  min-height: 36px;
+  border-radius: 6px;
+}
+
+.menu-categorias.compact .flecha {
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+}
+
+.menu-categorias.compact .subcategorias {
+  padding-left: 14px;
+}
+
+.menu-categorias.compact .subcategorias li span {
+  padding: 5px 10px;
+  font-size: 12px;
+  min-height: 32px;
+}
+
+.menu-categorias.compact .subcategorias li span::after {
+  font-size: 9px;
+  padding: 1px 4px;
+  min-width: 16px;
+}
