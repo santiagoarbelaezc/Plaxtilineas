@@ -23,7 +23,7 @@ const generarNumeroTicket = () => {
 const tiposPQRValidos = ['PETICION', 'QUEJA', 'RECLAMO', 'SUGERENCIA'];
 const estadosPQRValidos = ['PENDIENTE', 'EN_PROCESO', 'RESUELTO', 'CERRADO'];
 
-// 🔍 Obtener todas las PQRS (para panel admin)
+// 🔍 Obtener todas las PQRS (para panel admin) - YA CORREGIDO
 exports.obtenerPQRS = async (req, res) => {
   try {
     const { estado, tipo, fecha_inicio, fecha_fin, limit = 50, page = 1 } = req.query;
@@ -41,11 +41,19 @@ exports.obtenerPQRS = async (req, res) => {
         p.numero_ticket,
         DATE_FORMAT(p.fecha_creacion, '%d/%m/%Y %H:%i') as fecha_creacion_format,
         DATE_FORMAT(p.fecha_actualizacion, '%d/%m/%Y %H:%i') as fecha_actualizacion_format,
-        COUNT(DISTINCT r.id) as total_respuestas,
-        COUNT(DISTINCT a.id) as total_archivos
+        COALESCE(r.total_respuestas, 0) as total_respuestas,
+        COALESCE(a.total_archivos, 0) as total_archivos
       FROM pqrs p
-      LEFT JOIN pqr_respuestas r ON p.id = r.pqr_id
-      LEFT JOIN pqr_archivos a ON p.id = a.pqr_id
+      LEFT JOIN (
+        SELECT pqr_id, COUNT(*) as total_respuestas 
+        FROM pqr_respuestas 
+        GROUP BY pqr_id
+      ) r ON p.id = r.pqr_id
+      LEFT JOIN (
+        SELECT pqr_id, COUNT(*) as total_archivos 
+        FROM pqr_archivos 
+        GROUP BY pqr_id
+      ) a ON p.id = a.pqr_id
       WHERE 1=1
     `;
     
@@ -72,20 +80,36 @@ exports.obtenerPQRS = async (req, res) => {
       params.push(fecha_fin);
     }
     
-    // Contar total
-    const [countResult] = await db.query(
-      query.replace(
-        'SELECT p.id, p.tipo, p.nombre_completo, p.email, p.telefono, p.producto_relacionado, p.descripcion, p.estado, p.numero_ticket, DATE_FORMAT(p.fecha_creacion, \'%d/%m/%Y %H:%i\') as fecha_creacion_format, DATE_FORMAT(p.fecha_actualizacion, \'%d/%m/%Y %H:%i\') as fecha_actualizacion_format, COUNT(DISTINCT r.id) as total_respuestas, COUNT(DISTINCT a.id) as total_archivos',
-        'SELECT COUNT(DISTINCT p.id) as total'
-      ),
-      params
-    );
+    // Contar total (separado)
+    let countQuery = `SELECT COUNT(*) as total FROM pqrs p WHERE 1=1`;
+    const countParams = [];
     
+    if (estado && estadosPQRValidos.includes(estado)) {
+      countQuery += ' AND p.estado = ?';
+      countParams.push(estado);
+    }
+    
+    if (tipo && tiposPQRValidos.includes(tipo)) {
+      countQuery += ' AND p.tipo = ?';
+      countParams.push(tipo);
+    }
+    
+    if (fecha_inicio) {
+      countQuery += ' AND DATE(p.fecha_creacion) >= ?';
+      countParams.push(fecha_inicio);
+    }
+    
+    if (fecha_fin) {
+      countQuery += ' AND DATE(p.fecha_creacion) <= ?';
+      countParams.push(fecha_fin);
+    }
+    
+    const [countResult] = await db.query(countQuery, countParams);
     const total = countResult[0].total;
     
     // Paginación
     const offset = (page - 1) * limit;
-    query += ' GROUP BY p.id ORDER BY p.fecha_creacion DESC LIMIT ? OFFSET ?';
+    query += ' ORDER BY p.fecha_creacion DESC LIMIT ? OFFSET ?';
     params.push(parseInt(limit), parseInt(offset));
     
     const [rows] = await db.query(query, params);
@@ -110,7 +134,8 @@ exports.obtenerPQRS = async (req, res) => {
     });
   }
 };
-// ✅ Crear nueva PQR (versión actualizada con notificación)
+
+// ✅ Crear nueva PQR (versión actualizada con notificación) - YA CORRECTO
 exports.crearPQR = async (req, res) => {
   const {
     tipo,
@@ -121,7 +146,7 @@ exports.crearPQR = async (req, res) => {
     descripcion
   } = req.body;
 
-  // Validaciones (código existente)
+  // Validaciones
   if (!tipo || !nombre_completo || !email || !telefono || !descripcion) {
     return res.status(400).json({ 
       success: false,
@@ -163,7 +188,7 @@ exports.crearPQR = async (req, res) => {
        producto_relacionado?.trim() || null, descripcion.trim(), numeroTicket]
     );
 
-    // Procesar archivos adjuntos (código existente)
+    // Procesar archivos adjuntos
     let archivosSubidos = [];
     const cloudinaryResults = req.cloudinaryResults || [];
     
@@ -236,7 +261,7 @@ exports.crearPQR = async (req, res) => {
         })
       };
 
-      // Enviar email de confirmación (no esperar respuesta para no retrasar la respuesta al cliente)
+      // Enviar email de confirmación
       emailService.enviarConfirmacionCreacionPQR(pqrData)
         .then(result => {
           if (result.success) {
@@ -284,21 +309,29 @@ exports.crearPQR = async (req, res) => {
     connection.release();
   }
 };
-
-// 💬 Agregar respuesta a PQR (versión actualizada con notificación)
+// 💬 Agregar respuesta a PQR (VERSIÓN CON LOGS DE DEPURACIÓN)
 exports.agregarRespuesta = async (req, res) => {
+  console.log('🔍 INICIANDO agregarRespuesta - Body:', JSON.stringify(req.body));
+  console.log('🔍 Params:', req.params);
+  console.log('🔍 Tipo de respuesta recibida:', req.body?.tipo);
+  
   const { id } = req.params;
   const { mensaje, tipo = 'ADMINISTRACION', responsable } = req.body;
 
   if (!mensaje || !mensaje.trim()) {
+    console.log('❌ Error: Mensaje vacío o no proporcionado');
     return res.status(400).json({ 
       success: false,
       error: 'El mensaje es obligatorio' 
     });
   }
 
+  console.log(`✅ Validaciones pasadas. Mensaje: "${mensaje.substring(0, 50)}..."`);
+  console.log(`📝 Tipo de respuesta: ${tipo}`);
+
   const tiposRespuestaValidos = ['CLIENTE', 'ADMINISTRACION'];
   if (!tiposRespuestaValidos.includes(tipo)) {
+    console.log(`❌ Tipo inválido: ${tipo}. Válidos: ${tiposRespuestaValidos}`);
     return res.status(400).json({ 
       success: false,
       error: 'Tipo de respuesta inválido',
@@ -307,17 +340,21 @@ exports.agregarRespuesta = async (req, res) => {
   }
 
   const connection = await db.getConnection();
+  console.log('🔗 Conexión a BD obtenida');
   
   try {
     await connection.beginTransaction();
+    console.log('⚙️ Transacción iniciada');
 
     // Verificar que la PQR existe
+    console.log(`🔍 Buscando PQR con ID: ${id}`);
     const [pqrExistente] = await connection.query(
       'SELECT id, numero_ticket, estado, tipo, nombre_completo, email, producto_relacionado FROM pqrs WHERE id = ?',
       [id]
     );
 
     if (pqrExistente.length === 0) {
+      console.log(`❌ PQR no encontrada con ID: ${id}`);
       await connection.rollback();
       return res.status(404).json({ 
         success: false,
@@ -326,10 +363,18 @@ exports.agregarRespuesta = async (req, res) => {
     }
 
     const pqr = pqrExistente[0];
+    const estadoAnterior = pqr.estado;
     const fechaActualizacion = new Date();
+    let nuevoEstado = estadoAnterior;
+
+    console.log(`📋 PQR encontrada: ${pqr.numero_ticket}`);
+    console.log(`📊 Estado anterior: ${estadoAnterior}`);
+    console.log(`📧 Email del cliente: ${pqr.email}`);
 
     // Insertar respuesta
     const respuestaId = generarUUID();
+    console.log(`📝 Insertando respuesta con ID: ${respuestaId}`);
+    
     await connection.query(
       'INSERT INTO pqr_respuestas (id, pqr_id, mensaje, tipo) VALUES (?, ?, ?, ?)',
       [respuestaId, id, mensaje.trim(), tipo]
@@ -338,11 +383,12 @@ exports.agregarRespuesta = async (req, res) => {
     // Procesar archivo adjunto si existe
     let archivoAdjunto = null;
     if (req.cloudinaryResult) {
+      console.log(`📎 Archivo adjunto detectado: ${req.cloudinaryResult.url}`);
       const archivoId = generarUUID();
       await connection.query(
         `INSERT INTO pqr_archivos 
-         (id, pqr_id, nombre_archivo, url_archivo, tipo_archivo, es_respuesta) 
-         VALUES (?, ?, ?, ?, ?, TRUE)`,
+         (id, pqr_id, nombre_archivo, url_archivo, tipo_archivo) 
+         VALUES (?, ?, ?, ?, ?)`,
         [
           archivoId,
           id,
@@ -358,17 +404,20 @@ exports.agregarRespuesta = async (req, res) => {
         nombre: req.file?.originalname || 'adjunto',
         tipo: req.cloudinaryResult.format || 'desconocido'
       };
+    } else {
+      console.log('📎 No hay archivos adjuntos');
     }
 
     // Actualizar estado si es respuesta de administración y estaba pendiente
-    let nuevoEstado = pqr.estado;
     if (tipo === 'ADMINISTRACION' && pqr.estado === 'PENDIENTE') {
       nuevoEstado = 'EN_PROCESO';
+      console.log(`🔄 Actualizando estado de ${estadoAnterior} a ${nuevoEstado}`);
       await connection.query(
         'UPDATE pqrs SET estado = ?, fecha_actualizacion = CURRENT_TIMESTAMP WHERE id = ?',
         [nuevoEstado, id]
       );
     } else if (tipo === 'ADMINISTRACION') {
+      console.log(`📅 Actualizando fecha de actualización (estado se mantiene: ${nuevoEstado})`);
       await connection.query(
         'UPDATE pqrs SET fecha_actualizacion = CURRENT_TIMESTAMP WHERE id = ?',
         [id]
@@ -376,9 +425,14 @@ exports.agregarRespuesta = async (req, res) => {
     }
 
     await connection.commit();
+    console.log('✅ Transacción confirmada');
 
     // 🔔 ENVIAR NOTIFICACIÓN POR EMAIL SI ES RESPUESTA DE ADMINISTRACIÓN
+    console.log(`📧 Verificando si se debe enviar email: tipo=${tipo}`);
+    
     if (tipo === 'ADMINISTRACION') {
+      console.log('🎯 Tipo ADMINISTRACION detectado - Preparando email...');
+      
       try {
         const pqrData = {
           ...pqr,
@@ -397,26 +451,50 @@ exports.agregarRespuesta = async (req, res) => {
           tipo: tipo,
           responsable: responsable || req.user?.nombre || 'Equipo de soporte',
           archivo_adjunto: archivoAdjunto,
-          fecha: fechaActualizacion.toISOString()
+          fecha: fechaActualizacion.toLocaleString('es-CO', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          }),
+          estado_anterior: estadoAnterior,
+          estado_nuevo: nuevoEstado
         };
 
+        console.log('📤 Datos para email preparados:');
+        console.log(`   Destinatario: ${pqr.email}`);
+        console.log(`   Ticket: ${pqr.numero_ticket}`);
+        console.log(`   Estado: ${estadoAnterior} → ${nuevoEstado}`);
+        console.log(`   Responsable: ${respuestaData.responsable}`);
+
         // Enviar notificación (asíncrono)
+        console.log('🚀 Llamando a emailService.enviarNotificacionRespuestaPQR()');
+        
         emailService.enviarNotificacionRespuestaPQR(pqrData, respuestaData)
           .then(result => {
             if (result.success) {
-              console.log(`✅ Notificación de respuesta enviada a ${pqr.email}`);
+              console.log(`✅ Email enviado exitosamente a ${pqr.email}`);
+              console.log(`   Message ID: ${result.messageId}`);
             } else {
-              console.warn(`⚠️ No se pudo enviar notificación a ${pqr.email}:`, result.error);
+              console.error(`❌ FALLA en envío de email a ${pqr.email}:`, result.error);
+              console.error(`   Detalles:`, JSON.stringify(result));
             }
           })
           .catch(emailError => {
-            console.error(`❌ Error en envío de notificación:`, emailError.message);
+            console.error(`🔥 ERROR en promesa de email:`, emailError.message);
+            console.error(`   Stack:`, emailError.stack);
           });
+        
+        console.log('⏳ Email en proceso de envío (asíncrono)');
 
       } catch (emailError) {
-        console.error('⚠️ Error al preparar notificación de respuesta:', emailError.message);
+        console.error('🔥 ERROR al preparar datos para email:', emailError.message);
+        console.error('Stack:', emailError.stack);
         // Continuar sin fallar la operación principal
       }
+    } else {
+      console.log('ℹ️ Tipo CLIENTE - No se envía email');
     }
 
     const respuesta = {
@@ -429,6 +507,8 @@ exports.agregarRespuesta = async (req, res) => {
         tipo,
         mensaje: mensaje.trim(),
         fecha: fechaActualizacion.toISOString(),
+        estado_anterior: estadoAnterior,
+        estado_actual: nuevoEstado,
         notificacion: tipo === 'ADMINISTRACION' ? 'Se ha enviado notificación al cliente' : 'Respuesta registrada'
       }
     };
@@ -437,11 +517,15 @@ exports.agregarRespuesta = async (req, res) => {
       respuesta.archivo_adjunto = archivoAdjunto;
     }
 
+    console.log('📤 Enviando respuesta al cliente');
     res.status(201).json(respuesta);
 
   } catch (err) {
+    console.error('🔥 ERROR en agregarRespuesta:', err.message);
+    console.error('Stack:', err.stack);
     await connection.rollback();
-    console.error('❌ Error al agregar respuesta:', err);
+    console.log('↩️ Transacción revertida');
+    
     res.status(500).json({ 
       success: false,
       error: 'No se pudo agregar la respuesta',
@@ -449,10 +533,11 @@ exports.agregarRespuesta = async (req, res) => {
     });
   } finally {
     connection.release();
+    console.log('🔓 Conexión liberada');
   }
 };
 
-// 🔍 Obtener PQR por ID o número de ticket
+// 🔍 Obtener PQR por ID o número de ticket (VERSIÓN CORREGIDA)
 exports.obtenerPQRPorId = async (req, res) => {
   const { id } = req.params;
   
@@ -481,10 +566,14 @@ exports.obtenerPQRPorId = async (req, res) => {
 
     const pqr = pqrRows[0];
 
-    // Obtener archivos adjuntos
+    // Obtener archivos adjuntos (CORREGIDO: sin es_respuesta)
     const [archivos] = await db.query(
       `SELECT 
-        id, nombre_archivo, url_archivo, tipo_archivo, es_respuesta,
+        id, 
+        nombre_archivo, 
+        url_archivo, 
+        tipo_archivo,
+        fecha_creacion,
         DATE_FORMAT(fecha_creacion, '%d/%m/%Y %H:%i') as fecha_subida
        FROM pqr_archivos 
        WHERE pqr_id = ? 
@@ -495,7 +584,9 @@ exports.obtenerPQRPorId = async (req, res) => {
     // Obtener respuestas
     const [respuestas] = await db.query(
       `SELECT 
-        id, mensaje, tipo,
+        id, 
+        mensaje, 
+        tipo,
         DATE_FORMAT(fecha_creacion, '%d/%m/%Y %H:%i') as fecha_respuesta
        FROM pqr_respuestas 
        WHERE pqr_id = ? 
@@ -527,7 +618,7 @@ exports.obtenerPQRPorId = async (req, res) => {
   }
 };
 
-// 📝 Actualizar estado de PQR
+// 📝 Actualizar estado de PQR (YA CORRECTO)
 exports.actualizarEstadoPQR = async (req, res) => {
   const { id } = req.params;
   const { estado, mensaje_respuesta } = req.body;
@@ -605,8 +696,7 @@ exports.actualizarEstadoPQR = async (req, res) => {
   }
 };
 
-
-// 🗑️ Eliminar PQR
+// 🗑️ Eliminar PQR (YA CORRECTO)
 exports.eliminarPQR = async (req, res) => {
   const { id } = req.params;
 
@@ -701,7 +791,7 @@ exports.eliminarPQR = async (req, res) => {
   }
 };
 
-// 📊 Obtener estadísticas de PQRS
+// 📊 Obtener estadísticas de PQRS (YA CORRECTO)
 exports.obtenerEstadisticas = async (req, res) => {
   try {
     const [estadisticas] = await db.query(`
@@ -766,7 +856,7 @@ exports.obtenerEstadisticas = async (req, res) => {
   }
 };
 
-// 🔍 Buscar PQRS
+// 🔍 Buscar PQRS (VERSIÓN CORREGIDA)
 exports.buscarPQRS = async (req, res) => {
   const { q, campo = 'todo' } = req.query;
 
@@ -803,16 +893,24 @@ exports.buscarPQRS = async (req, res) => {
         LIMIT 50
       `;
     } else {
-      // Búsqueda en todos los campos
+      // Búsqueda en todos los campos (CORREGIDO: usar subconsultas como en obtenerPQRS)
       query = `
         SELECT 
           p.*,
           DATE_FORMAT(p.fecha_creacion, '%d/%m/%Y %H:%i') as fecha_creacion_format,
-          COUNT(DISTINCT r.id) as total_respuestas,
-          COUNT(DISTINCT a.id) as total_archivos
+          COALESCE(r.total_respuestas, 0) as total_respuestas,
+          COALESCE(a.total_archivos, 0) as total_archivos
         FROM pqrs p
-        LEFT JOIN pqr_respuestas r ON p.id = r.pqr_id
-        LEFT JOIN pqr_archivos a ON p.id = a.pqr_id
+        LEFT JOIN (
+          SELECT pqr_id, COUNT(*) as total_respuestas 
+          FROM pqr_respuestas 
+          GROUP BY pqr_id
+        ) r ON p.id = r.pqr_id
+        LEFT JOIN (
+          SELECT pqr_id, COUNT(*) as total_archivos 
+          FROM pqr_archivos 
+          GROUP BY pqr_id
+        ) a ON p.id = a.pqr_id
         WHERE 
           p.nombre_completo LIKE ? OR 
           p.email LIKE ? OR 
@@ -820,7 +918,6 @@ exports.buscarPQRS = async (req, res) => {
           p.numero_ticket LIKE ? OR 
           p.producto_relacionado LIKE ? OR 
           p.descripcion LIKE ?
-        GROUP BY p.id
         ORDER BY p.fecha_creacion DESC 
         LIMIT 50
       `;
@@ -850,19 +947,26 @@ exports.buscarPQRS = async (req, res) => {
   }
 };
 
-// 🔄 Obtener últimas PQRS
+// 🔄 Obtener últimas PQRS (VERSIÓN CORREGIDA)
 exports.obtenerUltimaPQR = async (req, res) => {
   try {
     const [ultimas] = await db.query(`
       SELECT 
         p.*,
         DATE_FORMAT(p.fecha_creacion, '%d/%m/%Y %H:%i') as fecha_creacion_format,
-        COUNT(DISTINCT r.id) as total_respuestas,
-        COUNT(DISTINCT a.id) as total_archivos
+        COALESCE(r.total_respuestas, 0) as total_respuestas,
+        COALESCE(a.total_archivos, 0) as total_archivos
       FROM pqrs p
-      LEFT JOIN pqr_respuestas r ON p.id = r.pqr_id
-      LEFT JOIN pqr_archivos a ON p.id = a.pqr_id
-      GROUP BY p.id
+      LEFT JOIN (
+        SELECT pqr_id, COUNT(*) as total_respuestas 
+        FROM pqr_respuestas 
+        GROUP BY pqr_id
+      ) r ON p.id = r.pqr_id
+      LEFT JOIN (
+        SELECT pqr_id, COUNT(*) as total_archivos 
+        FROM pqr_archivos 
+        GROUP BY pqr_id
+      ) a ON p.id = a.pqr_id
       ORDER BY p.fecha_creacion DESC 
       LIMIT 5
     `);
