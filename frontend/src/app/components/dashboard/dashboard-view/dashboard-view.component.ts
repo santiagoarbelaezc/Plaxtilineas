@@ -9,7 +9,9 @@ import {
   faSignOutAlt,
   faUserShield,
   faHome,
-  faBolt
+  faBolt,
+  faWarehouse,      // Icono para Inventario
+  faClipboardList   // Icono para PQR
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -28,9 +30,21 @@ export class DashboardViewComponent {
   faUserShield = faUserShield;
   faHome = faHome;
   faBolt = faBolt;
+  faWarehouse = faWarehouse;      // Icono para Inventario
+  faClipboardList = faClipboardList; // Icono para PQR
 
   constructor(private router: Router, library: FaIconLibrary) {
-    library.addIcons(faBoxes, faFolderOpen, faFolder, faSignOutAlt, faUserShield, faHome, faBolt);
+    library.addIcons(
+      faBoxes, 
+      faFolderOpen, 
+      faFolder, 
+      faSignOutAlt, 
+      faUserShield, 
+      faHome, 
+      faBolt,
+      faWarehouse,      // Añadido al library
+      faClipboardList   // Añadido al library
+    );
   }
 
   logout(): void {

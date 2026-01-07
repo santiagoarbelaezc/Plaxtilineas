@@ -5,29 +5,67 @@
   overflow: hidden;
   font-family: 'Segoe UI', sans-serif;
   margin: 0 auto;
-  
+  border-radius: 12px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+/* Elevación sutil al hacer hover */
+.banner-container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  border-radius: 14px;
+}
+
+/* Efecto de clic */
+.banner-container:active {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.18);
+  transition: all 0.2s ease;
 }
 
 .banner-image {
   width: 100%;
   height: 100%;
+  overflow: hidden;
+  transition: all 0.5s ease;
+}
+
+/* Efecto sutil de zoom en la imagen */
+.banner-container:hover .banner-image {
+  transform: scale(1.02);
 }
 
 .banner-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Brillo sutil en la imagen al hover */
+.banner-container:hover .banner-img {
+  transform: scale(1.03);
+  filter: brightness(1.05) contrast(1.02);
 }
 
 .description-container {
   position: absolute;
   padding: 20px;
   max-width: 50%;
-  transition: opacity 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  opacity: 0.98;
+}
+
+/* Elevación sutil del contenedor de descripción */
+.banner-container:hover .description-container {
+  transform: translateY(-2px);
+  opacity: 1;
 }
 
 .description-container:hover {
-  opacity: 0.95;
+  opacity: 1;
 }
 
 .description-content {
@@ -40,12 +78,54 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
   border-left: 4px solid #34db4a;
   backdrop-filter: blur(2px);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efecto de borde sutil alrededor del contenido */
+.description-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
   transition: all 0.3s ease;
 }
 
+.banner-container:hover .description-content::before {
+  border-color: rgba(52, 219, 74, 0.2);
+}
+
 .description-content:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  background-color: rgba(255, 255, 255, 0.95);
+  border-left-color: #2bc641;
+}
+
+/* Efecto de brillo sutil en el borde izquierdo */
+.description-content {
+  background: linear-gradient(
+    to right,
+    rgba(52, 219, 74, 0.05) 0%,
+    rgba(52, 219, 74, 0.01) 4px,
+    rgba(255, 255, 255, 0.92) 4px,
+    rgba(255, 255, 255, 0.92) 100%
+  );
+}
+
+.banner-container:hover .description-content {
+  background: linear-gradient(
+    to right,
+    rgba(52, 219, 74, 0.08) 0%,
+    rgba(52, 219, 74, 0.02) 4px,
+    rgba(255, 255, 255, 0.95) 4px,
+    rgba(255, 255, 255, 0.95) 100%
+  );
 }
 
 /* Posiciones verticales */
@@ -91,13 +171,34 @@
   transform: translateX(-50%);
 }
 
+/* Animación sutil para las posiciones */
+.banner-container:hover .v-top {
+  top: 26px;
+}
+
+.banner-container:hover .v-bottom {
+  bottom: 26px;
+}
+
+.banner-container:hover .h-left {
+  left: 26px;
+}
+
+.banner-container:hover .h-right {
+  right: 26px;
+}
+
 /* ============ RESPONSIVE ============ */
 
 /* Tablets grandes y laptops pequeños (1024px - 1280px) */
 @media (max-width: 1300px) {
   .banner-container {
     width: 1024px;
-    height: 286px; /* 358 * (1024/1280) = 286px */
+    height: 286px;
+  }
+  
+  .banner-container:hover {
+    transform: translateY(-3px);
   }
   
   .description-content {
@@ -114,13 +215,27 @@
     left: 22px;
     right: 22px;
   }
+  
+  .banner-container:hover .v-top {
+    top: 20px;
+  }
+  
+  .banner-container:hover .v-bottom {
+    bottom: 20px;
+  }
 }
 
 /* Tablets medianas (768px - 1024px) */
 @media (max-width: 1024px) {
   .banner-container {
     width: 768px;
-    height: 215px; /* 358 * (768/1280) = 215px */
+    height: 215px;
+    border-radius: 10px;
+  }
+  
+  .banner-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
   }
   
   .description-container {
@@ -135,6 +250,10 @@
     border-left-width: 3px;
   }
   
+  .description-content:hover {
+    transform: translateY(-2px);
+  }
+  
   .v-top, .v-bottom {
     top: 18px;
     bottom: 18px;
@@ -144,13 +263,19 @@
     left: 18px;
     right: 18px;
   }
+  
+  /* Reducir efectos hover en tablet */
+  .banner-container:hover .description-container {
+    transform: translateY(-1px);
+  }
 }
 
 /* Tablets pequeñas y móviles grandes (600px - 768px) */
 @media (max-width: 768px) {
   .banner-container {
     width: 600px;
-    height: 168px; /* 358 * (600/1280) = 168px */
+    height: 168px;
+    border-radius: 8px;
   }
   
   .description-container {
@@ -174,13 +299,23 @@
     left: 15px;
     right: 15px;
   }
+  
+  /* Efectos más sutiles en móviles grandes */
+  .banner-container:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  }
+  
+  .banner-container:hover .banner-img {
+    transform: scale(1.01);
+  }
 }
 
 /* Móviles medianos (480px - 600px) */
 @media (max-width: 600px) {
   .banner-container {
     width: 480px;
-    height: 134px; /* 358 * (480/1280) = 134px */
+    height: 134px;
   }
   
   .description-container {
@@ -195,6 +330,11 @@
     border-left-width: 2px;
     backdrop-filter: none;
     background-color: rgba(255, 255, 255, 0.95);
+  }
+  
+  .description-content:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
   }
   
   .v-top, .v-bottom {
@@ -214,6 +354,11 @@
   .v-bottom.h-right {
     max-width: 85%;
   }
+  
+  /* Desactivar algunos efectos en móviles para mejor rendimiento */
+  .banner-container:hover .banner-image {
+    transform: none;
+  }
 }
 
 /* Móviles pequeños (320px - 480px) */
@@ -221,7 +366,7 @@
   .banner-container {
     width: 100%;
     height: auto;
-    aspect-ratio: 1280 / 358; /* Mantiene proporción original */
+    aspect-ratio: 1280 / 358;
     max-width: 400px;
     margin: 0 auto;
   }
@@ -259,6 +404,12 @@
     width: 90%;
     max-width: 90%;
   }
+  
+  /* Efectos táctiles más suaves */
+  .banner-container:active {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  }
 }
 
 /* Móviles muy pequeños (menos de 320px) */
@@ -284,6 +435,11 @@
     width: 1280px;
     height: 358px;
     margin: 0 auto;
+  }
+  
+  .banner-container:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
   }
 }
 
@@ -322,4 +478,46 @@
 
 .banner-container.proportional .description-container {
   position: absolute;
+}
+
+/* Optimizaciones para dispositivos táctiles */
+@media (hover: none) and (pointer: coarse) {
+  .banner-container {
+    cursor: pointer;
+  }
+  
+  .banner-container:active {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  }
+  
+  .banner-container:active .banner-img {
+    transform: scale(1.01);
+  }
+  
+  .banner-container:active .description-container {
+    transform: translateY(-1px);
+  }
+  
+  .banner-container:active .description-content {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
+  }
+  
+  /* Desactivar efectos hover que no funcionan en táctiles */
+  .description-content:hover {
+    transform: none;
+  }
+}
+
+/* Efecto de carga suave para la imagen */
+.banner-img {
+  opacity: 1;
+  transition: opacity 0.5s ease, transform 0.6s ease;
+}
+
+/* Si la imagen no está cargada aún */
+.banner-img:not([src]),
+.banner-img[src=""] {
+  opacity: 0;
 }

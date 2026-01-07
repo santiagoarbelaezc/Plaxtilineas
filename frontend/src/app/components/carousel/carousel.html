@@ -62,8 +62,8 @@
                 [src]="producto.imagen_url" 
                 [alt]="producto.nombre"
                 class="imagen"
-                loading="lazy"
-                (error)="producto.imagen_url = 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Producto'">
+                loading="lazy">
+                <!-- Se eliminó el (error) que causaba el problema -->
             </div>
             
             <!-- Información del producto -->
@@ -106,9 +106,6 @@
       aria-label="Siguientes productos">
       ›
     </button>
-    
-    
-    
   </div>
   
   <!-- Mensaje si no hay productos -->

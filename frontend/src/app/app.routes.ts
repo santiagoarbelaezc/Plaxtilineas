@@ -61,6 +61,10 @@ export const routes: Routes = [
         path: 'inventario',
         loadComponent: () => import('./pages/dashboard/inventario/inventario').then(m => m.Inventario)
       },
+      {
+        path: 'pqr-admin',
+        loadComponent: () => import('./pages/dashboard/pqr/pqr').then(m => m.Pqr)
+      },
       
       
     ]

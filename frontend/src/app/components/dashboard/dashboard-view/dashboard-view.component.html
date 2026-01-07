@@ -46,8 +46,15 @@
         </li>
         <li class="menu-item">
           <a routerLink="/admin/inventario" class="menu-link">
-            <fa-icon [icon]="faBoxes" class="menu-icon"></fa-icon>
+            <fa-icon [icon]="faWarehouse" class="menu-icon"></fa-icon>
             <span>Inventario</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a routerLink="/admin/pqr-admin" class="menu-link">
+            <fa-icon [icon]="faClipboardList" class="menu-icon"></fa-icon>
+            <!-- Alternativa: faComments -->
+            <span>PQR</span>
           </a>
         </li>
       </ul>
@@ -95,11 +102,20 @@
 
             <a routerLink="/admin/inventario" class="access-card">
               <div class="access-icon-container">
-                <fa-icon [icon]="faBoxes"></fa-icon>
+                <fa-icon [icon]="faWarehouse"></fa-icon>
               </div>
               <h3 class="access-title">Gestionar inventario</h3>
               <p class="access-description">Administra el inventario</p>
               <span class="access-link">Ir a inventario →</span>
+            </a>
+
+            <a routerLink="/admin/pqr-admin" class="access-card">
+              <div class="access-icon-container">
+                <fa-icon [icon]="faClipboardList"></fa-icon>
+              </div>
+              <h3 class="access-title">Gestionar PQR</h3>
+              <p class="access-description">Administra las PQRS</p>
+              <span class="access-link">Ir a gestionador de PQR →</span>
             </a>
           </div>
         </section>

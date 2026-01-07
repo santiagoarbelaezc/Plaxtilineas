@@ -10,6 +10,22 @@
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
   font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
   border: 2px solid #f0f0f0;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  cursor: pointer;
+}
+
+/* Elevación sutil al pasar el mouse */
+.card-container:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.25);
+  border-color: #e0e0e0;
+}
+
+/* Efecto de clic */
+.card-container:active {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+  transition: all 0.2s ease;
 }
 
 /* Logo superpuesto en la parte superior */
@@ -25,6 +41,12 @@
   height: 100px;
   padding: 15px;
   background-color: transparent;
+  transition: all 0.3s ease;
+}
+
+/* Efecto sutil en el logo */
+.card-container:hover .logo-section {
+  transform: translateY(3px);
 }
 
 .logo {
@@ -32,6 +54,13 @@
   max-width: 280px;
   object-fit: contain;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  transition: all 0.4s ease;
+}
+
+/* Escala mínima en el logo */
+.card-container:hover .logo {
+  transform: scale(1.03);
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
 }
 
 /* Imagen del producto que ocupa toda la carta */
@@ -46,6 +75,13 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efecto sutil de zoom en la imagen */
+.card-container:hover .product-image {
+  transform: scale(1.04);
+  filter: brightness(1.03);
 }
 
 /* Sección de información del producto en la parte inferior */
@@ -57,6 +93,11 @@
   z-index: 10;
   padding: 20px;
   transition: all 0.3s ease;
+}
+
+/* Elevación sutil de la sección de info */
+.card-container:hover .product-info-section {
+  transform: translateY(-3px);
 }
 
 /* Clase para sección transparente - IMPORTANTE: Aumentar especificidad */
@@ -102,7 +143,14 @@
   box-sizing: border-box;
   text-align: center;
   border-top: 3px solid #ffffff;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+}
+
+/* Profundidad en el contenedor verde */
+.card-container:hover .green-container {
+  background-color: rgba(221, 24, 34, 0.98);
+  box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.35);
+  transform: translateY(-2px);
 }
 
 /* Contenido promocional */
@@ -115,6 +163,11 @@
   transition: all 0.3s ease;
 }
 
+/* Animación sutil del contenido */
+.card-container:hover .promo-content {
+  gap: 16px;
+}
+
 .promo-title {
   font-size: 22px;
   font-weight: 700;
@@ -123,7 +176,15 @@
   color: #ffffff;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   margin: 0;
-  transition: opacity 0.3s ease;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+/* Resalte sutil del título */
+.card-container:hover .promo-title {
+  transform: scale(1.02);
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.35);
+  letter-spacing: 1.6px;
 }
 
 .promo-description {
@@ -134,7 +195,14 @@
   max-width: 90%;
   color: #f8f9fa;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-  transition: opacity 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+/* Animación sutil de la descripción */
+.card-container:hover .promo-description {
+  transform: translateY(-1px);
+  text-shadow: 1.5px 1.5px 4px rgba(0, 0, 0, 0.25);
+  color: #ffffff;
 }
 
 /* Botón de compra - Estilo prominente */
@@ -149,23 +217,54 @@
   text-transform: uppercase;
   letter-spacing: 1.5px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
   border: 3px solid #ffffff;
   font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
   opacity: 1;
   visibility: visible;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efecto de elevación en el botón */
+.card-container:hover .promo-button {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+  background-color: #f8f9fa;
 }
 
 .promo-button:hover {
   background-color: #f8f9fa;
-  transform: scale(1.05);
+  transform: scale(1.05) translateY(-2px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  color: #218838;
 }
 
 .promo-button:active {
-  transform: scale(0.98);
+  transform: scale(0.98) translateY(0);
   background-color: #e9ecef;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s ease;
+}
+
+/* Efecto sutil de brillo en el botón */
+.promo-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.2), 
+    transparent);
+  transition: left 0.6s ease;
+}
+
+.promo-button:hover::before {
+  left: 100%;
 }
 
 /* ============================================
@@ -180,6 +279,11 @@
     height: 280px;
     flex-direction: row;
     border-radius: 12px;
+  }
+  
+  .card-container:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.23);
   }
   
   .logo-section {
@@ -218,6 +322,10 @@
     border-left: 3px solid #ffffff;
   }
   
+  .card-container:hover .green-container {
+    transform: translateX(-2px);
+  }
+  
   .product-info-section.transparent-section .green-container {
     border-left: none !important;
     background-color: transparent !important;
@@ -244,6 +352,10 @@
     font-size: 14px;
     margin-top: 5px;
   }
+  
+  .promo-button:hover {
+    transform: scale(1.04) translateY(-2px);
+  }
 }
 
 /* Para móviles grandes (576px - 767px) */
@@ -255,6 +367,11 @@
     flex-direction: row;
     border-radius: 10px;
     margin: 0 auto;
+  }
+  
+  .card-container:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
   }
   
   .logo-section {
@@ -285,6 +402,10 @@
     border-left: 2px solid #ffffff;
   }
   
+  .card-container:hover .green-container {
+    transform: translateX(-1px);
+  }
+  
   .product-info-section.transparent-section .green-container {
     border-left: none !important;
     background-color: transparent !important;
@@ -312,6 +433,10 @@
     padding: 6px 20px;
     font-size: 13px;
     border-width: 2px;
+  }
+  
+  .promo-button:hover {
+    transform: scale(1.03) translateY(-1px);
   }
 }
 
@@ -412,6 +537,19 @@
     transform: scale(0.95);
     background-color: #e9ecef;
   }
+  
+  .card-container:active {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+  }
+  
+  .card-container:active .green-container {
+    transform: translateY(-1px);
+  }
+  
+  .card-container:active .promo-button {
+    transform: scale(0.97);
+  }
 }
 
 /* Mejoras de rendimiento para móviles */
@@ -426,6 +564,16 @@
   
   .promo-button {
     transition: transform 0.2s ease;
+  }
+  
+  /* Reducir animaciones en móvil para mejor rendimiento */
+  .card-container:hover .product-image {
+    transform: scale(1.02);
+  }
+  
+  .card-container:hover .promo-title,
+  .card-container:hover .promo-description {
+    transform: none;
   }
 }
 

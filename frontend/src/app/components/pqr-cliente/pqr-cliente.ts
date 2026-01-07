@@ -201,9 +201,11 @@ export class PqrClienteComponent implements OnInit {
     this.pqrConsultada = null;
     
     this.pqrService.consultarPQR(this.numeroTicketConsulta.trim()).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         this.cargando = false;
-        this.pqrConsultada = response;
+        // Extraer la propiedad pqr si existe, de lo contrario usar la respuesta completa
+        this.pqrConsultada = response.pqr || response;
+        console.log('PQR consultada:', this.pqrConsultada);
         this.mostrarMensaje('✅ PQR encontrada', 'success');
       },
       error: (error) => {
@@ -211,6 +213,7 @@ export class PqrClienteComponent implements OnInit {
         this.pqrConsultada = null;
         const mensajeError = error.error?.error || 'No se encontró ninguna PQR con ese número de ticket';
         this.mostrarMensaje(mensajeError, 'error');
+        console.error('Error consultando PQR:', error);
       }
     });
   }

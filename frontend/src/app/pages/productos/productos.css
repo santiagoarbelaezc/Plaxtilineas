@@ -3,15 +3,72 @@
   flex-direction: column;
   gap: 20px;
   padding: 16px;
-  width: 100%;
-  max-width: 1600px;
-  margin: 0 auto;
+  width: 100%; /* Ocupa el 100% del ancho disponible */
+  margin: 0; /* Elimina el margen automático */
   box-sizing: border-box;
   position: relative;
+  max-width: 100%; /* Asegura que nunca tenga un límite máximo */
+}
+
+/* Elimina cualquier ancho máximo en todas las resoluciones */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .productos-layout {
+    flex-direction: row;
+    gap: 30px;
+    padding: 20px;
+    width: 100%; /* Asegura el 100% en tablet */
+    max-width: 100%;
+  }
+  
+  app-menu-categorias-component {
+    flex: 0 0 250px;
+    position: sticky;
+    top: 100px;
+    align-self: flex-start;
+    height: fit-content;
+  }
+  
+  app-product-list-component {
+    flex: 1;
+    min-width: 0;
+    width: calc(100% - 280px); /* Calcula el ancho restante */
+  }
+}
+
+@media (min-width: 1024px) {
+  .productos-layout {
+    flex-direction: row;
+    gap: 40px;
+    padding: 24px 40px;
+    width: 100%; /* 100% en escritorio también */
+    max-width: 100%;
+  }
+  
+  app-menu-categorias-component {
+    flex: 0 0 300px;
+    position: sticky;
+    top: 100px;
+    align-self: flex-start;
+    height: fit-content;
+  }
+  
+  app-product-list-component {
+    flex: 1;
+    margin-left: 20px;
+    min-width: 0;
+    width: calc(100% - 340px); /* Ancho dinámico basado en el restante */
+    max-width: 100%; /* Elimina el max-width fijo */
+  }
 }
 
 /* Móvil: menú oculto por defecto, se muestra con botón */
 @media (max-width: 767px) {
+  .productos-layout {
+    width: 100%;
+    max-width: 100%;
+    padding: 16px; /* Mantén el padding para respiro */
+  }
+  
   app-menu-categorias-component {
     position: fixed;
     top: 0;
@@ -22,37 +79,18 @@
     z-index: 1000;
     transition: left 0.3s ease;
     box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-    overflow: visible !important; /* Cambiado de auto a visible */
+    overflow: visible !important;
   }
   
   app-menu-categorias-component.menu-visible {
     left: 0;
   }
   
-  /* Elimina el background y padding del componente */
-  app-menu-categorias-component .menu-categorias {
-    background: transparent !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    border: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    height: 100% !important;
-  }
-  
-  /* Aplica el estilo al contenedor interno */
-  app-menu-categorias-component .menu-categorias::before {
-    display: none !important;
-  }
-  
- 
   app-product-list-component {
     width: 100%;
   }
   
-  /* Botón flecha para mostrar/ocultar menú en móvil */
+  /* ... el resto del código móvil permanece igual ... */
   .menu-toggle-categorias {
     display: block;
     position: fixed;
@@ -60,7 +98,7 @@
     left: 0;
     transform: translateY(-50%);
     z-index: 999;
-    background: #007bff;
+    background: #358A43;
     border: none;
     border-radius: 0 50% 50% 0;
     width: 40px;
@@ -74,13 +112,11 @@
     outline: none;
   }
   
-  /* Cuando el menú está visible, mover la flecha junto al menú */
   app-menu-categorias-component.menu-visible ~ .menu-toggle-categorias {
     left: 80%;
     max-left: 300px;
   }
   
-  /* Flecha dentro del botón */
   .toggle-arrow {
     width: 0;
     height: 0;
@@ -91,12 +127,10 @@
     transition: transform 0.3s ease;
   }
   
-  /* Cuando el menú está visible, girar la flecha */
   app-menu-categorias-component.menu-visible ~ .menu-toggle-categorias .toggle-arrow {
     transform: rotate(180deg);
   }
   
-  /* Overlay para cerrar menú tocando fuera */
   .menu-overlay {
     display: none;
     position: fixed;
@@ -118,51 +152,5 @@
   .menu-toggle-categorias,
   .menu-overlay {
     display: none !important;
-  }
-}
-
-/* Tablet */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .productos-layout {
-    flex-direction: row;
-    gap: 30px;
-    padding: 20px;
-  }
-  
-  app-menu-categorias-component {
-    flex: 0 0 250px;
-    position: sticky;
-    top: 100px;
-    align-self: flex-start;
-    height: fit-content;
-  }
-  
-  app-product-list-component {
-    flex: 1;
-    min-width: 0;
-  }
-}
-
-/* Escritorio */
-@media (min-width: 1024px) {
-  .productos-layout {
-    flex-direction: row;
-    gap: 40px;
-    padding: 24px 40px;
-  }
-  
-  app-menu-categorias-component {
-    flex: 0 0 300px;
-    position: sticky;
-    top: 100px;
-    align-self: flex-start;
-    height: fit-content;
-  }
-  
-  app-product-list-component {
-    flex: 1;
-    margin-left: 20px;
-    min-width: 0;
-    max-width: calc(100% - 340px);
   }
 }

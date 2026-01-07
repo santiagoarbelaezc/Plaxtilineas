@@ -316,11 +316,8 @@
               <div class="resumen-fecha">
                 <strong>Fecha de creación:</strong> {{ formatearFecha(pqrConsultada.fecha_creacion) }}
               </div>
-              <div class="resumen-fecha" *ngIf="pqrConsultada.fecha_actualizacion_formateada">
-                <strong>Última actualización:</strong> {{ pqrConsultada.fecha_actualizacion_formateada }}
-              </div>
-              
-              <div class="resumen-info">
+            <div class="resumen-fecha" *ngIf="pqrConsultada.fecha_actualizacion">
+              <strong>Última actualización:</strong> {{ formatearFecha(pqrConsultada.fecha_actualizacion) }}
                 <div class="info-item">
                   <span class="info-label">👤 Nombre:</span>
                   <span class="info-valor">{{ pqrConsultada.nombre_completo }}</span>
@@ -380,8 +377,8 @@
                   <div class="respuesta-tipo" [class]="respuesta.tipo === 'ADMINISTRACION' ? 'admin' : 'cliente'">
                     {{ respuesta.tipo === 'ADMINISTRACION' ? '👨‍💼 Administración' : '👤 Tú' }}
                   </div>
-                  <div class="respuesta-fecha" *ngIf="respuesta.fecha_respuesta">
-                    {{ respuesta.fecha_respuesta }}
+                  <div class="respuesta-fecha" *ngIf="respuesta.fecha_respuesta || respuesta.fecha_creacion">
+                    {{ formatearFecha(respuesta.fecha_respuesta || respuesta.fecha_creacion) }}
                   </div>
                 </div>
                 <div class="respuesta-mensaje">

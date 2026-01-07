@@ -6,7 +6,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { ProductoMenu } from '../../models/productoMenu.model';
 import { ProductoMenuService } from '../../services/producto-menu.service';
 import { ProductSelectService } from '../../services/product-select.service';
-import { MenuStateService } from '../../services/menu-state.service'; // ⭐ Importar nuevo
+import { MenuStateService } from '../../services/menu-state.service';
 
 @Component({
   selector: 'app-product-list-component',
@@ -27,13 +27,15 @@ import { MenuStateService } from '../../services/menu-state.service'; // ⭐ Imp
 export class ProductListComponent implements OnInit {
   productos: ProductoMenu[] = [];
   cargando = false;
+  filtroActual: string = '';
+  mensajeEstado: string = '';
   private isInitialLoad = true;
 
   constructor(
     private route: ActivatedRoute,
     private productoService: ProductoMenuService,
     private productSelectService: ProductSelectService,
-    private menuStateService: MenuStateService // ⭐ Inyectar nuevo servicio
+    private menuStateService: MenuStateService
   ) {}
 
   ngOnInit() {
@@ -45,77 +47,141 @@ export class ProductListComponent implements OnInit {
 
   private handleQueryParams(params: any): void {
     const subcatId = parseInt(params['subcategoria_id']);
+    const catId = parseInt(params['categoria_id']);
     
+    // Determinar qué acción tomar basado en los parámetros
     if (!isNaN(subcatId)) {
-      console.log(`🎯 Subcategoría desde URL: ${subcatId}`);
-      this.cargarProductos(subcatId);
+      this.cargarProductosPorSubcategoria(subcatId);
+    } else if (!isNaN(catId)) {
+      this.cargarProductosPorCategoria(catId);
     } else if (this.isInitialLoad) {
-      // ⭐ NUEVO: Si es la carga inicial y no hay subcategoría en URL,
-      // intentar cargar la última subcategoría guardada
-      this.loadLastSavedSubcategory();
+      this.handleInitialLoad();
+    } else {
+      this.cargarTodosLosProductos();
     }
     
     this.isInitialLoad = false;
   }
 
-  /**
-   * ⭐ NUEVO: Cargar la última subcategoría guardada
-   */
-  private loadLastSavedSubcategory(): void {
+  private handleInitialLoad(): void {
     const savedSubcategoryId = this.menuStateService.getLastSelectedSubcategory();
     
     if (savedSubcategoryId) {
       console.log(`📌 Cargando subcategoría guardada: ${savedSubcategoryId}`);
       
-      // Usar setTimeout para evitar problemas de timing
       setTimeout(() => {
-        this.cargarProductos(savedSubcategoryId);
+        this.cargarProductosPorSubcategoria(savedSubcategoryId);
         
-        // Actualizar la URL sin recargar la página
-        const url = new URL(window.location.href);
-        url.searchParams.set('subcategoria_id', savedSubcategoryId.toString());
-        window.history.replaceState({}, '', url.toString());
+        // Actualizar la URL para reflejar el estado
+        this.updateUrlWithParam('subcategoria_id', savedSubcategoryId);
       }, 300);
     } else {
-      console.log('ℹ️ No hay subcategoría guardada para cargar');
-      this.productos = [];
+      console.log('ℹ️ No hay subcategoría guardada');
+      this.cargarTodosLosProductos();
     }
   }
 
-  cargarProductos(subcatId: number) {
-    console.log(`🔄 Cargando productos para subcategoría: ${subcatId}`);
-    
+  private updateUrlWithParam(key: string, value: any): void {
+    const url = new URL(window.location.href);
+    url.searchParams.set(key, value.toString());
+    window.history.replaceState({}, '', url.toString());
+  }
+
+  private cargarTodosLosProductos(): void {
     this.cargando = true;
-    this.productoService.obtenerPorSubcategoria(subcatId).subscribe({
+    this.filtroActual = 'Todos los productos';
+    this.mensajeEstado = '';
+    
+    console.log('🔍 Cargando TODOS los productos...');
+    
+    this.productoService.obtenerTodosLosProductos().subscribe({
       next: (data: ProductoMenu[]) => {
-        setTimeout(() => {
-          this.productos = data;
-          this.cargando = false;
-          
-          console.log(`✅ ${data.length} productos cargados`);
-          
-          // Scroll suave a la sección
-          setTimeout(() => {
-            const seccion = document.getElementById('productos-seccion');
-            if (seccion) {
-              const offset = 100;
-              const seccionTop = seccion.getBoundingClientRect().top + window.pageYOffset;
-              window.scrollTo({
-                top: seccionTop - offset,
-                behavior: 'smooth'
-              });
-            }
-          }, 300);
-        }, 300);
+        this.handleSuccessResponse(data, `Se encontraron ${data.length} productos`);
       },
       error: (error) => {
-        console.error('❌ Error al cargar productos:', error);
-        setTimeout(() => {
-          this.productos = [];
-          this.cargando = false;
-        }, 300);
+        this.handleErrorResponse(error);
       }
     });
+  }
+
+  private cargarProductosPorSubcategoria(subcatId: number): void {
+    this.cargando = true;
+    this.filtroActual = `Subcategoría`;
+    this.mensajeEstado = `Cargando productos...`;
+    
+    console.log(`🔄 Cargando productos para subcategoría: ${subcatId}`);
+    
+    this.productoService.obtenerPorSubcategoria(subcatId).subscribe({
+      next: (data: ProductoMenu[]) => {
+        this.handleSuccessResponse(data, `Subcategoría: ${data.length} productos`);
+      },
+      error: (error) => {
+        this.handleErrorResponse(error);
+      }
+    });
+  }
+
+  private cargarProductosPorCategoria(catId: number): void {
+    this.cargando = true;
+    this.filtroActual = `Categoría`;
+    this.mensajeEstado = `Cargando productos...`;
+    
+    console.log(`🏷️ Cargando productos para categoría: ${catId}`);
+    
+    this.productoService.obtenerPorCategoria(catId).subscribe({
+      next: (data: ProductoMenu[]) => {
+        this.handleSuccessResponse(data, `Categoría: ${data.length} productos`);
+      },
+      error: (error) => {
+        this.handleErrorResponse(error);
+      }
+    });
+  }
+
+  private handleSuccessResponse(data: ProductoMenu[], mensaje: string = ''): void {
+    setTimeout(() => {
+      this.productos = data;
+      this.cargando = false;
+      this.mensajeEstado = data.length > 0 ? mensaje : 'No se encontraron productos';
+      
+      console.log(`✅ ${data.length} productos cargados`);
+      
+      // Solo hacer scroll si hay productos
+      if (data.length > 0) {
+        this.hacerScrollSuave();
+      }
+    }, 300);
+  }
+
+  private handleErrorResponse(error: any): void {
+    console.error('❌ Error al cargar productos:', error);
+    
+    setTimeout(() => {
+      this.productos = [];
+      this.cargando = false;
+      this.mensajeEstado = 'Error al cargar los productos';
+    }, 300);
+  }
+
+  private hacerScrollSuave(): void {
+    setTimeout(() => {
+      const seccion = document.getElementById('productos-seccion');
+      if (seccion) {
+        const offset = 100;
+        const seccionTop = seccion.getBoundingClientRect().top + window.pageYOffset;
+        
+        // Solo hacer scroll si la sección no es visible
+        const isVisible = (seccionTop - offset) > window.pageYOffset && 
+                          (seccionTop - offset) < (window.pageYOffset + window.innerHeight);
+        
+        if (!isVisible) {
+          window.scrollTo({
+            top: seccionTop - offset,
+            behavior: 'smooth'
+          });
+        }
+      }
+    }, 300);
   }
 
   verDetalles(producto: ProductoMenu) {
@@ -125,12 +191,18 @@ export class ProductListComponent implements OnInit {
   formatearPrecio(precio: number): string {
     if (precio === null || precio === undefined) return '$ 0';
     
-    // Redondear el precio a entero si tiene decimales
     const precioEntero = Math.round(precio);
-    
-    // Formatear sin decimales
     const precioFormateado = precioEntero.toLocaleString('es-ES');
     
     return `$ ${precioFormateado}`;
-}
+  }
+
+  // Método público para recargar productos (útil para botones externos)
+  recargarProductos(): void {
+    // Reiniciar y recargar según los parámetros actuales
+    this.isInitialLoad = false;
+    this.route.queryParams.subscribe(params => {
+      this.handleQueryParams(params);
+    });
+  }
 }

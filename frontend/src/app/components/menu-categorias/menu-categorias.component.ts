@@ -6,6 +6,12 @@ import { CategoriaMenuService } from '../../services/categoria-menu.service';
 import { MenuStateService } from '../../services/menu-state.service';
 import { CategoriaConSubcategorias } from '../../models/categoriaMenu.model';
 
+// Interface para extender la categoría con propiedades adicionales
+interface CategoriaExtendida extends CategoriaConSubcategorias {
+  expanded?: boolean;
+  cantidad?: number;
+}
+
 @Component({
   selector: 'app-menu-categorias-component',
   standalone: true,
@@ -14,7 +20,8 @@ import { CategoriaConSubcategorias } from '../../models/categoriaMenu.model';
   styleUrls: ['./menu-categorias.component.css']
 })
 export class MenuCategoriasComponent implements OnInit {
-  categorias: (CategoriaConSubcategorias & { expanded?: boolean })[] = [];
+  categorias: CategoriaExtendida[] = [];
+  mostrarTodosProductos: boolean = false; // Nueva variable de estado
 
   constructor(
     private categoriaService: CategoriaMenuService,
@@ -25,10 +32,25 @@ export class MenuCategoriasComponent implements OnInit {
 
   ngOnInit() {
     this.loadCategories();
+    
+    // Verificar si estamos mostrando todos los productos
+    this.checkIfShowingAllProducts();
+  }
+
+  /**
+   * Verificar si la URL actual indica que estamos mostrando todos los productos
+   */
+  private checkIfShowingAllProducts(): void {
+    this.route.queryParams.subscribe(params => {
+      const tieneSubcat = !!params['subcategoria_id'];
+      const tieneCat = !!params['categoria_id'];
+      
+      // Si no hay filtros, estamos mostrando todos los productos
+      this.mostrarTodosProductos = !tieneSubcat && !tieneCat;
+    });
   }
 
   private loadCategories(): void {
-    // 1. Primero capturamos el queryParam
     let categoriaIdDesdeURL: number | null = null;
     
     this.route.queryParams.subscribe(params => {
@@ -38,17 +60,16 @@ export class MenuCategoriasComponent implements OnInit {
       }
     });
 
-    // 2. Luego cargamos las categorías
     this.categoriaService.obtenerCategorias().subscribe(data => {
-      // Cargar estado guardado
       const expandedIds = this.menuStateService.getExpandedCategories();
       
       this.categorias = data.map(c => ({ 
         ...c, 
-        expanded: expandedIds.includes(c.id) 
+        expanded: expandedIds.includes(c.id),
+        cantidad: this.calcularCantidadTotal(c)
       }));
 
-      // 3. Si hay un ID desde URL, lo expandimos
+      // Si hay un ID desde URL, lo expandimos
       if (categoriaIdDesdeURL) {
         const encontrada = this.categorias.find(c => c.id === categoriaIdDesdeURL);
         if (encontrada && !encontrada.expanded) {
@@ -57,21 +78,26 @@ export class MenuCategoriasComponent implements OnInit {
         }
       }
       
-      // ⭐ NUEVO: Verificar si hay subcategoría guardada para cargar automáticamente
       this.checkForSavedSubcategory();
     });
   }
 
-  /**
-   * ⭐ NUEVO: Verificar si hay subcategoría guardada y cargarla
-   */
+  private calcularCantidadTotal(categoria: CategoriaConSubcategorias): number {
+    if (!categoria.subcategorias || categoria.subcategorias.length === 0) {
+      return 0;
+    }
+    
+    return categoria.subcategorias.reduce((total, subcat) => {
+      return total + (subcat.cantidad || 0);
+    }, 0);
+  }
+
   private checkForSavedSubcategory(): void {
     const savedSubcategoryId = this.menuStateService.getLastSelectedSubcategory();
     
     if (savedSubcategoryId) {
       console.log(`📌 Subcategoría guardada encontrada: ${savedSubcategoryId}`);
       
-      // Buscar en qué categoría está esta subcategoría
       let categoriaPadreId: number | null = null;
       
       for (const categoria of this.categorias) {
@@ -85,16 +111,13 @@ export class MenuCategoriasComponent implements OnInit {
         }
       }
       
-      // Si encontramos la categoría padre, expandirla
       if (categoriaPadreId) {
         const categoria = this.categorias.find(c => c.id === categoriaPadreId);
         if (categoria && !categoria.expanded) {
           categoria.expanded = true;
           this.menuStateService.expandCategory(categoria.id);
-          console.log(`📂 Categoría padre ${categoria.nombre} expandida automáticamente`);
         }
         
-        // Esperar un momento y luego cargar los productos
         setTimeout(() => {
           this.cargarProductosDeSubcategoria(savedSubcategoryId);
         }, 500);
@@ -102,21 +125,17 @@ export class MenuCategoriasComponent implements OnInit {
     }
   }
 
-  /**
-   * ⭐ NUEVO: Cargar productos de una subcategoría específica
-   */
   private cargarProductosDeSubcategoria(subcatId: number): void {
     console.log(`🔄 Cargando productos de subcategoría guardada: ${subcatId}`);
     
-    // Navegar para cargar los productos
     this.router.navigate(['/productos'], {
       queryParams: { subcategoria_id: subcatId },
       queryParamsHandling: 'merge',
-      replaceUrl: true // Para no agregar al historial
+      replaceUrl: true
     });
   }
 
-  toggle(cat: CategoriaConSubcategorias & { expanded?: boolean }) {
+  toggle(cat: CategoriaExtendida) {
     const newExpandedState = !cat.expanded;
     cat.expanded = newExpandedState;
     this.menuStateService.toggleCategory(cat.id, newExpandedState);
@@ -125,7 +144,10 @@ export class MenuCategoriasComponent implements OnInit {
   seleccionarSubcategoria(subcatId: number) {
     console.log(`🎯 Subcategoría seleccionada: ${subcatId}`);
     
-    // ⭐ GUARDAR la subcategoría seleccionada
+    // Actualizar estado
+    this.mostrarTodosProductos = false;
+    
+    // Guardar la subcategoría seleccionada
     this.menuStateService.saveLastSelectedSubcategory(subcatId);
     
     // Guardar scroll position
@@ -135,6 +157,34 @@ export class MenuCategoriasComponent implements OnInit {
     // Navegar
     this.router.navigate(['/productos'], {
       queryParams: { subcategoria_id: subcatId },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  /**
+   * ⭐ ACTUALIZADO: Ver todos los productos (sin filtros)
+   */
+  verTodosProductos() {
+    console.log('🔍 Ver todos los productos');
+    this.menuStateService.clearLastSelectedSubcategory();
+    this.router.navigate(['/productos']);
+  }
+
+  /**
+   * Seleccionar categoría completa (todos los productos de una categoría)
+   */
+  seleccionarCategoria(categoriaId: number) {
+    console.log(`🏷️ Categoría seleccionada: ${categoriaId}`);
+    
+    // Actualizar estado
+    this.mostrarTodosProductos = false;
+    
+    // Limpiar subcategoría guardada
+    this.menuStateService.clearLastSelectedSubcategory();
+    
+    // Navegar con parámetro de categoría
+    this.router.navigate(['/productos'], {
+      queryParams: { categoria_id: categoriaId },
       queryParamsHandling: 'merge'
     });
   }

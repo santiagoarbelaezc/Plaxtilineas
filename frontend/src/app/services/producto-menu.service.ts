@@ -8,18 +8,34 @@ import { ProductoMenu } from '../models/productoMenu.model';
   providedIn: 'root'
 })
 export class ProductoMenuService {
-  private apiUrl = '/api/productos'; // Ajusta si tienes proxy o prod
+  private apiUrl = '/api/productos';
 
   constructor(private http: HttpClient) {}
 
+  // ✅ Obtener por subcategoría usando query parameter
   obtenerPorSubcategoria(subcategoriaId: number): Observable<ProductoMenu[]> {
     const params = new HttpParams().set('subcategoria_id', subcategoriaId.toString());
     return this.http.get<ProductoMenu[]>(this.apiUrl, { params });
   }
 
-  // Opcional: obtener por categoría completa (sin subcategoría)
+  // ✅ Obtener por categoría usando ruta específica
   obtenerPorCategoria(categoriaId: number): Observable<ProductoMenu[]> {
-    const params = new HttpParams().set('categoria_id', categoriaId.toString());
-    return this.http.get<ProductoMenu[]>(this.apiUrl, { params });
+    return this.http.get<ProductoMenu[]>(`${this.apiUrl}/categoria/${categoriaId}`);
+  }
+
+  // ✅ Obtener TODOS los productos (sin filtros)
+  obtenerTodosLosProductos(): Observable<ProductoMenu[]> {
+    return this.http.get<ProductoMenu[]>(this.apiUrl);
+  }
+
+  // ✅ Opcional: Obtener productos aleatorios
+  obtenerAleatorios(limite: number = 8): Observable<ProductoMenu[]> {
+    const params = new HttpParams().set('limite', limite.toString());
+    return this.http.get<ProductoMenu[]>(`${this.apiUrl}/interes/aleatorios`, { params });
+  }
+
+  // ✅ Opcional: Obtener últimos productos (novedades)
+  obtenerUltimosProductos(): Observable<ProductoMenu[]> {
+    return this.http.get<ProductoMenu[]>(`${this.apiUrl}/novedades/ultimos`);
   }
 }
