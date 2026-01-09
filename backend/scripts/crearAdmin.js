@@ -5,54 +5,52 @@ const db = require('../config/db');
 
 async function crearUsuarioAdmin() {
   try {
-    const nombre = 'Administrador';
-    const correo = 'admin@plaxtilineas.com';
-    const passwordPlano = '123456';
-    const rol = 'admin';
-    const estado = 'activo';
+    const {
+      ADMIN_NAME,
+      ADMIN_EMAIL,
+      ADMIN_PASSWORD,
+      ADMIN_ROLE,
+      ADMIN_STATE
+    } = process.env;
 
-    console.log('🔄 Creando usuario administrador...');
-
-    // Verificar si el usuario ya existe
-    const [existingUsers] = await db.query('SELECT * FROM usuarios WHERE correo = ?', [correo]);
-    
-    if (existingUsers.length > 0) {
-      console.log('⚠️  El usuario ya existe en la base de datos');
-      console.log('   📧 Correo:', correo);
-      return;
+    if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+      throw new Error('ADMIN_EMAIL y ADMIN_PASSWORD son obligatorios');
     }
 
-    // Encriptar la contraseña
-    const hash = await bcrypt.hash(passwordPlano, 10);
+    const nombre = ADMIN_NAME || 'Administrador';
+    const correo = ADMIN_EMAIL;
+    const rol = ADMIN_ROLE || 'admin';
+    const estado = ADMIN_STATE || 'activo';
 
-    // Insertar usuario
-    const [result] = await db.query(
+    console.log('🔄 Verificando usuario administrador...');
+
+    const [existingUsers] = await db.query(
+      'SELECT id FROM usuarios WHERE correo = ?',
+      [correo]
+    );
+
+    if (existingUsers.length > 0) {
+      console.log('✔️ El usuario admin ya existe, no se realizó ninguna acción');
+      process.exit(0);
+    }
+
+    const hash = await bcrypt.hash(ADMIN_PASSWORD, 12);
+
+    await db.query(
       'INSERT INTO usuarios (nombre, correo, password, rol, estado) VALUES (?, ?, ?, ?, ?)',
       [nombre, correo, hash, rol, estado]
     );
 
-    console.log('✅ Usuario administrador creado exitosamente:');
-    console.log('----------------------------------');
-    console.log(`🆔 ID: ${result.insertId}`);
-    console.log(`👤 Nombre: ${nombre}`);
-    console.log(`📧 Correo: ${correo}`);
-    console.log(`🔑 Contraseña: ${passwordPlano}`);
-    console.log(`🧩 Rol: ${rol}`);
-    console.log(`🔘 Estado: ${estado}`);
-    console.log('----------------------------------');
-    console.log('\n💡 Credenciales para login:');
-    console.log('   Email: admin@plaxtilineas.com');
-    console.log('   Password: 123456');
-
+    console.log('✅ Usuario administrador creado correctamente');
     process.exit(0);
+
   } catch (err) {
-    console.error('❌ Error al crear usuario administrador:', err.message);
-    
+    console.error('❌ Error al crear admin:', err.message);
+
     if (err.code === 'ER_NO_SUCH_TABLE') {
-      console.error('\n💡 La tabla "usuarios" no existe. Ejecuta primero:');
-      console.error('   node scripts/crearEsquemaCompleto.js');
+      console.error('💡 Ejecuta primero: node scripts/crearEsquemaCompleto.js');
     }
-    
+
     process.exit(1);
   }
 }
