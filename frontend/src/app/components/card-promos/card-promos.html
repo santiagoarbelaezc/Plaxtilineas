@@ -1,4 +1,9 @@
-<div class="card-container">
+<div class="card-container" 
+     [routerLink]="linkUrl"
+     [queryParams]="queryParams"
+     (click)="onNavigate()"
+     *ngIf="tieneNavegacion()"
+     [style.cursor]="'pointer'">
   <!-- Logo superpuesto en la parte superior (opcional) -->
   <div *ngIf="logoUrl" class="logo-section">
     <img [src]="logoUrl" alt="Logo" class="logo" />
@@ -22,7 +27,46 @@
       <div class="promo-content">
         <div class="promo-title">{{ titulo }}</div>
         <div class="promo-description">{{ descripcion }}</div>
-        <button class="promo-button">COMPRA AHORA</button>
+        <button 
+          class="promo-button"
+          (click)="$event.preventDefault()">
+          COMPRA AHORA
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contenedor sin navegación -->
+<div class="card-container" 
+     *ngIf="!tieneNavegacion()">
+  <!-- Logo superpuesto en la parte superior (opcional) -->
+  <div *ngIf="logoUrl" class="logo-section">
+    <img [src]="logoUrl" alt="Logo" class="logo" />
+  </div>
+
+  <!-- Imagen de fondo -->
+  <div class="product-image-section">
+    <img 
+      [src]="imagen" 
+      [alt]="titulo" 
+      class="product-image"
+      
+    />
+  </div>
+
+  <!-- Sección de información -->
+  <div class="product-info-section" 
+       [class.transparent-section]="shouldBeTransparent()">
+    <div class="green-container">
+      <!-- Contenido promocional -->
+      <div class="promo-content">
+        <div class="promo-title">{{ titulo }}</div>
+        <div class="promo-description">{{ descripcion }}</div>
+        <button 
+          class="promo-button">
+          COMPRA AHORA
+        </button>
       </div>
     </div>
   </div>

@@ -9,10 +9,11 @@ import {
   ActualizarVarianteResponse,
   EliminarVarianteResponse
 } from '../models/variante.model';
+import { environment } from '../../enviroments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class VariantesService {
-  private apiUrl = '/api/variantes';
+  private apiUrl = `${environment.apiUrl}/variantes`;
 
   constructor(private http: HttpClient) {}
 

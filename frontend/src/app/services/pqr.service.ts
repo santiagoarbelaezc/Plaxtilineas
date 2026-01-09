@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../enviroments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class PqrService {
-  private apiUrl = '/api/pqrs';
+  private apiUrl = `${environment.apiUrl}/pqrs`;
 
   constructor(private http: HttpClient) {}
 

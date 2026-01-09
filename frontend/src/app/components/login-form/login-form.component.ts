@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
+import { environment } from '../../../enviroments/environment';
 
 @Component({
   selector: 'app-login-form',
@@ -36,7 +37,7 @@ export class LoginFormComponent {
     this.isSubmitting = true;
     const { correo, password } = this.loginForm.value;
 
-    this.http.post<{ token: string }>('http://localhost:3000/api/auth/login', { correo, password })
+    this.http.post<{ token: string }>(`${environment.apiUrl}/auth/login`, { correo, password })
       .subscribe({
       next: (res) => {
         localStorage.setItem('token', res.token);

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { CarouselComponent } from '../carousel/carousel';
 import { CardBannerComponent } from '../card-banner/card-banner';
-import { Card} from '../card/card';
+import { Card } from '../card/card';
 import { CardPromos } from '../card-promos/card-promos';
 
 @Component({
@@ -14,7 +14,7 @@ import { CardPromos } from '../card-promos/card-promos';
     Card, 
     CarouselComponent, 
     CardBannerComponent,
-    CardPromos // Añade el componente de promos
+    CardPromos
   ],
   templateUrl: './card-container.html',
   styleUrls: ['./card-container.css']
@@ -24,6 +24,8 @@ export class CardContainerComponent {
   @Input() precio: string = '';
   @Input() nombreProducto: string = '';
   @Input() imagenProducto: string = '';
+  @Input() cardLinkUrl: string[] = [];
+  @Input() cardQueryParams: any = {};
   
   // Inputs para el componente Carousel
   @Input() categoriaNombre: string = '';
@@ -39,6 +41,8 @@ export class CardContainerComponent {
   @Input() promoDescripcion: string = 'Compra y nosotros te lo enviamos a tu casa';
   @Input() promoImagen: string = 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767305113/envio4_vgotab.jpg';
   @Input() promoLogoUrl: string = 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767224962/logo-peque%C3%B1o_mrokec.png';
+  @Input() linkUrl: string[] = [];
+  @Input() promoQueryParams: any = {};
   
   // Inputs para personalización del layout
   @Input() cardWidth: string = '300px';

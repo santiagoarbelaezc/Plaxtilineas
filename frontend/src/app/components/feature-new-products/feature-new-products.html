@@ -10,6 +10,8 @@
       <div 
         class="product-card" 
         *ngFor="let producto of productos"
+        (click)="verDetalles(producto.id)"
+        [style.cursor]="'pointer'"
       >
         <!-- Imagen del producto -->
         <div class="product-image-container">
@@ -44,7 +46,7 @@
             
             <button 
               class="product-btn"
-              (click)="verDetalles(producto.id)"
+              (click)="$event.stopPropagation()"
             >
               Ver
               <span class="btn-icon">→</span>

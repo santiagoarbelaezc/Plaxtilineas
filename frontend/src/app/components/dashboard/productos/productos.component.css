@@ -448,8 +448,31 @@
 /* Tabla de datos */
 .table-container {
   overflow-x: auto;
+  overflow-y: auto;
+  max-height: 700px;
   border-radius: 12px;
   border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+/* Scrollbar personalizado */
+.table-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.3);
+  border-radius: 12px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #368c44, #25d366);
+  border-radius: 12px;
+  transition: background 0.3s ease;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #25d366, #1ea853);
 }
 
 .data-table {
@@ -582,9 +605,33 @@
 
 .description-cell {
   max-width: 300px;
+  max-height: 120px;
+  overflow-y: auto;
   line-height: 1.5;
   color: #64748b;
   font-size: 0.95rem;
+  padding: 10px !important;
+  display: block;
+}
+
+/* Scrollbar personalizado para descripción */
+.description-cell::-webkit-scrollbar {
+  width: 6px;
+}
+
+.description-cell::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.3);
+  border-radius: 6px;
+}
+
+.description-cell::-webkit-scrollbar-thumb {
+  background: rgba(54, 140, 68, 0.5);
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.description-cell::-webkit-scrollbar-thumb:hover {
+  background: rgba(54, 140, 68, 0.8);
 }
 
 .subcategory-cell {
@@ -1159,35 +1206,65 @@
 /* Tabla de variantes temporales */
 .variantes-list {
   margin-top: 15px;
+  max-height: 200px;
+  overflow-y: auto;
+  border-radius: 10px;
+  padding: 8px;
+  background: #f8fafc;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+/* Estilo de scrollbar personalizado para variantes */
+.variantes-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.variantes-list::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.3);
+  border-radius: 6px;
+}
+
+.variantes-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #368c44, #25d366);
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+.variantes-list::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #25d366, #1ea853);
 }
 
 .variantes-table {
   background: white;
-  border-radius: 10px;
+  border-radius: 8px;
   overflow: hidden;
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  border: none;
+  box-shadow: none;
+  margin: 0;
 }
 
 .variantes-table .data-table {
   min-width: auto;
   margin: 0;
+  width: 100%;
 }
 
 .variantes-table th {
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(79, 70, 229, 0.03));
   font-size: 0.85rem;
-  padding: 15px 20px;
+  padding: 12px 16px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: #8b5cf6;
   border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+  font-weight: 600;
 }
 
 .variantes-table td {
-  padding: 15px 20px;
+  padding: 12px 16px;
   color: #4a5568;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  vertical-align: middle;
 }
 
 .variantes-table td:first-child {
@@ -1201,7 +1278,7 @@
 }
 
 .variantes-table tbody tr {
-  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.5);
   transition: background-color 0.2s ease;
 }
 

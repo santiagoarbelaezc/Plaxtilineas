@@ -114,7 +114,7 @@
   
   app-menu-categorias-component.menu-visible ~ .menu-toggle-categorias {
     left: 80%;
-    max-left: 300px;
+    max-width: 300px;
   }
   
   .toggle-arrow {

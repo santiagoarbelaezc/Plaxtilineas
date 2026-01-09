@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ProductosService } from '../../services/productos.service';
+import { MenuStateService } from '../../services/menu-state.service';
 import { ProductoEditable } from '../../models/producto.model';
 
 @Component({
@@ -18,7 +19,8 @@ export class FeatureNewProducts implements OnInit {
 
   constructor(
     private productosService: ProductosService,
-    private router: Router
+    private router: Router,
+    private menuStateService: MenuStateService
   ) {}
 
   ngOnInit(): void {
@@ -49,6 +51,9 @@ export class FeatureNewProducts implements OnInit {
 
   verDetalles(productoId: number): void {
     console.log('Navegando a detalles del producto:', productoId);
+    
+    // Limpiar la última subcategoría seleccionada
+    this.menuStateService.clearLastSelectedSubcategory();
     
     // Navegar a la ruta /producto/{id}
     this.router.navigate(['/producto', productoId]);

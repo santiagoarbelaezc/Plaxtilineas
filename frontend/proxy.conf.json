@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "http://localhost:3000",
+    "target": "http://plaxti-prod.eba-vrgnhchj.sa-east-1.elasticbeanstalk.com",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

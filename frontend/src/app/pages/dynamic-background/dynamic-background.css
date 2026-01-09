@@ -220,6 +220,138 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
+/* Responsive para móvil - Sección final */
+
+@media (max-width: 768px) {
+  .final-section {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 3rem 0;
+  }
+
+  .final-content {
+    order: 1;
+    padding: 0 1rem;
+  }
+
+  .final-image {
+    order: 2;
+    padding: 0 1rem;
+  }
+
+  .final-title {
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .final-text {
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    max-width: 100%;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .stat-item {
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
+  .stat-number {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+  }
+
+  .store-image2 {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  }
+}
+
+@media (max-width: 480px) {
+  .final-section {
+    padding: 2rem 0;
+  }
+
+  .final-title {
+    font-size: 1.6rem;
+  }
+
+  .final-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .stat-item {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .store-image2 {
+    height: 250px;
+  }
+}
+
+@media (max-width: 360px) {
+  .final-title {
+    font-size: 1.4rem;
+  }
+
+  .final-text {
+    font-size: 0.9rem;
+  }
+
+  .stat-number {
+    font-size: 1.3rem;
+  }
+
+  .store-image2 {
+    height: 200px;
+  }
+}
+
+/* Para tablets en orientación vertical */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .final-section {
+    padding: 4rem 0;
+    gap: 3rem;
+  }
+
+  .final-title {
+    font-size: 2rem;
+  }
+
+  .final-text {
+    font-size: 1.05rem;
+  }
+
+  .store-image2 {
+    width: 100%;
+    height: 400px;
+  }
+}
+
 /* Componentes de ancho completo */
 .full-width-component {
   width: 100%;

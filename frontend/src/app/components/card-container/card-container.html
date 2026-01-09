@@ -10,7 +10,9 @@
           [titulo]="promoTitulo"
           [descripcion]="promoDescripcion"
           [imagen]="promoImagen"
-          [logoUrl]="promoLogoUrl">
+          [logoUrl]="promoLogoUrl"
+          [linkUrl]="linkUrl"
+          [queryParams]="promoQueryParams">
         </app-card-promos>
       </div>
       
@@ -19,7 +21,9 @@
         <app-card 
           [precio]="precio" 
           [nombreProducto]="nombreProducto"
-          [imagenProducto]="imagenProducto">
+          [imagenProducto]="imagenProducto"
+          [linkUrl]="cardLinkUrl"
+          [queryParams]="cardQueryParams">
         </app-card>
       </div>
     </div>

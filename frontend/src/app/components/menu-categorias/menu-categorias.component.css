@@ -396,25 +396,3 @@
     padding: 14px 16px;
   }
 }
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .menu-categorias {
-    --menu-bg: rgba(26, 32, 44, 0.95);
-    --menu-border: rgba(74, 85, 104, 0.3);
-    --text-primary: #e2e8f0;
-    --text-secondary: #cbd5e0;
-    --text-tertiary: #a0aec0;
-    --hover-bg: rgba(54, 140, 68, 0.15);
-    --active-bg: rgba(54, 140, 68, 0.2);
-  }
-  
-  .subcategorias {
-    background: rgba(26, 32, 44, 0.7);
-    border-color: rgba(74, 85, 104, 0.2);
-  }
-  
-  .subcategoria-count {
-    background: linear-gradient(135deg, #4a5568, #718096);
-  }
-}

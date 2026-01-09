@@ -697,10 +697,3 @@
     border: 2px solid #fff;
   }
 }
-
-/* Modo oscuro nativo */
-@media (prefers-color-scheme: dark) {
-  .footer {
-    background: #0a0a0a;
-  }
-}

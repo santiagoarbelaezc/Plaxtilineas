@@ -1,0 +1,26 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # ==================== PROXY PARA API ====================
+  # Redirige todas las peticiones /api al backend en Elastic Beanstalk
+  RewriteRule ^api/(.*)$ http://plaxti-prod.eba-vrgnhchj.sa-east-1.elasticbeanstalk.com/api/$1 [P,L]
+
+  # ==================== HTTPS REDIRECT ====================
+  # Opcional: Redirige HTTP a HTTPS
+  RewriteCond %{HTTPS} off
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # ==================== ANGULAR SPA ROUTING ====================
+  # CRÍTICO: Todas las rutas van a index.html para que Angular las maneje
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.*)$ /index.html [L]
+</IfModule>
+
+# ==================== HEADERS DE SEGURIDAD ====================
+<IfModule mod_headers.c>
+  # Permite peticiones desde todos los orígenes (CORS)
+  Header set Access-Control-Allow-Origin "*"
+  Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+  Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+</IfModule>
