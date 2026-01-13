@@ -1,14 +1,16 @@
 .banner-container {
   position: relative;
-  width: 1280px;
+  width: 100%;
+  max-width: 1460px;
   height: 358px;
   overflow: hidden;
   font-family: 'Segoe UI', sans-serif;
-  margin: 0 auto;
+  margin: 0;
   border-radius: 12px;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 /* Elevación sutil al hacer hover */
@@ -38,7 +40,7 @@
 }
 
 .banner-img {
-  width: 100%;
+  width: 1500px;
   height: 100%;
   object-fit: cover;
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -193,8 +195,12 @@
 /* Tablets grandes y laptops pequeños (1024px - 1280px) */
 @media (max-width: 1300px) {
   .banner-container {
-    width: 1024px;
+    width: 100%;
     height: 286px;
+  }
+  
+  .banner-img {
+    width: 100%;
   }
   
   .banner-container:hover {
@@ -228,9 +234,13 @@
 /* Tablets medianas (768px - 1024px) */
 @media (max-width: 1024px) {
   .banner-container {
-    width: 768px;
-    height: 215px;
+    width: 100%;
+    max-width: 1500px;
     border-radius: 10px;
+  }
+  
+  .banner-img {
+    width: 100%;
   }
   
   .banner-container:hover {
@@ -273,9 +283,13 @@
 /* Tablets pequeñas y móviles grandes (600px - 768px) */
 @media (max-width: 768px) {
   .banner-container {
-    width: 600px;
-    height: 168px;
+    width: 100%;
+    max-width: 1500px;
     border-radius: 8px;
+  }
+  
+  .banner-img {
+    width: 100%;
   }
   
   .description-container {
@@ -314,10 +328,14 @@
 /* Móviles medianos (480px - 600px) */
 @media (max-width: 600px) {
   .banner-container {
-    width: 480px;
+    width: 100%;
+    max-width: 1500px;
     height: 134px;
   }
   
+  .banner-img {
+    width: 100%;
+  }
   .description-container {
     max-width: 80%;
     padding: 10px;
@@ -369,6 +387,10 @@
     aspect-ratio: 1280 / 358;
     max-width: 400px;
     margin: 0 auto;
+  }
+  
+  .banner-img {
+    width: 100%;
   }
   
   .description-container {
@@ -432,9 +454,10 @@
 /* Para pantallas muy grandes (más de 1300px) */
 @media (min-width: 1300px) {
   .banner-container {
-    width: 1280px;
+    width: 100%;
+    max-width: 1460px;
     height: 358px;
-    margin: 0 auto;
+    margin: 0;
   }
   
   .banner-container:hover {
@@ -446,11 +469,10 @@
 /* Ajustes para cuando el contenedor está en un wrapper responsivo */
 .banner-container.responsive-wrapper {
   width: 100%;
-  max-width: 1280px;
+  max-width: 1500px;
   height: auto;
   aspect-ratio: 1280 / 358;
 }
-
 /* Helper class para centrar en contenedor padre */
 .center-banner {
   display: flex;

@@ -4,10 +4,11 @@
 
 /* Estilos generales de la sección */
 .categorias-section {
-  max-width: 1600px;
+  max-width: 1500px;
   background-color: var(--white);
   position: relative;
   width: 100%;
+  margin: 0 auto;
 }
 
 .section-header {
@@ -32,7 +33,7 @@
 /* Contenedor del carrusel - CORREGIDO */
 .categorias-container {
   position: relative;
-  max-width: 1600px;
+  max-width: 1500px;
   margin: 0 auto;
   padding: 0 60px; /* Espacio para los botones */
   overflow: hidden;
@@ -144,9 +145,9 @@
 .categorias-wrapper {
   position: relative;
   width: 100%;
-  max-width: 1700px;
+  max-width: 1500px;
   margin: 0 auto;
-  
+  padding: 0 20px;
 }
 
 .carrusel-btn {
@@ -432,14 +433,15 @@
 /* Desktop (1200px y más) - 11 columnas */
 @media (min-width: 1200px) {
   .categorias-section {
-    max-width: 1600px;
-    padding: 0.2rem 2.5rem;
+    max-width: 1500px;
+    padding: 20px;
+    margin: 0 auto;
     margin-top: 20px;
   }
   
   .categorias-container {
-    max-width: 1600px;
-    margin-left: 10px;
+    max-width: 1500px;
+    margin: 0 auto;
   }
   
   .categorias-grid {
@@ -478,14 +480,13 @@
 /* Desktop extra grande (1400px y más) */
 @media (min-width: 1400px) {
   .categorias-section {
-    max-width: 1700px;
-   
+    max-width: 1500px;
+    margin: 0 auto;
   }
   
   .categorias-container {
-    max-width: 1700px;
-    
-    
+    max-width: 1500px;
+    margin: 0 auto;
   }
   
   .categorias-grid {

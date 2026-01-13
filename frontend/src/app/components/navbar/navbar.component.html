@@ -1,13 +1,16 @@
-<!-- Navbar elegante con líneas debajo -->
+<!-- Navbar reorganizado y mejorado -->
 <div class="head" id="mainNavbar">
-  <!-- Logo -->
+  <!-- Logo con animación mejorada -->
   <div class="logo">
-    <a routerLink="/" aria-label="Ir a la página de inicio">
-      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Logo de PlaxtiLineas" class="logo-img" />
+    <a routerLink="/" aria-label="Ir a la página de inicio" class="logo-link">
+      <!-- Logo comprimido (Solo P) -->
+      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1768337110/logo-cut2_frbqja.png" alt="Logo de PlaxtiLineas" class="logo-img logo-compact" />
+      <!-- Logo completo (Plaxtilineas) -->
+      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Logo de PlaxtiLineas" class="logo-img logo-full" />
     </a>
   </div>
 
-  <!-- Buscador - Movido más a la izquierda -->
+  <!-- Buscador mejorado y centralizado -->
   <div class="search-container">
     <form class="search-form" (ngSubmit)="onSearch()">
       <div class="search-input-wrapper">
@@ -33,10 +36,9 @@
           <fa-icon [icon]="['fas', 'times']"></fa-icon>
         </button>
       </div>
-      <!-- Botón de búsqueda oculto para submit del formulario -->
       <button type="submit" style="display: none;"></button>
     </form>
-    <!-- Sugerencias de búsqueda -->
+    <!-- Sugerencias de búsqueda mejoradas -->
     <div class="search-suggestions" *ngIf="showSuggestions">
       <div class="suggestion-item" (click)="navigateToSearch('Piso')">
         <fa-icon [icon]="['fas', 'search']"></fa-icon>
@@ -75,60 +77,64 @@
   <!-- Menú de Navegación -->
   <nav class="navbar" [ngClass]="{ 'active': menuAbierto }" role="navigation" aria-label="Menú principal">
 
-    
-    <a routerLink="/" 
-       class="nav-link" 
-       routerLinkActive="active" 
-       [routerLinkActiveOptions]="{exact: true}"
-       (click)="onLinkClick(0)"
-       aria-label="Ir a Inicio">
-      Inicio
-    </a>
-    
-    <a routerLink="/productos" 
-       class="nav-link" 
-       routerLinkActive="active"
-       (click)="onLinkClick(1)"
-       aria-label="Ver productos">
-      Productos
-    </a>
-  
-    
-    <a routerLink="/nosotros" 
-       class="nav-link" 
-       routerLinkActive="active"
-       (click)="onLinkClick(3)"
-       aria-label="Conócenos">
-      Nosotros
-    </a>
+    <!-- Sección de navegación principal -->
+    <div class="nav-section main-nav">
+      <a routerLink="/" 
+         class="nav-link" 
+         routerLinkActive="active" 
+         [routerLinkActiveOptions]="{exact: true}"
+         (click)="onLinkClick(0)"
+         aria-label="Ir a Inicio">
+        <span class="nav-text">Inicio</span>
+      </a>
+      
+      <a routerLink="/productos" 
+         class="nav-link" 
+         routerLinkActive="active"
+         (click)="onLinkClick(1)"
+         aria-label="Ver productos">
+        <span class="nav-text">Productos</span>
+      </a>
+      
+      <a routerLink="/nosotros" 
+         class="nav-link" 
+         routerLinkActive="active"
+         (click)="onLinkClick(3)"
+         aria-label="Conócenos">
+        <span class="nav-text">Nosotros</span>
+      </a>
+    </div>
 
-    <a class="nav-link location-link" 
-   href="https://www.google.com/maps/dir/?api=1&destination=Cra.19+%23+19-35+Armenia+Quindio"
-   target="_blank"
-   rel="noopener noreferrer"
-   aria-label="Ver ubicación de Armenia en Google Maps">
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#000000" class="location-icon" viewBox="0 0 16 16">
-    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
-  </svg>
-  <span>Armenia</span>
-</a>
-    
-    <a routerLink="/contacto" 
-       class="nav-link whatsapp-link" 
-       (click)="onLinkClick(4)"
-       aria-label="Ir a la página de contacto">
-      <span>Contáctanos</span>
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="whatsapp-icon" viewBox="0 0 16 16">
-        <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
-      </svg>
-    </a>
-    
-    <a routerLink="/login" 
-       class="nav-link login-link" 
-       routerLinkActive="active"
-       (click)="onLinkClick(5)"
-       aria-label="Ingreso administrativo">
-      <fa-icon [icon]="['fas', 'key']" class="login-icon"></fa-icon>
-    </a>
+    <!-- Sección de acciones rápidas -->
+    <div class="nav-section action-nav">
+      <a class="nav-link location-link" 
+         href="https://www.google.com/maps/dir/?api=1&destination=Cra.19+%23+19-35+Armenia+Quindio"
+         target="_blank"
+         rel="noopener noreferrer"
+         aria-label="Ver ubicación de Armenia en Google Maps">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#000000" class="location-icon" viewBox="0 0 16 16">
+          <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+        </svg>
+        <span class="nav-text">Armenia</span>
+      </a>
+      
+      <a routerLink="/contacto" 
+         class="nav-link whatsapp-link" 
+         (click)="onLinkClick(4)"
+         aria-label="Ir a la página de contacto">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="whatsapp-icon" viewBox="0 0 16 16">
+          <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+        </svg>
+        <span class="nav-text">Contáctanos</span>
+      </a>
+      
+      <a routerLink="/login" 
+         class="nav-link login-link" 
+         routerLinkActive="active"
+         (click)="onLinkClick(5)"
+         aria-label="Ingreso administrativo">
+        <fa-icon [icon]="['fas', 'key']" class="login-icon"></fa-icon>
+      </a>
+    </div>
   </nav>
 </div>
