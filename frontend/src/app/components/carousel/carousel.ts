@@ -80,7 +80,7 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
     } else if (this.screenWidth < 640) {
       this.itemsPerView = 1; // Móvil (sm)
     } else if (this.screenWidth < 768) {
-      this.itemsPerView = 2; // Móvil grande/Tablet pequeña (md)
+      this.itemsPerView = 1; // Móvil grande/Tablet pequeña (md)
     } else if (this.screenWidth < 1024) {
       this.itemsPerView = 3; // Tablet (lg)
     } else if (this.screenWidth < 1280) {

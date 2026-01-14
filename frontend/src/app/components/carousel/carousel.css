@@ -186,9 +186,9 @@
 }
 
 /* PRODUCTOS POR VISTA - COMPLETAMENTE RESPONSIVE */
-/* Por defecto: 4 productos (desktop) */
+/* Por defecto: 1 producto para móvil */
 .producto-item {
-  flex: 0 0 calc(100% / 4);
+  flex: 0 0 100%;
   padding: 0 8px;
   box-sizing: border-box;
 }
@@ -442,7 +442,7 @@
   }
   
   .producto-item {
-    flex: 0 0 calc(100% / 4);
+    flex: 0 0 100%;
   }
   
   .producto-card {
@@ -470,7 +470,7 @@
   }
   
   .producto-item {
-    flex: 0 0 calc(100% / 4);
+    flex: 0 0 100%;
   }
   
   .producto-card {
@@ -499,7 +499,7 @@
   }
   
   .producto-item {
-    flex: 0 0 calc(100% / 3);
+    flex: 0 0 100%;
   }
   
   .categoria-titulo {
@@ -535,42 +535,102 @@
   .carousel-container {
     width: 100%;
     max-width: 100%;
-    padding: 10px 8px;
+    padding: 12px 8px;
     border-radius: 8px;
     box-sizing: border-box;
     margin: 0 auto;
+    min-height: 400px;
   }
   
   .producto-item {
-    flex: 0 0 calc(100% / 2);
+    flex: 0 0 100%;
     padding: 0 3px;
   }
   
   .categoria-header {
-    margin-bottom: 5px;
+    margin-bottom: 6px;
     padding-bottom: 4px;
   }
   
   .categoria-titulo {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
   }
   
   .nav-btn {
-    width: 28px;
-    height: 28px;
-    font-size: 0.9rem;
+    width: 30px;
+    height: 30px;
+    font-size: 0.95rem;
   }
   
   .producto-card {
-    min-height: 180px;
+    min-height: 270px;
   }
   
   .producto-imagen {
-    height: 65px !important;
+    height: 120px !important;
   }
   
   .product-name {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
+    margin: 0 0 5px 0;
+  }
+  
+  .price-display {
+    padding: 5px;
+  }
+  
+  .price-value {
+    font-size: 0.85rem;
+  }
+}
+
+/* Móvil (sm) - 480px a 639px */
+@media (max-width: 639px) and (min-width: 480px) {
+  .carousel-container {
+    width: 450px;
+    max-width: 100%;
+    padding: 12px 8px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    margin: 0 auto;
+    min-height: 500px;
+  }
+  
+  .producto-item {
+    flex: 0 0 100%;
+    padding: 0 3px;
+  }
+  
+  .categoria-header {
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+  }
+  
+  .categoria-titulo {
+    font-size: 0.85rem;
+  }
+  
+  .estado-mensaje {
+    min-height: 70px;
+    padding: 8px 4px;
+  }
+  
+  .nav-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 0.95rem;
+  }
+  
+  .producto-card {
+    min-height: 330px;
+  }
+  
+  .producto-imagen {
+    height: 150px !important;
+  }
+  
+  .product-name {
+    font-size: 0.75rem;
     margin: 0 0 4px 0;
   }
   
@@ -583,25 +643,26 @@
   }
 }
 
-/* Móvil (sm) - 480px a 639px */
-@media (max-width: 639px) and (min-width: 480px) {
+/* Móvil pequeño (xs) - menos de 480px */
+@media (max-width: 479px) {
   .carousel-container {
-    width: 100%;
+    width: 350px;
     max-width: 100%;
-    padding: 10px 8px;
-    border-radius: 8px;
+    padding: 10px 6px;
+    border-radius: 6px;
     box-sizing: border-box;
     margin: 0 auto;
+    min-height: 360px;
   }
   
   .producto-item {
-    flex: 0 0 calc(100% / 2);
-    padding: 0 3px;
+    flex: 0 0 100%;
+    padding: 0 2px;
   }
   
   .categoria-header {
     margin-bottom: 5px;
-    padding-bottom: 4px;
+    padding-bottom: 3px;
   }
   
   .categoria-titulo {
@@ -610,25 +671,38 @@
   
   .estado-mensaje {
     min-height: 60px;
-    padding: 6px 4px;
+    padding: 6px 3px;
+  }
+  
+  .spinner {
+    width: 16px;
+    height: 16px;
   }
   
   .nav-btn {
     width: 28px;
     height: 28px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
   
   .producto-card {
-    min-height: 175px;
+    min-height: 240px;
   }
   
   .producto-imagen {
-    height: 60px !important;
+    height: 200px !important;
+  }
+  
+  .producto-logo {
+    height: 16px;
+    top: 4px;
+    right: 4px;
+    padding: 2px 4px;
   }
   
   .product-name {
     font-size: 0.7rem;
+    -webkit-line-clamp: 1;
     margin: 0 0 3px 0;
   }
   
@@ -641,39 +715,29 @@
   }
 }
 
-/* Móvil pequeño (xs) - menos de 480px */
-@media (max-width: 479px) {
+/* Pantallas muy pequeñas (menos de 360px) */
+@media (max-width: 359px) {
   .carousel-container {
-    width: 100%;
+    width: 290px;
     max-width: 100%;
-    padding: 8px 6px;
-    border-radius: 6px;
+    padding: 8px 4px;
+    border-radius: 5px;
     box-sizing: border-box;
     margin: 0 auto;
+    min-height: 320px;
   }
   
   .producto-item {
-    flex: 0 0 100%;
     padding: 0 2px;
   }
   
   .categoria-header {
     margin-bottom: 4px;
-    padding-bottom: 3px;
+    padding-bottom: 2px;
   }
   
   .categoria-titulo {
     font-size: 0.75rem;
-  }
-  
-  .estado-mensaje {
-    min-height: 50px;
-    padding: 5px 3px;
-  }
-  
-  .spinner {
-    width: 16px;
-    height: 16px;
   }
   
   .nav-btn {
@@ -683,18 +747,18 @@
   }
   
   .producto-card {
-    min-height: 160px;
+    min-height: 200px;
   }
   
   .producto-imagen {
-    height: 55px !important;
+    height: 80px !important;
   }
   
   .producto-logo {
-    height: 16px;
-    top: 4px;
-    right: 4px;
-    padding: 2px 4px;
+    height: 14px;
+    top: 3px;
+    right: 3px;
+    padding: 1px 3px;
   }
   
   .product-name {
@@ -709,66 +773,6 @@
   
   .price-value {
     font-size: 0.7rem;
-  }
-}
-
-/* Pantallas muy pequeñas (menos de 360px) */
-@media (max-width: 359px) {
-  .carousel-container {
-    width: 100%;
-    max-width: 100%;
-    padding: 6px 4px;
-    border-radius: 5px;
-    box-sizing: border-box;
-    margin: 0 auto;
-  }
-  
-  .producto-item {
-    padding: 0 2px;
-  }
-  
-  .categoria-header {
-    margin-bottom: 3px;
-    padding-bottom: 2px;
-  }
-  
-  .categoria-titulo {
-    font-size: 0.7rem;
-  }
-  
-  .nav-btn {
-    width: 24px;
-    height: 24px;
-    font-size: 0.75rem;
-  }
-  
-  .producto-card {
-    min-height: 150px;
-  }
-  
-  .producto-imagen {
-    height: 50px !important;
-  }
-  
-  .producto-logo {
-    height: 14px;
-    top: 3px;
-    right: 3px;
-    padding: 1px 3px;
-  }
-  
-  .product-name {
-    font-size: 0.6rem;
-    -webkit-line-clamp: 1;
-    margin: 0 0 1px 0;
-  }
-  
-  .price-display {
-    padding: 2px;
-  }
-  
-  .price-value {
-    font-size: 0.65rem;
   }
 }
 
