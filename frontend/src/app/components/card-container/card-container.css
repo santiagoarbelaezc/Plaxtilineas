@@ -83,14 +83,13 @@
 /* Tablet (sm) - 768px a 899px */
 @media (max-width: 899px) {
   .container-wrapper {
-    padding: 40px 10px;
+    padding: 30px 10px;
   }
   
   /* Cambiar a diseño vertical */
   .layout-container {
     flex-direction: column;
     gap: 20px;
-    
   }
   
   /* La sección izquierda se expande al 100% */
@@ -99,27 +98,24 @@
     min-width: 100%;
   }
   
-  /* Reducir ancho del banner y carrusel en móvil - MÁS PEQUEÑO */
   .banner-section {
     min-height: 180px;
     border-radius: 12px;
-    width: 85%; /* Reducido de 95% */
-    
+    width: 100%;
     padding: 0;
   }
   
   .carousel-section {
     padding: 15px;
     border-radius: 12px;
-    width: 85%; /* Reducido de 95% */
-    
+    width: 100%;
   }
 }
 
 /* Tablet pequeña/Móvil grande (xs) - 640px a 767px */
 @media (max-width: 767px) {
   .container-wrapper {
-    padding: 35px 8px;
+    padding: 30px 8px;
   }
   
   .layout-container {
@@ -127,25 +123,27 @@
   }
   
   .banner-section {
+    width: 100%;
+    max-width: 100%;
     min-height: 160px;
     border-radius: 10px;
-    width: 82%; /* Reducido de 92% */
-   
     padding: 0;
+    margin: 0 auto;
   }
   
   .carousel-section {
+    width: 100%;
+    max-width: 100%;
     padding: 12px;
     border-radius: 10px;
-    width: 82%; /* Reducido de 92% */
-    
+    margin: 0 auto;
   }
 }
 
 /* Móvil grande (sm) - 540px a 639px */
 @media (max-width: 639px) {
   .container-wrapper {
-    padding: 30px 6px;
+    padding: 25px 6px;
   }
   
   .layout-container {
@@ -153,25 +151,27 @@
   }
   
   .banner-section {
+    width: 100%;
+    max-width: 100%;
     min-height: 140px;
     border-radius: 8px;
-    width: 80%; /* Reducido de 90% */
-    
     padding: 0;
+    margin: 0 auto;
   }
   
   .carousel-section {
+    width: 100%;
+    max-width: 100%;
     padding: 10px;
     border-radius: 8px;
-    width: 60%; /* Reducido de 90% */
-    
+    margin: 0 auto;
   }
 }
 
 /* Móvil estándar (base) - 480px a 539px */
 @media (max-width: 539px) {
   .container-wrapper {
-    padding: 25px 5px;
+    padding: 20px 5px;
   }
   
   .layout-container {
@@ -179,18 +179,20 @@
   }
   
   .banner-section {
+    width: 100%;
+    max-width: 100%;
     min-height: 130px;
     border-radius: 6px;
-    width: 78%; /* Reducido de 88% */
-   
     padding: 0;
+    margin: 0 auto;
   }
   
   .carousel-section {
+    width: 100%;
+    max-width: 100%;
     padding: 8px;
     border-radius: 6px;
-    width: 65%; /* Reducido de 88% */
-   
+    margin: 0 auto;
   }
   
   /* Ajustar sombras para móvil */
@@ -200,11 +202,17 @@
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
   }
 }
+  .carousel-section,
+  .banner-section,
+  .promo-section {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  }
+
 
 /* Móvil pequeño (xs) - 360px a 479px */
 @media (max-width: 479px) {
   .container-wrapper {
-    padding: 20px 4px;
+    padding: 15px 4px;
   }
   
   .layout-container {
@@ -212,25 +220,27 @@
   }
   
   .banner-section {
+    width: 100%;
+    max-width: 100%;
     min-height: 120px;
     border-radius: 5px;
-    width: 75%; /* Reducido de 85% */
-   
     padding: 0;
+    margin: 0 auto;
   }
   
   .carousel-section {
+    width: 100%;
+    max-width: 100%;
     padding: 6px;
     border-radius: 5px;
-    width: 65%; /* Reducido de 85% */
-    
+    margin: 0 auto;
   }
 }
 
 /* Móvil muy pequeño (2xs) - menos de 360px */
 @media (max-width: 359px) {
   .container-wrapper {
-    padding: 15px 3px;
+    padding: 12px 3px;
   }
   
   .layout-container {
@@ -238,17 +248,19 @@
   }
   
   .banner-section {
+    width: 100%;
+    max-width: 100%;
     min-height: 110px;
     border-radius: 4px;
-    width: 72%; /* Reducido de 82% */
-    margin: 0 auto;
     padding: 0;
+    margin: 0 auto;
   }
   
   .carousel-section {
+    width: 100%;
+    max-width: 100%;
     padding: 5px;
     border-radius: 4px;
-    width: 72%; /* Reducido de 82% */
     margin: 0 auto;
   }
 }
