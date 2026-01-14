@@ -285,39 +285,60 @@
   .banner-container {
     width: 100%;
     max-width: 1500px;
+    height: auto;
     border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .banner-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1280 / 358;
   }
   
   .banner-img {
     width: 100%;
+    height: 100%;
   }
   
   .description-container {
-    max-width: 70%;
-    padding: 12px;
+    position: relative;
+    max-width: 100%;
+    padding: 20px;
+    background-color: #f9f9f9;
   }
   
   .description-content {
-    padding: 16px 20px;
-    font-size: 14px;
-    line-height: 1.4;
-    backdrop-filter: blur(1px);
+    padding: 18px 24px;
+    font-size: 15px;
+    line-height: 1.5;
+    backdrop-filter: none;
+    background-color: rgba(255, 255, 255, 0.98);
+    box-shadow: none;
+    border-radius: 8px;
   }
   
-  .v-top, .v-bottom {
-    top: 15px;
-    bottom: 15px;
+  .v-top, .v-bottom, .v-middle {
+    position: relative;
+    top: auto;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    transform: none;
   }
   
-  .h-left, .h-right {
-    left: 15px;
-    right: 15px;
+  .h-left, .h-center, .h-right {
+    position: relative;
+    left: auto;
+    right: auto;
+    transform: none;
   }
   
   /* Efectos más sutiles en móviles grandes */
   .banner-container:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+    transform: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   }
   
   .banner-container:hover .banner-img {
@@ -330,39 +351,59 @@
   .banner-container {
     width: 100%;
     max-width: 1500px;
-    height: 134px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .banner-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1280 / 358;
+    overflow: hidden;
   }
   
   .banner-img {
     width: 100%;
+    height: 100%;
   }
+  
   .description-container {
-    max-width: 80%;
-    padding: 10px;
+    position: relative;
+    max-width: 100%;
+    padding: 18px;
+    background-color: #fafafa;
   }
   
   .description-content {
-    padding: 14px 18px;
-    font-size: 13px;
-    line-height: 1.3;
-    border-left-width: 2px;
+    padding: 16px 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    border-left-width: 3px;
     backdrop-filter: none;
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
   
   .description-content:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    transform: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   }
   
-  .v-top, .v-bottom {
-    top: 12px;
-    bottom: 12px;
+  .v-top, .v-bottom, .v-middle {
+    position: relative;
+    top: auto;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    transform: none;
   }
   
-  .h-left, .h-right {
-    left: 12px;
-    right: 12px;
+  .h-left, .h-center, .h-right {
+    position: relative;
+    left: auto;
+    right: auto;
+    transform: none;
   }
   
   /* En móviles, cambiamos algunas posiciones para mejor visualización */
@@ -370,7 +411,7 @@
   .v-top.h-right,
   .v-bottom.h-left,
   .v-bottom.h-right {
-    max-width: 85%;
+    max-width: 100%;
   }
   
   /* Desactivar algunos efectos en móviles para mejor rendimiento */
@@ -384,70 +425,103 @@
   .banner-container {
     width: 100%;
     height: auto;
-    aspect-ratio: 1280 / 358;
-    max-width: 400px;
+    max-width: 100%;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .banner-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1280 / 358;
+    overflow: hidden;
   }
   
   .banner-img {
     width: 100%;
+    height: 100%;
   }
   
   .description-container {
-    max-width: 85%;
-    padding: 8px;
+    position: relative;
+    max-width: 100%;
+    padding: 16px;
+    background-color: #fafafa;
   }
   
   .description-content {
-    padding: 12px 16px;
-    font-size: 12px;
-    line-height: 1.3;
+    padding: 14px 18px;
+    font-size: 13px;
+    line-height: 1.4;
     border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
   
-  .v-top, .v-bottom {
-    top: 10px;
-    bottom: 10px;
-  }
-  
-  .h-left, .h-right {
-    left: 10px;
-    right: 10px;
-  }
-  
-  /* Para móviles muy pequeños, forzamos algunas posiciones */
-  .v-middle {
-    top: 40%; /* Un poco más arriba para evitar teclado */
-  }
-  
-  .h-center {
-    left: 50%;
+  .v-top, .v-bottom, .v-middle {
+    position: relative;
+    top: auto;
+    bottom: auto;
+    left: auto;
     right: auto;
-    width: 90%;
-    max-width: 90%;
+    transform: none;
+  }
+  
+  .h-left, .h-center, .h-right {
+    position: relative;
+    left: auto;
+    right: auto;
+    transform: none;
   }
   
   /* Efectos táctiles más suaves */
   .banner-container:active {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    transform: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   }
 }
 
 /* Móviles muy pequeños (menos de 320px) */
 @media (max-width: 320px) {
   .banner-container {
-    max-width: 300px;
+    max-width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .banner-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1280 / 358;
   }
   
   .description-content {
-    padding: 10px 14px;
-    font-size: 11px;
-    line-height: 1.2;
+    padding: 12px 16px;
+    font-size: 12px;
+    line-height: 1.3;
+    background-color: rgba(255, 255, 255, 0.98);
   }
   
   .description-container {
-    max-width: 90%;
+    max-width: 100%;
+    padding: 14px;
+    background-color: #fafafa;
+  }
+  
+  .v-top, .v-bottom, .v-middle {
+    position: relative;
+    top: auto;
+    bottom: auto;
+    transform: none;
+  }
+  
+  .h-left, .h-right, .h-center {
+    position: relative;
+    left: auto;
+    right: auto;
+    transform: none;
   }
 }
 

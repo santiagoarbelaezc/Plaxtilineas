@@ -92,10 +92,22 @@
     gap: 20px;
   }
   
-  /* La sección izquierda se expande al 100% */
+  /* La sección izquierda: promo y card lado a lado */
   .left-section {
     width: 100%;
     min-width: 100%;
+    flex-direction: row;
+    gap: 15px;
+  }
+  
+  .promo-section {
+    flex: 1;
+    width: auto;
+  }
+  
+  .card-section {
+    flex: 1;
+    width: auto;
   }
   
   .banner-section {
@@ -120,6 +132,24 @@
   
   .layout-container {
     gap: 18px;
+  }
+  
+  /* Promo y card lado a lado */
+  .left-section {
+    width: 100%;
+    min-width: 100%;
+    flex-direction: row;
+    gap: 12px;
+  }
+  
+  .promo-section {
+    flex: 1;
+    width: auto;
+  }
+  
+  .card-section {
+    flex: 1;
+    width: auto;
   }
   
   .banner-section {
@@ -150,6 +180,24 @@
     gap: 15px;
   }
   
+  /* Promo y card lado a lado */
+  .left-section {
+    width: 100%;
+    min-width: 100%;
+    flex-direction: row;
+    gap: 10px;
+  }
+  
+  .promo-section {
+    flex: 1;
+    width: auto;
+  }
+  
+  .card-section {
+    flex: 1;
+    width: auto;
+  }
+  
   .banner-section {
     width: 100%;
     max-width: 100%;
@@ -176,6 +224,24 @@
   
   .layout-container {
     gap: 12px;
+  }
+  
+  /* Promo y card lado a lado */
+  .left-section {
+    width: 100%;
+    min-width: 100%;
+    flex-direction: row;
+    gap: 8px;
+  }
+  
+  .promo-section {
+    flex: 1;
+    width: auto;
+  }
+  
+  .card-section {
+    flex: 1;
+    width: auto;
   }
   
   .banner-section {
@@ -219,6 +285,24 @@
     gap: 10px;
   }
   
+  /* Promo y card lado a lado */
+  .left-section {
+    width: 100%;
+    min-width: 100%;
+    flex-direction: row;
+    gap: 6px;
+  }
+  
+  .promo-section {
+    flex: 1;
+    width: auto;
+  }
+  
+  .card-section {
+    flex: 1;
+    width: auto;
+  }
+  
   .banner-section {
     width: 100%;
     max-width: 100%;
@@ -245,6 +329,24 @@
   
   .layout-container {
     gap: 8px;
+  }
+  
+  /* Promo y card lado a lado */
+  .left-section {
+    width: 100%;
+    min-width: 100%;
+    flex-direction: row;
+    gap: 5px;
+  }
+  
+  .promo-section {
+    flex: 1;
+    width: auto;
+  }
+  
+  .card-section {
+    flex: 1;
+    width: auto;
   }
   
   .banner-section {

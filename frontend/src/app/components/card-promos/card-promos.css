@@ -443,10 +443,11 @@
 /* Para móviles pequeños (hasta 575px) */
 @media screen and (max-width: 575px) {
   .card-container {
-    width: 95vw;
-    max-width: 350px;
-    height: 200px;
+    width: 130vw;
+    max-width: 410px;
+    height: 250px;
     border-radius: 8px;
+    margin-left: 10px;
   }
   
   .product-image-section {
