@@ -1,8 +1,8 @@
 .banner-container {
   position: relative;
   width: 100%;
-  max-width: 1460px;
-  height: 358px;
+  max-width: 1500px;
+  height: 370px;
   overflow: hidden;
   font-family: 'Segoe UI', sans-serif;
   margin: 0;
@@ -28,7 +28,7 @@
 }
 
 .banner-image {
-  width: 100%;
+  width: 1450px;
   height: 100%;
   overflow: hidden;
   transition: all 0.5s ease;
@@ -40,7 +40,7 @@
 }
 
 .banner-img {
-  width: 1500px;
+  width: 1450px;
   height: 100%;
   object-fit: cover;
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);

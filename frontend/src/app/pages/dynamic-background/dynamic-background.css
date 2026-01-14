@@ -27,6 +27,11 @@
   color: #191919; /* Texto negro por defecto */
 }
 
+/* Estilo específico para section-4 (Categorías Destacadas) */
+#section-4 {
+  margin-top: 40px;
+}
+
 /* Sección con ancho completo */
 .full-width-section {
   width: 100vw;
@@ -79,7 +84,7 @@
   align-items: center;
   width: 100%;
   margin: 0 auto;
-  padding: 30px 20px;
+  padding: 60px 30px;
   background-color: #ffffff;
   box-sizing: border-box;
 }
@@ -362,7 +367,18 @@
 /* ESTILOS ESPECÍFICOS PARA LA SECCIÓN 7 (ELIMINAMOS LOS ESTILOS NEGROS) */
 /* Ahora la sección 7 tendrá los mismos estilos que el resto */
 .color-section#section-7 {
-  /* Hereda automáticamente los estilos de .color-section */
+  padding: 80px 0;
+  background-color: #FFFFFF;
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.color-section#section-7 app-plaxti-trio-presentation {
+  width: 100%;
+  display: block;
 }
 
 /* Estilos para componentes dentro de secciones */

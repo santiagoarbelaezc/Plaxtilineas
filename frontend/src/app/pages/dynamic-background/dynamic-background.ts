@@ -96,7 +96,7 @@ export class DynamicBackgroundComponent implements OnInit {
       textPosition: 'center'
     },
     {
-      imageUrl: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767456923/contactanos_bvuiud.jpg',
+      imageUrl: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1768349740/asesoria_oledy6.jpg',
       altText: 'Asesoramiento técnico',
       title: 'Asesoría',
       description: 'Expertos disponibles para brindar soluciones personalizadas a tus necesidades.',
