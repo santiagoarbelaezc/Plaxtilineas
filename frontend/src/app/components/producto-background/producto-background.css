@@ -285,24 +285,30 @@
 
 @media (max-width: 768px) {
   .producto-background-section {
-    padding: 30px 0;
+    padding: 25px 0;
   }
   
   .producto-background-container {
-    padding: 0 20px;
+    padding: 0 16px;
   }
   
   .background-grid {
-    height: 280px;
-    flex-direction: column;
+    height: 200px;
+    flex-direction: row;
+    border-radius: 12px;
   }
   
   .background-image-wrapper {
-    width: 100% !important;
-    flex: 1 0 auto;
+    flex: 1 1 0% !important;
+    border-radius: 0;
+  }
+  
+  .background-image-wrapper:hover {
+    flex: 1.5 1 0%;
   }
   
   .background-image-content {
+    padding: 20px 12px;
     transform: translateY(10px);
   }
   
@@ -311,67 +317,238 @@
   }
   
   .background-image-title {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 4px;
   }
   
   .background-image-description {
-    font-size: 0.85rem;
-    margin-bottom: 15px;
+    font-size: 0.7rem;
+    line-height: 1.2;
+    margin-bottom: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   
   .section-title {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
+    margin-bottom: 25px;
+  }
+  
+  .section-header {
+    margin-bottom: 25px;
+  }
+}
+
+@media (max-width: 640px) {
+  .producto-background-section {
+    padding: 20px 0;
+  }
+  
+  .producto-background-container {
+    padding: 0 14px;
+  }
+  
+  .background-grid {
+    height: 180px;
+    flex-direction: row;
+    border-radius: 10px;
+  }
+  
+  .background-image-wrapper {
+    flex: 1 1 0% !important;
+  }
+  
+  .background-image-content {
+    padding: 15px 10px;
+  }
+  
+  .background-image-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+  
+  .background-image-description {
+    font-size: 0.65rem;
+    line-height: 1.15;
+    margin-bottom: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .section-title {
+    font-size: 1.4rem;
+  }
+  
+  .section-header {
+    margin-bottom: 20px;
   }
 }
 
 @media (max-width: 576px) {
+  .producto-background-section {
+    padding: 18px 0;
+  }
+  
   .producto-background-container {
-    padding: 0 15px;
+    padding: 0 12px;
   }
   
   .background-grid {
-    height: 240px;
+    height: 160px;
+    flex-direction: row;
+    border-radius: 9px;
+  }
+  
+  .background-image-wrapper {
+    flex: 1 1 0% !important;
   }
   
   .background-image-content {
-    padding: 20px;
+    padding: 12px 8px;
   }
   
   .background-image-title {
-    font-size: 1rem;
-    margin-bottom: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 2px;
   }
   
   .background-image-description {
-    font-size: 0.8rem;
-    margin-bottom: 12px;
+    font-size: 0.6rem;
+    line-height: 1.1;
+    margin-bottom: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   
   .section-title {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+  }
+  
+  .section-header {
+    margin-bottom: 18px;
+  }
+  
+  .content-wrapper {
+    gap: 6px;
   }
 }
 
 @media (max-width: 480px) {
   .producto-background-section {
-    padding: 25px 0;
+    padding: 16px 0;
+  }
+  
+  .producto-background-container {
+    padding: 0 10px;
   }
   
   .background-grid {
-    height: 200px;
+    height: 150px;
+    flex-direction: row;
+    border-radius: 8px;
+  }
+  
+  .background-image-wrapper {
+    flex: 1 1 0% !important;
   }
   
   .background-image-content {
-    padding: 18px;
+    padding: 12px 8px;
   }
   
   .background-image-title {
-    font-size: 0.95rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 2px;
   }
   
   .background-image-description {
-    font-size: 0.75rem;
+    font-size: 0.55rem;
+    line-height: 1.1;
+    margin-bottom: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .section-title {
+    font-size: 1rem;
+  }
+  
+  .section-title::after {
+    bottom: -5px;
+    height: 2px;
+  }
+  
+  .section-header {
+    margin-bottom: 15px;
+  }
+  
+  .content-wrapper {
+    padding: 10px 8px;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 400px) {
+  .producto-background-section {
+    padding: 14px 0;
+  }
+  
+  .producto-background-container {
+    padding: 0 8px;
+  }
+  
+  .background-grid {
+    height: 140px;
+    flex-direction: row;
+    border-radius: 6px;
+  }
+  
+  .background-image-wrapper {
+    flex: 1 1 0% !important;
+  }
+  
+  .background-image-content {
+    padding: 10px 6px;
+  }
+  
+  .background-image-title {
+    font-size: 0.7rem;
+    margin-bottom: 2px;
+  }
+  
+  .background-image-description {
+    font-size: 0.5rem;
+    line-height: 1;
+    margin-bottom: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .section-title {
+    font-size: 0.95rem;
+  }
+  
+  .section-header {
+    margin-bottom: 12px;
+  }
+  
+  .content-wrapper {
+    padding: 8px 6px;
+    gap: 3px;
   }
 }
 
@@ -413,16 +590,24 @@
 /* Soporte para touch devices */
 @media (hover: none) and (pointer: coarse) {
   .background-image-wrapper {
-    transition: none;
+    transition: all 0.3s ease;
   }
   
   .background-image-content {
-    opacity: 0.8;
+    opacity: 0.9;
     transform: translateY(0);
   }
   
   .background-image-overlay {
-    opacity: 0.5;
+    opacity: 0.4;
+  }
+  
+  .background-image-title {
+    transform: translateY(0);
+  }
+  
+  .background-image-description {
+    transform: translateY(0);
   }
   
   /* Ajusta efectos de hover para touch */
@@ -436,5 +621,20 @@
   
   .background-image-wrapper:active .background-image-content {
     opacity: 1;
+  }
+  
+  /* En landscape móvil */
+  @media (orientation: landscape) {
+    .background-grid {
+      height: 200px;
+    }
+    
+    .background-image-title {
+      font-size: 0.95rem;
+    }
+    
+    .background-image-description {
+      font-size: 0.75rem;
+    }
   }
 }

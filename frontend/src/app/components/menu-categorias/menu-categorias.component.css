@@ -24,7 +24,7 @@
   padding: 24px;
   transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
   height: fit-content;
-  max-height: 85vh;
+  max-height: 110vh;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--primary-green) transparent;

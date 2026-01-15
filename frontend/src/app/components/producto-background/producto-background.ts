@@ -76,8 +76,6 @@ export class ProductoBackgroundComponent {
 
   // Si la imagen tiene link, navega
   onClick(image: ProductoBackgroundImage): void {
-    if (image.link) {
-      window.open(image.link, '_blank');
-    }
+    
   }
 }
