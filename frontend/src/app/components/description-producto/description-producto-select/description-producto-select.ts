@@ -216,20 +216,39 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     const numeroWhatsApp = '+573006680125';
     const nombreCompleto = this.nombreCompleto;
     
-    let mensaje = `Hola, estoy interesado en el siguiente producto de Plaxtilineas:\n\n` +
-                 `*${nombreCompleto}*\n` +
-                 `Código: ${this.producto.id}\n`;
+    // Construir mensaje limpio y bien formateado
+    let mensaje = `*CONSULTA DE PRODUCTO - PLAXTILINEAS*\n`;
+    mensaje += `${'='.repeat(40)}\n\n`;
     
-    // Añadir información de la variante seleccionada
+    mensaje += `*PRODUCTO DE INTERÉS:*\n`;
+    mensaje += `${nombreCompleto}\n\n`;
+    
+    mensaje += `*INFORMACIÓN TÉCNICA:*\n`;
+    mensaje += `• Código: ${this.producto.id}\n`;
+    
     if (this.varianteSeleccionada) {
-      mensaje += `Variante: ${this.varianteSeleccionada.nombre}\n`;
+      mensaje += `• Variante: ${this.varianteSeleccionada.nombre}\n`;
     }
     
-    mensaje += `Descripción: ${this.descripcionBase}\n` +
-               `Categoría: ${this.producto.categoria}\n` +
-               `Subcategoría: ${this.producto.subcategoria}\n` +
-               `Precio: $${this.formatearPrecio(this.precioActual)}\n\n` +
-               `¿Podrían darme más información sobre disponibilidad y características?`;
+    mensaje += `• Categoría: ${this.producto.categoria}\n`;
+    mensaje += `• Subcategoría: ${this.producto.subcategoria}\n\n`;
+    
+    mensaje += `*PRECIO ACTUAL:*\n`;
+    mensaje += `${this.formatearPrecio(this.precioActual)}\n\n`;
+    
+    if (this.descripcionBase) {
+      mensaje += `*DESCRIPCIÓN:*\n`;
+      mensaje += `${this.descripcionBase}\n\n`;
+    }
+    
+    mensaje += `*SOLICITO INFORMACIÓN SOBRE:*\n`;
+    mensaje += `✓ Disponibilidad actual del producto\n`;
+    mensaje += `✓ Características técnicas detalladas\n`;
+    mensaje += `✓ Opciones y costo de envío\n`;
+    mensaje += `✓ Formas de pago disponibles\n`;
+    mensaje += `✓ Tiempo de entrega\n\n`;
+    
+    mensaje += `Quedo atento a sus comentarios.`;
     
     const mensajeCodificado = encodeURIComponent(mensaje);
     return `https://wa.me/${numeroWhatsApp}?text=${mensajeCodificado}`;

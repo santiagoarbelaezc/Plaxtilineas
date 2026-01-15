@@ -26,151 +26,176 @@
       <span class="breadcrumb-current">{{nombreCompleto}}</span>
     </nav>
 
-    <!-- Contenedor principal -->
-    <div class="producto-grid">
+    <!-- Contenedor principal con estructura de dos columnas fijas -->
+    <div class="producto-layout-container">
       
-      <!-- Columna izquierda: Imagen -->
-      <div class="producto-imagen-col">
-        <div class="producto-imagen-container" (click)="abrirModalImagen()">
-          <img 
-            [src]="producto.imagen_url" 
-            [alt]="nombreCompleto" 
-            class="producto-imagen"
-            (error)="producto.imagen_url = 'assets/images/producto-default.jpg'">
-          <div class="imagen-overlay"></div>
+      <!-- Columna Izquierda Fija: Imagen y Precio -->
+      <div class="producto-columna-izquierda">
+        
+        <!-- Contenedor de imagen con tamaño fijo -->
+        <div class="producto-imagen-fixed-container" (click)="abrirModalImagen()">
+          <div class="producto-imagen-wrapper">
+            <img 
+              [src]="producto.imagen_url" 
+              [alt]="nombreCompleto" 
+              class="producto-imagen-fixed"
+              (error)="producto.imagen_url = 'assets/images/producto-default.jpg'">
+            <div class="imagen-overlay-fixed"></div>
+            <div class="imagen-zoom-indicator">
+              <span class="zoom-icon">🔍</span>
+              <span class="zoom-text">Haz clic para ampliar</span>
+            </div>
+          </div>
         </div>
+
+        <!-- Precio fijo debajo de la imagen -->
+        <div class="precio-fixed-container">
+          <div class="precio-fixed-header">
+            <span class="precio-fixed-label">Precio:</span>
+            <span class="precio-fixed-badge" *ngIf="varianteSeleccionada">Seleccionado</span>
+          </div>
+          <div class="precio-fixed-valor">
+            
+            <span class="precio-numero-fixed">{{formatearPrecio(precioActual)}}</span>
+          </div>
+          <div class="precio-fixed-nota" *ngIf="variantes.length > 0">
+            <small>Precio varía según la variante seleccionada</small>
+          </div>
+        </div>
+
+        <!-- Acciones rápidas en columna izquierda -->
+        <div class="acciones-rapidas-container">
+          <a [href]="generarWhatsAppLink()"
+             target="_blank"
+             rel="noopener noreferrer nofollow"
+             class="btn-whatsapp-fixed"
+             aria-label="Consultar sobre este producto por WhatsApp"
+             title="Consultar sobre este producto por WhatsApp">
+            <span class="btn-icon-fixed">💬</span>
+            <span class="btn-text-fixed">Consultar por WhatsApp</span>
+          </a>
+          
+          <button class="btn-compartir-fixed" (click)="copiarEnlace()" title="Copiar enlace del producto">
+            <span class="btn-icon-fixed">🔗</span>
+            <span class="btn-text-fixed">Copiar enlace</span>
+          </button>
+          
+          <div class="mensaje-copiado-fixed" *ngIf="enlaceCopiado">
+            ✓ Enlace copiado al portapapeles
+          </div>
+        </div>
+
       </div>
 
-      <!-- Columna derecha: Información -->
-      <div class="producto-info-col">
+      <!-- Columna Derecha Fija: Información del Producto -->
+      <div class="producto-columna-derecha">
         
         <!-- Encabezado -->
-        <div class="producto-header">
-          <div class="producto-categorias">
-            <span class="categoria-badge">{{producto.categoria}}</span>
-            <span class="subcategoria-badge">{{producto.subcategoria}}</span>
+        <div class="producto-header-fixed">
+          <div class="producto-categorias-fixed">
+            <span class="categoria-badge-fixed">{{producto.categoria}}</span>
+            <span class="subcategoria-badge-fixed">{{producto.subcategoria}}</span>
+            <span class="producto-id-fixed">ID: {{producto.id}}</span>
           </div>
-          <h1 class="producto-nombre">{{productoBaseNombre}}</h1>
-          <div class="producto-meta">
-            <span class="producto-id">ID: {{producto.id}}</span>
-            <!-- Verificar si el producto tiene el campo creado_en (viene del backend) -->
-            
-          </div>
+          <h1 class="producto-nombre-fixed">{{productoBaseNombre}}</h1>
         </div>
 
-        <!-- Selección de variantes -->
-        <div *ngIf="variantes.length > 0" class="opciones-container">
-          <h3 class="section-title">Seleccionar variante</h3>
-          <div class="opciones-grid">
-            <div 
-              *ngFor="let variante of variantes" 
-              class="opcion-item"
-              [class.opcion-seleccionada]="varianteSeleccionada?.id === variante.id"
-              (click)="seleccionarVariante(variante)">
-              <div class="opcion-contenido">
-                <span class="opcion-texto">{{variante.nombre}}</span>
-                <div class="opcion-checkbox">
-                  <div class="opcion-checkmark" *ngIf="varianteSeleccionada?.id === variante.id">✓</div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <!-- Contenedor de información con altura fija y scroll interno -->
+        <div class="producto-info-scroll-container">
           
-          <!-- Precio actualizado por variante -->
-          <div *ngIf="varianteSeleccionada" class="precio-opcion">
-            <span class="precio-opcion-label">Precio seleccionado:</span>
-            <span class="precio-opcion-valor">{{formatearPrecio(varianteSeleccionada.precio)}}</span>
-          </div>
-        </div>
-
-        <!-- Descripción -->
-        <div class="producto-descripcion-section">
-          <h3 class="section-title">Descripción</h3>
-          <p class="producto-descripcion">
-            {{descripcionBase || 'Descripción no disponible'}}
-          </p>
-        </div>
-
-        <!-- Detalles específicos -->
-        <div class="producto-detalles-section">
-          <h3 class="section-title">Detalles del producto</h3>
-          <div class="detalles-grid">
-            <div class="detalle-item">
-              <span class="detalle-label">Subcategoría:</span>
-              <span class="detalle-valor">{{producto.subcategoria}}</span>
+          <!-- Selección de variantes -->
+          <div *ngIf="variantes.length > 0" class="opciones-fixed-container">
+            <div class="section-header-fixed">
+              <h3 class="section-title-fixed">Seleccionar variante</h3>
+              <span class="section-subtitle">Selecciona una opción para actualizar el precio</span>
             </div>
-            <div class="detalle-item">
-              <span class="detalle-label">Categoría:</span>
-              <span class="detalle-valor">{{producto.categoria}}</span>
-            </div>
-            <div class="detalle-item" *ngIf="varianteSeleccionada">
-              <span class="detalle-label">Variante seleccionada:</span>
-              <span class="detalle-valor">{{varianteSeleccionada.nombre}}</span>
-            </div>
-            <div class="detalle-item" *ngIf="varianteSeleccionada">
-              <span class="detalle-label">ID de variante:</span>
-              <span class="detalle-valor">{{varianteSeleccionada.id}}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Precio y acciones -->
-        <div class="producto-acciones-section">
-          <div class="precio-container">
-            <span class="precio-label">Precio:</span>
-            <div class="precio-valor">
-              
-              <span class="precio-numero">{{formatearPrecio(precioActual)}}</span>
-            </div>
-            <div *ngIf="variantes.length > 0" class="precio-note">
-              <small>Selecciona una variante para ver su precio específico</small>
-            </div>
-          </div>
-
-          <div class="acciones-container">
-            <!-- Botón de WhatsApp para consultar sobre el producto -->
-            <a [href]="generarWhatsAppLink()"
-               target="_blank"
-               rel="noopener noreferrer nofollow"
-               class="btn-whatsapp"
-               aria-label="Consultar sobre este producto por WhatsApp"
-               title="Consultar sobre este producto por WhatsApp">
-              <span class="btn-icon">💬</span>
-              <span class="btn-text">Consultar por WhatsApp</span>
-            </a>
             
-            <button class="btn-volver" (click)="volverAProductos()">
-              <span class="btn-icon">←</span>
-              <span class="btn-text">Volver a productos</span>
-            </button>
-          </div>
-
-          <div class="acciones-secundarias">
-            <button class="btn-secundario" (click)="verMasDeEstaCategoria()" *ngIf="producto.categoria">
-              Ver más productos de {{producto.categoria}}
-            </button>
-            
-            <div class="compartir-container">
-              <span class="compartir-label">Compartir:</span>
-              <div class="compartir-botones">
-                <button class="btn-compartir" (click)="copiarEnlace()" title="Copiar enlace del producto">
-                  <span class="btn-compartir-icon">🔗</span>
-                  <span class="btn-compartir-text">Copiar enlace</span>
-                </button>
-                <div class="mensaje-compartir" *ngIf="enlaceCopiado">
-                  ✓ Enlace copiado
+            <div class="opciones-fixed-grid">
+              <div 
+                *ngFor="let variante of variantes" 
+                class="opcion-fixed-item"
+                [class.opcion-fixed-seleccionada]="varianteSeleccionada?.id === variante.id"
+                (click)="seleccionarVariante(variante)">
+                <div class="opcion-fixed-contenido">
+                  <div class="opcion-fixed-info">
+                    <span class="opcion-fixed-texto">{{variante.nombre}}</span>
+                    <span class="opcion-fixed-precio">{{formatearPrecio(variante.precio)}}</span>
+                  </div>
+                  <div class="opcion-fixed-checkbox">
+                    <div class="opcion-fixed-checkmark" *ngIf="varianteSeleccionada?.id === variante.id">✓</div>
+                  </div>
                 </div>
               </div>
             </div>
+            
+            <!-- Resumen de variante seleccionada -->
+            <div *ngIf="varianteSeleccionada" class="variante-seleccionada-resumen">
+              <div class="variante-resumen-item">
+                <span class="variante-resumen-label">Variante seleccionada:</span>
+                <span class="variante-resumen-valor">{{varianteSeleccionada.nombre}}</span>
+              </div>
+              <div class="variante-resumen-item">
+                <span class="variante-resumen-label">ID de variante:</span>
+                <span class="variante-resumen-valor">{{varianteSeleccionada.id}}</span>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Historial de productos vistos (si hay) -->
-    
-  </div>
-</div>
+          <!-- Descripción -->
+          <div class="producto-descripcion-fixed-section">
+            <div class="section-header-fixed">
+              <h3 class="section-title-fixed">Descripción del producto</h3>
+            </div>
+            <div class="descripcion-fixed-content">
+              <p class="producto-descripcion-fixed">
+                {{descripcionBase || 'Descripción no disponible'}}
+              </p>
+            </div>
+          </div>
+
+          <!-- Detalles específicos -->
+          <div class="producto-detalles-fixed-section">
+            <div class="section-header-fixed">
+              <h3 class="section-title-fixed">Detalles del producto</h3>
+            </div>
+            <div class="detalles-fixed-grid">
+              <div class="detalle-fixed-item">
+                <span class="detalle-fixed-label">Categoría:</span>
+                <span class="detalle-fixed-valor">{{producto.categoria}}</span>
+              </div>
+              <div class="detalle-fixed-item">
+                <span class="detalle-fixed-label">Subcategoría:</span>
+                <span class="detalle-fixed-valor">{{producto.subcategoria}}</span>
+              </div>
+              <div class="detalle-fixed-item">
+                <span class="detalle-fixed-label">ID del producto:</span>
+                <span class="detalle-fixed-valor">{{producto.id}}</span>
+              </div>
+              
+            </div>
+          </div>
+
+          <!-- Acciones adicionales -->
+          <div class="acciones-adicionales-container">
+            <button class="btn-volver-fixed" (click)="volverAProductos()">
+              <span class="btn-icon-fixed">←</span>
+              <span class="btn-text-fixed">Volver a productos</span>
+            </button>
+            
+            <button class="btn-categoria-fixed" (click)="verMasDeEstaCategoria()" *ngIf="producto.categoria">
+              <span class="btn-icon-fixed">📂</span>
+              <span class="btn-text-fixed">Ver más de {{producto.categoria}}</span>
+            </button>
+          </div>
+
+        </div> <!-- Fin del contenedor scroll -->
+
+      </div> <!-- Fin columna derecha -->
+
+    </div> <!-- Fin layout container -->
+
+  </div> <!-- Fin producto-detalles -->
+</div> <!-- Fin description-producto-container -->
 
 <!-- Modal de imagen ampliada -->
 <div *ngIf="mostrarModalImagen" class="image-modal-backdrop" (click)="cerrarModalImagen()">
