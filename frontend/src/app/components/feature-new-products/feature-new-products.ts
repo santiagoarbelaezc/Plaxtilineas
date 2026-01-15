@@ -59,6 +59,15 @@ export class FeatureNewProducts implements OnInit {
     this.router.navigate(['/producto', productoId]);
   }
 
+  /**
+   * Ver todos los productos sin filtros
+   */
+  verTodosProductos(): void {
+    console.log('🔍 Ver todos los productos');
+    this.menuStateService.clearLastSelectedSubcategory();
+    this.router.navigate(['/productos']);
+  }
+
 
   inicializarAOS(): void {
     // Inicializar AOS (Animate On Scroll) si está disponible
