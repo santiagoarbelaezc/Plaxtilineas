@@ -153,9 +153,13 @@
             <div class="compartir-container">
               <span class="compartir-label">Compartir:</span>
               <div class="compartir-botones">
-                <button class="btn-compartir">📱</button>
-                <button class="btn-compartir">📧</button>
-                <button class="btn-compartir">🔗</button>
+                <button class="btn-compartir" (click)="copiarEnlace()" title="Copiar enlace del producto">
+                  <span class="btn-compartir-icon">🔗</span>
+                  <span class="btn-compartir-text">Copiar enlace</span>
+                </button>
+                <div class="mensaje-compartir" *ngIf="enlaceCopiado">
+                  ✓ Enlace copiado
+                </div>
               </div>
             </div>
           </div>

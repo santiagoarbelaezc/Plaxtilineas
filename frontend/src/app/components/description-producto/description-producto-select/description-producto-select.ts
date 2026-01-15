@@ -8,6 +8,7 @@ import { Variante } from '../../../models/variante.model';
 import { ProductSelectService } from '../../../services/product-select.service';
 import { ProductosService } from '../../../services/productos.service';
 import { VariantesService } from '../../../services/variantes.service';
+import { MenuStateService } from '../../../services/menu-state.service';
 import { CarouselSignalService } from '../../../services/carousel-signal.service'; // Importar el nuevo servicio
 
 @Component({
@@ -31,6 +32,9 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   mostrarModalImagen = false;
   imagenModalUrl: string = '';
   
+  // Propiedad para el mensaje de enlace copiado
+  enlaceCopiado = false;
+  
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -38,8 +42,7 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private productosService: ProductosService,
-    private variantesService: VariantesService,
-    private carouselSignalService: CarouselSignalService // Inyectar el servicio
+    private variantesService: VariantesService,    private menuStateService: MenuStateService,    private carouselSignalService: CarouselSignalService // Inyectar el servicio
   ) {}
 
   ngOnInit() {
@@ -256,9 +259,10 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   }
 
   verMasDeEstaCategoria() {
-    if (this.producto?.categoria) {
+    if (this.producto?.subcategoria_id) {
+      this.menuStateService.clearLastSelectedSubcategory();
       this.router.navigate(['/productos'], {
-        queryParams: { categoria: this.producto.categoria }
+        queryParams: { subcategoria_id: this.producto.subcategoria_id }
       });
     }
   }
@@ -313,6 +317,51 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   onEscapeKey() {
     if (this.mostrarModalImagen) {
       this.cerrarModalImagen();
+    }
+  }
+
+  /**
+   * Copiar el enlace actual del producto al portapapeles
+   */
+  copiarEnlace(): void {
+    const enlace = window.location.href;
+    
+    navigator.clipboard.writeText(enlace).then(() => {
+      console.log('✓ Enlace copiado al portapapeles');
+      this.enlaceCopiado = true;
+      
+      // Mostrar el mensaje durante 3 segundos
+      setTimeout(() => {
+        this.enlaceCopiado = false;
+      }, 3000);
+    }).catch(err => {
+      console.error('Error al copiar enlace:', err);
+      // Fallback para navegadores antiguos
+      this.copiarEnlaceAntiguoBrowser(enlace);
+    });
+  }
+
+  /**
+   * Fallback para copiar enlace en navegadores antiguos
+   */
+  private copiarEnlaceAntiguoBrowser(enlace: string): void {
+    const textarea = document.createElement('textarea');
+    textarea.value = enlace;
+    document.body.appendChild(textarea);
+    textarea.select();
+    
+    try {
+      document.execCommand('copy');
+      console.log('✓ Enlace copiado (método antiguo)');
+      this.enlaceCopiado = true;
+      
+      setTimeout(() => {
+        this.enlaceCopiado = false;
+      }, 3000);
+    } catch (err) {
+      console.error('Error al copiar enlace:', err);
+    } finally {
+      document.body.removeChild(textarea);
     }
   }
 }
