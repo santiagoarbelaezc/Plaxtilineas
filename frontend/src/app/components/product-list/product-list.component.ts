@@ -7,11 +7,13 @@ import { ProductoMenu } from '../../models/productoMenu.model';
 import { ProductoMenuService } from '../../services/producto-menu.service';
 import { ProductSelectService } from '../../services/product-select.service';
 import { MenuStateService } from '../../services/menu-state.service';
+import { ProductoBackgroundComponent, ProductoBackgroundImage } from '../producto-background/producto-background';
+import { ProductoBackgroundService } from '../../services/producto-background.service';
 
 @Component({
   selector: 'app-product-list-component',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ProductoBackgroundComponent],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css'],
   animations: [
@@ -31,11 +33,18 @@ export class ProductListComponent implements OnInit {
   mensajeEstado: string = '';
   private isInitialLoad = true;
 
+  // Propiedades para ProductoBackground
+  mostrarProductoBackground = false;
+  tituloProductoBackground: string = '';
+  imagenesProductoBackground: ProductoBackgroundImage[] = [];
+  categoriaActual: string = '';
+
   constructor(
     private route: ActivatedRoute,
     private productoService: ProductoMenuService,
     private productSelectService: ProductSelectService,
-    private menuStateService: MenuStateService
+    private menuStateService: MenuStateService,
+    private productoBackgroundService: ProductoBackgroundService
   ) {}
 
   ngOnInit() {
@@ -113,6 +122,11 @@ export class ProductListComponent implements OnInit {
     
     this.productoService.obtenerPorSubcategoria(subcatId).subscribe({
       next: (data: ProductoMenu[]) => {
+        // Extraer nombre de categoría del primer producto
+        if (data.length > 0) {
+          this.categoriaActual = data[0].categoria;
+          this.actualizarProductoBackground(this.categoriaActual);
+        }
         this.handleSuccessResponse(data, `Subcategoría: ${data.length} productos`);
       },
       error: (error) => {
@@ -130,6 +144,11 @@ export class ProductListComponent implements OnInit {
     
     this.productoService.obtenerPorCategoria(catId).subscribe({
       next: (data: ProductoMenu[]) => {
+        // Extraer nombre de categoría del primer producto
+        if (data.length > 0) {
+          this.categoriaActual = data[0].categoria;
+          this.actualizarProductoBackground(this.categoriaActual);
+        }
         this.handleSuccessResponse(data, `Categoría: ${data.length} productos`);
       },
       error: (error) => {
@@ -204,5 +223,23 @@ export class ProductListComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.handleQueryParams(params);
     });
+  }
+
+  /**
+   * Actualizar ProductoBackground según la categoría actual
+   * @param nombreCategoria - Nombre de la categoría
+   */
+  private actualizarProductoBackground(nombreCategoria: string): void {
+    const config = this.productoBackgroundService.obtenerConfiguracionPorCategoria(nombreCategoria);
+    
+    if (config) {
+      this.mostrarProductoBackground = config.mostrar;
+      this.tituloProductoBackground = config.titulo;
+      this.imagenesProductoBackground = config.imagenes;
+      console.log(`✅ ProductoBackground configurado para: ${nombreCategoria}`);
+    } else {
+      this.mostrarProductoBackground = false;
+      console.log(`⚠️ No hay configuración de ProductoBackground para: ${nombreCategoria}`);
+    }
   }
 }

@@ -11,7 +11,7 @@ import { DescriptionProductoSelect } from './description-producto-select/descrip
 @Component({
   selector: 'app-description-producto',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, Footer, SocialButtonsComponent, CarouselInteres, DescriptionProductoSelect],
+  imports: [CommonModule, NavbarComponent, Footer, SocialButtonsComponent, CarouselInteres, DescriptionProductoSelect, CarouselRelacionados],
   templateUrl: './description-producto.html',
   styleUrl: './description-producto.css'
 })

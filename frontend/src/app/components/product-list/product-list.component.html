@@ -1,4 +1,11 @@
 <section id="productos-seccion">
+  <!-- Componente ProductoBackground - Mostrar solo si está configurado para esta categoría -->
+  <app-producto-background 
+    *ngIf="mostrarProductoBackground"
+    [titulo]="tituloProductoBackground"
+    [imagenes]="imagenesProductoBackground">
+  </app-producto-background>
+
   <!-- Encabezado elegante -->
   <div class="section-header">
     <h2 *ngIf="productos.length && !cargando">

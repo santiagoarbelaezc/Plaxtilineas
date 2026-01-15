@@ -1,8 +1,10 @@
 <section class="feature-new-products-section">
   <div class="feature-new-products-container">
     <div class="section-header">
-      <h2 class="section-title">Nuevos Productos</h2>
-      <p class="section-subtitle">Descubre nuestras últimas incorporaciones</p>
+      <div>
+        <h2 class="section-title">Nuevos Productos</h2>
+        <p class="section-subtitle">Descubre nuestras últimas incorporaciones</p>
+      </div>
     </div>
 
     <div class="products-grid" *ngIf="productos.length > 0; else loadingTemplate">
@@ -11,7 +13,6 @@
         class="product-card" 
         *ngFor="let producto of productos"
         (click)="verDetalles(producto.id)"
-        [style.cursor]="'pointer'"
       >
         <!-- Imagen del producto -->
         <div class="product-image-container">
@@ -21,17 +22,19 @@
               [alt]="producto.nombre"
               class="product-image"
               loading="lazy"
+              (error)="producto.imagen_url = 'assets/images/default-product.png'"
             />
-            <!-- Etiqueta de nuevo -->
-            <div class="product-badge new-badge">NUEVO</div>
+            <div class="image-overlay"></div>
           </div>
+          <!-- Etiqueta de nuevo -->
+          <div class="product-badge">NUEVO</div>
         </div>
 
         <!-- Contenido del producto -->
         <div class="product-content">
           <div class="product-meta">
             <span class="product-subcategory">{{producto.categoria}}</span>
-            <span class="product-stock in-stock">¡Disponible!</span>
+            <span class="product-stock">¡Disponible!</span>
           </div>
           
           <h3 class="product-title">{{producto.nombre}}</h3>
@@ -40,8 +43,7 @@
           
           <div class="product-bottom">
             <div class="product-price">
-            <span class="price-amount">{{ formatearPrecio(producto.precio) }}</span>
-            
+              <span class="price-amount">{{ formatearPrecio(producto.precio) }}</span>
             </div>
             
             <button 

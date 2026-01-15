@@ -274,7 +274,7 @@
   
   .categorias-grid {
     grid-auto-columns: calc(100% / 4);
-    gap: 0.7rem;
+    gap: 1.5rem;
   }
   
   .categoria-image-container {
@@ -299,7 +299,7 @@
   
   .categorias-grid {
     grid-auto-columns: calc(100% / 5);
-    gap: 0.8rem;
+    gap: 1rem;
   }
   
   .categoria-image-container {

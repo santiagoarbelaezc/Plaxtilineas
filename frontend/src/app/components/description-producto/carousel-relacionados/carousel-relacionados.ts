@@ -1,11 +1,10 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ProductosService } from '../../../services/productos.service';
-import { ProductSelectService } from '../../../services/product-select.service';
-import { ProductoEditable } from '../../../models/producto.model';
-import { ProductoMenu } from '../../../models/productoMenu.model';
 import { Subscription } from 'rxjs';
+import { ProductosService } from '../../../services/productos.service';
+import { ProductoEditable } from '../../../models/producto.model';
+import { CarouselSignalService } from '../../../services/carousel-signal.service';
 
 @Component({
   selector: 'app-carousel-relacionados',
@@ -14,65 +13,60 @@ import { Subscription } from 'rxjs';
   templateUrl: './carousel-relacionados.html',
   styleUrls: ['./carousel-relacionados.css']
 })
-export class CarouselRelacionados implements OnInit, OnChanges, AfterViewInit, OnDestroy {
+export class CarouselRelacionados implements OnInit, AfterViewInit, OnDestroy, OnChanges {
+  @Input() titulo: string = 'Productos relacionados';
+  @Input() subtitulo: string = 'Descubre productos similares que podrían interesarte';
+  @Input() limite: number = 10; // Mínimo 10 productos
   @Input() subcategoriaId?: number;
   @Input() productoId?: number;
-  @Input() productoData?: any;
-  @Input() titulo: string = 'Productos relacionados';
-  @Input() subtitulo: string = 'Descubre más productos que podrían interesarte';
-  @Input() limite: number = 8;
-  @Input() usarProductoSeleccionado: boolean = true;
+  @Input() forzarRecarga: boolean = false;
   
   productos: ProductoEditable[] = [];
-  productoActual: any = null;
   public carouselId = 'productos-relacionados-carousel';
   isLoading: boolean = false;
   error: string | null = null;
   
   // Variables para el carrusel
   currentIndex = 0;
-  visibleItems = 3;
+  visibleItems = 4;
 
-  // Suscripciones
-  private productoSeleccionadoSubscription?: Subscription;
+  // Para almacenar timestamp de última carga
+  private ultimaCarga: number = 0;
+  private readonly MIN_TIEMPO_ENTRE_CARGAS = 30000;
+
+  // Suscripción a las señales
+  private signalSubscription?: Subscription;
+  private recargaForzadaInterna = false;
+
+  // Para almacenar productos relacionados y generales por separado
+  private productosRelacionados: any[] = [];
+  private productosGenerales: any[] = [];
 
   constructor(
     private productosService: ProductosService,
-    private productSelectService: ProductSelectService
+    private carouselSignalService: CarouselSignalService
   ) {}
 
   ngOnInit(): void {
     console.log('🔄 Iniciando CarouselRelacionados...');
     console.log('📊 Inputs recibidos:', {
-      productoId: this.productoId,
+      titulo: this.titulo,
+      subtitulo: this.subtitulo,
+      limite: this.limite,
       subcategoriaId: this.subcategoriaId,
-      productoData: this.productoData,
-      usarProductoSeleccionado: this.usarProductoSeleccionado
+      productoId: this.productoId,
+      forzarRecarga: this.forzarRecarga
     });
 
-    if (this.usarProductoSeleccionado) {
-      this.suscribirseAProductoSeleccionado();
-    } else {
-      // Si tenemos datos del producto, extraer la subcategoría
-      if (this.productoData) {
-        this.extraerDatosDelProducto(this.productoData);
-      }
-      this.cargarProductosRelacionados();
-    }
+    this.cargarProductosRelacionados();
+    this.suscribirASeñales();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('🔄 Cambios detectados:', changes);
-    
-    if (!this.usarProductoSeleccionado) {
-      // Si cambian los datos del producto, extraer la subcategoría
-      if (changes['productoData'] && this.productoData) {
-        this.extraerDatosDelProducto(this.productoData);
-      }
-      
-      if (changes['subcategoriaId'] || changes['productoId'] || changes['limite'] || changes['productoData']) {
-        this.cargarProductosRelacionados();
-      }
+    // Recargar si cambian parámetros relevantes
+    if (changes['forzarRecarga'] || changes['subcategoriaId'] || changes['productoId'] || changes['limite']) {
+      console.log('🔄 Cambio detectado en inputs, recargando productos...');
+      this.recargarProductos();
     }
   }
 
@@ -83,271 +77,323 @@ export class CarouselRelacionados implements OnInit, OnChanges, AfterViewInit, O
   }
 
   ngOnDestroy(): void {
-    if (this.productoSeleccionadoSubscription) {
-      this.productoSeleccionadoSubscription.unsubscribe();
+    if (this.signalSubscription) {
+      this.signalSubscription.unsubscribe();
     }
   }
 
-  private suscribirseAProductoSeleccionado(): void {
-    console.log('🔍 Suscribiéndose a cambios de producto seleccionado...');
-    
-    this.productoSeleccionadoSubscription = this.productSelectService.productoSeleccionado$
-      .subscribe((producto) => {
-        console.log('📱 Producto seleccionado recibido:', producto);
-        this.productoActual = producto;
+  /**
+   * Suscribirse a señales de producto seleccionado
+   */
+  private suscribirASeñales(): void {
+    this.signalSubscription = this.carouselSignalService.productoSeleccionado$
+      .subscribe((productoId: number) => {
+        console.log(`🎯 Señal recibida: Producto ${productoId} seleccionado`);
         
-        if (producto) {
-          console.log('✅ Producto detectado:', {
-            nombre: producto.nombre,
-            id: producto.id,
-            subcategoria_id: producto.subcategoria_id,
-            subcategoria: producto.subcategoria
-          });
-          
-          this.productoId = producto.id;
-          
-          // Extraer la subcategoría del producto
-          this.extraerSubcategoriaDeProducto(producto);
-          
-          this.cargarProductosRelacionados();
-        } else {
-          console.log('📱 No hay producto seleccionado');
-          this.productos = [];
-        }
+        // Actualizar producto actual
+        this.productoId = productoId;
+        
+        // Recargar productos relacionados para el nuevo producto
+        this.recargarProductos();
       });
   }
 
-  private extraerSubcategoriaDeProducto(producto: any): void {
-    console.log('🔍 Extrayendo subcategoría del producto...');
+  /**
+   * Método principal para cargar productos relacionados
+   */
+  private cargarProductosRelacionados(): void {
+    const ahora = Date.now();
+    const esRecargaForzada = this.forzarRecarga || this.recargaForzadaInterna;
     
-    // Opción 1: Intentar obtener subcategoria_id directamente
-    if (producto.subcategoria_id !== undefined && producto.subcategoria_id !== null) {
-      this.subcategoriaId = producto.subcategoria_id;
-      console.log(`✅ Subcategoría obtenida de subcategoria_id: ${this.subcategoriaId}`);
+    if (!esRecargaForzada && (ahora - this.ultimaCarga) < this.MIN_TIEMPO_ENTRE_CARGAS) {
+      console.log('⏱️  Carga evitada: tiempo mínimo entre cargas no alcanzado');
+      if (this.productos.length > 0) {
+        this.isLoading = false;
+      }
       return;
     }
-    
-    // Opción 2: Si solo tenemos el nombre de la subcategoría
-    if (producto.subcategoria && typeof producto.subcategoria === 'string') {
-      console.log(`ℹ️ Solo tenemos nombre de subcategoría: ${producto.subcategoria}`);
-      // Podrías necesitar un mapeo de nombre a ID si es necesario
-    }
-    
-    console.warn('⚠️ No se pudo extraer subcategoria_id del producto');
-  }
 
-  private extraerDatosDelProducto(productoData: any): void {
-    console.log('🔍 Extrayendo datos del producto input...');
-    this.productoActual = productoData;
-    
-    if (productoData.subcategoria_id !== undefined && productoData.subcategoria_id !== null) {
-      this.subcategoriaId = productoData.subcategoria_id;
-      console.log(`✅ Subcategoría obtenida: ${this.subcategoriaId}`);
-    } else if (productoData.id) {
-      this.productoId = productoData.id;
-      console.log(`✅ Producto ID obtenido: ${this.productoId}`);
-    }
-  }
-
-  private cargarProductosRelacionados(): void {
     this.isLoading = true;
     this.error = null;
+    this.ultimaCarga = ahora;
+    this.productosRelacionados = [];
+    this.productosGenerales = [];
     
-    console.log('🔄 Intentando cargar productos relacionados...');
-    console.log('📊 Estado actual:', {
-      productoId: this.productoId,
-      subcategoriaId: this.subcategoriaId,
-      productoActual: this.productoActual
-    });
+    console.log('🔄 Cargando productos relacionados...');
+    console.log(`🔗 Subcategoría ID: ${this.subcategoriaId}`);
+    console.log(`🚫 Producto a excluir: ${this.productoId || 'ninguno'}`);
+    console.log(`🎯 Límite deseado: ${this.limite}`);
+    console.log(`🚀 Recarga forzada: ${esRecargaForzada ? 'SÍ' : 'NO'}`);
 
-    // Estrategia 1: Si tenemos subcategoriaId, cargar productos de esa subcategoría
-    if (this.subcategoriaId) {
-      console.log(`🔗 Cargando productos por subcategoría ID: ${this.subcategoriaId}`);
-      this.cargarPorSubcategoria();
-    }
-    // Estrategia 2: Si tenemos productoId pero no subcategoriaId, primero obtener el producto
-    else if (this.productoId) {
-      console.log(`🔗 Obteniendo producto ID: ${this.productoId} para saber su subcategoría`);
-      this.obtenerProductoYSucategorias(this.productoId);
-    }
-    // Estrategia 3: Si tenemos productoActual, extraer subcategoría de ahí
-    else if (this.productoActual?.subcategoria_id) {
-      this.subcategoriaId = this.productoActual.subcategoria_id;
-      console.log(`🔗 Obteniendo subcategoría del producto actual: ${this.subcategoriaId}`);
-      this.cargarPorSubcategoria();
-    }
-    else {
-      console.log('ℹ️ No hay suficiente información para cargar productos relacionados');
-      this.manejarError('No hay información suficiente para cargar productos relacionados');
+    // Si tenemos subcategoría, cargar productos de esa subcategoría
+    if (this.subcategoriaId && this.subcategoriaId > 0) {
+      this.cargarProductosPorSubcategoria();
+    } else if (this.productoId && this.productoId > 0) {
+      // Si tenemos producto pero no subcategoría, obtener primero la subcategoría
+      this.obtenerSubcategoriaDelProducto();
+    } else {
+      // Si no hay subcategoría ni producto, cargar productos generales
+      this.cargarSoloProductosGenerales();
     }
   }
 
-  private obtenerProductoYSucategorias(productoId: number): void {
-    this.productosService.obtenerProductoPorId(productoId).subscribe({
-      next: (producto) => {
-        if (producto) {
-          console.log('✅ Producto obtenido:', {
-            nombre: producto.nombre,
-            subcategoria_id: producto.subcategoria_id
-          });
-          
-          this.productoActual = producto;
-          this.subcategoriaId = producto.subcategoria_id;
-          
-          // Ahora cargar productos de la misma subcategoría
-          if (this.subcategoriaId) {
-            this.cargarPorSubcategoria();
-          } else {
-            this.manejarError('El producto no tiene subcategoría asignada');
-          }
+  /**
+   * Cargar productos por subcategoría (productos relacionados)
+   */
+  private cargarProductosPorSubcategoria(): void {
+    console.log(`🔍 Buscando productos RELACIONADOS de subcategoría ${this.subcategoriaId}...`);
+    
+    // Pedir bastante productos para tener variedad de relacionados
+    const limiteRelacionados = Math.max(this.limite * 2, 20);
+    
+    this.productosService.obtenerProductosPorSubcategoria(this.subcategoriaId!).subscribe({
+      next: (productos) => {
+        console.log(`✅ ${productos.length} productos RELACIONADOS encontrados`);
+        
+        // 1. Excluir el producto actual si existe
+        if (this.productoId && productos.length > 0) {
+          const antes = productos.length;
+          productos = productos.filter(p => p.id !== this.productoId);
+          console.log(`🚫 Productos relacionados después de excluir ID ${this.productoId}: ${antes} → ${productos.length}`);
+        }
+        
+        // 2. Guardar productos relacionados
+        this.productosRelacionados = productos;
+        
+        // 3. Verificar si necesitamos productos generales para completar
+        if (this.productosRelacionados.length >= this.limite) {
+          console.log(`✅ Tenemos suficientes productos relacionados (${this.productosRelacionados.length})`);
+          this.procesarProductosFinales();
         } else {
-          console.error('❌ Producto no encontrado');
-          this.manejarError('No se pudo encontrar el producto');
+          console.log(`⚠️ Necesitamos ${this.limite - this.productosRelacionados.length} productos adicionales`);
+          this.cargarProductosGeneralesParaCompletar();
+        }
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar productos relacionados:', err);
+        // Si falla la carga de relacionados, cargar solo productos generales
+        this.cargarSoloProductosGenerales();
+      }
+    });
+  }
+
+  /**
+   * Obtener la subcategoría de un producto específico
+   */
+  private obtenerSubcategoriaDelProducto(): void {
+    console.log(`🔍 Obteniendo detalles del producto ${this.productoId}...`);
+    
+    this.productosService.obtenerProductoPorId(this.productoId!).subscribe({
+      next: (producto) => {
+        if (!producto) {
+          console.log('⚠️ Producto no encontrado');
+          this.cargarSoloProductosGenerales();
+          return;
+        }
+        
+        console.log(`✅ Producto obtenido: ${producto.nombre}`);
+        
+        // Extraer subcategoría del producto
+        if (producto.subcategoria_id && producto.subcategoria_id > 0) {
+          this.subcategoriaId = producto.subcategoria_id;
+          console.log(`🎯 Subcategoría encontrada: ${this.subcategoriaId}`);
+          
+          // Ahora cargar productos de esa subcategoría
+          this.cargarProductosPorSubcategoria();
+        } else {
+          console.log('⚠️ Producto sin subcategoría, cargando productos generales');
+          this.cargarSoloProductosGenerales();
         }
       },
       error: (err) => {
         console.error('❌ Error al obtener producto:', err);
-        this.manejarError('Error al obtener información del producto');
+        this.cargarSoloProductosGenerales();
       }
     });
   }
 
-  private cargarPorSubcategoria(): void {
-    if (!this.subcategoriaId) {
-      this.manejarError('No se especificó una subcategoría');
-      return;
-    }
+  /**
+   * Cargar productos generales para completar el límite
+   */
+  private cargarProductosGeneralesParaCompletar(): void {
+    const cantidadNecesaria = this.limite - this.productosRelacionados.length;
+    const limiteAdicional = Math.max(cantidadNecesaria * 3, 15); // Pedir extras para excluir duplicados
     
-    console.log(`📦 Cargando productos para subcategoría: ${this.subcategoriaId}`);
+    console.log(`🔄 Cargando ${limiteAdicional} productos generales para completar...`);
     
-    this.productosService.obtenerProductosPorSubcategoria(this.subcategoriaId).subscribe({
+    this.productosService.obtenerProductosAleatorios(limiteAdicional).subscribe({
       next: (productos) => {
-        console.log(`✅ Productos por subcategoría obtenidos: ${productos.length}`);
+        console.log(`✅ ${productos.length} productos generales obtenidos`);
         
-        // Excluir el producto actual de la lista si existe
-        if (this.productoActual || this.productoId) {
-          const idExcluir = this.productoId || (this.productoActual?.id);
-          const productosFiltrados = productos.filter(p => p.id !== idExcluir);
-          console.log(`🔍 Productos después de filtrar: ${productosFiltrados.length} (excluyendo ID: ${idExcluir})`);
-          productos = productosFiltrados;
-        }
+        // Excluir productos que ya están en los relacionados
+        const idsRelacionados = new Set(this.productosRelacionados.map(p => p.id));
+        const productosFiltrados = productos.filter(p => p && !idsRelacionados.has(p.id));
         
-        // Mezclar aleatoriamente y limitar
-        const productosAleatorios = this.mezclarArray(productos).slice(0, this.limite);
+        console.log(`🔍 Productos generales únicos: ${productosFiltrados.length}`);
         
-        // Convertir a ProductoEditable
-        this.productos = productosAleatorios.map(producto => 
-          this.convertirAProductoEditable(producto)
-        );
+        // Guardar productos generales
+        this.productosGenerales = productosFiltrados;
         
-        this.calculateVisibleItems();
-        this.isLoading = false;
-        
-        if (this.productos.length === 0) {
-          console.log('ℹ️ No se encontraron productos relacionados');
-          this.mostrarAlternativas();
-        }
+        // Procesar productos finales
+        this.procesarProductosFinales();
       },
       error: (err) => {
-        console.error('❌ Error al cargar productos por subcategoría:', err);
-        this.manejarError('Error al cargar productos relacionados');
+        console.error('❌ Error al cargar productos generales:', err);
+        // Si falla, usar solo los productos relacionados que tengamos
+        this.procesarProductosFinales();
       }
     });
   }
 
-  private mezclarArray<T>(array: T[]): T[] {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
+  /**
+   * Cargar solo productos generales (cuando no hay subcategoría)
+   */
+  private cargarSoloProductosGenerales(): void {
+    console.log('🎲 Cargando SOLO productos generales...');
+    
+    const limiteAmpliado = Math.max(this.limite * 2, 20);
+    
+    this.productosService.obtenerProductosAleatorios(limiteAmpliado).subscribe({
+      next: (productos) => {
+        console.log(`✅ ${productos.length} productos generales obtenidos`);
+        
+        // Excluir producto actual si existe
+        if (this.productoId && productos.length > 0) {
+          const antes = productos.length;
+          productos = productos.filter(p => p.id !== this.productoId);
+          console.log(`🚫 Productos generales después de excluir ID ${this.productoId}: ${antes} → ${productos.length}`);
+        }
+        
+        // Guardar como productos generales
+        this.productosGenerales = productos;
+        this.productosRelacionados = []; // No hay productos relacionados
+        
+        // Procesar productos finales
+        this.procesarProductosFinales();
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar productos generales:', err);
+        this.manejarError('Error al cargar productos');
+      }
+    });
   }
 
+  /**
+   * Procesar y combinar productos finales
+   * Los productos relacionados van PRIMERO
+   */
+  private procesarProductosFinales(): void {
+    console.log('🔀 Combinando productos finales...');
+    console.log(`📊 Relacionados: ${this.productosRelacionados.length}, Generales: ${this.productosGenerales.length}`);
+    
+    // 1. Tomar todos los productos relacionados (vienen primero)
+    let productosCombinados = [...this.productosRelacionados];
+    
+    // 2. Calcular cuántos productos generales necesitamos
+    const espaciosDisponibles = this.limite - productosCombinados.length;
+    
+    if (espaciosDisponibles > 0 && this.productosGenerales.length > 0) {
+      // 3. Tomar productos generales necesarios para completar
+      const productosGeneralesTomar = Math.min(espaciosDisponibles, this.productosGenerales.length);
+      const productosGeneralesSeleccionados = this.productosGenerales.slice(0, productosGeneralesTomar);
+      
+      // 4. Agregar productos generales al final
+      productosCombinados = [...productosCombinados, ...productosGeneralesSeleccionados];
+      
+      console.log(`➕ Agregados ${productosGeneralesSeleccionados.length} productos generales al final`);
+    }
+    
+    // 5. Limitar al límite máximo
+    const productosFinales = productosCombinados.slice(0, this.limite);
+    
+    console.log(`🎯 Productos finales: ${productosFinales.length} (Relacionados: ${this.productosRelacionados.length}, Generales: ${productosFinales.length - this.productosRelacionados.length})`);
+    
+    // 6. Convertir a ProductoEditable
+    this.productos = productosFinales.map(producto => 
+      this.convertirAProductoEditable(producto)
+    );
+    
+    this.finalizarCarga();
+  }
+
+  /**
+   * Finalizar el proceso de carga
+   */
+  private finalizarCarga(): void {
+    this.calculateVisibleItems();
+    this.isLoading = false;
+    this.recargaForzadaInterna = false;
+    
+    if (this.productos.length > 0) {
+      console.log(`🎉 ${this.productos.length} productos cargados exitosamente`);
+      console.log(`📍 PRIMEROS productos del carrusel: ${this.productosRelacionados.length} productos relacionados`);
+      
+      // Inicializar carrusel
+      setTimeout(() => {
+        this.initCarousel();
+      }, 100);
+    } else {
+      console.log('ℹ️ No se encontraron productos');
+      this.error = 'No hay productos relacionados disponibles';
+    }
+  }
+
+  /**
+   * Manejar errores
+   */
   private manejarError(mensaje: string): void {
     console.error('❌ Error:', mensaje);
     this.error = mensaje;
     this.isLoading = false;
     this.productos = [];
-    
-    // Intentar cargar alternativas
-    this.mostrarAlternativas();
+    this.productosRelacionados = [];
+    this.productosGenerales = [];
+    this.recargaForzadaInterna = false;
   }
 
-  private mostrarAlternativas(): void {
-    console.log('🔄 Intentando cargar alternativas...');
+  /**
+   * Recargar productos (método público)
+   */
+  private recargarProductos(): void {
+    console.log('🔄 Recargando productos relacionados...');
     
-    // Opción 1: Cargar productos aleatorios del historial
-    this.cargarDelHistorial();
+    this.recargaForzadaInterna = true;
+    this.isLoading = true;
+    this.productos = [];
+    this.productosRelacionados = [];
+    this.productosGenerales = [];
+    this.error = null;
+    this.currentIndex = 0;
     
-    // Opción 2: Si eso no funciona, cargar productos aleatorios generales
-    if (this.productos.length === 0) {
-      this.cargarProductosAleatorios();
-    }
+    // 🔴 IMPORTANTE: Resetear subcategoriaId para que se obtenga la del nuevo producto
+    this.subcategoriaId = undefined;
+    
+    this.cargarProductosRelacionados();
   }
 
-  private cargarDelHistorial(): void {
-    const historial = this.productSelectService.getHistorial();
-    
-    if (historial.length > 0) {
-      let productosHistorial = historial;
-      
-      // Excluir producto actual si existe
-      if (this.productoId || this.productoActual?.id) {
-        const idExcluir = this.productoId || this.productoActual?.id;
-        productosHistorial = historial.filter(p => p.id !== idExcluir);
-      }
-      
-      if (productosHistorial.length > 0) {
-        console.log(`📚 Cargando ${productosHistorial.length} productos del historial`);
-        
-        const productosAleatorios = this.mezclarArray(productosHistorial).slice(0, this.limite);
-        
-        this.productos = productosAleatorios.map(producto => ({
-          id: producto.id,
-          nombre: producto.nombre,
-          descripcion: producto.descripcion || '',
-          cantidad: producto.cantidad || 0,
-          precio: producto.precio || 0,
-          imagen_url: producto.imagen_url || '',
-          subcategoria_id: producto.subcategoria_id || 0,
-          subcategoria: producto.subcategoria || 'Sin categoría',
-          categoria: producto.categoria || 'Sin categoría',
-          editando: false,
-          nuevaImagen: producto.nuevaImagen
-        }));
-        
-        this.calculateVisibleItems();
-        this.error = null;
-        console.log(`✅ Alternativas del historial cargadas: ${this.productos.length}`);
-      }
-    }
-  }
-
-  private cargarProductosAleatorios(): void {
-    console.log('🎲 Cargando productos aleatorios como última opción...');
-    
-    this.productosService.obtenerProductosAleatorios(this.limite).subscribe({
-      next: (productos) => {
-        this.productos = productos.map(producto => 
-          this.convertirAProductoEditable(producto)
-        );
-        this.calculateVisibleItems();
-        this.error = null;
-        console.log(`✅ Productos aleatorios cargados: ${this.productos.length}`);
-      },
-      error: (err) => {
-        console.error('❌ Error al cargar productos aleatorios:', err);
-        this.productos = [];
-      }
-    });
-  }
-
-  // Método para convertir cualquier producto a ProductoEditable
+  /**
+   * Convertir a ProductoEditable
+   */
   private convertirAProductoEditable(producto: any): ProductoEditable {
+    if (!producto) {
+      // Si el producto es null o undefined, devolver un objeto por defecto
+      return {
+        id: 0,
+        nombre: 'Producto no disponible',
+        descripcion: '',
+        cantidad: 0,
+        precio: 0,
+        imagen_url: '',
+        subcategoria_id: 0,
+        subcategoria: 'Sin categoría',
+        categoria: 'Sin categoría',
+        editando: false
+      };
+    }
+    
     return {
-      id: producto.id,
-      nombre: producto.nombre,
+      id: producto.id || 0,
+      nombre: producto.nombre || 'Producto sin nombre',
       descripcion: producto.descripcion || '',
       cantidad: producto.cantidad || 0,
       precio: producto.precio || 0,
@@ -364,6 +410,46 @@ export class CarouselRelacionados implements OnInit, OnChanges, AfterViewInit, O
     };
   }
 
+  // ===========================
+  // MÉTODOS PÚBLICOS Y DE INTERFAZ
+  // ===========================
+
+  /**
+   * Método público para recargar (usado por el botón de reintento)
+   */
+  recargar(): void {
+    console.log('🔄 Recargando productos relacionados...');
+    this.recargarProductos();
+  }
+
+  /**
+   * Obtener información del producto actual (para depuración)
+   */
+  getProductoActualInfo(): string {
+    return this.productoId 
+      ? `ID: ${this.productoId}, Subcategoría: ${this.subcategoriaId || 'N/A'}` 
+      : 'No hay producto actual';
+  }
+
+  /**
+   * Inicializar el carrusel
+   */
+  private initCarousel(): void {
+    const carousel = document.getElementById(this.carouselId);
+    if (!carousel || this.productos.length === 0) {
+      console.log('⚠️ No se puede inicializar carrusel: sin productos');
+      return;
+    }
+
+    carousel.scrollLeft = 0;
+    carousel.style.scrollBehavior = 'smooth';
+    
+    console.log('🎠 Carrusel de productos relacionados inicializado');
+  }
+
+  /**
+   * Calcular items visibles según el tamaño de pantalla
+   */
   private calculateVisibleItems(): void {
     const width = window.innerWidth;
     if (width < 768) {
@@ -375,26 +461,13 @@ export class CarouselRelacionados implements OnInit, OnChanges, AfterViewInit, O
     }
   }
 
-  private initCarousel(): void {
-    const carousel = document.getElementById(this.carouselId);
-    if (!carousel || this.productos.length === 0) return;
-
-    carousel.scrollLeft = 0;
-    carousel.style.scrollBehavior = 'smooth';
-    
-    console.log('🎠 Carrusel de productos relacionados inicializado');
-  }
-
-  // Métodos públicos
-  recargar(): void {
-    console.log('🔄 Recargando productos relacionados...');
-    this.cargarProductosRelacionados();
-  }
-
+  /**
+   * Navegación del carrusel
+   */
   scrollCarousel(direction: 'prev' | 'next'): void {
     const carousel = document.getElementById(this.carouselId);
     if (!carousel || this.productos.length === 0) {
-      console.warn('⚠️ No se encontró el elemento del carrusel de productos');
+      console.warn('⚠️ No se encontró el elemento del carrusel');
       return;
     }
 
@@ -426,42 +499,43 @@ export class CarouselRelacionados implements OnInit, OnChanges, AfterViewInit, O
     console.log(`🔄 Carrusel desplazado a: ${direction}, índice: ${this.currentIndex}`);
   }
 
+  /**
+   * Obtener ancho del item (valor fijo para cálculo)
+   */
   private getItemWidth(): number {
     return 320;
   }
 
+  /**
+   * Verificar si se puede navegar hacia atrás
+   */
+  isPrevEnabled(): boolean {
+    return this.currentIndex > 0;
+  }
+
+  /**
+   * Verificar si se puede navegar hacia adelante
+   */
+  isNextEnabled(): boolean {
+    return this.currentIndex < this.productos.length - this.visibleItems;
+  }
+
+  /**
+   * Obtener URL de imagen del producto
+   */
   getProductoImagen(producto: ProductoEditable): string {
-    if (producto.imagen_url && producto.imagen_url.trim() !== '') {
+    if (producto?.imagen_url && producto.imagen_url.trim() !== '') {
       return producto.imagen_url;
     }
     return 'assets/images/default-product.png';
   }
 
+  /**
+   * Manejar error de carga de imagen
+   */
   handleImageError(event: Event, producto: ProductoEditable): void {
     const imgElement = event.target as HTMLImageElement;
-    console.warn(`⚠️ Error cargando imagen para ${producto.nombre}`);
+    console.warn(`⚠️ Error cargando imagen para ${producto?.nombre || 'producto desconocido'}`);
     imgElement.src = 'assets/images/default-product.png';
-  }
-
-  isPrevEnabled(): boolean {
-    return this.currentIndex > 0;
-  }
-
-  isNextEnabled(): boolean {
-    return this.currentIndex < this.productos.length - this.visibleItems;
-  }
-
-  getProductoActualInfo(): string {
-    if (!this.productoActual) return 'No hay producto seleccionado';
-    return `${this.productoActual.nombre} (ID: ${this.productoActual.id}, Subcategoría: ${this.productoActual.subcategoria_id || 'N/A'})`;
-  }
-
-  // Método para actualizar manualmente
-  actualizarConProducto(producto: ProductoMenu): void {
-    console.log('🔄 Actualizando con producto manual:', producto.nombre);
-    this.productoActual = producto;
-    this.productoId = producto.id;
-    this.subcategoriaId = producto.subcategoria_id;
-    this.cargarProductosRelacionados();
   }
 }

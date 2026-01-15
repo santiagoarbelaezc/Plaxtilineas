@@ -1,5 +1,5 @@
 // description-producto-select.component.ts
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -26,6 +26,10 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   varianteSeleccionada: Variante | null = null;
   descripcionBase: string = '';
   productoBaseNombre: string = '';
+  
+  // Propiedades para el modal de imagen
+  mostrarModalImagen = false;
+  imagenModalUrl: string = '';
   
   private subscriptions: Subscription[] = [];
 
@@ -286,5 +290,29 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     
     // Llamar al servicio para manejar la navegación
     this.productSelectService.verDetallesProducto(producto);
+  }
+
+  // Métodos para el modal de imagen
+  abrirModalImagen() {
+    if (this.producto?.imagen_url) {
+      this.imagenModalUrl = this.producto.imagen_url;
+      this.mostrarModalImagen = true;
+      // Prevenir scroll del body
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  cerrarModalImagen() {
+    this.mostrarModalImagen = false;
+    // Restaurar scroll del body
+    document.body.style.overflow = 'auto';
+  }
+
+  // Cerrar modal con tecla Esc
+  @HostListener('document:keydown.escape')
+  onEscapeKey() {
+    if (this.mostrarModalImagen) {
+      this.cerrarModalImagen();
+    }
   }
 }

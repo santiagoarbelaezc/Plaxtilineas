@@ -1,0 +1,440 @@
+/* ===========================
+   PRODUCTO BACKGROUND - DISEÑO ELEGANTE
+   =========================== */
+
+.producto-background-section {
+  width: 100%;
+  position: relative;
+  overflow: visible;
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  padding: 40px 0;
+}
+
+/* Contenedor principal con padding horizontal */
+.producto-background-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+}
+
+/* Encabezado de sección */
+.section-header {
+  margin-bottom: 30px;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #2d3748;
+  font-family: 'Segoe UI', -apple-system, sans-serif;
+  letter-spacing: -0.02em;
+  margin: 0;
+  position: relative;
+  display: inline-block;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #368c44, #25d366);
+  border-radius: 1px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 0;
+  box-shadow: 0 2px 8px rgba(54, 140, 68, 0.3);
+}
+
+.producto-background-section:hover .section-title::after {
+  width: 100%;
+}
+
+/* Grid sin separación */
+.background-grid {
+  display: flex;
+  width: 100%;
+  height: 400px;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  gap: 0;
+}
+
+/* Contenedor de cada imagen */
+.background-image-wrapper {
+  position: relative;
+  flex: 1 1 0%;
+  height: 100%;
+  overflow: hidden;
+  cursor: default;
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: flex, transform;
+  backface-visibility: hidden;
+  transform-origin: center;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.background-image-wrapper:hover {
+  flex: 3 1 0%;
+  z-index: 20 !important;
+  cursor: crosshair !important;
+}
+
+/* Contenedor de imagen */
+.background-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Imagen principal - COLORES REALES POR DEFECTO */
+.background-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 1; /* Cambiado de 0.8 a 1 para colores reales */
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform, filter;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  filter: brightness(1); /* Brillo normal por defecto */
+}
+
+.background-image-wrapper:hover .background-image {
+  filter: brightness(1.05); /* Solo un ligero aumento de brillo en hover */
+  transform: scale(1.03);
+}
+
+/* Overlay para hover suave */
+.background-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4); /* Oscurece ligeramente por defecto */
+  opacity: 0.7;
+  transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.background-image-wrapper:hover .background-image-overlay {
+  opacity: 0.3; /* Se hace más claro al hacer hover */
+}
+
+/* Overlay de gradiente verde (característico PlaxtiLineas) */
+.background-gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(54, 140, 68, 0.4) 0%, rgba(37, 211, 102, 0.2) 100%);
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.background-image-wrapper:hover .background-gradient-overlay {
+  opacity: 0.3; /* Aparece suavemente al hacer hover */
+}
+
+/* Contenido superpuesto */
+.background-image-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  pointer-events: none;
+  transform: translateY(20px);
+}
+
+.background-image-wrapper:hover .background-image-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 40px 30px;
+  text-align: center;
+  gap: 12px;
+}
+
+/* Título de la imagen */
+.background-image-title {
+  color: white;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  font-family: 'Segoe UI', -apple-system, sans-serif;
+  max-width: 90%;
+  transform: translateY(10px);
+  transition: transform 0.5s ease;
+}
+
+.background-image-wrapper:hover .background-image-title {
+  transform: translateY(0);
+}
+
+/* Descripción de la imagen */
+.background-image-description {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1.15rem;
+  line-height: 1.6;
+  margin: 0;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.7);
+  font-weight: 400;
+  font-family: 'Segoe UI', -apple-system, sans-serif;
+  max-width: 90%;
+  transform: translateY(10px);
+  transition: transform 0.5s ease 0.1s;
+}
+
+.background-image-wrapper:hover .background-image-description {
+  transform: translateY(0);
+}
+
+/* Si la imagen es clickable */
+.background-image-wrapper.clickable {
+  cursor: pointer;
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+
+@media (max-width: 1200px) {
+  .producto-background-container {
+    padding: 0 30px;
+  }
+  
+  .background-grid {
+    height: 350px;
+  }
+  
+  .background-image-title {
+    font-size: 1.5rem;
+  }
+  
+  .background-image-description {
+    font-size: 0.95rem;
+  }
+  
+  .section-title {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .producto-background-container {
+    padding: 0 25px;
+  }
+  
+  .background-grid {
+    height: 320px;
+    flex-direction: column;
+  }
+  
+  .background-image-wrapper {
+    width: 100% !important;
+    flex: 1 0 auto;
+  }
+  
+  .background-image-title {
+    font-size: 1.4rem;
+  }
+  
+  .background-image-description {
+    font-size: 0.9rem;
+  }
+  
+  .section-title {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .producto-background-section {
+    padding: 30px 0;
+  }
+  
+  .producto-background-container {
+    padding: 0 20px;
+  }
+  
+  .background-grid {
+    height: 280px;
+    flex-direction: column;
+  }
+  
+  .background-image-wrapper {
+    width: 100% !important;
+    flex: 1 0 auto;
+  }
+  
+  .background-image-content {
+    transform: translateY(10px);
+  }
+  
+  .background-image-wrapper:hover .background-image-content {
+    transform: translateY(0);
+  }
+  
+  .background-image-title {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .background-image-description {
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .producto-background-container {
+    padding: 0 15px;
+  }
+  
+  .background-grid {
+    height: 240px;
+  }
+  
+  .background-image-content {
+    padding: 20px;
+  }
+  
+  .background-image-title {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+  
+  .background-image-description {
+    font-size: 0.8rem;
+    margin-bottom: 12px;
+  }
+  
+  .section-title {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .producto-background-section {
+    padding: 25px 0;
+  }
+  
+  .background-grid {
+    height: 200px;
+  }
+  
+  .background-image-content {
+    padding: 18px;
+  }
+  
+  .background-image-title {
+    font-size: 0.95rem;
+  }
+  
+  .background-image-description {
+    font-size: 0.75rem;
+  }
+}
+
+/* Mejora de rendimiento */
+.background-grid,
+.background-image-wrapper,
+.background-image {
+  will-change: transform, width;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Suavizado de animaciones */
+.background-grid {
+  perspective: 1000px;
+}
+
+.background-image-wrapper {
+  transform-style: preserve-3d;
+}
+
+/* Animación de entrada */
+@keyframes fadeInBackground {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.producto-background-section {
+  animation: fadeInBackground 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+/* Soporte para touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .background-image-wrapper {
+    transition: none;
+  }
+  
+  .background-image-content {
+    opacity: 0.8;
+    transform: translateY(0);
+  }
+  
+  .background-image-overlay {
+    opacity: 0.5;
+  }
+  
+  /* Ajusta efectos de hover para touch */
+  .background-image-wrapper:active .background-image {
+    transform: scale(1.02);
+  }
+  
+  .background-image-wrapper:active .background-image-overlay {
+    opacity: 0.3;
+  }
+  
+  .background-image-wrapper:active .background-image-content {
+    opacity: 1;
+  }
+}

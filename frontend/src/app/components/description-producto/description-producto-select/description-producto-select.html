@@ -31,7 +31,7 @@
       
       <!-- Columna izquierda: Imagen -->
       <div class="producto-imagen-col">
-        <div class="producto-imagen-container">
+        <div class="producto-imagen-container" (click)="abrirModalImagen()">
           <img 
             [src]="producto.imagen_url" 
             [alt]="nombreCompleto" 
@@ -165,5 +165,20 @@
 
     <!-- Historial de productos vistos (si hay) -->
     
+  </div>
+</div>
+
+<!-- Modal de imagen ampliada -->
+<div *ngIf="mostrarModalImagen" class="image-modal-backdrop" (click)="cerrarModalImagen()">
+  <div class="image-modal-container" (click)="$event.stopPropagation()">
+    <button class="image-modal-close" (click)="cerrarModalImagen()" title="Cerrar (Esc)">
+      ✕
+    </button>
+    <div class="image-modal-content">
+      <img [src]="imagenModalUrl" [alt]="nombreCompleto">
+      <div class="image-modal-info">
+        {{nombreCompleto}}
+      </div>
+    </div>
   </div>
 </div>
