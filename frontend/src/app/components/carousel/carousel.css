@@ -41,7 +41,7 @@
 
 .categoria-titulo {
   font-size: 1.3rem;
-  font-weight: 700;
+  font-weight: 400;
   color: #2d6a4f;
   letter-spacing: -0.02em;
   position: relative;
@@ -77,7 +77,7 @@
 .estado-mensaje p {
   font-size: 1rem;
   color: #358A43;
-  font-weight: 500;
+  font-weight: 300;
   margin: 10px 0 0;
 }
 
@@ -327,7 +327,7 @@
 .price-label {
   font-size: 0.85rem;
   color: #666;
-  font-weight: 500;
+  font-weight: 400;
   font-family: 'Segoe UI', -apple-system, sans-serif;
   letter-spacing: 0.3px;
 }
@@ -339,7 +339,7 @@
 
 .price-value {
   font-size: 1.4rem;
-  font-weight: 700;
+  font-weight: 600;
   background: linear-gradient(135deg, #368c44, #25d366);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -362,7 +362,7 @@
 /* Nombre del producto - elegante y prominente */
 .product-name {
   font-size: 1.12rem;
-  font-weight: 500;
+  font-weight: 400;
   color: #2d3748;
   line-height: 1.4;
   margin: 0 0 12px 0;

@@ -64,7 +64,7 @@ export class SubcategoriasComponent implements OnInit {
 
   // Propiedades para paginación
   paginaActual: number = 1;
-  itemsPorPagina: number = 10;
+  itemsPorPagina: number = 5;
   totalPaginas: number = 1;
   searchTerm: string = '';
 
@@ -137,15 +137,18 @@ export class SubcategoriasComponent implements OnInit {
   }
 
   calcularPaginacion(): void {
-    this.totalPaginas = Math.ceil(this.subcategoriasFiltradas.length / this.itemsPorPagina);
+    const items = Number(this.itemsPorPagina) || 5;
+    this.itemsPorPagina = items;
+    this.totalPaginas = Math.ceil(this.subcategoriasFiltradas.length / items);
     if (this.paginaActual > this.totalPaginas && this.totalPaginas > 0) {
       this.paginaActual = this.totalPaginas;
     }
   }
 
   actualizarDatosPaginados(): void {
-    const inicio = (this.paginaActual - 1) * this.itemsPorPagina;
-    const fin = inicio + this.itemsPorPagina;
+    const items = Number(this.itemsPorPagina) || 5;
+    const inicio = (this.paginaActual - 1) * items;
+    const fin = inicio + items;
     this.subcategoriasPaginadas = this.subcategoriasFiltradas.slice(inicio, fin);
   }
 
@@ -157,6 +160,7 @@ export class SubcategoriasComponent implements OnInit {
   }
 
   cambiarItemsPorPagina(): void {
+    this.itemsPorPagina = Number(this.itemsPorPagina) || 5;
     this.paginaActual = 1;
     this.calcularPaginacion();
     this.actualizarDatosPaginados();
@@ -186,8 +190,9 @@ export class SubcategoriasComponent implements OnInit {
   }
 
   getItemsMostrados(): string {
-    const inicio = (this.paginaActual - 1) * this.itemsPorPagina + 1;
-    const fin = Math.min(this.paginaActual * this.itemsPorPagina, this.totalSubcategorias);
+    const items = Number(this.itemsPorPagina) || 5;
+    const inicio = (this.paginaActual - 1) * items + 1;
+    const fin = Math.min(this.paginaActual * items, this.totalSubcategorias);
     return `${inicio}-${fin}`;
   }
 

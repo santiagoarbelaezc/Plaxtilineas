@@ -136,7 +136,7 @@
 
 .desde-text {
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 300;
   opacity: 0.9;
   margin-bottom: 3px;
   white-space: nowrap;
@@ -150,7 +150,7 @@
 
 .price {
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.5px;
   white-space: nowrap;
   transition: all 0.3s ease;
@@ -210,7 +210,7 @@
 .product-name {
   color: #000000;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   line-height: 1.4;

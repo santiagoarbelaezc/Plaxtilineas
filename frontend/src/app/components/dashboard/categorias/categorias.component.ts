@@ -75,7 +75,7 @@ export class CategoriasComponent implements OnInit {
   
   // Propiedades para paginación
   paginaActual: number = 1;
-  itemsPorPagina: number = 10;
+  itemsPorPagina: number = 5;
   totalPaginas: number = 1;
   searchTerm: string = '';
 
@@ -139,26 +139,30 @@ export class CategoriasComponent implements OnInit {
   }
 
   calcularPaginacion(): void {
-    this.totalPaginas = Math.ceil(this.categoriasFiltradas.length / this.itemsPorPagina);
+    const perPage = Number(this.itemsPorPagina) || 5;
+    this.totalPaginas = Math.ceil(this.categoriasFiltradas.length / perPage);
     if (this.paginaActual > this.totalPaginas && this.totalPaginas > 0) {
       this.paginaActual = this.totalPaginas;
     }
   }
 
   actualizarDatosPaginados(): void {
-    const inicio = (this.paginaActual - 1) * this.itemsPorPagina;
-    const fin = inicio + this.itemsPorPagina;
+    const perPage = Number(this.itemsPorPagina) || 5;
+    const inicio = (this.paginaActual - 1) * perPage;
+    const fin = inicio + perPage;
     this.categoriasPaginadas = this.categoriasFiltradas.slice(inicio, fin);
   }
 
   cambiarPagina(pagina: number): void {
     if (pagina >= 1 && pagina <= this.totalPaginas) {
+      this.itemsPorPagina = Number(this.itemsPorPagina) || 5;
       this.paginaActual = pagina;
       this.actualizarDatosPaginados();
     }
   }
 
   cambiarItemsPorPagina(): void {
+    this.itemsPorPagina = Number(this.itemsPorPagina) || 5;
     this.paginaActual = 1;
     this.calcularPaginacion();
     this.actualizarDatosPaginados();

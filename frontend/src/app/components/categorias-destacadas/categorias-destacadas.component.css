@@ -18,7 +18,7 @@
 
 .section-title {
   font-size: 2.25rem;
-  font-weight: 700;
+  font-weight: 400;
   color: var(--primary-darker);
  
 }
@@ -27,7 +27,7 @@
   font-size: 1.15rem;
   color: #666;
   margin-bottom: 15px;
-  font-weight: 400;
+  font-weight: 300;
 }
 
 /* Contenedor del carrusel - CORREGIDO */
@@ -127,7 +127,7 @@
 
 .categoria-name h3 {
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 400;
   color: var(--primary-darker);
   margin: 0;
   line-height: 1.3;

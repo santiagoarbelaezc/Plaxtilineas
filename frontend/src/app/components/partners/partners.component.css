@@ -56,8 +56,8 @@
 
 /* Logotipos con mejoras visuales - CORREGIDO */
 .brand-logo {
-    max-width: 160px;
-    height: auto;
+    width: 160px;
+    height: 160px;
     filter: grayscale(100%) opacity(85%);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     object-fit: contain;
@@ -161,7 +161,8 @@
     }
     
     .brand-logo {
-        max-width: 140px;
+        width: 140px;
+        height: 140px;
         padding: 12px;
     }
 }
@@ -181,7 +182,8 @@
     }
     
     .brand-logo {
-        max-width: 130px;
+        width: 130px;
+        height: 130px;
         padding: 10px;
     }
 }
@@ -202,7 +204,8 @@
     }
     
     .brand-logo {
-        max-width: 110px;
+        width: 110px;
+        height: 110px;
         padding: 8px;
         border-radius: 8px;
     }
@@ -219,7 +222,8 @@
     }
     
     .brand-logo {
-        max-width: 180px;
+        width: 180px;
+        height: 180px;
         padding: 20px;
     }
     
@@ -237,7 +241,8 @@
     }
     
     .brand-logo {
-        max-width: 200px;
+        width: 200px;
+        height: 200px;
     }
 }
 
