@@ -14,6 +14,7 @@ exports.obtenerProductos = async (req, res) => {
         p.cantidad, 
         p.precio, 
         p.imagen_url,
+        p.unidad,
         p.subcategoria_id,
         s.nombre AS subcategoria,
         c.nombre AS categoria,
@@ -66,6 +67,7 @@ exports.obtenerProductoPorId = async (req, res) => {
         p.cantidad, 
         p.precio, 
         p.imagen_url,
+        p.unidad,
         p.public_id,
         p.subcategoria_id,
         p.creado_en,
@@ -114,12 +116,13 @@ exports.crearProductoDesdeRuta = async (req, res) => {
   try {
     const nombre = req.body.nombre?.trim() || '';
     const descripcion = req.body.descripcion?.trim() || '';
-    const cantidad = parseInt(req.body.cantidad, 10);
+    const cantidad = req.body.cantidad ? parseInt(req.body.cantidad, 10) : 0;
     const precio = parseFloat(req.body.precio);
     const subcategoria_id = parseInt(req.body.subcategoria_id, 10);
+    const unidad = req.body.unidad?.trim() || 'unidad';
 
     // ✅ Validaciones
-    if (!nombre || isNaN(precio) || isNaN(cantidad) || isNaN(subcategoria_id)) {
+    if (!nombre || isNaN(precio) || isNaN(subcategoria_id)) {
       return res.status(400).json({ 
         error: 'Datos inválidos. Verifica los campos del formulario.'
       });
@@ -132,14 +135,15 @@ exports.crearProductoDesdeRuta = async (req, res) => {
     console.log('📸 Creando producto:', {
       nombre,
       tiene_imagen: !!imagen_url,
-      subcategoria_id
+      subcategoria_id,
+      unidad
     });
 
     // Insertar en la base de datos
     const [result] = await db.query(`
-      INSERT INTO productos (nombre, descripcion, cantidad, precio, imagen_url, public_id, subcategoria_id)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `, [nombre, descripcion, cantidad, precio, imagen_url, public_id, subcategoria_id]);
+      INSERT INTO productos (nombre, descripcion, cantidad, precio, imagen_url, public_id, subcategoria_id, unidad)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `, [nombre, descripcion, cantidad, precio, imagen_url, public_id, subcategoria_id, unidad]);
 
     return res.status(201).json({
       mensaje: 'Producto creado con éxito',
@@ -159,7 +163,7 @@ exports.crearProductoDesdeRuta = async (req, res) => {
 // 🔄 Actualizar producto
 exports.actualizarProducto = async (req, res) => {
   const { id } = req.params;
-  const { nombre, descripcion, cantidad, precio, subcategoria_id } = req.body;
+  const { nombre, descripcion, cantidad, precio, subcategoria_id, unidad } = req.body;
   
   try {
     // Obtener el producto actual
@@ -192,10 +196,11 @@ exports.actualizarProducto = async (req, res) => {
     // Preparar valores para actualización
     const imagenUrlFinal = nuevaImagenUrl || imagenActual;
     const publicIdFinal = nuevoPublicId || publicIdActual;
+    const unidadFinal = unidad?.trim() || 'unidad';
     
     // Actualizar producto en la base de datos
     await db.query(
-      'UPDATE productos SET nombre = ?, descripcion = ?, cantidad = ?, precio = ?, imagen_url = ?, public_id = ?, subcategoria_id = ? WHERE id = ?',
+      'UPDATE productos SET nombre = ?, descripcion = ?, cantidad = ?, precio = ?, imagen_url = ?, public_id = ?, subcategoria_id = ?, unidad = ? WHERE id = ?',
       [
         nombre,
         descripcion,
@@ -204,6 +209,7 @@ exports.actualizarProducto = async (req, res) => {
         imagenUrlFinal,
         publicIdFinal,
         subcategoria_id,
+        unidadFinal,
         id
       ]
     );
@@ -278,6 +284,7 @@ exports.obtenerProductosPorSubcategoria = async (req, res) => {
         p.cantidad, 
         p.precio, 
         p.imagen_url,
+        p.unidad,
         p.subcategoria_id,
         s.nombre AS subcategoria,
         c.nombre AS categoria,
@@ -341,6 +348,7 @@ exports.obtenerProductosPorCategoria = async (req, res) => {
         p.cantidad, 
         p.precio, 
         p.imagen_url,
+        p.unidad,
         p.subcategoria_id,
         p.creado_en,
         s.nombre AS subcategoria,
@@ -395,6 +403,7 @@ exports.obtenerProductosAleatorios = async (req, res) => {
         p.cantidad, 
         p.precio, 
         p.imagen_url,
+        p.unidad,
         p.subcategoria_id,
         s.nombre AS subcategoria,
         c.nombre AS categoria,
@@ -436,6 +445,7 @@ exports.obtenerUltimosProductos = async (req, res) => {
         p.cantidad, 
         p.precio, 
         p.imagen_url,
+        p.unidad,
         p.creado_en,
         p.subcategoria_id,
         s.nombre AS subcategoria,
