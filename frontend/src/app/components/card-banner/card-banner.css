@@ -7,7 +7,6 @@
   max-width: 1200px;
   height: auto;
   background-color: #ffffff;
-  border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
@@ -90,7 +89,6 @@
   width: 60px;
   height: 3px;
   background: linear-gradient(90deg, #358A43, #4cc76a);
-  border-radius: 2px;
   box-shadow: 0 2px 4px rgba(54, 140, 68, 0.3);
 }
 
@@ -156,7 +154,6 @@
   .banner-card {
     /* Mantenemos la misma proporción pero reducimos altura máxima */
     max-height: 300px;
-    border-radius: 14px;
   }
   
   .banner-content {
@@ -184,7 +181,6 @@
 @media screen and (max-width: 768px) {
   .banner-card {
     max-height: 220px;
-    border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   
@@ -218,7 +214,6 @@
 @media screen and (max-width: 576px) {
   .banner-card {
     max-height: 180px;
-    border-radius: 10px;
     aspect-ratio: 1000 / 354; /* Mantenemos proporción exacta */
   }
   
@@ -264,7 +259,6 @@
 @media screen and (max-width: 400px) {
   .banner-card {
     max-height: 150px;
-    border-radius: 8px;
   }
   
   .banner-content {

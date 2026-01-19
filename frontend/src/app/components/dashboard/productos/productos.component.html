@@ -105,8 +105,19 @@
                 class="form-select"
               >
                 <option value="">Seleccione unidad</option>
-                <option value="1">Metro</option>
-                <option value="0">Unidad</option>
+                <option value="unidad">Unidad (pieza)</option>
+                <option value="metro">Metro (m)</option>
+                <option value="metro cuadrado">Metro cuadrado (m²)</option>
+                <option value="kg">Kilogramo (kg)</option>
+                <option value="litro">Litro (L)</option>
+                <option value="rollo">Rollo</option>
+                <option value="paquete">Paquete</option>
+                <option value="caja">Caja</option>
+                <option value="bolsa">Bolsa</option>
+                <option value="tubo">Tubo</option>
+                <option value="lámina">Lámina</option>
+                <option value="carrete">Carrete</option>
+                <option value="galón">Galón</option>
               </select>
               <div *ngIf="formProducto.get('unidad')?.invalid && formProducto.get('unidad')?.touched" class="error-message">
                 La unidad es requerida
@@ -417,15 +428,26 @@
 
       <td>
         <div class="unit-cell" *ngIf="!prod.editando">
-          {{ prod.cantidad === 1 ? 'Metro' : 'Unidad' }}
+          {{ prod.unidad || 'unidad' }}
         </div>
         <select
           *ngIf="prod.editando"
-          [(ngModel)]="prod.cantidad"
+          [(ngModel)]="prod.unidad"
           class="edit-select"
         >
-          <option value="1">Metro</option>
-          <option value="0">Unidad</option>
+          <option value="unidad">Unidad (pieza)</option>
+          <option value="metro">Metro (m)</option>
+          <option value="metro cuadrado">Metro cuadrado (m²)</option>
+          <option value="kg">Kilogramo (kg)</option>
+          <option value="litro">Litro (L)</option>
+          <option value="rollo">Rollo</option>
+          <option value="paquete">Paquete</option>
+          <option value="caja">Caja</option>
+          <option value="bolsa">Bolsa</option>
+          <option value="tubo">Tubo</option>
+          <option value="lámina">Lámina</option>
+          <option value="carrete">Carrete</option>
+          <option value="galón">Galón</option>
         </select>
       </td>
 
@@ -455,12 +477,12 @@
     <tr *ngIf="productoMostrandoVariantes === prod.id" class="variantes-expanded-row">
       <td colspan="8">
         <div class="variantes-container">
-          <div *ngIf="variantesProductos[productoMostrandoVariantes]">
+          <div *ngIf="variantesProductos[productoMostrandoVariantes!]">
             <div class="variantes-header">
               <h4>
                 <fa-icon [icon]="faLayerGroup"></fa-icon>
                 Variantes del Producto #{{productoMostrandoVariantes}}
-                <span class="variantes-count">({{ variantesProductos[productoMostrandoVariantes].length }})</span>
+                <span class="variantes-count">({{ variantesProductos[productoMostrandoVariantes!].length }})</span>
               </h4>
             </div>
             
@@ -471,7 +493,7 @@
                   <label class="form-label">Nueva Variante</label>
                   <input
                     type="text"
-                    [(ngModel)]="nuevaVarianteProducto[productoMostrandoVariantes].nombre"
+                    [(ngModel)]="nuevaVarianteProducto[productoMostrandoVariantes!].nombre"
                     placeholder="Ej: Color azul, Talla L..."
                     class="form-input"
                     [ngModelOptions]="{standalone: true}"
@@ -481,7 +503,7 @@
                   <label class="form-label">Precio</label>
                   <input
                     type="number"
-                    [(ngModel)]="nuevaVarianteProducto[productoMostrandoVariantes].precio"
+                    [(ngModel)]="nuevaVarianteProducto[productoMostrandoVariantes!].precio"
                     placeholder="0.00"
                     min="0"
                     step="0.01"
@@ -491,7 +513,7 @@
                 </div>
                 <div class="form-group">
                   <button type="button" class="btn-primary" 
-                          (click)="crearVarianteEnTabla(productoMostrandoVariantes)">
+                          (click)="crearVarianteEnTabla(productoMostrandoVariantes!)">
                     <fa-icon [icon]="faPlus"></fa-icon>
                     Agregar Variante
                   </button>
@@ -500,7 +522,7 @@
             </div>
 
             <!-- Lista de variantes existentes -->
-            <div *ngIf="variantesProductos[productoMostrandoVariantes].length > 0" 
+            <div *ngIf="variantesProductos[productoMostrandoVariantes!].length > 0" 
                  class="variantes-list-existing">
               <table class="data-table variantes-table">
                 <thead>
@@ -513,7 +535,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let variante of variantesProductos[productoMostrandoVariantes]; 
+                  <tr *ngFor="let variante of variantesProductos[productoMostrandoVariantes!]; 
                                trackBy: trackByVarianteId"
                       [class.editing]="variante.editando">
                     <td>#{{ variante.id }}</td>
@@ -559,19 +581,19 @@
                       <div class="action-buttons variante-actions">
                         <ng-container *ngIf="!variante.editando">
                           <button class="btn-action edit" 
-                                  (click)="activarEdicionVariante(productoMostrandoVariantes, variante)" 
+                                  (click)="activarEdicionVariante(productoMostrandoVariantes!, variante)" 
                                   title="Editar variante">
                             <fa-icon [icon]="faPen"></fa-icon>
                           </button>
                           <button class="btn-action delete" 
-                                  (click)="eliminarVariante(productoMostrandoVariantes, variante.id)" 
+                                  (click)="eliminarVariante(productoMostrandoVariantes!, variante.id)" 
                                   title="Eliminar variante">
                             <fa-icon [icon]="faTrashAlt"></fa-icon>
                           </button>
                         </ng-container>
                         <ng-container *ngIf="variante.editando">
                           <button class="btn-action save" 
-                                  (click)="guardarEdicionVariante(productoMostrandoVariantes, variante)" 
+                                  (click)="guardarEdicionVariante(productoMostrandoVariantes!, variante)" 
                                   title="Guardar cambios">
                             <fa-icon [icon]="faCheck"></fa-icon>
                           </button>
@@ -588,7 +610,7 @@
               </table>
             </div>
             
-            <div *ngIf="variantesProductos[productoMostrandoVariantes].length === 0" class="no-variantes">
+            <div *ngIf="variantesProductos[productoMostrandoVariantes!].length === 0" class="no-variantes">
               <div class="no-variantes-content">
                 <fa-icon [icon]="faInbox" class="no-data-icon"></fa-icon>
                 <p>Este producto no tiene variantes</p>
@@ -597,7 +619,7 @@
             </div>
           </div>
           
-          <div *ngIf="!variantesProductos[productoMostrandoVariantes]" class="loading-variantes">
+          <div *ngIf="!variantesProductos[productoMostrandoVariantes!]" class="loading-variantes">
             <div class="loading-spinner"></div>
             <p>Cargando variantes...</p>
           </div>

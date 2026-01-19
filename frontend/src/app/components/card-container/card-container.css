@@ -40,7 +40,6 @@
 
 .promo-section {
   width: 100%;
-  border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
@@ -59,7 +58,6 @@
 .banner-section {
   width: 100%;
   min-height: 250px;
-  border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
   box-sizing: border-box;
@@ -70,7 +68,6 @@
   background: linear-gradient(135deg, 
     rgba(255, 255, 255, 0.98) 0%,
     rgba(248, 250, 252, 0.96) 100%);
-  border-radius: 16px;
   
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(229, 231, 235, 0.6);
@@ -112,14 +109,12 @@
   
   .banner-section {
     min-height: 180px;
-    border-radius: 12px;
     width: 100%;
     padding: 0;
   }
   
   .carousel-section {
     padding: 15px;
-    border-radius: 12px;
     width: 100%;
   }
 }
@@ -156,7 +151,6 @@
     width: 100%;
     max-width: 100%;
     min-height: 160px;
-    border-radius: 10px;
     padding: 0;
     margin: 0 auto;
   }
@@ -165,7 +159,6 @@
     width: 100%;
     max-width: 100%;
     padding: 12px;
-    border-radius: 10px;
     margin: 0 auto;
   }
 }
@@ -202,7 +195,6 @@
     width: 100%;
     max-width: 100%;
     min-height: 140px;
-    border-radius: 8px;
     padding: 0;
     margin: 0 auto;
   }
@@ -211,7 +203,6 @@
     width: 100%;
     max-width: 100%;
     padding: 10px;
-    border-radius: 8px;
     margin: 0 auto;
   }
 }
@@ -248,7 +239,6 @@
     width: 100%;
     max-width: 100%;
     min-height: 130px;
-    border-radius: 6px;
     padding: 0;
     margin: 0 auto;
   }
@@ -257,7 +247,6 @@
     width: 100%;
     max-width: 100%;
     padding: 8px;
-    border-radius: 6px;
     margin: 0 auto;
   }
   
@@ -307,7 +296,6 @@
     width: 100%;
     max-width: 100%;
     min-height: 120px;
-    border-radius: 5px;
     padding: 0;
     margin: 0 auto;
   }
@@ -316,7 +304,6 @@
     width: 100%;
     max-width: 100%;
     padding: 6px;
-    border-radius: 5px;
     margin: 0 auto;
   }
 }
@@ -353,7 +340,6 @@
     width: 100%;
     max-width: 100%;
     min-height: 110px;
-    border-radius: 4px;
     padding: 0;
     margin: 0 auto;
   }
@@ -362,7 +348,6 @@
     width: 100%;
     max-width: 100%;
     padding: 5px;
-    border-radius: 4px;
     margin: 0 auto;
   }
 }

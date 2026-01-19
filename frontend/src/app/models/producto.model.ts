@@ -10,6 +10,7 @@ export interface Producto {
   subcategoria_id: number;
   subcategoria: string; // nombre de la subcategoría
   categoria: string;    // nombre de la categoría (viene del JOIN)
+  unidad?: string; // ej: kg, litros, metros, piezas
   nuevaImagen?: File;
 }
 

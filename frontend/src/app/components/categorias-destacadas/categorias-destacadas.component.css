@@ -18,7 +18,7 @@
 
 .section-title {
   font-size: 2.25rem;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--primary-darker);
  
 }
@@ -27,7 +27,7 @@
   font-size: 1.15rem;
   color: #666;
   margin-bottom: 15px;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 /* Contenedor del carrusel - CORREGIDO */
@@ -83,7 +83,7 @@
 }
 
 .categoria-card:hover {
-  transform: translateY(-8px);
+  transform: none;
   text-decoration: none;
 }
 
@@ -94,16 +94,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
   background: var(--white);
   overflow: hidden;
-  border: 1px solid #eee;
+  border: 1px solid #e0e0e0;
   transition: all 0.3s ease;
 }
 
 .categoria-card:hover .categoria-image-container {
-  border-color: var(--primary-color);
-  box-shadow: 0 8px 25px rgba(54, 140, 68, 0.15);
+  border-color: #368c44;
+  box-shadow: none;
 }
 
 .categoria-icon {
@@ -115,7 +114,7 @@
 }
 
 .categoria-card:hover .categoria-icon {
-  transform: scale(1.08);
+  transform: scale(1.05);
 }
 
 /* Nombre de la categoría minimalista */
@@ -127,7 +126,7 @@
 
 .categoria-name h3 {
   font-size: 0.95rem;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--primary-darker);
   margin: 0;
   line-height: 1.3;
@@ -140,7 +139,7 @@
 }
 
 .categoria-card:hover .categoria-name h3 {
-  color: var(--primary-color);
+  color: #368c44;
 }
 .categorias-wrapper {
   position: relative;
@@ -155,8 +154,7 @@
   top: 50%;
   transform: translateY(-50%);
   background: white;
-  border: 1px solid #ddd;
-  border-radius: 50%;
+  border: 1px solid #e0e0e0;
   width: 50px;
   height: 50px;
   display: flex;
@@ -164,7 +162,7 @@
   justify-content: center;
   cursor: pointer;
   z-index: 100;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  box-shadow: none;
   transition: all 0.3s ease;
 }
 
@@ -186,10 +184,9 @@
   text-align: center;
   padding: 5rem 3rem;
   background-color: #fafafa;
-  border-radius: 12px;
   margin: 3rem auto;
   max-width: 600px;
-  border: 1px solid #eee;
+  border: 1px solid #e0e0e0;
 }
 
 .no-categorias-icon {

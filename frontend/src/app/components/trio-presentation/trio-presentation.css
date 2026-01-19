@@ -3,7 +3,7 @@
    =========================== */
 
 .seccion-trio-presentation {
-  padding: 30px 10px;
+  padding: 20px 10px;
   background: rgba(255, 255, 255, 0.98);
   font-family: 'Segoe UI', system-ui, sans-serif;
   position: relative;
@@ -55,15 +55,15 @@
 /* Header estilo PlaxtiLineas */
 .trio-header {
   text-align: center;
-  margin-bottom: 70px;
+  margin-bottom: 30px;
   padding: 0 20px;
 }
 
 .trio-title {
   font-size: 2.8rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--title-color, #1a202c);
-  margin-bottom: 25px;
+  
   position: relative;
   display: inline-block;
   letter-spacing: -0.5px;
@@ -84,11 +84,12 @@
 
 .trio-subtitle {
   color: var(--description-color, #4a5568);
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   line-height: 1.7;
   max-width: 700px;
-  margin: 40px auto 0;
+  margin: 20px auto 0;
   font-weight: 400;
+  letter-spacing: 0.3px;
 }
 
 .trio-subtitle strong {
@@ -109,34 +110,23 @@
 .trio-card {
   position: relative;
   background: var(--card-bg, white);
-  border-radius: 16px;
   overflow: hidden;
   cursor: default;
-  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-  border: 1px solid var(--border-color, rgba(226, 232, 240, 0.6));
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   min-height: 580px;
   position: relative;
 }
 
 .trio-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--gradient-primary, linear-gradient(90deg, #368c44, #25d366));
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 3;
+  display: none;
 }
 
 /* Efecto hover estilo PlaxtiLineas */
 .trio-card.hover-effect:hover {
-  transform: translateY(-12px);
-  border-color: var(--hover-border, rgba(54, 140, 68, 0.3));
-  box-shadow: 0 20px 40px rgba(54, 140, 68, 0.15);
+  border-color: #368c44;
+  box-shadow: 0 4px 12px rgba(54, 140, 68, 0.12);
 }
 
 .trio-card.hover-effect:hover::before {
@@ -190,8 +180,8 @@
     var(--overlay-light, rgba(37, 211, 102, 0.2)) 60%,
     transparent 100%
   );
-  opacity: 0.7;
-  transition: opacity 0.4s ease;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
   pointer-events: none;
 }
 
@@ -271,19 +261,17 @@
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
-  border-radius: 30px;
   font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
 .trio-action-button:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.6);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .trio-action-button svg {
@@ -319,7 +307,7 @@
   }
   
   .trio-card-title {
-    font-size: 1.4rem;
+    font-size: 1.35rem;
   }
 }
 

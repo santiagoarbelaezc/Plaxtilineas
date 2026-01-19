@@ -30,7 +30,7 @@ body {
 /* Contenido principal con padding para el navbar */
 .main-content {
   padding-top: var(--navbar-spacing);
-  max-width: 1400px;
+  max-width: 1800px;
   margin: 0 auto;
   padding-left: 20px;
   padding-right: 20px;
@@ -42,7 +42,7 @@ app-carousel-relacionados,
 app-carousel-interes,
 app-social-buttons {
   display: block;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
 }
 
 /* Imagen sticky en el componente de detalles */
@@ -75,7 +75,7 @@ app-footer {
   app-carousel-relacionados,
   app-carousel-interes,
   app-social-buttons {
-    margin-bottom: 40px;
+    margin-bottom: 18px;
   }
   
   app-footer {
@@ -103,7 +103,7 @@ app-footer {
   app-carousel-relacionados,
   app-carousel-interes,
   app-social-buttons {
-    margin-bottom: 30px;
+    margin-bottom: 15px;
   }
   
   app-footer {

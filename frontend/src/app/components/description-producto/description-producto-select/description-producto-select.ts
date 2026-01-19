@@ -9,7 +9,8 @@ import { ProductSelectService } from '../../../services/product-select.service';
 import { ProductosService } from '../../../services/productos.service';
 import { VariantesService } from '../../../services/variantes.service';
 import { MenuStateService } from '../../../services/menu-state.service';
-import { CarouselSignalService } from '../../../services/carousel-signal.service'; // Importar el nuevo servicio
+import { CarouselSignalService } from '../../../services/carousel-signal.service';
+import { PrecioCantidadService } from '../../../services/precio-cantidad.service';
 
 @Component({
   selector: 'app-description-producto-select',
@@ -28,9 +29,17 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   descripcionBase: string = '';
   productoBaseNombre: string = '';
   
+  // Propiedades para cantidad y precio
+  cantidadSeleccionada: number = 1;
+  opcionesCantidad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  precioConCantidad: number = 0;
+  
   // Propiedades para el modal de imagen
   mostrarModalImagen = false;
   imagenModalUrl: string = '';
+  
+  // Propiedad para el modal de descripción
+  mostrarModalDescripcion = false;
   
   // Propiedad para el mensaje de enlace copiado
   enlaceCopiado = false;
@@ -42,7 +51,10 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private productosService: ProductosService,
-    private variantesService: VariantesService,    private menuStateService: MenuStateService,    private carouselSignalService: CarouselSignalService // Inyectar el servicio
+    private variantesService: VariantesService,
+    private menuStateService: MenuStateService,
+    private carouselSignalService: CarouselSignalService,
+    private precioCantidadService: PrecioCantidadService
   ) {}
 
   ngOnInit() {
@@ -116,7 +128,8 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
           imagen_url: data.imagen_url,
           subcategoria_id: data.subcategoria_id,
           subcategoria: data.subcategoria,
-          categoria: data.categoria
+          categoria: data.categoria,
+          unidad: data.unidad || 'unidades'
         };
         
         // Agregar campos adicionales si existen
@@ -173,11 +186,15 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
           } else {
             this.varianteSeleccionada = null;
           }
+          
+          // Actualizar precio con cantidad
+          this.actualizarPrecioConCantidad();
         },
         error: (error) => {
           console.error('Error al cargar variantes:', error);
           this.variantes = [];
           this.varianteSeleccionada = null;
+          this.actualizarPrecioConCantidad();
         }
       });
   }
@@ -187,16 +204,26 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
    */
   seleccionarVariante(variante: Variante) {
     this.varianteSeleccionada = variante;
+    this.actualizarPrecioConCantidad();
   }
 
   /**
-   * Obtiene el precio actual basado en la variante seleccionada
+   * Cambiar cantidad seleccionada y actualizar precio
    */
-  get precioActual(): number {
-    if (this.varianteSeleccionada) {
-      return this.varianteSeleccionada.precio;
-    }
-    return this.producto?.precio || 0;
+  cambiarCantidad(cantidad: number): void {
+    this.cantidadSeleccionada = this.precioCantidadService.validarCantidad(cantidad);
+    this.actualizarPrecioConCantidad();
+  }
+
+  /**
+   * Actualiza el precio basado en cantidad y variante
+   */
+  private actualizarPrecioConCantidad(): void {
+    const precioBase = this.precioActual;
+    this.precioConCantidad = this.precioCantidadService.calcularPrecioTotal(
+      precioBase,
+      this.cantidadSeleccionada
+    );
   }
 
   /**
@@ -233,8 +260,12 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     mensaje += `• Categoría: ${this.producto.categoria}\n`;
     mensaje += `• Subcategoría: ${this.producto.subcategoria}\n\n`;
     
-    mensaje += `*PRECIO ACTUAL:*\n`;
-    mensaje += `${this.formatearPrecio(this.precioActual)}\n\n`;
+    mensaje += `*CANTIDAD SOLICITADA:*\n`;
+    mensaje += `${this.cantidadSeleccionada} ${this.cantidadSeleccionada === 1 ? 'unidad' : 'unidades'}\n\n`;
+    
+    mensaje += `*PRECIO:*\n`;
+    mensaje += `• Precio unitario: ${this.formatearPrecio(this.precioActual)}\n`;
+    mensaje += `• Precio total: ${this.formatearPrecio(this.precioConCantidad)}\n\n`;
     
     if (this.descripcionBase) {
       mensaje += `*DESCRIPCIÓN:*\n`;
@@ -296,7 +327,17 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     const precioFormateado = precioEntero.toLocaleString('es-ES');
     
     return `$ ${precioFormateado}`;
-}
+  }
+
+  /**
+   * Obtiene el precio actual basado en la variante seleccionada
+   */
+  get precioActual(): number {
+    if (this.varianteSeleccionada) {
+      return this.varianteSeleccionada.precio;
+    }
+    return this.producto?.precio || 0;
+  }
 
   getHistorialProductos(): ProductoMenu[] {
     return this.productSelectService.getHistorial();
@@ -331,11 +372,26 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     document.body.style.overflow = 'auto';
   }
 
-  // Cerrar modal con tecla Esc
+  abrirModalDescripcion() {
+    this.mostrarModalDescripcion = true;
+    // Prevenir scroll del body
+    document.body.style.overflow = 'hidden';
+  }
+
+  cerrarModalDescripcion() {
+    this.mostrarModalDescripcion = false;
+    // Restaurar scroll del body
+    document.body.style.overflow = 'auto';
+  }
+
+  // Cerrar modales con tecla Esc
   @HostListener('document:keydown.escape')
   onEscapeKey() {
     if (this.mostrarModalImagen) {
       this.cerrarModalImagen();
+    }
+    if (this.mostrarModalDescripcion) {
+      this.cerrarModalDescripcion();
     }
   }
 

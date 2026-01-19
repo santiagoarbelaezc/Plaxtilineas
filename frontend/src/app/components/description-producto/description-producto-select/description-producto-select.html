@@ -56,10 +56,10 @@
           </div>
           <div class="precio-fixed-valor">
             
-            <span class="precio-numero-fixed">{{formatearPrecio(precioActual)}}</span>
+            <span class="precio-numero-fixed">{{formatearPrecio(precioConCantidad)}}</span>
           </div>
           <div class="precio-fixed-nota" *ngIf="variantes.length > 0">
-            <small>Precio varía según la variante seleccionada</small>
+            <small>{{cantidadSeleccionada}} {{cantidadSeleccionada === 1 ? 'unidad' : 'unidades'}} x {{formatearPrecio(precioActual)}}</small>
           </div>
         </div>
 
@@ -71,12 +71,15 @@
              class="btn-whatsapp-fixed"
              aria-label="Consultar sobre este producto por WhatsApp"
              title="Consultar sobre este producto por WhatsApp">
-            <span class="btn-icon-fixed">💬</span>
+            <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1768854880/whatsapp-logo-whatsapp-logo-transparent-whatsapp-icon-transparent-free-free-png_awplkn.png" alt="WhatsApp" class="btn-icon-img">
             <span class="btn-text-fixed">Consultar por WhatsApp</span>
           </a>
           
           <button class="btn-compartir-fixed" (click)="copiarEnlace()" title="Copiar enlace del producto">
-            <span class="btn-icon-fixed">🔗</span>
+            <svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
             <span class="btn-text-fixed">Copiar enlace</span>
           </button>
           
@@ -100,8 +103,8 @@
           <h1 class="producto-nombre-fixed">{{productoBaseNombre}}</h1>
         </div>
 
-        <!-- Contenedor de información con altura fija y scroll interno -->
-        <div class="producto-info-scroll-container">
+        <!-- Contenedor de información SIN SCROLL -->
+        <div class="producto-info-container">
           
           <!-- Selección de variantes -->
           <div *ngIf="variantes.length > 0" class="opciones-fixed-container">
@@ -127,68 +130,72 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <!-- Selector de cantidad -->
+          <div class="cantidad-selector-fixed-section">
+            <div class="section-header-fixed">
+              <h3 class="section-title-fixed">Seleccionar cantidad</h3>
+              <span class="cantidad-actual-badge">{{cantidadSeleccionada}} {{producto.unidad || 'unidades'}}</span>
+            </div>
             
-            <!-- Resumen de variante seleccionada -->
-            <div *ngIf="varianteSeleccionada" class="variante-seleccionada-resumen">
-              <div class="variante-resumen-item">
-                <span class="variante-resumen-label">Variante seleccionada:</span>
-                <span class="variante-resumen-valor">{{varianteSeleccionada.nombre}}</span>
-              </div>
-              <div class="variante-resumen-item">
-                <span class="variante-resumen-label">ID de variante:</span>
-                <span class="variante-resumen-valor">{{varianteSeleccionada.id}}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Descripción -->
-          <div class="producto-descripcion-fixed-section">
-            <div class="section-header-fixed">
-              <h3 class="section-title-fixed">Descripción del producto</h3>
-            </div>
-            <div class="descripcion-fixed-content">
-              <p class="producto-descripcion-fixed">
-                {{descripcionBase || 'Descripción no disponible'}}
-              </p>
-            </div>
-          </div>
-
-          <!-- Detalles específicos -->
-          <div class="producto-detalles-fixed-section">
-            <div class="section-header-fixed">
-              <h3 class="section-title-fixed">Detalles del producto</h3>
-            </div>
-            <div class="detalles-fixed-grid">
-              <div class="detalle-fixed-item">
-                <span class="detalle-fixed-label">Categoría:</span>
-                <span class="detalle-fixed-valor">{{producto.categoria}}</span>
-              </div>
-              <div class="detalle-fixed-item">
-                <span class="detalle-fixed-label">Subcategoría:</span>
-                <span class="detalle-fixed-valor">{{producto.subcategoria}}</span>
-              </div>
-              <div class="detalle-fixed-item">
-                <span class="detalle-fixed-label">ID del producto:</span>
-                <span class="detalle-fixed-valor">{{producto.id}}</span>
-              </div>
+            <div class="cantidad-slider-container">
+              <input 
+                type="range" 
+                class="cantidad-slider" 
+                min="1" 
+                max="10" 
+                step="1"
+                [value]="cantidadSeleccionada"
+                (input)="cambiarCantidad(+$event.target.value)"
+              />
               
+              <div class="cantidad-labels">
+                <span *ngFor="let cantidad of opcionesCantidad" 
+                      class="cantidad-label"
+                      [class.cantidad-label-activa]="cantidadSeleccionada === cantidad"
+                      (click)="cambiarCantidad(cantidad)">
+                  {{cantidad}}
+                </span>
+              </div>
+            </div>
+            
+            <div class="precio-cantidad-display">
+              <div class="precio-cantidad-item">
+                <span class="precio-cantidad-label">Precio por unidad:</span>
+                <span class="precio-cantidad-valor">{{formatearPrecio(precioActual)}}</span>
+              </div>
+              <div class="precio-cantidad-item">
+                <span class="precio-cantidad-label">Cantidad:</span>
+                <span class="precio-cantidad-valor">{{cantidadSeleccionada}} {{producto.unidad || 'unidades'}}</span>
+              </div>
+              <div class="precio-cantidad-item total">
+                <span class="precio-cantidad-label">Precio total:</span>
+                <span class="precio-cantidad-valor-total">{{formatearPrecio(precioConCantidad)}}</span>
+              </div>
             </div>
           </div>
+
+          <!-- Botón para abrir descripción en modal -->
+          <button class="btn-ver-descripcion" (click)="abrirModalDescripcion()" title="Ver descripción del producto">
+            <span class="btn-descripcion-text">Ver descripción completa</span>
+            <span class="btn-descripcion-icon">↓</span>
+          </button>
 
           <!-- Acciones adicionales -->
           <div class="acciones-adicionales-container">
-            <button class="btn-volver-fixed" (click)="volverAProductos()">
+            <button class="btn-volver-fixed" (click)="volverAProductos()" title="Volver al catálogo de productos">
               <span class="btn-icon-fixed">←</span>
-              <span class="btn-text-fixed">Volver a productos</span>
+              <span class="btn-text-fixed">Volver</span>
             </button>
             
-            <button class="btn-categoria-fixed" (click)="verMasDeEstaCategoria()" *ngIf="producto.categoria">
-              <span class="btn-icon-fixed">📂</span>
-              <span class="btn-text-fixed">Ver más de {{producto.categoria}}</span>
+            <button class="btn-categoria-fixed" (click)="verMasDeEstaCategoria()" *ngIf="producto.categoria" [title]="'Ver más productos de ' + producto.categoria">
+              <span class="btn-icon-fixed">→</span>
+              <span class="btn-text-fixed">Más de {{producto.categoria}}</span>
             </button>
           </div>
 
-        </div> <!-- Fin del contenedor scroll -->
+        </div> <!-- Fin del contenedor info -->
 
       </div> <!-- Fin columna derecha -->
 
@@ -208,6 +215,24 @@
       <div class="image-modal-info">
         {{nombreCompleto}}
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de descripción -->
+<div *ngIf="mostrarModalDescripcion" class="descripcion-modal-backdrop" (click)="cerrarModalDescripcion()">
+  <div class="descripcion-modal-container" (click)="$event.stopPropagation()">
+    <button class="descripcion-modal-close" (click)="cerrarModalDescripcion()" title="Cerrar (Esc)">
+      ✕
+    </button>
+    <div class="descripcion-modal-content">
+      <h2 class="descripcion-modal-title">Descripción del producto</h2>
+      <div class="descripcion-modal-text">
+        {{descripcionBase || 'Descripción no disponible'}}
+      </div>
+      <button class="descripcion-modal-button" (click)="cerrarModalDescripcion()">
+        Cerrar
+      </button>
     </div>
   </div>
 </div>

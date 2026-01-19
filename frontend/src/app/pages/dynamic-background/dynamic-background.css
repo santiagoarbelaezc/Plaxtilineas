@@ -84,7 +84,7 @@
   align-items: center;
   width: 100%;
   margin: 0 auto;
-  padding: 60px 30px;
+  padding: 30px 30px;
   background-color: #ffffff;
   box-sizing: border-box;
 }
@@ -145,12 +145,30 @@
 }
 
 /* Sección final */
-.final-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+.specialized-wrapper {
+  max-width: 100%;
+  padding: 3rem 4rem;
+  display: flex;
+  gap: 3rem;
   align-items: center;
-  padding: 6rem 0;
+  width: 100%;
+  justify-content: center;
+}
+
+.specialized-content {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 600px;
+}
+
+.specialized-image {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 700px;
+  height: 500px;
+  object-fit: cover;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .final-title {
@@ -175,22 +193,26 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
   margin-top: 3rem;
+  width: 100%;
 }
 
 .stat-item {
   text-align: center;
-  padding: 1.5rem;
-  background: rgba(0, 0, 0, 0.03);
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  background: transparent;
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   color: #191919;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .stat-item:hover {
-  transform: translateY(-5px);
-  background: rgba(0, 0, 0, 0.05);
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  border-color: #368c44;
+  box-shadow: 0 4px 12px rgba(54, 140, 68, 0.12);
 }
 
 .stat-number {
@@ -212,37 +234,40 @@
 /* Imágenes de tienda */
 .store-image {
   width: 100%;
-  height: 400px;
-  object-fit: contain; /* Cambiado de cover a contain para mostrar logo completo */
-  border-radius: 16px;
-  padding: 1rem;
+  max-width: 100%;
+  height: 500px;
+  object-fit: cover;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .store-image2 {
-  width: 760px;
-  height: 500px;
+  width: 100%;
+  height: 450px;
   object-fit: cover;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
+
 
 /* Responsive para móvil - Sección final */
 
 @media (max-width: 768px) {
-  .final-section {
-    grid-template-columns: 1fr;
+  .specialized-wrapper {
+    flex-direction: column;
     gap: 2rem;
-    padding: 3rem 0;
+    padding: 3rem 2rem;
   }
 
-  .final-content {
-    order: 1;
-    padding: 0 1rem;
+  .specialized-content {
+    flex: 1;
+    max-width: 100%;
   }
 
-  .final-image {
-    order: 2;
-    padding: 0 1rem;
+  .specialized-image {
+    max-width: 100%;
+    width: 100%;
+    height: 300px;
   }
 
   .final-title {
@@ -265,8 +290,9 @@
   }
 
   .stat-item {
-    padding: 1rem;
-    border-radius: 8px;
+    padding: 1.5rem;
+    border: 1px solid #e0e0e0;
+    min-height: 200px;
   }
 
   .stat-number {
@@ -277,34 +303,11 @@
   .stat-label {
     font-size: 0.8rem;
   }
-
-  .store-image2 {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-  }
 }
 
 @media (max-width: 480px) {
-  .final-section {
-    padding: 2rem 0;
-  }
-
-  .final-title {
-    font-size: 1.6rem;
-  }
-
-  .final-text {
-    font-size: 0.95rem;
-    line-height: 1.6;
-  }
-
-  .stats-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    margin-top: 1.5rem;
+  .specialized-wrapper {
+    padding: 2rem;
   }
 
   .stat-item {
@@ -312,9 +315,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: 180px;
+    border: 1px solid #e0e0e0;
   }
 
-  .store-image2 {
+  .specialized-image {
     height: 250px;
   }
 }
@@ -339,9 +344,18 @@
 
 /* Para tablets en orientación vertical */
 @media (min-width: 769px) and (max-width: 1024px) {
-  .final-section {
-    padding: 4rem 0;
+  .specialized-wrapper {
+    padding: 4rem 2rem;
     gap: 3rem;
+  }
+
+  .specialized-content {
+    max-width: 450px;
+  }
+
+  .specialized-image {
+    max-width: 500px;
+    height: 400px;
   }
 
   .final-title {
@@ -350,11 +364,6 @@
 
   .final-text {
     font-size: 1.05rem;
-  }
-
-  .store-image2 {
-    width: 100%;
-    height: 400px;
   }
 }
 
@@ -367,7 +376,7 @@
 /* ESTILOS ESPECÍFICOS PARA LA SECCIÓN 7 (ELIMINAMOS LOS ESTILOS NEGROS) */
 /* Ahora la sección 7 tendrá los mismos estilos que el resto */
 .color-section#section-7 {
-  padding: 80px 0;
+  padding: 40px 0;
   background-color: #FFFFFF;
   position: relative;
   width: 100%;

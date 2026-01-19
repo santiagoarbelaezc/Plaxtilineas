@@ -409,7 +409,7 @@ export class ProductosComponent implements OnInit {
     formData.append('nombre', formValues.nombre);
     formData.append('precio', formValues.precio);
     formData.append('descripcion', formValues.descripcion || '');
-    formData.append('cantidad', formValues.unidad);
+    formData.append('unidad', formValues.unidad);
     formData.append('subcategoria_id', formValues.subcategoria_id);
     if (this.imagenSeleccionada) {
       formData.append('imagen', this.imagenSeleccionada);
@@ -615,6 +615,7 @@ export class ProductosComponent implements OnInit {
         formData.append('descripcion', prod.descripcion || '');
         formData.append('cantidad', prod.cantidad.toString());
         formData.append('subcategoria_id', prod.subcategoria_id.toString());
+        formData.append('unidad', prod.unidad || 'unidad');
         if (prod.nuevaImagen) {
           formData.append('imagen', prod.nuevaImagen);
         }

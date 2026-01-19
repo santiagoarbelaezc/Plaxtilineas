@@ -2,7 +2,7 @@
   <img [src]="producto.imagen_url || 'https://via.placeholder.com/200x150?text=Sin+Imagen'" alt="Imagen del producto" />
   <h3>{{ producto.nombre }}</h3>
   <p class="precio">
-    {{ producto.unidad === 1 ? 'Metro' : 'Unidad' }}
+    {{ producto.unidad || 'unidad' }}
     <span>${{ producto.precio | number:'1.0-0' }}</span>
   </p>
   <button (click)="abrirModal()">Más opciones</button>

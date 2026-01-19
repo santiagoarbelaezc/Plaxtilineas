@@ -5,7 +5,6 @@
   width: 340px;
   height: 400px;
   background-color: #ffffff;
-  border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   font-family: 'Segoe UI', sans-serif;
@@ -99,25 +98,26 @@
 
 /* Contenedor verde principal - OCUPA TODO EL ANCHO */
 .green-container {
-  background-color: #358A43;
-  border-radius: 0 0 12px 12px;
-  padding: 15px;
-  color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  background-color: transparent;
+  padding: 12px 15px;
+  color: #333;
+  box-shadow: none;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   box-sizing: border-box;
   gap: 10px;
-  min-height: 70px;
+  min-height: auto;
   transition: all 0.3s ease;
+  border: 1px solid #e0e0e0;
 }
 
 /* Efecto de profundidad en el contenedor verde */
 .card-container:hover .green-container {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  background-color: #2e7a3a;
+  box-shadow: none;
+  background-color: transparent;
+  border-color: #368c44;
 }
 
 /* Sección de precio a la izquierda */
@@ -166,10 +166,9 @@
 /* CONTENEDOR BLANCO MEJORADO PARA TEXTO LARGO */
 .white-container {
   background-color: #ffffff;
-  border-radius: 10px;
-  padding: 12px 16px;
+  padding: 10px 14px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: none;
   min-width: 120px;
   flex: 0 1 auto;
   max-width: 280px;
@@ -179,15 +178,15 @@
   overflow: hidden;
   position: relative;
   transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 1px solid #e0e0e0;
 }
 
 /* Efecto de elevación en el contenedor blanco */
 .card-container:hover .white-container {
-  box-shadow: 0 6px 16px rgba(54, 140, 68, 0.18);
-  transform: translateY(-3px);
-  background-color: #fafbfc;
-  border-color: rgba(54, 140, 68, 0.15);
+  box-shadow: none;
+  transform: none;
+  background-color: #ffffff;
+  border-color: #368c44;
 }
 
 /* Efecto de borde sutil en hover */
@@ -198,28 +197,27 @@
   left: 0;
   right: 0;
   bottom: 0;
-  border-radius: 8px;
   border: 1px solid transparent;
   transition: all 0.3s ease;
 }
 
 .card-container:hover .white-container::after {
-  border-color: rgba(53, 138, 67, 0.2);
+  border-color: transparent;
 }
 
 .product-name {
-  color: #000000;
-  font-size: 16px;
-  font-weight: 400;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  line-height: 1.4;
+  letter-spacing: 0.3px;
+  line-height: 1.3;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-height: 3.2em;
+  max-height: 2.6em;
   width: 100%;
   word-break: break-word;
   hyphens: auto;
@@ -227,7 +225,7 @@
 }
 
 .card-container:hover .product-name {
-  color: #2c3e50;
+  color: #368c44;
 }
 
 /* Efecto hover para mostrar texto completo */
@@ -238,7 +236,6 @@
     overflow: visible;
     background: white;
     padding: 4px;
-    border-radius: 4px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     z-index: 5;
     color: #000000;
@@ -255,7 +252,6 @@
     width: 100%;
     height: auto;
     min-height: 320px;
-    border-radius: 10px;
   }
   
   .logo-section {
@@ -293,7 +289,6 @@
   .white-container {
     padding: 5px 6px;
     min-width: 80px;
-    border-radius: 6px;
     max-width: 150px;
   }
   
@@ -312,7 +307,6 @@
     height: auto;
     min-height: 300px;
     flex-direction: column;
-    border-radius: 10px;
     padding: 0;
   }
   
@@ -340,7 +334,6 @@
   
   .green-container {
     padding: 8px;
-    border-radius: 0 0 10px 10px;
     min-height: auto;
     gap: 6px;
     flex-direction: column;
@@ -366,7 +359,6 @@
     padding: 5px 6px;
     min-width: auto;
     max-width: 100%;
-    border-radius: 6px;
   }
   
   .product-name {
@@ -385,7 +377,6 @@
     height: auto;
     min-height: 280px;
     flex-direction: column;
-    border-radius: 10px;
     margin: 0 auto;
     
   }
@@ -422,7 +413,6 @@
   
   .green-container {
     height: auto;
-    border-radius: 0 0 10px 10px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -452,7 +442,6 @@
     min-width: auto;
     max-width: 100%;
     padding: 6px;
-    border-radius: 6px;
     flex: 0 1 auto;
   }
   
@@ -525,7 +514,6 @@
   .card-container {
     height: auto;
     min-height: 230px;
-    border-radius: 8px;
   }
   
   .logo-section {
@@ -564,7 +552,7 @@
   
   .white-container {
     padding: 3px 4px;
-    border-radius: 5px;
+
   }
   
   .product-name {
@@ -633,7 +621,6 @@
     overflow: visible;
     background: white;
     padding: 4px;
-    border-radius: 4px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     z-index: 5;
   }

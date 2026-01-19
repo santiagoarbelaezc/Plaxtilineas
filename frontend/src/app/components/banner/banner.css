@@ -13,7 +13,8 @@
 .plaxti-banner-container {
   width: 100%;
   position: relative;
-  margin-bottom: 50px;
+  margin-bottom: 40px;
+  margin-top: 40px;
 }
 
 /* Grid sin separación */

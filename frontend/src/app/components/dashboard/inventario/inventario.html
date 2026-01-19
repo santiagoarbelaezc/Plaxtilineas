@@ -1,1 +1,281 @@
-<p>inventario works!</p>
+<div class="admin-content-wrapper">
+  <!-- Contenido principal -->
+  <main class="admin-main-content">
+    <!-- Header -->
+    <div class="admin-content-header">
+      <div class="header-content">
+        <h1 class="page-title">
+          <fa-icon [icon]="faBoxes" class="title-icon"></fa-icon>
+          Control de Inventario
+        </h1>
+        <p class="page-subtitle">Visualiza y gestiona el inventario y variantes de productos</p>
+      </div>
+      <button class="back-to-dashboard" (click)="volverAlDashboard()">
+        <fa-icon [icon]="faArrowLeft"></fa-icon>
+        <span>Volver al Dashboard</span>
+      </button>
+    </div>
+
+    <!-- Card: Filtros -->
+    <section class="admin-card filter-card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <fa-icon [icon]="faFilter" class="card-icon"></fa-icon>
+          Filtrar Productos
+        </h2>
+      </div>
+      <div class="card-body">
+        <div class="filter-controls">
+          <div class="filter-group">
+            <label for="filtroSubcategoria" class="form-label">
+              <fa-icon [icon]="faFolder"></fa-icon>
+              Subcategoría
+            </label>
+            <select
+              id="filtroSubcategoria"
+              [(ngModel)]="filtroSubcategoriaId"
+              (change)="filtrarPorSubcategoria()"
+              class="filter-select"
+            >
+              <option value="">Todas las subcategorías</option>
+              <option *ngFor="let sub of subcategorias" [value]="sub.id">{{ sub.nombre }}</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="searchTerm" class="form-label">
+              <fa-icon [icon]="faSearch"></fa-icon>
+              Buscar producto
+            </label>
+            <div class="search-box">
+              <fa-icon [icon]="faSearch" class="search-icon"></fa-icon>
+              <input
+                id="searchTerm"
+                type="text"
+                [(ngModel)]="searchTerm"
+                (input)="filtrarProductos()"
+                class="search-input"
+                placeholder="Busca por nombre o descripción..."
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Card: Lista de productos -->
+    <section class="admin-card list-card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <fa-icon [icon]="faList" class="card-icon"></fa-icon>
+          Inventario de Productos
+          <span class="badge">{{ totalProductos }}</span>
+        </h2>
+        
+        <!-- Controles de paginación superior -->
+        <div class="table-controls">
+          <div class="pagination-info">
+            Mostrando {{ getItemsMostrados() }} de {{ totalProductos }} productos
+          </div>
+          <div class="results-info">
+            <span class="filter-info" *ngIf="filtroSubcategoriaId">
+              Filtro: {{ getNombreSubcategoria(parseToInt(filtroSubcategoriaId)) }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 5%">ID</th>
+                <th style="width: 12%">Imagen</th>
+                <th style="width: 18%">Producto</th>
+                <th style="width: 12%">Precio</th>
+                <th style="width: 15%">Descripción</th>
+                <th style="width: 13%">Subcategoría</th>
+                <th style="width: 12%">Unidad</th>
+                <th style="width: 13%">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let prod of productosPaginadas; let i = index; trackBy: trackByProductoId">
+                <!-- Fila del producto -->
+                <tr>
+                  <td class="id-cell">
+                    <span class="badge-id">#{{ prod.id }}</span>
+                    <button 
+                      class="toggle-variantes" 
+                      (click)="toggleVariantesProducto(prod.id)"
+                      [title]="productoMostrandoVariantes === prod.id ? 'Ocultar variantes' : 'Ver variantes'"
+                    >
+                      <fa-icon [icon]="productoMostrandoVariantes === prod.id ? faCaretUp : faCaretDown"></fa-icon>
+                    </button>
+                  </td>
+
+                  <td>
+                    <div class="image-cell">
+                      <div class="image-preview">
+                        <img [src]="prod.imagen_url" alt="{{ prod.nombre }}" class="product-image" />
+                      </div>
+                    </div>
+                  </td>
+
+                  <td>
+                    <div class="name-cell">
+                      {{ prod.nombre }}
+                    </div>
+                  </td>
+
+                  <td>
+                    <div class="price-cell">
+                      {{ prod.precio | currency:'USD':'symbol':'1.2-2' }}
+                    </div>
+                  </td>
+
+                  <td>
+                    <div class="description-cell">
+                      {{ prod.descripcion || 'Sin descripción' }}
+                    </div>
+                  </td>
+
+                  <td>
+                    <div class="subcategory-cell">
+                      {{ getNombreSubcategoria(prod.subcategoria_id) }}
+                    </div>
+                  </td>
+
+                  <td>
+                    <div class="unit-cell">
+                      {{ prod.unidad || 'unidad' }}
+                    </div>
+                  </td>
+
+                  <td>
+                    <div class="action-buttons">
+                      <button class="btn-action view" title="Ver variantes">
+                        <fa-icon [icon]="faLayerGroup"></fa-icon>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Fila expandida para variantes -->
+                <tr *ngIf="productoMostrandoVariantes === prod.id" class="variantes-expanded-row">
+                  <td colspan="8">
+                    <div class="variantes-container">
+                      <div *ngIf="variantesProductos[productoMostrandoVariantes!]">
+                        <div class="variantes-header">
+                          <h4>
+                            <fa-icon [icon]="faLayerGroup"></fa-icon>
+                            Variantes del Producto #{{ productoMostrandoVariantes }}
+                            <span class="variantes-count">({{ variantesProductos[productoMostrandoVariantes!].length }})</span>
+                          </h4>
+                        </div>
+
+                        <div *ngIf="variantesProductos[productoMostrandoVariantes!].length > 0" class="variantes-list-existing">
+                          <table class="data-table variantes-table">
+                            <thead>
+                              <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Precio</th>
+                                <th>Creado</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let variante of variantesProductos[productoMostrandoVariantes!]; 
+                                           trackBy: trackByVarianteId">
+                                <td class="variante-id">#{{ variante.id }}</td>
+                                <td class="variante-nombre">{{ variante.nombre }}</td>
+                                <td class="variante-precio">{{ variante.precio | currency:'USD':'symbol':'1.2-2' }}</td>
+                                <td class="variante-fecha">{{ variante.creado_en | date:'short' }}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+
+                        <div *ngIf="variantesProductos[productoMostrandoVariantes!].length === 0" class="no-variantes">
+                          <fa-icon [icon]="faInbox" class="no-data-icon"></fa-icon>
+                          <p>Este producto no tiene variantes</p>
+                        </div>
+                      </div>
+
+                      <div *ngIf="!variantesProductos[productoMostrandoVariantes!]" class="loading-variantes">
+                        <div class="loading-spinner"></div>
+                        <p>Cargando variantes...</p>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+              
+              <!-- Mensaje cuando no hay productos -->
+              <tr *ngIf="productosPaginadas.length === 0">
+                <td colspan="8" class="no-data">
+                  <fa-icon [icon]="faInbox" class="no-data-icon"></fa-icon>
+                  <p>No se encontraron productos</p>
+                  <p class="no-data-subtitle" *ngIf="filtroSubcategoriaId">
+                    Intenta con otro filtro
+                  </p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Paginación -->
+        <div class="pagination" *ngIf="totalPaginas > 1">
+          <button 
+            class="pagination-btn" 
+            (click)="cambiarPagina(paginaActual - 1)"
+            [disabled]="paginaActual === 1"
+          >
+            <fa-icon [icon]="faChevronLeft"></fa-icon>
+          </button>
+          
+          <div class="pagination-numbers">
+            <button
+              *ngFor="let pagina of getRangoPaginas()"
+              class="pagination-number"
+              [class.active]="pagina === paginaActual"
+              (click)="cambiarPagina(pagina)"
+            >
+              {{ pagina }}
+            </button>
+          </div>
+          
+          <button 
+            class="pagination-btn" 
+            (click)="cambiarPagina(paginaActual + 1)"
+            [disabled]="paginaActual === totalPaginas"
+          >
+            <fa-icon [icon]="faChevronRight"></fa-icon>
+          </button>
+        </div>
+
+        <!-- Selector de items por página -->
+        <div class="page-size-selector">
+          <label for="pageSize">
+            <fa-icon [icon]="faListAlt"></fa-icon>
+            Mostrar:
+          </label>
+          <select 
+            id="pageSize" 
+            [(ngModel)]="itemsPorPagina" 
+            (ngModelChange)="cambiarItemsPorPagina()"
+            class="page-size-select"
+          >
+            <option [value]="5">5</option>
+            <option [value]="10">10</option>
+            <option [value]="20">20</option>
+            <option [value]="50">50</option>
+          </select>
+          <span class="selector-label">productos por página</span>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
