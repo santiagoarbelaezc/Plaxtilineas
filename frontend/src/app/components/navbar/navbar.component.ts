@@ -8,6 +8,7 @@ import { AosService } from '../../services/aos.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, takeUntil, Subject } from 'rxjs';
 import { SearchStateService } from '../../services/search-state.service';
+import { MenuStateService } from '../../services/menu-state.service';
 import { MenuDropdown } from './menu-dropdown/menu-dropdown';
 
 @Component({
@@ -34,7 +35,8 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     library: FaIconLibrary,
     private aosService: AosService,
     private router: Router,
-    private searchStateService: SearchStateService
+    private searchStateService: SearchStateService,
+    private menuStateService: MenuStateService
   ) {
     library.addIcons(faKey, faSearch, faTimes);
   }
@@ -117,6 +119,10 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   onLinkClick(index: number): void {
     this.activeLinkIndex = index;
     this.closeMenu();
+  }
+
+  closeDropdown(): void {
+    this.menuStateService.closeDropdownMenu();
   }
 
   // Métodos para el buscador

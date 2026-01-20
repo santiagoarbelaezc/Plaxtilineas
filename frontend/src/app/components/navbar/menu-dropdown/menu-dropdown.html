@@ -3,10 +3,13 @@
      (mouseleave)="onMouseLeave()">
   
   <!-- Trigger (el enlace Productos) -->
-  <div class="dropdown-trigger">
-    <span>Productos</span>
+  <a href="#" 
+     class="dropdown-trigger nav-link" 
+     (click)="onTriggerClick($event)"
+     aria-label="Productos">
+    <span class="nav-text">Productos</span>
     <span class="dropdown-arrow">▼</span>
-  </div>
+  </a>
 
   <!-- Menú desplegable -->
   <div class="dropdown-menu" [class.visible]="menuVisible">

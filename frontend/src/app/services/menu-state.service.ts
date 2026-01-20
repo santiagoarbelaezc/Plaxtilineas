@@ -1,6 +1,6 @@
 // src/app/services/menu-state.service.ts
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 export interface MenuState {
   expandedCategories: number[];
@@ -14,8 +14,10 @@ export interface MenuState {
 export class MenuStateService {
   private readonly STORAGE_KEY = 'menu_categorias_state';
   private stateSubject = new BehaviorSubject<MenuState>(this.getInitialState());
+  private closeDropdownSubject = new Subject<void>();
   
   state$ = this.stateSubject.asObservable();
+  closeDropdown$ = this.closeDropdownSubject.asObservable();
 
   constructor() {
     console.log('✅ MenuStateService inicializado');
@@ -152,5 +154,12 @@ export class MenuStateService {
       ...current,
       lastSelectedSubcategory: undefined
     }));
+  }
+
+  /**
+   * ⭐ NUEVO: Emitir evento para cerrar el dropdown
+   */
+  closeDropdownMenu(): void {
+    this.closeDropdownSubject.next();
   }
 }

@@ -251,7 +251,6 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     mensaje += `${nombreCompleto}\n\n`;
     
     mensaje += `*INFORMACIÓN TÉCNICA:*\n`;
-    mensaje += `• Código: ${this.producto.id}\n`;
     
     if (this.varianteSeleccionada) {
       mensaje += `• Variante: ${this.varianteSeleccionada.nombre}\n`;

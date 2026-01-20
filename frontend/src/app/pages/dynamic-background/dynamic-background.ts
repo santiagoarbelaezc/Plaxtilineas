@@ -53,7 +53,7 @@ export class DynamicBackgroundComponent implements OnInit {
       category: 'Asesoría'
     },
     {
-      url: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767035836/ChatGPT_Image_29_dic_2025_14_14_51_kgzzi5.png',
+      url: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1768884810/envio3_qatfoe.jpg',
       alt: 'Entrega de productos Plaxtilineas',
       title: 'Llegamos hasta tu negocio',
       description: 'Te entregamos plásticos, espumas, mimbres, mallas y sogas justo cuando los necesitas.',

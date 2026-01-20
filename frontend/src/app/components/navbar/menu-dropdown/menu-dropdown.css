@@ -9,47 +9,29 @@
 /* === TRIGGER (ENLACE PRODUCTOS) === */
 .dropdown-trigger {
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #2d3748;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.95rem;
-  padding: 8px 0;
-  cursor: pointer;
-  user-select: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.dropdown-trigger:hover {
-  color: #368c44;
-  transform: translateY(-1px);
+.dropdown-trigger.nav-link::after {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.dropdown-trigger::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0%;
-  height: 2px;
-  background: linear-gradient(90deg, #368c44, #25d366);
-  border-radius: 2px;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.menu-dropdown-wrapper:hover .dropdown-trigger::after {
-  width: 100%;
+.menu-dropdown-wrapper:hover .dropdown-trigger.nav-link::after {
+  width: 75%;
 }
 
 .dropdown-arrow {
   font-size: 0.65rem;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   color: #a0aec0;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
 }
 
-.menu-dropdown-wrapper:hover .dropdown-arrow {
+.menu-dropdown-wrapper:hover .dropdown-arrow,
+.dropdown-menu.visible ~ .dropdown-trigger .dropdown-arrow {
   transform: rotate(180deg);
   color: #368c44;
 }
