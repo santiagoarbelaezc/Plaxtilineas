@@ -216,28 +216,107 @@
 }
 
 @media (max-width: 768px) {
+  .menu-dropdown-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    height: auto;
+  }
+
   .dropdown-menu {
     display: none !important;
   }
 
-  .menu-dropdown-wrapper {
+  .dropdown-trigger {
+    width: 100%;
+    padding: 18px 28px;
+    margin-left: 0;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    color: #4a5568;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dropdown-trigger::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 0;
+    background: linear-gradient(180deg, #368c44, #25d366);
+    transition: height 0.3s ease;
+    z-index: -1;
+  }
+
+  .dropdown-trigger:hover::before {
+    height: 100%;
+  }
+
+  .dropdown-trigger:active,
+  .dropdown-trigger:focus {
+    outline: none;
+  }
+
+  .dropdown-trigger:hover {
+    background-color: rgba(54, 140, 68, 0.08);
+    color: #368c44;
+    transform: none;
+  }
+
+  .dropdown-trigger::after {
     display: none !important;
   }
 
-  .dropdown-trigger {
-    padding: 10px 14px;
-    font-size: 14px;
+  .dropdown-arrow {
+    font-size: 0.65rem;
+    opacity: 0;
+    visibility: hidden;
   }
 
-  .dropdown-arrow {
-    font-size: 0.6rem;
+  .dropdown-overlay {
+    display: none !important;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .dropdown-menu,
-  .categoria-column,
-  .subcategoria-link {
-    transition: none;
+/* === IPHONE Y DISPOSITIVOS PEQUEÑOS === */
+@media (max-width: 480px) {
+  .menu-dropdown-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    height: auto;
+  }
+
+  .dropdown-trigger {
+    padding: 16px 24px;
+    margin-left: 0;
+    font-size: 15.5px;
+    font-weight: 600;
+  }
+
+  .dropdown-menu {
+    display: none !important;
+  }
+}
+
+/* === IPHONE SE Y DISPOSITIVOS MUY PEQUEÑOS === */
+@media (max-width: 375px) {
+  .dropdown-trigger {
+    padding: 14px 20px;
+    margin-left: 0;
+    font-size: 15px;
+    font-weight: 600;
   }
 }

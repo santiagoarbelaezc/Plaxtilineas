@@ -3,7 +3,7 @@
      (mouseleave)="onMouseLeave()">
   
   <!-- Trigger (el enlace Productos) -->
-  <a href="#" 
+  <a [routerLink]="['/productos']"
      class="dropdown-trigger nav-link" 
      (click)="onTriggerClick($event)"
      aria-label="Productos">

@@ -643,13 +643,22 @@
     border: none;
     padding: 8px 0;
     width: 100%;
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  .nav-section:last-child {
+    border-bottom: none;
   }
 
   .nav-section.main-nav {
     border-right: none;
     border-bottom: 2px solid var(--border-color);
-    padding: 12px 0 20px 0;
-    margin-bottom: 8px;
+    padding: 0;
+    margin-bottom: 0;
+  }
+
+  .nav-section.action-nav {
+    margin-top: 50px;
   }
 
   /* Enlaces como tarjetas en móvil */
@@ -667,6 +676,9 @@
     position: relative;
     overflow: hidden;
     color: #4a5568;
+    justify-content: center;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
   }
 
   .nav-link::before {
@@ -697,7 +709,7 @@
 
   .nav-link:hover {
     background: rgba(54, 140, 68, 0.08);
-    transform: translateX(8px);
+    transform: none;
     box-shadow: none;
   }
 
@@ -706,6 +718,9 @@
     padding: 18px 28px;
     gap: 12px;
     color: var(--dark-green);
+    text-align: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--border-color);
   }
 
   .whatsapp-link::after {
@@ -720,13 +735,16 @@
   .whatsapp-link:hover {
     background: rgba(37, 211, 102, 0.12);
     border-color: transparent;
-    transform: translateX(8px);
+    transform: none;
     box-shadow: none;
   }
 
   /* Ubicación en móvil */
   .location-link {
     padding: 18px 28px;
+    text-align: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--border-color);
   }
 
   .location-icon {
@@ -740,11 +758,12 @@
     min-width: auto;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 16px;
     background: rgba(54, 140, 68, 0.08);
     border: none;
     border-radius: 0;
+    border-bottom: none;
   }
 
   .login-icon {
@@ -803,6 +822,15 @@
     padding: 12px 18px;
     font-size: 15px;
   }
+
+  .whatsapp-link,
+  .location-link {
+    padding: 16px 24px;
+  }
+
+  .nav-section.action-nav {
+    margin-top: 60px;
+  }
 }
 
 /* Pantallas muy pequeñas */
@@ -823,6 +851,15 @@
   
   .logo-img {
     height: 40px;
+  }
+
+  .whatsapp-link,
+  .location-link {
+    padding: 14px 20px;
+  }
+
+  .nav-section.action-nav {
+    margin-top: 50px;
   }
 }
 
