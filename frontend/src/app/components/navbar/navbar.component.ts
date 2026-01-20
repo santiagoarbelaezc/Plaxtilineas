@@ -8,11 +8,12 @@ import { AosService } from '../../services/aos.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, takeUntil, Subject } from 'rxjs';
 import { SearchStateService } from '../../services/search-state.service';
+import { MenuDropdown } from './menu-dropdown/menu-dropdown';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule, FontAwesomeModule, FormsModule],
+  imports: [CommonModule, RouterModule, FontAwesomeModule, FormsModule, MenuDropdown],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
   encapsulation: ViewEncapsulation.None

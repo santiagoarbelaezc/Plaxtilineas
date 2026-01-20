@@ -88,13 +88,8 @@
         <span class="nav-text">Inicio</span>
       </a>
       
-      <a routerLink="/productos" 
-         class="nav-link" 
-         routerLinkActive="active"
-         (click)="onLinkClick(1)"
-         aria-label="Ver productos">
-        <span class="nav-text">Productos</span>
-      </a>
+      <!-- Dropdown de Productos -->
+      <app-menu-dropdown></app-menu-dropdown>
       
       <a routerLink="/nosotros" 
          class="nav-link" 

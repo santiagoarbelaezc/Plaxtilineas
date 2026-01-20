@@ -413,15 +413,24 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   mostrarPrecio(producto: ProductoEditable): string {
+    const formatearPrecio = (precio: number): string => {
+      // Convertir a entero (sin decimales) y formatear con separador de miles
+      const precioEntero = Math.round(precio);
+      return `$ ${precioEntero.toLocaleString('es-CO', { 
+        minimumFractionDigits: 0, 
+        maximumFractionDigits: 0 
+      })}`;
+    };
+
     // Primero verificar si tiene variantes del backend
     if (producto.variantes && producto.variantes.length > 0) {
       const precios = producto.variantes.map(v => v.precio);
       const minPrecio = Math.min(...precios);
-      return `Desde $${minPrecio}`;
+      return `Desde ${formatearPrecio(minPrecio)}`;
     }
     
     // Si no tiene variantes, mostrar precio normal
-    return `$${producto.precio || 0}`;
+    return formatearPrecio(producto.precio || 0);
   }
 
   /**

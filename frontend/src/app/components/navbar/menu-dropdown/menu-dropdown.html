@@ -1,0 +1,55 @@
+<div class="menu-dropdown-wrapper" 
+     (mouseenter)="onMouseEnter()" 
+     (mouseleave)="onMouseLeave()">
+  
+  <!-- Trigger (el enlace Productos) -->
+  <div class="dropdown-trigger">
+    <span>Productos</span>
+    <span class="dropdown-arrow">▼</span>
+  </div>
+
+  <!-- Menú desplegable -->
+  <div class="dropdown-menu" [class.visible]="menuVisible">
+    <div class="dropdown-content">
+      <!-- Columnas de categorías -->
+      <div class="categorias-grid">
+        <div class="categoria-column" 
+             *ngFor="let categoria of categorias"
+             (mouseenter)="onCategoriaHover(categoria.id)"
+             (mouseleave)="onCategoriaLeave()"
+             [class.active]="hoveredCategoriaId === categoria.id">
+          
+          <!-- Encabezado de categoría -->
+          <div class="categoria-header">
+            <span class="categoria-icon" *ngIf="categoria.imagen_url">
+              <img [src]="categoria.imagen_url" [alt]="categoria.nombre" loading="lazy">
+            </span>
+            <span class="categoria-name">{{ categoria.nombre }}</span>
+          </div>
+
+          <!-- Subcategorías -->
+          <div class="subcategorias" *ngIf="categoria.subcategorias && categoria.subcategorias.length > 0">
+            <a *ngFor="let subcategoria of categoria.subcategorias"
+               [routerLink]="['/productos']"
+               [queryParams]="{ categoria_id: categoria.id, subcategoria_id: subcategoria.id }"
+               (click)="onSubcategoriaSelect(subcategoria.id); closeMenu()"
+               class="subcategoria-link">
+              <span class="subcategoria-dot"></span>
+              {{ subcategoria.nombre }}
+            </a>
+          </div>
+
+          <!-- Mensaje si no hay subcategorías -->
+          <div class="no-subcategorias" *ngIf="!categoria.subcategorias || categoria.subcategorias.length === 0">
+            <span class="no-subcategorias-text">Sin subcategorías</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay para cerrar menú -->
+  <div class="dropdown-overlay" 
+       [class.active]="menuVisible" 
+       (click)="onMouseLeave()"></div>
+</div>
