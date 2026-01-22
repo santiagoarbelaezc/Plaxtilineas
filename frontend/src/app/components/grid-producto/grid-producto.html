@@ -1,0 +1,59 @@
+<div class="grid-wrapper">
+  <section class="grid-container">
+    <!-- Primera fila -->
+    <ng-container *ngFor="let producto of primeraFila; let i = index">
+      <a [routerLink]="producto.link" class="producto-item" 
+         [class.alta]="producto.altura === 'alta'"
+         [class.baja]="producto.altura === 'baja'">
+        <img [src]="producto.imagen" [alt]="producto.descripcion" loading="lazy">
+        
+        <!-- Punto en la mitad -->
+        <div class="punto-medio" 
+             (mouseenter)="setHoveredIndex(i)" 
+             (mouseleave)="setHoveredIndex(null)">
+          <div class="info-extra" [class.visible]="hoveredIndex === i">
+            <ng-container *ngIf="producto.nombre">
+              <h3 class="producto-nombre">{{producto.nombre}}</h3>
+            </ng-container>
+            <ng-container *ngIf="producto.precio">
+              <p class="producto-precio">{{formatearPrecio(producto.precio)}}</p>
+            </ng-container>
+          </div>
+        </div>
+        
+        <!-- Descripción -->
+        <div class="producto-info">
+          <p class="producto-descripcion">{{producto.descripcion}}</p>
+        </div>
+      </a>
+    </ng-container>
+
+    <!-- Segunda fila -->
+    <ng-container *ngFor="let producto of segundaFila; let i = index">
+      <a [routerLink]="producto.link" class="producto-item" 
+         [class.alta]="producto.altura === 'alta'"
+         [class.baja]="producto.altura === 'baja'">
+        <img [src]="producto.imagen" [alt]="producto.descripcion" loading="lazy">
+        
+        <!-- Punto en la mitad -->
+        <div class="punto-medio" 
+             (mouseenter)="setHoveredIndex(4 + i)" 
+             (mouseleave)="setHoveredIndex(null)">
+          <div class="info-extra" [class.visible]="hoveredIndex === (4 + i)">
+            <ng-container *ngIf="producto.nombre">
+              <h3 class="producto-nombre">{{producto.nombre}}</h3>
+            </ng-container>
+            <ng-container *ngIf="producto.precio">
+              <p class="producto-precio">{{formatearPrecio(producto.precio)}}</p>
+            </ng-container>
+          </div>
+        </div>
+        
+        <!-- Descripción -->
+        <div class="producto-info">
+          <p class="producto-descripcion">{{producto.descripcion}}</p>
+        </div>
+      </a>
+    </ng-container>
+  </section>
+</div>

@@ -21,6 +21,9 @@ import { CardContainerComponent } from '../../components/card-container/card-con
 import { CardPromos } from '../../components/card-promos/card-promos';
 import { FullBanner } from '../../components/full-banner/full-banner';
 import { LongMap} from '../../components/long-map/long-map.component';
+import { UtilGridProducto } from '../../components/grid-producto/util-grid-producto/util-grid-producto';
+import { UtilGridProductoOther } from "../../components/grid-producto/util-grid-producto-other/util-grid-producto-other";
+
 
 @Component({
   selector: 'app-dynamic-background',
@@ -36,8 +39,10 @@ import { LongMap} from '../../components/long-map/long-map.component';
     PlaxtiBannerComponent,
     FeatureNewProducts,
     CardContainerComponent,
-    FullBanner
-  ],
+    FullBanner,
+    UtilGridProducto,
+    UtilGridProductoOther
+],
   templateUrl: './dynamic-background.html',
   styleUrls: ['./dynamic-background.css']
 })
