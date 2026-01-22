@@ -118,11 +118,13 @@
 .banner-card::before {
   content: '';
   position: absolute;
-  top: 0;
+  top: -1px;
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #368c44, #25d366);
+  background: linear-gradient(90deg, #368c44 0%, #25d366 30%, #368c44 60%, #25d366 100%);
+  border-radius: 0 0 2px 2px;
+  box-shadow: 0 2px 4px rgba(54, 140, 68, 0.3);
   z-index: 3;
 }
 

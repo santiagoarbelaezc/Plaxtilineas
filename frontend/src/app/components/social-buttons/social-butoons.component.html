@@ -1,33 +1,67 @@
-<!-- Botones de Redes Sociales -->
+<!-- Contenedor principal -->
 <div class="social-buttons-container">
-
+  
+  <!-- Botón de Facebook -->
   <a href="https://www.facebook.com/p/Plaxtilineas-100080040966300/"
      class="social-button facebook-button"
      target="_blank"
      rel="noopener noreferrer nofollow"
      aria-label="Síguenos en Facebook"
-     title="Síguenos en Facebook">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook">
+     title="Síguenos en Facebook"
+     (mouseenter)="onMouseEnter('facebook')"
+     (mouseleave)="onMouseLeave('facebook')">
+    <div class="button-content">
+      <img src="https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/facebook.svg" 
+           alt="Facebook" 
+           class="social-icon">
+      <span class="button-tooltip" *ngIf="hoveredButton === 'facebook'">
+        Síguenos en Facebook
+      </span>
+    </div>
   </a>
 
+  <!-- Botón de Instagram -->
   <a href="https://www.instagram.com/plaxtilineas/"
      class="social-button instagram-button"
      target="_blank"
      rel="noopener noreferrer nofollow"
      aria-label="Síguenos en Instagram"
-     title="Síguenos en Instagram">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram">
+     title="Síguenos en Instagram"
+     (mouseenter)="onMouseEnter('instagram')"
+     (mouseleave)="onMouseLeave('instagram')">
+    <div class="button-content">
+      <img src="https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/instagram.svg" 
+           alt="Instagram" 
+           class="social-icon">
+      <span class="button-tooltip" *ngIf="hoveredButton === 'instagram'">
+        Síguenos en Instagram
+      </span>
+    </div>
   </a>
 
+  <!-- Botón de WhatsApp -->
   <a href="https://wa.me/+573006680125?text=Hola, necesito ayuda"
      class="social-button whatsapp-button"
      target="_blank"
      rel="noopener noreferrer nofollow"
      aria-label="Chatea con nosotros por WhatsApp"
-     title="Chatea con nosotros por WhatsApp">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
-    <div class="notification">1</div>
+     title="Chatea con nosotros por WhatsApp"
+     (mouseenter)="onMouseEnter('whatsapp')"
+     (mouseleave)="onMouseLeave('whatsapp')">
+    <div class="button-content">
+      <img src="https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/whatsapp.svg" 
+           alt="WhatsApp" 
+           class="social-icon">
+      <div class="notification" *ngIf="true">1</div> <!-- Cambiar a variable si es dinámico -->
+      <span class="button-tooltip" *ngIf="hoveredButton === 'whatsapp'">
+        ¿Necesitas ayuda?
+      </span>
+    </div>
   </a>
 
-  <div class="help-message" id="helpMessage">¿Necesitas ayuda?</div>
+  <!-- Mensaje emergente inicial (solo para WhatsApp) -->
+  <div class="help-message" *ngIf="showHelpMessage" (click)="closeHelpMessage()">
+    ¿Necesitas ayuda?
+    <span class="close-icon">×</span>
+  </div>
 </div>

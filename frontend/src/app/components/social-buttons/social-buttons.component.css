@@ -1,374 +1,332 @@
-/* === AJUSTES GENERALES === */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* === VARIABLES DE COLOR === */
 
-html {
-  -webkit-text-size-adjust: 100%;
-}
 
-/* === ANIMACIONES === */
-@keyframes float {
-  0%, 100% { 
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% { 
-    transform: translateY(-10px) rotate(5deg);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
-  }
-  50% {
-    box-shadow: 0 0 0 10px rgba(37, 211, 102, 0);
-  }
-}
-
-@keyframes ripple {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
-}
-
-/* === CONTENEDOR === */
+/* === CONTENEDOR PRINCIPAL === */
 .social-buttons-container {
-  position: relative;
-  z-index: 999;
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 1000;
+  pointer-events: none;
 }
 
-/* === BOTONES FLOTANTES BASE === */
+/* === BOTONES BASE === */
 .social-button {
-  position: fixed;
-  right: 20px;
-  width: 60px;
-  height: 60px;
-  border-radius: 20px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.2);
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  z-index: 1000;
-  overflow: visible; /* CAMBIADO de hidden a visible */
-}
-
-.social-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+  transition: all 0.3s var(--transition-ease);
+  background: var(--color-background);
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 4px 20px var(--color-shadow),
+    0 0 0 1px rgba(255, 255, 255, 0.3);
+  text-decoration: none;
+  position: relative;
+  overflow: visible;
+  pointer-events: auto;
+  animation: slide-in 0.5s var(--transition-ease) forwards;
   opacity: 0;
-  transition: opacity 0.3s ease;
-  border-radius: 20px; /* AGREGADO para mantener el efecto dentro del borde redondeado */
 }
 
-.social-button:hover::before {
-  opacity: 1;
+/* === ANIMACIÓN DE ENTRADA === */
+.social-button:nth-child(1) { animation-delay: 0.1s; }
+.social-button:nth-child(2) { animation-delay: 0.2s; }
+.social-button:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
+/* === HOVER EFFECTS === */
 .social-button:hover {
-  transform: translateY(-5px) scale(1.05);
-  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 
+    0 6px 24px var(--color-shadow),
+    0 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
-.social-button:active {
-  transform: translateY(-2px) scale(0.98);
-}
-
-.social-button img {
-  width: 32px;
-  height: 32px;
-  position: relative;
+/* === ICONOS === */
+.social-icon {
+  width: 20px;
+  height: 20px;
+  transition: all 0.3s var(--transition-ease);
+  filter: brightness(0.9);
   z-index: 2;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-  transition: transform 0.3s ease;
 }
 
-.social-button:hover img {
-  transform: scale(1.1) rotate(5deg);
+.social-button:hover .social-icon {
+  transform: scale(1.15);
+  filter: brightness(1);
 }
 
-/* === WHATSAPP === */
-.whatsapp-button {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-  border-radius: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
-  animation: float 3s ease-in-out infinite;
-  z-index: 1000;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  overflow: visible; /* CAMBIADO de hidden a visible */
+/* === COLORES ESPECÍFICOS POR BOTÓN === */
+.whatsapp-button .social-icon {
+  color: var(--color-whatsapp);
 }
 
-.whatsapp-button::before {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-  animation: pulse 2s infinite;
-  border-radius: 20px;
+.facebook-button .social-icon {
+  color: var(--color-facebook);
 }
 
-.whatsapp-button::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 20px;
-  transform: translate(-50%, -50%) scale(0);
-  transition: transform 0.5s ease;
+.instagram-button .social-icon {
+  color: var(--color-instagram);
 }
 
-.whatsapp-button:hover::after {
-  transform: translate(-50%, -50%) scale(1);
-  animation: ripple 0.6s ease-out;
-}
-
+/* === EFECTO SUTIL DE FONDO AL HOVER === */
 .whatsapp-button:hover {
-  transform: translateY(-8px) scale(1.08);
-  box-shadow: 0 15px 35px rgba(37, 211, 102, 0.5);
-}
-
-.whatsapp-button:active {
-  transform: translateY(-4px) scale(1.02);
-}
-
-.whatsapp-button img {
-  width: 35px;
-  height: 35px;
-  position: relative;
-  z-index: 2;
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
-  transition: transform 0.3s ease;
-}
-
-.whatsapp-button:hover img {
-  transform: scale(1.15) rotate(-5deg);
-}
-
-/* === NOTIFICACIÓN WHATSAPP === */
-.notification {
-  position: absolute;
-  top: -8px; /* CAMBIADO de -5px a -8px */
-  right: -8px; /* CAMBIADO de -5px a -8px */
-  background: linear-gradient(135deg, #ff3b30 0%, #ff1744 100%);
-  color: white;
-  font-size: 12px;
-  font-weight: 700;
-  border-radius: 12px;
-  min-width: 22px;
-  height: 22px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 3px 10px rgba(255, 59, 48, 0.5);
-  border: 2px solid white;
-  z-index: 1001; /* CAMBIADO de 3 a 1001 para estar por encima del botón */
-  animation: pulse 2s infinite;
-}
-
-/* === FACEBOOK === */
-.facebook-button {
-  bottom: 100px;
-  background: linear-gradient(135deg, #1877F2 0%, #0d5fc7 100%);
-  box-shadow: 0 8px 25px rgba(24, 119, 242, 0.4);
+  background: rgba(37, 211, 102, 0.05);
 }
 
 .facebook-button:hover {
-  box-shadow: 0 12px 30px rgba(24, 119, 242, 0.5);
-}
-
-/* === INSTAGRAM === */
-.instagram-button {
-  bottom: 180px;
-  background: linear-gradient(135deg, #f58529 0%, #dd2a7b 50%, #8134af 100%);
-  box-shadow: 0 8px 25px rgba(221, 42, 123, 0.4);
+  background: rgba(24, 119, 242, 0.05);
 }
 
 .instagram-button:hover {
-  box-shadow: 0 12px 30px rgba(221, 42, 123, 0.5);
+  background: rgba(225, 48, 108, 0.05);
 }
 
-/* === MENSAJE EMERGENTE === */
-.help-message {
-  position: fixed;
-  bottom: 35px;
-  right: 100px;
-  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+/* === CONTENEDOR INTERNO === */
+.button-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* === TOOLTIP === */
+.button-tooltip {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.85);
   color: white;
-  font-size: 15px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  z-index: 1001;
+  animation: tooltip-fade 0.2s var(--transition-ease);
+}
+
+.button-tooltip::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 10px;
+  height: 10px;
+  background: rgba(0, 0, 0, 0.85);
+  pointer-events: none;
+}
+
+@keyframes tooltip-fade {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+/* === NOTIFICACIÓN === */
+.notification {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ff4444;
+  color: white;
+  font-size: 10px;
   font-weight: 600;
-  padding: 12px 20px;
-  border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
-  opacity: 0;
-  transform: translateX(20px) scale(0.9);
-  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  z-index: 1000;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3;
+  box-shadow: 0 2px 6px rgba(255, 68, 68, 0.3);
+  animation: notification-pulse 2s ease-in-out infinite;
+}
+
+@keyframes notification-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* === MENSAJE DE AYUDA INICIAL === */
+.help-message {
+  position: absolute;
+  right: calc(100% + 16px);
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  z-index: 1002;
+  animation: help-message-fade 0.3s var(--transition-ease);
+  display: flex;
+  align-items: center;
+  gap: 8px;
   white-space: nowrap;
 }
 
-.help-message::before {
+.help-message::after {
   content: '';
   position: absolute;
-  right: -8px;
-  top: 50%;
-  transform: translateY(-50%) rotate(45deg);
-  width: 16px;
-  height: 16px;
-  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-  border-right: 2px solid rgba(255, 255, 255, 0.3);
-  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+  right: -5px;
+  bottom: 16px;
+  transform: rotate(45deg);
+  width: 10px;
+  height: 10px;
+  background: rgba(0, 0, 0, 0.85);
 }
 
-.help-message.show {
+.close-icon {
+  font-size: 18px;
+  font-weight: 300;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.help-message:hover .close-icon {
   opacity: 1;
-  transform: translateX(0) scale(1);
+}
+
+@keyframes help-message-fade {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* === RESPONSIVE DESIGN === */
 @media (max-width: 768px) {
-  .social-button,
-  .whatsapp-button {
-    width: 50px;
-    height: 50px;
-    right: 15px;
-    border-radius: 16px;
+  .social-buttons-container {
+    right: 16px;
+    bottom: 16px;
+    gap: 10px;
   }
 
-  .facebook-button {
-    bottom: 85px;
+  .social-button {
+    width: 42px;
+    height: 42px;
   }
 
-  .instagram-button {
-    bottom: 150px;
-  }
-
-  .notification {
-    top: -7px; /* Ajustado para móvil */
-    right: -7px;
-    min-width: 20px;
-    height: 20px;
-    font-size: 11px;
-  }
-
-  .social-button img,
-  .whatsapp-button img {
-    width: 28px;
-    height: 28px;
-  }
-
-  .help-message {
-    font-size: 13px;
-    padding: 10px 16px;
-    bottom: 35px;
-    right: 75px;
-  }
-}
-
-@media (max-width: 480px) {
-  .social-button,
-  .whatsapp-button {
-    width: 48px;
-    height: 48px;
-    right: 12px;
-    border-radius: 14px;
-  }
-
-  .facebook-button {
-    bottom: 75px;
-  }
-
-  .instagram-button {
-    bottom: 135px;
-  }
-
-  .social-button img,
-  .whatsapp-button img {
-    width: 26px;
-    height: 26px;
-  }
-
-  .notification {
-    top: -6px; /* Ajustado para móvil pequeño */
-    right: -6px;
-    min-width: 18px;
+  .social-icon {
+    width: 18px;
     height: 18px;
-    font-size: 10px;
+  }
+
+  .notification {
+    width: 14px;
+    height: 14px;
+    font-size: 9px;
+    top: -3px;
+    right: -3px;
+  }
+
+  .button-tooltip {
+    font-size: 11px;
+    padding: 5px 10px;
+    right: calc(100% + 10px);
   }
 
   .help-message {
     font-size: 12px;
-    padding: 8px 14px;
-    bottom: 32px;
-    right: 65px;
+    padding: 7px 12px;
+    right: calc(100% + 12px);
   }
 }
 
-@media (min-width: 1400px) {
-  .social-button,
-  .whatsapp-button {
-    width: 70px;
-    height: 70px;
-    border-radius: 22px;
+@media (max-width: 480px) {
+  .social-buttons-container {
+    right: 12px;
+    bottom: 12px;
+    gap: 8px;
   }
 
-  .facebook-button {
-    bottom: 115px;
+  .social-button {
+    width: 40px;
+    height: 40px;
   }
 
-  .instagram-button {
-    bottom: 205px;
-  }
-
-  .social-button img,
-  .whatsapp-button img {
-    width: 38px;
-    height: 38px;
-  }
-
-  .notification {
-    top: -10px; /* Ajustado para pantallas grandes */
-    right: -10px;
-    min-width: 24px;
-    height: 24px;
-    font-size: 13px;
+  .social-icon {
+    width: 17px;
+    height: 17px;
   }
 
   .help-message {
-    font-size: 16px;
-    padding: 14px 24px;
-    bottom: 38px;
-    right: 105px;
+    display: none; /* Ocultar en móviles muy pequeños */
+  }
+}
+
+/* === PREFERENCIAS DE REDUCCIÓN DE MOVIMIENTO === */
+@media (prefers-reduced-motion: reduce) {
+  .social-button,
+  .social-icon,
+  .notification,
+  .button-tooltip,
+  .help-message {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* === MODO OSCURO === */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: rgba(30, 30, 30, 0.95);
+    --color-shadow: rgba(0, 0, 0, 0.25);
+    --color-text: #ffffff;
+  }
+  
+  .social-button {
+    box-shadow: 
+      0 4px 20px var(--color-shadow),
+      0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  .social-button:hover {
+    box-shadow: 
+      0 6px 24px var(--color-shadow),
+      0 0 0 1px rgba(255, 255, 255, 0.2);
   }
 }

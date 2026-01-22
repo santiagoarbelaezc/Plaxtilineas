@@ -17,18 +17,7 @@
   border-bottom: 1px solid var(--border-color);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
   transition: all var(--transition-speed) ease;
-  
-    @media (max-width: 768px) {
-      .nav-link {
-        font-size: 13px;
-        font-family: var(--font-primary);
-        font-weight: var(--font-weight-regular);
-        letter-spacing: 0.01em;
-      }
-    }
-  gap: 20px;
 }
-
 /* ===== LOGO MEJORADO ===== */
 .logo {
   flex-shrink: 0;
@@ -875,4 +864,143 @@
 
 .search-active .head {
   border-bottom-color: transparent;
+}
+
+
+
+/* ===== BARRA DE INFORMACIÓN GRIS ===== */
+.info-bar {
+  position: fixed;
+  top: var(--navbar-height);
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: #000;
+  border-bottom: 1px solid #333;
+  height: 36px;
+  z-index: 999;
+}
+
+.info-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 100%;
+  padding: 0 20px;
+  gap: 40px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #fff;
+  font-size: 11px;
+  font-family: var(--font-primary);
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 0 10px;
+  position: relative;
+}
+
+.info-item svg {
+  flex-shrink: 0;
+  color: var(--primary-green);
+  transition: all 0.3s ease;
+}
+
+.info-text {
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  font-size: 11px;
+}
+
+.info-desc {
+  color: #fff;
+  margin-left: 8px;
+  font-weight: 400;
+  white-space: nowrap;
+  font-size: 10px;
+  display: none;
+}
+
+.info-item.highlight {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.info-item.highlight svg {
+  color: var(--primary-green);
+}
+
+.info-item:hover {
+  color: #fff;
+}
+
+.info-item:hover svg {
+  transform: translateY(-1px);
+  color: var(--primary-green);
+}
+
+.info-item:hover .info-text {
+  color: #fff;
+}
+
+/* ===== ICONOS DE NAVEGACIÓN ===== */
+.nav-icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.nav-link:hover .nav-icon {
+  transform: translateY(-1px);
+  color: var(--primary-green);
+}
+
+/* Ajustar dropdown para que diga Catálogo */
+/* (Este ajuste lo debes hacer en el componente app-menu-dropdown) */
+
+/* ===== AJUSTES RESPONSIVE PARA LA BARRA DE INFORMACIÓN ===== */
+@media (max-width: 1024px) {
+  .info-content {
+    gap: 20px;
+    padding: 0 15px;
+  }
+  
+  .info-item {
+    padding: 0 8px;
+  }
+  
+  .info-desc {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .info-bar {
+    display: none; /* Ocultar en móvil */
+  }
+  
+  .head {
+    top: 0; /* Restablecer top cuando no hay barra de info */
+  }
+}
+
+@media (min-width: 1400px) {
+  .info-desc {
+    display: inline; /* Mostrar descripción solo en pantallas grandes */
+  }
+  
+  .info-content {
+    gap: 60px;
+  }
 }

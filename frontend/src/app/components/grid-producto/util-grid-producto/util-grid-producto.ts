@@ -78,7 +78,7 @@ export class UtilGridProducto {
       imagen: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1768448898/mimbre-img_gcvoyc.jpg',
       descripcion: 'Set de sillas de mimbre para terraza',
       nombre: 'Sillas en Mimbre',
-      precio: 425000,
+      precio: 110900,
       link: '/productos?categoria=muebles',
       altura: 'baja'
     }

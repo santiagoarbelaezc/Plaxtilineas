@@ -10,6 +10,39 @@
     </a>
   </div>
 
+  <!-- Barra de información gris -->
+  <div class="info-bar">
+    <div class="info-content">
+      <a routerLink="/productos" class="info-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+        </svg>
+        <span class="info-text">Compra ahora</span>
+        <span class="info-desc">Todo lo que necesitas para tus proyectos</span>
+      </a>
+      
+      <a href="https://www.google.com/maps/dir/?api=1&destination=Cra.19+%23+19-35+Armenia+Quindio" 
+         target="_blank" 
+         rel="noopener noreferrer" 
+         class="info-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+        </svg>
+        <span class="info-text">Localiza la tienda</span>
+        <span class="info-desc">Cra. 19 #19-35, Armenia, Quindío</span>
+      </a>
+      
+      <div class="info-item highlight">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8.5 5.6a.5.5 0 1 0-1 0v2.9h-3a.5.5 0 0 0 0 1H8a.5.5 0 0 0 .5-.5V5.6z"/>
+          <path d="M6.5 1A.5.5 0 0 1 7 .5h2a.5.5 0 0 1 0 1v.57c1.36.196 2.594.78 3.584 1.64l.456-.328a.5.5 0 1 1 .576.788l-.408.293c.182.27.354.567.516.875l.548-.328a.5.5 0 1 1 .548.838l-.293.176c.437.696.645 1.47.645 2.294 0 2.697-2.261 4.891-5 4.891-2.739 0-5-2.194-5-4.891 0-1.516.709-2.898 1.839-3.663.205-.149.323-.382.323-.627a.5.5 0 0 1 .5-.5c.223 0 .434.053.63.146a4.393 4.393 0 0 1 1.71-.614V1.5a.5.5 0 0 1 .5-.5zM5 6.5c0 .763.192 1.468.5 2.044V6.5a.5.5 0 0 1 1 0v2.044c.308-.576.5-1.281.5-2.044a.5.5 0 0 1 1 0c0 .763.192 1.468.5 2.044V6.5a.5.5 0 0 1 1 0v2.044c.308-.576.5-1.281.5-2.044 0-2.137-1.128-3.848-2.5-4.356v2.115a.5.5 0 0 1-1 0V2.144C6.128 2.652 5 4.363 5 6.5z"/>
+        </svg>
+        <span class="info-text">Encuentra soluciones</span>
+        <span class="info-desc">Para tu hogar y proyectos profesionales</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Buscador mejorado y centralizado -->
   <div class="search-container">
     <form class="search-form" (ngSubmit)="onSearch()">
@@ -85,10 +118,14 @@
          [routerLinkActiveOptions]="{exact: true}"
          (click)="onLinkClick(0)"
          aria-label="Ir a Inicio">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="nav-icon" viewBox="0 0 16 16">
+          <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5Z"/>
+          <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6Z"/>
+        </svg>
         <span class="nav-text">Inicio</span>
       </a>
       
-      <!-- Dropdown de Productos -->
+      <!-- Dropdown de Catálogo -->
       <app-menu-dropdown></app-menu-dropdown>
       
       <a routerLink="/nosotros" 
@@ -96,6 +133,9 @@
          routerLinkActive="active"
          (click)="onLinkClick(3)"
          aria-label="Conócenos">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="nav-icon" viewBox="0 0 16 16">
+          <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+        </svg>
         <span class="nav-text">Nosotros</span>
       </a>
     </div>

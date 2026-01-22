@@ -90,6 +90,14 @@ app-root {
   --gradient-primary: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-dark) 100%);
   --gradient-whatsapp: linear-gradient(135deg, var(--whatsapp-green) 0%, var(--whatsapp-dark) 100%);
   --gradient-subtle: linear-gradient(135deg, rgba(54, 140, 68, 0.9) 0%, rgba(44, 117, 57, 0.9) 100%);
+
+  --color-whatsapp: #25D366;
+  --color-facebook: #1877F2;
+  --color-instagram: #E1306C;
+  --color-background: rgba(255, 255, 255, 0.95);
+  --color-shadow: rgba(0, 0, 0, 0.1);
+  --color-text: #333333;
+  --transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 .productos-layout {
   display: flex;

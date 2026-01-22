@@ -1,10 +1,5 @@
 /* Variables CSS */
-:root {
-  --navbar-height: 80px;
-  --navbar-spacing: 100px;
-  --sticky-image-top: calc(var(--navbar-spacing) + 30px);
-  --transition-speed: 0.3s;
-}
+
 
 /* Resetear scroll del body */
 html {
@@ -12,13 +7,7 @@ html {
   scrollbar-gutter: stable; /* Reserva espacio para el scrollbar */
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-  overflow-x: hidden; /* Solo evita scroll horizontal */
-}
+
 
 /* Wrapper principal - NO padding-top aquí */
 .page-wrapper {

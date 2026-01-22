@@ -50,8 +50,8 @@ export class UtilGridProductoOther {
         id: 5,
         imagen: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1769099533/piso3_go1wyr.jpg',
         
-        descripcion: 'Silla de mimbre estilo vintage',
-        nombre: 'Silla en Mimbre',
+        descripcion: 'Piso Vinilico en varios tonos',
+        nombre: 'Piso Vinilico',
         precio: 189900,
         link: '/productos?categoria=muebles',
         altura: 'alta'
@@ -59,9 +59,9 @@ export class UtilGridProductoOther {
       {
         id: 6,
         imagen: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1768448898/mimbre-img_gcvoyc.jpg',
-        descripcion: 'Silla de mimbre estilo vintage',
-        nombre: 'Silla de Mimbre Vintage',
-        precio: 75900,
+        descripcion: 'Sillas en Mimbre Plastica',
+        nombre: 'Silla de Mimbre',
+        precio: 110900,
         link: '/productos?categoria=papeles',
         altura: 'alta'
       },
@@ -79,7 +79,7 @@ export class UtilGridProductoOther {
         imagen: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1769099829/mantel_zp5vph.jpg',
         descripcion: 'Mantel para comedor',
         nombre: 'Mantel para Comedor',
-        precio: 425000,
+        precio: 42500,
         link: '/productos?categoria=muebles',
         altura: 'baja'
       }

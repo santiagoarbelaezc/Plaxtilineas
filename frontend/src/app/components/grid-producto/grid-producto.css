@@ -213,179 +213,445 @@
 .producto-item.baja {
   grid-row: span 6;
 }
+/* ============================================
+   RESPONSIVE MOBILE FIRST
+============================================ */
 
-/* Responsive */
-@media (max-width: 1200px) {
-  .grid-container {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  
-  .grid-wrapper {
-    padding: var(--spacing-lg) 0;
-  }
-}
-
-@media (max-width: 992px) {
-  .grid-container {
-    padding: 0 20px;
-    gap: 16px;
-  }
-  
-  .producto-item.alta {
-    grid-row: span 6;
-  }
-  
-  .producto-item.baja {
-    grid-row: span 5;
-  }
-  
-  .producto-info {
-    padding: 14px 16px;
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
-  }
-  
-  .producto-descripcion {
-    font-size: 0.9rem;
-  }
-  
-  .info-extra {
-    min-width: 140px;
-    padding: 14px;
-  }
-  
-  .producto-nombre {
-    font-size: 0.9rem;
-  }
-  
-  .producto-precio {
-    font-size: 1.05rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .grid-container {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding: 0 16px;
-  }
-  
-  .producto-item.alta {
-    grid-row: span 5;
-  }
-  
-  .producto-item.baja {
-    grid-row: span 4;
-  }
-  
+/* MÓVIL - 2 imágenes por fila (default mobile) */
+@media (max-width: 767px) {
   .grid-wrapper {
     padding: var(--spacing-md) 0;
+    background-color: var(--bg-color);
   }
-  
-  .producto-info {
-    padding: 12px 14px;
-    font-size: 0.85rem;
+
+  .grid-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 16px;
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas fijas */
+    grid-auto-rows: auto; /* Altura flexible */
+    gap: 12px;
   }
-  
-  .producto-descripcion {
-    font-size: 0.85rem;
+
+  /* Resetear alturas de grid para móvil */
+  .producto-item {
+    grid-row: span 1 !important; /* Forzar una fila por item */
+    height: auto;
+    min-height: 180px; /* Altura mínima consistente */
+    aspect-ratio: 1 / 1.1; /* Relación aspecto uniforme */
+    border-radius: 6px;
   }
-  
+
+  /* Ajustar imágenes para móvil */
+  .producto-item img {
+    height: 70%; /* Ajustar altura de imagen */
+    object-fit: cover;
+  }
+
+  /* PUNTO INTERACTIVO - MUCHO MÁS PEQUEÑO EN MÓVIL */
+  .punto-medio {
+    opacity: 1; /* Siempre visible en móvil */
+    width: 20px; /* MUCHO más pequeño */
+    height: 20px; /* MUCHO más pequeño */
+    border-width: 2px;
+    box-shadow: 0 2px 6px rgba(54, 140, 68, 0.3);
+    cursor: pointer;
+    pointer-events: auto;
+    transition: all 0.2s ease;
+  }
+
+  .punto-medio:active {
+    transform: translate(-50%, -50%) scale(1.2);
+    background: linear-gradient(135deg, #368c44, #25d366);
+    border-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(54, 140, 68, 0.4);
+  }
+
+  /* Punto interno más pequeño */
+  .punto-medio::after {
+    width: 6px; /* Más pequeño */
+    height: 6px; /* Más pequeño */
+  }
+
+  /* Info extra - modal móvil */
   .info-extra {
-    width: 150px;
-    padding: 12px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 85vw;
+    max-width: 280px;
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 18px;
+    z-index: 1000;
+    opacity: 0;
+    border-radius: 10px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
-  
+
+  .info-extra.visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+  }
+
+  /* Ajustar texto del modal para punto pequeño */
   .producto-nombre {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
   }
-  
+
   .producto-precio {
     font-size: 1rem;
   }
-  
-  .punto-medio {
-    width: 20px;
-    height: 20px;
+
+  /* Descripción - siempre visible en móvil */
+  .producto-info {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    padding: 10px;
+    font-size: 0.75rem;
+    background: linear-gradient(135deg, rgba(54, 140, 68, 0.95) 0%, rgba(37, 211, 102, 0.95) 100%);
   }
-  
-  .punto-medio:hover {
-    width: 24px;
-    height: 24px;
+
+  .producto-descripcion {
+    font-size: 0.75rem;
+    line-height: 1.3;
+  }
+
+  /* Overlay - ajustado para móvil */
+  .producto-item::before {
+    opacity: 0.6;
+    background: linear-gradient(to bottom, 
+      transparent 0%, 
+      transparent 40%, 
+      rgba(0, 0, 0, 0.7) 100%);
+  }
+
+  /* Deshabilitar efectos hover para móvil */
+  .producto-item:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(54, 140, 68, 0.1);
+  }
+
+  .producto-item:hover img {
+    transform: none;
+  }
+
+  /* Backdrop para modal */
+  .info-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .info-backdrop.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Botón cerrar para modal móvil - también más pequeño */
+  .close-modal {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 26px;
+    height: 26px;
+    background: #368c44;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 16px;
+    line-height: 26px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 1001;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
   }
 }
 
-@media (max-width: 480px) {
+/* ============================================
+   TABLET - Adaptación progresiva
+============================================ */
+
+/* Tablet pequeña (portrait) */
+@media (min-width: 768px) and (max-width: 899px) {
   .grid-container {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    padding: 0 12px;
+    padding: 24px;
+    gap: 16px;
   }
-  
-  .producto-item.alta {
-    grid-row: span 4;
+
+  .producto-item {
+    min-height: 200px;
+    aspect-ratio: 1 / 1.15;
   }
-  
-  .producto-item.baja {
-    grid-row: span 3;
+
+  /* Mantener 2 columnas en tablet pequeña */
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
   }
-  
-  .grid-wrapper {
-    padding: var(--spacing-sm) 0;
+
+  /* Punto un poco más grande en tablet pero aún pequeño */
+  .punto-medio {
+    width: 22px;
+    height: 22px;
   }
-  
+
   .producto-info {
-    padding: 10px 12px;
-    font-size: 0.8rem;
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-  }
-  
-  .producto-descripcion {
+    padding: 12px;
     font-size: 0.8rem;
   }
-  
-  .info-extra {
-    width: 140px;
-    padding: 10px;
+}
+
+/* Tablet grande (landscape) */
+@media (min-width: 900px) and (max-width: 1023px) {
+  .grid-container {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    padding: 28px 20px;
   }
-  
-  .producto-nombre {
-    font-size: 0.8rem;
+
+  .producto-item.alta {
+    grid-row: span 6;
+    min-height: 260px;
   }
-  
-  .producto-precio {
-    font-size: 0.95rem;
+
+  .producto-item.baja {
+    grid-row: span 5;
+    min-height: 220px;
   }
-  
+
+  /* Punto tamaño normal en tablet landscape */
+  .punto-medio {
+    width: 26px;
+    height: 26px;
+  }
+
+  .producto-info {
+    padding: 14px;
+    font-size: 0.85rem;
+  }
+}
+
+/* ============================================
+   DESKTOP PEQUEÑO
+============================================ */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .grid-container {
+    max-width: 1200px;
+    padding: 30px 20px;
+    gap: 20px;
+  }
+
+  .producto-item.alta {
+    grid-row: span 7;
+  }
+
+  .producto-item.baja {
+    grid-row: span 6;
+  }
+
+  /* Restaurar tamaño original del punto en desktop */
+  .punto-medio {
+    width: 20px;
+    height: 20px;
+    background: #000;
+    border: none;
+    box-shadow: none;
+    transition: all 0.3s ease;
+    will-change: transform;
+  }
+  .punto-medio::after {
+    background: #fff;
+    width: 6px;
+    height: 6px;
+  }
+  .punto-medio:hover {
+    background: #fff;
+  }
+  .punto-medio:hover::after {
+    background: #000;
+  }
+}
+
+/* ============================================
+   DESKTOP GRANDE
+============================================ */
+@media (min-width: 1280px) and (max-width: 1439px) {
+  .grid-container {
+    max-width: 1400px;
+  }
+
+  .producto-item.alta {
+    grid-row: span 8;
+  }
+
+  .producto-item.baja {
+    grid-row: span 6;
+  }
+
+  .punto-medio {
+    width: 20px;
+    height: 20px;
+    background: #000;
+    border: none;
+    box-shadow: none;
+    transition: all 0.3s ease;
+    will-change: transform;
+  }
+  .punto-medio::after {
+    background: #fff;
+    width: 6px;
+    height: 6px;
+  }
+  .punto-medio:hover {
+    background: #fff;
+  }
+  .punto-medio:hover::after {
+    background: #000;
+  }
+}
+
+/* ============================================
+   DESKTOP EXTRA GRANDE
+============================================ */
+@media (min-width: 1440px) {
+  .grid-container {
+    max-width: 1500px;
+    padding: 40px 24px;
+  }
+
+  /* Mantener estilos originales para desktop grande */
+  .punto-medio {
+    width: 20px;
+    height: 20px;
+    background: #000;
+    border: none;
+    box-shadow: none;
+    transition: all 0.3s ease;
+    will-change: transform;
+  }
+  .punto-medio::after {
+    background: #fff;
+    width: 6px;
+    height: 6px;
+  }
+  .punto-medio:hover {
+    background: #fff;
+  }
+  .punto-medio:hover::after {
+    background: #000;
+  }
+}
+
+/* ============================================
+   AJUSTES ESPECIALES PARA PUNTOS PEQUEÑOS
+============================================ */
+
+/* Orientación landscape en móvil */
+@media (max-width: 767px) and (orientation: landscape) {
+  .grid-container {
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas en landscape */
+  }
+
+  .producto-item {
+    min-height: 140px;
+    aspect-ratio: 1 / 0.9;
+  }
+
+  /* Punto aún más pequeño en landscape */
   .punto-medio {
     width: 18px;
     height: 18px;
   }
-  
-  .punto-medio:hover {
-    width: 22px;
-    height: 22px;
+
+  .producto-info {
+    padding: 6px;
+    font-size: 0.7rem;
   }
 }
 
-/* Para iPhone SE y dispositivos muy pequeños */
-@media (max-width: 375px) {
+/* Pantallas muy pequeñas (iPhone SE, etc) */
+@media (max-width: 360px) {
   .grid-container {
-    padding: 0 10px;
+    padding: 12px;
+    gap: 8px;
   }
-  
+
+  .producto-item {
+    min-height: 160px;
+    aspect-ratio: 1 / 1.2;
+  }
+
+  /* Punto ultra pequeño para pantallas muy pequeñas */
+  .punto-medio {
+    width: 16px;
+    height: 16px;
+  }
+
+  .punto-medio::after {
+    width: 5px;
+    height: 5px;
+  }
+
   .producto-info {
-    padding: 8px 10px;
-    font-size: 0.75rem;
-    left: 10px;
-    right: 10px;
-    bottom: 10px;
+    padding: 8px;
+    font-size: 0.7rem;
+  }
+}
+
+/* Para pantallas de alta densidad (Retina) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  @media (max-width: 767px) {
+    .punto-medio {
+      border-width: 1.5px; /* Borde más fino para pantallas retina */
+    }
+  }
+}
+
+/* Asegurar que el punto sea clickeable aunque sea pequeño */
+@media (max-width: 767px) {
+  .punto-medio {
+    /* Área de toque más grande que el elemento visual */
+    position: relative;
   }
   
-  .producto-descripcion {
-    font-size: 0.75rem;
+  .punto-medio::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    cursor: pointer;
+    z-index: 1;
+  }
+}
+
+/* Alto contraste para accesibilidad */
+@media (prefers-contrast: high) {
+  @media (max-width: 767px) {
+    .punto-medio {
+      border: 2px solid #368c44;
+      background: #ffffff;
+    }
+    
+    .punto-medio::after {
+      background: #368c44;
+    }
   }
 }

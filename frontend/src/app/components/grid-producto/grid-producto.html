@@ -57,3 +57,35 @@
     </ng-container>
   </section>
 </div>
+
+<!-- Agregar esto en tu componente HTML -->
+<div class="info-backdrop" 
+     [class.visible]="hoveredIndex !== null"
+     (click)="setHoveredIndex(null)">
+</div>
+
+<!-- Y modificar el info-extra para incluir botón cerrar en móvil -->
+<!-- Primera fila: info-extra y botón cerrar -->
+<ng-container *ngFor="let producto of primeraFila; let i = index">
+  <div class="info-extra" [class.visible]="hoveredIndex === i">
+    <button class="close-modal" (click)="setHoveredIndex(null)">×</button>
+    <ng-container *ngIf="producto.nombre">
+      <h3 class="producto-nombre">{{producto.nombre}}</h3>
+    </ng-container>
+    <ng-container *ngIf="producto.precio">
+      <p class="producto-precio">{{formatearPrecio(producto.precio)}}</p>
+    </ng-container>
+  </div>
+</ng-container>
+<!-- Segunda fila: info-extra y botón cerrar -->
+<ng-container *ngFor="let producto of segundaFila; let i = index">
+  <div class="info-extra" [class.visible]="hoveredIndex === (4 + i)">
+    <button class="close-modal" (click)="setHoveredIndex(null)">×</button>
+    <ng-container *ngIf="producto.nombre">
+      <h3 class="producto-nombre">{{producto.nombre}}</h3>
+    </ng-container>
+    <ng-container *ngIf="producto.precio">
+      <p class="producto-precio">{{formatearPrecio(producto.precio)}}</p>
+    </ng-container>
+  </div>
+</ng-container>
