@@ -12,7 +12,7 @@
 
 /* Contenedor principal */
 .trio-container {
-  max-width: 1500px;
+  max-width: 1450px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
@@ -255,306 +255,229 @@
    RESPONSIVE DESIGN
    =========================== */
 
-/* Desktop grande (1200px y más) */
-@media (min-width: 1200px) {
+/* Tablet - 768px */
+@media (max-width: 768px) {
   .seccion-trio-presentation {
-    padding: 48px 32px;
+    padding: 32px 16px;
   }
-  
-  .trio-title {
-    font-size: 2.25rem;
-  }
-  
-  .trio-subtitle {
-    font-size: 1.05rem;
-  }
-  
-  .cards-grid-trio {
-    gap: 28px;
-    padding: 0 20px;
-  }
-  
-  .trio-card {
-    height: 420px;
-  }
-  
-  .trio-card-title {
-    font-size: 1.35rem;
-  }
-  
-  .trio-card-description {
-    font-size: 1rem;
-  }
-}
 
-/* Desktop (1024px - 1199px) */
-@media (max-width: 1199px) and (min-width: 1024px) {
-  .seccion-trio-presentation {
-    padding: 40px 28px;
-  }
-  
-  .cards-grid-trio {
-    gap: 24px;
-  }
-  
-  .trio-card {
-    height: 380px;
-  }
-  
-  .trio-text-overlay {
-    padding: 20px;
-  }
-}
-
-/* Tablet grande (768px - 1023px) */
-@media (max-width: 1023px) and (min-width: 768px) {
-  .seccion-trio-presentation {
-    padding: 36px 24px;
-  }
-  
   .trio-header {
-    margin-bottom: 28px;
+    margin-bottom: 24px;
+    padding: 0 16px;
   }
-  
+
   .trio-title {
-    font-size: 1.8rem;
+    font-size: 1.75rem;
   }
-  
+
   .trio-subtitle {
     font-size: 0.95rem;
+    max-width: 600px;
   }
-  
+
   .cards-grid-trio {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
+    padding: 0 8px;
   }
-  
-  .trio-card:nth-child(3) {
-    grid-column: span 2;
-    max-width: 80%;
-    justify-self: center;
-  }
-  
+
   .trio-card {
     height: 350px;
   }
-  
+
   .trio-text-overlay {
     padding: 20px;
   }
-  
+
   .trio-card-title {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
   }
-  
+
   .trio-card-description {
     font-size: 0.9rem;
+    margin-bottom: 14px;
   }
-  
+
   .trio-action-button {
-    padding: 0.6rem 1.2rem;
+    padding: 0.7rem 1.3rem;
     font-size: 0.85rem;
   }
 }
 
-/* Tablet pequeña/Móvil grande (640px - 767px) */
-@media (max-width: 767px) and (min-width: 640px) {
+/* Móvil grande - 576px */
+@media (max-width: 576px) {
   .seccion-trio-presentation {
-    padding: 32px 20px;
+    padding: 24px 12px;
   }
-  
+
+  .trio-header {
+    margin-bottom: 20px;
+    padding: 0 12px;
+  }
+
+  .trio-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+
+  .trio-title::after {
+    width: 40px;
+    height: 2px;
+    bottom: -8px;
+  }
+
+  .trio-subtitle {
+    font-size: 0.9rem;
+    max-width: 500px;
+  }
+
   .cards-grid-trio {
     grid-template-columns: 1fr;
-    gap: 20px;
-    max-width: 500px;
-    margin: 0 auto;
+    gap: 16px;
+    padding: 0 4px;
   }
-  
-  .trio-card:nth-child(3) {
-    grid-column: span 1;
+
+  .trio-card {
+    height: 300px;
     max-width: 100%;
   }
-  
-  .trio-card {
-    height: 320px;
-  }
-  
+
   .trio-text-overlay {
-    padding: 18px;
+    padding: 16px;
   }
-  
+
+  .trio-text-content {
+    max-width: 95%;
+  }
+
   .trio-card-title {
-    font-size: 1.15rem;
+    font-size: 1rem;
+    margin-bottom: 8px;
   }
-  
+
   .trio-card-description {
     font-size: 0.85rem;
     margin-bottom: 12px;
   }
-  
+
   .trio-action-button {
-    padding: 0.55rem 1.1rem;
+    padding: 0.6rem 1.2rem;
     font-size: 0.8rem;
   }
 }
 
-/* Móvil (480px - 639px) */
-@media (max-width: 639px) and (min-width: 480px) {
+/* Móvil pequeño - 375px */
+@media (max-width: 375px) {
   .seccion-trio-presentation {
-    padding: 28px 16px;
+    padding: 20px 8px;
   }
-  
+
+  .trio-header {
+    margin-bottom: 16px;
+    padding: 0 8px;
+  }
+
   .trio-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
+    margin-bottom: 8px;
   }
-  
+
+  .trio-title::after {
+    width: 30px;
+    height: 2px;
+    bottom: -6px;
+  }
+
   .trio-subtitle {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    max-width: 100%;
   }
-  
+
   .cards-grid-trio {
-    gap: 16px;
+    gap: 12px;
+    padding: 0 2px;
   }
-  
+
   .trio-card {
     height: 280px;
   }
-  
+
   .trio-text-overlay {
-    padding: 16px;
+    padding: 12px;
   }
-  
+
+  .trio-text-content {
+    max-width: 100%;
+  }
+
   .trio-card-title {
-    font-size: 1.1rem;
-    margin-bottom: 8px;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
   }
-  
+
   .trio-card-description {
     font-size: 0.8rem;
     margin-bottom: 10px;
   }
-  
+
   .trio-action-button {
     padding: 0.5rem 1rem;
     font-size: 0.75rem;
   }
 }
 
-/* Móvil pequeño (hasta 479px) */
-@media (max-width: 479px) {
+/* Móvil muy pequeño - 320px */
+@media (max-width: 320px) {
   .seccion-trio-presentation {
-    padding: 24px 12px;
+    padding: 16px 6px;
   }
-  
+
   .trio-header {
-    margin-bottom: 24px;
-    padding: 0 10px;
+    margin-bottom: 12px;
+    padding: 0 6px;
   }
-  
+
   .trio-title {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
+    margin-bottom: 6px;
   }
-  
+
+  .trio-title::after {
+    width: 25px;
+    height: 1px;
+    bottom: -4px;
+  }
+
   .trio-subtitle {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
-  
+
   .cards-grid-trio {
-    gap: 12px;
-    padding: 0 5px;
+    gap: 10px;
+    padding: 0 1px;
   }
-  
+
   .trio-card {
     height: 260px;
   }
-  
+
   .trio-text-overlay {
-    padding: 14px;
+    padding: 10px;
   }
-  
+
   .trio-card-title {
-    font-size: 1rem;
-    margin-bottom: 6px;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
   }
-  
+
   .trio-card-description {
     font-size: 0.75rem;
     margin-bottom: 8px;
   }
-  
+
   .trio-action-button {
-    padding: 0.45rem 0.9rem;
+    padding: 0.4rem 0.8rem;
     font-size: 0.7rem;
   }
-}
-
-/* ===========================
-   ANIMACIONES SUAVES
-   =========================== */
-
-@keyframes fadeInUpTrio {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.trio-card {
-  animation: fadeInUpTrio 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  opacity: 0;
-}
-
-.trio-card:nth-child(1) {
-  animation-delay: 0.1s;
-}
-
-.trio-card:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.trio-card:nth-child(3) {
-  animation-delay: 0.3s;
-}
-
-/* Optimizaciones para dispositivos táctiles */
-@media (hover: none) and (pointer: coarse) {
-  .trio-card.hover-effect:hover {
-    transform: none;
-    border-color: var(--gray-200);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  }
-  
-  .trio-card.hover-effect:active {
-    transform: translateY(-2px);
-    border-color: var(--primary-green);
-    box-shadow: 0 8px 24px rgba(54, 140, 68, 0.12);
-  }
-  
-  .trio-action-button:hover {
-    transform: none;
-  }
-  
-  .trio-action-button:active {
-    background: rgba(255, 255, 255, 0.25);
-    transform: translateY(-1px);
-  }
-  
-  .trio-card:hover .trio-image {
-    transform: none;
-  }
-  
-  .trio-card:active .trio-image {
-    transform: scale(1.03);
-  }
-}
-
-/* Mejoras de rendimiento */
-.trio-image,
-.trio-image-overlay,
-.trio-text-overlay {
-  backface-visibility: hidden;
 }

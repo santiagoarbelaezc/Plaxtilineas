@@ -20,77 +20,76 @@
   </div>
 
   <!-- 🔹 Contenedor del carrusel -->
- <div class="carousel-container" *ngIf="productos.length > 0 && !isLoading">
-  <!-- Botón de navegación anterior -->
-  <button class="carousel-nav prev" 
-          (click)="scrollCarousel('prev')" 
-          [disabled]="!isPrevEnabled()"
-          aria-label="Productos anteriores"
-          [class.disabled]="!isPrevEnabled()">
-    ‹
-  </button>
+  <div class="carousel-container" *ngIf="productos.length > 0 && !isLoading">
+    <!-- Botón de navegación anterior -->
+    <button class="carousel-nav prev" 
+            (click)="scrollCarousel('prev')" 
+            [disabled]="!isPrevEnabled()"
+            aria-label="Productos anteriores"
+            [class.disabled]="!isPrevEnabled()">
+      ‹
+    </button>
 
-  <!-- Wrapper del carrusel -->
-  <div class="carousel-wrapper">
-    <div class="carousel" [id]="carouselId">
-      <!-- Items del carrusel -->
-      <div class="carousel-item" 
-           *ngFor="let producto of productos; let i = index">
-        
-        <a [routerLink]="['/producto', producto.id]" class="producto-card">
+    <!-- Wrapper del carrusel -->
+    <div class="carousel-wrapper">
+      <div class="carousel" [id]="carouselId">
+        <!-- Items del carrusel -->
+        <div class="carousel-item" 
+             *ngFor="let producto of productos; let i = index">
           
-          <!-- Contenedor de la imagen del producto -->
-          <div class="producto-image-container">
-            <div class="image-wrapper">
-              <img [src]="getProductoImagen(producto)" 
-                   [alt]="producto.nombre"
-                   class="producto-image"
-                   (error)="handleImageError($event, producto)">
-              <div class="image-glow"></div>
-            </div>
-          </div>
-
-          <!-- Contenedor del texto -->
-          <div class="producto-text-container">
-            <div class="producto-content">
-              <!-- Nombre del producto - UNA SOLA LÍNEA -->
-              <h3 class="producto-title" [title]="producto.nombre">
-                {{ producto.nombre }}
-              </h3>
-              
-              <!-- Subcategoría -->
-              <div class="producto-subcategoria">
-                <span class="subcategoria-badge">
-                  {{ producto.subcategoria || 'Sin categoría' }}
-                </span>
+          <a [routerLink]="['/producto', producto.id]" class="producto-card">
+            
+            <!-- Contenedor de la imagen del producto -->
+            <div class="producto-image-container">
+              <div class="image-wrapper">
+                <img [src]="getProductoImagen(producto)" 
+                     [alt]="producto.nombre"
+                     class="producto-image"
+                     (error)="handleImageError($event, producto)">
+                <div class="image-glow"></div>
               </div>
-
-              <!-- Precio -->
-              <div class="producto-precio" *ngIf="producto.precio">
-                <span class="precio-actual">
-                  {{ producto.precio | currency:'USD':'symbol':'1.2-2' }}
-                </span>
-              </div>
-
-              <!-- Enlace para ver más -->
-              
             </div>
-          </div>
-        </a>
+
+            <!-- Contenedor del texto -->
+            <div class="producto-text-container">
+              <div class="producto-content">
+                <!-- Contenedor para el nombre del producto con altura fija -->
+                <div class="producto-title-container">
+                  <h3 class="producto-title" [title]="producto.nombre">
+                    {{ producto.nombre }}
+                  </h3>
+                </div>
+                
+                <!-- Subcategoría -->
+                <div class="producto-subcategoria">
+                  <span class="subcategoria-badge">
+                    {{ producto.subcategoria || 'Sin categoría' }}
+                  </span>
+                </div>
+
+                <!-- Precio -->
+                <div class="producto-precio" *ngIf="producto.precio">
+                  <span class="precio-actual">
+                    {{ producto.precio | currency:'USD':'symbol':'1.2-2' }}
+                  </span>
+                </div>
+
+              </div>
+            </div>
+          </a>
+        </div>
       </div>
     </div>
+
+    <!-- Botón de navegación siguiente -->
+    <button class="carousel-nav next" 
+            (click)="scrollCarousel('next')" 
+            [disabled]="!isNextEnabled()"
+            aria-label="Siguientes productos"
+            [class.disabled]="!isNextEnabled()">
+      ›
+    </button>
   </div>
-
-  <!-- Botón de navegación siguiente -->
-  <button class="carousel-nav next" 
-          (click)="scrollCarousel('next')" 
-          [disabled]="!isNextEnabled()"
-          aria-label="Siguientes productos"
-          [class.disabled]="!isNextEnabled()">
-    ›
-  </button>
-</div>
-
   
   <!-- 🔹 Mensaje si no hay productos relacionados -->
   <div class="no-productos" *ngIf="productos.length === 0 && !isLoading && !error">
@@ -98,7 +97,4 @@
     <h3>No hay productos relacionados</h3>
     <p>Explora otras categorías para encontrar más productos.</p>
   </div>
-
-  <!-- 🔹 Información de depuración (solo en desarrollo) -->
-  
 </section>

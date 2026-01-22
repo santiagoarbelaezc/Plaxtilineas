@@ -148,86 +148,73 @@
   right: 26px;
 }
 
-/* ============ RESPONSIVE ============ */
+/* ==================== */
+/* RESPONSIVE DESIGN */
+/* ==================== */
 
-/* Desktop grande (1301px - 1600px) */
-@media (max-width: 1600px) {
-  .banner-container {
-    max-width: 1400px;
-  }
-}
-
-/* Tablets grandes y laptops pequeños (1024px - 1300px) */
-@media (max-width: 1300px) {
+/* Tablets grandes y laptops pequeñas */
+@media (max-width: 1200px) {
   .banner-container {
     height: 320px;
-    max-width: 1200px;
+  }
+  
+  .description-container {
+    padding: 18px;
+    max-width: 55%;
   }
   
   .description-content {
     padding: 16px 20px;
     font-size: 0.95rem;
   }
-  
-  .v-top, .v-bottom {
-    top: 24px;
-    bottom: 24px;
-  }
-  
-  .h-left, .h-right {
-    left: 24px;
-    right: 24px;
-  }
-  
-  .banner-container:hover .v-top {
-    top: 22px;
-  }
-  
-  .banner-container:hover .v-bottom {
-    bottom: 22px;
-  }
 }
 
-/* Tablets medianas (768px - 1024px) */
-@media (max-width: 1024px) {
+/* Tablets en modo retrato */
+@media (max-width: 768px) {
   .banner-container {
     height: 280px;
-    max-width: 1000px;
   }
   
   .description-container {
-    max-width: 60%;
     padding: 16px;
+    max-width: 60%;
   }
   
   .description-content {
     padding: 14px 18px;
     font-size: 0.9rem;
-    line-height: 1.4;
   }
   
-  .v-top, .v-bottom {
+  /* Ajustar posiciones para tablets */
+  .v-top {
     top: 20px;
+  }
+  
+  .v-bottom {
     bottom: 20px;
   }
   
-  .h-left, .h-right {
+  .h-left {
     left: 20px;
+  }
+  
+  .h-right {
     right: 20px;
   }
 }
 
-/* Tablets pequeñas y móviles grandes (600px - 768px) */
-@media (max-width: 768px) {
+/* Móviles grandes */
+@media (max-width: 576px) {
   .banner-container {
-    height: 240px;
-    max-width: 100%;
-    margin: 0 20px;
+    width: 364px;
+    height: 200px;
+    margin: 0;
+    /* Alinear a la izquierda */
   }
   
   .description-container {
-    max-width: 70%;
     padding: 12px;
+    max-width: 70%;
   }
   
   .description-content {
@@ -236,28 +223,61 @@
     line-height: 1.4;
   }
   
-  .v-top, .v-bottom {
-    top: 16px;
-    bottom: 16px;
+  /* Posiciones simplificadas para móviles */
+  .v-top {
+    top: 12px;
   }
   
-  .h-left, .h-right {
-    left: 16px;
-    right: 16px;
+  .v-middle {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .v-bottom {
+    bottom: 12px;
+  }
+  
+  .h-left {
+    left: 12px;
+  }
+  
+  .h-center {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .h-right {
+    right: 12px;
+  }
+  
+  /* Combinaciones para móviles */
+  .v-middle.h-center {
+    transform: translate(-50%, -50%);
+  }
+  
+  .v-middle.h-left,
+  .v-middle.h-right {
+    transform: translateY(-50%);
+  }
+  
+  .v-top.h-center,
+  .v-bottom.h-center {
+    transform: translateX(-50%);
   }
 }
 
-/* Móviles medianos (480px - 600px) */
-@media (max-width: 600px) {
+/* iPhone y móviles pequeños */
+@media (max-width: 375px) {
   .banner-container {
-    height: 200px;
-    max-width: 100%;
-    margin: 0 16px;
+    width: 300px;
+    height: 180px;
+    margin: 0;
+    margin-left: 10px; /* Alinear a la izquierda */
   }
   
   .description-container {
-    max-width: 80%;
     padding: 10px;
+    max-width: 75%;
   }
   
   .description-content {
@@ -266,128 +286,140 @@
     line-height: 1.3;
   }
   
-  .v-top, .v-bottom {
-    top: 12px;
-    bottom: 12px;
+  /* Posiciones más compactas */
+  .v-top {
+    top: 8px;
   }
   
-  .h-left, .h-right {
-    left: 12px;
-    right: 12px;
+  .v-bottom {
+    bottom: 8px;
+  }
+  
+  .h-left {
+    left: 8px;
+  }
+  
+  .h-right {
+    right: 8px;
   }
 }
 
-/* Móviles pequeños (375px - 480px) */
-@media (max-width: 480px) {
+/* iPhone SE y dispositivos muy pequeños */
+@media (max-width: 320px) {
   .banner-container {
-    height: 180px;
-    max-width: 100%;
-    margin: 0 12px;
+    width: 250px;
+    height: 160px;
+    margin: 0;
+    margin-left: 10px; /* Alinear a la izquierda */
   }
   
   .description-container {
-    max-width: 85%;
     padding: 8px;
+    max-width: 80%;
   }
   
   .description-content {
     padding: 8px 12px;
     font-size: 0.75rem;
-    line-height: 1.3;
-  }
-  
-  .v-top, .v-bottom {
-    top: 10px;
-    bottom: 10px;
-  }
-  
-  .h-left, .h-right {
-    left: 10px;
-    right: 10px;
-  }
-}
-
-/* Móviles muy pequeños (menos de 375px) */
-@media (max-width: 375px) {
-  .banner-container {
-    height: 160px;
-    max-width: 100%;
-    margin: 0 10px;
-  }
-  
-  .description-container {
-    max-width: 90%;
-    padding: 6px;
-  }
-  
-  .description-content {
-    padding: 6px 10px;
-    font-size: 0.7rem;
     line-height: 1.2;
   }
   
-  .v-top, .v-bottom {
-    top: 8px;
-    bottom: 8px;
+  /* Posiciones mínimas */
+  .v-top {
+    top: 6px;
   }
   
-  .h-left, .h-right {
-    left: 8px;
-    right: 8px;
+  .v-bottom {
+    bottom: 6px;
+  }
+  
+  .h-left {
+    left: 6px;
+  }
+  
+  .h-right {
+    right: 6px;
   }
 }
 
-/* Para orientación landscape en móviles */
-@media (max-width: 768px) and (orientation: landscape) {
+/* Orientación horizontal en móviles */
+@media screen and (max-height: 500px) and (orientation: landscape) {
   .banner-container {
-    height: 200px;
-    max-width: 100%;
+    width: 450px;
+    height: 140px;
+    margin: 0;
+    margin-left: 10px; /* Alinear a la izquierda */
+  }
+  
+  .description-container {
+    padding: 8px;
+    max-width: 65%;
   }
   
   .description-content {
     padding: 10px 14px;
     font-size: 0.8rem;
+    line-height: 1.3;
+  }
+  
+  /* Posiciones para landscape */
+  .v-top {
+    top: 8px;
+  }
+  
+  .v-bottom {
+    bottom: 8px;
+  }
+  
+  .h-left {
+    left: 8px;
+  }
+  
+  .h-right {
+    right: 8px;
   }
 }
 
-/* Optimizaciones para dispositivos táctiles */
+/* Deshabilitar efectos hover en dispositivos táctiles */
 @media (hover: none) and (pointer: coarse) {
-  .banner-container:active {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(54, 140, 68, 0.1);
-  }
-  
-  .banner-container:active .banner-img {
-    transform: scale(1.01);
-  }
-  
-  .banner-container:active .description-container {
-    transform: translateY(-1px);
-  }
-  
   .banner-container:hover {
-    transform: none;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     border-color: #e0e0e0;
+    transform: none;
   }
   
   .banner-container:hover .banner-image {
     transform: none;
   }
   
-  .banner-container:hover .description-container {
+  .banner-container:hover .banner-img {
     transform: none;
   }
-}
-
-/* Efecto de carga suave para la imagen */
-.banner-img {
-  opacity: 1;
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-/* Si la imagen no está cargada aún */
-.banner-img:not([src]),
-.banner-img[src=""] {
-  opacity: 0;
+  
+  .banner-container:hover .description-container {
+    transform: none;
+    opacity: 0.98;
+  }
+  
+  .banner-container:hover .description-content {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-color: #e0e0e0;
+  }
+  
+  /* Deshabilitar animaciones de posiciones */
+  .banner-container:hover .v-top {
+    top: 28px;
+  }
+  
+  .banner-container:hover .v-bottom {
+    bottom: 28px;
+  }
+  
+  .banner-container:hover .h-left {
+    left: 28px;
+  }
+  
+  .banner-container:hover .h-right {
+    right: 28px;
+  }
 }

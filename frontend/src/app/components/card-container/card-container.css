@@ -108,7 +108,7 @@
   }
   
   .banner-section {
-    min-height: 180px;
+    min-height: 150px;
     width: 100%;
     padding: 0;
   }
@@ -150,7 +150,7 @@
   .banner-section {
     width: 100%;
     max-width: 100%;
-    min-height: 160px;
+    min-height: 120px;
     padding: 0;
     margin: 0 auto;
   }
@@ -170,7 +170,7 @@
   }
   
   .layout-container {
-    gap: 15px;
+    gap: 10px;
   }
   
   /* Promo y card lado a lado */
@@ -194,7 +194,7 @@
   .banner-section {
     width: 100%;
     max-width: 100%;
-    min-height: 140px;
+    min-height: 100px;
     padding: 0;
     margin: 0 auto;
   }
@@ -209,63 +209,6 @@
 
 /* Móvil estándar (base) - 480px a 539px */
 @media (max-width: 539px) {
-  .container-wrapper {
-    padding: 20px 5px;
-  }
-  
-  .layout-container {
-    gap: 12px;
-  }
-  
-  /* Promo y card lado a lado */
-  .left-section {
-    width: 100%;
-    min-width: 100%;
-    flex-direction: row;
-    gap: 8px;
-  }
-  
-  .promo-section {
-    flex: 1;
-    width: auto;
-  }
-  
-  .card-section {
-    flex: 1;
-    width: auto;
-  }
-  
-  .banner-section {
-    width: 100%;
-    max-width: 100%;
-    min-height: 130px;
-    padding: 0;
-    margin: 0 auto;
-  }
-  
-  .carousel-section {
-    width: 100%;
-    max-width: 100%;
-    padding: 8px;
-    margin: 0 auto;
-  }
-  
-  /* Ajustar sombras para móvil */
-  .carousel-section,
-  .banner-section,
-  .promo-section {
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
-  }
-}
-  .carousel-section,
-  .banner-section,
-  .promo-section {
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-  }
-
-
-/* Móvil pequeño (xs) - 360px a 479px */
-@media (max-width: 479px) {
   .container-wrapper {
     padding: 15px 4px;
   }
@@ -295,7 +238,7 @@
   .banner-section {
     width: 100%;
     max-width: 100%;
-    min-height: 120px;
+    min-height: 90px;
     padding: 0;
     margin: 0 auto;
   }
@@ -303,13 +246,21 @@
   .carousel-section {
     width: 100%;
     max-width: 100%;
-    padding: 6px;
+    padding: 8px;
     margin: 0 auto;
+  }
+  
+  /* Ajustar sombras para móvil */
+  .carousel-section,
+  .banner-section,
+  .promo-section {
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
   }
 }
 
-/* Móvil muy pequeño (2xs) - menos de 360px */
-@media (max-width: 359px) {
+
+/* Móvil pequeño (xs) - 360px a 479px */
+@media (max-width: 479px) {
   .container-wrapper {
     padding: 12px 3px;
   }
@@ -323,7 +274,7 @@
     width: 100%;
     min-width: 100%;
     flex-direction: row;
-    gap: 5px;
+    gap: 4px;
   }
   
   .promo-section {
@@ -339,7 +290,51 @@
   .banner-section {
     width: 100%;
     max-width: 100%;
-    min-height: 110px;
+    min-height: 80px;
+    padding: 0;
+    margin: 0 auto;
+  }
+  
+  .carousel-section {
+    width: 100%;
+    max-width: 100%;
+    padding: 6px;
+    margin: 0 auto;
+  }
+}
+
+/* Móvil muy pequeño (2xs) - menos de 360px */
+@media (max-width: 359px) {
+  .container-wrapper {
+    padding: 10px 2px;
+  }
+  
+  .layout-container {
+    gap: 6px;
+  }
+  
+  /* Promo y card lado a lado */
+  .left-section {
+    width: 100%;
+    min-width: 100%;
+    flex-direction: row;
+    gap: 3px;
+  }
+  
+  .promo-section {
+    flex: 1;
+    width: auto;
+  }
+  
+  .card-section {
+    flex: 1;
+    width: auto;
+  }
+  
+  .banner-section {
+    width: 100%;
+    max-width: 100%;
+    min-height: 70px;
     padding: 0;
     margin: 0 auto;
   }
@@ -378,8 +373,8 @@
   }
   
   .banner-section {
-    min-height: 100px;
-    max-height: 130px;
+    min-height: 80px;
+    max-height: 100px;
     width: 90%; /* En landscape también reducir */
     margin: 0 auto;
   }

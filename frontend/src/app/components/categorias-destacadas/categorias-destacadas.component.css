@@ -277,106 +277,22 @@
   font-family: var(--font-primary);
 }
 
-/* ============================================
-   MEDIA QUERIES RESPONSIVE - Optimizadas
-   ============================================ */
+/* ==================== */
+/* RESPONSIVE DESIGN */
+/* ==================== */
 
-/* Para móviles muy pequeños (hasta 359px) */
-@media screen and (max-width: 359px) {
-  .categorias-section {
-    padding: 1.5rem 0.75rem;
-  }
-  
-  .categorias-wrapper {
-    padding: 0 10px;
+/* Tablets grandes y laptops pequeñas */
+@media (max-width: 1200px) {
+  .categorias-grid {
+    grid-auto-columns: calc(100% / 9); /* 9 categorías */
   }
   
   .categorias-container {
-    padding: 16px 30px;
-    border-radius: 6px;
+    padding: 20px 40px 28px 40px;
   }
   
   .section-title {
-    font-size: 1.5rem;
-  }
-  
-  .section-subtitle {
-    font-size: 0.9rem;
-  }
-  
-  .categorias-grid {
-    grid-auto-columns: calc(100% / 3);
-  }
-  
-  .categoria-item {
-    padding: 12px 8px;
-  }
-  
-  .categoria-image-container {
-    width: 52px;
-    height: 52px;
-    margin-bottom: 8px;
-  }
-  
-  .categoria-icon {
-    padding: 12px;
-  }
-  
-  .categoria-name h3 {
-    font-size: 0.8rem;
-  }
-  
-  .carrusel-btn {
-    width: 36px;
-    height: 36px;
-    display: none;
-  }
-  
-  .btn-icon {
-    font-size: 18px;
-  }
-  
-  .carrusel-indicators {
-    margin-top: 16px;
-  }
-}
-
-/* Móviles (360px - 479px) */
-@media (min-width: 360px) and (max-width: 479px) {
-  .categorias-container {
-    padding: 16px 35px;
-  }
-  
-  .categorias-grid {
-    grid-auto-columns: calc(100% / 4);
-  }
-  
-  .categoria-item {
-    padding: 12px 8px;
-  }
-  
-  .categoria-image-container {
-    width: 56px;
-    height: 56px;
-  }
-  
-  .categoria-name h3 {
-    font-size: 0.82rem;
-  }
-  
-  .carrusel-btn {
-    display: none;
-  }
-}
-
-/* Tablet pequeña (480px - 639px) */
-@media (min-width: 480px) and (max-width: 639px) {
-  .categorias-container {
-    padding: 20px 45px;
-  }
-  
-  .categorias-grid {
-    grid-auto-columns: calc(100% / 5);
+    font-size: 1.8rem;
   }
   
   .categoria-image-container {
@@ -387,223 +303,28 @@
   .categoria-name h3 {
     font-size: 0.85rem;
   }
-  
-  .carrusel-btn {
-    display: none;
-  }
 }
 
-/* Tablet (640px - 767px) */
-@media (min-width: 640px) and (max-width: 767px) {
+/* Tablets en modo retrato */
+@media (max-width: 768px) {
   .categorias-section {
-    padding: 2rem 1.5rem;
-  }
-  
-  .categorias-container {
-    padding: 20px 50px;
-  }
-  
-  .categorias-grid {
-    grid-auto-columns: calc(100% / 6);
-  }
-  
-  .categoria-image-container {
-    width: 64px;
-    height: 64px;
-  }
-  
-  .categoria-name h3 {
-    font-size: 0.88rem;
-  }
-  
-  .carrusel-btn {
-    display: none;
-  }
-}
-
-/* Tablet grande (768px - 1023px) */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .categorias-section {
-    max-width: 1200px;
-    padding: 2.5rem 2rem;
-  }
-  
-  .categorias-container {
-    padding: 24px 60px;
-    max-width: 1200px;
-  }
-  
-  .categorias-grid {
-    grid-auto-columns: calc(100% / 6);
-  }
-  
-  .categoria-item {
-    padding: 16px 12px;
-  }
-  
-  .categoria-image-container {
-    width: 68px;
-    height: 68px;
-  }
-  
-  .categoria-icon {
-    padding: 16px;
-  }
-  
-  .categoria-name h3 {
-    font-size: 0.9rem;
-  }
-  
-  .carrusel-btn {
-    display: flex;
-    width: 42px;
-    height: 42px;
-  }
-  
-  .carrusel-btn.prev-btn {
-    left: 5px;
-  }
-  
-  .carrusel-btn.next-btn {
-    right: 5px;
-  }
-}
-
-/* Desktop pequeño (1024px - 1199px) */
-@media (min-width: 1024px) and (max-width: 1199px) {
-  .categorias-section {
-    max-width: 1300px;
-    padding: 3rem 2rem;
-  }
-  
-  .categorias-container {
-    max-width: 1300px;
-    padding: 24px 70px;
-  }
-  
-  .categorias-grid {
-    grid-auto-columns: calc(100% / 8);
-  }
-  
-  .categoria-image-container {
-    width: 72px;
-    height: 72px;
-  }
-  
-  .categoria-name h3 {
-    font-size: 0.92rem;
-  }
-  
-  .carrusel-btn {
-    width: 44px;
-    height: 44px;
-  }
-  
-  .carrusel-btn.prev-btn {
-    left: 15px;
-  }
-  
-  .carrusel-btn.next-btn {
-    right: 15px;
-  }
-}
-
-/* Desktop (1200px y más) - 11 columnas */
-@media (min-width: 1200px) {
-  .categorias-section {
-    max-width: 1500px;
     padding: 20px;
-    margin: 20px auto 0;
-  }
-  
-  .categorias-container {
-    max-width: 1500px;
   }
   
   .categorias-grid {
-    grid-auto-columns: calc(100% / 11);
+    grid-auto-columns: calc(100% / 6); /* 6 categorías */
   }
   
-  .categoria-item {
-    padding: 20px 16px;
+  .categorias-container {
+    padding: 16px 30px 24px 30px;
   }
   
-  .categoria-image-container {
-    width: 76px;
-    height: 76px;
+  .section-title {
+    font-size: 1.6rem;
   }
   
-  .categoria-icon {
-    padding: 18px;
-  }
-  
-  .categoria-name h3 {
+  .section-subtitle {
     font-size: 0.95rem;
-  }
-  
-  .carrusel-btn {
-    width: 48px;
-    height: 48px;
-  }
-  
-  .carrusel-btn.prev-btn {
-    left: 20px;
-  }
-  
-  .carrusel-btn.next-btn {
-    right: 20px;
-  }
-}
-
-/* Desktop extra grande (1400px y más) */
-@media (min-width: 1400px) {
-  .categorias-section {
-    max-width: 1500px;
-  }
-  
-  .categorias-container {
-    max-width: 1500px;
-  }
-  
-  .categorias-grid {
-    grid-auto-columns: calc(100% / 11);
-  }
-  
-  .categoria-item {
-    padding: 22px 18px;
-  }
-  
-  .categoria-image-container {
-    width: 80px;
-    height: 80px;
-  }
-  
-  .categoria-icon {
-    padding: 20px;
-  }
-  
-  .categoria-name h3 {
-    font-size: 1rem;
-  }
-  
-  .carrusel-btn {
-    width: 52px;
-    height: 52px;
-  }
-  
-  .carrusel-btn.prev-btn {
-    left: 25px;
-  }
-  
-  .carrusel-btn.next-btn {
-    right: 25px;
-  }
-}
-
-/* Para orientación landscape en móviles */
-@media screen and (max-width: 767px) and (orientation: landscape) {
-  .categorias-grid {
-    grid-auto-columns: calc(100% / 5);
   }
   
   .categoria-image-container {
@@ -612,24 +333,191 @@
   }
   
   .categoria-name h3 {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
   
-  .carrusel-indicators {
-    margin-top: 20px;
+  .carrusel-btn {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .btn-icon {
+    font-size: 18px;
   }
 }
 
-/* Optimización para dispositivos táctiles */
+/* Móviles grandes */
+@media (max-width: 576px) {
+  .categorias-section {
+    padding: 16px;
+    width: 364px;
+    margin: 0;
+    margin-left: 10px; /* Alinear a la izquierda */
+  }
+  
+  .categorias-grid {
+    grid-auto-columns: calc(100% / 4); /* 4 categorías */
+  }
+  
+  .categorias-container {
+    padding: 12px 20px 20px 20px;
+  }
+  
+  .section-title {
+    font-size: 1.4rem;
+  }
+  
+  .section-subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .categoria-image-container {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .categoria-name h3 {
+    font-size: 0.75rem;
+  }
+  
+  .carrusel-btn {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .btn-icon {
+    font-size: 16px;
+  }
+  
+  .carrusel-indicators {
+    margin-top: 16px;
+  }
+}
+
+/* iPhone y móviles pequeños */
+@media (max-width: 375px) {
+  .categorias-section {
+    width: 300px;
+    margin: 0;
+    margin-left: 10px; /* Alinear a la izquierda */
+    padding: 12px;
+  }
+  
+  .categorias-grid {
+    grid-auto-columns: calc(100% / 3); /* 3 categorías */
+  }
+  
+  .categorias-container {
+    padding: 10px 16px 16px 16px;
+  }
+  
+  .section-title {
+    font-size: 1.2rem;
+  }
+  
+  .section-subtitle {
+    font-size: 0.85rem;
+  }
+  
+  .categoria-image-container {
+    width: 52px;
+    height: 52px;
+  }
+  
+  .categoria-name h3 {
+    font-size: 0.7rem;
+  }
+  
+  .carrusel-btn {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .btn-icon {
+    font-size: 14px;
+  }
+}
+
+/* iPhone SE y dispositivos muy pequeños */
+@media (max-width: 320px) {
+  .categorias-section {
+    width: 250px;
+    margin: 0;
+    margin-left: 10px; /* Alinear a la izquierda */
+    padding: 10px;
+  }
+  
+  .categorias-grid {
+    grid-auto-columns: calc(100% / 2); /* 2 categorías */
+  }
+  
+  .categorias-container {
+    padding: 8px 12px 14px 12px;
+  }
+  
+  .section-title {
+    font-size: 1.1rem;
+  }
+  
+  .section-subtitle {
+    font-size: 0.8rem;
+  }
+  
+  .categoria-image-container {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .categoria-name h3 {
+    font-size: 0.65rem;
+  }
+  
+  .carrusel-btn {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .btn-icon {
+    font-size: 12px;
+  }
+}
+
+/* Orientación horizontal en móviles */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  .categorias-section {
+    width: 450px;
+    margin: 0;
+    margin-left: 10px; /* Alinear a la izquierda */
+    padding: 8px;
+  }
+  
+  .categorias-grid {
+    grid-auto-columns: calc(100% / 5); /* 5 categorías */
+  }
+  
+  .categorias-container {
+    padding: 10px 20px 16px 20px;
+  }
+  
+  .section-title {
+    font-size: 1.3rem;
+  }
+  
+  .categoria-image-container {
+    width: 58px;
+    height: 58px;
+  }
+  
+  .categoria-name h3 {
+    font-size: 0.75rem;
+  }
+}
+
+/* Deshabilitar efectos hover en dispositivos táctiles */
 @media (hover: none) and (pointer: coarse) {
   .categoria-item:hover {
     background-color: transparent;
     border-left-color: transparent;
-  }
-  
-  .categoria-item:active {
-    background-color: rgba(54, 140, 68, 0.08);
-    border-left-color: #368c44;
   }
   
   .categoria-card:hover .categoria-image-container {
@@ -637,110 +525,21 @@
     box-shadow: none;
   }
   
-  .categoria-card:active .categoria-image-container {
-    border-color: #368c44;
-    box-shadow: 0 4px 12px rgba(54, 140, 68, 0.15);
+  .categoria-card:hover .categoria-icon {
+    transform: none;
   }
   
   .categoria-card:hover .categoria-name h3 {
     color: #2d3748;
   }
   
-  .categoria-card:active .categoria-name h3 {
-    color: #368c44;
+  .carrusel-btn:hover {
+    background: white;
+    border-color: #e0e0e0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   
-  .carrusel-btn:active {
-    background-color: #368c44;
-    border-color: #368c44;
-    transform: translateY(-50%) scale(0.95);
+  .carrusel-btn:hover .btn-icon {
+    color: #4a5568;
   }
-  
-  .carrusel-btn:active .btn-icon {
-    color: white;
-  }
-}
-
-/* Efecto de desvanecimiento en los bordes */
-.categorias-container::before,
-.categorias-container::after {
-  content: '';
-  position: absolute;
-  top: 15px;
-  bottom: 25px;
-  width: 60px;
-  pointer-events: none;
-  z-index: 10;
-  opacity: 1;
-  transition: opacity 0.3s ease;
-}
-
-.categorias-container::before {
-  left: 0;
-  background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
-}
-
-.categorias-container::after {
-  right: 0;
-  background: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
-}
-
-/* Asegurar que los botones estén sobre el efecto de desvanecimiento */
-.carrusel-btn {
-  z-index: 20;
-}
-
-/* Clases para manejar visibilidad de botones */
-.carrusel-btn.hidden {
-  opacity: 0.3;
-  cursor: not-allowed;
-  visibility: visible;
-}
-
-.carrusel-btn.hidden:hover {
-  background-color: white;
-  border-color: #ddd;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.carrusel-btn.hidden:hover .btn-icon {
-  color: #4a5568;
-}
-
-/* Animación de entrada suave */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.carrusel-btn {
-  animation: fadeIn 0.3s ease;
-}
-
-/* Animación suave para los items */
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.categoria-item {
-  animation: slideIn 0.4s ease forwards;
-}
-
-.categoria-item:nth-child(odd) {
-  animation-delay: 0.05s;
-}
-
-.categoria-item:nth-child(even) {
-  animation-delay: 0.1s;
 }
