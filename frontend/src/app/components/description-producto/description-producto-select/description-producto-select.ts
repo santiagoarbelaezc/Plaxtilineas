@@ -28,6 +28,9 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   varianteSeleccionada: Variante | null = null;
   descripcionBase: string = '';
   productoBaseNombre: string = '';
+
+  zoomX = 0;
+  zoomY = 0;
   
   // Propiedades para cantidad y precio
   cantidadSeleccionada: number = 1;
@@ -437,5 +440,30 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     } finally {
       document.body.removeChild(textarea);
     }
+  }
+
+  
+  /**
+   * Calcula la posición del zoom basada en la posición del cursor
+   */
+  onImageMouseMove(event: MouseEvent): void {
+    const container = event.currentTarget as HTMLElement;
+    const rect = container.getBoundingClientRect();
+    
+    // Calcula la posición relativa del cursor (0 a 1)
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+    
+    // Convierte a porcentaje para la traslación (0% a 100%)
+    this.zoomX = x * 100;
+    this.zoomY = y * 100;
+  }
+
+  /**
+   * Reinicia la posición del zoom cuando el cursor sale
+   */
+  onImageMouseLeave(): void {
+    this.zoomX = 50;
+    this.zoomY = 50;
   }
 }

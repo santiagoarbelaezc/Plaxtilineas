@@ -33,6 +33,11 @@ export class ProductListComponent implements OnInit {
   mensajeEstado: string = '';
   private isInitialLoad = true;
 
+  // Propiedades para paginación
+  currentPage = 1;
+  itemsPerPage = 9;
+  totalPages = 0;
+
   // Propiedades para ProductoBackground
   mostrarProductoBackground = false;
   tituloProductoBackground: string = '';
@@ -161,9 +166,11 @@ export class ProductListComponent implements OnInit {
     setTimeout(() => {
       this.productos = data;
       this.cargando = false;
+      this.currentPage = 1; // Resetear a primera página
+      this.totalPages = Math.ceil(data.length / this.itemsPerPage);
       this.mensajeEstado = data.length > 0 ? mensaje : 'No se encontraron productos';
       
-      console.log(`✅ ${data.length} productos cargados`);
+      console.log(`✅ ${data.length} productos cargados (${this.totalPages} páginas)`);
       
       // Solo hacer scroll si hay productos
       if (data.length > 0) {
@@ -214,6 +221,62 @@ export class ProductListComponent implements OnInit {
     const precioFormateado = precioEntero.toLocaleString('es-ES');
     
     return `$ ${precioFormateado}`;
+  }
+
+  // Getter para productos de la página actual
+  get productosPaginaActual(): ProductoMenu[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.productos.slice(startIndex, endIndex);
+  }
+
+  // Métodos de paginación
+  cambiarPagina(pagina: number): void {
+    if (pagina >= 1 && pagina <= this.totalPages) {
+      this.currentPage = pagina;
+      this.hacerScrollSuave();
+    }
+  }
+
+  paginaAnterior(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.hacerScrollSuave();
+    }
+  }
+
+  paginaSiguiente(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.hacerScrollSuave();
+    }
+  }
+
+  // Método para obtener el rango de productos mostrado
+  get rangoProductos(): string {
+    if (this.productos.length === 0) return '';
+    
+    const start = (this.currentPage - 1) * this.itemsPerPage + 1;
+    const end = Math.min(this.currentPage * this.itemsPerPage, this.productos.length);
+    return `${start}-${end}`;
+  }
+
+  // Método para obtener páginas para mostrar en controles
+  get paginasVisibles(): number[] {
+    const paginas: number[] = [];
+    const maxPaginasVisibles = 5;
+    let startPage = Math.max(1, this.currentPage - Math.floor(maxPaginasVisibles / 2));
+    let endPage = Math.min(this.totalPages, startPage + maxPaginasVisibles - 1);
+
+    if (endPage - startPage + 1 < maxPaginasVisibles) {
+      startPage = Math.max(1, endPage - maxPaginasVisibles + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      paginas.push(i);
+    }
+
+    return paginas;
   }
 
   // Método público para recargar productos (útil para botones externos)

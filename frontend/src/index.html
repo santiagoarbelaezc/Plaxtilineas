@@ -4,16 +4,47 @@
   <meta charset="utf-8">
   <title>Plaxtilineas</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
   
+  <!-- FUENTE MONTSEERRAT (solo esta) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- FAVICON desde assets -->
-  <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
-  
-  <!-- Opcional: añadir version para evitar cache -->
+  <!-- FAVICON con cache busting -->
   <link rel="icon" type="image/x-icon" href="assets/favicon.ico?v=1.0">
+  
+  <!-- Apple Touch Icon -->
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  
+  <!-- Manifest para PWA -->
+  <link rel="manifest" href="manifest.webmanifest">
+  
+  <!-- Meta tags para SEO y redes sociales -->
+  <meta name="description" content="Plaxtilineas - Tu solución en plásticos y líneas">
+  <meta name="theme-color" content="#368C44">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Plaxtilineas">
+  <meta property="og:description" content="Tu solución en plásticos y líneas">
+  <meta property="og:image" content="assets/og-image.jpg">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Plaxtilineas">
+  <meta name="twitter:description" content="Tu solución en plásticos y líneas">
+  <meta name="twitter:image" content="assets/twitter-image.jpg">
 </head>
 <body>
+  <noscript>
+    <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+      <h1>JavaScript requerido</h1>
+      <p>Esta aplicación web requiere JavaScript para funcionar correctamente.</p>
+      <p>Por favor, habilita JavaScript en tu navegador y recarga la página.</p>
+    </div>
+  </noscript>
+  
   <app-root></app-root>
 </body>
 </html>

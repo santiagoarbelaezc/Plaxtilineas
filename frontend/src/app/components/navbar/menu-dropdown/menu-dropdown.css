@@ -9,6 +9,10 @@
 /* === TRIGGER (ENLACE PRODUCTOS) === */
 .dropdown-trigger {
   position: relative;
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  letter-spacing: 0.01em;
 }
 
 .dropdown-trigger.nav-link::after {
@@ -99,8 +103,10 @@
 
 .categoria-name {
   color: #2d3748;
-  font-weight: 600;
+  font-weight: var(--font-weight-medium);
   font-size: 0.9rem;
+  font-family: var(--font-primary);
+  letter-spacing: 0.01em;
   transition: all 0.3s ease;
   display: inline-block;
 }
@@ -126,6 +132,9 @@
   color: #666;
   text-decoration: none;
   font-size: 0.8rem;
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: 0.01em;
   padding: 6px 8px;
   border-radius: 4px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -155,7 +164,7 @@
   background-color: rgba(54, 140, 68, 0.08);
   color: #368c44;
   padding-left: 12px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .subcategoria-dot {
@@ -171,6 +180,9 @@
   color: #a0aec0;
   font-size: 0.75rem;
   font-style: italic;
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: 0.01em;
 }
 
 /* === OVERLAY === */
@@ -231,8 +243,10 @@
     width: 100%;
     padding: 18px 28px;
     margin-left: 0;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 14px;
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-regular);
+    letter-spacing: 0.01em;
     text-decoration: none;
     color: #4a5568;
     border: none;
@@ -302,8 +316,10 @@
   .dropdown-trigger {
     padding: 16px 24px;
     margin-left: 0;
-    font-size: 15.5px;
-    font-weight: 600;
+    font-size: 13.5px;
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-regular);
+    letter-spacing: 0.01em;
   }
 
   .dropdown-menu {
@@ -316,7 +332,9 @@
   .dropdown-trigger {
     padding: 14px 20px;
     margin-left: 0;
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 13px;
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-regular);
+    letter-spacing: 0.01em;
   }
 }

@@ -1,112 +1,109 @@
-/* Sección del mapa mejorada */
+/* Sección del mapa - Estilo actualizado */
 .contenidoM.mapa {
-  padding: 80px 20px;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  max-width: 1500px;
+  background-color: var(--white);
   position: relative;
-  overflow: hidden;
+  padding: 40px 26px;
+  border-radius: 12px;
+  margin: 40px auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  font-family: var(--font-primary);
 }
 
 .contenidoM.mapa::before {
   content: '';
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #368c44, #25d366);
-  z-index: 1;
+  left: 20px;
+  right: 20px;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(54, 140, 68, 0.2), 
+    transparent);
+  border-radius: 0 0 2px 2px;
 }
 
 .title {
   text-align: center;
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #1a202c;
+  font-size: 2rem;
+  font-weight: 500;
+  color: #2d3748;
   margin-bottom: 16px;
   position: relative;
-  font-family: 'Segoe UI', -apple-system, sans-serif;
-  letter-spacing: -0.5px;
-  line-height: 1.2;
+  font-family: var(--font-primary);
+  letter-spacing: 0.01em;
+  display: inline-block;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .title::after {
   content: '';
   position: absolute;
-  bottom: -8px;
+  bottom: -10px;
   left: 50%;
   transform: translateX(-50%);
-  width: 80px;
-  height: 4px;
+  width: 60px;
+  height: 3px;
   background: linear-gradient(90deg, #368c44, #25d366);
   border-radius: 2px;
 }
 
 .map-subtitle {
   text-align: center;
-  font-size: 1.125rem;
-  color: #4a5568;
-  margin-bottom: 40px;
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 32px;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
   line-height: 1.6;
   padding: 0 20px;
+  font-weight: 400;
+  font-family: var(--font-primary);
+  letter-spacing: 0.01em;
 }
 
 .map-subtitle strong {
   color: #368c44;
-  font-weight: 600;
-  background: linear-gradient(90deg, #368c44, #25d366);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-weight: var(--font-weight-medium);
 }
 
-/* Contenedor del mapa con efectos modernos */
+/* Contenedor del mapa */
 .map-container {
-  max-width: 1000px;
-  margin: 0 auto 40px;
-  border-radius: 16px;
+  max-width: 1400px;
+  margin: 0 auto 32px;
+  border-radius: 10px;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.map-container::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(54, 140, 68, 0.1), rgba(37, 211, 102, 0.05));
-  z-index: 1;
-  pointer-events: none;
-  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(224, 224, 224, 0.3);
 }
 
 .map-container:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(54, 140, 68, 0.12);
+  border-color: rgba(54, 140, 68, 0.2);
 }
 
 .map-container iframe {
   display: block;
   border: none;
   width: 100%;
-  height: 500px;
+  height: 450px;
   position: relative;
   z-index: 2;
-  transition: all 0.4s ease;
+  transition: all 0.3s ease;
 }
 
 /* Botones de acción */
 .map-buttons {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  max-width: 1000px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 20px;
 }
 
 .btn2 {
@@ -114,46 +111,31 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 16px 36px;
-  background: linear-gradient(135deg, #368c44, #25d366);
+  padding: 14px 32px;
+  background: #368c44;
   color: white;
   text-decoration: none;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 1.125rem;
-  font-family: 'Segoe UI', -apple-system, sans-serif;
-  letter-spacing: 0.3px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 1rem;
+  font-family: var(--font-primary);
+  letter-spacing: 0.01em;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  border: none;
+  border: 2px solid transparent;
   cursor: pointer;
-  box-shadow: 0 10px 30px rgba(54, 140, 68, 0.3);
-  min-width: 200px;
-}
-
-.btn2::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.7s ease;
+  box-shadow: 0 4px 12px rgba(54, 140, 68, 0.2);
 }
 
 .btn2:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(54, 140, 68, 0.4);
-}
-
-.btn2:hover::before {
-  left: 100%;
+  transform: translateY(-3px);
+  background: #2d7a3a;
+  box-shadow: 0 6px 20px rgba(54, 140, 68, 0.3);
 }
 
 .btn2:active {
-  transform: translateY(-2px) scale(0.98);
+  transform: translateY(-1px);
 }
 
 .spn2 {
@@ -164,35 +146,51 @@
   gap: 8px;
 }
 
-.spn2::before {
-  content: '📍';
-  font-size: 1.2rem;
-  transition: transform 0.3s ease;
-}
-
-.btn2:hover .spn2::before {
-  transform: scale(1.2) rotate(15deg);
-}
-
 /* Responsive Design */
+@media (max-width: 1200px) {
+  .contenidoM.mapa {
+    max-width: 1300px;
+    padding: 36px 24px;
+  }
+  
+  .map-container {
+    max-width: 1200px;
+  }
+}
+
+@media (max-width: 992px) {
+  .contenidoM.mapa {
+    max-width: 1000px;
+    padding: 32px 20px;
+    margin: 30px auto;
+  }
+  
+  .map-container {
+    max-width: 900px;
+  }
+}
+
 @media (max-width: 768px) {
   .contenidoM.mapa {
-    padding: 60px 16px;
+    padding: 28px 16px;
+    margin: 24px auto;
+    border-radius: 10px;
   }
   
   .title {
-    font-size: 2rem;
+    font-size: 1.6rem;
     padding: 0 16px;
   }
   
   .map-subtitle {
-    font-size: 1rem;
+    font-size: 0.95rem;
+    margin-bottom: 24px;
     padding: 0 16px;
   }
   
   .map-container {
-    border-radius: 12px;
-    margin-bottom: 32px;
+    border-radius: 8px;
+    margin-bottom: 24px;
   }
   
   .map-container iframe {
@@ -202,19 +200,27 @@
   .map-buttons {
     flex-direction: column;
     align-items: center;
-    gap: 16px;
   }
   
   .btn2 {
     width: 100%;
     max-width: 300px;
-    padding: 14px 28px;
+    padding: 12px 24px;
   }
 }
 
 @media (max-width: 480px) {
+  .contenidoM.mapa {
+    padding: 24px 12px;
+    margin: 20px auto;
+  }
+  
   .title {
-    font-size: 1.75rem;
+    font-size: 1.4rem;
+  }
+  
+  .map-subtitle {
+    font-size: 0.9rem;
   }
   
   .map-container iframe {
@@ -222,17 +228,35 @@
   }
   
   .btn2 {
-    padding: 12px 24px;
-    font-size: 1rem;
+    padding: 12px 20px;
+    font-size: 0.95rem;
   }
 }
 
-/* Efecto de carga suave */
-.map-container iframe {
-  opacity: 0;
-  animation: fadeInUp 0.8s ease forwards 0.3s;
+@media (max-width: 359px) {
+  .contenidoM.mapa {
+    padding: 20px 10px;
+  }
+  
+  .title {
+    font-size: 1.3rem;
+  }
+  
+  .map-subtitle {
+    font-size: 0.85rem;
+  }
+  
+  .map-container iframe {
+    height: 250px;
+  }
+  
+  .btn2 {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
 }
 
+/* Animación de entrada */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -244,14 +268,34 @@
   }
 }
 
-/* Accesibilidad mejorada */
-.btn2:focus-visible {
-  outline: 3px solid #368c44;
-  outline-offset: 3px;
-  box-shadow: 0 0 0 6px rgba(54, 140, 68, 0.2);
+.map-container iframe {
+  animation: fadeInUp 0.5s ease forwards;
+  opacity: 0;
 }
 
-.map-container:focus-within {
-  outline: 3px solid #368c44;
-  outline-offset: 3px;
+/* Optimización para dispositivos táctiles */
+@media (hover: none) and (pointer: coarse) {
+  .map-container:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .map-container:active {
+    transform: scale(0.98);
+  }
+  
+  .btn2:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(54, 140, 68, 0.2);
+  }
+  
+  .btn2:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Accesibilidad mejorada */
+.btn2:focus-visible {
+  outline: 2px solid #368c44;
+  outline-offset: 2px;
 }

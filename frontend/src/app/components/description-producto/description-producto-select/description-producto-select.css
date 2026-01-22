@@ -1,6 +1,6 @@
 /* ====== CONTENEDOR PRINCIPAL CON TAMAÑO FIJO ====== */
 .description-producto-container {
-  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif;
+  font-family: var(--font-primary);
   letter-spacing: -0.01em;
   line-height: 1.4;
   color: #2d3748;
@@ -18,7 +18,7 @@
 /* ====== LAYOUT PRINCIPAL CON DOS COLUMNAS FIJAS ====== */
 .producto-layout-container {
   display: grid;
-  grid-template-columns: 350px 1fr;
+  grid-template-columns: 500px 1fr;
   gap: 40px;
   min-height: 700px;
   margin-top: 20px;
@@ -46,22 +46,34 @@
   gap: 25px;
 }
 
-/* Contenedor de imagen fija */
-.producto-imagen-fixed-container {
+/* ========== CONTENEDOR IMAGEN PRINCIPAL CON ZOOM ========== */
+.imagen-principal-wrapper {
   width: 100%;
-  height: 450px;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(229, 231, 235, 0.8);
-  cursor: pointer;
-  transition: transform 0.3s ease;
-  background: white;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
-.producto-imagen-fixed-container:hover {
-  transform: translateY(-4px);
+.producto-imagen-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  background: white;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  cursor: crosshair;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.producto-imagen-container:hover {
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+  border-color: rgba(229, 231, 235, 0.9);
 }
 
 .producto-imagen-wrapper {
@@ -69,19 +81,25 @@
   height: 100%;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.producto-imagen-fixed {
+.producto-imagen {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  object-position: center;
+  transition: transform 0.2s linear;
+  transform-origin: var(--zoom-x, 50%) var(--zoom-y, 50%);
+  display: block;
   padding: 20px;
   background: white;
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.producto-imagen-fixed-container:hover .producto-imagen-fixed {
-  transform: scale(1.05);
+.producto-imagen-container:hover .producto-imagen {
+  transform: scale(2);
 }
 
 .imagen-overlay-fixed {
@@ -105,7 +123,7 @@
   padding: 8px 12px;
   border-radius: 8px;
   font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -113,9 +131,10 @@
   opacity: 0;
   transform: translateY(10px);
   transition: all 0.3s ease;
+  font-family: var(--font-primary);
 }
 
-.producto-imagen-fixed-container:hover .imagen-zoom-indicator {
+.producto-imagen-container:hover .imagen-zoom-indicator {
   opacity: 1;
   transform: translateY(0);
 }
@@ -143,7 +162,8 @@
 .precio-fixed-label {
   font-size: 0.95rem;
   color: #666;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-primary);
 }
 
 .precio-fixed-badge {
@@ -152,8 +172,9 @@
   padding: 4px 10px;
   border-radius: 20px;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   animation: pulse 2s infinite;
+  font-family: var(--font-primary);
 }
 
 @keyframes pulse {
@@ -171,18 +192,20 @@
 
 .precio-simbolo-fixed {
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: #368c44;
+  font-family: var(--font-primary);
 }
 
 .precio-numero-fixed {
   font-size: 2.5rem;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   background: linear-gradient(135deg, #2d6a4f, #1ba852);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.02em;
+  font-family: var(--font-primary);
 }
 
 .precio-fixed-nota {
@@ -191,6 +214,7 @@
   opacity: 0.8;
   padding-top: 8px;
   border-top: 1px solid rgba(229, 231, 235, 0.6);
+  font-family: var(--font-primary);
 }
 
 /* Acciones rápidas en columna izquierda */
@@ -211,11 +235,12 @@
   padding: 16px 24px;
   border-radius: 12px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: none;
   cursor: pointer;
   box-shadow: 0 6px 20px rgba(27, 168, 82, 0.2);
+  font-family: var(--font-primary);
 }
 
 .btn-whatsapp-fixed:hover {
@@ -235,9 +260,10 @@
   padding: 16px 24px;
   border-radius: 12px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
+  font-family: var(--font-primary);
 }
 
 .btn-compartir-fixed:hover {
@@ -253,6 +279,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  font-family: var(--font-primary);
 }
 
 .btn-icon-svg {
@@ -269,7 +296,8 @@
 }
 
 .btn-text-fixed {
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-primary);
 }
 
 .mensaje-copiado-fixed {
@@ -278,10 +306,11 @@
   padding: 12px 16px;
   border-radius: 8px;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   text-align: center;
   animation: slideIn 0.3s ease;
   margin-top: 10px;
+  font-family: var(--font-primary);
 }
 
 @keyframes slideIn {
@@ -327,7 +356,8 @@
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-primary);
 }
 
 .subcategoria-badge-fixed {
@@ -337,7 +367,8 @@
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-primary);
 }
 
 .producto-id-fixed {
@@ -347,19 +378,21 @@
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-primary);
 }
 
 .producto-nombre-fixed {
   font-size: 2.2rem;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   color: #2d3748;
   line-height: 1.2;
   margin: 0;
   letter-spacing: -0.02em;
+  font-family: var(--font-primary);
 }
 
-/* Contenedor de información SIN SCROLL -->
+/* Contenedor de información SIN SCROLL */
 .producto-info-container {
   display: flex;
   flex-direction: column;
@@ -387,11 +420,12 @@
 
 .section-title-fixed {
   font-size: 1.4rem;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   color: #2d3748;
   margin: 0;
   position: relative;
   padding-bottom: 8px;
+  font-family: var(--font-primary);
 }
 
 .section-title-fixed::after {
@@ -409,6 +443,7 @@
   font-size: 0.9rem;
   color: #666;
   opacity: 0.8;
+  font-family: var(--font-primary);
 }
 
 /* Opciones de variantes fijas */
@@ -477,9 +512,10 @@
 }
 
 .opcion-fixed-texto {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: #2d3748;
   font-size: 0.95rem;
+  font-family: var(--font-primary);
 }
 
 .opcion-fixed-seleccionada .opcion-fixed-texto {
@@ -487,9 +523,10 @@
 }
 
 .opcion-fixed-precio {
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   color: #666;
   font-size: 0.85rem;
+  font-family: var(--font-primary);
 }
 
 .opcion-fixed-checkbox {
@@ -512,6 +549,7 @@
   color: white;
   font-weight: bold;
   font-size: 0.9rem;
+  font-family: var(--font-primary);
 }
 
 .variante-seleccionada-resumen {
@@ -533,13 +571,15 @@
 .variante-resumen-label {
   font-size: 0.85rem;
   color: #666;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-primary);
 }
 
 .variante-resumen-valor {
   font-size: 0.95rem;
   color: #2d3748;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-primary);
 }
 
 /* Descripción fija */
@@ -552,6 +592,7 @@
   color: #555;
   margin: 0;
   white-space: pre-line;
+  font-family: var(--font-primary);
 }
 
 /* Detalles fijos */
@@ -574,13 +615,15 @@
 .detalle-fixed-label {
   font-size: 0.85rem;
   color: #666;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-primary);
 }
 
 .detalle-fixed-valor {
   font-size: 0.95rem;
   color: #2d3748;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-primary);
 }
 
 /* Acciones adicionales */
@@ -599,7 +642,7 @@
   padding: 16px 24px;
   border-radius: 12px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   flex: 1;
@@ -607,6 +650,7 @@
   border: none;
   position: relative;
   overflow: hidden;
+  font-family: var(--font-primary);
 }
 
 .btn-volver-fixed {
@@ -744,7 +788,7 @@
 
 .historial-fixed-titulo {
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: #2d3748;
   line-height: 1.3;
   margin: 0;
@@ -754,13 +798,15 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   min-height: 2.4em;
+  font-family: var(--font-primary);
 }
 
 .historial-fixed-precio {
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   color: #2d6a4f;
   margin-top: auto;
+  font-family: var(--font-primary);
 }
 
 /* ====== BREADCRUMB ====== */
@@ -775,13 +821,15 @@
   margin-right: auto;
   font-size: 0.9rem;
   color: #666;
+  font-family: var(--font-primary);
 }
 
 .breadcrumb-link {
   color: #2d6a4f;
   text-decoration: none;
   transition: color 0.3s ease;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-primary);
 }
 
 .breadcrumb-link:hover {
@@ -790,12 +838,14 @@
 
 .breadcrumb-separator {
   color: #cbd5e0;
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
+  font-family: var(--font-primary);
 }
 
 .breadcrumb-current {
   color: #2d3748;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-primary);
 }
 
 /* ====== ESTADOS DE CARGA Y ERROR ====== */
@@ -832,7 +882,8 @@
 .loading-text {
   font-size: 1.2rem;
   color: #666;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-primary);
 }
 
 .error-icon {
@@ -842,9 +893,10 @@
 
 .error-title {
   font-size: 2rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: #2d3748;
   margin-bottom: 15px;
+  font-family: var(--font-primary);
 }
 
 .error-message {
@@ -852,6 +904,7 @@
   color: #666;
   margin-bottom: 35px;
   max-width: 500px;
+  font-family: var(--font-primary);
 }
 
 .error-button {
@@ -861,10 +914,11 @@
   padding: 14px 32px;
   border-radius: 12px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 6px 20px rgba(45, 106, 79, 0.2);
+  font-family: var(--font-primary);
 }
 
 .error-button:hover {
@@ -872,100 +926,10 @@
   box-shadow: 0 10px 25px rgba(45, 106, 79, 0.3);
 }
 
-/* ====== MODAL DE IMAGEN ====== */
-.image-modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: fadeIn 0.3s ease;
-  cursor: default;
-}
-
-.image-modal-container {
-  position: relative;
-  max-width: 90vw;
-  max-height: 90vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: zoomIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.image-modal-content {
-  position: relative;
-  max-width: 100%;
-  max-height: 100%;
-  background: white;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-}
-
-.image-modal-content img {
-  display: block;
-  max-width: 100%;
-  max-height: 85vh;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  padding: 20px;
-  background: white;
-}
-
-.image-modal-close {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 45px;
-  height: 45px;
-  background: rgba(255, 255, 255, 0.95);
-  border: none;
-  border-radius: 50%;
-  font-size: 24px;
-  color: #2d3748;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  z-index: 1001;
-}
-
-.image-modal-close:hover {
-  background: white;
-  transform: rotate(90deg);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-.image-modal-info {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(45, 55, 72, 0.95);
-  color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  z-index: 1001;
-  backdrop-filter: blur(10px);
-  max-width: 80%;
-  text-align: center;
-}
-
 /* ====== RESPONSIVE ====== */
 @media (max-width: 1200px) {
   .producto-layout-container {
-    grid-template-columns: 320px 1fr;
+    grid-template-columns: 400px 1fr;
     gap: 30px;
   }
   
@@ -976,7 +940,7 @@
 
 @media (max-width: 992px) {
   .producto-layout-container {
-    grid-template-columns: 280px 1fr;
+    grid-template-columns: 350px 1fr;
     gap: 25px;
   }
   
@@ -985,8 +949,8 @@
     top: 0;
   }
   
-  .producto-imagen-fixed-container {
-    height: 350px;
+  .imagen-principal-wrapper {
+    height: 400px;
   }
   
   .historial-fixed-grid {
@@ -1013,7 +977,7 @@
     gap: 20px;
   }
   
-  .producto-imagen-fixed-container {
+  .imagen-principal-wrapper {
     height: 350px;
   }
   
@@ -1052,7 +1016,7 @@
 }
 
 @media (max-width: 480px) {
-  .producto-imagen-fixed-container {
+  .imagen-principal-wrapper {
     height: 280px;
   }
   
@@ -1115,8 +1079,9 @@
   padding: 4px 12px;
   border-radius: 16px;
   font-size: 0.8rem;
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   letter-spacing: 0.2px;
+  font-family: var(--font-primary);
 }
 
 /* Contenedor del slider */
@@ -1191,7 +1156,7 @@
   justify-content: center;
   padding: 8px;
   font-size: 0.9rem;
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   color: #666;
   background: white;
   border: 1px solid #e0e0e0;
@@ -1199,6 +1164,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
+  font-family: var(--font-primary);
 }
 
 .cantidad-label:hover {
@@ -1228,17 +1194,20 @@
   justify-content: space-between;
   align-items: center;
   font-size: 0.9rem;
+  font-family: var(--font-primary);
 }
 
 .precio-cantidad-label {
   color: #666;
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
+  font-family: var(--font-primary);
 }
 
 .precio-cantidad-valor {
   color: #2d3748;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   font-size: 0.95rem;
+  font-family: var(--font-primary);
 }
 
 .precio-cantidad-item.total {
@@ -1250,13 +1219,15 @@
 
 .precio-cantidad-item.total .precio-cantidad-label {
   color: #555;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-primary);
 }
 
 .precio-cantidad-valor-total {
   color: #1ba852;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 1.1rem;
+  font-family: var(--font-primary);
 }
 
 /* Responsive para cantidad selector */
@@ -1317,10 +1288,11 @@
   padding: 14px 20px;
   border-radius: 8px;
   font-size: 0.95rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: all 0.3s ease;
   margin-bottom: 30px;
+  font-family: var(--font-primary);
 }
 
 .btn-ver-descripcion:hover {
@@ -1330,11 +1302,13 @@
 
 .btn-descripcion-text {
   flex: 1;
+  font-family: var(--font-primary);
 }
 
 .btn-descripcion-icon {
   font-size: 1.1rem;
   transition: transform 0.3s ease;
+  font-family: var(--font-primary);
 }
 
 .btn-ver-descripcion:hover .btn-descripcion-icon {
@@ -1422,11 +1396,12 @@
 
 .descripcion-modal-title {
   font-size: 1.8rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: #2d3748;
   margin: 0 0 20px 0;
   padding-bottom: 15px;
   border-bottom: 2px solid #e0e0e0;
+  font-family: var(--font-primary);
 }
 
 .descripcion-modal-text {
@@ -1436,6 +1411,7 @@
   white-space: pre-line;
   margin-bottom: 30px;
   word-wrap: break-word;
+  font-family: var(--font-primary);
 }
 
 .descripcion-modal-button {
@@ -1447,9 +1423,10 @@
   padding: 14px 20px;
   border-radius: 8px;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: all 0.3s ease;
+  font-family: var(--font-primary);
 }
 
 .descripcion-modal-button:hover {

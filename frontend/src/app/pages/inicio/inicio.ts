@@ -7,7 +7,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { Partners } from '../../components/partners/partners.component';
 import { Footer } from '../../components/footer/footer.component';
 import { SocialButtonsComponent } from '../../components/social-buttons/social-buttons.component';
-import { LongMap } from '../../components/long-map/long-map.component';
+
 import { CategoriasDestacadasComponent } from '../../components/categorias-destacadas/categorias-destacadas.component';
 import { FeatureBanner } from '../../components/feature-banner/feature-banner';
 import { PlaxtiTrioPresentationComponent } from '../../components/trio-presentation/trio-presentation';

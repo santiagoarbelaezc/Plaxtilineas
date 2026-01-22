@@ -1,22 +1,4 @@
-/* Variables CSS mejoradas */
-:root {
-  --navbar-height: 80px;
-  --transition-speed: 0.3s;
-  --primary-green: #368c44;
-  --whatsapp-green: #25d366;
-  --dark-green: #128C7E;
-  --light-bg: #f8f9fa;
-  --border-color: rgba(0, 0, 0, 0.08);
-}
-
-/* Reset básico */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* Navbar principal reorganizada */
+/* ===== NAVBAR PRINCIPAL ===== */
 .head {
   display: flex;
   align-items: center;
@@ -35,10 +17,19 @@
   border-bottom: 1px solid var(--border-color);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
   transition: all var(--transition-speed) ease;
+  
+    @media (max-width: 768px) {
+      .nav-link {
+        font-size: 13px;
+        font-family: var(--font-primary);
+        font-weight: var(--font-weight-regular);
+        letter-spacing: 0.01em;
+      }
+    }
   gap: 20px;
 }
 
-/* Logo mejorado */
+/* ===== LOGO MEJORADO ===== */
 .logo {
   flex-shrink: 0;
   display: flex;
@@ -69,7 +60,7 @@
   flex-shrink: 0;
 }
 
-/* Logo comprimido (Solo P) - Visible por defecto */
+/* Logo comprimido */
 .logo-img.logo-compact {
   width: 60px;
   position: relative;
@@ -78,7 +69,7 @@
   transition: opacity 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Logo completo - Superpuesto */
+/* Logo completo */
 .logo-img.logo-full {
   width: 280px;
   position: absolute;
@@ -89,7 +80,6 @@
   transition: opacity 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Al hover - Mostrar logo completo */
 .logo-link:hover .logo-compact {
   opacity: 0;
 }
@@ -104,7 +94,7 @@
   box-shadow: 0 8px 25px rgba(54, 140, 68, 0.15);
 }
 
-/* Buscador centralizado y mejorado */
+/* ===== BUSCADOR ===== */
 .search-container {
   position: relative;
   flex: 1 1 auto;
@@ -151,7 +141,8 @@
   border-bottom: 1px solid rgba(54, 140, 68, 0.08);
   border-radius: 0;
   font-size: 15px;
-  font-family: 'Segoe UI', -apple-system, sans-serif;
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-regular);
   background: transparent;
   color: #2d3748;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -169,7 +160,7 @@
 
 .search-input::placeholder {
   color: #a0aec0;
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
 }
 
 .search-icon {
@@ -213,7 +204,7 @@
   transform: translateY(-50%) scale(1.2) rotate(90deg);
 }
 
-/* Sugerencias de búsqueda mejoradas */
+/* ===== SUGERENCIAS DE BÚSQUEDA ===== */
 .search-suggestions {
   position: absolute;
   top: calc(100% + 0px);
@@ -253,6 +244,8 @@
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   border-bottom: 1px solid #f1f5f9;
   font-size: 14.5px;
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-regular);
   position: relative;
   overflow: hidden;
 }
@@ -282,6 +275,7 @@
   background: rgba(54, 140, 68, 0.04);
   color: var(--primary-green);
   padding-left: 28px;
+  font-weight: var(--font-weight-medium);
 }
 
 .suggestion-item fa-icon {
@@ -295,7 +289,7 @@
   transform: scale(1.2) translateX(2px);
 }
 
-/* Navegación reorganizada en secciones */
+/* ===== NAVEGACIÓN ===== */
 .navbar {
   display: flex;
   gap: 8px;
@@ -330,15 +324,15 @@
   padding: 12px 10px;
 }
 
-/* Enlaces de navegación mejorados */
+/* ===== ENLACES DE NAVEGACIÓN ===== */
 .nav-link {
   position: relative;
   padding: 12px 18px;
-  color: #4a5568;
+  color: #23272f;
   text-decoration: none;
-  font-weight: 500;
-  font-size: 15px;
-  font-family: 'Segoe UI', -apple-system, sans-serif;
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  font-family: var(--font-primary);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 0;
   overflow: visible;
@@ -346,13 +340,13 @@
   align-items: center;
   gap: 8px;
   white-space: nowrap;
+  letter-spacing: 0.01em;
 }
 
 .nav-text {
   transition: all var(--transition-speed) ease;
 }
 
-/* Línea animada mejorada */
 .nav-link::after {
   content: '';
   position: absolute;
@@ -372,7 +366,6 @@
   width: 75%;
 }
 
-/* Efectos hover mejorados */
 .nav-link:hover {
   color: var(--primary-green);
   background: transparent;
@@ -383,9 +376,10 @@
 .nav-link.active {
   color: var(--primary-green);
   background: transparent;
+  font-weight: var(--font-weight-medium);
 }
 
-/* Enlace de ubicación especial */
+/* ===== UBICACIÓN ===== */
 .location-link {
   padding: 12px 16px;
 }
@@ -403,11 +397,14 @@
   filter: drop-shadow(0 2px 6px rgba(229, 62, 62, 0.3));
 }
 
-/* WhatsApp estilo especial */
+/* ===== WHATSAPP ===== */
 .whatsapp-link {
   padding: 12px 18px;
-  font-weight: 600;
-  color: var(--dark-green);
+  font-weight: var(--font-weight-regular);
+  color: #1a242f;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  letter-spacing: 0.01em;
 }
 
 .whatsapp-link::after {
@@ -433,7 +430,7 @@
   filter: drop-shadow(0 2px 10px rgba(37, 211, 102, 0.4));
 }
 
-/* Login icono elegante */
+/* ===== LOGIN ===== */
 .login-link {
   padding: 12px 18px;
   min-width: auto;
@@ -444,6 +441,10 @@
   border-radius: 0;
   border: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  letter-spacing: 0.01em;
 }
 
 .login-link:hover {
@@ -464,7 +465,7 @@
   text-shadow: 0 2px 10px rgba(54, 140, 68, 0.35);
 }
 
-/* Hamburguesa mejorada */
+/* ===== MENÚ HAMBURGUESA ===== */
 .menu-toggle {
   display: none;
   flex-direction: column;
@@ -510,7 +511,7 @@
   background: var(--primary-green);
 }
 
-/* RESPONSIVE - Tablets grandes */
+/* ===== RESPONSIVE - TABLETS GRANDES ===== */
 @media (max-width: 1200px) {
   .head {
     padding: 0 30px;
@@ -535,7 +536,7 @@
   }
 }
 
-/* Tablets */
+/* ===== TABLETS ===== */
 @media (max-width: 1024px) {
   .head {
     padding: 0 25px;
@@ -560,7 +561,7 @@
   }
 }
 
-/* Móviles grandes - Reorganización importante */
+/* ===== MÓVILES GRANDES ===== */
 @media (max-width: 768px) {
   .head {
     height: 75px;
@@ -569,7 +570,6 @@
     gap: 0;
   }
   
-  /* Buscador en móvil */
   .search-container {
     position: absolute;
     top: 100%;
@@ -607,7 +607,6 @@
     order: 3;
   }
   
-  /* Menú de navegación móvil reorganizado */
   .navbar {
     flex-direction: column;
     align-items: stretch;
@@ -636,7 +635,6 @@
     pointer-events: auto;
   }
 
-  /* Secciones en móvil */
   .nav-section {
     flex-direction: column;
     gap: 0;
@@ -661,21 +659,20 @@
     margin-top: 50px;
   }
 
-  /* Enlaces como tarjetas en móvil */
   .nav-link {
     width: 100%;
     padding: 18px 28px;
     border-radius: 0;
     margin: 0;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     background: transparent;
     border: none;
     box-shadow: none;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
-    color: #4a5568;
+    color: #23272f;
     justify-content: center;
     text-align: center;
     border-bottom: 1px solid var(--border-color);
@@ -713,11 +710,10 @@
     box-shadow: none;
   }
 
-  /* WhatsApp en móvil */
   .whatsapp-link {
     padding: 18px 28px;
     gap: 12px;
-    color: var(--dark-green);
+    color: #1a242f;
     text-align: center;
     justify-content: center;
     border-bottom: 1px solid var(--border-color);
@@ -739,7 +735,6 @@
     box-shadow: none;
   }
 
-  /* Ubicación en móvil */
   .location-link {
     padding: 18px 28px;
     text-align: center;
@@ -752,7 +747,6 @@
     height: 22px;
   }
 
-  /* Login en móvil */
   .login-link {
     padding: 18px 28px;
     min-width: auto;
@@ -784,7 +778,7 @@
   }
 }
 
-/* Móviles pequeños */
+/* ===== MÓVILES PEQUEÑOS ===== */
 @media (max-width: 480px) {
   .head {
     height: 70px;
@@ -803,6 +797,7 @@
   .nav-link {
     padding: 16px 24px;
     font-size: 15.5px;
+    color: #23272f;
   }
   
   .search-container {
@@ -826,6 +821,7 @@
   .whatsapp-link,
   .location-link {
     padding: 16px 24px;
+    color: #1a242f;
   }
 
   .nav-section.action-nav {
@@ -833,7 +829,7 @@
   }
 }
 
-/* Pantallas muy pequeñas */
+/* ===== PANTALLAS MUY PEQUEÑAS ===== */
 @media (max-width: 360px) {
   .head {
     padding: 0 12px;
@@ -847,6 +843,7 @@
   .nav-link {
     padding: 14px 20px;
     font-size: 15px;
+    color: #23272f;
   }
   
   .logo-img {
@@ -863,7 +860,7 @@
   }
 }
 
-/* Accesibilidad mejorada */
+/* ===== ACCESIBILIDAD ===== */
 .search-input:focus,
 .nav-link:focus,
 .menu-toggle:focus,
@@ -872,7 +869,6 @@
   outline-offset: 2px;
 }
 
-/* Clase activa para búsqueda */
 .search-active {
   overflow: hidden;
 }

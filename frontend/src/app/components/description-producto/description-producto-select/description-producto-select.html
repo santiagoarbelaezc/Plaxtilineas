@@ -32,18 +32,25 @@
       <!-- Columna Izquierda Fija: Imagen y Precio -->
       <div class="producto-columna-izquierda">
         
-        <!-- Contenedor de imagen con tamaño fijo -->
-        <div class="producto-imagen-fixed-container" (click)="abrirModalImagen()">
-          <div class="producto-imagen-wrapper">
-            <img 
-              [src]="producto.imagen_url" 
-              [alt]="nombreCompleto" 
-              class="producto-imagen-fixed"
-              (error)="producto.imagen_url = 'assets/images/producto-default.jpg'">
-            <div class="imagen-overlay-fixed"></div>
-            <div class="imagen-zoom-indicator">
-              <span class="zoom-icon">🔍</span>
-              <span class="zoom-text">Haz clic para ampliar</span>
+        <!-- Contenedor de imagen con zoom -->
+        <div class="imagen-principal-wrapper">
+          <div class="producto-imagen-container"
+               (mousemove)="onImageMouseMove($event)"
+               (mouseleave)="onImageMouseLeave()">
+            <div class="producto-imagen-wrapper">
+              <img 
+                [src]="producto.imagen_url" 
+                [alt]="nombreCompleto" 
+                class="producto-imagen"
+                [style.--zoom-x]="zoomX + '%'"
+                [style.--zoom-y]="zoomY + '%'"
+                (error)="producto.imagen_url = 'assets/images/producto-default.jpg'"
+              />
+              <div class="imagen-overlay-fixed"></div>
+              <div class="imagen-zoom-indicator">
+                <span class="zoom-icon">🔍</span>
+                <span class="zoom-text">Acerca el cursor para hacer zoom</span>
+              </div>
             </div>
           </div>
         </div>
@@ -55,7 +62,6 @@
             <span class="precio-fixed-badge" *ngIf="varianteSeleccionada">Seleccionado</span>
           </div>
           <div class="precio-fixed-valor">
-            
             <span class="precio-numero-fixed">{{formatearPrecio(precioConCantidad)}}</span>
           </div>
           <div class="precio-fixed-nota" *ngIf="variantes.length > 0">
@@ -202,21 +208,6 @@
 
   </div> <!-- Fin producto-detalles -->
 </div> <!-- Fin description-producto-container -->
-
-<!-- Modal de imagen ampliada -->
-<div *ngIf="mostrarModalImagen" class="image-modal-backdrop" (click)="cerrarModalImagen()">
-  <div class="image-modal-container" (click)="$event.stopPropagation()">
-    <button class="image-modal-close" (click)="cerrarModalImagen()" title="Cerrar (Esc)">
-      ✕
-    </button>
-    <div class="image-modal-content">
-      <img [src]="imagenModalUrl" [alt]="nombreCompleto">
-      <div class="image-modal-info">
-        {{nombreCompleto}}
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- Modal de descripción -->
 <div *ngIf="mostrarModalDescripcion" class="descripcion-modal-backdrop" (click)="cerrarModalDescripcion()">

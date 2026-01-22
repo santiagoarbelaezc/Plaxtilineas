@@ -4,21 +4,24 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1500px;
   height: auto;
-  background-color: #ffffff;
+  background-color: var(--white);
   overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  /* Nueva altura basada en la proporción de 1536x544 ≈ 2.82:1 */
-  aspect-ratio: 1000 / 354; /* 1000 ÷ 2.82 ≈ 354 */
-  cursor: crosshair;
+  box-shadow: 0 8px 32px rgba(54, 140, 68, 0.12);
+  font-family: var(--font-primary);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  aspect-ratio: 1000 / 354;
+  cursor: pointer;
+  margin: 0 auto;
+  border-radius: 8px;
+  border-top: 3px solid #368c44;
 }
 
 .banner-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(54, 140, 68, 0.18);
 }
 
 /* Contenedor de la imagen */
@@ -29,13 +32,13 @@
   overflow: hidden;
 }
 
-/* Imagen del banner - MODIFICADO PARA 1536x544 */
+/* Imagen del banner */
 .banner-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top; /* Enfoca la parte superior que suele tener más contenido */
-  transition: transform 0.5s ease;
+  object-position: center;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .banner-card:hover .banner-image {
@@ -51,9 +54,9 @@
   bottom: 0;
   background: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.5) 0%,
     rgba(0, 0, 0, 0.2) 40%,
-    rgba(0, 0, 0, 0.6) 100%
+    rgba(0, 0, 0, 0.7) 100%
   );
   z-index: 1;
 }
@@ -65,20 +68,20 @@
   left: 0;
   right: 0;
   z-index: 2;
-  padding: 30px 35px;
-  color: white;
+  padding: 32px 40px;
+  color: var(--white);
 }
 
 /* Título del banner */
 .banner-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin: 0 0 15px 0;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  font-size: 2.25rem;
+  font-weight: var(--font-weight-medium);
+  margin: 0 0 12px 0;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
   position: relative;
   display: inline-block;
+  font-family: var(--font-primary);
 }
 
 .banner-title::after {
@@ -86,10 +89,14 @@
   position: absolute;
   bottom: -8px;
   left: 0;
-  width: 60px;
+  width: 50px;
   height: 3px;
-  background: linear-gradient(90deg, #358A43, #4cc76a);
-  box-shadow: 0 2px 4px rgba(54, 140, 68, 0.3);
+  background: linear-gradient(90deg, #368c44, #25d366);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.banner-card:hover .banner-title::after {
+  width: 80px;
 }
 
 /* Descripción del banner */
@@ -98,30 +105,25 @@
 }
 
 .banner-description p {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   line-height: 1.6;
   margin: 0;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
-  font-weight: 300;
-  letter-spacing: 0.3px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: 0.01em;
+  font-family: var(--font-primary);
 }
 
-/* Efecto de línea decorativa que aparece al hacer hover */
+/* Efecto de línea decorativa superior */
 .banner-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #358A43, #25d366);
-  opacity: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #368c44, #25d366);
   z-index: 3;
-  transition: opacity 0.3s ease;
-}
-
-.banner-card:hover::before {
-  opacity: 1;
 }
 
 /* Efecto de brillo sutil al hacer hover */
@@ -135,73 +137,98 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.08),
     transparent
   );
-  transition: left 0.7s ease;
+  transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
 }
 
 .banner-card:hover .banner-image-container::after {
   left: 100%;
 }
+
 /* ============================================
    MEDIA QUERIES RESPONSIVE MANTENIENDO PROPORCIÓN
    ============================================ */
 
-/* Para tablets y dispositivos medianos (hasta 992px) */
-@media screen and (max-width: 992px) {
+/* Para tablets y dispositivos medianos (hasta 1200px) */
+@media screen and (max-width: 1200px) {
   .banner-card {
-    /* Mantenemos la misma proporción pero reducimos altura máxima */
-    max-height: 300px;
+    max-width: 100%;
+    margin: 0 20px;
   }
   
   .banner-content {
-    padding: 25px 30px;
+    padding: 28px 32px;
   }
   
   .banner-title {
     font-size: 2rem;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
   
   .banner-description p {
     font-size: 1rem;
+  }
+}
+
+/* Para tablets (hasta 992px) */
+@media screen and (max-width: 992px) {
+  .banner-content {
+    padding: 24px 28px;
+  }
+  
+  .banner-title {
+    font-size: 1.75rem;
+    margin-bottom: 10px;
+  }
+  
+  .banner-description p {
+    font-size: 0.95rem;
     line-height: 1.5;
   }
   
   .banner-title::after {
-    width: 50px;
+    width: 40px;
     height: 2.5px;
-    bottom: -7px;
+    bottom: -6px;
+  }
+  
+  .banner-card:hover .banner-title::after {
+    width: 60px;
   }
 }
 
 /* Para tablets pequeñas (hasta 768px) */
 @media screen and (max-width: 768px) {
   .banner-card {
-    max-height: 220px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(54, 140, 68, 0.1);
+    margin: 0 16px;
   }
   
   .banner-content {
-    padding: 20px 25px;
+    padding: 20px 24px;
   }
   
   .banner-title {
-    font-size: 1.6rem;
-    margin-bottom: 10px;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
   }
   
   .banner-description p {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     line-height: 1.4;
   }
   
   .banner-title::after {
-    width: 40px;
+    width: 35px;
     height: 2px;
-    bottom: -6px;
+    bottom: -5px;
+  }
+  
+  .banner-card:hover .banner-title::after {
+    width: 50px;
   }
   
   /* Reduce animaciones en tablets para mejor rendimiento */
@@ -210,28 +237,24 @@
   }
 }
 
-/* Para móviles (hasta 576px) */
-@media screen and (max-width: 576px) {
+/* Para móviles grandes (hasta 640px) */
+@media screen and (max-width: 640px) {
   .banner-card {
-    max-height: 180px;
-    aspect-ratio: 1000 / 354; /* Mantenemos proporción exacta */
-  }
-  
-  .banner-image-container {
-    height: 100%; /* Aseguramos que ocupe todo el alto */
+    margin: 0 12px;
+    aspect-ratio: 1000 / 400; /* Aumentamos altura para móviles */
   }
   
   .banner-image {
-    object-position: center 30%; /* Ajustamos posición vertical para móvil */
+    object-position: center center;
   }
   
   .banner-content {
-    padding: 15px 20px;
+    padding: 18px 20px;
   }
   
   .banner-title {
     font-size: 1.3rem;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
   
   .banner-description p {
@@ -248,50 +271,90 @@
   .image-overlay {
     background: linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0.6) 0%,
       rgba(0, 0, 0, 0.3) 40%,
-      rgba(0, 0, 0, 0.7) 100%
+      rgba(0, 0, 0, 0.8) 100%
     );
   }
 }
 
-/* Para móviles pequeños (hasta 400px) */
-@media screen and (max-width: 400px) {
+/* Para móviles medianos (hasta 480px) */
+@media screen and (max-width: 480px) {
   .banner-card {
-    max-height: 150px;
+    margin: 0 10px;
+    aspect-ratio: 1000 / 420;
   }
   
   .banner-content {
-    padding: 12px 15px;
+    padding: 16px 18px;
   }
   
   .banner-title {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
   }
   
   .banner-description p {
     font-size: 0.8rem;
-    -webkit-line-clamp: 1; /* Solo 1 línea en pantallas muy pequeñas */
+    -webkit-line-clamp: 2;
   }
   
   .banner-title::after {
     width: 30px;
     height: 2px;
   }
+  
+  .banner-card:hover .banner-title::after {
+    width: 40px;
+  }
+}
+
+/* Para móviles pequeños (hasta 360px) */
+@media screen and (max-width: 360px) {
+  .banner-card {
+    margin: 0 8px;
+    aspect-ratio: 1000 / 450;
+  }
+  
+  .banner-content {
+    padding: 14px 16px;
+  }
+  
+  .banner-title {
+    font-size: 1.05rem;
+  }
+  
+  .banner-description p {
+    font-size: 0.75rem;
+    -webkit-line-clamp: 1; /* Solo 1 línea en pantallas muy pequeñas */
+  }
+  
+  .banner-title::after {
+    width: 25px;
+  }
+  
+  .banner-card:hover .banner-title::after {
+    width: 35px;
+  }
 }
 
 /* Ajustes para orientación landscape en móviles */
 @media screen and (max-width: 768px) and (orientation: landscape) {
   .banner-card {
-    max-height: 200px;
+    aspect-ratio: 1000 / 250;
+    margin: 0 12px;
   }
   
   .banner-content {
-    padding: 15px 20px;
+    padding: 16px 20px;
   }
   
   .banner-title {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
+  }
+  
+  .banner-description p {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 1;
   }
 }
 
@@ -299,19 +362,28 @@
 @media (hover: none) and (pointer: coarse) {
   .banner-card:hover {
     transform: none;
+    box-shadow: 0 8px 32px rgba(54, 140, 68, 0.12);
   }
   
   .banner-card:hover .banner-image {
     transform: none;
   }
   
+  .banner-card:hover .banner-title::after {
+    width: 50px;
+  }
+  
   .banner-image-container::after {
     display: none;
   }
   
-  /* Mostrar siempre la línea decorativa en móvil */
-  .banner-card::before {
-    opacity: 1;
+  /* Efecto activo para toques */
+  .banner-card:active {
+    transform: scale(0.98);
+  }
+  
+  .banner-card:active .banner-image {
+    transform: scale(1.02);
   }
 }
 
@@ -324,10 +396,14 @@
   .banner-image {
     transition: transform 0.3s ease;
   }
+  
+  .banner-image-container::after {
+    display: none; /* Desactivar efecto de brillo para mejor rendimiento en móvil */
+  }
 }
 
 /* Ajustes de texto para pantallas pequeñas */
-@media screen and (max-width: 576px) {
+@media screen and (max-width: 640px) {
   .banner-title {
     word-break: break-word;
     hyphens: auto;
@@ -336,4 +412,17 @@
   .banner-description p {
     max-width: 90%;
   }
+}
+
+/* Efecto de carga progresiva */
+.banner-image {
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+
 }

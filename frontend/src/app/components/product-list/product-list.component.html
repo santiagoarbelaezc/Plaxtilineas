@@ -10,7 +10,7 @@
   <div class="section-header">
     <h2 *ngIf="productos.length && !cargando">
       <span class="title-text">Productos disponibles</span>
-      <span class="product-count">({{productos.length}})</span>
+      <span class="product-count">({{rangoProductos}} de {{productos.length}})</span>
     </h2>
   </div>
 
@@ -44,7 +44,7 @@
     
     <div class="products-grid">
       <div class="product-card-wrapper"
-           *ngFor="let producto of productos; let i = index"
+           *ngFor="let producto of productosPaginaActual; let i = index"
            [@fadeInUp]>
         
         <!-- Tarjeta de producto con click en toda la card -->
@@ -97,25 +97,47 @@
           </div>
           
           <!-- Contenedor inferior: Acción principal -->
-          <div class="product-actions-section">
-            <div class="main-action-container">
-              <button class="main-action-button" (click)="$event.stopPropagation(); verDetalles(producto)">
-                <span class="button-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
-                </span>
-                <span class="button-text">
-                  Ver detalles del producto
-                </span>
-              </button>
-            </div>
-          </div>
+          
           
         </div>
         
       </div>
+    </div>
+    
+    <!-- Controles de paginación -->
+    <div class="pagination-controls" *ngIf="totalPages > 1 && !cargando">
+      <button 
+        class="pagination-btn pagination-prev" 
+        [disabled]="currentPage === 1"
+        (click)="paginaAnterior()"
+        aria-label="Página anterior">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+        Anterior
+      </button>
+      
+      <div class="pagination-numbers">
+        <button 
+          *ngFor="let page of paginasVisibles"
+          class="pagination-btn pagination-number" 
+          [class.active]="page === currentPage"
+          (click)="cambiarPagina(page)"
+          [attr.aria-label]="'Ir a página ' + page">
+          {{page}}
+        </button>
+      </div>
+      
+      <button 
+        class="pagination-btn pagination-next" 
+        [disabled]="currentPage === totalPages"
+        (click)="paginaSiguiente()"
+        aria-label="Página siguiente">
+        Siguiente
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M9 18l6-6-6-6"></path>
+        </svg>
+      </button>
     </div>
   </div>
 </section>

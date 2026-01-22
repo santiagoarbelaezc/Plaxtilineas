@@ -1,4 +1,4 @@
-/* Componente de Asistencia WhatsApp */
+/* Componente de Asistencia WhatsApp - Contenedor y tipografía actualizados */
 .asistente {
   background: 
     linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3)),
@@ -6,14 +6,13 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  padding: 80px 0;
+  padding: 80px 26px;
   position: relative;
-  font-family: 'Segoe UI', -apple-system, sans-serif;
-
+  font-family: var(--font-primary);
 }
 
 .main-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 40px;
   display: grid;
@@ -28,7 +27,7 @@
 /* Ventana de WhatsApp - Estilo elegante */
 .whatsapp-window {
   background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
+  border-radius: 12px;
   box-shadow: 
     0 10px 40px rgba(0, 0, 0, 0.15),
     0 0 0 1px rgba(255, 255, 255, 0.1),
@@ -70,18 +69,18 @@
 }
 
 .whatsapp-company {
-  font-family: 'Segoe UI', -apple-system, sans-serif;
+  font-family: var(--font-primary);
   font-size: 1.4rem;
   font-weight: 600;
   display: block;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.01em;
 }
 
 .whatsapp-status {
-  font-family: 'Segoe UI', -apple-system, sans-serif;
+  font-family: var(--font-primary);
   font-size: 0.9rem;
   opacity: 0.9;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.01em;
 }
 
 /* Cuerpo del chat */
@@ -98,9 +97,10 @@
   max-width: 85%;
   position: relative;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  font-family: 'Segoe UI', -apple-system, sans-serif;
+  font-family: var(--font-primary);
   line-height: 1.5;
   color: #333;
+  font-weight: 400;
 }
 
 .bubble.assistant::before {
@@ -123,11 +123,11 @@
   color: white;
   text-decoration: none;
   border-radius: 12px;
-  font-family: 'Segoe UI', -apple-system, sans-serif;
+  font-family: var(--font-primary);
   font-weight: 600;
   font-size: 1rem;
   text-align: center;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.01em;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: none;
   cursor: pointer;
@@ -166,13 +166,13 @@
 }
 
 #asistente-titulo {
-  font-family: 'Segoe UI', -apple-system, sans-serif;
+  font-family: var(--font-primary);
   font-size: 3rem;
   font-weight: 700;
   color: white;
   margin: 0;
   line-height: 1.2;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.01em;
   text-shadow: 
     0 2px 10px rgba(0, 0, 0, 0.3),
     0 0 20px rgba(37, 211, 102, 0.2);
@@ -195,8 +195,28 @@
   50% { opacity: 0.7; }
 }
 
+/* Efecto de borde sutil */
+.asistente::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(54, 140, 68, 0.2), 
+    transparent);
+  border-radius: 0 0 2px 2px;
+}
+
 /* Responsive */
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
+  .asistente {
+    max-width: 1300px;
+    padding: 36px 24px;
+  }
+  
   .main-container {
     gap: 40px;
     padding: 0 30px;
@@ -207,9 +227,28 @@
   }
 }
 
+@media (max-width: 992px) {
+  .asistente {
+    max-width: 1000px;
+    padding: 32px 20px;
+    margin: 30px auto;
+  }
+  
+  .main-container {
+    gap: 40px;
+    padding: 0 25px;
+  }
+  
+  #asistente-titulo {
+    font-size: 2.2rem;
+  }
+}
+
 @media (max-width: 768px) {
   .asistente {
-    padding: 60px 0;
+    padding: 28px 16px;
+    margin: 24px auto;
+    border-radius: 10px;
   }
   
   .main-container {
@@ -229,7 +268,7 @@
   }
   
   #asistente-titulo {
-    font-size: 2.2rem;
+    font-size: 2rem;
   }
   
   #asistente-titulo::after {
@@ -239,7 +278,8 @@
 
 @media (max-width: 480px) {
   .asistente {
-    padding: 40px 0;
+    padding: 24px 12px;
+    margin: 20px auto;
   }
   
   .main-container {
@@ -271,6 +311,21 @@
   
   #asistente-titulo {
     font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 359px) {
+  .asistente {
+    padding: 20px 10px;
+  }
+  
+  .main-container {
+    padding: 0 15px;
+    gap: 25px;
+  }
+  
+  #asistente-titulo {
+    font-size: 1.6rem;
   }
 }
 

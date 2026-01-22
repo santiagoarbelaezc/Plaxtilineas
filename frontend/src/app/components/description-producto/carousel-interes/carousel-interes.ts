@@ -462,11 +462,16 @@ export class CarouselInteres implements OnInit, AfterViewInit, OnDestroy, OnChan
   }
 
   isPrevEnabled(): boolean {
-    return this.currentIndex > 0;
+    const carousel = document.getElementById(this.carouselId);
+    return carousel ? carousel.scrollLeft > 0 : false;
   }
 
+  /**
+   * Verificar si se puede navegar hacia adelante
+   */
   isNextEnabled(): boolean {
-    return this.currentIndex < this.productos.length - this.visibleItems;
+    const carousel = document.getElementById(this.carouselId);
+    return carousel ? carousel.scrollLeft < carousel.scrollWidth - carousel.clientWidth : false;
   }
 
   /**

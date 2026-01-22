@@ -1,36 +1,39 @@
+/* Banner - Estilo consistente con el sistema */
 .banner-container {
   position: relative;
   width: 100%;
-  max-width: 1500px;
+  max-width: 1600px;
   height: 370px;
   overflow: hidden;
-  font-family: 'Segoe UI', sans-serif;
-  margin: 0;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: var(--font-primary);
+  margin: 0 auto;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   cursor: pointer;
   box-sizing: border-box;
   border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  border-top: 3px solid #368c44;
 }
 
 /* Elevación sutil al hacer hover */
 .banner-container:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-  border-color: #368c44;
+  box-shadow: 0 8px 32px rgba(54, 140, 68, 0.12);
+  border-color: #d0d0d0;
+  transform: translateY(-4px);
 }
 
 /* Efecto de clic */
 .banner-container:active {
   transform: translateY(-2px);
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.18);
-  transition: all 0.2s ease;
+  transition: all 0.1s ease;
 }
 
 .banner-image {
-  width: 1450px;
+  width: 100%;
   height: 100%;
   overflow: hidden;
-  transition: all 0.5s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Efecto sutil de zoom en la imagen */
@@ -39,23 +42,22 @@
 }
 
 .banner-img {
-  width: 1450px;
+  width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Brillo sutil en la imagen al hover */
 .banner-container:hover .banner-img {
   transform: scale(1.03);
-  filter: brightness(1.05) contrast(1.02);
 }
 
 .description-container {
   position: absolute;
   padding: 20px;
   max-width: 50%;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0.98;
 }
 
@@ -65,44 +67,25 @@
   opacity: 1;
 }
 
-.description-container:hover {
-  opacity: 1;
-}
-
 .description-content {
   background-color: rgba(255, 255, 255, 0.95);
   color: #333;
-  padding: 20px 24px;
+  padding: 18px 22px;
   font-size: 1rem;
   font-weight: 400;
-  line-height: 1.6;
-  box-shadow: none;
+  line-height: 1.5;
   border: 1px solid #e0e0e0;
-  backdrop-filter: none;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.01em;
+  border-radius: 6px;
+  font-family: var(--font-primary);
 }
 
-/* Efecto de borde sutil alrededor del contenido */
-.description-content::before {
-  display: none;
-}
-
-.banner-container:hover .description-content::before {
-  border-color: rgba(52, 219, 74, 0.2);
-}
-
-.description-content:hover {
-  background-color: rgba(255, 255, 255, 0.98);
-  border-color: #368c44;
-  color: #368c44;
-}
-
-/* Estilo minimalista */
 .banner-container:hover .description-content {
   background-color: rgba(255, 255, 255, 0.98);
+  border-color: #368c44;
 }
 
 /* Posiciones verticales */
@@ -167,397 +150,211 @@
 
 /* ============ RESPONSIVE ============ */
 
-/* Tablets grandes y laptops pequeños (1024px - 1280px) */
+/* Desktop grande (1301px - 1600px) */
+@media (max-width: 1600px) {
+  .banner-container {
+    max-width: 1400px;
+  }
+}
+
+/* Tablets grandes y laptops pequeños (1024px - 1300px) */
 @media (max-width: 1300px) {
   .banner-container {
-    width: 100%;
-    height: 286px;
-  }
-  
-  .banner-img {
-    width: 100%;
-  }
-  
-  .banner-container:hover {
-    transform: translateY(-3px);
+    height: 320px;
+    max-width: 1200px;
   }
   
   .description-content {
-    padding: 20px 28px;
-    font-size: 1.05rem;
+    padding: 16px 20px;
+    font-size: 0.95rem;
   }
   
   .v-top, .v-bottom {
-    top: 22px;
-    bottom: 22px;
+    top: 24px;
+    bottom: 24px;
   }
   
   .h-left, .h-right {
-    left: 22px;
-    right: 22px;
+    left: 24px;
+    right: 24px;
   }
   
   .banner-container:hover .v-top {
-    top: 20px;
+    top: 22px;
   }
   
   .banner-container:hover .v-bottom {
-    bottom: 20px;
+    bottom: 22px;
   }
 }
 
 /* Tablets medianas (768px - 1024px) */
 @media (max-width: 1024px) {
   .banner-container {
-    width: 100%;
-    max-width: 1500px;
-  }
-  
-  .banner-img {
-    width: 100%;
-  }
-  
-  .banner-container:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+    height: 280px;
+    max-width: 1000px;
   }
   
   .description-container {
     max-width: 60%;
-    padding: 15px;
+    padding: 16px;
   }
   
   .description-content {
-    padding: 18px 24px;
-    font-size: 1rem;
+    padding: 14px 18px;
+    font-size: 0.9rem;
     line-height: 1.4;
-    border-left-width: 3px;
-  }
-  
-  .description-content:hover {
-    transform: translateY(-2px);
   }
   
   .v-top, .v-bottom {
-    top: 18px;
-    bottom: 18px;
+    top: 20px;
+    bottom: 20px;
   }
   
   .h-left, .h-right {
-    left: 18px;
-    right: 18px;
-  }
-  
-  /* Reducir efectos hover en tablet */
-  .banner-container:hover .description-container {
-    transform: translateY(-1px);
+    left: 20px;
+    right: 20px;
   }
 }
 
 /* Tablets pequeñas y móviles grandes (600px - 768px) */
 @media (max-width: 768px) {
   .banner-container {
-    width: 100%;
-    max-width: 1500px;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .banner-image {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1280 / 358;
-  }
-  
-  .banner-img {
-    width: 100%;
-    height: 100%;
+    height: 240px;
+    max-width: 100%;
+    margin: 0 20px;
   }
   
   .description-container {
-    position: relative;
-    max-width: 100%;
-    padding: 20px;
-    background-color: #f9f9f9;
+    max-width: 70%;
+    padding: 12px;
   }
   
   .description-content {
-    padding: 18px 24px;
-    font-size: 1rem;
-    line-height: 1.5;
-    backdrop-filter: none;
-    background-color: rgba(255, 255, 255, 0.98);
-    box-shadow: none;
-    border: 1px solid #e0e0e0;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    line-height: 1.4;
   }
   
-  .v-top, .v-bottom, .v-middle {
-    position: relative;
-    top: auto;
-    bottom: auto;
-    left: auto;
-    right: auto;
-    transform: none;
+  .v-top, .v-bottom {
+    top: 16px;
+    bottom: 16px;
   }
   
-  .h-left, .h-center, .h-right {
-    position: relative;
-    left: auto;
-    right: auto;
-    transform: none;
-  }
-  
-  /* Efectos más sutiles en móviles grandes */
-  .banner-container:hover {
-    transform: none;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  }
-  
-  .banner-container:hover .banner-img {
-    transform: scale(1.01);
+  .h-left, .h-right {
+    left: 16px;
+    right: 16px;
   }
 }
 
 /* Móviles medianos (480px - 600px) */
 @media (max-width: 600px) {
   .banner-container {
-    width: 100%;
-    max-width: 1500px;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .banner-image {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1280 / 358;
-    overflow: hidden;
-  }
-  
-  .banner-img {
-    width: 100%;
-    height: 100%;
+    height: 200px;
+    max-width: 100%;
+    margin: 0 16px;
   }
   
   .description-container {
-    position: relative;
-    max-width: 100%;
-    padding: 18px;
-    background-color: #fafafa;
+    max-width: 80%;
+    padding: 10px;
   }
   
   .description-content {
-    padding: 16px 20px;
-    font-size: 14px;
-    line-height: 1.5;
-    border-left-width: 3px;
-    backdrop-filter: none;
-    background-color: rgba(255, 255, 255, 0.98);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    line-height: 1.3;
   }
   
-  .description-content:hover {
-    transform: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  .v-top, .v-bottom {
+    top: 12px;
+    bottom: 12px;
   }
   
-  .v-top, .v-bottom, .v-middle {
-    position: relative;
-    top: auto;
-    bottom: auto;
-    left: auto;
-    right: auto;
-    transform: none;
-  }
-  
-  .h-left, .h-center, .h-right {
-    position: relative;
-    left: auto;
-    right: auto;
-    transform: none;
-  }
-  
-  /* En móviles, cambiamos algunas posiciones para mejor visualización */
-  .v-top.h-left,
-  .v-top.h-right,
-  .v-bottom.h-left,
-  .v-bottom.h-right {
-    max-width: 100%;
-  }
-  
-  /* Desactivar algunos efectos en móviles para mejor rendimiento */
-  .banner-container:hover .banner-image {
-    transform: none;
+  .h-left, .h-right {
+    left: 12px;
+    right: 12px;
   }
 }
 
-/* Móviles pequeños (320px - 480px) */
+/* Móviles pequeños (375px - 480px) */
 @media (max-width: 480px) {
   .banner-container {
-    width: 100%;
-    height: auto;
+    height: 180px;
     max-width: 100%;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .banner-image {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1280 / 358;
-    overflow: hidden;
-  }
-  
-  .banner-img {
-    width: 100%;
-    height: 100%;
+    margin: 0 12px;
   }
   
   .description-container {
-    position: relative;
-    max-width: 100%;
-    padding: 16px;
-    background-color: #fafafa;
+    max-width: 85%;
+    padding: 8px;
   }
   
   .description-content {
-    padding: 14px 18px;
-    font-size: 13px;
-    line-height: 1.4;
-    background-color: rgba(255, 255, 255, 0.98);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    border: 1px solid #e0e0e0;
-  }
-  
-  .v-top, .v-bottom, .v-middle {
-    position: relative;
-    top: auto;
-    bottom: auto;
-    left: auto;
-    right: auto;
-    transform: none;
-  }
-  
-  .h-left, .h-center, .h-right {
-    position: relative;
-    left: auto;
-    right: auto;
-    transform: none;
-  }
-  
-  /* Efectos táctiles más suaves */
-  .banner-container:active {
-    transform: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  }
-}
-
-/* Móviles muy pequeños (menos de 320px) */
-@media (max-width: 320px) {
-  .banner-container {
-    max-width: 100%;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .banner-image {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1280 / 358;
-  }
-  
-  .description-content {
-    padding: 12px 16px;
-    font-size: 12px;
+    padding: 8px 12px;
+    font-size: 0.75rem;
     line-height: 1.3;
-    background-color: rgba(255, 255, 255, 0.98);
+  }
+  
+  .v-top, .v-bottom {
+    top: 10px;
+    bottom: 10px;
+  }
+  
+  .h-left, .h-right {
+    left: 10px;
+    right: 10px;
+  }
+}
+
+/* Móviles muy pequeños (menos de 375px) */
+@media (max-width: 375px) {
+  .banner-container {
+    height: 160px;
+    max-width: 100%;
+    margin: 0 10px;
   }
   
   .description-container {
-    max-width: 100%;
-    padding: 14px;
-    background-color: #fafafa;
+    max-width: 90%;
+    padding: 6px;
   }
   
-  .v-top, .v-bottom, .v-middle {
-    position: relative;
-    top: auto;
-    bottom: auto;
-    transform: none;
+  .description-content {
+    padding: 6px 10px;
+    font-size: 0.7rem;
+    line-height: 1.2;
   }
   
-  .h-left, .h-right, .h-center {
-    position: relative;
-    left: auto;
-    right: auto;
-    transform: none;
+  .v-top, .v-bottom {
+    top: 8px;
+    bottom: 8px;
+  }
+  
+  .h-left, .h-right {
+    left: 8px;
+    right: 8px;
   }
 }
 
-/* Para pantallas muy grandes (más de 1300px) */
-@media (min-width: 1300px) {
+/* Para orientación landscape en móviles */
+@media (max-width: 768px) and (orientation: landscape) {
   .banner-container {
-    width: 100%;
-    max-width: 1460px;
-    height: 358px;
-    margin: 0;
+    height: 200px;
+    max-width: 100%;
   }
   
-  .banner-container:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+  .description-content {
+    padding: 10px 14px;
+    font-size: 0.8rem;
   }
-}
-
-/* Ajustes para cuando el contenedor está en un wrapper responsivo */
-.banner-container.responsive-wrapper {
-  width: 100%;
-  max-width: 1500px;
-  height: auto;
-  aspect-ratio: 1280 / 358;
-}
-/* Helper class para centrar en contenedor padre */
-.center-banner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  padding: 20px;
-}
-
-/* Para mantener proporción exacta en todos los dispositivos */
-.banner-container.proportional {
-  width: 100%;
-  height: 0;
-  padding-bottom: calc(358 / 1280 * 100%); /* 27.97% */
-  position: relative;
-}
-
-.banner-container.proportional .banner-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.banner-container.proportional .description-container {
-  position: absolute;
 }
 
 /* Optimizaciones para dispositivos táctiles */
 @media (hover: none) and (pointer: coarse) {
-  .banner-container {
-    cursor: pointer;
-  }
-  
   .banner-container:active {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 8px 24px rgba(54, 140, 68, 0.1);
   }
   
   .banner-container:active .banner-img {
@@ -568,13 +365,17 @@
     transform: translateY(-1px);
   }
   
-  .banner-container:active .description-content {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
+  .banner-container:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border-color: #e0e0e0;
   }
   
-  /* Desactivar efectos hover que no funcionan en táctiles */
-  .description-content:hover {
+  .banner-container:hover .banner-image {
+    transform: none;
+  }
+  
+  .banner-container:hover .description-container {
     transform: none;
   }
 }
@@ -582,7 +383,7 @@
 /* Efecto de carga suave para la imagen */
 .banner-img {
   opacity: 1;
-  transition: opacity 0.5s ease, transform 0.6s ease;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 /* Si la imagen no está cargada aún */

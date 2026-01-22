@@ -6,7 +6,7 @@
   width: 100%;
   position: relative;
   overflow: hidden;
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: var(--font-primary);
 }
 
 /* Contenedor principal */
@@ -148,11 +148,12 @@
 .plaxti-image-title {
   color: white;
   font-size: 2rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   margin: 0 0 15px 0;
   text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
   line-height: 1.3;
   letter-spacing: -0.5px;
+  font-family: var(--font-primary);
 }
 
 /* Descripción de la imagen */
@@ -162,7 +163,8 @@
   line-height: 1.6;
   margin: 0 0 25px 0;
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
+  font-family: var(--font-primary);
 }
 
 /* Botón de acción estilo PlaxtiLineas */
@@ -182,10 +184,10 @@
   color: white;
   border-radius: 25px;
   font-size: 0.95rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: var(--font-primary);
 }
 
 .plaxti-action-btn:hover {
@@ -214,7 +216,7 @@
   width: 100%;
   height: 100%;
   border: 3px solid transparent;
-  background: linear-gradient(90deg, #368c44, #25d366) border-box;
+  background: linear-gradient(90deg, var(--primary-green), var(--whatsapp-green)) border-box;
   -webkit-mask: 
     linear-gradient(#fff 0 0) padding-box, 
     linear-gradient(#fff 0 0);
@@ -268,130 +270,8 @@
   left: 0;
   width: 40px;
   height: 3px;
-  background: linear-gradient(90deg, #368c44, #25d366);
+  background: linear-gradient(90deg, var(--primary-green), var(--whatsapp-green));
   border-radius: 2px;
-}
-
-/* ===========================
-   RESPONSIVE DESIGN
-   =========================== */
-
-@media (max-width: 1200px) {
-  .plaxti-image-title {
-    font-size: 1.75rem;
-  }
-  
-  .plaxti-image-description {
-    font-size: 1rem;
-  }
-  
-  .plaxti-image-content {
-    padding: 30px;
-  }
-}
-
-@media (max-width: 992px) {
-  .plaxti-banner-grid {
-    flex-direction: column;
-  }
-  
-  .plaxti-image-wrapper {
-    width: 100% !important;
-    flex: 1 0 auto;
-  }
-  
-  .plaxti-image-title {
-    font-size: 1.5rem;
-  }
-  
-  .plaxti-image-description {
-    font-size: 0.95rem;
-  }
-  
-  .content-wrapper {
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .plaxti-banner-container {
-    height: 500px !important;
-  }
-  
-  .plaxti-image-content {
-    padding: 25px;
-    transform: translateY(20px);
-  }
-  
-  .plaxti-image-wrapper:hover .plaxti-image-content {
-    transform: translateY(0);
-  }
-  
-  .plaxti-action-btn {
-    padding: 0.6rem 1.2rem;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .plaxti-banner-container {
-    height: 400px !important;
-  }
-  
-  .plaxti-image-content {
-    padding: 20px;
-  }
-  
-  .plaxti-image-title {
-    font-size: 1.3rem;
-    margin-bottom: 10px;
-  }
-  
-  .plaxti-image-description {
-    font-size: 0.9rem;
-    margin-bottom: 20px;
-  }
-  
-  .plaxti-action-btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.85rem;
-  }
-}
-
-/* Mejora de rendimiento */
-.plaxti-banner-grid,
-.plaxti-image-wrapper,
-.plaxti-banner-image,
-.plaxti-image-overlay {
-  will-change: transform, width;
-  backface-visibility: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Suavizado de animaciones */
-.plaxti-banner-grid {
-  perspective: 1000px;
-}
-
-.plaxti-image-wrapper {
-  transform-style: preserve-3d;
-}
-
-/* Animación de entrada */
-@keyframes fadeInBanner {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.plaxti-banner {
-  animation: fadeInBanner 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 /* ===========================
@@ -402,6 +282,7 @@
 @media (max-width: 1200px) {
   .plaxti-image-title {
     font-size: 1.75rem;
+    font-weight: var(--font-weight-semibold);
     margin-bottom: 12px;
   }
   
@@ -409,6 +290,7 @@
     font-size: 1rem;
     line-height: 1.5;
     margin-bottom: 20px;
+    font-weight: var(--font-weight-regular);
   }
   
   .plaxti-image-content {
@@ -422,6 +304,7 @@
   .plaxti-action-btn {
     padding: 0.65rem 1.3rem;
     font-size: 0.92rem;
+    font-weight: var(--font-weight-medium);
   }
 }
 
@@ -440,6 +323,7 @@
   
   .plaxti-image-title {
     font-size: 1.6rem;
+    font-weight: var(--font-weight-semibold);
     margin-bottom: 10px;
   }
   
@@ -447,6 +331,7 @@
     font-size: 0.98rem;
     line-height: 1.5;
     margin-bottom: 18px;
+    font-weight: var(--font-weight-regular);
   }
   
   .content-wrapper {
@@ -471,6 +356,7 @@
   .plaxti-action-btn {
     padding: 0.6rem 1.2rem;
     font-size: 0.9rem;
+    font-weight: var(--font-weight-medium);
   }
 }
 
@@ -498,6 +384,7 @@
   
   .plaxti-image-title {
     font-size: 1.5rem;
+    font-weight: var(--font-weight-semibold);
     margin-bottom: 8px;
     letter-spacing: -0.3px;
   }
@@ -507,6 +394,7 @@
     line-height: 1.4;
     margin-bottom: 15px;
     color: rgba(255, 255, 255, 0.95);
+    font-weight: var(--font-weight-regular);
   }
   
   .content-wrapper {
@@ -517,6 +405,7 @@
     padding: 0.55rem 1.1rem;
     font-size: 0.88rem;
     backdrop-filter: blur(5px);
+    font-weight: var(--font-weight-medium);
   }
   
   /* Optimización de efectos para móviles */
@@ -548,6 +437,7 @@
   
   .plaxti-image-title {
     font-size: 1.4rem;
+    font-weight: var(--font-weight-semibold);
     margin-bottom: 6px;
   }
   
@@ -559,12 +449,14 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    font-weight: var(--font-weight-regular);
   }
   
   .plaxti-action-btn {
     padding: 0.5rem 1rem;
     font-size: 0.85rem;
     gap: 0.4rem;
+    font-weight: var(--font-weight-medium);
   }
   
   .plaxti-action-btn svg {
@@ -587,7 +479,6 @@
   .plaxti-image-wrapper {
     height: 250px;
     min-height: 250px;
-    
   }
   
   .plaxti-image-content {
@@ -596,6 +487,7 @@
   
   .plaxti-image-title {
     font-size: 1.3rem;
+    font-weight: var(--font-weight-semibold);
     margin-bottom: 5px;
   }
   
@@ -604,11 +496,13 @@
     line-height: 1.3;
     margin-bottom: 10px;
     -webkit-line-clamp: 2;
+    font-weight: var(--font-weight-regular);
   }
   
   .plaxti-action-btn {
     padding: 0.45rem 0.9rem;
     font-size: 0.8rem;
+    font-weight: var(--font-weight-medium);
   }
   
   /* Desactiva algunos efectos para mejor rendimiento */
@@ -638,6 +532,7 @@
   
   .plaxti-image-title {
     font-size: 1.2rem;
+    font-weight: var(--font-weight-semibold);
     margin-bottom: 5px;
   }
   
@@ -645,11 +540,13 @@
     font-size: 0.8rem;
     margin-bottom: 8px;
     -webkit-line-clamp: 1;
+    font-weight: var(--font-weight-regular);
   }
   
   .plaxti-action-btn {
     padding: 0.4rem 0.8rem;
     font-size: 0.75rem;
+    font-weight: var(--font-weight-medium);
   }
 }
 
@@ -657,10 +554,12 @@
 @media (min-width: 1600px) {
   .plaxti-image-title {
     font-size: 2.2rem;
+    font-weight: var(--font-weight-semibold);
   }
   
   .plaxti-image-description {
     font-size: 1.15rem;
+    font-weight: var(--font-weight-regular);
   }
   
   .content-wrapper {
@@ -714,6 +613,7 @@
   .plaxti-action-btn {
     backdrop-filter: none;
     background: rgba(255, 255, 255, 0.2);
+    font-family: var(--font-primary);
   }
   
   /* Ajusta efectos de hover para touch */
@@ -724,4 +624,40 @@
   .plaxti-image-wrapper:active .plaxti-image-overlay {
     opacity: 0.85;
   }
+}
+
+/* Mejora de rendimiento */
+.plaxti-banner-grid,
+.plaxti-image-wrapper,
+.plaxti-banner-image,
+.plaxti-image-overlay {
+  will-change: transform, width;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Suavizado de animaciones */
+.plaxti-banner-grid {
+  perspective: 1000px;
+}
+
+.plaxti-image-wrapper {
+  transform-style: preserve-3d;
+}
+
+/* Animación de entrada */
+@keyframes fadeInBanner {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.plaxti-banner {
+  animation: fadeInBanner 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
