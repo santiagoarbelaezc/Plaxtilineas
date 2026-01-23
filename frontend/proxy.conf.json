@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "http://plaxti-prod.eba-vrgnhchj.sa-east-1.elasticbeanstalk.com",
+    "target": "https://d2so52llbeo6ij.cloudfront.net",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
