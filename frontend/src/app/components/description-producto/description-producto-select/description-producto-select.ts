@@ -112,50 +112,32 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
       return;
     }
     
-    // 2. Usar fetch directamente para obtener el producto
-    fetch(`/api/productos/${id}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Producto no encontrado');
-        }
-        return response.json();
-      })
-      .then(data => {
-        // Convertir datos del backend al tipo ProductoMenu
-        const productoConvertido: any = {
-          id: data.id,
-          nombre: data.nombre,
-          descripcion: data.descripcion,
-          cantidad: data.cantidad || 0,
-          precio: typeof data.precio === 'string' ? parseFloat(data.precio) : data.precio,
-          imagen_url: data.imagen_url,
-          subcategoria_id: data.subcategoria_id,
-          subcategoria: data.subcategoria,
-          categoria: data.categoria,
-          unidad: data.unidad || 'unidades'
-        };
-        
-        // Agregar campos adicionales si existen
-        if (data.public_id) productoConvertido.public_id = data.public_id;
-        if (data.creado_en) productoConvertido.creado_en = data.creado_en;
-        if (data.categoria_icono) productoConvertido.categoria_icono = data.categoria_icono;
-        
-        this.producto = productoConvertido;
-        this.procesarProducto();
-        
-        if (this.producto) {
+    // 2. Usar el servicio ProductosService para obtener el producto
+    this.productosService.obtenerProductoPorId(id).subscribe({
+      next: (productoData) => {
+        if (productoData) {
+          // Convertir ProductoEditable a ProductoMenu
+          const productoConvertido: ProductoMenu = this.convertirProductoEditableAMenu(productoData);
+          
+          this.producto = productoConvertido;
+          this.procesarProducto();
+          
           this.productSelectService.seleccionarProducto(this.producto);
           
           // 🚨 EMITIR SEÑAL después de seleccionar el producto
           this.carouselSignalService.notificarProductoSeleccionado(this.producto.id);
+        } else {
+          console.error('Producto no encontrado');
+          this.error = true;
         }
         this.cargando = false;
-      })
-      .catch(error => {
+      },
+      error: (error) => {
         console.error('Error al cargar producto:', error);
         this.error = true;
         this.cargando = false;
-      });
+      }
+    });
   }
 
   /**
@@ -465,5 +447,23 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   onImageMouseLeave(): void {
     this.zoomX = 50;
     this.zoomY = 50;
+  }
+
+  /**
+   * Convierte un ProductoEditable a ProductoMenu
+   */
+  private convertirProductoEditableAMenu(productoEditable: any): ProductoMenu {
+    return {
+      id: productoEditable.id,
+      nombre: productoEditable.nombre,
+      descripcion: productoEditable.descripcion,
+      cantidad: productoEditable.cantidad || 0,
+      precio: typeof productoEditable.precio === 'string' ? parseFloat(productoEditable.precio) : productoEditable.precio,
+      imagen_url: productoEditable.imagen_url,
+      subcategoria_id: productoEditable.subcategoria_id,
+      subcategoria: productoEditable.subcategoria,
+      categoria: productoEditable.categoria,
+      unidad: productoEditable.unidad || 'unidades'
+    };
   }
 }
