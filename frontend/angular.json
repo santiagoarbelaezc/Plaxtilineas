@@ -64,7 +64,12 @@
                 }
               ],
               "outputHashing": "all",
-              "optimization": true,
+              "optimization": {
+                "scripts": true,
+                "styles": true,
+                "fonts": false
+              },
+
               "extractLicenses": true,
               "sourceMap": false
             },
