@@ -1,59 +1,65 @@
-# Frontend
+<div align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=120&section=header&animation=fadeIn" />
+</div>
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.1.
+<h1 align="center">🛍️ Plaxtilíneas – Plataforma E-commerce</h1>
 
-## Development server
+<h3 align="center">📍 Plataforma digital para empresa en Armenia, Quindío</h3>
 
-To start a local development server, run:
+<p align="center">Sistema web para gestión y visualización de productos con catálogo moderno y administrable.</p>
 
-```bash
-ng serve
-```
+---
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 📌 Descripción
+Plataforma e-commerce desarrollada para empresa en **Armenia, Quindío**. Enfocada en **gestión de catálogo y visualización de productos**. Arquitectura desacoplada frontend/backend con API REST.
 
-## Code scaffolding
+> ⚠️ **Nota:** Proyecto enfocado en catálogo, no incluye carrito de compras ni pagos.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+---
 
-```bash
-ng generate component component-name
-```
+## 🧩 Funcionalidades
+### 🔧 **Backend (Administración)**
+- Gestión de categorías y subcategorías
+- Gestión de productos y variantes
+- API REST completa
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### 🖥️ **Frontend (Cliente)**
+- Catálogo de productos navegable
+- Diseño responsive y moderno
+- Experiencia de usuario optimizada
 
-```bash
-ng generate --help
-```
+---
 
-## Building
+## 🔧 **Tech Stack**
 
-To build the project run:
+### **Frontend**
+<div align="center">
+  <img src="https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white" />
+  <img width="8" />
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img width="8" />
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" />
+  <img width="8" />
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" />
+</div>
 
-```bash
-ng build
-```
+### **Backend**
+<div align="center">
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
+  <img width="8" />
+  <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" />
+</div>
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### **Base de Datos**
+<div align="center">
+  <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" />
+</div>
 
-## Running unit tests
+### **Infraestructura**
+<div align="center">
+  <img src="https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white" />
+  <img width="8" />
+  <img src="https://img.shields.io/badge/Hostinger-673DE6?style=for-the-badge&logo=hostinger&logoColor=white" />
+</div>
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+---
