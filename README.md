@@ -13,8 +13,6 @@
 ## 📌 Descripción
 Plataforma e-commerce desarrollada para empresa en **Armenia, Quindío**. Enfocada en **gestión de catálogo y visualización de productos**. Arquitectura desacoplada frontend/backend con API REST.
 
-> ⚠️ **Nota:** Proyecto enfocado en catálogo, no incluye carrito de compras ni pagos.
-
 ---
 
 ## 🧩 Funcionalidades
