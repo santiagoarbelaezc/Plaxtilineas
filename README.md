@@ -2,6 +2,10 @@
   <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=120&section=header&animation=fadeIn" />
 </div>
 
+[![Angular](https://img.shields.io/badge/Angular-18.2.0-red.svg)](https://angular.io/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5.2-blue.svg)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
 <h1 align="center">🛍️ Plaxtilíneas – Plataforma E-commerce</h1>
 
 <h3 align="center">📍 Plataforma digital para empresa en Armenia, Quindío</h3>
