@@ -99,6 +99,76 @@ Plataforma e-commerce desarrollada para empresa en **Armenia, Quindío**. Enfoca
 
 El proyecto implementa una **arquitectura distribuida moderna**, desacoplando frontend, backend y base de datos en diferentes proveedores de infraestructura:
 
+### **🖥️ Frontend (Capa de Presentación)**
+| Componente | Descripción | Tecnologías | Despliegue |
+|------------|-------------|-------------|------------|
+| **Aplicación Angular** | Single Page Application principal | Angular 16+, TypeScript, HTML5, CSS3 | Hostinger |
+| **Interfaz de Usuario** | Catálogo de productos responsive | Componentes Angular, RxJS | Hostinger |
+| **Gestión de Estado** | Estado global de la aplicación | Services, RxJS BehaviorSubject | Hostinger |
+
+### **🌐 CDN & Routing (Capa de Red)**
+| Componente | Descripción | Tecnologías | Proveedor |
+|------------|-------------|-------------|-----------|
+| **Amazon CloudFront** | Content Delivery Network global | CDN, SSL/TLS, Caching | AWS |
+| **Routing de Peticiones** | Direccionamiento API y assets | Request Routing, Edge Locations | AWS |
+| **Terminación SSL** | Seguridad en tránsito | TLS 1.2+, HTTPS | AWS |
+
+### **⚙️ Backend (Capa de Servicios)**
+| Componente | Descripción | Tecnologías | Despliegue |
+|------------|-------------|-------------|------------|
+| **API REST** | Servicios backend principales | Node.js, Express.js | AWS Elastic Beanstalk |
+| **Gestión de Productos** | CRUD de productos y categorías | Express Routes, Controllers | AWS Elastic Beanstalk |
+| **Auto-scaling** | Escalado automático por demanda | Load Balancer, Auto-scaling Groups | AWS |
+
+### **🗄️ Base de Datos (Capa de Persistencia)**
+| Componente | Descripción | Tecnologías | Proveedor |
+|------------|-------------|-------------|-----------|
+| **MySQL Database** | Almacenamiento persistente | MySQL 8.0+, Relacional | Hostinger |
+| **Gestión de Datos** | Productos, categorías, usuarios | Tablas relacionales, índices | Hostinger |
+| **Conexiones Seguras** | Comunicación encriptada | SSL Database Connections | Hostinger |
+
+---
+
+## 🔄 Flujo de Comunicación
+
+Usuario → Frontend Angular (Hostinger)
+→ CloudFront CDN (AWS)
+→ API REST (Elastic Beanstalk - AWS)
+→ MySQL Database (Hostinger)
+
+
+## 📊 Características por Capa
+
+### **Frontend (Hostinger)**
+- **Hosting**: Alojamiento web optimizado para Angular
+- **Rendimiento**: Carga rápida de assets estáticos
+- **Disponibilidad**: 99.9% uptime garantizado
+
+### **CDN (AWS CloudFront)**
+- **Distribución**: 300+ edge locations globales
+- **Caché**: Caching inteligente de recursos
+- **Seguridad**: Protección DDoS y WAF
+
+### **Backend (AWS Elastic Beanstalk)**
+- **Escalabilidad**: Auto-scaling basado en carga
+- **Balanceo**: Load balancer distribuido
+- **Monitoreo**: CloudWatch integrado
+
+### **Base de Datos (Hostinger MySQL)**
+- **Almacenamiento**: 20GB SSD inicial
+- **Backups**: Copias de seguridad diarias
+- **Conectividad**: Conexiones simultáneas ilimitadas
+
+---
+
+### Principios de Diseño Aplicados
+
+1. **Separación de Responsabilidades**: Cada capa tiene responsabilidades específicas y bien definidas
+2. **Escalabilidad Independiente**: Cada componente escala según su propia demanda
+3. **Seguridad en Capas**: Múltiples niveles de protección (SSL, firewalls, autenticación)
+4. **Alta Disponibilidad**: Redundancia y distribución geográfica
+5. **Mantenibilidad**: Despliegue y actualización independiente por componente
+
 ---
 
 👨‍💻 **Autor**
