@@ -91,20 +91,10 @@ Plataforma e-commerce desarrollada para empresa en **Armenia, Quindío**. Enfoca
 
 ---
 
-## 📊 **Diagrama de Arquitectura**
+## 🏗 Arquitectura del Sistema
 
-┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
-│ Frontend │────▶│ CloudFront │────▶│ Backend API │
-│ Angular │ │ (CDN & Proxy) │ │ Elastic │
-│ Hostinger │ │ AWS │ │ Beanstalk │
-└─────────────────┘ └─────────────────┘ └────────┬────────┘
-│
-▼
-┌─────────────────┐
-│ Base Datos │
-│ MySQL │
-│ Hostinger │
-└─────────────────┘
+El proyecto implementa una **arquitectura distribuida moderna**, desacoplando frontend, backend y base de datos en diferentes proveedores de infraestructura:
+
 
 
 
