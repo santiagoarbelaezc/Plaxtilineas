@@ -95,6 +95,48 @@ Plataforma e-commerce desarrollada para empresa en **Armenia, Quindío**. Enfoca
 
 El proyecto implementa una **arquitectura distribuida moderna**, desacoplando frontend, backend y base de datos en diferentes proveedores de infraestructura:
 
+┌─────────────────────────────────────────────────────────────────────┐
+│ FRONTEND (Capa de Presentación) │
+│ ┌───────────────────────────────────────────────────────────────┐ │
+│ │ • Angular 16+ (SPA) │ │
+│ │ • TypeScript / HTML5 / CSS3 │ │
+│ │ • Desplegado en Hostinger │ │
+│ │ • Responsive Design │ │
+│ └───────────────────────────────────────────────────────────────┘ │
+└──────────────────────────────┬───────────────────────────────────────┘
+│ HTTP/HTTPS Requests
+┌──────────────────────────────▼───────────────────────────────────────┐
+│ CDN & ROUTING (Capa de Red) │
+│ ┌───────────────────────────────────────────────────────────────┐ │
+│ │ • Amazon CloudFront │ │
+│ │ • Global CDN Distribution │ │
+│ │ • SSL/TLS Termination │ │
+│ │ • Request Routing to Backend │ │
+│ │ • Caching Static Assets │ │
+│ └───────────────────────────────────────────────────────────────┘ │
+└──────────────────────────────┬───────────────────────────────────────┘
+│ API Requests (REST)
+┌──────────────────────────────▼───────────────────────────────────────┐
+│ BACKEND (Capa de Servicios) │
+│ ┌───────────────────────────────────────────────────────────────┐ │
+│ │ • Node.js + Express.js │ │
+│ │ • API RESTful │ │
+│ │ • Desplegado en AWS Elastic Beanstalk │ │
+│ │ • Auto-scaling Groups │ │
+│ │ • Load Balancer │ │
+│ └───────────────────────────────────────────────────────────────┘ │
+└──────────────────────────────┬───────────────────────────────────────┘
+│ Database Queries
+┌──────────────────────────────▼───────────────────────────────────────┐
+│ BASE DE DATOS (Capa de Persistencia) │
+│ ┌───────────────────────────────────────────────────────────────┐ │
+│ │ • MySQL Database │ │
+│ │ • Alojada en Hostinger │ │
+│ │ • Conexiones Seguras SSL │ │
+│ │ • Backups Automáticos │ │
+│ └───────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────┘
+
 
 ---
 
