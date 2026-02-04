@@ -15,6 +15,10 @@
   letter-spacing: 0.01em;
 }
 
+.nav-text-container {
+  font-weight: var(--font-weight-regular);
+}
+
 .dropdown-trigger.nav-link::after {
   bottom: 0;
   left: 50%;
@@ -245,10 +249,10 @@
     margin-left: 0;
     font-size: 14px;
     font-family: var(--font-primary);
-    font-weight: var(--font-weight-regular);
+    font-weight: var(--font-weight-medium);
     letter-spacing: 0.01em;
     text-decoration: none;
-    color: #4a5568;
+    color: #1f1f1f;
     border: none;
     background: transparent;
     cursor: pointer;
@@ -260,6 +264,11 @@
     border-bottom: 1px solid var(--border-color);
     position: relative;
     overflow: hidden;
+  }
+
+  .nav-text-container {
+    font-weight: var(--font-weight-medium);
+    color: #1f1f1f;
   }
 
   .dropdown-trigger::before {
@@ -311,15 +320,23 @@
     display: flex;
     align-items: center;
     height: auto;
+    
   }
 
   .dropdown-trigger {
     padding: 16px 24px;
     margin-left: 0;
-    font-size: 13.5px;
-    font-family: var(--font-primary);
-    font-weight: var(--font-weight-regular);
+    font-size: 16px;
+    font-family: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
     letter-spacing: 0.01em;
+    color: #1f1f1f;
+    left: 8px;
+  }
+
+  .nav-text-container {
+    font-weight: var(--font-weight-medium);
+    color: #1f1f1f;
   }
 
   .dropdown-menu {
@@ -334,8 +351,14 @@
     margin-left: 0;
     font-size: 13px;
     font-family: var(--font-primary);
-    font-weight: var(--font-weight-regular);
+    font-weight: var(--font-weight-medium);
     letter-spacing: 0.01em;
+    color: #1f1f1f;
+  }
+
+  .nav-text-container {
+    font-weight: var(--font-weight-medium);
+    color: #1f1f1f;
   }
 }
 

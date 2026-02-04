@@ -105,77 +105,62 @@
 /* Contenedor de botones en horizontal */
 .buttons-container {
   display: flex;
-  gap: 20px;
+  gap: 15px;
   width: 100%;
   margin-top: 10px;
 }
 
-/* Botones modernos en horizontal */
+/* Botones modernos en horizontal - ESTILO TRIO */
 .header-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   flex: 1;
-  min-width: 140px;
-  height: 50px;
-  padding: 0 20px;
-  border: 1.5px solid rgba(54, 140, 68, 0.4);
-  color: #000;
+  min-width: 120px;
+  height: 48px;
+  padding: 0 18px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: white;
   text-decoration: none;
   font-weight: 500;
-  font-size: 15px;
+  font-size: 14px;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 6px;
   font-family: var(--font-primary);
-  letter-spacing: 0.3px;
-  box-shadow: 0 4px 12px rgba(54, 140, 68, 0.1);
+  letter-spacing: 0.01em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 1;
 }
 
-.header-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--gradient-primary);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: -1;
-  border-radius: 6px;
-}
-
 .header-btn:hover {
-  color: #ffffff;
-  border-color: var(--primary-green-dark);
-  background: linear-gradient(135deg, rgba(54, 140, 68, 0.9) 0%, rgba(42, 107, 53, 0.9) 100%);
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(54, 140, 68, 0.25);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
-.header-btn:hover::before {
-  opacity: 1;
-}
-
-.header-btn:hover .btn-icon {
-  fill: #ffffff;
+.header-btn:active {
   transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.15);
 }
 
-/* Iconos dentro de los botones */
+/* Iconos dentro de los botones - ESTILO TRIO */
 .btn-icon {
   width: 16px;
   height: 16px;
-  fill: #000;
+  fill: white;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
+}
+
+.header-btn:hover .btn-icon {
+  transform: translateX(3px);
 }
 
 /* Texto dentro de los botones */
@@ -188,33 +173,34 @@
 
 .header-btn:hover span {
   font-weight: 600;
-  letter-spacing: 0.4px;
 }
 
 /* Animación sutil para los botones */
-@keyframes buttonGlow {
-  0%, 100% {
-    box-shadow: 0 4px 12px rgba(54, 140, 68, 0.1);
+@keyframes buttonFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  50% {
-    box-shadow: 0 4px 16px rgba(54, 140, 68, 0.2);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
 .header-btn {
-  animation: buttonGlow 4s ease-in-out infinite;
+  animation: buttonFadeIn 0.5s ease forwards;
 }
 
-.header-btn:nth-child(2) {
-  animation-delay: 1.3s;
-}
+.header-btn:nth-child(1) { animation-delay: 0.1s; }
+.header-btn:nth-child(2) { animation-delay: 0.2s; }
+.header-btn:nth-child(3) { animation-delay: 0.3s; }
 
-.header-btn:nth-child(3) {
-  animation-delay: 2.6s;
-}
-/* Responsive para móvil */
+/* ===========================
+   RESPONSIVE DESIGN - HEADER
+   =========================== */
+
+/* Tablet - 768px */
 @media (max-width: 768px) {
-  /* Contenedor principal */
   .contenidoH {
     height: 100vh;
     min-height: 600px;
@@ -226,8 +212,8 @@
   .header-content {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto;
-    gap: 30px;
-    margin-top: 10px;
+    gap: 25px;
+    margin-top: 20px;
     text-align: center;
     padding: 20px 0;
   }
@@ -238,10 +224,11 @@
   }
 
   .logo-container img {
-    height: 200px;
+    height: 180px;
     width: 100%;
-    max-width: 280px;
+    max-width: 260px;
     object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
   }
 
   /* Text container centrado */
@@ -252,7 +239,7 @@
   }
 
   .text-container p {
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.6;
     margin-bottom: 25px;
     text-align: center;
@@ -260,55 +247,98 @@
   }
 
   .text-container strong {
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .text-container em {
-    font-size: 13px;
+    font-size: 14px;
     margin-top: 5px;
     display: block;
   }
 
-  /* Botones en columna */
+  /* BOTONES COMPACTOS - Contenedor */
   .buttons-container {
     flex-direction: column;
-    gap: 18px;
+    gap: 12px;
     width: 100%;
-    max-width: 320px;
+    max-width: 280px;
     margin: 0 auto;
-    margin-top: 5px;
+    margin-top: 10px;
   }
 
-  /* Botones adaptados */
+  /* BOTONES ESTILO TRIO - Estilos principales */
   .header-btn {
-    width: auto;
-    max-width: 220px;
-    min-width: auto;
-    height: 55px;
-    padding: 0 22px;
-    font-size: 16px;
-    border-radius: 10px;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    margin: 0 auto;
-    background: rgba(255, 255, 255, 0.99);
-    box-shadow: 0 8px 24px rgba(54, 140, 68, 0.3);
-    border: 2px solid rgba(54, 140, 68, 0.5);
-    transition: all 0.3s ease;
+    gap: 12px;
+    width: 100%;
+    height: 52px;
+    padding: 0 20px;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    
+    /* Color estilo TRIO */
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    
+    /* Sombra estilo TRIO */
+    box-shadow: 
+      0 4px 12px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
 
+  /* Efecto hover - activo en móvil con touch */
+  .header-btn:active {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 
+      0 2px 8px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+
+  /* Iconos de botones mejorados */
   .btn-icon {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+    fill: white;
   }
 
-  /* Ajustar animaciones para móvil */
-  .header-btn {
-    animation: none; /* Remover animación en móvil para mejor rendimiento */
+  .header-btn:active .btn-icon {
+    transform: translateX(2px);
   }
 
-  .header-btn:nth-child(2),
+  /* Texto dentro del botón */
+  .header-btn span {
+    flex-grow: 1;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  /* Colores de acento para los botones */
+  .header-btn:nth-child(1) {
+    border-left: 3px solid rgba(255, 255, 255, 0.5);
+  }
+
+  .header-btn:nth-child(2) {
+    border-left: 3px solid rgba(255, 255, 255, 0.5);
+  }
+
   .header-btn:nth-child(3) {
-    animation-delay: 0s;
+    border-left: 3px solid rgba(255, 255, 255, 0.5);
   }
 
   /* Espacio extra para iOS */
@@ -317,119 +347,186 @@
       height: -webkit-fill-available;
       min-height: -webkit-fill-available;
     }
-  }
-
-  /* Optimización para tablets pequeñas */
-  @media (min-width: 481px) and (max-width: 768px) {
-    .logo-container img {
-      height: 220px;
-      width: 100%;
-      max-width: 300px;
-      object-fit: contain;
-    }
-
-    .text-container p {
-      font-size: 15px;
-    }
-
-    .buttons-container {
-      max-width: 350px;
-    }
-  }
-
-  /* Optimización para teléfonos muy pequeños */
-  @media (max-width: 480px) {
-    .contenidoH {
-      padding: 0 15px;
-    }
-
-    .header-content {
-      gap: 25px;
-      margin-top: 15px;
-    }
-
-    .logo-container img {
-      height: 180px;
-      width: 100%;
-      max-width: 250px;
-      object-fit: contain;
-    }
-
-    .text-container p {
-      font-size: 13px;
-      line-height: 1.5;
-      margin-bottom: 20px;
-    }
-
+    
     .header-btn {
-      height: 50px;
-      font-size: 15px;
-      width: auto;
-      max-width: 200px;
-      margin: 0 auto;
-      padding: 0 20px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.98);
-      box-shadow: 0 6px 18px rgba(54, 140, 68, 0.25);
-      border: 1.5px solid rgba(54, 140, 68, 0.4);
-    }
-
-    .btn-icon {
-      width: 18px;
-      height: 18px;
-    }
-
-    .btn-icon {
-      width: 14px;
-      height: 14px;
+      height: 54px;
+      -webkit-tap-highlight-color: transparent;
     }
   }
+}
 
-  /* Landscape móvil */
-  @media (max-height: 600px) and (orientation: landscape) {
-    .contenidoH {
-      height: auto;
-      min-height: 100vh;
-      padding: 40px 5%;
-    }
+/* Móvil grande - 576px */
+@media (max-width: 576px) {
+  .contenidoH {
+    padding: 0 15px;
+  }
 
-    .header-content {
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto;
-      gap: 30px;
-      align-items: center;
-    }
+  .header-content {
+    gap: 20px;
+    margin-top: 15px;
+  }
 
-    .logo-container img {
-      height: 160px;
-      width: 100%;
-      max-width: 220px;
-      object-fit: contain;
-    }
+  .logo-container img {
+    height: 160px;
+    width: 100%;
+    max-width: 240px;
+    object-fit: contain;
+  }
 
-    .buttons-container {
-      flex-direction: row;
-      flex-wrap: wrap;
-      max-width: 100%;
-    }
+  .text-container p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    padding: 0 5px;
+  }
 
-    .header-btn {
-      flex: 1;
-      min-width: 120px;
-      width: auto;
-      max-width: 180px;
-      height: 52px;
-      padding: 0 18px;
-      font-size: 15px;
-      border-radius: 7px;
-      background: rgba(255, 255, 255, 0.97);
-      box-shadow: 0 5px 16px rgba(54, 140, 68, 0.22);
-    }
+  .text-container strong {
+    font-size: 15px;
+  }
 
-    .text-container p {
-      font-size: 13px;
-      margin-bottom: 15px;
-    }
+  .text-container em {
+    font-size: 13px;
+  }
+
+  .buttons-container {
+    gap: 10px;
+    max-width: 260px;
+  }
+
+  .header-btn {
+    height: 50px;
+    font-size: 14px;
+    padding: 0 18px;
+    border-radius: 8px;
+    gap: 10px;
+  }
+
+  .btn-icon {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Móvil pequeño - 480px */
+@media (max-width: 480px) {
+  .contenidoH {
+    padding: 0 12px;
+  }
+
+  .logo-container img {
+    height: 140px;
+    max-width: 220px;
+  }
+
+  .text-container p {
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+
+  .text-container strong {
+    font-size: 14px;
+  }
+
+  .text-container em {
+    font-size: 12px;
+  }
+
+  .buttons-container {
+    max-width: 200px;
+    height: 140px;
+    gap: 8px;
+  }
+
+  .header-btn {
+    height: 48px;
+    font-size: 13.5px;
+    padding: 0 16px;
+    gap: 8px;
+  }
+
+  .btn-icon {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+/* Landscape móvil */
+@media (max-height: 600px) and (orientation: landscape) {
+  .contenidoH {
+    height: auto;
+    min-height: 100vh;
+    padding: 40px 5%;
+  }
+
+  .header-content {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 30px;
+    align-items: center;
+    margin-top: 0;
+  }
+
+  .logo-container img {
+    height: 140px;
+    max-width: 200px;
+  }
+
+  .text-container p {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  .buttons-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-width: 100%;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .header-btn {
+    flex: 1;
+    min-width: 120px;
+    max-width: 180px;
+    height: 46px;
+    padding: 0 14px;
+    font-size: 13px;
+  }
+
+  .btn-icon {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* Móvil muy pequeño - 375px */
+@media (max-width: 375px) {
+  .contenidoH {
+    padding: 0 10px;
+  }
+
+  .logo-container img {
+    height: 130px;
+    max-width: 200px;
+  }
+
+  .text-container p {
+    font-size: 12.5px;
+    margin-bottom: 16px;
+  }
+
+  .text-container strong {
+    font-size: 13.5px;
+  }
+
+  .buttons-container {
+    max-width: 220px;
+  }
+
+  .header-btn {
+    height: 46px;
+    font-size: 13px;
+    padding: 0 14px;
   }
 }
 
