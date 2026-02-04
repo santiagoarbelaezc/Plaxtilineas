@@ -161,7 +161,7 @@
 .image-wrapper {
   position: relative;
   width: 100px;
-  height: 140px;
+  aspect-ratio: 3 / 1;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 16px;
@@ -267,10 +267,10 @@
 
 @media (max-width: 992px) {
   .product-header {
-    height: 90vh;
+    height: 85vh;
     flex-direction: column;
     justify-content: center;
-    padding: 0 30px;
+    padding: 0 25px;
   }
   
   .header-left-content {
@@ -278,24 +278,25 @@
     max-width: 100%;
     text-align: center;
     padding-left: 0;
-    margin-bottom: 50px;
-    align-items: center; /* Centramos todo en móvil */
+    margin-bottom: 40px;
+    align-items: center;
   }
   
   .main-logo {
-    max-width: 250px;
-    margin: 0 auto 0 auto; /* Solo margen inferior si queremos */
+    max-width: 240px;
+    margin: 0 auto;
   }
   
   .scroll-indicator {
-    margin-top: 40px; /* Un poco más de separación en móvil */
-    align-self: center; /* Centrado en móvil */
+    margin-top: 30px;
+    align-self: center;
   }
   
   .scroll-text {
     writing-mode: horizontal-tb;
     transform: none;
     margin-top: 0;
+    font-size: 12px;
   }
   
   .images-carousel {
@@ -304,62 +305,16 @@
     right: auto;
     transform: none;
     width: 100%;
-    max-width: 500px;
+    max-width: 480px;
     margin: 0 auto;
+    height: 180px;
   }
 }
 
 @media (max-width: 768px) {
   .product-header {
-    height: 85vh;
-    padding: 0 20px;
-  }
-  
-  .main-logo {
-    max-width: 220px;
-  }
-  
-  .scroll-indicator {
-    margin-top: 35px;
-  }
-  
-  .scroll-arrow {
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 18px solid rgba(0, 0, 0, 0.7);
-  }
-  
-  .scroll-text {
-    font-size: 12px;
-    letter-spacing: 2px;
-  }
-  
-  .images-carousel {
-    height: 180px;
-  }
-  
-  .images-track {
-    gap: 20px;
-    justify-content: center;
-  }
-  
-  .image-wrapper {
-    width: 90px;
-    height: 130px;
-  }
-  
-  .image-wrapper:hover,
-  .image-wrapper.selected,
-  .image-wrapper.auto-active {
-    width: 120px;
-    height: 170px;
-  }
-}
-
-@media (max-width: 480px) {
-  .product-header {
     height: 80vh;
-    min-height: 500px;
+    padding: 0 15px;
   }
   
   .main-logo {
@@ -367,13 +322,13 @@
   }
   
   .scroll-indicator {
-    margin-top: 30px;
+    margin-top: 25px;
   }
   
   .scroll-arrow {
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-top: 15px solid rgba(0, 0, 0, 0.7);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 16px solid rgba(0, 0, 0, 0.7);
   }
   
   .scroll-text {
@@ -385,15 +340,64 @@
     height: 160px;
   }
   
+  .images-track {
+    gap: 15px;
+    justify-content: center;
+  }
+  
   .image-wrapper {
-    width: 80px;
-    height: 120px;
+    width: 85px;
   }
   
   .image-wrapper:hover,
   .image-wrapper.selected,
   .image-wrapper.auto-active {
-    width: 100px;
-    height: 150px;
+    width: 110px;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-header {
+    height: 50vh;
+    min-height: 450px;
+    padding: 0 10px;
+  }
+  
+  .main-logo {
+    max-width: 180px;
+  }
+  
+  .scroll-indicator {
+    margin-top: 20px;
+  }
+  
+  .scroll-arrow {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 14px solid rgba(0, 0, 0, 0.7);
+  }
+  
+  .scroll-text {
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+  
+  .images-carousel {
+    height: 140px;
+  }
+  
+  .images-track {
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  .image-wrapper {
+    width: 75px;
+  }
+  
+  .image-wrapper:hover,
+  .image-wrapper.selected,
+  .image-wrapper.auto-active {
+    width: 90px;
   }
 }
