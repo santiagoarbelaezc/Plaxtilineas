@@ -64,6 +64,158 @@
     <main class="admin-main-content">
       <!-- Bienvenida (solo visible en /admin) -->
       <div *ngIf="estaEnInicio" class="admin-welcome-section">
+        
+        <!-- Sección de Importación de Productos -->
+        <section class="admin-card import-section">
+          <div class="import-header">
+            <h2 class="card-title">
+              <fa-icon [icon]="faDownload" class="section-icon"></fa-icon>
+              Importar Productos desde Hostinger
+            </h2>
+            <p class="card-subtitle">Sincroniza productos desde la base de datos de Hostinger</p>
+          </div>
+
+          <!-- Mensajes de error y éxito -->
+          <div *ngIf="mensajeError" class="alert alert-error">
+            {{ mensajeError }}
+          </div>
+          <div *ngIf="mensajeExito" class="alert alert-success">
+            {{ mensajeExito }}
+          </div>
+
+          <!-- Botones de control -->
+          <div class="import-controls">
+            <button 
+              class="import-btn import-btn-preview" 
+              (click)="obtenerPreview()"
+              [disabled]="cargandoPreview || cargandoEstadisticas || cargandoImportacion"
+              title="Ver una vista previa de los productos a importar">
+              <fa-icon [icon]="faEye"></fa-icon>
+              <span *ngIf="!cargandoPreview">Ver Preview</span>
+              <span *ngIf="cargandoPreview">Cargando...</span>
+            </button>
+
+            <button 
+              class="import-btn import-btn-stats" 
+              (click)="obtenerEstadisticas()"
+              [disabled]="cargandoEstadisticas || cargandoPreview || cargandoImportacion"
+              title="Ver estadísticas de productos disponibles">
+              <fa-icon [icon]="faChartBar"></fa-icon>
+              <span *ngIf="!cargandoEstadisticas">Ver Estadísticas</span>
+              <span *ngIf="cargandoEstadisticas">Cargando...</span>
+            </button>
+
+            <button 
+              class="import-btn import-btn-execute" 
+              (click)="ejecutarImportacion()"
+              [disabled]="cargandoImportacion || cargandoPreview || cargandoEstadisticas"
+              title="Ejecutar importación de todos los productos">
+              <fa-icon [icon]="faDownload"></fa-icon>
+              <span *ngIf="!cargandoImportacion">Ejecutar Importación</span>
+              <span *ngIf="cargandoImportacion">Importando...</span>
+            </button>
+
+            <button 
+              class="import-btn import-btn-clear" 
+              (click)="limpiarDatos()"
+              [disabled]="!datosPreview && !datosEstadisticas && !respuestaImportacion"
+              title="Limpiar datos mostrados">
+              Limpiar
+            </button>
+          </div>
+
+          <!-- Preview de Productos -->
+          <div *ngIf="datosPreview" class="import-data-section preview-section">
+            <h3 class="data-section-title">
+              <fa-icon [icon]="faEye"></fa-icon>
+              Vista Previa ({{ datosPreview.total_en_preview }} productos)
+            </h3>
+            <div class="products-preview-grid">
+              <div *ngFor="let producto of datosPreview.productos" class="product-preview-card">
+                <div *ngIf="producto.primera_imagen" class="product-preview-image">
+                  <img [src]="producto.primera_imagen" [alt]="producto.name" />
+                </div>
+                <div class="product-preview-info">
+                  <h4 class="product-name">{{ producto.name }}</h4>
+                  <p class="product-cat">{{ producto.category || 'Sin categoría' }}</p>
+                  <p class="product-variants">📦 {{ producto.variantes_count }} variantes</p>
+                  <p *ngIf="producto.primer_precio" class="product-price">💰 ${{ producto.primer_precio }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Estadísticas -->
+          <div *ngIf="datosEstadisticas" class="import-data-section stats-section">
+            <h3 class="data-section-title">
+              <fa-icon [icon]="faChartBar"></fa-icon>
+              Estadísticas
+            </h3>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-value">{{ datosEstadisticas.total_productos }}</div>
+                <div class="stat-label">Total de Productos</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">{{ datosEstadisticas.productos_con_imagen }}</div>
+                <div class="stat-label">Con Imagen</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">{{ datosEstadisticas.productos_con_variantes }}</div>
+                <div class="stat-label">Con Variantes</div>
+              </div>
+            </div>
+            <div *ngIf="datosEstadisticas.productos_por_categoria && datosEstadisticas.productos_por_categoria.length" class="categories-list">
+              <h4>Productos por Categoría:</h4>
+              <ul>
+                <li *ngFor="let cat of datosEstadisticas.productos_por_categoria">
+                  <strong>{{ cat.category || '(sin categoría)' }}:</strong> {{ cat.total }} productos
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Resultado de Importación -->
+          <div *ngIf="respuestaImportacion" class="import-data-section result-section" 
+               [class.success]="respuestaImportacion.errores === 0">
+            <h3 class="data-section-title">
+              <fa-icon [icon]="faDownload"></fa-icon>
+              Resultado de Importación
+            </h3>
+            <div class="result-summary">
+              <div class="result-item success">
+                <span class="result-label">Importados Exitosamente:</span>
+                <span class="result-value">{{ respuestaImportacion.importados_exitosamente }}/{{ respuestaImportacion.total_procesados }}</span>
+              </div>
+              <div *ngIf="respuestaImportacion.duplicados_ignorados > 0" class="result-item warning">
+                <span class="result-label">Duplicados Ignorados:</span>
+                <span class="result-value">{{ respuestaImportacion.duplicados_ignorados }}</span>
+              </div>
+              <div *ngIf="respuestaImportacion.errores > 0" class="result-item error">
+                <span class="result-label">Errores:</span>
+                <span class="result-value">{{ respuestaImportacion.errores }}</span>
+              </div>
+            </div>
+
+            <div *ngIf="respuestaImportacion.detalles_duplicados && respuestaImportacion.detalles_duplicados.length" class="details-section">
+              <h4>Productos Duplicados ({{ respuestaImportacion.detalles_duplicados.length }})</h4>
+              <ul class="details-list">
+                <li *ngFor="let dup of respuestaImportacion.detalles_duplicados">
+                  {{ dup.nombre }}
+                </li>
+              </ul>
+            </div>
+
+            <div *ngIf="respuestaImportacion.detalles_errores && respuestaImportacion.detalles_errores.length" class="details-section">
+              <h4>Errores ({{ respuestaImportacion.detalles_errores.length }})</h4>
+              <ul class="details-list">
+                <li *ngFor="let err of respuestaImportacion.detalles_errores">
+                  <strong>{{ err.nombre }}:</strong> {{ err.error }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
       
         <section class="admin-card quick-access-card">
           <h2 class="card-title">
