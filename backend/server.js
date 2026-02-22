@@ -52,6 +52,7 @@ const subcategoriaRoutes = require('./routes/subcategoria.routes');
 const categoriaRoutes = require('./routes/categoria.routes');
 const varianteRoutes = require('./routes/variante.routes');
 const pqrsRoutes = require('./routes/pqrs.routes');
+const importarProductosRoutes = require('./routes/importar-productos.routes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/subcategorias', subcategoriaRoutes);
@@ -59,6 +60,7 @@ app.use('/api/productos', productoRoutes);
 app.use('/api/categorias', categoriaRoutes);
 app.use('/api/variantes', varianteRoutes);
 app.use('/api/pqrs', pqrsRoutes);
+app.use('/api/importar', importarProductosRoutes);
 
 // 🩹 HEALTH CHECK - CRÍTICO PARA ELASTIC BEANSTALK
 app.get('/health', (req, res) => {
@@ -88,6 +90,7 @@ app.get('/', (req, res) => {
       subcategorias: '/api/subcategorias',
       variantes: '/api/variantes',
       pqrs: '/api/pqrs',
+      importar: '/api/importar',
       health: '/health'
     },
     documentation: 'Consulta la documentación interna',
