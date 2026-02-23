@@ -15,7 +15,8 @@ import {
   faClipboardList,   // Icono para PQR
   faDownload,        // Icono para descargar/importar
   faEye,            // Icono para preview
-  faChartBar        // Icono para estadísticas
+  faChartBar,        // Icono para estadísticas
+  faArrowRight
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -39,6 +40,7 @@ export class DashboardViewComponent {
   faDownload = faDownload;
   faEye = faEye;
   faChartBar = faChartBar;
+  faArrowRight = faArrowRight;
 
   // Estados para la importación
   cargandoPreview = false;
@@ -71,7 +73,8 @@ export class DashboardViewComponent {
       faClipboardList,
       faDownload,
       faEye,
-      faChartBar
+      faChartBar,
+      faArrowRight
     );
   }
 

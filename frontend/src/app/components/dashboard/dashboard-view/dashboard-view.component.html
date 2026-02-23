@@ -2,11 +2,12 @@
   <!-- Header del Dashboard -->
   <header class="admin-dashboard-header">
     <div class="admin-header-content">
-      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766438846/plaxtilineas_mujcoh.png" alt="Logo" class="admin-logo" />
+      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766438846/plaxtilineas_mujcoh.png" alt="Logo"
+        class="admin-logo" />
       <div class="admin-header-text">
         <h1 class="admin-title">Panel de Administración</h1>
         <p class="admin-subtitle">Gestiona productos, categorías y subcategorías de forma rápida y eficiente.
-              Accede a todas las herramientas desde el menú lateral</p>
+          Accede a todas las herramientas desde el menú lateral</p>
       </div>
     </div>
     <button class="admin-logout-btn" (click)="logout()" title="Cerrar sesión">
@@ -64,7 +65,7 @@
     <main class="admin-main-content">
       <!-- Bienvenida (solo visible en /admin) -->
       <div *ngIf="estaEnInicio" class="admin-welcome-section">
-        
+
         <!-- Sección de Importación de Productos -->
         <section class="admin-card import-section">
           <div class="import-header">
@@ -85,9 +86,7 @@
 
           <!-- Botones de control -->
           <div class="import-controls">
-            <button 
-              class="import-btn import-btn-preview" 
-              (click)="obtenerPreview()"
+            <button class="import-btn import-btn-preview" (click)="obtenerPreview()"
               [disabled]="cargandoPreview || cargandoEstadisticas || cargandoImportacion"
               title="Ver una vista previa de los productos a importar">
               <fa-icon [icon]="faEye"></fa-icon>
@@ -95,9 +94,7 @@
               <span *ngIf="cargandoPreview">Cargando...</span>
             </button>
 
-            <button 
-              class="import-btn import-btn-stats" 
-              (click)="obtenerEstadisticas()"
+            <button class="import-btn import-btn-stats" (click)="obtenerEstadisticas()"
               [disabled]="cargandoEstadisticas || cargandoPreview || cargandoImportacion"
               title="Ver estadísticas de productos disponibles">
               <fa-icon [icon]="faChartBar"></fa-icon>
@@ -105,9 +102,7 @@
               <span *ngIf="cargandoEstadisticas">Cargando...</span>
             </button>
 
-            <button 
-              class="import-btn import-btn-execute" 
-              (click)="ejecutarImportacion()"
+            <button class="import-btn import-btn-execute" (click)="ejecutarImportacion()"
               [disabled]="cargandoImportacion || cargandoPreview || cargandoEstadisticas"
               title="Ejecutar importación de todos los productos">
               <fa-icon [icon]="faDownload"></fa-icon>
@@ -115,11 +110,8 @@
               <span *ngIf="cargandoImportacion">Importando...</span>
             </button>
 
-            <button 
-              class="import-btn import-btn-clear" 
-              (click)="limpiarDatos()"
-              [disabled]="!datosPreview && !datosEstadisticas && !respuestaImportacion"
-              title="Limpiar datos mostrados">
+            <button class="import-btn import-btn-clear" (click)="limpiarDatos()"
+              [disabled]="!datosPreview && !datosEstadisticas && !respuestaImportacion" title="Limpiar datos mostrados">
               Limpiar
             </button>
           </div>
@@ -165,7 +157,8 @@
                 <div class="stat-label">Con Variantes</div>
               </div>
             </div>
-            <div *ngIf="datosEstadisticas.productos_por_categoria && datosEstadisticas.productos_por_categoria.length" class="categories-list">
+            <div *ngIf="datosEstadisticas.productos_por_categoria && datosEstadisticas.productos_por_categoria.length"
+              class="categories-list">
               <h4>Productos por Categoría:</h4>
               <ul>
                 <li *ngFor="let cat of datosEstadisticas.productos_por_categoria">
@@ -176,8 +169,8 @@
           </div>
 
           <!-- Resultado de Importación -->
-          <div *ngIf="respuestaImportacion" class="import-data-section result-section" 
-               [class.success]="respuestaImportacion.errores === 0">
+          <div *ngIf="respuestaImportacion" class="import-data-section result-section"
+            [class.success]="respuestaImportacion.errores === 0">
             <h3 class="data-section-title">
               <fa-icon [icon]="faDownload"></fa-icon>
               Resultado de Importación
@@ -185,7 +178,8 @@
             <div class="result-summary">
               <div class="result-item success">
                 <span class="result-label">Importados Exitosamente:</span>
-                <span class="result-value">{{ respuestaImportacion.importados_exitosamente }}/{{ respuestaImportacion.total_procesados }}</span>
+                <span class="result-value">{{ respuestaImportacion.importados_exitosamente }}/{{
+                  respuestaImportacion.total_procesados }}</span>
               </div>
               <div *ngIf="respuestaImportacion.duplicados_ignorados > 0" class="result-item warning">
                 <span class="result-label">Duplicados Ignorados:</span>
@@ -197,7 +191,8 @@
               </div>
             </div>
 
-            <div *ngIf="respuestaImportacion.detalles_duplicados && respuestaImportacion.detalles_duplicados.length" class="details-section">
+            <div *ngIf="respuestaImportacion.detalles_duplicados && respuestaImportacion.detalles_duplicados.length"
+              class="details-section">
               <h4>Productos Duplicados ({{ respuestaImportacion.detalles_duplicados.length }})</h4>
               <ul class="details-list">
                 <li *ngFor="let dup of respuestaImportacion.detalles_duplicados">
@@ -206,7 +201,8 @@
               </ul>
             </div>
 
-            <div *ngIf="respuestaImportacion.detalles_errores && respuestaImportacion.detalles_errores.length" class="details-section">
+            <div *ngIf="respuestaImportacion.detalles_errores && respuestaImportacion.detalles_errores.length"
+              class="details-section">
               <h4>Errores ({{ respuestaImportacion.detalles_errores.length }})</h4>
               <ul class="details-list">
                 <li *ngFor="let err of respuestaImportacion.detalles_errores">
@@ -216,14 +212,16 @@
             </div>
           </div>
         </section>
-      
-        <section class="admin-card quick-access-card">
-          <h2 class="card-title">
-            <fa-icon [icon]="faBolt" class="section-icon"></fa-icon>
-            Acceso rápido
-          </h2>
-          <p class="card-subtitle">Navega rápidamente a las secciones principales</p>
-          
+
+        <section class="admin-card quick-access-section">
+          <div class="section-header">
+            <h2 class="card-title">
+              <fa-icon [icon]="faBolt" class="section-icon"></fa-icon>
+              Acceso Rápido
+            </h2>
+            <p class="card-subtitle">Navega rápidamente a las secciones principales</p>
+          </div>
+
           <div class="quick-access-grid">
             <a routerLink="/admin/categorias" class="access-card">
               <div class="access-icon-container">
@@ -233,7 +231,7 @@
               <p class="access-description">Organiza las categorías principales del catálogo</p>
               <span class="access-link">Ir a categorías →</span>
             </a>
-            
+
             <a routerLink="/admin/subcategorias" class="access-card">
               <div class="access-icon-container">
                 <fa-icon [icon]="faFolder"></fa-icon>
@@ -242,7 +240,7 @@
               <p class="access-description">Administra las subdivisiones de cada categoría</p>
               <span class="access-link">Ir a subcategorías →</span>
             </a>
-            
+
             <a routerLink="/admin/productos" class="access-card">
               <div class="access-icon-container">
                 <fa-icon [icon]="faBoxes"></fa-icon>
