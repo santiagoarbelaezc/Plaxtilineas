@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../enviroments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ImportProductsService {
   // Backend en puerto 3000 (local) o el servidor correspondiente
-  private apiUrl = 'https://d2so52llbeo6ij.cloudfront.net/api/importar';
+   private apiUrl = `${environment.apiUrl}/importar`;
 
   constructor(private http: HttpClient) {
     console.log('📡 API Base URL:', this.apiUrl);
