@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class ImportProductsService {
   // Backend en puerto 3000 (local) o el servidor correspondiente
-  private apiUrl = 'http://localhost:3000/api/importar';
+  private apiUrl = 'https://d2so52llbeo6ij.cloudfront.net/api/importar';
 
   constructor(private http: HttpClient) {
     console.log('📡 API Base URL:', this.apiUrl);
