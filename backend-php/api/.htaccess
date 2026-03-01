@@ -1,6 +1,12 @@
 Options -Indexes
 
-# Redirigir todas las peticiones al router index.php
+# ─── Bloquear acceso directo al .env ─────────────────────────────────────────
+<FilesMatch "^\.env(\..*)?$">
+  Order Allow,Deny
+  Deny from all
+</FilesMatch>
+
+# ─── Redirigir todas las peticiones al router index.php ──────────────────────
 # (excepto archivos físicos que existan en el servidor)
 RewriteEngine On
 RewriteBase /api
@@ -9,7 +15,7 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [QSA,L]
 
-# Seguridad: bloquear acceso directo a archivos PHP (excepto index.php)
+# ─── Bloquear acceso directo a archivos PHP (excepto index.php) ──────────────
 <FilesMatch "\.php$">
   <If "%{REQUEST_URI} !~ m|/api/index\.php$|">
     Order Deny,Allow
@@ -17,7 +23,8 @@ RewriteRule ^(.*)$ index.php [QSA,L]
   </If>
 </FilesMatch>
 
-# Headers de seguridad
+# ─── Headers de seguridad ─────────────────────────────────────────────────────
 Header always set X-Content-Type-Options "nosniff"
 Header always set X-Frame-Options "DENY"
 Header always set X-XSS-Protection "1; mode=block"
+

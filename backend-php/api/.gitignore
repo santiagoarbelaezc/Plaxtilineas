@@ -1,0 +1,10 @@
+# ─── Privado: NUNCA subir al repositorio ─────────────────────────────────────
+.env
+
+# ─── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ─── Dependencias (si en el futuro se usa Composer) ──────────────────────────
+vendor/
+composer.lock
