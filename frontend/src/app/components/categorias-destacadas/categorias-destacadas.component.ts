@@ -15,7 +15,7 @@ import { MenuStateService } from '../../services/menu-state.service';
 })
 export class CategoriasDestacadasComponent implements OnInit {
   @ViewChild('categoriasGrid') categoriasGrid!: ElementRef;
-  
+
   categorias: CategoriaIndex[] = [];
   categoriasConSubcategorias: any[] = [];
   currentPage = 0;
@@ -38,7 +38,7 @@ export class CategoriasDestacadasComponent implements OnInit {
     private categoriasService: CategoriasService,
     private categoriaMenuService: CategoriaMenuService,
     private menuStateService: MenuStateService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.checkIfMobile();
@@ -57,7 +57,7 @@ export class CategoriasDestacadasComponent implements OnInit {
 
   private updateItemsPerPage(): void {
     const width = window.innerWidth;
-    
+
     if (width < 360) {
       this.itemsPerPage = 2;
     } else if (width < 480) {
@@ -73,7 +73,7 @@ export class CategoriasDestacadasComponent implements OnInit {
     } else {
       this.itemsPerPage = 11;
     }
-    
+
     this.updatePagesArray();
   }
 
@@ -101,10 +101,10 @@ export class CategoriasDestacadasComponent implements OnInit {
 
   private combineCategoriasWithFixedImages(data: CategoriaIndex[]): CategoriaIndex[] {
     return data.map(cat => {
-      const categoriaFija = this.categoriasFijas.find(f => 
+      const categoriaFija = this.categoriasFijas.find(f =>
         f.nombre.toLowerCase() === cat.nombre.toLowerCase()
       );
-      
+
       return {
         ...cat,
         icono_url: categoriaFija?.icono_url || cat.icono_url
@@ -119,7 +119,7 @@ export class CategoriasDestacadasComponent implements OnInit {
     const grid = this.categoriasGrid.nativeElement;
     const itemWidth = grid.scrollWidth / this.categorias.length;
     const scrollAmount = itemWidth * this.itemsPerPage;
-    
+
     if (direction === 'prev') {
       grid.scrollLeft -= scrollAmount;
       this.currentPage = Math.max(0, this.currentPage - 1);
@@ -136,12 +136,12 @@ export class CategoriasDestacadasComponent implements OnInit {
     const grid = this.categoriasGrid.nativeElement;
     const itemWidth = grid.scrollWidth / this.categorias.length;
     const scrollAmount = itemWidth * this.itemsPerPage * page;
-    
+
     grid.scrollTo({
       left: scrollAmount,
       behavior: 'smooth'
     });
-    
+
     this.currentPage = page;
   }
 
@@ -169,7 +169,7 @@ export class CategoriasDestacadasComponent implements OnInit {
       destacado: true,
       orden: index + 1
     }));
-    
+
     this.updateItemsPerPage();
   }
 
@@ -191,7 +191,7 @@ export class CategoriasDestacadasComponent implements OnInit {
 
   onCategoriaClick(categoria: CategoriaIndex): void {
     const subcategoriaId = this.obtenerPrimeraSubcategoria(categoria.id);
-    
+
     if (subcategoriaId) {
       this.menuStateService.saveLastSelectedSubcategory(subcategoriaId);
     }
@@ -202,11 +202,11 @@ export class CategoriasDestacadasComponent implements OnInit {
     const categoriaFija = this.categoriasFijas.find(
       f => f.nombre.toLowerCase() === categoria.nombre.toLowerCase()
     );
-    
+
     if (categoriaFija) {
       imgElement.src = categoriaFija.icono_url;
     } else {
-      imgElement.src = 'assets/images/default-category.png';
+      imgElement.src = '/assets/images/default-category.png';
     }
   }
 }

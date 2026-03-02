@@ -7,14 +7,14 @@ import { environment } from '../../enviroments/environment';
 export class CategoriasService {
   private apiUrl = `${environment.apiUrl}/categorias`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getCategorias(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
   }
 
-   getIdCategoriaPorNombre(nombre: string): Observable<{ id: number, nombre: string }> {
-    return this.http.get<{ id: number, nombre: string }>(
+  getIdCategoriaPorNombre(nombre: string): Observable<{ success: boolean, categoria: { id: number, nombre: string } }> {
+    return this.http.get<{ success: boolean, categoria: { id: number, nombre: string } }>(
       `${this.apiUrl}/id-por-nombre/${encodeURIComponent(nombre)}`
     );
   }
