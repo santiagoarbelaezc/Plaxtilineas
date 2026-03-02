@@ -54,7 +54,11 @@ class Database
         } catch (PDOException $e) {
             http_response_code(500);
             header('Content-Type: application/json');
-            echo json_encode(['error' => 'Error de conexión a la base de datos']);
+            $errorData = ['error' => 'Error de conexión a la base de datos'];
+            if (defined('APP_ENV') && APP_ENV === 'development') {
+                $errorData['details'] = $e->getMessage();
+            }
+            echo json_encode($errorData);
             exit;
         }
     }

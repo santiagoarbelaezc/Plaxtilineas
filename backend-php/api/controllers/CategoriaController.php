@@ -74,6 +74,29 @@ class CategoriaController
         ResponseHandler::success(['success' => true, 'categoria' => $row]);
     }
 
+    // ─── GET /api/categorias/id-por-nombre/:nombre ────────────────────────────
+    // Devuelve {id, nombre} — usado por el frontend Angular (carousel, etc.)
+    public static function getIdPorNombre(string $nombre): void
+    {
+        $nombre = ResponseHandler::sanitize(urldecode($nombre));
+        if (!$nombre) ResponseHandler::error('Nombre requerido', 400);
+
+        $db   = Database::getConnection();
+        $stmt = $db->prepare('SELECT id, nombre FROM categorias WHERE nombre = ? LIMIT 1');
+        $stmt->execute([$nombre]);
+        $row = $stmt->fetch();
+
+        if (!$row) ResponseHandler::error("Categoría '{$nombre}' no encontrada", 404);
+        ResponseHandler::success([
+            'success'   => true,
+            'categoria' => [
+                'id'     => (int)$row['id'],
+                'nombre' => $row['nombre']
+            ]
+        ]);
+    }
+
+
     // ─── POST /api/categorias (protegido, multipart) ─────────────────────────
     public static function crearCategoria(): void
     {

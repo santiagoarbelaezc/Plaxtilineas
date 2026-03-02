@@ -9,16 +9,16 @@
  * Lee el método HTTP y la URI para despachar al controller correcto.
  */
 
-declare(strict_types=1);
-error_reporting(APP_ENV === 'development' ? E_ALL : 0);
-ini_set('display_errors', APP_ENV === 'development' ? '1' : '0');
-
 // ─── Autoload de archivos base ───────────────────────────────────────────────
 require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/utils/ResponseHandler.php';
 require_once __DIR__ . '/utils/TokenHelper.php';
 require_once __DIR__ . '/middleware/AuthMiddleware.php';
+
+error_reporting(APP_ENV === 'development' ? E_ALL : 0);
+ini_set('display_errors', APP_ENV === 'development' ? '1' : '0');
+
 
 // ─── Controllers ─────────────────────────────────────────────────────────────
 require_once __DIR__ . '/controllers/AuthController.php';
@@ -83,9 +83,21 @@ if ($uri === '/' || $uri === '/health') {
             'variantes'     => '/api/variantes',
             'pqrs'          => '/api/pqrs',
             'importar'      => '/api/importar',
+            'debug'         => '/api/debug/extensions'
         ],
     ]);
 }
+
+if ($uri === '/debug/extensions') {
+    ResponseHandler::success([
+        'php_version' => PHP_VERSION,
+        'php_ini_path' => php_ini_loaded_file(),
+        'loaded_extensions' => get_loaded_extensions(),
+        'pdo_drivers' => PDO::getAvailableDrivers(),
+        'app_env' => defined('APP_ENV') ? APP_ENV : 'undefined'
+    ]);
+}
+
 
 // ═════════════════════════════════════════════════════════════════════════════
 // AUTH  /api/auth/*
@@ -165,6 +177,9 @@ if ($uri === '/categorias/con-subcategorias' && $method === 'GET') {
 }
 if ($p = matchRoute('/categorias/nombre/:nombre', $uri)) {
     if ($method === 'GET') CategoriaController::obtenerPorNombre($p['nombre']);
+}
+if ($p = matchRoute('/categorias/id-por-nombre/:nombre', $uri)) {
+    if ($method === 'GET') CategoriaController::getIdPorNombre($p['nombre']);
 }
 if ($p = matchRoute('/categorias/:id', $uri)) {
     match ($method) {
