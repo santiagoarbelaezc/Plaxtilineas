@@ -542,3 +542,77 @@
     position: relative;
   }
 }
+
+/* ===========================
+   BOTÓN DE PLAY
+   =========================== */
+
+.play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  border: 2.5px solid rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  animation: pulsePlay 2.2s ease-in-out infinite;
+}
+
+.play-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.9);
+  transform: translate(-50%, -50%) scale(1.12);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  animation: none;
+}
+
+.play-button:active {
+  transform: translate(-50%, -50%) scale(0.97);
+}
+
+.play-button svg {
+  width: 34px;
+  height: 34px;
+  fill: white;
+  margin-left: 4px; /* compensar visual del triángulo */
+  opacity: 0.95;
+}
+
+.play-button.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+@keyframes pulsePlay {
+  0%, 100% {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 0 rgba(255, 255, 255, 0.25);
+  }
+  50% {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 16px rgba(255, 255, 255, 0);
+  }
+}
+
+@media (max-width: 768px) {
+  .play-button {
+    width: 68px;
+    height: 68px;
+  }
+
+  .play-button svg {
+    width: 28px;
+    height: 28px;
+  }
+}

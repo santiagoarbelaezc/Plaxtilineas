@@ -1,15 +1,19 @@
 <header class="contenidoH">
   <!-- Video de fondo -->
   <video
+    #headerVideo
     autoplay
     muted
     loop
     playsinline
+    webkit-playsinline
     preload="auto"
+    disablePictureInPicture
+    [muted]="true"
     class="video-background"
     aria-label="Video de presentación de PlaxtiLineas"
   >
-    <source src="https://res.cloudinary.com/dsv1gdgya/video/upload/v1759878466/header_y5dhj8.mp4" type="video/mp4" />
+    <source src="assets/videos/plaxtilineas.mp4" type="video/mp4" />
     Tu navegador no soporta la etiqueta de video.
   </video>
 
