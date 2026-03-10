@@ -6,11 +6,24 @@ Options -Indexes
   Deny from all
 </FilesMatch>
 
-# ─── Redirigir todas las peticiones al router index.php ──────────────────────
-# (excepto archivos físicos que existan en el servidor)
+# ─── CORS a nivel de servidor (permite www y sin www) ────────────────────────
+<IfModule mod_headers.c>
+  SetEnvIf Origin "^https://(www\.)?plaxtilineas\.com$" CORS_ORIGIN=$0
+  SetEnvIf Origin "^http://localhost:4200$" CORS_ORIGIN=$0
+  Header always set Access-Control-Allow-Origin "%{CORS_ORIGIN}e" env=CORS_ORIGIN
+  Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+  Header always set Access-Control-Allow-Headers "Content-Type, Authorization"
+  Header always set Access-Control-Allow-Credentials "true"
+  Header merge Vary Origin
+</IfModule>
+
+# Responder 200 a pre-flight OPTIONS directamente desde Apache
 RewriteEngine On
 RewriteBase /api
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
 
+# ─── Redirigir todas las peticiones al router index.php ──────────────────────
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [QSA,L]

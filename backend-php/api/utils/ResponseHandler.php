@@ -12,11 +12,23 @@ class ResponseHandler
      */
     public static function setCorsHeaders(): void
     {
-        $allowed = [FRONTEND_URL, 'http://localhost:4200'];
-        $origin  = $_SERVER['HTTP_ORIGIN'] ?? '';
+        $allowed = [
+            'https://plaxtilineas.com',
+            'https://www.plaxtilineas.com',
+            'http://localhost:4200',
+        ];
 
-        if (in_array($origin, $allowed, true) || empty($origin)) {
-            header('Access-Control-Allow-Origin: ' . ($origin ?: '*'));
+        // Si FRONTEND_URL del .env no está en la lista, agregarla dinámicamente
+        if (defined('FRONTEND_URL') && !in_array(FRONTEND_URL, $allowed, true)) {
+            $allowed[] = FRONTEND_URL;
+        }
+
+        $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+        if (in_array($origin, $allowed, true)) {
+            header('Access-Control-Allow-Origin: ' . $origin);
+        } elseif (empty($origin)) {
+            header('Access-Control-Allow-Origin: https://www.plaxtilineas.com');
         }
 
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
