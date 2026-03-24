@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 export interface BannerImage {
@@ -18,6 +19,7 @@ export interface BannerImage {
   styleUrls: ['./banner.css']
 })
 export class PlaxtiBannerComponent {
+  constructor(private router: Router) {}
   @Input() images: BannerImage[] = [];
   @Input() height: string = '600px'; // Altura ajustada para PlaxtiLineas
   @Input() hoverScale: number = 1.2; // Escala al hacer hover
@@ -72,10 +74,10 @@ export class PlaxtiBannerComponent {
     this.hoveredIndex = null;
   }
 
-  // Si la imagen tiene link, navega
+  // Si la imagen tiene link, navega usando el router de Angular
   onClick(image: BannerImage): void {
     if (image.link) {
-      window.open(image.link, '_blank');
+      this.router.navigateByUrl(image.link);
     }
   }
 }

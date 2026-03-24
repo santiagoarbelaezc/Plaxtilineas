@@ -1,6 +1,7 @@
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, HostListener, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { MenuStateService } from '../../services/menu-state.service';
 
 export interface Producto {
   id: number;
@@ -10,6 +11,8 @@ export interface Producto {
   altura: 'alta' | 'baja';
   nombre?: string;
   precio?: number;
+  categoria_id?: number;
+  subcategoria_id?: number;
 }
 
 @Component({
@@ -20,6 +23,9 @@ export interface Producto {
   styleUrls: ['./grid-producto.css']
 })
 export class GridProductoComponent {
+  private router = inject(Router);
+  private menuStateService = inject(MenuStateService);
+
   @Input() productos: Producto[] = [];
   hoveredIndex: number | null = null;
   
@@ -38,6 +44,27 @@ export class GridProductoComponent {
 
   setHoveredIndex(index: number | null): void {
     this.hoveredIndex = index;
+  }
+
+  onProductoClick(producto: Producto, event: Event): void {
+    event.preventDefault();
+    
+    // Guardar estado de la subcategoría si existe
+    if (producto.subcategoria_id) {
+      this.menuStateService.saveLastSelectedSubcategory(producto.subcategoria_id);
+      
+      // Si también tenemos categoría, podemos expandirla
+      if (producto.categoria_id) {
+        this.menuStateService.expandCategory(producto.categoria_id);
+      }
+      
+      console.log(`📌 Navegando desde grid-producto a subcategoria ${producto.subcategoria_id}`);
+    }
+
+    // Navegar a la URL
+    if (producto.link) {
+      this.router.navigateByUrl(producto.link);
+    }
   }
 
   

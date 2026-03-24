@@ -2,7 +2,7 @@
   <section class="grid-container">
     <!-- Primera fila -->
     <ng-container *ngFor="let producto of primeraFila; let i = index">
-      <a [routerLink]="producto.link" class="producto-item" 
+      <a href="javascript:void(0)" (click)="onProductoClick(producto, $event)" class="producto-item" 
          [class.alta]="producto.altura === 'alta'"
          [class.baja]="producto.altura === 'baja'">
         <img [src]="producto.imagen" [alt]="producto.descripcion" loading="lazy">
@@ -30,7 +30,7 @@
 
     <!-- Segunda fila -->
     <ng-container *ngFor="let producto of segundaFila; let i = index">
-      <a [routerLink]="producto.link" class="producto-item" 
+      <a href="javascript:void(0)" (click)="onProductoClick(producto, $event)" class="producto-item" 
          [class.alta]="producto.altura === 'alta'"
          [class.baja]="producto.altura === 'baja'">
         <img [src]="producto.imagen" [alt]="producto.descripcion" loading="lazy">

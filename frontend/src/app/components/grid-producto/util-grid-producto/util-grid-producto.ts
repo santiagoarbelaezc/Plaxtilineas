@@ -16,7 +16,9 @@ export class UtilGridProducto {
       descripcion: 'Malla plástica de alta resistencia',
       nombre: 'Malla Plástica Naranja',
       precio: 89900,
-      link: '/productos?categoria=mallas',
+      link: '/productos?categoria_id=5&subcategoria_id=6',
+      categoria_id: 5,
+      subcategoria_id: 6,
       altura: 'baja'
     },
     {
@@ -25,7 +27,9 @@ export class UtilGridProducto {
       descripcion: 'Aislante acústico y térmico de alta calidad',
       nombre: 'Yumbolón Negro',
       precio: 129000,
-      link: '/productos?categoria=aislantes',
+      link: '/productos?categoria_id=7&subcategoria_id=23',
+      categoria_id: 7,
+      subcategoria_id: 23,
       altura: 'alta'
     },
     {
@@ -34,7 +38,9 @@ export class UtilGridProducto {
       descripcion: 'Papel para colgadura decorativa',
       nombre: 'Papel de Colgadura',
       precio: 45900,
-      link: '/productos?categoria=papeles',
+      link: '/productos?categoria_id=11&subcategoria_id=12',
+      categoria_id: 11,
+      subcategoria_id: 12,
       altura: 'baja'
     },
     {
@@ -43,7 +49,9 @@ export class UtilGridProducto {
       descripcion: 'Aislante reflectante plateado',
       nombre: 'Yumbolón Plateado',
       precio: 145000,
-      link: '/productos?categoria=aislantes',
+      link: '/productos?categoria_id=7&subcategoria_id=23',
+      categoria_id: 7,
+      subcategoria_id: 23,
       altura: 'alta'
     },
     {
@@ -52,7 +60,9 @@ export class UtilGridProducto {
       descripcion: 'Silla de mimbre estilo vintage',
       nombre: 'Silla en Mimbre',
       precio: 189900,
-      link: '/productos?categoria=muebles',
+      link: '/productos?categoria_id=2&subcategoria_id=3',
+      categoria_id: 2,
+      subcategoria_id: 3,
       altura: 'alta'
     },
     {
@@ -61,7 +71,9 @@ export class UtilGridProducto {
       descripcion: 'Espuma de poliuretano naranja',
       nombre: 'Espuma Naranja',
       precio: 75900,
-      link: '/productos?categoria=espumas',
+      link: '/productos?categoria_id=3&subcategoria_id=5',
+      categoria_id: 3,
+      subcategoria_id: 5,
       altura: 'alta'
     },
     {
@@ -70,7 +82,9 @@ export class UtilGridProducto {
       descripcion: 'Papel decorativo para paredes',
       nombre: 'Papel Colgadura Decorativo',
       precio: 52900,
-      link: '/productos?categoria=papeles',
+      link: '/productos?categoria_id=11&subcategoria_id=12',
+      categoria_id: 11,
+      subcategoria_id: 12,
       altura: 'baja'
     },
     {
@@ -79,7 +93,9 @@ export class UtilGridProducto {
       descripcion: 'Set de sillas de mimbre para terraza',
       nombre: 'Sillas en Mimbre',
       precio: 110900,
-      link: '/productos?categoria=muebles',
+      link: '/productos?categoria_id=2&subcategoria_id=3',
+      categoria_id: 2,
+      subcategoria_id: 3,
       altura: 'baja'
     }
   ];

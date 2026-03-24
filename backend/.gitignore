@@ -1,4 +1,16 @@
 
+# ─── Privado: NUNCA subir al repositorio ─────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ─── Dependencias ────────────────────────────────────────────────────────────
+node_modules/
+
+# ─── Logs ────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml

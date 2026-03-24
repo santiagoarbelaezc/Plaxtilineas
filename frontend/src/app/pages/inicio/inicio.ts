@@ -38,7 +38,7 @@ export class Inicio {
       alt: 'Consultoría especializada en plaxtilineas',
       title: 'Expertos en Soluciones',
       description: 'Brindamos asesoramiento personalizado para optimizar tus procesos industriales.',
-      link: '/servicios/consultoria',
+      link: '/contacto',
       category: 'Consultoría'
     },
     {
@@ -46,7 +46,7 @@ export class Inicio {
       alt: 'Distribución eficiente de productos',
       title: 'Distribución Confiable',
       description: 'Logística optimizada con entregas puntuales a nivel nacional e internacional.',
-      link: '/servicios/distribucion',
+      link: '/nosotros',
       category: 'Distribución'
     },
     {
@@ -54,7 +54,7 @@ export class Inicio {
       alt: 'Soporte técnico permanente',
       title: 'Soporte 24/7',
       description: 'Asistencia técnica especializada disponible cuando más lo necesitas.',
-      link: '/servicios/soporte',
+      link: '/contacto',
       category: 'Soporte'
     },
     {

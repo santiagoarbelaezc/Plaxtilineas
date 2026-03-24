@@ -16,7 +16,9 @@ export class UtilGridProductoOther {
         descripcion: 'Malla plástica de alta resistencia',
         nombre: 'Malla Plástica Azul',
         precio: 89900,
-        link: '/productos?categoria=mallas',
+        link: '/productos?categoria_id=5&subcategoria_id=6',
+        categoria_id: 5,
+        subcategoria_id: 6,
         altura: 'baja'
       },
       {
@@ -25,7 +27,9 @@ export class UtilGridProductoOther {
         descripcion: 'Silla de mimbre estilo vintage',
         nombre: 'Silla Mimbre Vintage',
         precio: 129000,
-        link: '/productos?categoria=aislantes',
+        link: '/productos?categoria_id=2&subcategoria_id=3',
+        categoria_id: 2,
+        subcategoria_id: 3,
         altura: 'alta'
       },
       {
@@ -43,7 +47,9 @@ export class UtilGridProductoOther {
         descripcion: 'Espuma de poliuretano',
         nombre: 'Espuma Negra',
         precio: 145000,
-        link: '/productos?categoria=aislantes',
+        link: '/productos?categoria_id=3&subcategoria_id=5',
+        categoria_id: 3,
+        subcategoria_id: 5,
         altura: 'alta'
       },
       {
@@ -62,7 +68,9 @@ export class UtilGridProductoOther {
         descripcion: 'Sillas en Mimbre Plastica',
         nombre: 'Silla de Mimbre',
         precio: 110900,
-        link: '/productos?categoria=papeles',
+        link: '/productos?categoria_id=2&subcategoria_id=3',
+        categoria_id: 2,
+        subcategoria_id: 3,
         altura: 'alta'
       },
       {
@@ -71,7 +79,9 @@ export class UtilGridProductoOther {
         descripcion: 'Papel decorativo para paredes',
         nombre: 'Papel Colgadura Decorativo',
         precio: 52900,
-        link: '/productos?categoria=papeles',
+        link: '/productos?categoria_id=11&subcategoria_id=12',
+        categoria_id: 11,
+        subcategoria_id: 12,
         altura: 'baja'
       },
       {

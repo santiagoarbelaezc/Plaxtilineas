@@ -314,119 +314,104 @@
   opacity: 0.9;
 }
 
-/* Tarjeta de acceso rápido */
-.quick-access-card .card-title {
-  font-size: 1.6rem;
-  margin-bottom: 10px;
+/* Contenedor del cuerpo de tarjeta */
+.card-body {
+  padding: 0; /* Quitamos padding excesivo para la lista horizontal */
+}
+
+/* Lista de acceso rápido horizontal */
+.quick-access-list {
   display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.section-icon {
-  color: #368c44;
-  font-size: 1.4rem;
-}
-
-.card-subtitle {
-  color: #4a5568;
-  font-size: 1rem;
-  margin-bottom: 40px;
-  opacity: 0.8;
-}
-
-/* Grid de acceso rápido */
-.quick-access-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  max-width: 600px;
-  /* Más compacto aún */
-  margin: 0 auto;
-}
-
-.access-card {
+  flex-direction: row;
+  width: 100%;
   background: white;
-  border-radius: 16px;
-  padding: 20px;
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 0 0 16px 16px;
+  overflow-x: auto; /* Scroll horizontal en móviles si es necesario */
+  padding: 20px 10px;
+  gap: 10px;
+}
+
+/* Tarjetas individuales dentro de la lista horizontal */
+.access-item {
+  flex: 1;
+  min-width: 140px; /* Tamaño mínimo para que no se colapsen */
   display: flex;
   flex-direction: column;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
-  min-height: 220px;
-}
-
-.access-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(54, 140, 68, 0.2);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
-}
-
-.access-icon-container {
-  width: 50px;
-  height: 50px;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 10px;
+  text-decoration: none;
+  color: #4a5568;
   border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  position: relative;
+}
+
+.access-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background: rgba(226, 232, 240, 0.8);
+}
+
+.access-item:hover {
+  background: rgba(54, 140, 68, 0.05);
+  transform: translateY(-3px);
+  color: #368c44;
+}
+
+.access-item .access-icon-container {
+  width: 45px;
+  height: 45px;
+  min-width: 45px;
+  border-radius: 10px;
+  background: rgba(54, 140, 68, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   transition: all 0.3s ease;
-  background: rgba(54, 140, 68, 0.08);
-  /* Fondo suave original */
 }
 
-/* Colores temáticos por tarjeta */
-/* Removed thematic colors as per instruction to revert to green */
+.access-item:hover .access-icon-container {
+  background: rgba(54, 140, 68, 0.15);
+  transform: scale(1.1);
+}
 
-.access-card fa-icon {
-  font-size: 1.25rem;
+.access-item fa-icon {
+  font-size: 1.1rem;
   color: #368c44;
-  /* Verde original */
 }
 
-/* Si el contenedor no tiene clase específica y queremos fallback */
-/* Removed fallback rule as per instruction */
-
-.access-card:hover .access-icon-container {
-  transform: scale(1.05);
-  background: rgba(54, 140, 68, 0.12);
-}
-
-.access-title {
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: #1e293b;
-  margin-bottom: 6px;
-  line-height: 1.2;
-}
-
-.access-description {
-  color: #64748b;
-  line-height: 1.4;
+.access-item .access-title {
   font-size: 0.9rem;
-  margin-bottom: 15px;
-  flex-grow: 1;
-}
-
-.access-link {
-  color: #368c44;
   font-weight: 600;
-  font-size: 0.85rem;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: auto;
-  transition: gap 0.3s ease;
+  margin: 0;
+  white-space: nowrap;
 }
 
-.access-card:hover .access-link {
-  gap: 10px;
+.access-item .access-link-text {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  margin-top: 2px;
 }
+
+/* Ocultar descripción larga en vista horizontal compacta */
+.access-description {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .quick-access-list {
+    justify-content: flex-start;
+    padding-bottom: 25px; /* Espacio para el scrollbar */
+  }
+}
+
 
 /* Efectos de fondo sutiles */
 .admin-main-content::before {

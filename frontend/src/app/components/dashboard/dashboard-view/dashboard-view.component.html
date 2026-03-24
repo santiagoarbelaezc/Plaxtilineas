@@ -6,8 +6,7 @@
         class="admin-logo" />
       <div class="admin-header-text">
         <h1 class="admin-title">Panel de Administración</h1>
-        <p class="admin-subtitle">Gestiona productos, categorías y subcategorías de forma rápida y eficiente.
-          Accede a todas las herramientas desde el menú lateral</p>
+        <p class="admin-subtitle">Gestiona productos, categorías, subcategorías y más</p>
       </div>
     </div>
     <button class="admin-logout-btn" (click)="logout()" title="Cerrar sesión">
@@ -18,7 +17,7 @@
 
   <!-- Contenido principal -->
   <div class="admin-content-wrapper">
-    <!-- Menú de navegación lateral -->
+    <!-- Menú lateral -->
     <nav class="admin-sidebar">
       <ul class="admin-menu">
         <li class="menu-item" [class.active]="estaEnInicio">
@@ -54,7 +53,6 @@
         <li class="menu-item">
           <a routerLink="/admin/pqr-admin" class="menu-link">
             <fa-icon [icon]="faClipboardList" class="menu-icon"></fa-icon>
-            <!-- Alternativa: faComments -->
             <span>PQR</span>
           </a>
         </li>
@@ -63,10 +61,9 @@
 
     <!-- Área de contenido -->
     <main class="admin-main-content">
-      <!-- Bienvenida (solo visible en /admin) -->
       <div *ngIf="estaEnInicio" class="admin-welcome-section">
 
-        <!-- Sección de Importación de Productos -->
+        <!-- 1. IMPORTACIÓN -->
         <section class="admin-card import-section">
           <div class="import-header">
             <h2 class="card-title">
@@ -76,47 +73,34 @@
             <p class="card-subtitle">Sincroniza productos desde la base de datos de Hostinger</p>
           </div>
 
-          <!-- Mensajes de error y éxito -->
-          <div *ngIf="mensajeError" class="alert alert-error">
-            {{ mensajeError }}
-          </div>
-          <div *ngIf="mensajeExito" class="alert alert-success">
-            {{ mensajeExito }}
-          </div>
+          <div *ngIf="mensajeError" class="alert alert-error">{{ mensajeError }}</div>
+          <div *ngIf="mensajeExito" class="alert alert-success">{{ mensajeExito }}</div>
 
-          <!-- Botones de control -->
           <div class="import-controls">
             <button class="import-btn import-btn-preview" (click)="obtenerPreview()"
-              [disabled]="cargandoPreview || cargandoEstadisticas || cargandoImportacion"
-              title="Ver una vista previa de los productos a importar">
+              [disabled]="cargandoPreview || cargandoEstadisticas || cargandoImportacion">
               <fa-icon [icon]="faEye"></fa-icon>
               <span *ngIf="!cargandoPreview">Ver Preview</span>
               <span *ngIf="cargandoPreview">Cargando...</span>
             </button>
-
             <button class="import-btn import-btn-stats" (click)="obtenerEstadisticas()"
-              [disabled]="cargandoEstadisticas || cargandoPreview || cargandoImportacion"
-              title="Ver estadísticas de productos disponibles">
+              [disabled]="cargandoEstadisticas || cargandoPreview || cargandoImportacion">
               <fa-icon [icon]="faChartBar"></fa-icon>
               <span *ngIf="!cargandoEstadisticas">Ver Estadísticas</span>
               <span *ngIf="cargandoEstadisticas">Cargando...</span>
             </button>
-
             <button class="import-btn import-btn-execute" (click)="ejecutarImportacion()"
-              [disabled]="cargandoImportacion || cargandoPreview || cargandoEstadisticas"
-              title="Ejecutar importación de todos los productos">
+              [disabled]="cargandoImportacion || cargandoPreview || cargandoEstadisticas">
               <fa-icon [icon]="faDownload"></fa-icon>
               <span *ngIf="!cargandoImportacion">Ejecutar Importación</span>
               <span *ngIf="cargandoImportacion">Importando...</span>
             </button>
-
             <button class="import-btn import-btn-clear" (click)="limpiarDatos()"
-              [disabled]="!datosPreview && !datosEstadisticas && !respuestaImportacion" title="Limpiar datos mostrados">
+              [disabled]="!datosPreview && !datosEstadisticas && !respuestaImportacion">
               Limpiar
             </button>
           </div>
 
-          <!-- Preview de Productos -->
           <div *ngIf="datosPreview" class="import-data-section preview-section">
             <h3 class="data-section-title">
               <fa-icon [icon]="faEye"></fa-icon>
@@ -137,7 +121,6 @@
             </div>
           </div>
 
-          <!-- Estadísticas -->
           <div *ngIf="datosEstadisticas" class="import-data-section stats-section">
             <h3 class="data-section-title">
               <fa-icon [icon]="faChartBar"></fa-icon>
@@ -168,7 +151,6 @@
             </div>
           </div>
 
-          <!-- Resultado de Importación -->
           <div *ngIf="respuestaImportacion" class="import-data-section result-section"
             [class.success]="respuestaImportacion.errores === 0">
             <h3 class="data-section-title">
@@ -178,8 +160,7 @@
             <div class="result-summary">
               <div class="result-item success">
                 <span class="result-label">Importados Exitosamente:</span>
-                <span class="result-value">{{ respuestaImportacion.importados_exitosamente }}/{{
-                  respuestaImportacion.total_procesados }}</span>
+                <span class="result-value">{{ respuestaImportacion.importados_exitosamente }}/{{ respuestaImportacion.total_procesados }}</span>
               </div>
               <div *ngIf="respuestaImportacion.duplicados_ignorados > 0" class="result-item warning">
                 <span class="result-label">Duplicados Ignorados:</span>
@@ -190,17 +171,13 @@
                 <span class="result-value">{{ respuestaImportacion.errores }}</span>
               </div>
             </div>
-
             <div *ngIf="respuestaImportacion.detalles_duplicados && respuestaImportacion.detalles_duplicados.length"
               class="details-section">
-              <h4>Productos Duplicados ({{ respuestaImportacion.detalles_duplicados.length }})</h4>
+              <h4>Duplicados ({{ respuestaImportacion.detalles_duplicados.length }})</h4>
               <ul class="details-list">
-                <li *ngFor="let dup of respuestaImportacion.detalles_duplicados">
-                  {{ dup.nombre }}
-                </li>
+                <li *ngFor="let dup of respuestaImportacion.detalles_duplicados">{{ dup.nombre }}</li>
               </ul>
             </div>
-
             <div *ngIf="respuestaImportacion.detalles_errores && respuestaImportacion.detalles_errores.length"
               class="details-section">
               <h4>Errores ({{ respuestaImportacion.detalles_errores.length }})</h4>
@@ -213,62 +190,61 @@
           </div>
         </section>
 
+        <!-- 2. ACCESO RÁPIDO — tarjetas horizontales en grid de 3 columnas -->
         <section class="admin-card quick-access-section">
-          <div class="section-header">
+          <div class="card-header">
             <h2 class="card-title">
-              <fa-icon [icon]="faBolt" class="section-icon"></fa-icon>
+              <fa-icon [icon]="faBolt" class="card-icon"></fa-icon>
               Acceso Rápido
             </h2>
-            <p class="card-subtitle">Navega rápidamente a las secciones principales</p>
+            <p class="page-subtitle">Navega a las secciones principales del panel</p>
           </div>
 
-          <div class="quick-access-grid">
-            <a routerLink="/admin/categorias" class="access-card">
-              <div class="access-icon-container">
-                <fa-icon [icon]="faFolderOpen"></fa-icon>
-              </div>
-              <h3 class="access-title">Gestionar categorías</h3>
-              <p class="access-description">Organiza las categorías principales del catálogo</p>
-              <span class="access-link">Ir a categorías →</span>
-            </a>
+          <div class="card-body">
+            <div class="quick-access-list">
+              <a routerLink="/admin/categorias" class="access-item">
+                <div class="access-icon-container">
+                  <fa-icon [icon]="faFolderOpen"></fa-icon>
+                </div>
+                <h3 class="access-title">Categorías</h3>
+                <span class="access-link-text">Gestionar →</span>
+              </a>
 
-            <a routerLink="/admin/subcategorias" class="access-card">
-              <div class="access-icon-container">
-                <fa-icon [icon]="faFolder"></fa-icon>
-              </div>
-              <h3 class="access-title">Gestionar subcategorías</h3>
-              <p class="access-description">Administra las subdivisiones de cada categoría</p>
-              <span class="access-link">Ir a subcategorías →</span>
-            </a>
+              <a routerLink="/admin/subcategorias" class="access-item">
+                <div class="access-icon-container">
+                  <fa-icon [icon]="faFolder"></fa-icon>
+                </div>
+                <h3 class="access-title">Subcategorías</h3>
+                <span class="access-link-text">Gestionar →</span>
+              </a>
 
-            <a routerLink="/admin/productos" class="access-card">
-              <div class="access-icon-container">
-                <fa-icon [icon]="faBoxes"></fa-icon>
-              </div>
-              <h3 class="access-title">Gestionar productos</h3>
-              <p class="access-description">Administra los productos del catálogo</p>
-              <span class="access-link">Ir a productos →</span>
-            </a>
+              <a routerLink="/admin/productos" class="access-item">
+                <div class="access-icon-container">
+                  <fa-icon [icon]="faBoxes"></fa-icon>
+                </div>
+                <h3 class="access-title">Productos</h3>
+                <span class="access-link-text">Gestionar →</span>
+              </a>
 
-            <a routerLink="/admin/inventario" class="access-card">
-              <div class="access-icon-container">
-                <fa-icon [icon]="faWarehouse"></fa-icon>
-              </div>
-              <h3 class="access-title">Gestionar inventario</h3>
-              <p class="access-description">Administra el inventario</p>
-              <span class="access-link">Ir a inventario →</span>
-            </a>
+              <a routerLink="/admin/inventario" class="access-item">
+                <div class="access-icon-container">
+                  <fa-icon [icon]="faWarehouse"></fa-icon>
+                </div>
+                <h3 class="access-title">Inventario</h3>
+                <span class="access-link-text">Gestionar →</span>
+              </a>
 
-            <a routerLink="/admin/pqr-admin" class="access-card">
-              <div class="access-icon-container">
-                <fa-icon [icon]="faClipboardList"></fa-icon>
-              </div>
-              <h3 class="access-title">Gestionar PQR</h3>
-              <p class="access-description">Administra las PQRS</p>
-              <span class="access-link">Ir a gestionador de PQR →</span>
-            </a>
+              <a routerLink="/admin/pqr-admin" class="access-item">
+                <div class="access-icon-container">
+                  <fa-icon [icon]="faClipboardList"></fa-icon>
+                </div>
+                <h3 class="access-title">PQR</h3>
+                <span class="access-link-text">Gestionar →</span>
+              </a>
+            </div>
           </div>
         </section>
+
       </div>
 
       <!-- Router outlet para vistas hijas -->

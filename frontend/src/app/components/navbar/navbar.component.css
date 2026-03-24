@@ -316,56 +316,44 @@
 /* ===== ENLACES DE NAVEGACIÓN ===== */
 .nav-link {
   position: relative;
-  padding: 12px 18px;
+  padding: 9px 16px;
   color: #23272f;
   text-decoration: none;
   font-weight: var(--font-weight-regular);
   font-size: 14px;
   font-family: var(--font-primary);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 0;
+  transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50px;
   overflow: visible;
   display: flex;
   align-items: center;
   gap: 8px;
   white-space: nowrap;
   letter-spacing: 0.01em;
+  background: transparent;
 }
 
 .nav-text {
   transition: all var(--transition-speed) ease;
 }
 
+/* Sin línea inferior — el highlight es el fondo redondeado */
 .nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--primary-green), var(--whatsapp-green));
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: translateX(-50%);
-  border-radius: 2px;
-  box-shadow: 0 2px 12px rgba(54, 140, 68, 0.4);
-}
-
-.nav-link.active::after,
-.nav-link:hover::after {
-  width: 75%;
+  display: none;
 }
 
 .nav-link:hover {
   color: var(--primary-green);
-  background: transparent;
-  transform: none;
-  box-shadow: none;
+  background: rgba(54, 140, 68, 0.08);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(54, 140, 68, 0.12);
 }
 
 .nav-link.active {
   color: var(--primary-green);
-  background: transparent;
+  background: linear-gradient(135deg, rgba(54, 140, 68, 0.13) 0%, rgba(37, 211, 102, 0.08) 100%);
   font-weight: var(--font-weight-medium);
+  box-shadow: 0 2px 12px rgba(54, 140, 68, 0.15), inset 0 1px 0 rgba(255,255,255,0.6);
 }
 
 /* ===== UBICACIÓN ===== */
@@ -649,37 +637,26 @@
   }
 
   .nav-link {
-    width: 100%;
-    padding: 18px 28px;
-    border-radius: 0;
-    margin: 0;
-    font-size: 16px;
+    width: calc(100% - 32px);
+    padding: 14px 20px;
+    border-radius: 14px;
+    margin: 4px 16px;
+    font-size: 15.5px;
     font-weight: var(--font-weight-semibold);
     background: transparent;
     border: none;
     box-shadow: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
     color: #23272f;
-    justify-content: center;
-    text-align: center;
-    border-bottom: 1px solid var(--border-color);
+    justify-content: flex-start;
+    text-align: left;
+    border-bottom: none;
   }
 
   .nav-link::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 0;
-    background: linear-gradient(180deg, var(--primary-green), var(--whatsapp-green));
-    transition: height 0.3s ease;
-  }
-
-  .nav-link:hover::before {
-    height: 100%;
+    display: none;
   }
 
   .nav-link::after {
@@ -687,15 +664,17 @@
   }
 
   .nav-link.active {
-    background: rgba(54, 140, 68, 0.1);
+    background: linear-gradient(135deg, rgba(54, 140, 68, 0.14) 0%, rgba(37, 211, 102, 0.09) 100%);
     color: var(--primary-green);
-    border-left: 4px solid var(--primary-green);
-    padding-left: 24px;
+    box-shadow: 0 3px 14px rgba(54, 140, 68, 0.15), inset 0 1px 0 rgba(255,255,255,0.5);
+    border-left: none;
+    padding-left: 20px;
   }
 
   .nav-link:hover {
-    background: rgba(54, 140, 68, 0.08);
-    transform: none;
+    background: rgba(54, 140, 68, 0.07);
+    color: var(--primary-green);
+    transform: translateX(4px);
     box-shadow: none;
   }
 

@@ -161,6 +161,42 @@
   box-shadow: 0 0 0 3px rgba(54, 140, 68, 0.08);
 }
 
+/* Password Toggle Wrapper */
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-input-wrapper .form-input {
+  padding-right: 48px; /* Espacio para el ojo */
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.password-toggle-btn:hover {
+  color: #368c44;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.password-toggle-btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
 .form-input::placeholder {
   color: #aaa;
   font-size: 0.9rem;
@@ -333,5 +369,107 @@
   .back-link {
     padding: 11px 16px;
     font-size: 0.9rem;
+  }
+}
+
+/* --- MODAL DE ERROR --- */
+.login-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeInModal 0.3s ease-out;
+}
+
+.login-modal-box {
+  background: white;
+  width: 90%;
+  max-width: 380px;
+  padding: 32px;
+  border-radius: 28px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-icon-wrapper {
+  margin-bottom: 20px;
+}
+
+.modal-icon-circle {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.4);
+}
+
+.modal-main-content {
+  margin-bottom: 28px;
+}
+
+.modal-headline {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 12px;
+}
+
+.modal-description {
+  font-size: 0.95rem;
+  color: #4b5563;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.modal-action-area {
+  width: 100%;
+}
+
+.modal-confirm-btn {
+  width: 100%;
+  padding: 14px;
+  background: #111827;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-confirm-btn:hover {
+  background: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes fadeInModal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
