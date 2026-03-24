@@ -2,5 +2,5 @@
 export const environment = {
   production: false,
   // apiUrl: 'https://plaxtilineas.com/api'
-  apiUrl: 'http://localhost:8000'
+  apiUrl: 'https://plaxtilineas.com/api'
 };

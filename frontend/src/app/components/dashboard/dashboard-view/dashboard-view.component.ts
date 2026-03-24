@@ -80,7 +80,7 @@ export class DashboardViewComponent {
 
   logout(): void {
     localStorage.removeItem('token');
-    window.location.href = '/login';
+    this.router.navigate(['/']); // Redirigir al Inicio (Home)
   }
 
   get estaEnInicio(): boolean {
