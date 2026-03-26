@@ -74,9 +74,8 @@ export class ProductosService {
   }
 
   actualizarProducto(token: string, id: number, data: FormData): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, data, {
-      headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
-    });
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.post(`${this.apiUrl}/${id}`, data, { headers });
   }
 
   eliminarProducto(token: string, id: number): Observable<any> {

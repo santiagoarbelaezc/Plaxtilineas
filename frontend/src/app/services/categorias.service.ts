@@ -32,7 +32,7 @@ export class CategoriasService {
   }
 
   actualizarCategoria(token: string, id: number, formData: FormData): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, formData, {
+    return this.http.post(`${this.apiUrl}/${id}`, formData, {
       headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
     });
   }
