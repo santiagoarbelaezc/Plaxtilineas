@@ -150,8 +150,8 @@ export class DashboardViewComponent {
         this.respuestaImportacion = response;
         this.cargandoImportacion = false;
         
-        let msg = `✅ Importación completada: ${response.importados_exitosamente} nuevos`;
-        if (response.duplicados_ignorados > 0) msg += `, ${response.duplicados_ignorados} ignorados (ya existían)`;
+        let msg = `✅ Sincronización completada: ${response.importados_exitosamente} nuevos`;
+        if (response.actualizados > 0) msg += `, ${response.actualizados} actualizados`;
         if (response.errores > 0) msg += `, ${response.errores} errores`;
         
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
