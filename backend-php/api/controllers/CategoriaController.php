@@ -219,6 +219,9 @@ class CategoriaController
             }
             $nombre = ResponseHandler::sanitize($_POST['nombre'] ?? '');
             if (!$nombre) {
+                if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+                    throw new InvalidArgumentException('El nombre es obligatorio. Nota: asegúrate de usar POST para actualizar categorías con íconos.');
+                }
                 throw new InvalidArgumentException('El nombre es obligatorio');
             }
 

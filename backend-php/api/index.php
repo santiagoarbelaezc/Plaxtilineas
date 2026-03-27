@@ -146,7 +146,7 @@ try {
     if ($p = matchRoute('/productos/:id', $uri)) {
         match ($method) {
             'GET'    => ProductoController::obtenerProductoPorId((int)$p['id']),
-            'PUT'    => (AuthMiddleware::verify() && ProductoController::actualizarProducto((int)$p['id'])),
+            'PUT', 'POST'=> (AuthMiddleware::verify() && ProductoController::actualizarProducto((int)$p['id'])),
             'DELETE' => (AuthMiddleware::verify() && ProductoController::eliminarProducto((int)$p['id'])),
             default  => null,
         };
@@ -174,7 +174,7 @@ try {
     }
     if ($p = matchRoute('/categorias/:id', $uri)) {
         match ($method) {
-            'PUT'    => (AuthMiddleware::verify() && CategoriaController::actualizarCategoria((int)$p['id'])),
+            'PUT', 'POST'=> (AuthMiddleware::verify() && CategoriaController::actualizarCategoria((int)$p['id'])),
             'DELETE' => (AuthMiddleware::verify() && CategoriaController::eliminarCategoria((int)$p['id'])),
             default  => null,
         };
@@ -271,7 +271,7 @@ try {
     // IMPORTAR  /api/importar/*
     // ═════════════════════════════════════════════════════════════════════════════
 
-    if ($uri === '/importar/hostinger' && $method === 'POST') {
+    if ($uri === '/importar/ejecutar' && $method === 'POST') {
         AuthMiddleware::verify();
         ImportarController::importarProductosHostinger();
     }

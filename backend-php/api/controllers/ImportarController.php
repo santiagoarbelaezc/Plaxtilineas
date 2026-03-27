@@ -23,16 +23,23 @@ class ImportarController
             $importados = 0;
             $duplicados = [];
             $errores    = [];
+            $logs       = [];
 
             $dbLocal->beginTransaction();
             try {
                 foreach ($products as $product) {
+                    $nombreProd = $product['name'] ?? 'Sin nombre';
+                    $logs[] = "Procesando Hostinger ID: {$product['id']} | Nombre: '{$nombreProd}'";
+
                     $dupCheck = $dbLocal->prepare('SELECT id FROM productos WHERE nombre = ? LIMIT 1');
-                    $dupCheck->execute([$product['name'] ?? 'Sin nombre']);
-                    if ($dupCheck->fetch()) {
-                        $duplicados[] = ['nombre' => $product['name']];
+                    $dupCheck->execute([$nombreProd]);
+                    if ($row = $dupCheck->fetch()) {
+                        $logs[] = "  -> OMITIDO: Ya existe en la BD local con el ID: {$row['id']}";
+                        $duplicados[] = ['nombre' => $nombreProd];
                         continue;
                     }
+
+                    $logs[] = "  -> NUEVO: No existe localmente. Intentando insertar...";
 
                     try {
                         $imgStmt = $dbHostinger->prepare('SELECT url FROM product_images WHERE product_id = ? LIMIT 1');
@@ -55,13 +62,14 @@ class ImportarController
                             VALUES (?, ?, 1, ?, ?, ?, 'unidad', NOW())
                         ");
                         $pStmt->execute([
-                            $product['name'] ?? 'Sin nombre',
+                            $nombreProd,
                             $product['description'] ?? '',
                             $precio,
                             $imagenUrl,
                             $subcatId,
                         ]);
                         $productoId = (int)$dbLocal->lastInsertId();
+                        $logs[] = "  -> EXITO: Insertado como ID local: {$productoId}";
 
                         foreach ($variantes as $v) {
                             $dbLocal->prepare('INSERT INTO variantes (producto_id, nombre, precio) VALUES (?, ?, ?)')
@@ -70,7 +78,8 @@ class ImportarController
 
                         $importados++;
                     } catch (Throwable $e) {
-                        $errores[] = ['nombre' => $product['name'] ?? '?', 'error' => $e->getMessage()];
+                        $logs[] = "  -> ERROR FATAL: " . $e->getMessage();
+                        $errores[] = ['nombre' => $nombreProd, 'error' => $e->getMessage()];
                     }
                 }
 
@@ -88,6 +97,7 @@ class ImportarController
                 'errores'                 => count($errores),
                 'detalles_duplicados'     => $duplicados ?: null,
                 'detalles_errores'        => $errores    ?: null,
+                'logs_detallados'         => $logs,
             ]);
 
         } catch (PDOException $e) {

@@ -16,6 +16,7 @@ class ResponseHandler
             'https://plaxtilineas.com',
             'https://www.plaxtilineas.com',
             'http://localhost:4200',
+            'http://127.0.0.1:4200'
         ];
 
         // Si FRONTEND_URL del .env no está en la lista, agregarla dinámicamente

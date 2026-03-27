@@ -519,6 +519,16 @@ class ProductoController
             $subcatId    = (int)($_POST['subcategoria_id'] ?? 0);
             $unidad      = ResponseHandler::sanitize($_POST['unidad'] ?? 'unidad');
 
+            if (!$nombre) {
+                if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+                    throw new InvalidArgumentException("El nombre es requerido. Nota: asegúrate de usar POST para actualizar productos con imágenes.");
+                }
+                throw new InvalidArgumentException("El nombre del producto es requerido.");
+            }
+            if (!$subcatId) {
+                throw new InvalidArgumentException("La subcategoría es requerida.");
+            }
+
             $db   = Database::getConnection();
             $stmt = $db->prepare('SELECT imagen_url, public_id FROM productos WHERE id = ?');
             $stmt->execute([$id]);
