@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { ContentCard } from '../../models/content-card.model';
 
 @Component({
@@ -22,7 +23,7 @@ export class PlaxtiTrioPresentationComponent {
   @Input() headerTitle: string = 'Nuestros Servicios';
   @Input() headerSubtitle?: string;
 
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(private sanitizer: DomSanitizer, private router: Router) {}
 
   // Obtener estilos dinámicos para la sección
   getSectionStyles(): SafeStyle {
@@ -100,7 +101,11 @@ export class PlaxtiTrioPresentationComponent {
   // Navega al enlace si existe
   navigateToLink(link?: string): void {
     if (link) {
-      window.open(link, '_blank');
+      if (link.startsWith('http')) {
+        window.open(link, '_blank');
+      } else {
+        this.router.navigateByUrl(link);
+      }
     }
   }
 

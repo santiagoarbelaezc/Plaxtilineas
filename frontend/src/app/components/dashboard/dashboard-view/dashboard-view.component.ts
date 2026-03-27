@@ -149,8 +149,22 @@ export class DashboardViewComponent {
       next: (response) => {
         this.respuestaImportacion = response;
         this.cargandoImportacion = false;
-        this.mensajeExito = `✅ Importación completada: ${response.importados_exitosamente} productos importados`;
-        setTimeout(() => this.mensajeExito = '', 5000);
+        
+        let msg = `✅ Importación completada: ${response.importados_exitosamente} nuevos`;
+        if (response.duplicados_ignorados > 0) msg += `, ${response.duplicados_ignorados} ignorados (ya existían)`;
+        if (response.errores > 0) msg += `, ${response.errores} errores`;
+        
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.log('📄 LOGS DE IMPORTACIÓN (Línea por línea):');
+        if (response.logs_detallados && response.logs_detallados.length > 0) {
+            response.logs_detallados.forEach((log: string) => console.log(log));
+        } else {
+            console.log('No se recibieron logs detallados.');
+        }
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        
+        this.mensajeExito = msg;
+        setTimeout(() => this.mensajeExito = '', 8000);
       },
       error: (err) => {
         this.cargandoImportacion = false;
