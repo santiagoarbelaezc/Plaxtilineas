@@ -49,14 +49,13 @@ export class FeatureNewProducts implements OnInit {
     });
   }
 
-  verDetalles(productoId: number): void {
+  verDetalles(productoId: number, nombre?: string): void {
     console.log('Navegando a detalles del producto:', productoId);
-    
-    // Limpiar la última subcategoría seleccionada
     this.menuStateService.clearLastSelectedSubcategory();
     
-    // Navegar a la ruta /producto/{id}
-    this.router.navigate(['/producto', productoId]);
+    const slug = nombre ? nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '') : '';
+    const urlParam = slug ? `${productoId}-${slug}` : productoId;
+    this.router.navigate(['/producto', urlParam]);
   }
 
   /**

@@ -404,10 +404,11 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   verDetallesProducto(producto: ProductoEditable): void {
-    // Guardar estado actual antes de navegar
     const currentSearch = this.terminoBusqueda;
+    const slug = producto.nombre ? producto.nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '') : '';
+    const urlParam = slug ? `${producto.id}-${slug}` : producto.id;
     
-    this.router.navigate(['/producto', producto.id], {
+    this.router.navigate(['/producto', urlParam], {
       state: { fromSearch: true, searchTerm: currentSearch }
     });
   }

@@ -44,7 +44,7 @@
           *ngFor="let producto of productos; trackBy: trackByProductId" 
           class="producto-item"
           [style.flex-basis]="'calc(100% / ' + itemsPerView + ')'"
-          (click)="verDetalles(producto.id)">
+          (click)="verDetalles(producto.id, producto.nombre)">
           
           <!-- Tarjeta de producto clickeable -->
           <div class="producto-card clickable">

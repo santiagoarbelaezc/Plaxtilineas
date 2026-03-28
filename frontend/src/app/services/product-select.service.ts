@@ -25,14 +25,13 @@ export class ProductSelectService {
    * Navegar a la página de detalles del producto
    */
   verDetallesProducto(producto: ProductoMenu): void {
-    // Guardar el producto seleccionado
     this.productoSeleccionadoSubject.next(producto);
-    
-    // Agregar al historial
     this.agregarAlHistorial(producto);
     
-    // Navegar a la página de detalles
-    this.router.navigate(['/producto', producto.id], {
+    const slug = producto.nombre ? producto.nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '') : '';
+    const urlParam = slug ? `${producto.id}-${slug}` : producto.id;
+    
+    this.router.navigate(['/producto', urlParam], {
       state: { producto: producto }
     });
   }

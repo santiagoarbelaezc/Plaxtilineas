@@ -338,10 +338,14 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   
   // NUEVO MÉTODO: Redirigir a detalles del producto
-  verDetalles(productoId: number): void {
+  verDetalles(productoId: number, nombre?: string): void {
     console.log('Navegando a detalles del producto:', productoId);
     
-    // Navegar a la ruta /producto/{id}
-    this.router.navigate(['/producto', productoId]);
+    // Generar slug SEO
+    const slug = nombre ? nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '') : '';
+    const urlParam = slug ? `${productoId}-${slug}` : productoId;
+    
+    // Navegar a la ruta /producto/{id-slug}
+    this.router.navigate(['/producto', urlParam]);
   }
 }

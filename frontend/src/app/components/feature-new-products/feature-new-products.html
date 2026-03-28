@@ -12,7 +12,7 @@
       <div 
         class="product-card" 
         *ngFor="let producto of productos"
-        (click)="verDetalles(producto.id)"
+        (click)="verDetalles(producto.id, producto.nombre)"
       >
         <!-- Imagen del producto -->
         <div class="product-image-container">

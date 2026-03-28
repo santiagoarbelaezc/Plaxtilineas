@@ -64,8 +64,8 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     // Escuchar cambios en los parámetros de la ruta
     this.subscriptions.push(
       this.route.params.subscribe(params => {
-        const productId = +params['id'];
-        if (productId) {
+        const productId = parseInt(params['id'], 10);
+        if (productId && !isNaN(productId)) {
           this.cargarProducto(productId);
         }
       })
