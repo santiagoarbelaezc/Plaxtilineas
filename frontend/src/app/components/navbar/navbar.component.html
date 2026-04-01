@@ -118,24 +118,20 @@
          [routerLinkActiveOptions]="{exact: true}"
          (click)="onLinkClick(0)"
          aria-label="Ir a Inicio">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="nav-icon" viewBox="0 0 16 16">
-          <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5Z"/>
-          <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6Z"/>
-        </svg>
+        <fa-icon [icon]="['fas', 'home']" class="nav-icon"></fa-icon>
         <span class="nav-text">Inicio</span>
       </a>
       
       <!-- Dropdown de Catálogo -->
       <app-menu-dropdown></app-menu-dropdown>
+
       
       <a routerLink="/nosotros" 
          class="nav-link" 
          routerLinkActive="active"
          (click)="onLinkClick(3)"
          aria-label="Conócenos">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="nav-icon" viewBox="0 0 16 16">
-          <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
-        </svg>
+        <fa-icon [icon]="['fas', 'users']" class="nav-icon"></fa-icon>
         <span class="nav-text">Nosotros</span>
       </a>
     </div>
@@ -147,11 +143,12 @@
          target="_blank"
          rel="noopener noreferrer"
          aria-label="Ver ubicación de Armenia en Google Maps">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#000000" class="location-icon" viewBox="0 0 16 16">
-          <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
-        </svg>
+        <fa-icon [icon]="['fas', 'map-marker-alt']" class="location-icon"></fa-icon>
         <span class="nav-text">Armenia</span>
       </a>
+
+      <!-- Dropdown de Empresas -->
+      <app-empresas-dropdown></app-empresas-dropdown>
       
       <a routerLink="/contacto" 
          class="nav-link whatsapp-link" 

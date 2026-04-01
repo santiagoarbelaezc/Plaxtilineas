@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 
 // Importa todos los componentes que quieres mostrar en la vista de inicio
 import { NavbarComponent } from '../../components/navbar/navbar.component';
@@ -23,6 +24,7 @@ import { DynamicBackgroundComponent } from '../dynamic-background/dynamic-backgr
   standalone: true,
   imports: [
     CommonModule,
+
     NavbarComponent,
     HeaderComponent,
     DynamicBackgroundComponent
@@ -31,6 +33,7 @@ import { DynamicBackgroundComponent } from '../dynamic-background/dynamic-backgr
   styleUrls: ['./inicio.css']
 })
 export class Inicio {
+
   // Datos para el Banner Principal
   bannerImages: BannerImage[] = [
     {

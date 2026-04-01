@@ -498,4 +498,13 @@ export class CarouselInteres implements OnInit, AfterViewInit, OnDestroy, OnChan
       this.currentIndex = 0;
     }
   }
+
+  /**
+   * Generar URL amigable con el slug (SEO)
+   */
+  getProductoUrl(producto: ProductoEditable): any[] {
+    const slug = producto.nombre ? producto.nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '') : '';
+    const urlParam = slug ? `${producto.id}-${slug}` : producto.id;
+    return ['/producto', urlParam];
+  }
 }

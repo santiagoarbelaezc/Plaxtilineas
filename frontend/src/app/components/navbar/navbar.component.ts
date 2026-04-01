@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, HostListener, ViewEncapsulation, OnDe
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faKey, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faKey, faSearch, faTimes, faHome, faUsers, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import { FormsModule } from '@angular/forms';
 import { AosService } from '../../services/aos.service';
 import { Router, NavigationEnd } from '@angular/router';
@@ -10,11 +10,12 @@ import { filter, takeUntil, Subject } from 'rxjs';
 import { SearchStateService } from '../../services/search-state.service';
 import { MenuStateService } from '../../services/menu-state.service';
 import { MenuDropdown } from './menu-dropdown/menu-dropdown';
+import { EmpresasDropdown } from './empresas-dropdown/empresas-dropdown';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule, FontAwesomeModule, FormsModule, MenuDropdown],
+  imports: [CommonModule, RouterModule, FontAwesomeModule, FormsModule, MenuDropdown, EmpresasDropdown],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
   encapsulation: ViewEncapsulation.None
@@ -38,7 +39,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     private searchStateService: SearchStateService,
     private menuStateService: MenuStateService
   ) {
-    library.addIcons(faKey, faSearch, faTimes);
+    library.addIcons(faKey, faSearch, faTimes, faHome, faUsers, faMapMarkerAlt);
   }
 
   ngOnInit(): void {

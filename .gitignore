@@ -62,3 +62,10 @@ Desktop.ini
 
 # Evitar subir imágenes
 frontend/src/assets/img/
+
+# === Archivos Comprimidos ===
+*.zip
+*.rar
+*.7z
+*.tar.gz
+backend-php/api.zip

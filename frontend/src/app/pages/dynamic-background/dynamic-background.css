@@ -29,7 +29,7 @@
 
 /* Estilo específico para section-4 (Categorías Destacadas) */
 #section-4 {
-  margin-top: 40px;
+  margin-top: -20px; /* Reducción agresiva, sobreponiendo levemente o eliminando todo el espacio restante */
 }
 
 /* Sección con ancho completo */

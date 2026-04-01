@@ -11,63 +11,107 @@ class ImportarController
     // ─── POST /api/importar/hostinger (protegido) ─────────────────────────────
     public static function importarProductosHostinger(): void
     {
+        // El proceso de sincronización puede tardar más de 60s por latencia a Hostinger
+        set_time_limit(0); 
+
         try {
             $dbLocal     = Database::getConnection();
             $dbHostinger = Database::getHostingerConnection();
 
+            // Auto-migración mágica: Agregar la columna id_hostinger si no existe
+            try {
+                $dbLocal->query("SELECT id_hostinger FROM productos LIMIT 1");
+            } catch (PDOException $e) {
+                // La columna no existe, la creamos
+                $dbLocal->exec("ALTER TABLE productos ADD COLUMN id_hostinger INT NULL UNIQUE");
+            }
+
+            // 1. Obtener todos los productos
             $stmt     = $dbHostinger->query(
                 "SELECT * FROM products WHERE deleted_at IS NULL AND category='Plaxtilineas' ORDER BY id DESC"
             );
             $products = $stmt->fetchAll();
 
-            $importados = 0;
-            $duplicados = [];
-            $errores    = [];
-            $logs       = [];
+            // 2. Obtener todas las imágenes en una sola consulta
+            $imgStmt = $dbHostinger->query("SELECT product_id, url FROM product_images");
+            $allImages = $imgStmt->fetchAll();
+            $imageMap = [];
+            foreach ($allImages as $img) {
+                if (!isset($imageMap[$img['product_id']])) {
+                    $imageMap[$img['product_id']] = $img['url'];
+                }
+            }
+
+            // 3. Obtener todas las variantes activas en una sola consulta
+            $varStmt = $dbHostinger->query("SELECT product_id, name, price FROM product_variants WHERE available=1 ORDER BY price ASC");
+            $allVariants = $varStmt->fetchAll();
+            $variantMap = [];
+            foreach ($allVariants as $var) {
+                $variantMap[$var['product_id']][] = [
+                    'name' => $var['name'],
+                    'price' => $var['price']
+                ];
+            }
+
+            $importados  = 0;
+            $actualizados= 0;
+            $duplicados  = [];
+            $errores     = [];
+            $logs        = [];
 
             $dbLocal->beginTransaction();
             try {
                 foreach ($products as $product) {
-                    $nombreProd = $product['name'] ?? 'Sin nombre';
-                    $logs[] = "Procesando Hostinger ID: {$product['id']} | Nombre: '{$nombreProd}'";
+                    $hostingerId = (int)$product['id'];
+                    $nombreProd  = $product['name'] ?? 'Sin nombre';
+                    $logs[] = "Procesando Hostinger ID: {$hostingerId} | Nombre: '{$nombreProd}'";
 
-                    $dupCheck = $dbLocal->prepare('SELECT id FROM productos WHERE nombre = ? LIMIT 1');
-                    $dupCheck->execute([$nombreProd]);
-                    if ($row = $dupCheck->fetch()) {
-                        $logs[] = "  -> OMITIDO: Ya existe en la BD local con el ID: {$row['id']}";
-                        $duplicados[] = ['nombre' => $nombreProd];
-                        continue;
-                    }
+                    // Conseguir datos de los mapas en memoria (instantáneo)
+                    $imagenUrl = $imageMap[$hostingerId] ?? null;
+                    $variantes = $variantMap[$hostingerId] ?? [];
+                    
+                    $subcatId = self::obtenerOCrearSubcategoria($dbLocal, $product['category'] ?? null);
 
-                    $logs[] = "  -> NUEVO: No existe localmente. Intentando insertar...";
+                    $precio = $variantes ? (float)($variantes[0]['price'] ?? 0) : 0;
+                    $descripcion = $product['description'] ?? '';
 
                     try {
-                        $imgStmt = $dbHostinger->prepare('SELECT url FROM product_images WHERE product_id = ? LIMIT 1');
-                        $imgStmt->execute([$product['id']]);
-                        $imgRow    = $imgStmt->fetch();
-                        $imagenUrl = $imgRow['url'] ?? null;
+                        // 2. Verificar si ya existe SOLAMENTE por ID (ignorando el nombre para permitir a voluntad del usuario importar e identificar duplicados)
+                        $matchStmt = $dbLocal->prepare('SELECT id, id_hostinger FROM productos WHERE id_hostinger = ? LIMIT 1');
+                        $matchStmt->execute([$hostingerId]);
+                        $row = $matchStmt->fetch();
 
-                        $subcatId = self::obtenerOCrearSubcategoria($dbLocal, $product['category'] ?? null);
+                        if ($row) {
+                            $localId = (int)$row['id'];
+                            $logs[] = "  -> VINCULANDO: Ya existe en la BD local (Local ID: {$localId}). Actualizando datos...";
 
-                        $varStmt = $dbHostinger->prepare(
-                            'SELECT name, price FROM product_variants WHERE product_id=? AND available=1 ORDER BY price ASC'
-                        );
-                        $varStmt->execute([$product['id']]);
-                        $variantes = $varStmt->fetchAll();
+                            // 2a. Actualizar el producto existente (esto también actualiza el id_hostinger si solo coincidió el nombre)
+                            $updStmt = $dbLocal->prepare("
+                                UPDATE productos 
+                                SET nombre=?, descripcion=?, precio=?, imagen_url=?, subcategoria_id=?, id_hostinger=? 
+                                WHERE id=?
+                            ");
+                            $updStmt->execute([$nombreProd, $descripcion, $precio, $imagenUrl, $subcatId, $hostingerId, $localId]);
 
-                        $precio = $variantes ? (float)($variantes[0]['price'] ?? 0) : 0;
+                            // 2b. Recrear las variantes (borramos las viejas e insertamos las nuevas para sincronizar perfecto)
+                            $dbLocal->prepare("DELETE FROM variantes WHERE producto_id=?")->execute([$localId]);
+                            foreach ($variantes as $v) {
+                                $dbLocal->prepare('INSERT INTO variantes (producto_id, nombre, precio) VALUES (?, ?, ?)')
+                                        ->execute([$localId, $v['name'] ?? 'Variante', (float)($v['price'] ?? 0)]);
+                            }
 
+                            $actualizados++;
+                            $logs[] = "  -> EXITO: Producto ID {$localId} actualizado.";
+                            continue;
+                        }
+
+                        // 3. Si NO existe, Insertar como nuevo
+                        $logs[] = "  -> NUEVO: No existe localmente. Intentando insertar...";
                         $pStmt = $dbLocal->prepare("
-                            INSERT INTO productos (nombre, descripcion, cantidad, precio, imagen_url, subcategoria_id, unidad, creado_en)
-                            VALUES (?, ?, 1, ?, ?, ?, 'unidad', NOW())
+                            INSERT INTO productos (nombre, descripcion, cantidad, precio, imagen_url, subcategoria_id, unidad, creado_en, id_hostinger)
+                            VALUES (?, ?, 1, ?, ?, ?, 'unidad', NOW(), ?)
                         ");
-                        $pStmt->execute([
-                            $nombreProd,
-                            $product['description'] ?? '',
-                            $precio,
-                            $imagenUrl,
-                            $subcatId,
-                        ]);
+                        $pStmt->execute([$nombreProd, $descripcion, $precio, $imagenUrl, $subcatId, $hostingerId]);
                         $productoId = (int)$dbLocal->lastInsertId();
                         $logs[] = "  -> EXITO: Insertado como ID local: {$productoId}";
 
@@ -90,13 +134,12 @@ class ImportarController
             }
 
             ResponseHandler::success([
-                'mensaje'                 => 'Importación completada',
+                'mensaje'                 => 'Importación y sincronización completadas',
                 'total_procesados'        => count($products),
                 'importados_exitosamente' => $importados,
-                'duplicados_ignorados'    => count($duplicados),
+                'actualizados'            => $actualizados,
                 'errores'                 => count($errores),
-                'detalles_duplicados'     => $duplicados ?: null,
-                'detalles_errores'        => $errores    ?: null,
+                'detalles_errores'        => $errores ?: null,
                 'logs_detallados'         => $logs,
             ]);
 

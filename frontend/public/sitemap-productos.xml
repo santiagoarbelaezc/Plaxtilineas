@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Este archivo será generado dinámicamente con todos los productos -->
+<!-- Mientras tanto, aquí está el esquema base -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Ejemplo: Cartón Corrugado -->
+  <url>
+    <loc>https://plaxtilineas.com/producto/carton-corrugado</loc>
+    <lastmod>2026-03-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://plaxtilineas.com/assets/carton-corrugado.jpg</image:loc>
+      <image:title>Cartón Corrugado Plaxtilineas</image:title>
+    </image:image>
+  </url>
+
+</urlset>

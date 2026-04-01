@@ -540,4 +540,13 @@ export class CarouselRelacionados implements OnInit, AfterViewInit, OnDestroy, O
     console.warn(`⚠️ Error cargando imagen para ${producto?.nombre || 'producto desconocido'}`);
     imgElement.src = 'assets/images/default-product.png';
   }
+
+  /**
+   * Generar URL amigable con el slug (SEO)
+   */
+  getProductoUrl(producto: ProductoEditable): any[] {
+    const slug = producto.nombre ? producto.nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '') : '';
+    const urlParam = slug ? `${producto.id}-${slug}` : producto.id;
+    return ['/producto', urlParam];
+  }
 }

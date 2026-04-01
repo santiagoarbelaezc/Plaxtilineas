@@ -33,10 +33,16 @@ Options -Indexes
   AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json application/manifest+json
 </IfModule>
 
-# ─── Routing Angular SPA ─────────────────────────────────────────────────────
-# Redirige todas las URLs que no sean archivos físicos a index.html
-# para que Angular Router maneje la navegación client-side
+# ─── Redirecciones SEO ──────────────────────────────────────────────────────
 RewriteEngine On
+
+# Forzar HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# Remover www
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
 
 # No redirigir requests a /api (backend PHP)
 RewriteRule ^api/ - [L]
@@ -48,6 +54,27 @@ RewriteRule ^ - [L]
 
 # Todo lo demás → index.html (Angular SPA)
 RewriteRule ^ /index.html [L]
+
+# ─── Headers SEO y Seguridad ──────────────────────────────────────────────────
+<IfModule mod_headers.c>
+  # Canonical header para SEO
+  Header set Link "</index.html>; rel=\"canonical\""
+  
+  # Prevenir clic jacking
+  Header set X-Frame-Options "SAMEORIGIN"
+  
+  # Prevenir MIME type sniffing
+  Header set X-Content-Type-Options "nosniff"
+  
+  # XSS protection
+  Header set X-XSS-Protection "1; mode=block"
+  
+  # Referrer policy para privacidad
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  
+  # Permitir acceso desde cualquier origen (CORS básico)
+  Header set Access-Control-Allow-Origin "*"
+</IfModule>
 
 # ─── Headers de seguridad ────────────────────────────────────────────────────
 <IfModule mod_headers.c>

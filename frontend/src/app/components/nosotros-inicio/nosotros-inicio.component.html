@@ -1,0 +1,70 @@
+<!-- 🔍 SEO CONTENT BLOCK - Visible para Google -->
+<section class="seccion-nosotros" aria-label="Sección sobre Quiénes Somos" itemscope itemtype="https://schema.org/LocalBusiness">
+  <div class="nosotros-container">
+    
+    <!-- Header -->
+    <div class="nosotros-header">
+      <h2 class="nosotros-title seo-subtitle">¿Quiénes Somos?</h2>
+      <p class="nosotros-subtitle seo-description" itemprop="description">
+        <strong>Plaxtilineas</strong> es el distribuidor líder de <strong>peletería, plásticos, espumas y empaques</strong> 
+        en <strong>Armenia, Quindío y toda la región del Eje Cafetero</strong>.
+      </p>
+    </div>
+
+    <!-- Main Content (Cards-like) -->
+    <div class="nosotros-content-card valor-card">
+      <p class="valor-descripcion">
+        Con más de una década de experiencia, ofrecemos soluciones integrales en <strong>cartón corrugado, materiales de construcción, mallas y empaques industriales</strong> para empresas grandes, pequeñas y comercios locales.
+      </p>
+      <br>
+      <p class="valor-descripcion">
+        En Plaxtilineas encuentras todo lo que necesitas en <strong>plásticos de calidad, espumas especializadas, peletería variada</strong> y <strong>empaques personalizados</strong> para proteger y presentar tus productos. Servimos a <strong>Armenia, Pereira, Manizales</strong> y municipios del <strong>Quindío</strong> con entregas rápidas y precios competitivos.
+      </p>
+    </div>
+
+    <!-- Categorías -->
+    <div class="seo-categories-links">
+      <h3 class="valor-titulo" style="text-align: center; margin-bottom: 24px;">Explora nuestros principales productos</h3>
+      <div class="valores-grid-categorias">
+        <!-- Categoría 1 -->
+        <a routerLink="/productos" (click)="limpiarFiltros()" class="valor-card categoria-card">
+          <div class="valor-icono-container">
+            <fa-icon [icon]="['fas', 'layer-group']" class="valor-icono"></fa-icon>
+          </div>
+          <h4 class="valor-titulo">Peletería</h4>
+        </a>
+
+        <!-- Categoría 2 -->
+        <a routerLink="/busqueda" [queryParams]="{q: 'plastico'}" (click)="limpiarFiltros()" class="valor-card categoria-card">
+          <div class="valor-icono-container">
+            <fa-icon [icon]="['fas', 'box']" class="valor-icono"></fa-icon>
+          </div>
+          <h4 class="valor-titulo">Plásticos</h4>
+        </a>
+
+        <!-- Categoría 3 -->
+        <a routerLink="/productos" (click)="limpiarFiltros()" class="valor-card categoria-card">
+          <div class="valor-icono-container">
+            <fa-icon [icon]="['fas', 'box-open']" class="valor-icono"></fa-icon>
+          </div>
+          <h4 class="valor-titulo">Empaques</h4>
+        </a>
+
+        <!-- Categoría 4 -->
+        <a routerLink="/busqueda" [queryParams]="{q: 'carton'}" (click)="limpiarFiltros()" class="valor-card categoria-card">
+          <div class="valor-icono-container">
+            <fa-icon [icon]="['fas', 'truck']" class="valor-icono"></fa-icon>
+          </div>
+          <h4 class="valor-titulo">Cartón</h4>
+        </a>
+      </div>
+    </div>
+
+    <!-- SEO Meta Tags -->
+    <meta itemprop="name" content="Plaxtilineas Armstrong">
+    <meta itemprop="image" content="https://plaxtilineas.com/assets/og-image.jpg">
+    <meta itemprop="telephone" content="+57-6-XXXXXXXXX">
+    <meta itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+    <meta itemprop="name" content="Armenia, Quindío, Colombia">
+  </div>
+</section>

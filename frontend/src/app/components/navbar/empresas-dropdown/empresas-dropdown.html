@@ -1,0 +1,53 @@
+<div class="menu-dropdown-wrapper" 
+     (mouseenter)="onMouseEnter()" 
+     (mouseleave)="onMouseLeave()">
+  
+  <a class="dropdown-trigger nav-link" 
+     (click)="$event.preventDefault()"
+     aria-label="Nuestras Empresas">
+    
+    <fa-icon [icon]="['fas', 'city']" class="nav-icon"></fa-icon>
+    <div class="nav-text-container">
+      <span class="nav-text">Grupo</span>
+    </div>
+    <span class="dropdown-arrow">▼</span>
+  </a>
+
+  <!-- Menú desplegable optimizado para dos columnas -->
+  <div class="dropdown-menu" [class.visible]="menuVisible" style="min-width: 400px; left: -50px;">
+    <div class="dropdown-content">
+      <div class="categorias-grid" style="grid-template-columns: 1fr 1fr;">
+        
+        <div class="categoria-column">
+          <div class="categoria-header">
+            <span class="categoria-name" style="color:#2b4260">Colchones Districol</span>
+          </div>
+          <div class="subcategorias">
+            <a href="https://colchonesdistricol.com/" target="_blank" rel="noopener noreferrer" class="subcategoria-link">
+              <span class="subcategoria-dot"></span>
+              Ir al Sitio Oficial
+            </a>
+          </div>
+        </div>
+
+        <div class="categoria-column">
+          <div class="categoria-header">
+            <span class="categoria-name" style="color:#008ac7">Espumas y Plásticos</span>
+          </div>
+          <div class="subcategorias">
+            <a href="https://espumasyplasticos.com/" target="_blank" rel="noopener noreferrer" class="subcategoria-link">
+              <span class="subcategoria-dot"></span>
+              Ir al Sitio Oficial
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay para cerrar menú -->
+  <div class="dropdown-overlay" 
+       [class.active]="menuVisible" 
+       (click)="onMouseLeave()"></div>
+</div>

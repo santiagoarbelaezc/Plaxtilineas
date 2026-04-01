@@ -4,6 +4,8 @@ import { RouterModule, Router } from '@angular/router';
 import { CategoriaMenuService } from '../../../services/categoria-menu.service';
 import { MenuStateService } from '../../../services/menu-state.service';
 import { Subject, takeUntil } from 'rxjs';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 
 interface Subcategoria {
   id: number;
@@ -21,7 +23,7 @@ interface Categoria {
 @Component({
   selector: 'app-menu-dropdown',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FontAwesomeModule],
   templateUrl: './menu-dropdown.html',
   styleUrl: './menu-dropdown.css',
 })
@@ -35,8 +37,10 @@ export class MenuDropdown implements OnInit, OnDestroy {
   constructor(
     private categoriaMenuService: CategoriaMenuService,
     private menuStateService: MenuStateService,
-    private router: Router
+    private router: Router,
+    library: FaIconLibrary
   ) {
+    library.addIcons(faLayerGroup);
     this.cargarCategorias();
   }
 

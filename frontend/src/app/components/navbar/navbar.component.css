@@ -309,9 +309,7 @@
   gap: 6px;
 }
 
-.nav-section.action-nav .nav-link {
-  padding: 12px 10px;
-}
+
 
 /* ===== ENLACES DE NAVEGACIÓN ===== */
 .nav-link {
@@ -357,26 +355,23 @@
 }
 
 /* ===== UBICACIÓN ===== */
-.location-link {
-  padding: 12px 16px;
-}
+
 
 .location-icon {
   width: 18px;
   height: 18px;
-  color: #e53e3e;
+  color: #191919;
   transition: all 0.3s ease;
 }
 
 .location-link:hover .location-icon {
-  color: #c53030;
+  color: #000000;
   transform: scale(1.15) rotate(-8deg);
-  filter: drop-shadow(0 2px 6px rgba(229, 62, 62, 0.3));
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
 }
 
 /* ===== WHATSAPP ===== */
 .whatsapp-link {
-  padding: 12px 18px;
   font-weight: var(--font-weight-regular);
   color: #1a242f;
   font-family: var(--font-primary);
@@ -409,7 +404,6 @@
 
 /* ===== LOGIN ===== */
 .login-link {
-  padding: 12px 18px;
   min-width: auto;
   display: flex;
   align-items: center;

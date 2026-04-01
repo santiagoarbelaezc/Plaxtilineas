@@ -37,7 +37,7 @@
         <div class="carousel-item" 
              *ngFor="let producto of productos; let i = index">
           
-          <a [routerLink]="['/producto', producto.id]" class="producto-card">
+          <a [routerLink]="getProductoUrl(producto)" class="producto-card">
             
             <!-- Contenedor de la imagen del producto -->
             <div class="producto-image-container">

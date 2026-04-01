@@ -23,6 +23,7 @@ import { FullBanner } from '../../components/full-banner/full-banner';
 import { LongMap} from '../../components/long-map/long-map.component';
 import { UtilGridProducto } from '../../components/grid-producto/util-grid-producto/util-grid-producto';
 import { UtilGridProductoOther } from "../../components/grid-producto/util-grid-producto-other/util-grid-producto-other";
+import { NosotrosInicioComponent } from '../../components/nosotros-inicio/nosotros-inicio.component';
 
 
 @Component({
@@ -41,7 +42,8 @@ import { UtilGridProductoOther } from "../../components/grid-producto/util-grid-
     CardContainerComponent,
     FullBanner,
     UtilGridProducto,
-    UtilGridProductoOther
+    UtilGridProductoOther,
+    NosotrosInicioComponent
 ],
   templateUrl: './dynamic-background.html',
   styleUrls: ['./dynamic-background.css']
