@@ -13,6 +13,8 @@
 
 ---
 
+### **PENDIENTE PARA MIGRACIÓN DE HOSTINGER ANTIGUO A NUEVO HOSTINGER**
+
 ## 📋 **Descripción del Proyecto**
 
 **Plaxtilineas** es una plataforma de comercio electrónico especializada en productos plásticos, lonas y líneas para aplicaciones industriales y comerciales. La empresa, ubicada en Colombia, ofrece una variada gama de artículos para protección, construcción de cerramientos, señalización y soluciones a la medida.
