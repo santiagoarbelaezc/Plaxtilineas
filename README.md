@@ -14,6 +14,7 @@
 ---
 
 ### **PENDIENTE PARA MIGRACIÓN DE HOSTINGER ANTIGUO A NUEVO HOSTINGER**
+Migracion completa
 
 ## 📋 **Descripción del Proyecto**
 
