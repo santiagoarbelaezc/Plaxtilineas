@@ -5,13 +5,15 @@ import { AosService } from './services/aos.service';
 import { ScrollService } from './services/scroll.service';
 import { NavbarComponent } from "./components/navbar/navbar.component";
 import { CommonModule } from '@angular/common';
+import { CartDrawerComponent } from './cart/cart-drawer/cart-drawer.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
     CommonModule, // Necesario para directivas como *ngIf, *ngFor
-    RouterModule
+    RouterModule,
+    CartDrawerComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']

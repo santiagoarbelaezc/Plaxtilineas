@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations'; 
 import { ProductoMenu } from '../../models/productoMenu.model';
 import { ProductoMenuService } from '../../services/producto-menu.service';
+import { AddToCartBtnComponent } from '../../cart/add-to-cart-btn/add-to-cart-btn.component';
 import { ProductSelectService } from '../../services/product-select.service';
 import { MenuStateService } from '../../services/menu-state.service';
 import { ProductoBackgroundComponent, ProductoBackgroundImage } from '../producto-background/producto-background';
@@ -13,7 +14,7 @@ import { ProductoBackgroundService } from '../../services/producto-background.se
 @Component({
   selector: 'app-product-list-component',
   standalone: true,
-  imports: [CommonModule, ProductoBackgroundComponent],
+  imports: [CommonModule, ProductoBackgroundComponent, AddToCartBtnComponent],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css'],
   animations: [

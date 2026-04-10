@@ -9,7 +9,7 @@
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: 16px 12px; /* Reducido de 24px 16px */
   font-family: var(--font-primary);
   background: var(--white);
   box-shadow: 0 8px 32px rgba(54, 140, 68, 0.12);
@@ -22,8 +22,8 @@
 
 /* Encabezado de categoría - premium */
 .categoria-header {
-  margin-bottom: 20px;
-  padding-bottom: 12px;
+  margin-bottom: 10px; /* Reducido de 20px */
+  padding-bottom: 6px; /* Reducido de 12px */
   border-bottom: 2px solid rgba(54, 140, 68, 0.15);
 }
 
@@ -192,7 +192,7 @@
   border: 1px solid var(--gray-200);
   position: relative;
   height: 100%;
-  min-height: 260px;
+  min-height: 380px; /* Aumentado para acomodar el botón premium */
   display: flex;
   flex-direction: column;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -228,11 +228,6 @@
   object-fit: contain;
 }
 
-.producto-card:hover .producto-logo {
-  transform: scale(1.05);
-  box-shadow: 0 3px 10px rgba(54, 140, 68, 0.15);
-}
-
 /* Imagen del producto - premium */
 .producto-imagen {
   width: 100%;
@@ -250,11 +245,7 @@
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.producto-card:hover .producto-imagen .imagen {
-  transform: scale(1.05);
-}
-
-/* Información del producto - elegante y sobrio */
+/* Información del producto */
 .producto-info {
   flex: 1;
   display: flex;
@@ -264,7 +255,7 @@
   gap: 12px;
 }
 
-/* Nombre del producto - elegante y prominente */
+/* Nombre del producto */
 .product-name {
   font-size: 0.95rem;
   font-weight: var(--font-weight-medium);
@@ -282,11 +273,7 @@
   min-height: 2.5em;
 }
 
-.producto-card:hover .product-name {
-  color: #368c44;
-}
-
-/* Contenedor de precio elegante */
+/* Contenedor de precio */
 .price-display {
   display: flex;
   justify-content: space-between;
@@ -295,85 +282,20 @@
   background: transparent;
   border: 1px solid var(--gray-200);
   border-radius: 4px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.producto-card:hover .price-display {
-  border-color: #368c44;
-  background: rgba(54, 140, 68, 0.02);
-}
-
-.price-label-area {
-  display: flex;
-  align-items: center;
-}
-
-.price-label {
-  font-size: 0.85rem;
-  color: var(--gray-600);
-  font-weight: var(--font-weight-regular);
-  font-family: var(--font-primary);
-  letter-spacing: 0.01em;
-}
-
-.price-value-area {
-  display: flex;
-  align-items: center;
 }
 
 .price-value {
   font-size: 1.2rem;
   font-weight: var(--font-weight-medium);
   color: #368c44;
-  font-family: var(--font-primary);
-  letter-spacing: 0.01em;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.producto-card:hover .price-value {
-  color: #2e7a3a;
-}
-
-/* Línea superior decorativa */
-.producto-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #368c44, #25d366);
-  opacity: 0;
-  z-index: 5;
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.producto-card:hover::before {
-  opacity: 1;
-}
-
-/* Estilos para hacer que las tarjetas sean clickeables */
-.producto-item {
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.producto-item:hover {
-  transform: translateY(-5px);
-}
-
-.producto-item .producto-card.clickable {
-  cursor: pointer;
-}
-
-/* Indicador visual de que es clickeable */
-.producto-item:hover .producto-card {
-  box-shadow: 0 8px 20px rgba(54, 140, 68, 0.15);
-}
-
-/* Evitar que el logo sea clickeable directamente */
-.producto-logo {
-  pointer-events: none;
+/* Estilos para el contenedor de productos */
+.productos-container {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+  padding: 15px 0;
 }
 
 /* ===== RESPONSIVE DESIGN ===== */

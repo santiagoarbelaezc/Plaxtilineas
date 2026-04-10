@@ -5,7 +5,7 @@
   position: relative;
   padding: 90px 20px;
   border-radius: 12px;
-  margin: 40px auto;
+  margin: 70px auto;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   font-family: var(--font-primary);
 }
@@ -145,15 +145,15 @@
     padding: 30px 16px;
     margin: 30px auto;
   }
-  
+
   .nosotros-title {
     font-size: 1.8rem;
   }
-  
+
   .nosotros-subtitle {
     font-size: 1rem;
   }
-  
+
   .valores-grid {
     grid-template-columns: 1fr;
     gap: 16px;
@@ -161,25 +161,25 @@
     margin-left: auto;
     margin-right: auto;
   }
-  
+
   .valor-card {
     padding: 20px;
   }
-  
+
   .valor-icono-container {
     width: 60px;
     height: 60px;
     margin-bottom: 16px;
   }
-  
+
   .valor-icono {
     font-size: 1.6rem;
   }
-  
+
   .valor-titulo {
     font-size: 1.1rem;
   }
-  
+
   .valor-descripcion {
     font-size: 0.9rem;
   }
@@ -190,15 +190,15 @@
     padding: 24px 12px;
     margin: 60px auto;
   }
-  
+
   .nosotros-title {
     font-size: 1.6rem;
   }
-  
+
   .valores-grid {
     gap: 14px;
   }
-  
+
   .valor-card {
     padding: 18px;
   }
@@ -209,7 +209,7 @@
   .valor-card:hover {
     transform: none;
   }
-  
+
   .valor-card:active {
     transform: scale(0.98);
   }
@@ -223,9 +223,9 @@
   left: 20px;
   right: 20px;
   height: 3px;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(54, 140, 68, 0.2), 
-    transparent);
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(54, 140, 68, 0.2),
+      transparent);
   border-radius: 0 0 2px 2px;
 }

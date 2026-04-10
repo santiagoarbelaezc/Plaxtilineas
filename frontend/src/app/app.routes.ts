@@ -70,6 +70,10 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'carrito',
+    loadComponent: () => import('./cart/cart-summary/cart-summary.component').then(m => m.CartSummaryComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }

@@ -1,28 +1,29 @@
-<div class="login-container">
-  <div class="login-card">
-    <div class="login-grid">
-      <!-- Sección de imagen -->
-      <div class="login-image-section">
-        <div class="image-container">
-          <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1767048820/ChatGPT_Image_Dec_24_2025_12_40_24_AM_kqig3j.png" alt="Espumas y materiales Plaxtilineas" class="login-bg-image" />
-          <div class="image-overlay">
-            
-          </div>
-        </div>
-      </div>
+<!-- src/app/components/login-form/login-form.component.html -->
+<div class="flex justify-center items-center min-h-screen bg-gradient-to-br from-[#368c44] to-[#25d366] p-5 font-sans relative overflow-hidden">
+  <!-- Elementos decorativos (migrados a pseudo-elementos o divs absolutos si es necesario, aquí los mantendré en CSS por ahora o usaré Tailwind) -->
+  <div class="absolute -top-[200px] -right-[200px] w-[500px] height-[500px] bg-[radial-gradient(circle,rgba(54,140,68,0.08)_0%,transparent_70%)] rounded-full pointer-events-none z-0"></div>
+  <div class="absolute -bottom-[150px] -left-[150px] w-[400px] height-[400px] bg-[radial-gradient(circle,rgba(37,211,102,0.06)_0%,transparent_70%)] rounded-full pointer-events-none z-0"></div>
+
+  <div class="w-full max-w-[420px] bg-white rounded-2xl p-[60px_40px] shadow-[0_10px_40px_rgba(54,140,68,0.15)] border border-[rgba(54,140,68,0.08)] relative z-10 animate-slideInUp md:p-[50px_30px] sm:p-[40px_25px]">
+    <div class="block h-auto">
+      <!-- Sección de imagen (Oculta según CSS original) -->
+      <div class="hidden"></div>
 
       <!-- Sección del formulario -->
-      <div class="login-form-section">
-        <div class="form-header">
-          <h2>Iniciar Sesión</h2>
-          <p class="subtitle">Ingresa tus credenciales para acceder</p>
+      <div class="p-0 flex flex-col justify-center overflow-visible">
+        <div class="mb-10 text-center">
+          <h2 class="text-[1.8rem] font-normal text-[#1a202c] mb-2 tracking-[0.2px] relative inline-block after:content-[''] after:block after:w-[60px] after:h-[3px] after:bg-gradient-to-r after:from-[#368c44] after:to-[#25d366] after:mx-auto after:mt-4 after:rounded-[2px] md:text-[1.6rem] sm:text-[1.5rem]">
+            Iniciar Sesión
+          </h2>
+          <p class="text-[#888] text-[0.85rem] font-light tracking-[0.5px] uppercase mt-3 sm:text-[0.8rem]">
+            Ingresa tus credenciales para acceder
+          </p>
         </div>
 
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-          <div class="input-group">
-            <label for="correo">
-              <!-- Icono minimalista de correo (SVG inline) -->
-              <span class="input-icon">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-full flex flex-col gap-6">
+          <div class="relative flex flex-col gap-2">
+            <label for="correo" class="flex items-center gap-2 text-[0.9rem] font-normal text-[#333] tracking-[0.2px] sm:text-[0.85rem]">
+              <span class="inline-flex items-center text-[#6b7280]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                   <polyline points="22,6 12,13 2,6"/>
@@ -36,15 +37,13 @@
               type="email" 
               placeholder="ejemplo@correo.com"
               required
-              class="form-input"
+              class="w-full p-[12px_14px] text-[0.95rem] bg-[#fafafa] border border-[#e0e0e0] rounded-lg transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] text-[#333] focus:outline-none focus:border-primary-green focus:bg-white focus:shadow-[0_0_0_3px_rgba(54,140,68,0.08)] placeholder:text-[#aaa] placeholder:text-[0.9rem] sm:p-[10px_12px] sm:text-[0.9rem]"
             >
-            <div class="input-line"></div>
           </div>
 
-          <div class="input-group">
-            <label for="password">
-              <!-- Icono minimalista de candado (SVG inline) -->
-              <span class="input-icon">
+          <div class="relative flex flex-col gap-2">
+            <label for="password" class="flex items-center gap-2 text-[0.9rem] font-normal text-[#333] tracking-[0.2px] sm:text-[0.85rem]">
+              <span class="inline-flex items-center text-[#6b7280]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                   <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
@@ -52,16 +51,16 @@
               </span>
               Contraseña
             </label>
-            <div class="password-input-wrapper">
+            <div class="relative w-full">
               <input 
                 id="password" 
                 formControlName="password" 
                 [type]="showPassword ? 'text' : 'password'" 
                 placeholder="••••••••"
                 required
-                class="form-input"
+                class="w-full p-[12px_14px] pr-12 text-[0.95rem] bg-[#fafafa] border border-[#e0e0e0] rounded-lg transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] text-[#333] focus:outline-none focus:border-primary-green focus:bg-white focus:shadow-[0_0_0_3px_rgba(54,140,68,0.08)] placeholder:text-[#aaa] placeholder:text-[0.9rem] sm:p-[10px_12px] sm:text-[0.9rem]"
               >
-              <button type="button" class="password-toggle-btn" (click)="togglePasswordVisibility()" [title]="showPassword ? 'Ocultar contraseña' : 'Ver contraseña'">
+              <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#64748b] hover:text-primary-green hover:scale-110 active:scale-95 transition-all duration-200 z-10 flex items-center justify-center p-2" (click)="togglePasswordVisibility()" [title]="showPassword ? 'Ocultar contraseña' : 'Ver contraseña'">
                 <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                   <circle cx="12" cy="12" r="3"></circle>
@@ -72,25 +71,23 @@
                 </svg>
               </button>
             </div>
-            <div class="input-line"></div>
           </div>
 
-          <button type="submit" class="submit-btn">
-            <span class="btn-text">Ingresar</span>
-            <!-- Icono minimalista de flecha (SVG inline) -->
-            <span class="btn-icon">
+          <button type="submit" class="w-full p-[12px_24px] bg-gradient-to-br from-[#368c44] to-[#2e7a3a] text-white border-none rounded-lg text-[0.95rem] font-normal cursor-pointer flex items-center justify-center gap-2 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] mt-2 shadow-[0_4px_12px_rgba(54,140,68,0.2)] relative overflow-hidden group hover:not-disabled:-translate-y-[2px] hover:not-disabled:shadow-[0_8px_20px_rgba(54,140,68,0.3)] hover:not-disabled:from-[#2e7a3a] hover:not-disabled:to-[#256830] active:translate-y-0 disabled:from-[#ddd] disabled:to-[#ccc] disabled:cursor-not-allowed disabled:shadow-none sm:p-[11px_16px] sm:text-[0.9rem]">
+            <span class="relative z-10">Ingresar</span>
+            <span class="inline-flex items-center transition-transform duration-300 group-hover:translate-x-[3px] scale-110 relative z-10">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"/>
                 <polyline points="12 5 19 12 12 19"/>
               </svg>
             </span>
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full transition-transform duration-700 ease-in-out group-hover:translate-x-full"></div>
           </button>
         </form>
 
-        <div class="form-footer">
-          <a routerLink="/productos" class="back-link">
-            <!-- Icono minimalista de flecha izquierda (SVG inline) -->
-            <span class="back-icon">
+        <div class="mt-6 text-center">
+          <a routerLink="/productos" class="inline-flex items-center gap-[6px] w-full p-[12px_24px] bg-transparent border border-[#e0e0e0] rounded-lg text-[#666] no-underline text-[0.95rem] font-normal transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] justify-center mt-2 group hover:bg-[#f5f5f5] hover:border-primary-green hover:text-primary-green sm:p-[11px_16px] sm:text-[0.9rem]">
+            <span class="inline-flex items-center transition-transform duration-300 group-hover:-translate-x-[3px]">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12"/>
                 <polyline points="12 19 5 12 12 5"/>
@@ -105,48 +102,23 @@
 </div>
 
 <!-- Modal de Error: Aparece cuando fallan las credenciales o los campos están vacíos -->
-<div class="login-modal-overlay" *ngIf="showErrorModal" (click)="closeErrorModal()">
-  <div class="login-modal-box" (click)="$event.stopPropagation()">
-    <div class="modal-icon-wrapper">
-      <div class="modal-icon-circle">
+<div class="fixed inset-0 w-full h-full bg-[#0f172a]/70 backdrop-blur-sm flex items-center justify-center z-[9999] animate-fadeInModal" *ngIf="showErrorModal" (click)="closeErrorModal()">
+  <div class="bg-white w-[90%] max-w-[380px] p-8 rounded-[28px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.3)] flex flex-col items-center text-center animate-modalSlideUp" (click)="$event.stopPropagation()">
+    <div class="mb-5">
+      <div class="w-16 h-16 bg-gradient-to-br from-[#ef4444] to-[#dc2626] rounded-full flex items-center justify-center shadow-[0_10px_15px_-3px_rgba(239,68,68,0.4)]">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </div>
     </div>
-    <div class="modal-main-content">
-      <h3 class="modal-headline">Atención</h3>
-      <p class="modal-description">{{ errorMsg }}</p>
+    <div class="mb-7">
+      <h3 class="text-[1.4rem] font-bold text-[#111827] mb-3">Atención</h3>
+      <p class="text-[0.95rem] text-[#4b5563] leading-relaxed m-0">{{ errorMsg }}</p>
     </div>
-    <div class="modal-action-area">
-      <button class="modal-confirm-btn" (click)="closeErrorModal()">Entendido</button>
+    <div class="w-full">
+      <button class="w-full p-3.5 bg-[#111827] text-white border-none rounded-[14px] font-semibold text-base cursor-pointer transition-all duration-200 hover:bg-black hover:-translate-y-[2px] hover:shadow-[0_4px_12px_rgba(0,0,0,0.2)]" (click)="closeErrorModal()">Entendido</button>
     </div>
   </div>
 </div>
-
-<style>
-.input-icon {
-  display: inline-flex;
-  align-items: center;
-  color: #6b7280; /* Color gris suave */
-  margin-right: 8px;
-}
-
-.btn-icon {
-  display: inline-flex;
-  align-items: center;
-  margin-left: 8px;
-  transition: transform 0.2s ease;
-}
-
-.submit-btn:hover .btn-icon {
-  transform: translateX(3px); /* Efecto sutil al pasar el cursor */
-}
-
-.back-icon {
-  display: inline-flex;
-  align-items: center;
-  margin-right: 6px;
-}
-</style>
+

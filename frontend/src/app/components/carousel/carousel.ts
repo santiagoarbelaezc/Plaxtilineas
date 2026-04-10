@@ -4,11 +4,12 @@ import { Router } from '@angular/router';
 import { ProductoEditable } from '../../models/producto.model';
 import { CategoriasService } from '../../services/categorias.service';
 import { ProductosService } from '../../services/productos.service';
+import { AddToCartBtnComponent } from '../../cart/add-to-cart-btn/add-to-cart-btn.component';
 
 @Component({
   selector: 'app-carousel',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AddToCartBtnComponent],
   templateUrl: './carousel.html',
   styleUrls: ['./carousel.css']
 })
@@ -337,15 +338,20 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.productos.length > this.itemsPerView && this.currentIndex > 0;
   }
   
-  // NUEVO MÉTODO: Redirigir a detalles del producto
+  // Navegar a la ruta /producto/{id-slug}
   verDetalles(productoId: number, nombre?: string): void {
-    console.log('Navegando a detalles del producto:', productoId);
-    
-    // Generar slug SEO
-    const slug = nombre ? nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '') : '';
-    const urlParam = slug ? `${productoId}-${slug}` : productoId;
-    
-    // Navegar a la ruta /producto/{id-slug}
+    const slug = this.getSlug(nombre);
+    const urlParam = slug ? `${productoId}-${slug}` : productoId.toString();
     this.router.navigate(['/producto', urlParam]);
+  }
+
+  getSlug(nombre?: string): string {
+    if (!nombre) return '';
+    return nombre.toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
   }
 }

@@ -5,6 +5,7 @@ import { MenuStateService } from '../../services/menu-state.service';
 
 @Component({
   selector: 'app-card',
+  standalone: true,
   imports: [RouterModule, CommonModule],
   templateUrl: './card.html',
   styleUrl: './card.css'

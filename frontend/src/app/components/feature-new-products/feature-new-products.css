@@ -205,7 +205,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 4px;
+  margin-top: 10px; /* Más aire */
+  padding-top: 12px;
+  border-top: 1px solid rgba(0,0,0,0.03); /* Separación sutil */
   gap: 12px;
 }
 
@@ -247,6 +249,11 @@
   z-index: 2;
   font-family: var(--font-primary);
   letter-spacing: 0.01em;
+}
+
+.cart-btn-wrapper {
+  flex: 0 0 110px; /* Reducido para el botón minimalista */
+  z-index: 2;
 }
 
 .product-btn:hover {

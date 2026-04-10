@@ -46,13 +46,13 @@
               <span class="price-amount">{{ formatearPrecio(producto.precio) }}</span>
             </div>
             
-            <button 
-              class="product-btn"
-              (click)="$event.stopPropagation()"
-            >
-              Ver
-              <span class="btn-icon">→</span>
-            </button>
+            <div class="cart-btn-wrapper" (click)="$event.stopPropagation()">
+              <app-add-to-cart-btn 
+                [producto]="producto" 
+                [cantidad]="1"
+                [isMinimal]="true">
+              </app-add-to-cart-btn>
+            </div>
           </div>
         </div>
       </div>

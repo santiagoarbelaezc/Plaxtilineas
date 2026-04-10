@@ -272,12 +272,19 @@
   letter-spacing: 0.01em;
 }
 
-/* Sección de precio - MÁS COMPACTA */
+/* Sección de precio y acción - MÁS ELEGANTE */
 .product-details-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0,0,0,0.03);
+}
+
+.product-action-section {
+  width: 100%;
+  margin-top: 2px;
 }
 
 .product-price-section {

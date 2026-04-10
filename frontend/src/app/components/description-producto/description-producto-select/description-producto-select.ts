@@ -11,11 +11,12 @@ import { VariantesService } from '../../../services/variantes.service';
 import { MenuStateService } from '../../../services/menu-state.service';
 import { CarouselSignalService } from '../../../services/carousel-signal.service';
 import { PrecioCantidadService } from '../../../services/precio-cantidad.service';
+import { AddToCartBtnComponent } from '../../../cart/add-to-cart-btn/add-to-cart-btn.component';
 
 @Component({
   selector: 'app-description-producto-select',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, AddToCartBtnComponent],
   templateUrl: './description-producto-select.html',
   styleUrls: ['./description-producto-select.css']
 })
@@ -46,6 +47,10 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   
   // Propiedad para el mensaje de enlace copiado
   enlaceCopiado = false;
+  
+  // Propiedad para el aviso periódico de carrito
+  mostrarAvisoNotificacion = false;
+  private intervalAviso: any;
   
   private subscriptions: Subscription[] = [];
 
@@ -90,10 +95,31 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
 
     // Restaurar historial
     this.productSelectService.restaurarHistorial();
+
+    // Iniciar el ciclo de avisos periódicos
+    this.iniciarCicloAvisos();
   }
 
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+    if (this.intervalAviso) {
+      clearInterval(this.intervalAviso);
+    }
+  }
+
+  private iniciarCicloAvisos() {
+    // Aparecer por primera vez a los 5 segundos
+    setTimeout(() => {
+      this.mostrarAvisoNotificacion = true;
+      // Desaparecer tras 4 segundos
+      setTimeout(() => this.mostrarAvisoNotificacion = false, 4000);
+    }, 5000);
+
+    // Repetir cada 12 segundos (4 visible + 8 oculto)
+    this.intervalAviso = setInterval(() => {
+      this.mostrarAvisoNotificacion = true;
+      setTimeout(() => this.mostrarAvisoNotificacion = false, 4000);
+    }, 12000);
   }
 
   private cargarProducto(id: number) {

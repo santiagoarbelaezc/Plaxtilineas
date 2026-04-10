@@ -9,7 +9,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  z-index: 1000;
+  z-index: 30;
   pointer-events: none;
 }
 
@@ -126,7 +126,7 @@
   backdrop-filter: blur(4px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   pointer-events: none;
-  z-index: 1001;
+  z-index: 31;
   animation: tooltip-fade 0.2s var(--transition-ease);
 }
 
@@ -196,7 +196,7 @@
   backdrop-filter: blur(4px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   cursor: pointer;
-  z-index: 1002;
+  z-index: 32;
   animation: help-message-fade 0.3s var(--transition-ease);
   display: flex;
   align-items: center;

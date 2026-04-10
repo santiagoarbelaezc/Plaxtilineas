@@ -63,7 +63,6 @@
                 [alt]="producto.nombre"
                 class="imagen"
                 loading="lazy">
-                <!-- Se eliminó el (error) que causaba el problema -->
             </div>
             
             <!-- Información del producto -->
@@ -79,6 +78,15 @@
                 <div class="price-value-area">
                   <span class="price-value">{{ formatearPrecio(producto.precio) }}</span>
                 </div>
+              </div>
+
+              <!-- Botón Añadir al Carrito (Premium) -->
+              <div class="mt-4" (click)="$event.stopPropagation()">
+                <app-add-to-cart-btn 
+                  [producto]="producto" 
+                  [cantidad]="1"
+                  [isMinimal]="true">
+                </app-add-to-cart-btn>
               </div>
             </div>
           </div>

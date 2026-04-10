@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* SOLUCIÓN SCROLLBAR - CRÍTICO */
 html {
   overflow-y: scroll !important;
