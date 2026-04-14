@@ -117,6 +117,9 @@ Próxima funcionalidad: se piensa añadir un carrito para que los usuarios pueda
 
 ---
 
+## **Rama Santiago se utiliza para convertir en el front en PWA**
+
+---
 ## 🚀 **Cómo ejecutar el proyecto**
 
 ### Backend
@@ -136,7 +139,7 @@ ng serve
 
 ---
 
-### **Rama Santiago se utiliza para convertir en el front en PWA**
+
 
 ---
 
