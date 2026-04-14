@@ -14,7 +14,7 @@
 ---
 
 ### **PENDIENTE PARA MIGRACIÓN DE HOSTINGER ANTIGUO A NUEVO HOSTINGER**
-Migracion completa
+
 
 ## 📋 **Descripción del Proyecto**
 
@@ -117,6 +117,9 @@ Próxima funcionalidad: se piensa añadir un carrito para que los usuarios pueda
 
 ---
 
+## **Rama Santiago se utiliza para convertir en el front en PWA**
+
+---
 ## 🚀 **Cómo ejecutar el proyecto**
 
 ### Backend
@@ -133,6 +136,10 @@ cd frontend
 npm install
 ng serve
 ```
+
+---
+
+
 
 ---
 
