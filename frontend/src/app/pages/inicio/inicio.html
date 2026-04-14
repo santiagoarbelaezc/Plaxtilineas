@@ -1,5 +1,134 @@
 <app-navbar></app-navbar>
-<app-header></app-header>
 
+<main class="home-main">
+  <!-- Hero Section -->
+  <app-header></app-header>
 
-<app-dynamic-background></app-dynamic-background>
+  <!-- Categorías Destacadas -->
+  <section class="home-section" id="categories">
+    <app-categorias-destacadas></app-categorias-destacadas>
+  </section>
+
+  <!-- Nosotros Inicio (Completo: Texto + Categorías) -->
+  <section class="home-section intro-nosotros" data-aos="fade-up" data-aos-duration="1000">
+    <app-nosotros-inicio></app-nosotros-inicio>
+  </section>
+
+  <!-- Showcase de Producto -->
+  <section class="home-section no-padding">
+    <app-card-container
+      [precio]="'$ 99.000'"
+      [nombreProducto]="'Pisos Vinílicos'"
+      [imagenProducto]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767225513/card1_ipfxoo.jpg'"
+      [categoriaNombre]="'Pisos'"
+      [bannerImagenUrl]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767297309/feature2-project_wypdpt.jpg'"
+      [bannerTitulo]="'Pisos'"
+      [bannerDescripcion]="'Pisos Vinílicos Plaxtilíneas. La combinación ideal entre diseño, resistencia y funcionalidad para hogares y espacios comerciales.'"
+      [bannerAltText]="'Banner de pisos vinílicos'"
+      [promoTitulo]="'ENVIOS A PARTIR DE $70.000'"
+      [promoDescripcion]="'Ventas por mas de $70.000 envíos gratis a todo el Quindio'"
+      [promoImagen]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1768884810/envio3_qatfoe.jpg'"
+      [promoLogoUrl]="''"
+      [linkUrl]="['/productos']"
+      [promoQueryParams]="{ }"
+      [cardLinkUrl]="['/productos']"
+      [cardQueryParams]="{ subcategoria_id: 10 }">
+    </app-card-container>
+  </section>
+
+  <!-- Grilla de Productos 1 -->
+  <section class="home-section">
+    <div class="container">
+      <app-util-grid-producto></app-util-grid-producto>
+    </div>
+  </section>
+
+  <!-- Full Banner 1 -->
+  <div class="full-banner-container">
+    <app-full-banner
+      [imageUrl]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1768846772/banner2-project23_eqph6v.jpg'"
+      [description]="'Optimiza tu producción con nuestras soluciones especializadas'"
+      [vPosition]="'top'"
+      [hPosition]="'left'"
+      [linkUrl]="'/productos?subcategoria_id=13'"
+      [subcategoriaId]="13">
+    </app-full-banner>
+  </div>
+
+  <!-- Carrusel de Banners -->
+  <section class="home-section full-width">
+    <app-plaxti-banner
+      [images]="bannerImages"
+      [height]="'600px'"
+      [hoverScale]="1.05"
+      [minScale]="0.95">
+    </app-plaxti-banner>
+  </section>
+
+  <!-- Nuevos Productos -->
+  <section class="home-section">
+    <app-feature-new-products></app-feature-new-products>
+  </section>
+
+  <!-- Full Banner 2 -->
+  <div class="full-banner-container">
+    <app-full-banner
+      [imageUrl]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1768343765/banner3-project_guqon6.png'"
+      [description]="'Lonas de cerramiento y protección de alta resistencia, ideales para aplicaciones industriales.'"
+      [vPosition]="'top'"
+      [hPosition]="'left'"
+      [linkUrl]="'/productos?subcategoria_id=11'"
+      [subcategoriaId]="11">
+    </app-full-banner>
+  </div>
+
+  <!-- Showcase Yumbolon -->
+  <section class="home-section no-padding">
+    <app-card-container
+      [precio]="'$ 99.000'"
+      [nombreProducto]="'YUMBOLON - THERMOLON'"
+      [imagenProducto]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767412446/card-template3_iwmedg.jpg'"
+      [categoriaNombre]="'Yumbolon'"
+      [bannerImagenUrl]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767412449/feature5-project_zhqhxr.jpg'"
+      [bannerTitulo]="'Yumbolon - Thermolon'"
+      [bannerDescripcion]="'Material para aislamiento térmico ideal para obras, techos en PVC y aislamiento acústico.'"
+      [bannerAltText]="'Banner de Yumbolon - Thermolon'"
+      [promoTitulo]="'ENVIOS A PARTIR DE $70.000'"
+      [promoDescripcion]="'Ventas por mas de $70.000 envíos gratis a todo el Quindio'"
+      [promoImagen]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1768884810/envio3_qatfoe.jpg'"
+      [promoLogoUrl]="''"
+      [linkUrl]="['/productos']"
+      [promoQueryParams]="{ subcategoria_id: 19 }"
+      [cardLinkUrl]="['/productos']"
+      [cardQueryParams]="{ subcategoria_id: 12 }">
+    </app-card-container>
+  </section>
+
+  <!-- Grilla de Productos 2 -->
+  <section class="home-section">
+    <app-util-grid-producto-other></app-util-grid-producto-other>
+  </section>
+
+  <!-- Trio Presentation Servicios -->
+  <section class="home-section">
+    <app-plaxti-trio-presentation
+      [cards]="serviciosCards"
+      [showHeader]="true"
+      [headerTitle]="'Nuestros Servicios'"
+      [headerSubtitle]="'Soluciones integrales diseñadas para impulsar el crecimiento de tu empresa'"
+      [backgroundColor]="'transparent'"
+      [cardHeight]="'450px'"
+      [gap]="'30px'"
+      [hoverEffect]="true"
+      [layout]="'alternate'">
+    </app-plaxti-trio-presentation>
+  </section>
+
+  <!-- Ubicación y Partners -->
+  <div class="footer-stack">
+    <app-long-map></app-long-map>
+    <app-social-buttons></app-social-buttons>
+    <app-partners></app-partners>
+    <app-footer></app-footer>
+  </div>
+</main>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
+import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AosService } from './services/aos.service';
 import { ScrollService } from './services/scroll.service';
@@ -7,6 +8,7 @@ import { SeoService } from './services/seo.service';
 import { NavbarComponent } from "./components/navbar/navbar.component";
 import { CommonModule } from '@angular/common';
 import { CartDrawerComponent } from './cart/cart-drawer/cart-drawer.component';
+import { PwaService } from './services/pwa.service';
 
 @Component({
   selector: 'app-root',
@@ -21,13 +23,20 @@ import { CartDrawerComponent } from './cart/cart-drawer/cart-drawer.component';
 })
 export class AppComponent implements OnInit {
   title = 'Plaxtilineas';
+  
+  canInstall$: Observable<boolean>;
+  isIos$: Observable<boolean>;
 
   constructor(
     private aosService: AosService,
     private scrollService: ScrollService,
     private router: Router,
-    private seoService: SeoService
-  ) {}
+    private seoService: SeoService,
+    private pwaService: PwaService
+  ) {
+    this.canInstall$ = this.pwaService.canInstall$;
+    this.isIos$ = this.pwaService.isIos$;
+  }
 
   ngOnInit() {
     console.log('🚀 AppComponent inicializado');
@@ -55,5 +64,9 @@ export class AppComponent implements OnInit {
         console.log('🔄 AOS refrescado');
       }, 100);
     });
+  }
+
+  installPwa(): void {
+    this.pwaService.installPwa();
   }
 }

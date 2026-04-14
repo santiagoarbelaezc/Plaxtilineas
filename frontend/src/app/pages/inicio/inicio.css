@@ -1,1 +1,152 @@
-/* Se trasladaron los estilos de .seccion-nosotros a dynamic-background.css */
+/* ==========================================================================
+   HOME PAGE (INICIO) - STYLES REFACTOR
+   ========================================================================== */
+
+:host {
+  display: block;
+  background-color: #FFFFFF;
+}
+
+.home-main {
+  overflow-x: hidden;
+  background-color: #FFFFFF;
+}
+
+/* --- Section Layout --- */
+.home-section {
+  padding: 80px 0;
+  position: relative;
+  width: 100%;
+}
+
+.home-section.no-padding {
+  padding: 0;
+}
+
+.home-section.full-width {
+  padding: 40px 0;
+}
+
+/* --- Containers --- */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.container-narrow {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* --- Typography & Headers --- */
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #1a202c;
+  text-align: center;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: #4a5568;
+  text-align: center;
+  margin-bottom: 3rem;
+  font-weight: 400;
+}
+
+/* --- Intro/Nosotros Refinement --- */
+.intro-nosotros {
+  padding-top: 0;
+  background-color: #fdfdfd;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.nosotros-content-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+}
+
+.nosotros-content-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 60px rgba(54, 140, 68, 0.08);
+  border-color: rgba(54, 140, 68, 0.2);
+}
+
+.valor-descripcion {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: #4a5568;
+  margin-bottom: 0;
+}
+
+.valor-descripcion strong {
+  color: #368C44;
+}
+
+/* --- Full Banners --- */
+.full-banner-container {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 20px 0;
+}
+
+/* --- Footer Stack --- */
+.footer-stack {
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+/* AOS Tweaks */
+[data-aos] {
+  pointer-events: none;
+}
+.aos-animate {
+  pointer-events: auto;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .home-section {
+    padding: 60px 0;
+  }
+  .section-title {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-section {
+    padding: 40px 0;
+  }
+  .section-title {
+    font-size: 1.75rem;
+  }
+  .nosotros-content-card {
+    padding: 30px 20px;
+  }
+  .valor-descripcion {
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.5rem;
+  }
+  .section-subtitle {
+    font-size: 0.95rem;
+  }
+}

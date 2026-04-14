@@ -644,8 +644,10 @@
     position: relative;
     overflow: hidden;
     color: #23272f;
-    justify-content: flex-start;
-    text-align: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     border-bottom: none;
   }
 
@@ -662,13 +664,12 @@
     color: var(--primary-green);
     box-shadow: 0 3px 14px rgba(54, 140, 68, 0.15), inset 0 1px 0 rgba(255,255,255,0.5);
     border-left: none;
-    padding-left: 20px;
   }
 
   .nav-link:hover {
     background: rgba(54, 140, 68, 0.07);
     color: var(--primary-green);
-    transform: translateX(4px);
+    transform: none;
     box-shadow: none;
   }
 
@@ -676,8 +677,10 @@
     padding: 18px 28px;
     gap: 12px;
     color: #1a242f;
-    text-align: center;
+    display: flex;
     justify-content: center;
+    align-items: center;
+    text-align: center;
     border-bottom: 1px solid var(--border-color);
   }
 
@@ -699,8 +702,10 @@
 
   .location-link {
     padding: 18px 28px;
-    text-align: center;
+    display: flex;
     justify-content: center;
+    align-items: center;
+    text-align: center;
     border-bottom: 1px solid var(--border-color);
   }
 
@@ -738,6 +743,7 @@
     background: linear-gradient(135deg, var(--primary-green), var(--whatsapp-green));
     box-shadow: 0 6px 20px rgba(54, 140, 68, 0.3);
   }
+
 }
 
 /* ===== MÓVILES PEQUEÑOS ===== */
