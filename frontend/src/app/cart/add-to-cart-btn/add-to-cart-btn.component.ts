@@ -16,8 +16,8 @@ import { Variante } from '../../models/variante.model';
       </button>
     } @else {
       <button [class]="getButtonClasses(true)">
-        <svg xmlns="http://www.w3.org/2000/svg" [attr.width]="getIconSize()" [attr.height]="getIconSize()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        ¡Agregado!
+        <svg xmlns="http://www.w3.org/2000/svg" [attr.width]="getIconSize()" [attr.height]="getIconSize()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg>
+        ¡En Desarrollo!
       </button>
     }
   `
@@ -93,12 +93,22 @@ export class AddToCartBtnComponent {
   addToCart() {
     if (!this.producto) return;
     
-    this.cartService.addToCart(this.producto, this.cantidad, this.variante);
+    // Activa la notificación visual de 'En Desarrollo'
     this.isAdded = true;
     
-    // Reset state after 2 seconds
+    // Preparar redirección a WhatsApp provisionalmente
+    const numeroWhatsApp = '573006680125';
+    let itemName = this.producto.nombre;
+    if (this.variante) {
+      itemName += ` - ${this.variante.nombre}`;
+    }
+    const mensaje = `Hola Plaxtilineas, me interesa adquirir ${this.cantidad} unidad(es) de: ${itemName}`;
+    const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+    
+    // Esperar el aviso visual y redirigir
     setTimeout(() => {
+      window.open(url, '_blank');
       this.isAdded = false;
-    }, 2000);
+    }, 1500);
   }
 }

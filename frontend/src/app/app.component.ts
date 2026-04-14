@@ -3,6 +3,7 @@ import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AosService } from './services/aos.service';
 import { ScrollService } from './services/scroll.service';
+import { SeoService } from './services/seo.service';
 import { NavbarComponent } from "./components/navbar/navbar.component";
 import { CommonModule } from '@angular/common';
 import { CartDrawerComponent } from './cart/cart-drawer/cart-drawer.component';
@@ -24,11 +25,15 @@ export class AppComponent implements OnInit {
   constructor(
     private aosService: AosService,
     private scrollService: ScrollService,
-    private router: Router
+    private router: Router,
+    private seoService: SeoService
   ) {}
 
   ngOnInit() {
     console.log('🚀 AppComponent inicializado');
+    
+    // Inicializar SEO por defecto
+    this.seoService.setDefaultSeo();
     
     // Inicializar AOS
     this.aosService.init();

@@ -1,0 +1,20 @@
+# Robots.txt para Plaxtilineas Armstrong
+
+User-agent: *
+Allow: /
+Disallow: /node_modules/
+Disallow: /.env
+Disallow: /*.map
+Disallow: /admin/
+Disallow: /private/
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+Crawl-delay: 1
+
+Sitemap: https://plaxtilineas.com/sitemap.xml
+Sitemap: https://plaxtilineas.com/sitemap-productos.xml
