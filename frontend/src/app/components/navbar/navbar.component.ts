@@ -6,7 +6,7 @@ import { faKey, faSearch, faTimes, faHome, faUsers, faMapMarkerAlt } from '@fort
 import { FormsModule } from '@angular/forms';
 import { AosService } from '../../services/aos.service';
 import { Router, NavigationEnd } from '@angular/router';
-import { filter, takeUntil, Subject } from 'rxjs';
+import { filter, takeUntil, Subject, throttleTime } from 'rxjs';
 import { SearchStateService } from '../../services/search-state.service';
 import { MenuStateService } from '../../services/menu-state.service';
 import { MenuDropdown } from './menu-dropdown/menu-dropdown';
@@ -32,6 +32,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   isSearchRoute: boolean = false;
 
   private destroy$ = new Subject<void>();
+  private scrollSubject = new Subject<void>();
 
   constructor(
     library: FaIconLibrary,
@@ -47,12 +48,21 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.calculateLinkPositions();
     this.setupRouterListener();
     this.setupSearchStateListener();
+    this.setupScrollListener();
+  }
+
+  private setupScrollListener(): void {
+    this.scrollSubject.pipe(
+      throttleTime(100, undefined, { leading: true, trailing: true }),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.updateActiveLinkBasedOnScroll();
+    });
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.aosService.refresh();
-    }, 100);
+    // Eliminamos el refresh automático de AOS para mejorar la carga inicial
+    // Solo se refrescará si es estrictamente necesario
   }
 
   ngOnDestroy(): void {
@@ -109,9 +119,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   closeMenu(): void {
     this.menuAbierto = false;
     document.body.style.overflow = 'auto';
-    setTimeout(() => {
-      this.aosService.refresh();
-    }, 300);
+    // Eliminamos el refresh de AOS al cerrar el menú para evitar jank
   }
 
   private calculateLinkPositions(): void {
@@ -191,7 +199,7 @@ navigateToSearch(term: string): void {
 
   @HostListener('window:scroll')
   onScroll(): void {
-    this.updateActiveLinkBasedOnScroll();
+    this.scrollSubject.next();
   }
 
   private updateActiveLinkBasedOnScroll(): void {

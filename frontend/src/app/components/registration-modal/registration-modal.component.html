@@ -1,0 +1,68 @@
+<div *ngIf="isVisible" class="modal-overlay" [@fadeInOut] (click)="closeModal()">
+  <div class="modal-container" [@slideUpIn] (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="brand-logo">
+        <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Plaxtilineas Logo" class="logo-img">
+      </div>
+      <button (click)="closeModal()" class="btn-close" aria-label="Cerrar">
+        <fa-icon [icon]="['fas', 'times']"></fa-icon>
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="modal-body">
+      <h2 class="modal-title">¡Bienvenido a Plaxtilineas!</h2>
+      <p class="modal-description">
+        Regístrate para recibir nuestras últimas promociones y novedades directamente en tu celular.
+      </p>
+
+      <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="registration-form">
+        <!-- Full Name -->
+        <div class="form-group">
+          <label for="fullName">Nombre y apellidos</label>
+          <div class="input-container" [class.error]="registrationForm.get('fullName')?.invalid && registrationForm.get('fullName')?.touched">
+            <fa-icon [icon]="['fas', 'user']" class="input-icon"></fa-icon>
+            <input 
+              type="text" 
+              id="fullName" 
+              formControlName="fullName" 
+              placeholder="Ej. Juan Pérez"
+              autocomplete="name">
+          </div>
+          <small *ngIf="registrationForm.get('fullName')?.invalid && registrationForm.get('fullName')?.touched" class="error-text">
+            Ingresa tu nombre completo.
+          </small>
+        </div>
+
+        <!-- Phone -->
+        <div class="form-group">
+          <label for="phone">Teléfono</label>
+          <div class="input-container" [class.error]="registrationForm.get('phone')?.invalid && registrationForm.get('phone')?.touched">
+            <fa-icon [icon]="['fas', 'phone']" class="input-icon"></fa-icon>
+            <input 
+              type="tel" 
+              id="phone" 
+              formControlName="phone" 
+              placeholder="Ej. 300 123 4567"
+              autocomplete="tel">
+          </div>
+          <small *ngIf="registrationForm.get('phone')?.invalid && registrationForm.get('phone')?.touched" class="error-text">
+            Ingresa un número de teléfono válido.
+          </small>
+        </div>
+
+        <button type="submit" [disabled]="isSubmitting" class="btn-submit">
+          <span *ngIf="!isSubmitting">Registrarme ahora</span>
+          <span *ngIf="isSubmitting" class="loading-spinner"></span>
+          <fa-icon *ngIf="!isSubmitting" [icon]="['fas', 'paper-plane']" class="submit-icon"></fa-icon>
+        </button>
+      </form>
+    </div>
+
+    <!-- Footer decoration -->
+    <div class="modal-footer">
+      <p>Tus datos están seguros con nosotros.</p>
+    </div>
+  </div>
+</div>

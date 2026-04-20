@@ -1,0 +1,209 @@
+/* Overlay styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end; /* Mobile focus: slides from bottom */
+  justify-content: center;
+}
+
+/* Modal Container */
+.modal-container {
+  width: 100%;
+  max-width: 500px;
+  background: #ffffff;
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Header & Close Button */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.logo-img {
+  height: 50px;
+  width: auto;
+}
+
+.btn-close {
+  background: #f3f4f6;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-close:active {
+  transform: scale(0.9);
+  background: #e5e7eb;
+}
+
+/* Title & Description */
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.modal-description {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+/* Form Styling */
+.registration-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+  margin-left: 4px;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  background: #f9fafb;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0 16px;
+  transition: all 0.3s ease;
+}
+
+.input-container:focus-within {
+  border-color: #368C44;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(54, 140, 68, 0.1);
+}
+
+.input-container.error {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.input-icon {
+  color: #9ca3af;
+  margin-right: 12px;
+  font-size: 1rem;
+}
+
+.input-container:focus-within .input-icon {
+  color: #368C44;
+}
+
+input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  padding: 14px 0;
+  font-size: 1rem;
+  color: #1f2937;
+  outline: none;
+}
+
+input::placeholder {
+  color: #9ca3af;
+}
+
+.error-text {
+  font-size: 0.75rem;
+  color: #ef4444;
+  margin-top: 2px;
+  margin-left: 4px;
+}
+
+/* Submit Button */
+.btn-submit {
+  background: linear-gradient(90deg, #368C44, #25D366);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(54, 140, 68, 0.3);
+}
+
+.btn-submit:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 8px rgba(54, 140, 68, 0.2);
+}
+
+.btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.submit-icon {
+  font-size: 0.9rem;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Footer Decoration */
+.modal-footer {
+  margin-top: 24px;
+  text-align: center;
+  border-top: 1px solid #f3f4f6;
+  padding-top: 16px;
+}
+
+.modal-footer p {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+/* Animation triggers handled by Angular animations in TS */

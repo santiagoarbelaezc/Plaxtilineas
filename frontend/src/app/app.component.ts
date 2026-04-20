@@ -9,6 +9,8 @@ import { NavbarComponent } from "./components/navbar/navbar.component";
 import { CommonModule } from '@angular/common';
 import { CartDrawerComponent } from './cart/cart-drawer/cart-drawer.component';
 import { PwaService } from './services/pwa.service';
+import { RegistrationModalComponent } from './components/registration-modal/registration-modal.component';
+
 
 @Component({
   selector: 'app-root',
@@ -16,8 +18,10 @@ import { PwaService } from './services/pwa.service';
   imports: [
     CommonModule, // Necesario para directivas como *ngIf, *ngFor
     RouterModule,
-    CartDrawerComponent
+    CartDrawerComponent,
+    RegistrationModalComponent
   ],
+
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
