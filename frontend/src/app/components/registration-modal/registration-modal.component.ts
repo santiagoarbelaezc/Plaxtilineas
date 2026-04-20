@@ -55,15 +55,10 @@ export class RegistrationModalComponent implements OnInit {
   }
 
   private checkAndShowModal(): void {
-    const isMobile = window.innerWidth < 768;
-    const hasBeenShown = localStorage.getItem('registrationModalShown');
-
-    if (isMobile && !hasBeenShown) {
-      // Delay slightly for better UX (let the app load first)
-      setTimeout(() => {
-        this.isVisible = true;
-      }, 1500);
-    }
+    // Se muestra siempre al recargar, sin importar si es móvil o si ya se mostró antes
+    setTimeout(() => {
+      this.isVisible = true;
+    }, 1500);
   }
 
   closeModal(): void {
