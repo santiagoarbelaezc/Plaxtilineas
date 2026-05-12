@@ -1,73 +1,31 @@
-<div class="card-container" 
+<div class="promo-card" 
      [routerLink]="linkUrl"
      [queryParams]="queryParams"
      (click)="onNavigate()"
-     *ngIf="tieneNavegacion()"
-     [style.cursor]="'pointer'">
-  <!-- Logo superpuesto en la parte superior (opcional) -->
-  <div *ngIf="logoUrl" class="logo-section">
-    <img [src]="logoUrl" alt="Logo" class="logo" />
-  </div>
-
-  <!-- Imagen de fondo -->
-  <div class="product-image-section">
-    <img 
-      [src]="imagen" 
-      [alt]="titulo" 
-      class="product-image"
-      
-    />
-  </div>
-
-  <!-- Sección de información -->
-  <div class="product-info-section" 
-       [class.transparent-section]="shouldBeTransparent()">
-    <div class="green-container">
-      <!-- Contenido promocional -->
-      <div class="promo-content">
-        <div class="promo-title">{{ titulo }}</div>
-        <div class="promo-description">{{ descripcion }}</div>
-        <button 
-          class="promo-button"
-          (click)="$event.preventDefault()">
-          COMPRA AHORA
-        </button>
-      </div>
+     [style.cursor]="tieneNavegacion() ? 'pointer' : 'default'">
+  
+  <!-- Media Layer -->
+  <div class="card-media">
+    <img [src]="imagen" [alt]="titulo" class="promo-image">
+    <div class="media-overlay"></div>
+    
+    <!-- Optional Logo -->
+    <div *ngIf="logoUrl" class="brand-logo">
+      <img [src]="logoUrl" alt="Brand Logo">
     </div>
   </div>
-</div>
 
-<!-- Contenedor sin navegación -->
-<div class="card-container" 
-     *ngIf="!tieneNavegacion()">
-  <!-- Logo superpuesto en la parte superior (opcional) -->
-  <div *ngIf="logoUrl" class="logo-section">
-    <img [src]="logoUrl" alt="Logo" class="logo" />
-  </div>
-
-  <!-- Imagen de fondo -->
-  <div class="product-image-section">
-    <img 
-      [src]="imagen" 
-      [alt]="titulo" 
-      class="product-image"
+  <!-- Content Layer -->
+  <div class="card-body" [class.no-content]="shouldBeTransparent()">
+    <div class="info-box">
+      <div class="badge">Oferta Especial</div>
+      <h3 class="promo-title">{{ titulo }}</h3>
+      <p class="promo-description">{{ descripcion }}</p>
       
-    />
-  </div>
-
-  <!-- Sección de información -->
-  <div class="product-info-section" 
-       [class.transparent-section]="shouldBeTransparent()">
-    <div class="green-container">
-      <!-- Contenido promocional -->
-      <div class="promo-content">
-        <div class="promo-title">{{ titulo }}</div>
-        <div class="promo-description">{{ descripcion }}</div>
-        <button 
-          class="promo-button">
-          COMPRA AHORA
-        </button>
-      </div>
+      <button class="cta-button">
+        Explorar Ahora
+        <fa-icon [icon]="['fas', 'chevron-right']"></fa-icon>
+      </button>
     </div>
   </div>
 </div>

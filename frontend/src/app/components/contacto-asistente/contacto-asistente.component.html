@@ -1,38 +1,69 @@
-<section class="asistente" aria-labelledby="asistente-titulo">
-  <div class="main-container">
-    
-    <!-- Ventana simulada de WhatsApp -->
-    <article class="whatsapp-window" role="region" aria-label="Chat de atención al cliente">
-      <header class="whatsapp-header">
-        <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766542007/logo_rmslxj.png" alt="Logo de PlaxtiLineas" class="whatsapp-logo">
-        <div class="whatsapp-info">
-          <strong class="whatsapp-company">PlaxtiLineas</strong>
-          <small class="whatsapp-status">Responde rápidamente</small>
+<div class="chat-overlay" (click)="onClose()">
+  <div class="chat-window" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <header class="chat-header">
+      <div class="assistant-info">
+        <div class="avatar-container">
+          <img src="assets/images/mateo5.png" alt="Mateo" class="header-avatar">
+          <span class="status-dot"></span>
         </div>
-      </header>
+        <div class="text-info">
+          <h3>Mateo</h3>
+          <span>Asistente IA • Online</span>
+        </div>
+      </div>
+      <button class="close-btn" (click)="onClose()" aria-label="Cerrar chat">×</button>
+    </header>
+
+    <!-- Messages Area -->
+    <div class="chat-messages" #scrollMe>
       
-      <div class="whatsapp-body">
-        <div class="bubble assistant">
-          ¡Hola! 👋<br>
-          ¿En qué podemos ayudarte hoy?
+      <!-- Welcome Hero Section -->
+      <div class="welcome-hero">
+        <img src="assets/images/mateo5.png" alt="Mateo Asistente" class="large-mateo">
+        <div class="welcome-text">
+          <h2>Hola, Soy <span>Mateo</span></h2>
+          <p>
+            Tu asistente personal de Plaxtilineas.<br>
+            ¿Qué buscas? ¿Qué producto necesitas?<br>
+            <strong>¡Yo te ayudo!</strong>
+          </p>
         </div>
       </div>
 
-      <!-- Botón de acción dentro del simulador -->
-      <a href="https://wa.me/+573006680125?text=Hola, necesito ayuda"
-         target="_blank"
-         rel="noopener noreferrer nofollow"
-         class="whatsapp-chat-button"
-         aria-label="Iniciar chat de WhatsApp con PlaxtiLineas"
-         title="Chatea directamente con PlaxtiLineas por WhatsApp">
-        Chatea en WhatsApp
-      </a>
-    </article>
+      <!-- Messages Loop -->
+      <div *ngFor="let msg of messages" [class]="'message-wrapper ' + msg.sender">
+        <div class="message-bubble">
+          {{ msg.text }}
+          <span class="message-time">{{ msg.timestamp | date:'HH:mm' }}</span>
+        </div>
+      </div>
 
-    <!-- Título a la derecha -->
-    <div class="titulo-derecha">
-      <h2 id="asistente-titulo">¿Necesitas ayuda?</h2>
+      <!-- Typing Indicator -->
+      <div class="message-wrapper assistant" *ngIf="isTyping">
+        <div class="message-bubble typing">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </div>
     </div>
 
+    <!-- Input Area -->
+    <footer class="chat-footer">
+      <form (ngSubmit)="sendMessage()" class="input-form">
+        <input 
+          type="text" 
+          [(ngModel)]="newMessage" 
+          name="message" 
+          placeholder="Escribe tu mensaje aquí..."
+          autocomplete="off">
+        <button type="submit" [disabled]="!newMessage.trim()" class="send-btn">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+          </svg>
+        </button>
+      </form>
+    </footer>
   </div>
-</section>
+</div>

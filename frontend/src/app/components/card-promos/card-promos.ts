@@ -1,11 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { MenuStateService } from '../../services/menu-state.service';
 
 @Component({
   selector: 'app-card-promos',
-  imports: [CommonModule, RouterModule],
+  standalone: true,
+  imports: [CommonModule, RouterModule, FontAwesomeModule],
   templateUrl: './card-promos.html',
   styleUrls: ['./card-promos.css']
 })
@@ -17,7 +20,9 @@ export class CardPromos {
   @Input() linkUrl: string[] = [];
   @Input() queryParams: any = {};
 
-  constructor(private menuStateService: MenuStateService) {}
+  constructor(private menuStateService: MenuStateService, library: FaIconLibrary) {
+    library.addIcons(faChevronRight);
+  }
 
   shouldBeTransparent(): boolean {
     // Verifica si descripción Y logo están vacíos (imagen puede tener valor)

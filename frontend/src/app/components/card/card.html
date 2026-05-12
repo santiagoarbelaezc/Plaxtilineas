@@ -1,62 +1,22 @@
-<div class="card-container" 
-     [routerLink]="linkUrl"
+<div class="product-card" 
+     [routerLink]="linkUrl" 
      [queryParams]="queryParams"
      (click)="onNavigate()"
-     *ngIf="tieneNavegacion()"
-     [style.cursor]="'pointer'">
-  <!-- Logo de la empresa en la parte superior -->
-  <div class="logo-section">
-    <img [src]="logoUrl" alt="Logo de la empresa" class="logo">
+     [style.cursor]="tieneNavegacion() ? 'pointer' : 'default'">
+  
+  <div class="image-area">
+    <img [src]="imagenProducto" [alt]="nombreProducto" class="product-img">
+    <div class="card-glow"></div>
   </div>
 
-  <!-- Espacio para la imagen del producto (centro) -->
-  <div class="product-image-section">
-    <!-- Imagen del producto -->
-    <img 
-      [src]="imagenProducto" 
-      [alt]="nombreProducto" 
-      class="product-image"
-      (error)="handleImageError($event)">
-  </div>
-
-  <!-- Contenedor verde con información del producto -->
-  <div class="product-info-section">
-    <!-- Contenedor verde principal -->
-    <div class="green-container">
-      <!-- Contenedor blanco pequeño para el nombre del producto -->
-      <div class="white-container">
-        <span class="product-name">{{ nombreProducto }}</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Contenedor sin navegación -->
-<div class="card-container" 
-     *ngIf="!tieneNavegacion()">
-  <!-- Logo de la empresa en la parte superior -->
-  <div class="logo-section">
-    <img [src]="logoUrl" alt="Logo de la empresa" class="logo">
-  </div>
-
-  <!-- Espacio para la imagen del producto (centro) -->
-  <div class="product-image-section">
-    <!-- Imagen del producto -->
-    <img 
-      [src]="imagenProducto" 
-      [alt]="nombreProducto" 
-      class="product-image"
-      (error)="handleImageError($event)">
-  </div>
-
-  <!-- Contenedor verde con información del producto -->
-  <div class="product-info-section">
-    <!-- Contenedor verde principal -->
-    <div class="green-container">
-      <!-- Contenedor blanco pequeño para el nombre del producto -->
-      <div class="white-container">
-        <span class="product-name">{{ nombreProducto }}</span>
-      </div>
-    </div>
+  <div class="details-area">
+    <span class="category-label">Producto Destacado</span>
+    <h4 class="product-name">{{ nombreProducto }}</h4>
+    <div class="price-tag">{{ precio }}</div>
+    
+    <button class="view-btn">
+      Ver Detalles
+      <fa-icon [icon]="['fas', 'arrow-right']"></fa-icon>
+    </button>
   </div>
 </div>

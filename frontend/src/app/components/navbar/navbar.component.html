@@ -1,175 +1,149 @@
-<!-- Navbar reorganizado y mejorado -->
-<div class="head" id="mainNavbar">
-  <!-- Logo con animación mejorada -->
-  <div class="logo">
-    <a routerLink="/" aria-label="Ir a la página de inicio" class="logo-link">
-      <!-- Logo comprimido (Solo P) -->
-      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1768337110/logo-cut2_frbqja.png" alt="Logo de PlaxtiLineas" class="logo-img logo-compact" />
-      <!-- Logo completo (Plaxtilineas) -->
-      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Logo de PlaxtiLineas" class="logo-img logo-full" />
-    </a>
-  </div>
-
-  <!-- Barra de información gris -->
-  <div class="info-bar">
-    <div class="info-content">
-      <a routerLink="/productos" class="info-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-        </svg>
-        <span class="info-text">Compra ahora</span>
-        <span class="info-desc">Todo lo que necesitas para tus proyectos</span>
-      </a>
-      
-      <a href="https://www.google.com/maps/dir/?api=1&destination=Cra.19+%23+19-35+Armenia+Quindio" 
-         target="_blank" 
-         rel="noopener noreferrer" 
-         class="info-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
-        </svg>
-        <span class="info-text">Localiza la tienda</span>
-        <span class="info-desc">Cra. 19 #19-35, Armenia, Quindío</span>
-      </a>
-      
-      <div class="info-item highlight">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M8.5 5.6a.5.5 0 1 0-1 0v2.9h-3a.5.5 0 0 0 0 1H8a.5.5 0 0 0 .5-.5V5.6z"/>
-          <path d="M6.5 1A.5.5 0 0 1 7 .5h2a.5.5 0 0 1 0 1v.57c1.36.196 2.594.78 3.584 1.64l.456-.328a.5.5 0 1 1 .576.788l-.408.293c.182.27.354.567.516.875l.548-.328a.5.5 0 1 1 .548.838l-.293.176c.437.696.645 1.47.645 2.294 0 2.697-2.261 4.891-5 4.891-2.739 0-5-2.194-5-4.891 0-1.516.709-2.898 1.839-3.663.205-.149.323-.382.323-.627a.5.5 0 0 1 .5-.5c.223 0 .434.053.63.146a4.393 4.393 0 0 1 1.71-.614V1.5a.5.5 0 0 1 .5-.5zM5 6.5c0 .763.192 1.468.5 2.044V6.5a.5.5 0 0 1 1 0v2.044c.308-.576.5-1.281.5-2.044a.5.5 0 0 1 1 0c0 .763.192 1.468.5 2.044V6.5a.5.5 0 0 1 1 0v2.044c.308-.576.5-1.281.5-2.044 0-2.137-1.128-3.848-2.5-4.356v2.115a.5.5 0 0 1-1 0V2.144C6.128 2.652 5 4.363 5 6.5z"/>
-        </svg>
-        <span class="info-text">Encuentra soluciones</span>
-        <span class="info-desc">Para tu hogar y proyectos profesionales</span>
+<header class="main-header" [class.scrolled]="isScrolled">
+  <!-- Top Bar (Información) -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-content">
+        <div class="info-group">
+          <a routerLink="/productos" class="top-info-item">
+            <fa-icon [icon]="['fas', 'shopping-bag']"></fa-icon>
+            <span>Compra ahora lo mejor en plásticos</span>
+          </a>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=Cra.19+%23+19-35+Armenia+Quindio" target="_blank" class="top-info-item">
+            <fa-icon [icon]="['fas', 'map-marker-alt']"></fa-icon>
+            <span>Cra. 19 #19-35, Armenia</span>
+          </a>
+        </div>
+        <div class="info-group hide-mobile">
+          <div class="top-info-item">
+            <fa-icon [icon]="['fas', 'clock']"></fa-icon>
+            <span>Lunes - Sábado: 8:00 AM - 6:00 PM</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Buscador mejorado y centralizado -->
-  <div class="search-container">
-    <form class="search-form" (ngSubmit)="onSearch()">
-      <div class="search-input-wrapper">
-        <fa-icon [icon]="['fas', 'search']" class="search-icon"></fa-icon>
-        <input 
-          type="text" 
-          class="search-input" 
-          [(ngModel)]="searchQuery"
-          name="searchQuery"
-          placeholder="¿Qué estás buscando?"
-          aria-label="Buscar productos"
-          (keydown)="onSearchKeydown($event)"  
-          (focus)="onSearchFocus()"
-          (blur)="onSearchBlur()"
-        >
-        <button 
-          type="button" 
-          class="search-clear" 
-          *ngIf="searchQuery"
-          (click)="clearSearch()"
-          aria-label="Limpiar búsqueda"
-        >
-          <fa-icon [icon]="['fas', 'times']"></fa-icon>
-        </button>
-      </div>
-      <button type="submit" style="display: none;"></button>
-    </form>
-    <!-- Sugerencias de búsqueda mejoradas -->
-    <div class="search-suggestions" *ngIf="showSuggestions">
-      <div class="suggestion-item" (click)="navigateToSearch('Piso')">
-        <fa-icon [icon]="['fas', 'search']"></fa-icon>
-        <span>Piso</span>
-      </div>
-      <div class="suggestion-item" (click)="navigateToSearch('Espuma')">
-        <fa-icon [icon]="['fas', 'search']"></fa-icon>
-        <span>Espuma</span>
-      </div>
-      <div class="suggestion-item" (click)="navigateToSearch('Yumbolon')">
-        <fa-icon [icon]="['fas', 'search']"></fa-icon>
-        <span>Yumbolon</span>
-      </div>
-      <div class="suggestion-item" (click)="navigateToSearch('Malla')">
-        <fa-icon [icon]="['fas', 'search']"></fa-icon>
-        <span>Malla</span>
-      </div>
-      <div class="suggestion-item" (click)="navigateToSearch('Pegante')">
-        <fa-icon [icon]="['fas', 'search']"></fa-icon>
-        <span>Pegante</span>
-      </div>
-      <div class="suggestion-item" (click)="navigateToSearch('Mimbre')">
-        <fa-icon [icon]="['fas', 'search']"></fa-icon>
-        <span>Mimbre</span>
-      </div>
-    </div>
-  </div>
+  <!-- Main Navbar -->
+  <nav class="navbar-content">
+    <div class="container">
+      <div class="navbar-wrapper">
+        
+        <!-- Logo -->
+        <div class="logo-area">
+          <a routerLink="/" class="logo-link">
+            <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Plaxtilineas Logo" class="logo-main">
+          </a>
+        </div>
 
-  <!-- Botón de Menú Hamburguesa -->
-  <button class="menu-toggle" aria-label="Abrir menú" (click)="toggleMenu()" [attr.aria-expanded]="menuAbierto">
-    <span class="hamburger-line"></span>
-    <span class="hamburger-line"></span>
-    <span class="hamburger-line"></span>
-  </button>
+        <!-- Desktop Navigation -->
+        <div class="nav-links-area">
+          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+            <fa-icon [icon]="['fas', 'home']"></fa-icon>
+            <span>Inicio</span>
+          </a>
+          <app-menu-dropdown></app-menu-dropdown>
+          <a routerLink="/nosotros" routerLinkActive="active" class="nav-link">
+            <fa-icon [icon]="['fas', 'users']"></fa-icon>
+            <span>Nosotros</span>
+          </a>
+          <app-empresas-dropdown></app-empresas-dropdown>
+        </div>
 
-  <!-- Menú de Navegación -->
-  <nav class="navbar" [ngClass]="{ 'active': menuAbierto }" role="navigation" aria-label="Menú principal">
+        <!-- Actions (Search, Cart, User) -->
+        <div class="nav-actions-area">
+          <!-- Desktop Search -->
+          <div class="search-desktop">
+            <div class="search-box">
+              <fa-icon [icon]="['fas', 'search']" class="search-trigger-icon"></fa-icon>
+              <input 
+                type="text" 
+                [(ngModel)]="searchQuery" 
+                (keydown.enter)="onSearch()"
+                (focus)="onSearchFocus()"
+                (blur)="onSearchBlur()"
+                placeholder="Buscar productos...">
+            </div>
+            
+            <!-- Suggestions Dropdown -->
+            <div class="search-suggestions-overlay" *ngIf="showSuggestions">
+              <div class="suggestion-header">Sugerencias</div>
+              <div class="suggestion-list">
+                <div class="suggestion-item" (click)="navigateToSearch('Espumas')">Espumas</div>
+                <div class="suggestion-item" (click)="navigateToSearch('Plásticos')">Plásticos</div>
+                <div class="suggestion-item" (click)="navigateToSearch('Empaques')">Empaques</div>
+              </div>
+            </div>
+          </div>
 
-    <!-- Sección de navegación principal -->
-    <div class="nav-section main-nav">
-      <a routerLink="/" 
-         class="nav-link" 
-         routerLinkActive="active" 
-         [routerLinkActiveOptions]="{exact: true}"
-         (click)="onLinkClick(0)"
-         aria-label="Ir a Inicio">
-        <fa-icon [icon]="['fas', 'home']" class="nav-icon"></fa-icon>
-        <span class="nav-text">Inicio</span>
-      </a>
-      
-      <!-- Dropdown de Catálogo -->
-      <app-menu-dropdown></app-menu-dropdown>
+          <!-- Mobile Search Toggle -->
+          <button class="action-btn search-toggle" (click)="toggleSearch()" aria-label="Buscar">
+            <fa-icon [icon]="['fas', 'search']"></fa-icon>
+          </button>
 
-      
-      <a routerLink="/nosotros" 
-         class="nav-link" 
-         routerLinkActive="active"
-         (click)="onLinkClick(3)"
-         aria-label="Conócenos">
-        <fa-icon [icon]="['fas', 'users']" class="nav-icon"></fa-icon>
-        <span class="nav-text">Nosotros</span>
-      </a>
-    </div>
+          <!-- WhatsApp Icon -->
+          <a href="https://wa.me/573000000000" target="_blank" class="action-btn whatsapp-btn" aria-label="WhatsApp">
+            <fa-icon [icon]="['fab', 'whatsapp']" *ngIf="false"></fa-icon> <!-- Fallback -->
+            <svg viewBox="0 0 24 24" fill="currentColor" class="icon-svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          </a>
 
-    <!-- Sección de acciones rápidas -->
-    <div class="nav-section action-nav">
-      <a class="nav-link location-link" 
-         href="https://www.google.com/maps/dir/?api=1&destination=Cra.19+%23+19-35+Armenia+Quindio"
-         target="_blank"
-         rel="noopener noreferrer"
-         aria-label="Ver ubicación de Armenia en Google Maps">
-        <fa-icon [icon]="['fas', 'map-marker-alt']" class="location-icon"></fa-icon>
-        <span class="nav-text">Armenia</span>
-      </a>
+          <!-- Shopping Cart -->
+          <app-cart-icon></app-cart-icon>
 
-      <!-- Dropdown de Empresas -->
-      <app-empresas-dropdown></app-empresas-dropdown>
-      
-      <a routerLink="/contacto" 
-         class="nav-link whatsapp-link" 
-         (click)="onLinkClick(4)"
-         aria-label="Ir a la página de contacto">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="whatsapp-icon" viewBox="0 0 16 16">
-          <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
-        </svg>
-        <span class="nav-text">Contáctanos</span>
-      </a>
-      
-      <a routerLink="/login" 
-         class="nav-link login-link" 
-         routerLinkActive="active"
-         (click)="onLinkClick(5)"
-         aria-label="Ingreso administrativo">
-        <fa-icon [icon]="['fas', 'key']" class="login-icon"></fa-icon>
-      </a>
+          <!-- User/Login -->
+          <a routerLink="/login" class="action-btn user-btn" aria-label="Mi Cuenta">
+            <fa-icon [icon]="['fas', 'user']"></fa-icon>
+          </a>
 
-      <!-- Icono del carrito -->
-      <app-cart-icon></app-cart-icon>
+          <!-- Menu Toggle (Mobile) -->
+          <button class="menu-toggle-btn" (click)="toggleMenu()" [class.active]="menuAbierto">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+
+      </div>
     </div>
   </nav>
-</div>
+
+  <!-- Mobile Search Overlay -->
+  <div class="mobile-search-overlay" [class.active]="searchActive">
+    <div class="search-overlay-header">
+      <button class="close-search" (click)="toggleSearch()">
+        <fa-icon [icon]="['fas', 'arrow-left']"></fa-icon>
+      </button>
+      <input 
+        type="text" 
+        class="mobile-search-input" 
+        [(ngModel)]="searchQuery" 
+        (keydown.enter)="onSearch()"
+        placeholder="Buscar productos...">
+    </div>
+    <div class="search-overlay-body">
+      <p class="search-hint">Escribe para buscar en nuestro catálogo</p>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Drawer -->
+  <div class="mobile-drawer-overlay" *ngIf="menuAbierto" (click)="closeMenu()"></div>
+  <div class="mobile-drawer" [class.active]="menuAbierto">
+    <div class="drawer-header">
+      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Logo" class="drawer-logo">
+      <button class="drawer-close" (click)="closeMenu()"><fa-icon [icon]="['fas', 'times']"></fa-icon></button>
+    </div>
+    <div class="drawer-body">
+      <a routerLink="/" class="drawer-link" (click)="closeMenu()">
+        <fa-icon [icon]="['fas', 'home']"></fa-icon> Inicio
+      </a>
+      <a routerLink="/nosotros" class="drawer-link" (click)="closeMenu()">
+        <fa-icon [icon]="['fas', 'users']"></fa-icon> Nosotros
+      </a>
+      <a routerLink="/contacto" class="drawer-link" (click)="closeMenu()">
+        <fa-icon [icon]="['fas', 'envelope']"></fa-icon> Contacto
+      </a>
+      <a routerLink="/login" class="drawer-link" (click)="closeMenu()">
+        <fa-icon [icon]="['fas', 'lock']"></fa-icon> Acceso Admin
+      </a>
+    </div>
+  </div>
+</header>

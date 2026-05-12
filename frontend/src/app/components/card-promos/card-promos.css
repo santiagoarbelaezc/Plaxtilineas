@@ -1,564 +1,127 @@
-/* Card de Producto - Estilo consistente con el sistema */
-.card-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  width: 340px;
-  height: 385px;
-  background-color: var(--white);
-  overflow: hidden;
-  font-family: var(--font-primary);
-  border: 1px solid var(--gray-200);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-/* Elevación sutil al pasar el mouse */
-.card-container:hover {
-  transform: translateY(-5px);
-  border-color: var(--gray-300);
-  box-shadow: 0 8px 24px rgba(54, 140, 68, 0.12);
-}
-
-/* Efecto de clic */
-.card-container:active {
-  transform: translateY(-2px);
-  transition: all 0.2s ease;
-}
-
-/* Logo superpuesto en la parte superior */
-.logo-section {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 10;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 80px;
-  padding: 15px;
-  background-color: transparent;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Efecto sutil en el logo */
-.card-container:hover .logo-section {
-  transform: translateY(2px);
-}
-
-.logo {
-  max-height: 60px;
-  max-width: 200px;
-  object-fit: contain;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Escala mínima en el logo */
-.card-container:hover .logo {
-  transform: scale(1.05);
-}
-
-/* Imagen del producto que ocupa toda la carta */
-.product-image-section {
+.promo-card {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 320px;
+  background: white;
+  border-radius: 24px;
   overflow: hidden;
-  background: var(--gray-50);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.product-image {
+.card-media {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.promo-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.6s ease;
 }
 
-/* Efecto sutil de zoom en la imagen */
-.card-container:hover .product-image {
-  transform: scale(1.05);
-}
-
-/* Sección de información del producto en la parte inferior */
-.product-info-section {
+.media-overlay {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 10;
-  padding: 16px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.2) 100%);
 }
 
-/* Elevación sutil de la sección de info */
-.card-container:hover .product-info-section {
-  transform: translateY(-2px);
+.brand-logo {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: white;
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 2;
 }
 
-/* Clase para sección transparente */
-.product-info-section.transparent-section {
-  opacity: 0;
-  pointer-events: none;
+.brand-logo img {
+  height: 30px;
+  width: auto;
 }
 
-.product-info-section.transparent-section .green-container {
-  background-color: transparent;
-  box-shadow: none;
-  border: none;
-  padding: 0;
+.card-body {
+  padding: 20px;
+  background: #368C44;
+  color: white;
+  position: relative;
+  transition: all 0.3s ease;
 }
 
-.product-info-section.transparent-section .promo-content {
+.card-body.no-content {
   display: none;
 }
 
-/* Contenedor principal */
-.green-container {
-  background-color: rgba(54, 140, 68, 0.95);
-  padding: 16px 12px;
-  color: var(--white);
+.info-box {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: center;
-  border-top: 3px solid var(--white);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 0 0 6px 6px;
+  gap: 8px;
 }
 
-/* Profundidad en el contenedor verde */
-.card-container:hover .green-container {
-  background-color: rgba(46, 122, 58, 0.98);
-  transform: translateY(-1px);
-}
-
-/* Contenido promocional */
-.promo-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Animación sutil del contenido */
-.card-container:hover .promo-content {
-  gap: 14px;
+.badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  width: fit-content;
 }
 
 .promo-title {
-  font-size: 1.25rem;
-  font-weight: var(--font-weight-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
-  color: var(--white);
+  font-size: 1.4rem;
+  font-weight: 800;
   margin: 0;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: var(--font-primary);
-}
-
-/* Resalte sutil del título */
-.card-container:hover .promo-title {
-  transform: scale(1.03);
+  line-height: 1.2;
 }
 
 .promo-description {
-  font-size: 0.95rem;
-  font-weight: var(--font-weight-regular);
-  line-height: 1.5;
-  margin: 0;
-  max-width: 90%;
-  color: rgba(255, 255, 255, 0.9);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: var(--font-primary);
-  letter-spacing: 0.01em;
-}
-
-/* Animación sutil de la descripción */
-.card-container:hover .promo-description {
-  color: var(--white);
-}
-
-/* Botón de compra - Estilo consistente */
-.promo-button {
-  background-color: var(--white);
-  color: #368c44;
-  border: none;
-  padding: 10px 28px;
   font-size: 0.9rem;
-  font-weight: var(--font-weight-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
+  opacity: 0.9;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.cta-button {
+  margin-top: 10px;
+  background: white;
+  color: #368C44;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 2px solid var(--white);
-  font-family: var(--font-primary);
-  border-radius: 4px;
-  margin-top: 4px;
+  transition: all 0.3s ease;
 }
 
-/* Efecto de elevación en el botón */
-.card-container:hover .promo-button {
-  background-color: var(--white);
-  transform: translateY(-1px);
+.cta-button:hover {
+  background: #f1f5f9;
+  transform: translateX(5px);
 }
 
-.promo-button:hover {
-  background-color: #f8f9fa;
-  color: #2e7a3a;
-  transform: scale(1.05) translateY(-1px);
+/* Hover States */
+.promo-card:hover {
+  transform: translateY(-5px);
 }
 
-.promo-button:active {
-  transform: scale(0.98);
-  background-color: #e9ecef;
-  transition: all 0.2s ease;
-}
-/* ==================== */
-/* RESPONSIVE - MÓVIL Y IPHONE */
-/* ==================== */
-
-/* Dispositivos grandes (tablets en modo paisaje) */
-@media screen and (max-width: 1200px) {
-  .card-container {
-    width: 320px;
-    height: 365px;
-  }
-  
-  .logo-section {
-    height: 75px;
-    padding: 12px;
-  }
-  
-  .logo {
-    max-height: 55px;
-    max-width: 180px;
-  }
-  
-  .product-info-section {
-    padding: 14px;
-  }
-  
-  .promo-title {
-    font-size: 1.2rem;
-  }
-  
-  .promo-description {
-    font-size: 0.92rem;
-  }
+.promo-card:hover .promo-image {
+  transform: scale(1.1);
 }
 
-/* Tablets (modo retrato) */
-@media screen and (max-width: 768px) {
-  .card-container {
-    width: 300px;
-    height: 345px;
-    margin: 0 auto;
-  }
-  
-  .logo-section {
-    height: 70px;
-    padding: 10px;
-  }
-  
-  .logo {
-    max-height: 50px;
-    max-width: 160px;
-  }
-  
-  .green-container {
-    padding: 14px 10px;
-  }
-  
-  .promo-title {
-    font-size: 1.15rem;
-  }
-  
-  .promo-description {
-    font-size: 0.9rem;
-    max-width: 95%;
-  }
-  
-  .promo-button {
-    padding: 9px 24px;
-    font-size: 0.85rem;
-  }
-}
-
-/* Dispositivos móviles medianos */
-@media screen and (max-width: 576px) {
-  .card-container {
-    width: 230px;
-    height: 260px;
-    margin-left: 10px;
-  }
-  
-  .logo-section {
-    height: 65px;
-  }
-  
-  .logo {
-    max-height: 45px;
-    max-width: 150px;
-  }
-  
-  .product-info-section {
-    padding: 10px;
-  }
-  
-  .green-container {
-    padding: 10px 6px;
-    border-radius: 0 0 5px 5px;
-    max-width: 78%;
-  }
-  
-  .promo-content {
-    gap: 10px;
-  }
-  
-  .promo-title {
-    font-size: 1.05rem;
-  }
-  
-  .promo-description {
-    font-size: 0.8rem;
-    line-height: 1.3;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  .promo-button {
-    padding: 7px 20px;
-    font-size: 0.8rem;
-    margin-top: 2px;
-  }
-}
-
-/* iPhone y dispositivos móviles pequeños */
-@media screen and (max-width: 375px) {
-  .card-container {
-    width: 160px;
-    height: 180px;
-    margin-left: 10px;
-  }
-  
-  .logo-section {
-    height: 45px;
-    padding: 4px;
-  }
-  
-  .logo {
-    max-height: 35px;
-    max-width: 100px;
-  }
-  
-  .product-info-section {
-    padding: 8px;
-  }
-  
-  .green-container {
-    padding: 8px 5px;
-    border-radius: 0 0 5px 5px;
-    max-width: 78%;
-    max-width: 78%;
-  }
-  
-  .promo-title {
-    font-size: 0.95rem;
-  }
-  
-  .promo-description {
-    font-size: 0.75rem;
-    line-height: 1.2;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  .promo-button {
-    padding: 6px 16px;
-    font-size: 0.75rem;
-  }
-}
-
-/* iPhone SE y dispositivos muy pequeños */
-@media screen and (max-width: 320px) {
-  .card-container {
-    width: 160px;
-    height: 180px;
-  }
-  
-  .logo-section {
-    height: 45px;
-  }
-  
-  .logo {
-    max-height: 30px;
-    max-width: 100px;
-  }
-  
-  .promo-title {
-    font-size: 0.9rem;
-  }
-  
-  .promo-description {
-    font-size: 0.7rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  .promo-button {
-    padding: 5px 14px;
-    font-size: 0.7rem;
-  }
-}
-
-/* Ajustes para modo oscuro en dispositivos móviles */
-@media (prefers-color-scheme: dark) and (max-width: 768px) {
-  .card-container {
-    background-color: var(--dark-bg, #1a1a1a);
-    border-color: var(--dark-border, #333);
-  }
-  
-  .product-image-section {
-    background: var(--dark-gray, #2a2a2a);
-  }
-}
-
-/* Soporte para orientación horizontal en móviles */
-@media screen and (max-height: 500px) and (orientation: landscape) {
-  .card-container {
-    width: 280px;
-    height: 250px;
-  }
-  
-  .logo-section {
-    height: 50px;
-    padding: 6px;
-  }
-  
-  .logo {
-    max-height: 35px;
-  }
-  
-  .product-info-section {
-    padding: 8px;
-  }
-  
-  .green-container {
-    padding: 8px 6px;
-  }
-  
-  .promo-title {
-    font-size: 1rem;
-  }
-  
-  .promo-description {
-    font-size: 0.8rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-}
-
-/* Ajustes para Safari en iPhone (problemas comunes) */
-@supports (-webkit-touch-callout: none) {
-  @media screen and (max-width: 768px) {
-    .card-container {
-      -webkit-tap-highlight-color: transparent;
-    }
-    
-    .card-container:hover .product-image {
-      /* Safari tiene problemas con transform en hover en móviles */
-      transform: none;
-    }
-    
-    /* Mejorar rendimiento en Safari */
-    .product-image {
-      -webkit-transform: translateZ(0);
-      backface-visibility: hidden;
-    }
-  }
-}
-
-/* Optimización para pantallas retina */
-@media screen and (-webkit-min-device-pixel-ratio: 2),
-       screen and (min-resolution: 192dpi) {
-  .logo {
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
-  }
-  
-  .product-image {
-    image-rendering: auto;
-  }
-}
-
-/* Deshabilitar efectos hover en dispositivos táctiles */
-@media (hover: none) and (pointer: coarse) {
-  .card-container:hover {
-    transform: none;
-    border-color: var(--gray-200);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  }
-  
-  .card-container:active {
-    transform: scale(0.98);
-    border-color: var(--gray-300);
-    box-shadow: 0 8px 24px rgba(54, 140, 68, 0.12);
-  }
-  
-  .card-container:hover .logo-section,
-  .card-container:hover .product-info-section,
-  .card-container:hover .green-container,
-  .card-container:hover .logo,
-  .card-container:hover .product-image,
-  .card-container:hover .promo-title,
-  .card-container:hover .promo-description,
-  .card-container:hover .promo-button {
-    transform: none;
-  }
-  
-  .card-container:hover .green-container {
-    background-color: rgba(54, 140, 68, 0.95);
-  }
-  
-  .card-container:hover .promo-content {
-    gap: 12px;
-  }
-  
-  .card-container:hover .promo-description {
-    color: rgba(255, 255, 255, 0.9);
-  }
-  
-  .promo-button:active {
-    background-color: #e9ecef;
-    transform: scale(0.95);
-  }
-}
-
-/* Ajuste de fuentes para mejor legibilidad en móviles */
-@media screen and (max-width: 768px) {
-  .promo-title,
-  .promo-description,
-  .promo-button {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+/* Responsive */
+@media (max-width: 640px) {
+  .promo-card { height: auto; }
+  .card-media { height: 200px; }
 }

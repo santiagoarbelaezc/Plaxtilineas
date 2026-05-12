@@ -2,37 +2,33 @@ import { Component, OnInit } from '@angular/core';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { AosService } from './services/aos.service';
 import { ScrollService } from './services/scroll.service';
 import { SeoService } from './services/seo.service';
-import { NavbarComponent } from "./components/navbar/navbar.component";
 import { CommonModule } from '@angular/common';
 import { CartDrawerComponent } from './cart/cart-drawer/cart-drawer.component';
 import { PwaService } from './services/pwa.service';
-import { RegistrationModalComponent } from './components/registration-modal/registration-modal.component';
-
+import { LoadingScreenComponent } from './components/loading-screen/loading-screen';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    CommonModule, // Necesario para directivas como *ngIf, *ngFor
+    CommonModule,
     RouterModule,
     CartDrawerComponent,
-    RegistrationModalComponent
+    LoadingScreenComponent
   ],
-
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
   title = 'Plaxtilineas';
+  isLoading = true;
   
   canInstall$: Observable<boolean>;
   isIos$: Observable<boolean>;
 
   constructor(
-    private aosService: AosService,
     private scrollService: ScrollService,
     private router: Router,
     private seoService: SeoService,
@@ -44,15 +40,14 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     console.log('🚀 AppComponent inicializado');
-    
-    // Inicializar SEO por defecto
     this.seoService.setDefaultSeo();
     
-    // Inicializar AOS
-    this.aosService.init();
-    console.log('✅ AOS inicializado');
+    // Simular carga inicial
+    setTimeout(() => {
+      this.isLoading = false;
+      console.log('✨ Carga completada');
+    }, 1500);
     
-    // Configurar scroll al top
     this.setupRouteChangeScroll();
   }
 
@@ -61,16 +56,10 @@ export class AppComponent implements OnInit {
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
       console.log(`📍 Navegación completada: ${event.url}`);
-      
-      // Re-inicializar AOS después de cada navegación
-      setTimeout(() => {
-        this.aosService.refresh();
-        console.log('🔄 AOS refrescado');
-      }, 100);
     });
   }
 
   installPwa(): void {
     this.pwaService.installPwa();
   }
-}
+}

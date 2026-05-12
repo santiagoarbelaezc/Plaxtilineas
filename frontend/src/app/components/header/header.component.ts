@@ -1,68 +1,39 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, OnDestroy, NgZone } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faShoppingCart, faUsers, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, FontAwesomeModule],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements AfterViewInit, OnDestroy {
+export class HeaderComponent implements AfterViewInit {
   mostrarHeader = true;
 
-  @ViewChild('headerVideo', { static: true }) videoRef!: ElementRef<HTMLVideoElement>;
+  @ViewChild('headerVideo') videoRef!: ElementRef<HTMLVideoElement>;
 
-  private observer: IntersectionObserver | null = null;
-
-  constructor(private router: Router, private ngZone: NgZone) {
+  constructor(private router: Router, private ngZone: NgZone, library: FaIconLibrary) {
+    library.addIcons(faShoppingCart, faUsers, faEnvelope);
     this.router.events.subscribe(() => {
       this.mostrarHeader = !['/login', '/admin'].includes(this.router.url);
     });
   }
 
   ngAfterViewInit() {
-    const video = this.videoRef?.nativeElement;
-    if (!video) return;
-
-    // Forzar muted en todos los niveles (Edge lo requiere)
-    video.muted = true;
-    video.defaultMuted = true;
-    video.volume = 0;
-    video.setAttribute('muted', '');
-    video.setAttribute('playsinline', '');
-    video.setAttribute('webkit-playsinline', '');
-
-    const play = () => {
-      video.muted = true;
-      video.volume = 0;
-      video.play().catch(err => console.warn('[Header Video] Autoplay bloqueado:', err));
-    };
-
-    video.addEventListener('canplay', play);
-    video.addEventListener('loadedmetadata', play);
-
-    // IntersectionObserver: pausar cuando no es visible
-    this.observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          play();
-        } else {
+    this.ngZone.runOutsideAngular(() => {
+      setTimeout(() => {
+        const video = this.videoRef?.nativeElement;
+        if (video) {
+          video.muted = true;
           video.pause();
+          console.log('[Header Video] Video pausado por petición del usuario');
         }
-      });
-    }, { threshold: 0.1 });
-    this.observer.observe(video);
-
-    // Intento inicial
-    play();
-  }
-
-  ngOnDestroy() {
-    if (this.observer) {
-      this.observer.disconnect();
-    }
+      }, 1000); // Dar tiempo al preloader
+    });
   }
 }
 

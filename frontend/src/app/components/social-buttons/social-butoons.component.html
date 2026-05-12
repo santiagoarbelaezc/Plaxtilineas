@@ -1,6 +1,21 @@
 <!-- Contenedor principal -->
 <div class="social-buttons-container">
   
+  <!-- Botón de Asistente (Mateo) - AHORA ARRIBA Y MÁS GRANDE -->
+  <button class="social-button assistant-button"
+     (click)="toggleChat()"
+     aria-label="Hablar con Mateo"
+     title="Hablar con Mateo"
+     (mouseenter)="onMouseEnter('mateo')"
+     (mouseleave)="onMouseLeave('mateo')">
+    <div class="button-content">
+      <img src="assets/images/mateo.png" 
+           alt="Asistente Mateo" 
+           class="assistant-avatar">
+      <div class="mateo-pill">Habla con <span>Mateo</span></div>
+    </div>
+  </button>
+
   <!-- Botón de Facebook -->
   <a href="https://www.facebook.com/p/Plaxtilineas-100080040966300/"
      class="social-button facebook-button"
@@ -52,16 +67,22 @@
       <img src="https://cdn.jsdelivr.net/npm/simple-icons@v8/icons/whatsapp.svg" 
            alt="WhatsApp" 
            class="social-icon">
-      <div class="notification" *ngIf="true">1</div> <!-- Cambiar a variable si es dinámico -->
+      <div class="notification" *ngIf="true">1</div>
       <span class="button-tooltip" *ngIf="hoveredButton === 'whatsapp'">
         ¿Necesitas ayuda?
       </span>
     </div>
   </a>
 
-  <!-- Mensaje emergente inicial (solo para WhatsApp) -->
+  <!-- Mensaje emergente inicial -->
   <div class="help-message" *ngIf="showHelpMessage" (click)="closeHelpMessage()">
     ¿Necesitas ayuda?
     <span class="close-icon">×</span>
   </div>
 </div>
+
+<!-- Modal de Chat de Mateo -->
+<app-contacto-asistente 
+  *ngIf="isChatOpen" 
+  (closeChat)="toggleChat()">
+</app-contacto-asistente>

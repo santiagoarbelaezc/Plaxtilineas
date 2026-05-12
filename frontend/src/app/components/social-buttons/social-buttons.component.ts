@@ -1,75 +1,65 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
+import { ContactoAsistente } from '../contacto-asistente/contacto-asistente.component';
+import { ChatService } from '../../services/chat.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-social-buttons',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ContactoAsistente],
   templateUrl: './social-butoons.component.html',
   styleUrls: ['./social-buttons.component.css']
 })
 export class SocialButtonsComponent implements OnInit, OnDestroy {
   
   private helpMessageTimeout: any;
-  private mouseLeaveTimeout: any;
-  private hoverTimeout: any;
+  private chatSubscription?: Subscription;
 
   // Estado para mostrar/ocultar mensajes
   showHelpMessage = false;
   hoveredButton: string | null = null;
+  isChatOpen = false;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private chatService: ChatService
+  ) {}
 
   ngOnInit(): void {
+    // Suscribirse al estado global del chat
+    this.chatSubscription = this.chatService.isChatOpen$.subscribe(isOpen => {
+      this.isChatOpen = isOpen;
+    });
+
     if (isPlatformBrowser(this.platformId)) {
-      // Mostrar mensaje inicial después de 3 segundos
       this.helpMessageTimeout = setTimeout(() => {
         this.showHelpMessage = true;
-        
-        // Ocultar después de 4 segundos
-        setTimeout(() => {
-          this.showHelpMessage = false;
-        }, 4000);
+        setTimeout(() => this.showHelpMessage = false, 4000);
       }, 3000);
     }
   }
 
   ngOnDestroy(): void {
-    // Limpiar todos los timers al destruir el componente
-    if (this.helpMessageTimeout) {
-      clearTimeout(this.helpMessageTimeout);
-    }
-    if (this.mouseLeaveTimeout) {
-      clearTimeout(this.mouseLeaveTimeout);
-    }
-    if (this.hoverTimeout) {
-      clearTimeout(this.hoverTimeout);
-    }
+    if (this.helpMessageTimeout) clearTimeout(this.helpMessageTimeout);
+    if (this.chatSubscription) this.chatSubscription.unsubscribe();
   }
 
-  // Métodos para manejar hover
+  toggleChat(): void {
+    this.chatService.toggleChat();
+  }
+
   onMouseEnter(buttonType: string): void {
-    if (this.hoverTimeout) {
-      clearTimeout(this.hoverTimeout);
-    }
-    
     this.hoveredButton = buttonType;
-    
-    // Ocultar mensaje general si está visible
-    if (this.showHelpMessage) {
-      this.showHelpMessage = false;
-    }
+    if (this.showHelpMessage) this.showHelpMessage = false;
   }
 
   onMouseLeave(buttonType: string): void {
-    this.hoverTimeout = setTimeout(() => {
-      if (this.hoveredButton === buttonType) {
-        this.hoveredButton = null;
-      }
+    setTimeout(() => {
+      if (this.hoveredButton === buttonType) this.hoveredButton = null;
     }, 300);
   }
 
-  // Método para cerrar el mensaje de ayuda
   closeHelpMessage(): void {
     this.showHelpMessage = false;
   }

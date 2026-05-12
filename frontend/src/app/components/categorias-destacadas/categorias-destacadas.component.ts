@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faChevronLeft, faChevronRight, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { CategoriaIndex } from '../../models/categoriaIndex.model';
 import { CategoriasService } from '../../services/categorias.service';
 import { CategoriaMenuService } from '../../services/categoria-menu.service';
@@ -9,7 +11,7 @@ import { MenuStateService } from '../../services/menu-state.service';
 @Component({
   selector: 'app-categorias-destacadas',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FontAwesomeModule],
   templateUrl: './categorias-destacadas.component.html',
   styleUrls: ['./categorias-destacadas.component.css']
 })
@@ -37,8 +39,11 @@ export class CategoriasDestacadasComponent implements OnInit {
   constructor(
     private categoriasService: CategoriasService,
     private categoriaMenuService: CategoriaMenuService,
-    private menuStateService: MenuStateService
-  ) { }
+    private menuStateService: MenuStateService,
+    library: FaIconLibrary
+  ) {
+    library.addIcons(faChevronLeft, faChevronRight, faFolderOpen);
+  }
 
   ngOnInit(): void {
     this.checkIfMobile();

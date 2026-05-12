@@ -1,231 +1,287 @@
-/* ====== SECCIÓN NOSOTROS - CSS Simplificado ====== */
+/* ====== SECCIÓN NOSOTROS PREMIUM ====== */
 .seccion-nosotros {
-  max-width: 1500px;
-  background-color: var(--white);
-  position: relative;
-  padding: 90px 20px;
-  border-radius: 12px;
-  margin: 70px auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  font-family: var(--font-primary);
+  width: 100%;
+  background-color: #ffffff;
+  padding: 150px 0 80px 0; /* Aumentado el padding superior para evitar solapamiento con el navbar */
+  font-family: 'Montserrat', sans-serif;
+  overflow: hidden;
 }
 
 .nosotros-container {
-  max-width: 1400px;
+  max-width: 1500px;
   margin: 0 auto;
+  padding: 0 40px;
 }
 
-/* Header */
-.nosotros-header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.nosotros-title {
-  font-size: 2rem;
-  font-weight: 500;
-  color: #2d3748;
-  font-family: var(--font-primary);
-  margin-bottom: 16px;
-  position: relative;
-  display: inline-block;
-}
-
-.nosotros-title::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(90deg, #368c44, #25d366);
-  border-radius: 2px;
-}
-
-.nosotros-subtitle {
-  font-size: 1.1rem;
-  color: #666;
-  font-weight: 400;
-  font-family: var(--font-primary);
-  max-width: 800px;
-  margin: 24px auto 0;
-  line-height: 1.6;
-}
-
-.nosotros-subtitle strong {
-  color: #368c44;
-  font-weight: 500;
-}
-
-/* Grid de valores - SIMPLE: 3x2 */
-.valores-grid {
+/* === LAYOUT PRINCIPAL === */
+.layout-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-  margin-top: 30px;
+  grid-template-columns: 1.5fr 1fr; /* Proporciones invertidas: Grid (Izquierda) es más ancho que Intro (Derecha) */
+  gap: 60px;
+  align-items: stretch;
 }
 
-/* Tarjetas de valor */
-.valor-card {
-  background: white;
-  border-radius: 10px;
-  padding: 24px;
-  text-align: center;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(224, 224, 224, 0.3);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+/* === COLUMNA DERECHA: INTRO Y MATEO === */
+.intro-column {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start; /* Cambio a flex-start para mejor alineación superior */
+  position: relative;
+  z-index: 2;
+  padding-top: 20px;
 }
+
+.badge-new {
+  background: #368C44;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  width: fit-content;
+  letter-spacing: 0.1em;
+  box-shadow: 0 4px 15px rgba(54, 140, 68, 0.3);
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: #1e293b;
+  line-height: 1.1;
+  margin: 0 0 20px 0;
+}
+
+.title span {
+  color: #368C44;
+}
+
+.description {
+  font-size: 1.15rem;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0 0 40px 0;
+}
+
+.description strong {
+  color: #1e293b;
+  font-weight: 800;
+}
+
+/* Presentación de Mateo */
+.mateo-presentation {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  margin-top: auto;
+  min-height: 350px;
+}
+
+.blob-bg {
+  position: absolute;
+  width: 100%;
+  height: 80%;
+  background: radial-gradient(circle, rgba(54, 140, 68, 0.1) 0%, transparent 70%);
+  bottom: 0;
+  z-index: 1;
+}
+
+.mateo-img {
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  z-index: 2;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.15));
+  transition: transform 0.4s ease;
+}
+
+.mateo-presentation:hover .mateo-img {
+  transform: translateY(-10px) scale(1.02);
+}
+
+.floating-badge {
+  position: absolute;
+  top: 20%;
+  right: 0;
+  background: white;
+  padding: 12px 24px;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1e293b;
+  z-index: 3;
+  animation: float 4s ease-in-out infinite;
+  border-left: 5px solid #368C44;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+/* === COLUMNA DERECHA: GRID DE VALORES === */
+.valores-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+  align-content: center;
+}
+
+@keyframes customFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tarjetas de Valor */
+.valor-card {
+  background: #f8fafc;
+  border-radius: 24px;
+  padding: 30px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+  
+  /* Animación de entrada personalizada */
+  opacity: 0;
+  animation: customFadeUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+/* Stagger animations for cards */
+.valor-card:nth-child(1) { animation-delay: 0.1s; }
+.valor-card:nth-child(2) { animation-delay: 0.2s; }
+.valor-card:nth-child(3) { animation-delay: 0.3s; }
+.valor-card:nth-child(4) { animation-delay: 0.4s; }
+.valor-card:nth-child(5) { animation-delay: 0.5s; }
+.valor-card:nth-child(6) { animation-delay: 0.6s; }
 
 .valor-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
+  background: #ffffff;
   border-color: rgba(54, 140, 68, 0.2);
-  box-shadow: 0 8px 24px rgba(54, 140, 68, 0.1);
+  box-shadow: 0 20px 40px rgba(54, 140, 68, 0.12);
 }
 
-/* Contenedor del icono */
+/* Icono */
 .valor-icono-container {
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   background: rgba(54, 140, 68, 0.1);
-  border-radius: 50%;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 20px;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
 }
 
 .valor-card:hover .valor-icono-container {
-  background: rgba(54, 140, 68, 0.15);
-  transform: scale(1.1);
+  background: #368C44;
+  transform: rotate(-10deg) scale(1.1);
+  box-shadow: 0 10px 20px rgba(54, 140, 68, 0.3);
 }
 
 .valor-icono {
-  font-size: 1.8rem;
-  color: #368c44;
-  transition: all 0.3s ease;
+  font-size: 1.5rem;
+  color: #368C44;
+  transition: all 0.4s ease;
 }
 
-/* Texto de la tarjeta */
+.valor-card:hover .valor-icono {
+  color: #ffffff;
+}
+
+/* Texto */
+.valor-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .valor-titulo {
   font-size: 1.2rem;
-  font-weight: 500;
-  color: #2d3748;
-  margin-bottom: 12px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
   line-height: 1.3;
-  font-family: var(--font-primary);
-}
-
-.valor-card:hover .valor-titulo {
-  color: #368c44;
 }
 
 .valor-descripcion {
-  color: #666;
-  line-height: 1.5;
   font-size: 0.95rem;
+  color: #64748b;
+  line-height: 1.6;
   margin: 0;
-  font-weight: 400;
-  font-family: var(--font-primary);
+  font-weight: 500;
 }
 
-/* Responsive Design */
-@media (max-width: 992px) {
+/* === RESPONSIVE === */
+@media (max-width: 1200px) {
+  .layout-grid {
+    gap: 40px;
+  }
+  .title {
+    font-size: 3rem;
+  }
   .valores-grid {
-    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
+  }
+}
+
+@media (max-width: 992px) {
+  .layout-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .intro-column {
+    align-items: center;
+  }
+  .mateo-presentation {
+    min-height: 300px;
+  }
+  .floating-badge {
+    right: 10%;
   }
 }
 
 @media (max-width: 768px) {
   .seccion-nosotros {
-    padding: 30px 16px;
-    margin: 30px auto;
+    padding: 50px 0;
   }
-
-  .nosotros-title {
-    font-size: 1.8rem;
+  .nosotros-container {
+    padding: 0 20px;
   }
-
-  .nosotros-subtitle {
-    font-size: 1rem;
+  .title {
+    font-size: 2.5rem;
   }
-
   .valores-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
+    gap: 20px;
   }
-
   .valor-card {
-    padding: 20px;
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    padding: 24px;
   }
-
-  .valor-icono-container {
-    width: 60px;
-    height: 60px;
-    margin-bottom: 16px;
-  }
-
-  .valor-icono {
-    font-size: 1.6rem;
-  }
-
-  .valor-titulo {
-    font-size: 1.1rem;
-  }
-
-  .valor-descripcion {
-    font-size: 0.9rem;
+  .floating-badge {
+    display: none; /* Ocultar en móvil para dar espacio a Mateo */
   }
 }
 
 @media (max-width: 480px) {
-  .seccion-nosotros {
-    padding: 24px 12px;
-    margin: 60px auto;
-  }
-
-  .nosotros-title {
-    font-size: 1.6rem;
-  }
-
-  .valores-grid {
-    gap: 14px;
-  }
-
   .valor-card {
-    padding: 18px;
+    flex-direction: column;
+    text-align: center;
   }
-}
-
-/* Optimización para dispositivos táctiles */
-@media (hover: none) and (pointer: coarse) {
-  .valor-card:hover {
-    transform: none;
-  }
-
-  .valor-card:active {
-    transform: scale(0.98);
-  }
-}
-
-/* Efecto de borde sutil */
-.seccion-nosotros::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 20px;
-  right: 20px;
-  height: 3px;
-  background: linear-gradient(90deg,
-      transparent,
-      rgba(54, 140, 68, 0.2),
-      transparent);
-  border-radius: 0 0 2px 2px;
-}
+}

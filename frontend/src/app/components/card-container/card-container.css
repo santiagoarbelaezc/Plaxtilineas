@@ -1,496 +1,81 @@
-/* card-container.css - Versión completamente responsive */
+/* ===== CARD CONTAINER LAYOUT (GRILLA 2x2) ===== */
 :host {
   display: block;
   width: 100%;
 }
 
-/* Versión ultra ancha - Base responsive */
 .container-wrapper {
   width: 100%;
-  max-width: 1500px;
+  max-width: 1550px; /* Aumentado para mayor espacio horizontal */
   margin: 0 auto;
-  padding: 50px 20px;
-  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
-  box-sizing: border-box;
+  padding: 10px 2rem; /* Reducido de 40px para acercarlo a otros componentes */
+  font-family: 'Montserrat', sans-serif;
 }
 
 .layout-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  grid-template-rows: auto 1fr; /* La segunda fila se estira */
   gap: 30px;
-  align-items: flex-start;
-  width: 100%;
-  box-sizing: border-box;
+  align-items: stretch; /* Esto hace que card y carousel tengan el mismo alto */
 }
 
-/* Sección izquierda: Card y Promos */
-.left-section {
-  flex: 0 0 auto;
+/* Sections Base */
+.promo-section, 
+.banner-section, 
+.card-section, 
+.carousel-section {
+  width: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s ease;
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  width: 350px;
-  min-width: 300px;
-  box-sizing: border-box;
 }
 
-.card-section {
-  width: 100%;
-  box-sizing: border-box;
+.promo-section:hover, 
+.banner-section:hover, 
+.card-section:hover {
+  box-shadow: 0 20px 40px rgba(54, 140, 68, 0.1);
 }
 
-.promo-section {
-  width: 100%;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  box-sizing: border-box;
-}
-
-/* Sección derecha con Banner y Carousel */
-.content-section {
-  flex: 1;
+/* Ajustes específicos para que ocupen todo el alto de la celda */
+.card-section app-card,
+.carousel-section app-carousel {
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  min-width: 0;
-  box-sizing: border-box;
-}
-
-.banner-section {
-  width: 100%;
-  min-height: 250px;
-  overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-  box-sizing: border-box;
+  height: 100%;
 }
 
 .carousel-section {
-  width: 100%;
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.98) 0%,
-    rgba(248, 250, 252, 0.96) 100%);
-  
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(229, 231, 235, 0.6);
-  box-sizing: border-box;
+  background: white;
+  padding: 20px;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
 }
-/* ========================================= */
-/* MÓVIL - AQUÍ ES DONDE CAMBIA EL DISEÑO */
-/* ========================================= */
 
-/* Tablet (sm) - 768px a 899px */
-@media (max-width: 899px) {
-  .container-wrapper {
-    padding: 30px 10px;
-  }
-  
-  /* Cambiar a diseño vertical */
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1100px) {
   .layout-container {
-    flex-direction: column;
+    grid-template-columns: 320px 1fr;
     gap: 20px;
   }
-  
-  /* La sección izquierda: promo y card lado a lado */
-  .left-section {
-    width: 100%;
-    min-width: 100%;
-    flex-direction: row;
-    gap: 15px;
-  }
-  
-  .promo-section {
-    flex: 1;
-    width: auto;
-  }
-  
-  .card-section {
-    flex: 1;
-    width: auto;
-  }
-  
-  .banner-section {
-    min-height: 150px;
-    width: 100%;
-    padding: 0;
+}
+
+@media (max-width: 900px) {
+  .layout-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, auto);
   }
   
   .carousel-section {
-    padding: 15px;
-    width: 100%;
+    order: 4;
   }
 }
 
-/* Tablet pequeña/Móvil grande (xs) - 640px a 767px */
-@media (max-width: 767px) {
+@media (max-width: 640px) {
   .container-wrapper {
-    padding: 30px 8px;
-  }
-  
-  .layout-container {
-    gap: 18px;
-  }
-  
-  /* Promo y card lado a lado */
-  .left-section {
-    width: 100%;
-    min-width: 100%;
-    flex-direction: row;
-    gap: 12px;
-  }
-  
-  .promo-section {
-    flex: 1;
-    width: auto;
-  }
-  
-  .card-section {
-    flex: 1;
-    width: auto;
-  }
-  
-  .banner-section {
-    width: 100%;
-    max-width: 100%;
-    min-height: 120px;
-    padding: 0;
-    margin: 0 auto;
-  }
-  
-  .carousel-section {
-    width: 100%;
-    max-width: 100%;
-    padding: 12px;
-    margin: 0 auto;
-  }
-}
-
-/* Móvil grande (sm) - 540px a 639px */
-@media (max-width: 639px) {
-  .container-wrapper {
-    padding: 25px 6px;
-  }
-  
-  .layout-container {
-    gap: 10px;
-  }
-  
-  /* Promo y card lado a lado */
-  .left-section {
-    width: 100%;
-    min-width: 100%;
-    flex-direction: row;
-    gap: 10px;
-  }
-  
-  .promo-section {
-    flex: 1;
-    width: auto;
-  }
-  
-  .card-section {
-    flex: 1;
-    width: auto;
-  }
-  
-  .banner-section {
-    width: 100%;
-    max-width: 100%;
-    min-height: 100px;
-    padding: 0;
-    margin: 0 auto;
-  }
-  
-  .carousel-section {
-    width: 100%;
-    max-width: 100%;
-    padding: 10px;
-    margin: 0 auto;
-  }
-}
-
-/* Móvil estándar (base) - 480px a 539px */
-@media (max-width: 539px) {
-  .container-wrapper {
-    padding: 15px 4px;
-  }
-  
-  .layout-container {
-    gap: 10px;
-  }
-  
-  /* Promo y card lado a lado */
-  .left-section {
-    width: 100%;
-    min-width: 100%;
-    flex-direction: row;
-    gap: 6px;
-  }
-  
-  .promo-section {
-    flex: 1;
-    width: auto;
-  }
-  
-  .card-section {
-    flex: 1;
-    width: auto;
-  }
-  
-  .banner-section {
-    width: 100%;
-    max-width: 100%;
-    min-height: 90px;
-    padding: 0;
-    margin: 0 auto;
-  }
-  
-  .carousel-section {
-    width: 100%;
-    max-width: 100%;
-    padding: 8px;
-    margin: 0 auto;
-  }
-  
-  /* Ajustar sombras para móvil */
-  .carousel-section,
-  .banner-section,
-  .promo-section {
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
-  }
-}
-
-
-/* Móvil pequeño (xs) - 360px a 479px */
-@media (max-width: 479px) {
-  .container-wrapper {
-    padding: 12px 3px;
-  }
-  
-  .layout-container {
-    gap: 8px;
-  }
-  
-  /* Promo y card lado a lado */
-  .left-section {
-    width: 100%;
-    min-width: 100%;
-    flex-direction: row;
-    gap: 4px;
-  }
-  
-  .promo-section {
-    flex: 1;
-    width: auto;
-  }
-  
-  .card-section {
-    flex: 1;
-    width: auto;
-  }
-  
-  .banner-section {
-    width: 100%;
-    max-width: 100%;
-    min-height: 80px;
-    padding: 0;
-    margin: 0 auto;
-  }
-  
-  .carousel-section {
-    width: 100%;
-    max-width: 100%;
-    padding: 6px;
-    margin: 0 auto;
-  }
-}
-
-/* Móvil muy pequeño (2xs) - menos de 360px */
-@media (max-width: 359px) {
-  .container-wrapper {
-    padding: 10px 2px;
-  }
-  
-  .layout-container {
-    gap: 6px;
-  }
-  
-  /* Promo y card lado a lado */
-  .left-section {
-    width: 100%;
-    min-width: 100%;
-    flex-direction: row;
-    gap: 3px;
-  }
-  
-  .promo-section {
-    flex: 1;
-    width: auto;
-  }
-  
-  .card-section {
-    flex: 1;
-    width: auto;
-  }
-  
-  .banner-section {
-    width: 100%;
-    max-width: 100%;
-    min-height: 70px;
-    padding: 0;
-    margin: 0 auto;
-  }
-  
-  .carousel-section {
-    width: 100%;
-    max-width: 100%;
-    padding: 5px;
-    margin: 0 auto;
-  }
-}
-
-/* ========================================= */
-/* ORIENTACIÓN HORIZONTAL EN MÓVILES */
-/* ========================================= */
-@media screen and (max-height: 500px) and (orientation: landscape) {
-  .container-wrapper {
-    padding: 8px;
-  }
-  
-  /* En landscape mantener diseño original (dos columnas) */
-  .layout-container {
-    flex-direction: row;
-    align-items: stretch;
-    gap: 12px;
-  }
-  
-  .left-section {
-    flex: 0 0 40%;
-    flex-direction: column;
-  }
-  
-  .content-section {
-    flex: 0 0 60%;
-    gap: 12px;
-  }
-  
-  .banner-section {
-    min-height: 80px;
-    max-height: 100px;
-    width: 90%; /* En landscape también reducir */
-    margin: 0 auto;
-  }
-  
-  .carousel-section {
-    padding: 8px;
-    max-height: 160px;
-    width: 90%; /* En landscape también reducir */
-    margin: 0 auto;
-  }
-}
-
-/* ========================================= */
-/* MEJORAS PARA DISPOSITIVOS TÁCTILES */
-/* ========================================= */
-@media (hover: none) and (pointer: coarse) {
-  /* Aumentar áreas táctiles */
-  .left-section,
-  .content-section {
-    gap: 15px; /* Reducido de 20px */
-  }
-}
-
-/* ========================================= */
-/* MEJORAS DE ACCESIBILIDAD */
-/* ========================================= */
-@media (prefers-reduced-motion: reduce) {
-  .layout-container,
-  .left-section,
-  .content-section {
-    transition: none !important;
-  }
-}
-
-/* ========================================= */
-/* PREVENCIÓN DE ZOOM EN IOS */
-/* ========================================= */
-@media screen and (max-width: 768px) {
-  .container-wrapper {
-    font-size: 16px; /* Previene zoom automático en iOS */
-  }
-  
-  input,
-  select,
-  textarea {
-    font-size: 16px;
-  }
-}
-
-/* ========================================= */
-/* MEJORAS DE RENDIMIENTO PARA MÓVILES */
-/* ========================================= */
-@media (max-width: 768px) {
-  /* Optimizar para dispositivos móviles */
-  .container-wrapper {
-    -webkit-tap-highlight-color: transparent;
-  }
-  
-  /* Reducir efectos en móviles */
-  .carousel-section,
-  .banner-section,
-  .promo-section {
-    transform: translateZ(0);
-    backface-visibility: hidden;
-  }
-}
-
-/* ========================================= */
-/* PANTALLAS ULTRA ANCHAS (FUTURO) */
-/* ========================================= */
-@media screen and (min-width: 1920px) {
-  .container-wrapper {
-    max-width: 1800px;
-    padding: 50px 40px;
-  }
-  
-  .layout-container {
-    gap: 50px;
-  }
-  
-  .left-section {
-    width: 420px;
-  }
-  
-  .banner-section {
-    min-height: 350px;
-  }
-  
-  .carousel-section {
-    padding: 40px 35px;
-  }
-}
-
-/* ========================================= */
-/* PRINT STYLES */
-/* ========================================= */
-@media print {
-  .container-wrapper {
-    padding: 0;
-    max-width: 100%;
-  }
-  
-  .layout-container {
-    display: block;
-  }
-  
-  .left-section,
-  .content-section {
-    width: 100%;
-    page-break-inside: avoid;
-  }
-  
-  .carousel-section,
-  .banner-section,
-  .promo-section {
-    box-shadow: none;
-    border: 1px solid #ddd;
+    padding: 20px 1rem;
   }
 }

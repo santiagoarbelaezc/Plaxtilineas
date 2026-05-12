@@ -7,13 +7,13 @@
   font-family: var(--font-primary);
   letter-spacing: 0.01em;
   line-height: 1.5;
-  padding: 40px 20px;
+  padding: 10px 20px; /* Reducido de 40px para acercarlo a otros componentes */
   position: relative;
   overflow: hidden;
 }
 
 .feature-new-products-container {
-  max-width: 1460px;
+  max-width: 1550px; /* Aumentado de 1460px para aprovechar el ancho */
   margin: 0 auto;
   position: relative;
   z-index: 1;

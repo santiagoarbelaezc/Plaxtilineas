@@ -10,11 +10,12 @@
 .home-main {
   overflow-x: hidden;
   background-color: #FFFFFF;
+  padding-top: 120px; /* Altura del navbar (Top bar + Main bar) */
 }
 
 /* --- Section Layout --- */
 .home-section {
-  padding: 80px 0;
+  padding: 40px 0; /* Reducido de 80px para que los componentes estén más juntos */
   position: relative;
   width: 100%;
 }
@@ -24,18 +25,18 @@
 }
 
 .home-section.full-width {
-  padding: 40px 0;
+  padding: 15px 0; /* Reducido de 40px */
 }
 
 /* --- Containers --- */
 .container {
-  max-width: 1400px;
+  max-width: 1550px; /* Aumentado de 1400px para aprovechar mejor el ancho */
   margin: 0 auto;
   padding: 0 20px;
 }
 
 .container-narrow {
-  max-width: 1000px;
+  max-width: 1200px; /* Aumentado proporcionalmente */
   margin: 0 auto;
   padding: 0 20px;
 }
@@ -96,7 +97,7 @@
 .full-banner-container {
   width: 100%;
   background-color: #ffffff;
-  padding: 20px 0;
+  padding: 15px 0; /* Reducido de 20px */
 }
 
 /* --- Footer Stack --- */
@@ -120,7 +121,7 @@
 
 @media (max-width: 1024px) {
   .home-section {
-    padding: 60px 0;
+    padding: 35px 0; /* Reducido */
   }
   .section-title {
     font-size: 2rem;

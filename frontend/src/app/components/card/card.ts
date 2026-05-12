@@ -1,12 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { MenuStateService } from '../../services/menu-state.service';
 
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, FontAwesomeModule],
   templateUrl: './card.html',
   styleUrl: './card.css'
 })
@@ -23,7 +25,9 @@ export class Card {
   // Imagen de respaldo en caso de error
   defaultImage: string = 'https://via.placeholder.com/250x200/6c757d/ffffff?text=Producto';
 
-  constructor(private menuStateService: MenuStateService) {}
+  constructor(private menuStateService: MenuStateService, library: FaIconLibrary) {
+    library.addIcons(faArrowRight);
+  }
   
   // Manejo de error en la imagen
   handleImageError(event: any) {

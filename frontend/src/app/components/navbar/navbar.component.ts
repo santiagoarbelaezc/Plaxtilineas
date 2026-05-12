@@ -2,7 +2,10 @@ import { Component, OnInit, AfterViewInit, HostListener, ViewEncapsulation, OnDe
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faKey, faSearch, faTimes, faHome, faUsers, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faKey, faSearch, faTimes, faHome, faUsers, faMapMarkerAlt, 
+  faShoppingBag, faClock, faUser, faEnvelope, faLock, faArrowLeft 
+} from '@fortawesome/free-solid-svg-icons';
 import { FormsModule } from '@angular/forms';
 import { AosService } from '../../services/aos.service';
 import { Router, NavigationEnd } from '@angular/router';
@@ -23,8 +26,8 @@ import { CartIconComponent } from '../../cart/cart-icon/cart-icon.component';
 })
 export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   menuAbierto = false;
-  private activeLinkIndex = 0;
-  private linkPositions: number[] = [];
+  isScrolled = false;
+  searchActive = false;
   
   // Variables para el buscador
   searchQuery: string = '';
@@ -41,23 +44,30 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     private searchStateService: SearchStateService,
     private menuStateService: MenuStateService
   ) {
-    library.addIcons(faKey, faSearch, faTimes, faHome, faUsers, faMapMarkerAlt);
+    library.addIcons(
+      faKey, faSearch, faTimes, faHome, faUsers, faMapMarkerAlt,
+      faShoppingBag, faClock, faUser, faEnvelope, faLock, faArrowLeft
+    );
   }
 
   ngOnInit(): void {
-    this.calculateLinkPositions();
     this.setupRouterListener();
     this.setupSearchStateListener();
     this.setupScrollListener();
+    this.checkInitialScroll();
   }
 
   private setupScrollListener(): void {
     this.scrollSubject.pipe(
-      throttleTime(100, undefined, { leading: true, trailing: true }),
+      throttleTime(50, undefined, { leading: true, trailing: true }),
       takeUntil(this.destroy$)
     ).subscribe(() => {
-      this.updateActiveLinkBasedOnScroll();
+      this.isScrolled = window.scrollY > 20;
     });
+  }
+
+  private checkInitialScroll(): void {
+    this.isScrolled = window.scrollY > 20;
   }
 
   ngAfterViewInit(): void {
@@ -109,25 +119,25 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   toggleMenu(): void {
     this.menuAbierto = !this.menuAbierto;
-    if (this.menuAbierto) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
+    document.body.style.overflow = this.menuAbierto ? 'hidden' : 'auto';
   }
 
   closeMenu(): void {
     this.menuAbierto = false;
     document.body.style.overflow = 'auto';
-    // Eliminamos el refresh de AOS al cerrar el menú para evitar jank
   }
 
-  private calculateLinkPositions(): void {
-    this.linkPositions = [0, 80, 160, 240, 320];
+  toggleSearch(): void {
+    this.searchActive = !this.searchActive;
+    if (this.searchActive) {
+      setTimeout(() => {
+        const input = document.querySelector('.mobile-search-input') as HTMLInputElement;
+        if (input) input.focus();
+      }, 300);
+    }
   }
 
   onLinkClick(index: number): void {
-    this.activeLinkIndex = index;
     this.closeMenu();
   }
 
@@ -192,26 +202,8 @@ navigateToSearch(term: string): void {
   }, 50);
 }
 
-  @HostListener('window:resize')
-  onResize(): void {
-    this.calculateLinkPositions();
-  }
-
   @HostListener('window:scroll')
   onScroll(): void {
     this.scrollSubject.next();
   }
-
-  private updateActiveLinkBasedOnScroll(): void {
-    const sections = ['inicio', 'productos', 'nosotros', 'contacto'];
-    const scrollPosition = window.scrollY + 100;
-    
-    for (let i = sections.length - 1; i >= 0; i--) {
-      const element = document.getElementById(sections[i]);
-      if (element && element.offsetTop <= scrollPosition) {
-        this.activeLinkIndex = i;
-        break;
-      }
-    }
-  }
-}
+}

@@ -1,15 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, OnDestroy, HostListener, AfterViewInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, Input, OnInit, OnDestroy, HostListener, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faChevronLeft, faChevronRight, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { ProductoEditable } from '../../models/producto.model';
 import { CategoriasService } from '../../services/categorias.service';
 import { ProductosService } from '../../services/productos.service';
-import { AddToCartBtnComponent } from '../../cart/add-to-cart-btn/add-to-cart-btn.component';
 
 @Component({
   selector: 'app-carousel',
   standalone: true,
-  imports: [CommonModule, AddToCartBtnComponent],
+  imports: [CommonModule, RouterModule, FontAwesomeModule],
   templateUrl: './carousel.html',
   styleUrls: ['./carousel.css']
 })
@@ -36,8 +37,10 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private categoriasService: CategoriasService,
     private productosService: ProductosService,
-    private router: Router // Añadido para la navegación
+    private router: Router,
+    library: FaIconLibrary
   ) {
+    library.addIcons(faChevronLeft, faChevronRight, faPlus);
     this.detectDeviceType();
     this.updateItemsPerView();
   }
@@ -318,40 +321,35 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
     return descripcion.substring(0, this.maxDescLength) + '...';
   }
   
-  // Método para calcular el porcentaje de transformación
-  getTransformValue(): string {
-    if (this.productos.length <= this.itemsPerView) {
-      return 'translateX(0%)';
+  // New Methods for Redesign
+  moveNext(): void {
+    if (this.currentIndex < this.productos.length - this.itemsPerView) {
+      this.currentIndex++;
     }
-    
-    const slideWidth = 100 / this.itemsPerView;
-    return `translateX(-${this.currentIndex * slideWidth}%)`;
-  }
-  
-  // Método para verificar si hay más productos por mostrar
-  hasNext(): boolean {
-    return this.productos.length > this.itemsPerView && 
-           this.currentIndex < this.productos.length - this.itemsPerView;
-  }
-  
-  hasPrev(): boolean {
-    return this.productos.length > this.itemsPerView && this.currentIndex > 0;
-  }
-  
-  // Navegar a la ruta /producto/{id-slug}
-  verDetalles(productoId: number, nombre?: string): void {
-    const slug = this.getSlug(nombre);
-    const urlParam = slug ? `${productoId}-${slug}` : productoId.toString();
-    this.router.navigate(['/producto', urlParam]);
   }
 
-  getSlug(nombre?: string): string {
-    if (!nombre) return '';
-    return nombre.toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^\w\s-]/g, '')
-      .replace(/[\s_-]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+  movePrev(): void {
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+    }
+  }
+
+  get isAtStart(): boolean {
+    return this.currentIndex === 0;
+  }
+
+  get isAtEnd(): boolean {
+    return this.currentIndex >= this.productos.length - this.itemsPerView;
+  }
+
+  get scrollProgress(): number {
+    if (this.productos.length <= this.itemsPerView) return 100;
+    const maxIndex = this.productos.length - this.itemsPerView;
+    return (this.currentIndex / maxIndex) * 100;
+  }
+
+  getTransform(): string {
+    const itemWidth = 220 + 20; // item width + gap
+    return `translateX(-${this.currentIndex * itemWidth}px)`;
   }
 }

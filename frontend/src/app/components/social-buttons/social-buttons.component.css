@@ -4,13 +4,15 @@
 /* === CONTENEDOR PRINCIPAL === */
 .social-buttons-container {
   position: fixed;
-  right: 24px;
+  right: 24px; /* Restaurado a una posición estándar */
   bottom: 24px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  align-items: center; /* Alinea los centros de todos los botones */
+  gap: 15px;
   z-index: 30;
   pointer-events: none;
+  width: 120px; /* Ancho basado en el botón más grande (Mateo) */
 }
 
 /* === BOTONES BASE === */
@@ -23,11 +25,9 @@
   align-items: center;
   cursor: pointer;
   transition: all 0.3s var(--transition-ease);
-  background: var(--color-background);
+  background: white;
   backdrop-filter: blur(10px);
-  box-shadow: 
-    0 4px 20px var(--color-shadow),
-    0 0 0 1px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   text-decoration: none;
   position: relative;
   overflow: visible;
@@ -40,293 +40,126 @@
 .social-button:nth-child(1) { animation-delay: 0.1s; }
 .social-button:nth-child(2) { animation-delay: 0.2s; }
 .social-button:nth-child(3) { animation-delay: 0.3s; }
+.social-button:nth-child(4) { animation-delay: 0.4s; }
 
 @keyframes slide-in {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* === HOVER EFFECTS === */
-.social-button:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 
-    0 6px 24px var(--color-shadow),
-    0 0 0 1px rgba(255, 255, 255, 0.5);
+/* === ASISTENTE MATEO (CENTRADO) === */
+.assistant-button {
+  width: 120px !important;
+  height: 120px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0;
+  margin: 0 !important; /* Eliminar cualquier margen lateral */
+  backdrop-filter: none !important;
 }
 
-/* === ICONOS === */
-.social-icon {
-  width: 20px;
-  height: 20px;
-  transition: all 0.3s var(--transition-ease);
-  filter: brightness(0.9);
-  z-index: 2;
-}
-
-.social-button:hover .social-icon {
-  transform: scale(1.15);
-  filter: brightness(1);
-}
-
-/* === COLORES ESPECÍFICOS POR BOTÓN === */
-.whatsapp-button .social-icon {
-  color: var(--color-whatsapp);
-}
-
-.facebook-button .social-icon {
-  color: var(--color-facebook);
-}
-
-.instagram-button .social-icon {
-  color: var(--color-instagram);
-}
-
-/* === EFECTO SUTIL DE FONDO AL HOVER === */
-.whatsapp-button:hover {
-  background: rgba(37, 211, 102, 0.05);
-}
-
-.facebook-button:hover {
-  background: rgba(24, 119, 242, 0.05);
-}
-
-.instagram-button:hover {
-  background: rgba(225, 48, 108, 0.05);
-}
-
-/* === CONTENEDOR INTERNO === */
-.button-content {
-  position: relative;
+.assistant-avatar {
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* === TOOLTIP === */
-.button-tooltip {
+.assistant-button:hover .assistant-avatar {
+  transform: scale(1.1) translateY(-5px);
+}
+
+.mateo-pill {
   position: absolute;
-  right: calc(100% + 12px);
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.85);
-  color: white;
-  font-size: 12px;
-  font-weight: 500;
-  padding: 6px 12px;
-  border-radius: 6px;
+  bottom: -15px; /* Ubicado abajo, cerca a sus pies */
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffff;
+  color: #1e293b;
+  padding: 6px 16px;
+  border-radius: 20px; /* Píldora perfectamente redondeada */
+  font-size: 0.8rem;
+  font-weight: 800;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   white-space: nowrap;
-  backdrop-filter: blur(4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 5;
   pointer-events: none;
-  z-index: 31;
-  animation: tooltip-fade 0.2s var(--transition-ease);
+  animation: float-bubble-bottom 4s ease-in-out infinite;
+  font-family: 'Montserrat', sans-serif;
+  border: 1px solid rgba(54, 140, 68, 0.15);
 }
 
-.button-tooltip::after {
-  content: '';
-  position: absolute;
-  right: -5px;
-  top: 50%;
-  transform: translateY(-50%) rotate(45deg);
-  width: 10px;
-  height: 10px;
-  background: rgba(0, 0, 0, 0.85);
-  pointer-events: none;
+.mateo-pill span {
+  color: #368C44;
 }
 
-@keyframes tooltip-fade {
-  from {
-    opacity: 0;
-    transform: translateY(-50%) translateX(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(-50%) translateX(0);
-  }
+@keyframes float-bubble-bottom {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -6px); }
+}
+
+/* === ICONOS Y HOVERS === */
+.social-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.whatsapp-button .social-icon { color: #25D366; }
+.facebook-button .social-icon { color: #1877F2; }
+.instagram-button .social-icon { color: #E1306C; }
+
+.social-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
 }
 
 /* === NOTIFICACIÓN === */
 .notification {
   position: absolute;
-  top: -4px;
-  right: -4px;
+  top: -2px;
+  right: -2px;
   background: #ff4444;
   color: white;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   border-radius: 50%;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 3;
-  box-shadow: 0 2px 6px rgba(255, 68, 68, 0.3);
-  animation: notification-pulse 2s ease-in-out infinite;
+  border: 2px solid white;
 }
 
-@keyframes notification-pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-}
-
-/* === MENSAJE DE AYUDA INICIAL === */
-.help-message {
+/* === TOOLTIP (CENTRADO) === */
+.button-tooltip {
   position: absolute;
-  right: calc(100% + 16px);
-  bottom: 0;
+  right: calc(100% + 15px);
+  top: 50%;
+  transform: translateY(-50%);
   background: rgba(0, 0, 0, 0.85);
   color: white;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 8px 14px;
-  border-radius: 8px;
-  backdrop-filter: blur(4px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  cursor: pointer;
-  z-index: 32;
-  animation: help-message-fade 0.3s var(--transition-ease);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* === MENSAJE DE AYUDA === */
+.help-message {
+  position: absolute;
+  right: calc(100% + 15px);
+  bottom: 0;
+  background: #368C44;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   white-space: nowrap;
-}
-
-.help-message::after {
-  content: '';
-  position: absolute;
-  right: -5px;
-  bottom: 16px;
-  transform: rotate(45deg);
-  width: 10px;
-  height: 10px;
-  background: rgba(0, 0, 0, 0.85);
-}
-
-.close-icon {
-  font-size: 18px;
-  font-weight: 300;
-  opacity: 0.7;
-  transition: opacity 0.2s;
-}
-
-.help-message:hover .close-icon {
-  opacity: 1;
-}
-
-@keyframes help-message-fade {
-  from {
-    opacity: 0;
-    transform: translateX(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* === RESPONSIVE DESIGN === */
-@media (max-width: 768px) {
-  .social-buttons-container {
-    right: 16px;
-    bottom: 16px;
-    gap: 10px;
-  }
-
-  .social-button {
-    width: 42px;
-    height: 42px;
-  }
-
-  .social-icon {
-    width: 18px;
-    height: 18px;
-  }
-
-  .notification {
-    width: 14px;
-    height: 14px;
-    font-size: 9px;
-    top: -3px;
-    right: -3px;
-  }
-
-  .button-tooltip {
-    font-size: 11px;
-    padding: 5px 10px;
-    right: calc(100% + 10px);
-  }
-
-  .help-message {
-    font-size: 12px;
-    padding: 7px 12px;
-    right: calc(100% + 12px);
-  }
-}
-
-@media (max-width: 480px) {
-  .social-buttons-container {
-    right: 12px;
-    bottom: 12px;
-    gap: 8px;
-  }
-
-  .social-button {
-    width: 40px;
-    height: 40px;
-  }
-
-  .social-icon {
-    width: 17px;
-    height: 17px;
-  }
-
-  .help-message {
-    display: none; /* Ocultar en móviles muy pequeños */
-  }
-}
-
-/* === PREFERENCIAS DE REDUCCIÓN DE MOVIMIENTO === */
-@media (prefers-reduced-motion: reduce) {
-  .social-button,
-  .social-icon,
-  .notification,
-  .button-tooltip,
-  .help-message {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
-/* === MODO OSCURO === */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: rgba(30, 30, 30, 0.95);
-    --color-shadow: rgba(0, 0, 0, 0.25);
-    --color-text: #ffffff;
-  }
-  
-  .social-button {
-    box-shadow: 
-      0 4px 20px var(--color-shadow),
-      0 0 0 1px rgba(255, 255, 255, 0.1);
-  }
-  
-  .social-button:hover {
-    box-shadow: 
-      0 6px 24px var(--color-shadow),
-      0 0 0 1px rgba(255, 255, 255, 0.2);
-  }
 }
