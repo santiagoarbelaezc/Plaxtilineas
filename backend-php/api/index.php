@@ -29,6 +29,7 @@ require_once __DIR__ . '/controllers/SubcategoriaController.php';
 require_once __DIR__ . '/controllers/VarianteController.php';
 require_once __DIR__ . '/controllers/PqrsController.php';
 require_once __DIR__ . '/controllers/ImportarController.php';
+require_once __DIR__ . '/controllers/StatsController.php';
 
 // ─── CORS headers (siempre primero) ──────────────────────────────────────────
 ResponseHandler::setCorsHeaders();
@@ -74,6 +75,7 @@ try {
                 'variantes'     => '/api/variantes',
                 'pqrs'          => '/api/pqrs',
                 'importar'      => '/api/importar',
+                'chat'          => '/api/chat',
                 'debug'         => '/api/debug/extensions'
             ],
         ]);
@@ -283,6 +285,22 @@ try {
         AuthMiddleware::verify();
         ImportarController::previewProductosHostinger();
     }
+
+    // ═════════════════════════════════════════════════════════════════════════════
+    // ESTADÍSTICAS Y ANALÍTICA  /api/stats/*
+    // ═════════════════════════════════════════════════════════════════════════════
+    if ($uri === '/stats/track' && $method === 'POST') {
+        StatsController::track();
+    }
+    if ($uri === '/stats/dashboard' && $method === 'GET') {
+        AuthMiddleware::verify();
+        StatsController::getDashboardStats();
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════════
+    // ASISTENTE VIRTUAL MATEO  /api/chat/*
+    // ═════════════════════════════════════════════════════════════════════════════
+    require_once __DIR__ . '/routes/chat.routes.php';
 
     // ─── 404 fallback ────────────────────────────────────────────────────────────
     ResponseHandler::error(
