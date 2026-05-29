@@ -248,8 +248,21 @@
 .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* Scrollbar */
-.chat-messages::-webkit-scrollbar { width: 5px; }
-.chat-messages::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+.chat-messages::-webkit-scrollbar { 
+  width: 6px; 
+}
+.chat-messages::-webkit-scrollbar-track { 
+  background: #050505; /* Un negro casi puro para contraste sutil con el fondo */
+  border-radius: 10px;
+  margin: 10px 0; 
+}
+.chat-messages::-webkit-scrollbar-thumb { 
+  background-color: #368C44; /* Verde principal */
+  border-radius: 10px; 
+}
+.chat-messages::-webkit-scrollbar-thumb:hover { 
+  background-color: #25D366; /* Verde más brillante en hover */
+}
 
 /* Typing Indicator */
 .typing { display: flex; gap: 5px; padding: 15px; }

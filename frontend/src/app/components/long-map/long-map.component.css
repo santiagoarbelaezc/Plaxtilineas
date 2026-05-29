@@ -1,78 +1,35 @@
-/* Sección del mapa - Estilo actualizado para coincidir con categorías */
-.contenidoM.mapa {
-  max-width: 1500px;
-  background-color: var(--white);
+/* Sección del mapa - Estilo moderno */
+.map-section {
   position: relative;
-  padding: 26px;
-  border-radius: 12px;
-  margin: 40px auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  font-family: var(--font-primary);
+  overflow: hidden;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
 }
 
-/* Título - Mismo estilo que section-title */
-.title {
-  font-size: 2rem;
-  font-weight: 500;
-  color: #2d3748;
-  font-family: var(--font-primary);
-  letter-spacing: 0.01em;
-  margin-bottom: 8px;
-  text-align: center;
-  position: relative;
-  display: inline-block;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.title::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(90deg, #368c44, #25d366);
-  border-radius: 2px;
-}
-
-/* Subtítulo - Mismo estilo que section-subtitle */
-.map-subtitle {
-  font-size: 1rem;
-  color: #666;
-  margin: 24px auto 32px;
-  font-weight: 400;
-  font-family: var(--font-primary);
-  letter-spacing: 0.01em;
-  text-align: center;
-  max-width: 600px;
-  line-height: 1.6;
-}
-
-.map-subtitle strong {
-  color: #368c44;
-  font-weight: var(--font-weight-medium);
-  position: relative;
-}
-
-/* Contenedor del mapa - Estilo similar a categorías-container */
-.map-container {
-  position: relative;
+.map-wrapper {
   max-width: 1400px;
-  margin: 0 auto 32px;
+  margin: 0 auto;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+/* Contenedor del mapa */
+.map-container {
+  width: 100%;
+  position: relative;
   overflow: hidden;
   background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(54, 140, 68, 0.12);
-  border-top: 3px solid #368c44;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px -10px rgba(54, 140, 68, 0.15), 0 0 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f3f4f6;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .map-container:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(54, 140, 68, 0.18);
+  transform: translateY(-5px);
+  box-shadow: 0 30px 50px -15px rgba(54, 140, 68, 0.25), 0 0 25px rgba(0, 0, 0, 0.05);
 }
 
 /* Iframe del mapa */
@@ -80,22 +37,17 @@
   display: block;
   border: none;
   width: 100%;
-  height: 450px;
   position: relative;
   z-index: 2;
   filter: grayscale(0.1) contrast(1.05);
-  transition: filter 0.3s ease;
+  transition: filter 0.4s ease;
+  animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+  transform: translateY(20px);
 }
 
 .map-container:hover iframe {
   filter: grayscale(0) contrast(1.1);
-}
-
-/* Animación de entrada suave para el iframe */
-.map-container iframe {
-  animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  opacity: 0;
-  transform: translateY(20px);
 }
 
 @keyframes slideUp {
@@ -105,296 +57,90 @@
   }
 }
 
-/* Botones - Estilo similar a los botones de categorías */
+/* Botones */
 .map-buttons {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  max-width: 1400px;
-  margin: 0 auto;
+  width: 100%;
+  margin-top: 10px;
 }
 
 /* Botón principal - Estilo actualizado */
-.btn2 {
+.btn-modern-map {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 16px 36px;
-  background: linear-gradient(135deg, #368c44 0%, #25d366 100%);
-  color: white;
+  padding: 16px 40px;
+  background: #ffffff;
+  color: #368C44;
   text-decoration: none;
-  border-radius: 10px;
-  font-weight: var(--font-weight-medium);
+  border-radius: 50px;
+  font-weight: 700;
   font-size: 0.95rem;
-  font-family: var(--font-primary);
-  letter-spacing: 0.01em;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  border: 2px solid transparent;
+  border: 2px solid #368C44;
   cursor: pointer;
-  box-shadow: 0 8px 24px rgba(54, 140, 68, 0.2);
-  min-width: 220px;
-  min-height: 52px;
+  box-shadow: 0 4px 15px rgba(54, 140, 68, 0.1);
+  min-width: 250px;
 }
 
-.btn2:hover {
+.btn-modern-map:hover {
+  background: #368C44;
+  color: #ffffff;
   transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(54, 140, 68, 0.3);
-  background: linear-gradient(135deg, #2d7a3a 0%, #1eb854 100%);
+  box-shadow: 0 10px 25px rgba(54, 140, 68, 0.3);
 }
 
-.btn2:active {
+.btn-modern-map:active {
   transform: translateY(-1px);
 }
 
-/* Efecto ripple para el botón */
-.btn2::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  background-image: radial-gradient(circle, rgba(255,255,255,0.3) 10%, transparent 10.01%);
-  background-repeat: no-repeat;
-  background-position: 50%;
-  transform: scale(10,10);
-  opacity: 0;
-  transition: transform 0.5s, opacity 0.8s;
-}
-
-.btn2:active::after {
-  transform: scale(0,0);
-  opacity: 0.5;
-  transition: 0s;
-}
-
-/* Texto del botón */
 .spn2 {
   position: relative;
   z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* Accesibilidad mejorada */
-.btn2:focus-visible {
-  outline: 3px solid #368c44;
-  outline-offset: 3px;
-  box-shadow: 0 0 0 6px rgba(54, 140, 68, 0.2);
+.btn-modern-map .icon {
+  transition: transform 0.3s ease;
 }
 
-.map-container:focus-within {
-  outline: 3px solid #368c44;
-  outline-offset: 3px;
-  border-radius: 15px;
+.btn-modern-map:hover .icon {
+  transform: scale(1.1);
 }
 
-/* Responsive Design - Mismos breakpoints que categorías */
-@media (max-width: 1200px) {
-  .contenidoM.mapa {
-    max-width: 1300px;
-    padding: 24px;
-  }
-  
-  .title {
-    font-size: 1.8rem;
-  }
-}
-
+/* Responsive Design */
 @media (max-width: 992px) {
-  .contenidoM.mapa {
-    max-width: 1000px;
-    padding: 20px;
-    margin: 30px auto;
+  .map-wrapper {
+    gap: 20px;
   }
-  
-  .map-buttons {
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-  }
-  
-  .btn2 {
+  .btn-modern-map {
     width: 100%;
     max-width: 400px;
-    padding: 14px 28px;
   }
 }
 
 @media (max-width: 768px) {
-  .contenidoM.mapa {
-    padding: 20px 16px;
-    margin: 24px auto;
-    border-radius: 10px;
-  }
-  
-  .title {
-    font-size: 1.6rem;
-  }
-  
-  .map-subtitle {
-    font-size: 0.95rem;
-    margin: 20px auto 24px;
-  }
-  
   .map-container {
-    border-radius: 10px;
-    margin-bottom: 24px;
+    border-radius: 16px;
   }
   
   .map-container iframe {
     height: 350px;
   }
   
-  .btn2 {
+  .btn-modern-map {
     padding: 14px 24px;
     font-size: 0.9rem;
-    min-height: 48px;
-    min-width: 200px;
   }
 }
 
 @media (max-width: 480px) {
-  .contenidoM.mapa {
-    padding: 16px 12px;
-    margin: 20px auto;
-  }
-  
-  .title {
-    font-size: 1.4rem;
-  }
-  
-  .map-subtitle {
-    font-size: 0.9rem;
-    margin: 16px auto 20px;
-  }
-  
   .map-container iframe {
     height: 300px;
-  }
-  
-  .btn2 {
-    padding: 12px 20px;
-    font-size: 0.85rem;
-    min-height: 44px;
-  }
-}
-
-@media (max-width: 359px) {
-  .contenidoM.mapa {
-    padding: 14px 10px;
-  }
-  
-  .title {
-    font-size: 1.3rem;
-  }
-  
-  .map-subtitle {
-    font-size: 0.85rem;
-  }
-  
-  .map-container iframe {
-    height: 250px;
-  }
-  
-  .btn2 {
-    padding: 10px 16px;
-    font-size: 0.8rem;
-    min-height: 40px;
-  }
-}
-
-/* Para orientación landscape en móviles */
-@media screen and (max-width: 767px) and (orientation: landscape) {
-  .map-container iframe {
-    height: 280px;
-  }
-  
-  .map-buttons {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-}
-
-/* Optimización para dispositivos táctiles */
-@media (hover: none) and (pointer: coarse) {
-  .map-container:hover {
-    transform: none;
-    box-shadow: 0 8px 32px rgba(54, 140, 68, 0.12);
-  }
-  
-  .btn2:hover {
-    transform: none;
-    box-shadow: 0 8px 24px rgba(54, 140, 68, 0.2);
-  }
-  
-  .btn2:active {
-    transform: translateY(-1px);
-    box-shadow: 0 12px 32px rgba(54, 140, 68, 0.3);
-  }
-}
-
-/* Efecto de borde sutil en toda la sección */
-.contenidoM.mapa::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 20px;
-  right: 20px;
-  height: 3px;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(54, 140, 68, 0.3), 
-    transparent);
-  border-radius: 0 0 2px 2px;
-}
-
-/* Efecto de sombra suave en la parte inferior */
-.contenidoM.mapa::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 20px;
-  right: 20px;
-  height: 1px;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(0, 0, 0, 0.05), 
-    transparent);
-}
-
-/* Clases de utilidad para accesibilidad */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* Animación suave para los elementos */
-.title,
-.map-subtitle,
-.map-container,
-.map-buttons {
-  animation: fadeIn 0.5s ease forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
   }
 }

@@ -1,35 +1,23 @@
 <div class="admin-content-wrapper">
   <!-- Contenido principal -->
   <main class="admin-main-content">
-    <!-- Header -->
-    <div class="admin-content-header">
-      <div class="header-content">
-        <h1 class="page-title">
-          <fa-icon [icon]="faBoxes" class="title-icon"></fa-icon>
-          Gestión de Productos
-        </h1>
-        <p class="page-subtitle">Administra el inventario completo de productos</p>
-      </div>
-      <button class="back-to-dashboard" (click)="volverAlDashboard()">
-        <fa-icon [icon]="faArrowLeft"></fa-icon>
-        <span>Volver al Dashboard</span>
-      </button>
-    </div>
-
     <!-- Card: Crear nuevo producto -->
     <section class="admin-card create-card">
-      <div class="card-header">
+      <div class="card-header" (click)="toggleFormularioCrear()" style="cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='rgba(0,0,0,0.1)'">
         <h2 class="card-title">
           <fa-icon [icon]="faPlus" class="card-icon"></fa-icon>
           Crear Nuevo Producto
         </h2>
-        <button class="btn-secondary btn-sm" (click)="toggleVariantesForm()">
-          <fa-icon [icon]="faLayerGroup"></fa-icon>
-          {{ mostrarVariantesForm ? 'Ocultar' : 'Agregar' }} Variantes
-          <span *ngIf="variantesTemporales.length > 0" class="badge">{{ variantesTemporales.length }}</span>
-        </button>
+        <div style="display: flex; gap: 15px; align-items: center;">
+          <button class="btn-secondary btn-sm" (click)="$event.stopPropagation(); toggleVariantesForm()" *ngIf="mostrarFormularioCrear">
+            <fa-icon [icon]="faLayerGroup"></fa-icon>
+            {{ mostrarVariantesForm ? 'Ocultar' : 'Agregar' }} Variantes
+            <span *ngIf="variantesTemporales.length > 0" class="badge">{{ variantesTemporales.length }}</span>
+          </button>
+          <fa-icon [icon]="mostrarFormularioCrear ? faCaretUp : faCaretDown" style="color: #64748b; font-size: 1.2rem;"></fa-icon>
+        </div>
       </div>
-      <div class="card-body">
+      <div class="card-body" *ngIf="mostrarFormularioCrear">
         <form (ngSubmit)="crearProducto()" [formGroup]="formProducto" enctype="multipart/form-data" class="product-form">
           <div class="form-row">
             <div class="form-group">
@@ -262,25 +250,9 @@
       <div class="card-body">
         <div class="filter-controls">
           <div class="filter-group">
-            <label for="filtroSubcategoria" class="form-label">
-              <fa-icon [icon]="faFolder"></fa-icon>
-              Filtrar por subcategoría:
-            </label>
-            <select
-              id="filtroSubcategoria"
-              [(ngModel)]="filtroSubcategoriaId"
-              (change)="filtrarPorSubcategoria()"
-              class="filter-select"
-            >
-              <option value="">Todas las subcategorías</option>
-              <option *ngFor="let sub of subcategorias" [value]="sub.id">{{ sub.nombre }}</option>
-            </select>
-          </div>
-
-          <div class="filter-group">
             <label for="searchTerm" class="form-label">
               <fa-icon [icon]="faSearch"></fa-icon>
-              Buscar por nombre:
+              Buscar producto:
             </label>
             <div class="search-box">
               <fa-icon [icon]="faSearch" class="search-icon"></fa-icon>
@@ -289,10 +261,62 @@
                 id="searchTerm"
                 [(ngModel)]="searchTerm"
                 (ngModelChange)="filtrarProductos()"
-                placeholder="Buscar producto..."
+                placeholder="Nombre, ID, o desc..."
                 class="search-input"
               />
             </div>
+          </div>
+
+          <div class="filter-group">
+            <label for="filtroCategoria" class="form-label">
+              <fa-icon [icon]="faFolder"></fa-icon>
+              Categoría:
+            </label>
+            <select
+              id="filtroCategoria"
+              [(ngModel)]="filtroCategoriaId"
+              (change)="filtrarProductos()"
+              class="filter-select"
+            >
+              <option value="">Todas</option>
+              <option *ngFor="let cat of categoriasDisponibles" [value]="cat.id">{{ cat.nombre }}</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filtroSubcategoria" class="form-label">
+              <fa-icon [icon]="faFolder"></fa-icon>
+              Subcategoría:
+            </label>
+            <select
+              id="filtroSubcategoria"
+              [(ngModel)]="filtroSubcategoriaId"
+              (change)="filtrarProductos()"
+              class="filter-select"
+            >
+              <option value="">Todas</option>
+              <option *ngFor="let sub of subcategorias" [value]="sub.id">{{ sub.nombre }}</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filtroOrden" class="form-label">
+              <fa-icon [icon]="faFilter"></fa-icon>
+              Ordenar por:
+            </label>
+            <select
+              id="filtroOrden"
+              [(ngModel)]="filtroOrden"
+              (change)="filtrarProductos()"
+              class="filter-select"
+            >
+              <option value="recientes">Últimos agregados</option>
+              <option value="antiguos">Más antiguos</option>
+              <option value="nombre_asc">Nombre (A-Z)</option>
+              <option value="nombre_desc">Nombre (Z-A)</option>
+              <option value="precio_asc">Precio (Menor a Mayor)</option>
+              <option value="precio_desc">Precio (Mayor a Menor)</option>
+            </select>
           </div>
         </div>
       </div>

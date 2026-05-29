@@ -2,12 +2,14 @@
   <!-- Header del Dashboard -->
   <header class="admin-dashboard-header">
     <div class="admin-header-content">
-      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766438846/plaxtilineas_mujcoh.png" alt="Logo"
-        class="admin-logo" />
       <div class="admin-header-text">
-        <h1 class="admin-title">Panel de Administración</h1>
-        <p class="admin-subtitle">Gestiona productos, categorías, subcategorías y más</p>
+        <h1 class="admin-title">{{ tituloSeccion }}</h1>
+        <p class="admin-subtitle">{{ subtituloSeccion }}</p>
       </div>
+      <button *ngIf="!estaEnInicio" class="admin-logout-btn" style="margin-left: 20px; background: rgba(54, 140, 68, 0.1); border-color: rgba(54, 140, 68, 0.3); color: #4ade80;" routerLink="/admin">
+        <fa-icon [icon]="faArrowLeft"></fa-icon>
+        <span>Volver al Dashboard</span>
+      </button>
     </div>
     <button class="admin-logout-btn" (click)="logout()" title="Cerrar sesión">
       <fa-icon [icon]="faSignOutAlt" class="logout-icon"></fa-icon>

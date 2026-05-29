@@ -12,33 +12,6 @@
   padding: 0 2rem;
 }
 
-/* Section Header */
-.section-header {
-  text-align: center;
-  margin-bottom: 25px;
-}
-
-.section-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #111827;
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-  margin-bottom: 12px;
-}
-
-.section-title span {
-  color: #368C44;
-}
-
-.section-subtitle {
-  font-size: 1.1rem;
-  color: #6b7280;
-  max-width: 600px;
-  margin: 0 auto;
-  font-weight: 400;
-}
-
 /* Carousel Wrapper */
 .carousel-wrapper {
   position: relative;

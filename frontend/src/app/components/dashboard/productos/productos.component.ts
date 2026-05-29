@@ -94,7 +94,13 @@ export class ProductosComponent implements OnInit {
   subcategorias: Subcategoria[] = [];
   imagenSeleccionada: File | null = null;
   filtroSubcategoriaId: string = '';
+  filtroCategoriaId: string = '';
+  filtroOrden: string = 'recientes';
+  categoriasDisponibles: {id: number, nombre: string}[] = [];
   
+  // Propiedades de UI
+  mostrarFormularioCrear: boolean = false;
+
   // Propiedades para variantes
   mostrarVariantesForm: boolean = false;
   variantesTemporales: CrearVarianteDTO[] = [];
@@ -111,7 +117,7 @@ export class ProductosComponent implements OnInit {
 
   // Propiedades para paginación
   paginaActual: number = 1;
-  itemsPorPagina: number = 10;
+  itemsPorPagina: number = 5;
   totalPaginas: number = 1;
   searchTerm: string = '';
 
@@ -155,11 +161,22 @@ export class ProductosComponent implements OnInit {
     this.subcategoriasService.getSubcategorias().subscribe({
       next: subs => {
         this.subcategorias = subs;
+        this.extraerCategoriasDisponibles();
       },
       error: err => {
         console.error('Error al cargar subcategorías:', err);
       }
     });
+  }
+
+  extraerCategoriasDisponibles(): void {
+    const mapa = new Map<number, string>();
+    this.subcategorias.forEach(s => {
+      if (s.categoria_id && s.categoria) {
+        mapa.set(s.categoria_id, s.categoria);
+      }
+    });
+    this.categoriasDisponibles = Array.from(mapa.entries()).map(([id, nombre]) => ({ id, nombre }));
   }
 
   cargarProductos(): void {
@@ -177,6 +194,11 @@ export class ProductosComponent implements OnInit {
         console.error('Error al cargar productos:', err);
       }
     });
+  }
+
+  // MÉTODOS DE UI
+  toggleFormularioCrear(): void {
+    this.mostrarFormularioCrear = !this.mostrarFormularioCrear;
   }
 
   // MÉTODOS PARA VARIANTES (CREACIÓN EN FORMULARIO)
@@ -472,16 +494,57 @@ export class ProductosComponent implements OnInit {
 
   // Métodos para productos (sin cambios)
   filtrarProductos(): void {
-    if (this.searchTerm.trim() === '') {
-      this.productosFiltrados = [...this.productos];
-    } else {
+    let filtrados = [...this.productos];
+
+    // Filtro por término de búsqueda
+    if (this.searchTerm.trim() !== '') {
       const termino = this.searchTerm.toLowerCase();
-      this.productosFiltrados = this.productos.filter(prod =>
+      filtrados = filtrados.filter(prod =>
         prod.nombre.toLowerCase().includes(termino) ||
         prod.descripcion?.toLowerCase().includes(termino) ||
         prod.id.toString().includes(termino)
       );
     }
+
+    // Filtro por Categoría Principal
+    if (this.filtroCategoriaId) {
+      const catId = parseInt(this.filtroCategoriaId);
+      // Solo mantener productos cuya subcategoría pertenezca a esta categoría
+      const subcategoriasDeEstaCategoria = this.subcategorias
+        .filter(s => s.categoria_id === catId)
+        .map(s => s.id);
+      filtrados = filtrados.filter(prod => subcategoriasDeEstaCategoria.includes(prod.subcategoria_id));
+    }
+
+    // Filtro por Subcategoría (solo si no estamos filtrando ya por ella en la API)
+    if (this.filtroSubcategoriaId && this.filtroSubcategoriaId !== '') {
+      const subId = parseInt(this.filtroSubcategoriaId);
+      filtrados = filtrados.filter(prod => prod.subcategoria_id === subId);
+    }
+
+    // Ordenamiento
+    switch (this.filtroOrden) {
+      case 'recientes':
+        filtrados.sort((a, b) => b.id - a.id);
+        break;
+      case 'antiguos':
+        filtrados.sort((a, b) => a.id - b.id);
+        break;
+      case 'nombre_asc':
+        filtrados.sort((a, b) => a.nombre.localeCompare(b.nombre));
+        break;
+      case 'nombre_desc':
+        filtrados.sort((a, b) => b.nombre.localeCompare(a.nombre));
+        break;
+      case 'precio_asc':
+        filtrados.sort((a, b) => a.precio - b.precio);
+        break;
+      case 'precio_desc':
+        filtrados.sort((a, b) => b.precio - a.precio);
+        break;
+    }
+
+    this.productosFiltrados = filtrados;
     
     this.paginaActual = 1;
     this.calcularPaginacion();

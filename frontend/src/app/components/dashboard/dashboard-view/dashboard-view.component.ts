@@ -16,7 +16,8 @@ import {
   faDownload,        // Icono para descargar/importar
   faEye,            // Icono para preview
   faChartBar,        // Icono para estadísticas
-  faArrowRight
+  faArrowRight,
+  faArrowLeft
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -41,6 +42,7 @@ export class DashboardViewComponent {
   faEye = faEye;
   faChartBar = faChartBar;
   faArrowRight = faArrowRight;
+  faArrowLeft = faArrowLeft;
 
   // Estados para la importación
   cargandoPreview = false;
@@ -74,7 +76,8 @@ export class DashboardViewComponent {
       faDownload,
       faEye,
       faChartBar,
-      faArrowRight
+      faArrowRight,
+      faArrowLeft
     );
   }
 
@@ -85,6 +88,26 @@ export class DashboardViewComponent {
 
   get estaEnInicio(): boolean {
     return this.router.url === '/admin';
+  }
+
+  get tituloSeccion(): string {
+    const url = this.router.url;
+    if (url.includes('/categorias')) return 'Gestión de Categorías';
+    if (url.includes('/subcategorias')) return 'Gestión de Subcategorías';
+    if (url.includes('/productos')) return 'Gestión de Productos';
+    if (url.includes('/inventario')) return 'Gestión de Inventario';
+    if (url.includes('/pqr-admin')) return 'Peticiones, Quejas y Reclamos';
+    return 'Panel de Administración';
+  }
+
+  get subtituloSeccion(): string {
+    const url = this.router.url;
+    if (url.includes('/categorias')) return 'Administra las categorías principales del catálogo';
+    if (url.includes('/subcategorias')) return 'Administra las subcategorías y su relación';
+    if (url.includes('/productos')) return 'Añade, edita o elimina productos del catálogo';
+    if (url.includes('/inventario')) return 'Controla el stock y precios de tus productos';
+    if (url.includes('/pqr-admin')) return 'Gestiona los mensajes de contacto de clientes';
+    return 'Gestiona productos, categorías, subcategorías y más';
   }
 
   /**

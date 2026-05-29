@@ -59,12 +59,16 @@
   </div>
 
   <!-- Carrusel de Banners -->
-  <section class="home-section full-width">
+  <section class="home-section" id="soluciones">
     <app-plaxti-banner
       [images]="bannerImages"
-      [height]="'600px'"
-      [hoverScale]="1.05"
-      [minScale]="0.95">
+      [height]="'500px'"
+      [hoverScale]="1.1"
+      [minScale]="0.95"
+      [fullWidth]="false"
+      [showHeader]="true"
+      [headerTitle]="'Nuestras <span>Soluciones</span>'"
+      [headerSubtitle]="'Descubre todo lo que Plaxtilineas tiene para ofrecerte'">
     </app-plaxti-banner>
   </section>
 
