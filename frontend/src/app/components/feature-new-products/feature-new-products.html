@@ -1,73 +1,90 @@
-<section class="feature-new-products-section">
-  <div class="feature-new-products-container">
+<section class="feature-new-products-section categories-section">
+  <div class="container">
+    <!-- Section Header -->
     <div class="section-header">
-      <div>
-        <h2 class="section-title">Nuevos Productos</h2>
-        <p class="section-subtitle">Descubre nuestras últimas incorporaciones</p>
-      </div>
+      <h2 class="section-title">Nuevos <span>Productos</span></h2>
+      <p class="section-subtitle">Descubre nuestras últimas incorporaciones</p>
     </div>
 
-    <div class="products-grid" *ngIf="productos.length > 0; else loadingTemplate">
-      <!-- Producto -->
-      <div 
-        class="product-card" 
-        *ngFor="let producto of productos"
-        (click)="verDetalles(producto.id, producto.nombre)"
-      >
-        <!-- Imagen del producto -->
-        <div class="product-image-container">
-          <div class="product-image-wrapper">
-            <img 
-              [src]="producto.imagen_url || 'assets/placeholder.jpg'" 
-              [alt]="producto.nombre"
-              class="product-image"
-              loading="lazy"
-              (error)="producto.imagen_url = 'assets/images/default-product.png'"
-            />
-            <div class="image-overlay"></div>
-          </div>
-          <!-- Etiqueta de nuevo -->
-          <div class="product-badge">NUEVO</div>
-        </div>
-
-        <!-- Contenido del producto -->
-        <div class="product-content">
-          <div class="product-meta">
-            <span class="product-subcategory">{{producto.categoria}}</span>
-            <span class="product-stock">¡Disponible!</span>
-          </div>
-          
-          <h3 class="product-title">{{producto.nombre}}</h3>
-          
-          <p class="product-description">{{producto.descripcion}}</p>
-          
-          <div class="product-bottom">
-            <div class="product-price">
-              <span class="price-amount">{{ formatearPrecio(producto.precio) }}</span>
-            </div>
+    <!-- Carousel Container -->
+    <div class="carousel-wrapper" *ngIf="!loading && productos.length > 0">
+      <!-- Prev Button -->
+      <button class="nav-btn prev" (click)="scrollCarrusel('prev')" aria-label="Anterior">
+        <fa-icon [icon]="['fas', 'chevron-left']"></fa-icon>
+      </button>
+      
+      <div class="carousel-viewport">
+        <div class="categories-grid products-carousel-grid" #productosGrid>
+          <!-- Product Card -->
+          <div class="category-item" *ngFor="let producto of productos">
             
-            <div class="cart-btn-wrapper" (click)="$event.stopPropagation()">
-              <app-add-to-cart-btn 
-                [producto]="producto" 
-                [cantidad]="1"
-                [isMinimal]="true">
-              </app-add-to-cart-btn>
+            <div class="category-card product-card-styled" (click)="verDetalles(producto.id, producto.nombre)">
+              
+              <div class="card-visual">
+                <img 
+                  [src]="producto.imagen_url || 'assets/placeholder.jpg'" 
+                  [alt]="producto.nombre"
+                  class="category-icon product-image"
+                  loading="lazy"
+                  (error)="producto.imagen_url = 'assets/images/default-product.png'"
+                >
+                <div class="card-overlay"></div>
+                <!-- Etiqueta de nuevo -->
+                <div class="product-badge">NUEVO</div>
+              </div>
+
+              <div class="card-content product-info">
+                <span class="product-subcategory">{{producto.categoria}}</span>
+                <h3 class="product-title">{{producto.nombre}}</h3>
+                <div class="product-price">
+                  <span class="price-amount">{{ formatearPrecio(producto.precio) }}</span>
+                </div>
+                
+                <div class="cart-btn-wrapper" (click)="$event.stopPropagation()">
+                  <app-add-to-cart-btn 
+                    [producto]="producto" 
+                    [cantidad]="1"
+                    [isMinimal]="true">
+                  </app-add-to-cart-btn>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      
+      <!-- Next Button -->
+      <button class="nav-btn next" (click)="scrollCarrusel('next')" aria-label="Siguiente">
+        <fa-icon [icon]="['fas', 'chevron-right']"></fa-icon>
+      </button>
+    </div>
+    
+    <!-- Indicators -->
+    <div class="carousel-indicators" *ngIf="!loading && pagesArray.length > 1">
+      <button class="indicator-dot" 
+              *ngFor="let page of pagesArray"
+              [class.active]="currentPage === page"
+              (click)="goToPage(page)"
+              aria-label="Ir a página"></button>
     </div>
 
     <!-- Loading template -->
-    <ng-template #loadingTemplate>
-      <div class="loading-container">
-        <div class="loading-spinner"></div>
-        <p>Cargando nuevos productos...</p>
+    <div class="loading-container" *ngIf="loading">
+      <div class="loading-spinner"></div>
+      <p>Cargando nuevos productos...</p>
+    </div>
+    
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!loading && productos.length === 0">
+      <div class="empty-icon">
+        <fa-icon [icon]="['fas', 'box-open']"></fa-icon>
       </div>
-    </ng-template>
+      <h3>Próximamente nuevos productos</h3>
+      <p>Estamos trabajando para traer nuevas opciones al catálogo.</p>
+    </div>
 
     <!-- Botón para ver todos los productos -->
-    <div class="view-all-container">
+    <div class="view-all-container" *ngIf="!loading && productos.length > 0">
       <button class="view-all-btn" (click)="verTodosProductos()">
         Ver Todos los Productos
         <span class="arrow-icon">→</span>

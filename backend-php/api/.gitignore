@@ -8,3 +8,8 @@ logs/
 # ─── Dependencias (si en el futuro se usa Composer) ──────────────────────────
 vendor/
 composer.lock
+
+# ─── Archivos Comprimidos ─────────────────────────────────────────────────────
+*.zip
+*.rar
+*.tar.gz
