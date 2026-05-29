@@ -1,0 +1,76 @@
+<!-- Botón flotante -->
+<button 
+  class="assistant-fab" 
+  [class.hidden]="isOpen" 
+  (click)="toggleChat()" 
+  title="Hablar con Mateo">
+  <div class="fab-avatar-container">
+    <img src="assets/images/mateo4.png" alt="Mateo" class="fab-avatar">
+    <span class="status-dot"></span>
+  </div>
+</button>
+
+<!-- Panel de Chat -->
+<div class="assistant-panel" [class.open]="isOpen">
+  <!-- Cabecera -->
+  <div class="chat-header" (click)="toggleChat()">
+    <div class="header-info">
+      <!-- Icono de arrastre para dar sensación de movilidad -->
+      <svg class="drag-handle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+        <path d="M8.5 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm7-7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
+      </svg>
+      <div class="header-text">
+        <h4>Mateo</h4>
+        <span>Asistente del Sistema</span>
+      </div>
+    </div>
+    <button class="close-btn" (click)="closeChat(); $event.stopPropagation()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Contenedor de Mensajes -->
+  <div class="chat-body" #chatContainer>
+    <div class="welcome-banner">
+      <img src="assets/images/mateo-dashboard.png" alt="Mateo" class="welcome-mateo-img">
+      <p>¡Hola! Soy <strong>Mateo</strong>, estoy aquí para guiarte en el panel de administración de Plaxtilineas.</p>
+    </div>
+
+    <div class="messages-wrapper">
+      <div *ngFor="let msg of messages" class="message-group" [ngClass]="msg.sender">
+        <div class="message-bubble">
+          {{ msg.text }}
+        </div>
+        <span class="message-time">{{ msg.timestamp | date:'HH:mm' }}</span>
+      </div>
+
+      <!-- Indicador de escribiendo -->
+      <div *ngIf="isTyping" class="message-group assistant">
+        <div class="message-bubble typing">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Entrada de texto -->
+  <div class="chat-footer">
+    <form (ngSubmit)="sendMessage()">
+      <input 
+        type="text" 
+        name="message" 
+        [(ngModel)]="newMessage" 
+        placeholder="Escribe un mensaje..." 
+        autocomplete="off">
+      <button type="submit" [disabled]="!newMessage.trim()" class="send-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </form>
+  </div>
+</div>

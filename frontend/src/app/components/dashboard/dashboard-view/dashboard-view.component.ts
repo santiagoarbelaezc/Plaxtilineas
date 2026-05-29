@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { ImportProductsService } from '../../../services/import-products.service';
+import { DashboardAssistantComponent } from '../dashboard-assistant/dashboard-assistant.component';
 import {
   faBoxes,
   faFolderOpen,
@@ -17,13 +18,17 @@ import {
   faEye,            // Icono para preview
   faChartBar,        // Icono para estadísticas
   faArrowRight,
-  faArrowLeft
+  faArrowLeft,
+  faChartLine,
+  faPaintBrush,
+  faChartPie,
+  faFileAlt
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-dashboard-view',
   standalone: true,
-  imports: [CommonModule, RouterModule, FontAwesomeModule],
+  imports: [CommonModule, RouterModule, FontAwesomeModule, DashboardAssistantComponent],
   templateUrl: './dashboard-view.component.html',
   styleUrls: ['./dashboard-view.component.css']
 })
@@ -43,6 +48,10 @@ export class DashboardViewComponent {
   faChartBar = faChartBar;
   faArrowRight = faArrowRight;
   faArrowLeft = faArrowLeft;
+  faChartLine = faChartLine;
+  faPaintBrush = faPaintBrush;
+  faChartPie = faChartPie;
+  faFileAlt = faFileAlt;
 
   // Estados para la importación
   cargandoPreview = false;

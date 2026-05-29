@@ -65,8 +65,22 @@ export const routes: Routes = [
         path: 'pqr-admin',
         loadComponent: () => import('./pages/dashboard/pqr/pqr').then(m => m.Pqr)
       },
-      
-      
+      {
+        path: 'analiticas',
+        loadComponent: () => import('./pages/dashboard/analiticas/analiticas').then(m => m.Analiticas)
+      },
+      {
+        path: 'personalizar-web',
+        loadComponent: () => import('./pages/dashboard/personalizar-web/personalizar-web').then(m => m.PersonalizarWeb)
+      },
+      {
+        path: 'estadisticas',
+        loadComponent: () => import('./pages/dashboard/estadisticas/estadisticas').then(m => m.Estadisticas)
+      },
+      {
+        path: 'reportes',
+        loadComponent: () => import('./pages/dashboard/reportes/reportes').then(m => m.Reportes)
+      }
     ]
   },
   {

@@ -7,7 +7,7 @@
         class="btn btn-secondary"
         (click)="showFiltros = !showFiltros"
         [class.active]="showFiltros">
-        <i class="fas fa-filter"></i>
+        <fa-icon icon="filter"></fa-icon>
         {{ showFiltros ? 'Ocultar Filtros' : 'Mostrar Filtros' }}
       </button>
       
@@ -15,14 +15,14 @@
         class="btn btn-info"
         (click)="cargarEstadisticas(); modoVista = 'estadisticas'"
         [class.active]="modoVista === 'estadisticas'">
-        <i class="fas fa-chart-bar"></i>
+        <fa-icon icon="chart-bar"></fa-icon>
         Estadísticas
       </button>
       
       <button 
         class="btn btn-primary"
         (click)="cargarPQRS()">
-        <i class="fas fa-sync-alt"></i>
+        <fa-icon icon="sync-alt"></fa-icon>
         Actualizar
       </button>
     </div>
@@ -39,7 +39,7 @@
       </span>
       {{ mensaje }}
       <button class="alert-close" (click)="mensaje = ''">
-        <i class="fas fa-times"></i>
+        <fa-icon icon="times"></fa-icon>
       </button>
     </div>
   </div>
@@ -47,7 +47,7 @@
   <!-- Filtros avanzados -->
   <div *ngIf="showFiltros" class="filtros-avanzados card fade-in">
     <div class="filtros-header">
-      <h3><i class="fas fa-sliders"></i> Filtros Avanzados</h3> <!-- Corregido: fa-sliders-h -> fa-sliders -->
+      <h3><fa-icon icon="sliders"></fa-icon> Filtros Avanzados</h3> <!-- Corregido: fa-sliders-h -> fa-sliders -->
     </div>
     
     <div class="filtros-body">
@@ -55,7 +55,7 @@
         <!-- Filtro por estado -->
         <div class="form-group">
           <label for="filtroEstado">
-            <i class="fas fa-flag"></i> Estado
+            <fa-icon icon="flag"></fa-icon> Estado
           </label>
           <select 
             id="filtroEstado" 
@@ -70,7 +70,7 @@
         <!-- Filtro por tipo -->
         <div class="form-group">
           <label for="filtroTipo">
-            <i class="fas fa-tag"></i> Tipo
+            <fa-icon icon="tag"></fa-icon> Tipo
           </label>
           <select 
             id="filtroTipo" 
@@ -85,7 +85,7 @@
         <!-- Filtro por fecha inicio -->
         <div class="form-group">
           <label for="filtroFechaInicio">
-            <i class="fas fa-calendar-alt"></i> Fecha Inicio
+            <fa-icon icon="calendar-alt"></fa-icon> Fecha Inicio
           </label>
           <input 
             type="date" 
@@ -97,7 +97,7 @@
         <!-- Filtro por fecha fin -->
         <div class="form-group">
           <label for="filtroFechaFin">
-            <i class="fas fa-calendar-alt"></i> Fecha Fin
+            <fa-icon icon="calendar-alt"></fa-icon> Fecha Fin
           </label>
           <input 
             type="date" 
@@ -109,7 +109,7 @@
         <!-- Ordenar por -->
         <div class="form-group">
           <label for="ordenarPor">
-            <i class="fas fa-sort-amount-down"></i> Ordenar por
+            <fa-icon icon="sort-amount-down"></fa-icon> Ordenar por
           </label>
           <select 
             id="ordenarPor" 
@@ -124,7 +124,7 @@
         <!-- Orden -->
         <div class="form-group">
           <label for="orden">
-            <i class="fas fa-sort"></i> Orden
+            <fa-icon icon="sort"></fa-icon> Orden
           </label>
           <select 
             id="orden" 
@@ -138,10 +138,10 @@
 
       <div class="filtros-actions">
         <button class="btn btn-primary" (click)="aplicarFiltros()">
-          <i class="fas fa-check"></i> Aplicar Filtros
+          <fa-icon icon="check"></fa-icon> Aplicar Filtros
         </button>
         <button class="btn btn-outline" (click)="limpiarFiltros()">
-          <i class="fas fa-broom"></i> Limpiar Filtros
+          <fa-icon icon="broom"></fa-icon> Limpiar Filtros
         </button>
       </div>
     </div>
@@ -151,7 +151,7 @@
   <div class="search-bar card">
     <div class="search-container">
       <div class="search-icon">
-        <i class="fas fa-search"></i>
+        <fa-icon icon="search"></fa-icon>
       </div>
       <input 
         type="text" 
@@ -169,7 +169,7 @@
       </select>
       
       <button class="search-btn" (click)="realizarBusqueda()" *ngIf="filtros.terminoBusqueda">
-        <i class="fas fa-search"></i> Buscar
+        <fa-icon icon="search"></fa-icon> Buscar
       </button>
     </div>
   </div>
@@ -252,21 +252,21 @@
                   class="btn-icon btn-view"
                   (click)="verDetallePQR(pqr)"
                   title="Ver detalles">
-                  <i class="fas fa-eye"></i>
+                  <fa-icon icon="eye"></fa-icon>
                 </button>
                 
                 <button 
                   class="btn-icon btn-edit"
                   (click)="verDetallePQR(pqr)"
                   title="Responder">
-                  <i class="fas fa-reply"></i>
+                  <fa-icon icon="reply"></fa-icon>
                 </button>
                 
                 <button 
                   class="btn-icon btn-danger"
                   (click)="eliminarPQR(pqr)"
                   title="Eliminar">
-                  <i class="fas fa-trash"></i>
+                  <fa-icon icon="trash-alt"></fa-icon>
                 </button>
               </div>
             </td>
@@ -276,7 +276,7 @@
       
       <!-- Mensaje sin resultados -->
       <div *ngIf="pqrs.length === 0" class="no-results">
-        <i class="fas fa-inbox"></i>
+        <fa-icon icon="inbox"></fa-icon>
         <h3>No hay PQRS para mostrar</h3>
         <p *ngIf="filtros.estado || filtros.tipo || filtros.terminoBusqueda">
           Intenta con otros filtros de búsqueda
@@ -304,7 +304,7 @@
           class="paginacion-btn"
           [disabled]="paginacion.paginaActual === 1"
           (click)="cambiarPagina(paginacion.paginaActual - 1)">
-          <i class="fas fa-chevron-left"></i> Anterior
+          <fa-icon icon="chevron-left"></fa-icon> Anterior
         </button>
         
         <div class="paginacion-numbers">
@@ -321,7 +321,7 @@
           class="paginacion-btn"
           [disabled]="paginacion.paginaActual === paginacion.totalPaginas"
           (click)="cambiarPagina(paginacion.paginaActual + 1)">
-          Siguiente <i class="fas fa-chevron-right"></i>
+          Siguiente <fa-icon icon="chevron-right"></fa-icon>
         </button>
       </div>
     </div>
@@ -332,7 +332,7 @@
     <!-- Header del detalle -->
     <div class="detalle-header">
       <button class="btn btn-outline" (click)="volverALista()">
-        <i class="fas fa-arrow-left"></i> Volver a la lista
+        <fa-icon icon="arrow-left"></fa-icon> Volver a la lista
       </button>
       
       <div class="detalle-ticket">
@@ -363,31 +363,31 @@
         <div class="detalle-col">
           <div class="card info-card">
             <div class="card-header">
-              <h3><i class="fas fa-user-circle"></i> Información del Solicitante</h3>
+              <h3><fa-icon icon="user-circle"></fa-icon> Información del Solicitante</h3>
             </div>
             <div class="card-body">
               <div class="info-item">
-                <label><i class="fas fa-user"></i> Nombre:</label>
+                <label><fa-icon icon="user"></fa-icon> Nombre:</label>
                 <span>{{ pqrSeleccionada.nombre_completo }}</span>
               </div>
               <div class="info-item">
-                <label><i class="fas fa-envelope"></i> Email:</label>
+                <label><fa-icon icon="envelope"></fa-icon> Email:</label>
                 <a href="mailto:{{ pqrSeleccionada.email }}">{{ pqrSeleccionada.email }}</a>
               </div>
               <div class="info-item">
-                <label><i class="fas fa-phone"></i> Teléfono:</label>
+                <label><fa-icon icon="phone"></fa-icon> Teléfono:</label>
                 <a href="tel:{{ pqrSeleccionada.telefono }}">{{ pqrSeleccionada.telefono }}</a>
               </div>
               <div class="info-item">
-                <label><i class="fas fa-calendar-alt"></i> Fecha creación:</label>
+                <label><fa-icon icon="calendar-alt"></fa-icon> Fecha creación:</label>
                 <span>{{ formatearFecha(pqrSeleccionada.fecha_creacion || '') }}</span>
               </div>
               <div class="info-item">
-                <label><i class="fas fa-calendar-check"></i> Última actualización:</label>
+                <label><fa-icon icon="calendar-check"></fa-icon> Última actualización:</label>
                 <span>{{ formatearFecha(pqrSeleccionada.fecha_actualizacion || '') }}</span>
               </div>
               <div class="info-item">
-                <label><i class="fas fa-box"></i> Producto relacionado:</label>
+                <label><fa-icon icon="box"></fa-icon> Producto relacionado:</label>
                 <span>{{ pqrSeleccionada.producto_relacionado || 'No especificado' }}</span>
               </div>
             </div>
@@ -396,11 +396,11 @@
           <!-- Gestión del estado -->
           <div class="card estado-card">
             <div class="card-header">
-              <h3><i class="fas fa-cogs"></i> Gestión del Estado</h3>
+              <h3><fa-icon icon="cogs"></fa-icon> Gestión del Estado</h3>
             </div>
             <div class="card-body">
               <div class="form-group">
-                <label><i class="fas fa-flag"></i> Cambiar estado:</label>
+                <label><fa-icon icon="flag"></fa-icon> Cambiar estado:</label>
                 <select 
                   class="form-control"
                   [(ngModel)]="nuevoEstado.estado">
@@ -412,7 +412,7 @@
               </div>
               
               <div class="form-group">
-                <label><i class="fas fa-comment"></i> Mensaje de actualización (opcional):</label>
+                <label><fa-icon icon="comment"></fa-icon> Mensaje de actualización (opcional):</label>
                 <textarea 
                   class="form-control"
                   rows="3"
@@ -424,7 +424,7 @@
                 class="btn btn-primary btn-block"
                 (click)="actualizarEstado()"
                 [disabled]="nuevoEstado.estado === pqrSeleccionada.estado">
-                <i class="fas fa-save"></i> Actualizar Estado
+                <fa-icon icon="save"></fa-icon> Actualizar Estado
               </button>
             </div>
           </div>
@@ -435,7 +435,7 @@
           <!-- Descripción -->
           <div class="card descripcion-card">
             <div class="card-header">
-              <h3><i class="fas fa-file-alt"></i> Descripción</h3>
+              <h3><fa-icon icon="file-alt"></fa-icon> Descripción</h3>
             </div>
             <div class="card-body">
               <div class="descripcion-content">
@@ -447,7 +447,7 @@
           <!-- Archivos adjuntos -->
           <div *ngIf="pqrSeleccionada.archivos && pqrSeleccionada.archivos.length > 0" class="card archivos-card">
             <div class="card-header">
-              <h3><i class="fas fa-paperclip"></i> Archivos Adjuntos ({{ pqrSeleccionada.archivos.length }})</h3>
+              <h3><fa-icon icon="paperclip"></fa-icon> Archivos Adjuntos ({{ pqrSeleccionada.archivos.length }})</h3>
             </div>
             <div class="card-body">
               <div class="archivos-grid">
@@ -468,7 +468,7 @@
                     class="btn-icon btn-download"
                     (click)="descargarArchivo(archivo.url_archivo, archivo.nombre_archivo)"
                     title="Descargar">
-                    <i class="fas fa-download"></i>
+                    <fa-icon icon="download"></fa-icon>
                   </button>
                 </div>
               </div>
@@ -480,7 +480,7 @@
       <!-- Historial de respuestas -->
       <div class="card respuestas-card">
         <div class="card-header">
-          <h3><i class="fas fa-comments"></i> Historial de Respuestas</h3>
+          <h3><fa-icon icon="comments"></fa-icon> Historial de Respuestas</h3>
         </div>
         <div class="card-body">
           <!-- Lista de respuestas -->
@@ -508,14 +508,14 @@
           
           <ng-template #sinRespuestas>
             <div class="sin-respuestas">
-              <i class="fas fa-comment-slash"></i>
+              <fa-icon icon="comment-slash"></fa-icon>
               <p>No hay respuestas aún</p>
             </div>
           </ng-template>
           
           <!-- Formulario para nueva respuesta -->
           <div class="nueva-respuesta">
-            <h4><i class="fas fa-reply"></i> Agregar Respuesta</h4>
+            <h4><fa-icon icon="reply"></fa-icon> Agregar Respuesta</h4>
             <div class="form-group">
               <textarea 
                 class="form-control"
@@ -527,7 +527,7 @@
               class="btn btn-success"
               (click)="agregarRespuesta()"
               [disabled]="!nuevaRespuesta.mensaje.trim() || cargando">
-              <i class="fas fa-paper-plane"></i> 
+              <fa-icon icon="paper-plane"></fa-icon> 
               {{ cargando ? 'Enviando...' : 'Enviar Respuesta' }}
             </button>
           </div>
@@ -540,10 +540,10 @@
   <div *ngIf="modoVista === 'estadisticas'" class="estadisticas-container fade-in">
     <div class="estadisticas-header">
       <button class="btn btn-outline" (click)="modoVista = 'lista'">
-        <i class="fas fa-arrow-left"></i> Volver a la lista
+        <fa-icon icon="arrow-left"></fa-icon> Volver a la lista
       </button>
       
-      <h2><i class="fas fa-chart-bar"></i> Estadísticas de PQRS</h2>
+      <h2><fa-icon icon="chart-bar"></fa-icon> Estadísticas de PQRS</h2>
       
       <button class="btn btn-primary" (click)="cargarEstadisticas()" [disabled]="cargandoEstadisticas">
         <i class="fas fa-sync-alt" [class.fa-spin]="cargandoEstadisticas"></i>
@@ -555,7 +555,7 @@
       <!-- Tarjetas de resumen -->
       <div class="estadistica-card total">
         <div class="estadistica-icon">
-          <i class="fas fa-inbox"></i>
+          <fa-icon icon="inbox"></fa-icon>
         </div>
         <div class="estadistica-content">
           <h3>{{ estadisticas.estadisticas.total }}</h3>
@@ -565,7 +565,7 @@
 
       <div class="estadistica-card pendientes">
         <div class="estadistica-icon">
-          <i class="fas fa-clock"></i>
+          <fa-icon icon="clock"></fa-icon>
         </div>
         <div class="estadistica-content">
           <h3>{{ estadisticas.estadisticas.pendientes }}</h3>
@@ -575,7 +575,7 @@
 
       <div class="estadistica-card en-proceso">
         <div class="estadistica-icon">
-          <i class="fas fa-cogs"></i>
+          <fa-icon icon="cogs"></fa-icon>
         </div>
         <div class="estadistica-content">
           <h3>{{ estadisticas.estadisticas.en_proceso }}</h3>
@@ -585,7 +585,7 @@
 
       <div class="estadistica-card resueltas">
         <div class="estadistica-icon">
-          <i class="fas fa-check-circle"></i>
+          <fa-icon icon="check-circle"></fa-icon>
         </div>
         <div class="estadistica-content">
           <h3>{{ estadisticas.estadisticas.resueltas }}</h3>
@@ -596,7 +596,7 @@
       <!-- Distribución por tipo -->
       <div class="card chart-card">
         <div class="card-header">
-          <h3><i class="fas fa-chart-pie"></i> Distribución por Tipo</h3>
+          <h3><fa-icon icon="chart-pie"></fa-icon> Distribución por Tipo</h3>
         </div>
         <div class="card-body">
           <div class="distribucion-tipos">
@@ -629,12 +629,12 @@
       <!-- Tiempo promedio -->
       <div class="card chart-card">
         <div class="card-header">
-          <h3><i class="fas fa-stopwatch"></i> Tiempo de Respuesta</h3>
+          <h3><fa-icon icon="stopwatch"></fa-icon> Tiempo de Respuesta</h3>
         </div>
         <div class="card-body">
           <div class="tiempo-promedio">
             <div class="tiempo-icon">
-              <i class="fas fa-clock"></i>
+              <fa-icon icon="clock"></fa-icon>
             </div>
             <div class="tiempo-content">
               <h3>{{ estadisticas.estadisticas.tiempo_promedio_horas.toFixed(1) }}h</h3>
@@ -653,7 +653,7 @@
 
     <!-- Sin estadísticas -->
     <div *ngIf="!estadisticas && !cargandoEstadisticas" class="no-estadisticas">
-      <i class="fas fa-chart-line"></i>
+      <fa-icon icon="chart-line"></fa-icon>
       <h3>No hay estadísticas disponibles</h3>
       <p>Intenta actualizar más tarde</p>
     </div>
@@ -663,9 +663,9 @@
   <div *ngIf="showModalConfirmacion" class="modal-overlay fade-in">
     <div class="modal-content">
       <div class="modal-header">
-        <h3><i class="fas fa-exclamation-triangle"></i> Confirmar acción</h3>
+        <h3><fa-icon icon="exclamation-triangle"></fa-icon> Confirmar acción</h3>
         <button class="modal-close" (click)="cancelarAccionModal()">
-          <i class="fas fa-times"></i>
+          <fa-icon icon="times"></fa-icon>
         </button>
       </div>
       
@@ -675,10 +675,10 @@
       
       <div class="modal-footer">
         <button class="btn btn-outline" (click)="cancelarAccionModal()">
-          <i class="fas fa-times"></i> Cancelar
+          <fa-icon icon="times"></fa-icon> Cancelar
         </button>
         <button class="btn btn-danger" (click)="confirmarAccionModal()">
-          <i class="fas fa-check"></i> Confirmar
+          <fa-icon icon="check"></fa-icon> Confirmar
         </button>
       </div>
     </div>
