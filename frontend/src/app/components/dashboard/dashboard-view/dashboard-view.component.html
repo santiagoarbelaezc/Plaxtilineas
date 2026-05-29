@@ -58,12 +58,51 @@
             <span>PQR</span>
           </a>
         </li>
+        <li class="menu-item">
+          <a routerLink="/admin/analiticas" class="menu-link">
+            <fa-icon [icon]="faChartLine" class="menu-icon"></fa-icon>
+            <span>Analíticas</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a routerLink="/admin/personalizar-web" class="menu-link">
+            <fa-icon [icon]="faPaintBrush" class="menu-icon"></fa-icon>
+            <span>Personalizar Web</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a routerLink="/admin/estadisticas" class="menu-link">
+            <fa-icon [icon]="faChartPie" class="menu-icon"></fa-icon>
+            <span>Estadísticas</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a routerLink="/admin/reportes" class="menu-link">
+            <fa-icon [icon]="faFileAlt" class="menu-icon"></fa-icon>
+            <span>Reportes</span>
+          </a>
+        </li>
       </ul>
     </nav>
 
     <!-- Área de contenido -->
     <main class="admin-main-content">
       <div *ngIf="estaEnInicio" class="admin-welcome-section">
+        
+        <!-- BANNER DE MATEO (NUEVO) -->
+        <section class="admin-card mateo-hero-banner" style="background: linear-gradient(135deg, #1e293b, #0f1420); border-left: 4px solid #368C44; display: flex; align-items: center; justify-content: space-between; padding: 30px; margin-bottom: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+          <div style="flex: 1; padding-right: 20px;">
+            <h2 style="color: #ffffff; font-size: 1.8rem; margin-bottom: 10px; font-weight: 700;">
+              Pregúntale a Mateo para ayudarte en lo que necesites
+            </h2>
+            <p style="color: #cbd5e1; font-size: 1.1rem; margin: 0;">
+              Estoy aquí para asistirte con inventarios, ventas, PQR y más. Usa el chat en la esquina para conversar.
+            </p>
+          </div>
+          <div style="width: 150px; height: 150px; flex-shrink: 0;">
+            <img src="assets/images/mateo-dashboard.png" alt="Mateo Asistente" style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.4));">
+          </div>
+        </section>
 
         <!-- 1. IMPORTACIÓN -->
         <section class="admin-card import-section">
