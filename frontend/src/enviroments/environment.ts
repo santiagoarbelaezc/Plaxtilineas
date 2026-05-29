@@ -1,5 +1,5 @@
-// DESARROLLO Y PRODUCCIÓN = Backend EB
+// DESARROLLO LOCAL — Apuntando al backend PHP local (php -S localhost:8000)
 export const environment = {
   production: false,
-  apiUrl: 'https://plaxtilineas.com/api'
+  apiUrl: 'http://localhost:8000/api'
 };

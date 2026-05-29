@@ -18,6 +18,14 @@
           </p>
         </div>
 
+        <!-- ── Banner sesión expirada ── -->
+        <div *ngIf="sessionExpired" class="session-expired-banner">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+          Tu sesión expiró. Inicia sesión nuevamente.
+        </div>
+
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-full flex flex-col gap-6">
           <div class="relative flex flex-col gap-2">
             <label for="correo" class="flex items-center gap-2 text-[0.9rem] font-medium text-[#e2e8f0] tracking-[0.2px] sm:text-[0.85rem]">

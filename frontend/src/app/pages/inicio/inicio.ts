@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { RouterModule } from '@angular/router';
 
 // Importa todos los componentes que quieres mostrar en la vista de inicio
 import { NavbarComponent } from '../../components/navbar/navbar.component';
@@ -23,13 +23,14 @@ import { UtilGridProducto } from '../../components/grid-producto/util-grid-produ
 import { UtilGridProductoOther } from "../../components/grid-producto/util-grid-producto-other/util-grid-producto-other";
 import { NosotrosInicioComponent } from '../../components/nosotros-inicio/nosotros-inicio.component';
 import { BannerAsistenteComponent } from '../../components/banner-asistente/banner-asistente.component';
-
+import { ComponentesService, ComponenteDinamico } from '../../services/componentes.service';
 
 @Component({
   selector: 'app-inicio',
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule,
     NavbarComponent,
     HeaderComponent,
     Partners,
@@ -116,7 +117,10 @@ export class Inicio implements OnInit {
     }
   ];
 
-  constructor() {}
+  // Componentes dinámicos cargados de la base de datos
+  componentesDinamicos: ComponenteDinamico[] = [];
+
+  constructor(private componentesService: ComponentesService) {}
 
   ngOnInit(): void {
     // Aseguramos el fondo blanco estático
@@ -124,5 +128,21 @@ export class Inicio implements OnInit {
       document.body.style.backgroundColor = '#FFFFFF';
       document.documentElement.style.backgroundColor = '#FFFFFF';
     }
+
+    this.cargarComponentesDinamicos();
+  }
+
+  cargarComponentesDinamicos(): void {
+    this.componentesService.getComponentes().subscribe({
+      next: (res: any) => {
+        // Filtrar y guardar solo componentes activos
+        const datos = res.data || res;
+        this.componentesDinamicos = (datos as ComponenteDinamico[]).filter(c => c.activo == 1 || c.activo === true);
+        console.log('✅ Componentes dinámicos cargados con éxito en la Landing Page:', this.componentesDinamicos);
+      },
+      error: (err) => {
+        console.error('❌ Error al obtener componentes dinámicos para el Inicio:', err);
+      }
+    });
   }
 }

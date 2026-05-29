@@ -90,17 +90,37 @@
       <div *ngIf="estaEnInicio" class="admin-welcome-section">
         
         <!-- BANNER DE MATEO (NUEVO) -->
-        <section class="admin-card mateo-hero-banner" style="background: linear-gradient(135deg, #1e293b, #0f1420); border-left: 4px solid #368C44; display: flex; align-items: center; justify-content: space-between; padding: 30px; margin-bottom: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-          <div style="flex: 1; padding-right: 20px;">
-            <h2 style="color: #ffffff; font-size: 1.8rem; margin-bottom: 10px; font-weight: 700;">
-              Pregúntale a Mateo para ayudarte en lo que necesites
-            </h2>
-            <p style="color: #cbd5e1; font-size: 1.1rem; margin: 0;">
-              Estoy aquí para asistirte con inventarios, ventas, PQR y más. Usa el chat en la esquina para conversar.
-            </p>
+        <section class="mateo-hero-banner">
+          <!-- Fondo con partículas decorativas -->
+          <div class="mateo-banner-bg">
+            <div class="glow-orb glow-1"></div>
+            <div class="glow-orb glow-2"></div>
           </div>
-          <div style="width: 150px; height: 150px; flex-shrink: 0;">
-            <img src="assets/images/mateo-dashboard.png" alt="Mateo Asistente" style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.4));">
+
+          <!-- Contenido izquierdo -->
+          <div class="mateo-banner-content">
+            <div class="mateo-badge">
+              <span class="mateo-badge-dot"></span>
+              Asistente IA · Online
+            </div>
+            <h2 class="mateo-banner-title">
+              Pregúntale a <span class="mateo-name">Mateo</span> para ayudarte<br>en lo que necesites
+            </h2>
+            <p class="mateo-banner-desc">
+              Estoy aquí para asistirte con inventarios, ventas, PQR y más.<br>
+              Usa el chat en la esquina inferior derecha para comenzar.
+            </p>
+            <div class="mateo-banner-tags">
+              <span class="mateo-tag">📦 Inventario</span>
+              <span class="mateo-tag">🛒 Ventas</span>
+              <span class="mateo-tag">📋 PQR</span>
+              <span class="mateo-tag">📊 Analíticas</span>
+            </div>
+          </div>
+
+          <!-- Imagen de Mateo -->
+          <div class="mateo-banner-image-wrapper">
+            <img src="assets/images/mateo-dashboard.png" alt="Mateo Asistente" class="mateo-banner-image">
           </div>
         </section>
 

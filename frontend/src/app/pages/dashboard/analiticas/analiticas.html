@@ -1,1 +1,201 @@
-<p>analiticas works!</p>
+<div class="admin-content-wrapper-inner">
+  <div class="admin-view-header">
+    <h1 class="admin-view-title">Analíticas</h1>
+    <p class="admin-view-subtitle">Estadísticas en tiempo real de tu plataforma</p>
+    <button class="btn-refresh" (click)="cargarEstadisticas()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+      Actualizar
+    </button>
+  </div>
+
+  <!-- Estado de carga -->
+  <div *ngIf="cargando" class="loading-state">
+    <div class="spinner-grande"></div>
+    <p>Cargando estadísticas...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !cargando" class="error-state">
+    <div class="error-icon">⚠️</div>
+    <h3>No se pudieron cargar los datos</h3>
+    <p>{{ error }}</p>
+    <button class="btn-refresh" (click)="cargarEstadisticas()">Reintentar</button>
+  </div>
+
+  <!-- Contenido principal -->
+  <div *ngIf="stats">
+
+    <!-- ═══════════════════════════════════ KPIS ═══════════════════════════ -->
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-visitas">
+        <div class="kpi-icon">👁️</div>
+        <div class="kpi-info">
+          <span class="kpi-label">Visitas Hoy</span>
+          <span class="kpi-value">{{ (stats.resumen?.visitas_hoy || 0) | number }}</span>
+          <span class="kpi-badge" [ngClass]="getDiferenciaClass()">
+            {{ (stats.resumen?.diferencia_hoy || 0) >= 0 ? '▲' : '▼' }}
+            {{ (stats.resumen?.diferencia_hoy || 0) | number }} vs ayer
+          </span>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-semana">
+        <div class="kpi-icon">📅</div>
+        <div class="kpi-info">
+          <span class="kpi-label">Visitas esta semana</span>
+          <span class="kpi-value">{{ (stats.resumen?.visitas_semana || 0) | number }}</span>
+          <span class="kpi-sub">{{ (stats.resumen?.sesiones_unicas || 0) | number }} sesiones únicas (30d)</span>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-productos">
+        <div class="kpi-icon">📦</div>
+        <div class="kpi-info">
+          <span class="kpi-label">Productos Registrados</span>
+          <span class="kpi-value">{{ (stats.resumen?.total_productos || 0) | number }}</span>
+          <span class="kpi-sub">{{ stats.resumen?.total_categorias || 0 }} categorías · {{ stats.resumen?.total_subcats || 0 }} subcategorías</span>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-leads">
+        <div class="kpi-icon">👥</div>
+        <div class="kpi-info">
+          <span class="kpi-label">Personas Registradas</span>
+          <span class="kpi-value">{{ (stats.resumen?.total_leads || 0) | number }}</span>
+          <span class="kpi-sub">+{{ stats.resumen?.leads_semana || 0 }} esta semana · +{{ stats.resumen?.leads_hoy || 0 }} hoy</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════ GRÁFICO VISITAS 30d ═════════════════ -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3>Tráfico — Últimos 30 días</h3>
+        <span class="chart-total">Total: {{ (stats.resumen?.visitas_mes || 0) | number }} visitas</span>
+      </div>
+      <div class="chart-body" *ngIf="stats.grafico_visitas && stats.grafico_visitas.length > 0; else sinDatosVisitas">
+        <svg [attr.viewBox]="'0 0 ' + chartWidth + ' ' + chartHeight" class="line-chart" preserveAspectRatio="none">
+          <!-- Área bajo la línea -->
+          <defs>
+            <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#4ade80" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#4ade80" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <polygon [attr.points]="getAreaPoints()" fill="url(#areaGrad)"/>
+          <polyline [attr.points]="getPolylinePoints()" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+        </svg>
+        <div class="chart-labels">
+          <span *ngFor="let punto of stats.grafico_visitas; let i = index">
+            <span *ngIf="i === 0 || i === stats.grafico_visitas.length - 1 || i % 5 === 0" class="chart-label">
+              {{ formatFecha(punto.fecha) }}
+            </span>
+          </span>
+        </div>
+      </div>
+      <ng-template #sinDatosVisitas>
+        <div class="no-data">Sin datos de visitas aún. El tracking se activa automáticamente en el frontend.</div>
+      </ng-template>
+    </div>
+
+    <!-- ════════════════════════════ GRID INFERIOR ═══════════════════════ -->
+    <div class="bottom-grid">
+
+      <!-- Top Productos -->
+      <div class="rank-card">
+        <h3 class="rank-title">🏆 Productos más vistos</h3>
+        <div *ngIf="stats.top_productos && stats.top_productos.length > 0; else sinProductos">
+          <div class="rank-item" *ngFor="let p of stats.top_productos; let i = index">
+            <span class="rank-num">#{{ i + 1 }}</span>
+            <div class="rank-info">
+              <span class="rank-name">{{ p.nombre }}</span>
+              <div class="rank-bar-wrap">
+                <div class="rank-bar" [style.width]="getBarWidth(p.visitas, getMaxVisitasProductos())"></div>
+              </div>
+            </div>
+            <span class="rank-count">{{ p.visitas }}</span>
+          </div>
+        </div>
+        <ng-template #sinProductos>
+          <div class="no-data">Aún no hay vistas de productos registradas.</div>
+        </ng-template>
+      </div>
+
+      <!-- Top Categorías -->
+      <div class="rank-card">
+        <h3 class="rank-title">📂 Categorías más visitadas</h3>
+        <div *ngIf="stats.visitas_categoria && stats.visitas_categoria.length > 0; else sinCategorias">
+          <div class="rank-item" *ngFor="let c of stats.visitas_categoria; let i = index">
+            <span class="rank-num">#{{ i + 1 }}</span>
+            <div class="rank-info">
+              <span class="rank-name">{{ c.categoria }}</span>
+              <div class="rank-bar-wrap">
+                <div class="rank-bar rank-bar-azul" [style.width]="getBarWidth(c.visitas, getMaxVisitasCategoria())"></div>
+              </div>
+            </div>
+            <span class="rank-count">{{ c.visitas }}</span>
+          </div>
+        </div>
+        <ng-template #sinCategorias>
+          <div class="no-data">Aún no hay datos de categorías.</div>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════ TABLA DE LEADS ══════════════════════ -->
+    <div class="leads-card">
+      <div class="leads-header">
+        <h3>👥 Personas Registradas (Leads)</h3>
+        <div class="leads-search">
+          <input type="text" [(ngModel)]="leadsBuscar" placeholder="Buscar por nombre o teléfono..." (input)="buscarLeads()">
+          <span class="total-leads-badge">Total: {{ leadsTotal }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="cargandoLeads" class="loading-mini">Cargando...</div>
+
+      <div *ngIf="!cargandoLeads">
+        <div *ngIf="leads.length === 0" class="no-data">No hay leads registrados aún.</div>
+        
+        <div class="leads-table-wrap" *ngIf="leads.length > 0">
+          <table class="leads-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Fuente</th>
+                <th>Fecha de Registro</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let lead of leads; let i = index">
+                <td>{{ ((leadsPagina - 1) * 10) + i + 1 }}</td>
+                <td>{{ lead.nombre }}</td>
+                <td>{{ lead.telefono }}</td>
+                <td><span class="fuente-badge">{{ lead.fuente }}</span></td>
+                <td>{{ formatFechaCompleta(lead.created_at) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════ ÚLTIMOS LEADS ════════════════════════ -->
+    <div *ngIf="stats.leads_recientes?.length" class="recent-card">
+      <h3>🕐 Últimos registros</h3>
+      <div class="recent-list">
+        <div class="recent-item" *ngFor="let lead of stats.leads_recientes">
+          <div class="recent-avatar">{{ lead.nombre.charAt(0).toUpperCase() }}</div>
+          <div class="recent-info">
+            <span class="recent-name">{{ lead.nombre }}</span>
+            <span class="recent-phone">{{ lead.telefono }}</span>
+          </div>
+          <span class="recent-date">{{ formatFechaCompleta(lead.created_at) }}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

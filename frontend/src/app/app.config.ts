@@ -1,7 +1,8 @@
 import { ApplicationConfig, provideZoneChangeDetection, isDevMode } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './interceptors/auth.interceptor';
 import { routes } from './app.routes';
 import { ScrollService } from './services/scroll.service';
 import { MenuStateService } from './services/menu-state.service';
@@ -18,7 +19,7 @@ export const appConfig: ApplicationConfig = {
     })),
     
     provideAnimations(),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor])),
     ScrollService, 
     MenuStateService, provideServiceWorker('ngsw-worker.js', {
             enabled: !isDevMode(),

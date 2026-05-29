@@ -1,1 +1,326 @@
-<p>personalizar-web works!</p>
+<div class="admin-content-wrapper-inner">
+  
+  <!-- Encabezado -->
+  <div class="admin-view-header">
+    <div class="header-left">
+      <h1 class="admin-view-title">Personalizar Web</h1>
+      <p class="admin-view-subtitle">Organiza y gestiona las secciones dinámicas de la Landing Page</p>
+    </div>
+    <button class="btn-preview-toggle" (click)="togglePreview()">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+      </svg>
+      {{ vistaPrevia ? 'Cerrar vista previa' : 'Ver inicio en vivo' }}
+    </button>
+  </div>
+
+  <!-- Toast de éxito -->
+  <div *ngIf="mensajeExito" class="toast-success">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    {{ mensajeExito }}
+  </div>
+
+  <!-- ════════════ PANEL DE VISTA PREVIA (iframe real) ════════════ -->
+  <div class="preview-panel" *ngIf="vistaPrevia">
+    <div class="preview-panel-bar">
+      <div class="preview-url-pill">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span>http://localhost:4200/</span>
+      </div>
+      <div class="preview-bar-actions">
+        <button class="btn-preview-action" (click)="recargarPreview()" title="Recargar para ver cambios">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Recargar
+        </button>
+        <button class="btn-preview-action btn-preview-open" (click)="abrirEnNuevaPestana()" title="Abrir en nueva pestaña">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Abrir
+        </button>
+        <button class="btn-preview-close" (click)="togglePreview()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Selector de escala de dispositivo -->
+    <div class="preview-device-bar">
+      <button class="btn-device" [class.active]="deviceMode === 'desktop'" (click)="setDevice('desktop')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Desktop
+      </button>
+      <button class="btn-device" [class.active]="deviceMode === 'tablet'" (click)="setDevice('tablet')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        Tablet
+      </button>
+      <button class="btn-device" [class.active]="deviceMode === 'mobile'" (click)="setDevice('mobile')">
+        <svg width="14" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        Móvil
+      </button>
+      <span class="device-hint">Los cambios guardados se reflejan al recargar</span>
+    </div>
+
+    <!-- Contenedor del iframe -->
+    <div class="iframe-container" [ngClass]="'device-' + deviceMode">
+      <div class="iframe-chrome">
+        <div class="iframe-chrome-dots">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+      <div class="iframe-body-wrapper">
+        <iframe
+          #previewFrame
+          id="preview-iframe"
+          [src]="previewSafeUrl"
+          title="Vista previa del inicio"
+          frameborder="0"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ PANEL EDITOR ════════════ -->
+  <div class="editor-panel">
+
+    <!-- Botones de Acción Rápida -->
+    <div class="action-bar">
+      <h3 class="action-bar-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Añadir nueva sección
+      </h3>
+      <div class="quick-add-grid">
+
+        <button class="btn-quick-add btn-banner" (click)="abrirCreador('banner')">
+          <div class="quick-icon-box icon-banner">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/>
+            </svg>
+          </div>
+          <div class="quick-text">
+            <strong>Banner</strong>
+            <span>Imagen + descripción</span>
+          </div>
+        </button>
+
+        <button class="btn-quick-add btn-anuncio" (click)="abrirCreador('anuncio')">
+          <div class="quick-icon-box icon-anuncio">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/>
+            </svg>
+          </div>
+          <div class="quick-text">
+            <strong>Anuncio</strong>
+            <span>Tarjeta de novedades</span>
+          </div>
+        </button>
+
+        <button class="btn-quick-add btn-texto" (click)="abrirCreador('texto')">
+          <div class="quick-icon-box icon-texto">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          </div>
+          <div class="quick-text">
+            <strong>Bloque Texto</strong>
+            <span>Título + párrafo</span>
+          </div>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Estado de Carga -->
+    <div *ngIf="cargando" class="loading-state">
+      <div class="spinner-grande"></div>
+      <p>Cargando estructura...</p>
+    </div>
+    <div *ngIf="error && !cargando" class="error-state">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <p>{{ error }}</p>
+      <button class="btn-retry" (click)="cargarComponentes()">Reintentar</button>
+    </div>
+
+    <!-- Lista de Componentes -->
+    <div *ngIf="!cargando && !error">
+      <h3 class="section-subtitle-custom">Secciones activas — clic para editar</h3>
+
+      <div *ngIf="componentes.length === 0" class="no-components-state">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        <p>No hay secciones. ¡Añade una arriba!</p>
+      </div>
+
+      <div class="components-list-wrapper">
+        <div
+          class="comp-list-item"
+          *ngFor="let comp of componentes; let i = index"
+          [class.disabled-item]="comp.activo == 0"
+          (click)="abrirEditor(comp)">
+
+          <!-- Flechas de orden -->
+          <div class="comp-order-controls">
+            <button class="btn-order btn-up" [disabled]="i === 0" (click)="moverArriba(i, $event)" title="Subir">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
+            </button>
+            <span class="comp-index">{{ i + 1 }}</span>
+            <button class="btn-order btn-down" [disabled]="i === componentes.length - 1" (click)="moverAbajo(i, $event)" title="Bajar">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+          </div>
+
+          <!-- Tipo badge + icono -->
+          <div class="comp-type-col">
+            <div class="type-icon-box" [ngClass]="'icon-' + comp.tipo">
+              <svg *ngIf="comp.tipo === 'banner'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+              <svg *ngIf="comp.tipo === 'anuncio'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+              <svg *ngIf="comp.tipo === 'texto'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
+            </div>
+            <span class="comp-badge" [ngClass]="'badge-' + comp.tipo">{{ comp.tipo }}</span>
+          </div>
+
+          <!-- Detalles del componente -->
+          <div class="comp-details">
+            <div *ngIf="comp.tipo === 'banner'" class="details-row">
+              <div class="details-thumb" *ngIf="comp.contenido?.imageUrl">
+                <img [src]="comp.contenido.imageUrl" alt="">
+              </div>
+              <div class="details-text">
+                <strong>Banner Publicitario</strong>
+                <p>{{ comp.contenido?.descripcion || 'Sin descripción' }}</p>
+              </div>
+            </div>
+            <div *ngIf="comp.tipo === 'anuncio'" class="details-row">
+              <div class="details-thumb" *ngIf="comp.contenido?.imageUrl">
+                <img [src]="comp.contenido.imageUrl" alt="">
+              </div>
+              <div class="details-text">
+                <strong>{{ comp.contenido?.titulo || 'Anuncio sin título' }}</strong>
+                <p>{{ comp.contenido?.texto || 'Sin descripción' }}</p>
+              </div>
+            </div>
+            <div *ngIf="comp.tipo === 'texto'" class="details-row">
+              <div class="details-text">
+                <strong>{{ comp.contenido?.titulo || 'Bloque de texto' }}</strong>
+                <p>{{ comp.contenido?.cuerpo || 'Sin cuerpo de texto' }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botones de acción -->
+          <div class="comp-actions">
+            <button class="btn-act-icon btn-toggle-vis" [class.is-active]="comp.activo == 1" (click)="toggleActivo(comp, $event)" [title]="comp.activo == 1 ? 'Desactivar' : 'Activar'">
+              <svg *ngIf="comp.activo == 1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg *ngIf="comp.activo != 1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              <span>{{ comp.activo == 1 ? 'Activo' : 'Inactivo' }}</span>
+            </button>
+
+            <button class="btn-act-icon btn-edit-icon" (click)="abrirEditor(comp); $event.stopPropagation()" title="Editar">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <span>Editar</span>
+            </button>
+
+            <button class="btn-act-icon btn-delete-icon" (click)="eliminarComponente(comp.id!, $event)" title="Eliminar">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ MODAL DE EDICIÓN Y CREACIÓN ════════════ -->
+  <div class="modal-overlay" *ngIf="modalAbierto" (click)="cerrarModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div class="modal-header-title">
+          <div class="modal-type-icon" [ngClass]="'icon-' + tempTipo">
+            <svg *ngIf="tempTipo === 'banner'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+            <svg *ngIf="tempTipo === 'anuncio'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+            <svg *ngIf="tempTipo === 'texto'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
+          </div>
+          <h3 class="modal-title">{{ editando ? 'Editar Sección' : 'Nueva Sección' }} — <span class="modal-type-text">{{ tempTipo | uppercase }}</span></h3>
+        </div>
+        <button class="btn-modal-close" (click)="cerrarModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group-row">
+          <label class="form-label-toggle">
+            <input type="checkbox" [(ngModel)]="tempActivo">
+            <span>Visible en la Landing Page</span>
+          </label>
+        </div>
+
+        <!-- BANNER -->
+        <div *ngIf="tempTipo === 'banner'" class="form-section-dynamic">
+          <div class="form-group">
+            <label class="form-label">URL de la Imagen (Cloudinary)</label>
+            <input type="text" [(ngModel)]="cImageUrl" placeholder="https://res.cloudinary.com/..." class="form-control">
+            <div class="image-preview-box" *ngIf="cImageUrl"><img [src]="cImageUrl" alt=""></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Descripción del Banner</label>
+            <textarea [(ngModel)]="cTexto" rows="3" placeholder="Mensaje que aparece en el banner..." class="form-control"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Enlace de redirección (opcional)</label>
+            <input type="text" [(ngModel)]="cLinkUrl" placeholder="/productos?subcategoria_id=13" class="form-control">
+          </div>
+        </div>
+
+        <!-- ANUNCIO -->
+        <div *ngIf="tempTipo === 'anuncio'" class="form-section-dynamic">
+          <div class="form-group">
+            <label class="form-label">Título del Anuncio</label>
+            <input type="text" [(ngModel)]="cTitulo" placeholder="Ej: YUMBOLON - THERMOLON" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">URL de la Imagen</label>
+            <input type="text" [(ngModel)]="cImageUrl" placeholder="https://res.cloudinary.com/..." class="form-control">
+            <div class="image-preview-box" *ngIf="cImageUrl"><img [src]="cImageUrl" alt=""></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Descripción de la Novedad</label>
+            <textarea [(ngModel)]="cTexto" rows="3" placeholder="Describe la novedad o promoción..." class="form-control"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Enlace de redirección (opcional)</label>
+            <input type="text" [(ngModel)]="cLinkUrl" placeholder="/productos" class="form-control">
+          </div>
+        </div>
+
+        <!-- TEXTO -->
+        <div *ngIf="tempTipo === 'texto'" class="form-section-dynamic">
+          <div class="form-group">
+            <label class="form-label">Título del Bloque</label>
+            <input type="text" [(ngModel)]="cTitulo" placeholder="Ej: Calidad y Durabilidad Garantizada" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cuerpo del Mensaje</label>
+            <textarea [(ngModel)]="cCuerpo" rows="5" placeholder="Escribe el párrafo informativo..." class="form-control"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Alineación del texto</label>
+            <select [(ngModel)]="cAlineacion" class="form-control">
+              <option value="left">Izquierda</option>
+              <option value="center">Centrado</option>
+              <option value="right">Derecha</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-modal-cancel" (click)="cerrarModal()">Cancelar</button>
+        <button class="btn-modal-save" (click)="guardarComponente()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          {{ editando ? 'Guardar Cambios' : 'Añadir Sección' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

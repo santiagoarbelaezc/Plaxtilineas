@@ -472,3 +472,147 @@
   .menu-link { padding: 10px 15px; }
   .menu-link::before { display: none; }
 }
+
+/* ===========================
+   BANNER HERO DE MATEO
+   =========================== */
+.mateo-hero-banner {
+  position: relative;
+  background: linear-gradient(135deg, #0d1f1a 0%, #0f1420 40%, #111827 100%);
+  border: 1px solid rgba(54, 140, 68, 0.25);
+  border-radius: 16px;
+  padding: 0;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  min-height: 260px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(54,140,68,0.1);
+}
+
+.mateo-banner-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.3;
+}
+.glow-1 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, #368C44 0%, transparent 70%);
+  top: -80px;
+  left: -60px;
+}
+.glow-2 {
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, #1e4a26 0%, transparent 70%);
+  bottom: -60px;
+  right: 200px;
+}
+
+.mateo-banner-content {
+  position: relative;
+  z-index: 2;
+  padding: 40px 40px 40px 40px;
+  flex: 1;
+}
+
+.mateo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(54, 140, 68, 0.15);
+  border: 1px solid rgba(54, 140, 68, 0.4);
+  color: #4ade80;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 18px;
+  letter-spacing: 0.3px;
+}
+
+.mateo-badge-dot {
+  width: 8px;
+  height: 8px;
+  background: #4ade80;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.mateo-banner-title {
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.25;
+  margin: 0 0 14px 0;
+  letter-spacing: -0.02em;
+}
+
+.mateo-name {
+  color: #4ade80;
+  position: relative;
+}
+
+.mateo-banner-desc {
+  color: #94a3b8;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin: 0 0 22px 0;
+}
+
+.mateo-banner-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.mateo-tag {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.mateo-tag:hover {
+  background: rgba(54, 140, 68, 0.15);
+  border-color: rgba(54, 140, 68, 0.4);
+  color: #4ade80;
+}
+
+.mateo-banner-image-wrapper {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  width: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 20px 0 0;
+}
+
+.mateo-banner-image {
+  width: 100%;
+  height: auto;
+  max-height: 290px;
+  object-fit: contain;
+  filter: drop-shadow(0 -10px 30px rgba(54, 140, 68, 0.3)) drop-shadow(0 10px 20px rgba(0,0,0,0.6));
+  transform: translateY(0);
+}

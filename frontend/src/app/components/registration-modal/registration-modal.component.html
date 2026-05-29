@@ -12,52 +12,65 @@
 
     <!-- Content -->
     <div class="modal-body">
-      <h2 class="modal-title">¡Bienvenido a Plaxtilineas!</h2>
-      <p class="modal-description">
-        Regístrate para recibir nuestras últimas promociones y novedades directamente en tu celular.
-      </p>
+      
+      <!-- Estado de éxito -->
+      <div *ngIf="registroExitoso" class="success-state">
+        <fa-icon [icon]="['fas', 'check-circle']" class="success-icon"></fa-icon>
+        <h2>¡Registro exitoso!</h2>
+        <p>Gracias por registrarte. Pronto recibirás nuestras novedades y promociones.</p>
+      </div>
 
-      <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="registration-form">
-        <!-- Full Name -->
-        <div class="form-group">
-          <label for="fullName">Nombre y apellidos</label>
-          <div class="input-container" [class.error]="registrationForm.get('fullName')?.invalid && registrationForm.get('fullName')?.touched">
-            <fa-icon [icon]="['fas', 'user']" class="input-icon"></fa-icon>
-            <input 
-              type="text" 
-              id="fullName" 
-              formControlName="fullName" 
-              placeholder="Ej. Juan Pérez"
-              autocomplete="name">
+      <!-- Formulario normal -->
+      <div *ngIf="!registroExitoso">
+        <h2 class="modal-title">¡Bienvenido a Plaxtilineas!</h2>
+        <p class="modal-description">
+          Regístrate para recibir nuestras últimas promociones y novedades directamente en tu celular.
+        </p>
+
+        <div *ngIf="errorMessage" class="error-banner">{{ errorMessage }}</div>
+
+        <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="registration-form">
+          <!-- Full Name -->
+          <div class="form-group">
+            <label for="fullName">Nombre y apellidos</label>
+            <div class="input-container" [class.error]="registrationForm.get('fullName')?.invalid && registrationForm.get('fullName')?.touched">
+              <fa-icon [icon]="['fas', 'user']" class="input-icon"></fa-icon>
+              <input 
+                type="text" 
+                id="fullName" 
+                formControlName="fullName" 
+                placeholder="Ej. Juan Pérez"
+                autocomplete="name">
+            </div>
+            <small *ngIf="registrationForm.get('fullName')?.invalid && registrationForm.get('fullName')?.touched" class="error-text">
+              Ingresa tu nombre completo.
+            </small>
           </div>
-          <small *ngIf="registrationForm.get('fullName')?.invalid && registrationForm.get('fullName')?.touched" class="error-text">
-            Ingresa tu nombre completo.
-          </small>
-        </div>
 
-        <!-- Phone -->
-        <div class="form-group">
-          <label for="phone">Teléfono</label>
-          <div class="input-container" [class.error]="registrationForm.get('phone')?.invalid && registrationForm.get('phone')?.touched">
-            <fa-icon [icon]="['fas', 'phone']" class="input-icon"></fa-icon>
-            <input 
-              type="tel" 
-              id="phone" 
-              formControlName="phone" 
-              placeholder="Ej. 300 123 4567"
-              autocomplete="tel">
+          <!-- Phone -->
+          <div class="form-group">
+            <label for="phone">Teléfono</label>
+            <div class="input-container" [class.error]="registrationForm.get('phone')?.invalid && registrationForm.get('phone')?.touched">
+              <fa-icon [icon]="['fas', 'phone']" class="input-icon"></fa-icon>
+              <input 
+                type="tel" 
+                id="phone" 
+                formControlName="phone" 
+                placeholder="Ej. 300 123 4567"
+                autocomplete="tel">
+            </div>
+            <small *ngIf="registrationForm.get('phone')?.invalid && registrationForm.get('phone')?.touched" class="error-text">
+              Ingresa un número de teléfono válido.
+            </small>
           </div>
-          <small *ngIf="registrationForm.get('phone')?.invalid && registrationForm.get('phone')?.touched" class="error-text">
-            Ingresa un número de teléfono válido.
-          </small>
-        </div>
 
-        <button type="submit" [disabled]="isSubmitting" class="btn-submit">
-          <span *ngIf="!isSubmitting">Registrarme ahora</span>
-          <span *ngIf="isSubmitting" class="loading-spinner"></span>
-          <fa-icon *ngIf="!isSubmitting" [icon]="['fas', 'paper-plane']" class="submit-icon"></fa-icon>
-        </button>
-      </form>
+          <button type="submit" [disabled]="isSubmitting" class="btn-submit">
+            <span *ngIf="!isSubmitting">Registrarme ahora</span>
+            <span *ngIf="isSubmitting" class="loading-spinner"></span>
+            <fa-icon *ngIf="!isSubmitting" [icon]="['fas', 'paper-plane']" class="submit-icon"></fa-icon>
+          </button>
+        </form>
+      </div>
     </div>
 
     <!-- Footer decoration -->

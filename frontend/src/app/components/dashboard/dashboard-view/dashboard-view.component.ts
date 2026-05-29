@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { ImportProductsService } from '../../../services/import-products.service';
 import { DashboardAssistantComponent } from '../dashboard-assistant/dashboard-assistant.component';
@@ -28,7 +28,7 @@ import {
 @Component({
   selector: 'app-dashboard-view',
   standalone: true,
-  imports: [CommonModule, RouterModule, FontAwesomeModule, DashboardAssistantComponent],
+  imports: [CommonModule, RouterModule, RouterOutlet, FontAwesomeModule, DashboardAssistantComponent],
   templateUrl: './dashboard-view.component.html',
   styleUrls: ['./dashboard-view.component.css']
 })
