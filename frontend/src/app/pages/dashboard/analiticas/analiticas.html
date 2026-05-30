@@ -31,10 +31,10 @@
         <div class="kpi-icon">👁️</div>
         <div class="kpi-info">
           <span class="kpi-label">Visitas Hoy</span>
-          <span class="kpi-value">{{ (stats.resumen?.visitas_hoy || 0) | number }}</span>
+          <span class="kpi-value">{{ (stats.resumen.visitas_hoy || 0) | number }}</span>
           <span class="kpi-badge" [ngClass]="getDiferenciaClass()">
-            {{ (stats.resumen?.diferencia_hoy || 0) >= 0 ? '▲' : '▼' }}
-            {{ (stats.resumen?.diferencia_hoy || 0) | number }} vs ayer
+            {{ (stats.resumen.diferencia_hoy || 0) >= 0 ? '▲' : '▼' }}
+            {{ (stats.resumen.diferencia_hoy || 0) | number }} vs ayer
           </span>
         </div>
       </div>
@@ -43,8 +43,8 @@
         <div class="kpi-icon">📅</div>
         <div class="kpi-info">
           <span class="kpi-label">Visitas esta semana</span>
-          <span class="kpi-value">{{ (stats.resumen?.visitas_semana || 0) | number }}</span>
-          <span class="kpi-sub">{{ (stats.resumen?.sesiones_unicas || 0) | number }} sesiones únicas (30d)</span>
+          <span class="kpi-value">{{ (stats.resumen.visitas_semana || 0) | number }}</span>
+          <span class="kpi-sub">{{ (stats.resumen.sesiones_unicas || 0) | number }} sesiones únicas (30d)</span>
         </div>
       </div>
 
@@ -52,8 +52,8 @@
         <div class="kpi-icon">📦</div>
         <div class="kpi-info">
           <span class="kpi-label">Productos Registrados</span>
-          <span class="kpi-value">{{ (stats.resumen?.total_productos || 0) | number }}</span>
-          <span class="kpi-sub">{{ stats.resumen?.total_categorias || 0 }} categorías · {{ stats.resumen?.total_subcats || 0 }} subcategorías</span>
+          <span class="kpi-value">{{ (stats.resumen.total_productos || 0) | number }}</span>
+          <span class="kpi-sub">{{ stats.resumen.total_categorias || 0 }} categorías · {{ stats.resumen.total_subcats || 0 }} subcategorías</span>
         </div>
       </div>
 
@@ -61,8 +61,8 @@
         <div class="kpi-icon">👥</div>
         <div class="kpi-info">
           <span class="kpi-label">Personas Registradas</span>
-          <span class="kpi-value">{{ (stats.resumen?.total_leads || 0) | number }}</span>
-          <span class="kpi-sub">+{{ stats.resumen?.leads_semana || 0 }} esta semana · +{{ stats.resumen?.leads_hoy || 0 }} hoy</span>
+          <span class="kpi-value">{{ (stats.resumen.total_leads || 0) | number }}</span>
+          <span class="kpi-sub">+{{ stats.resumen.leads_semana || 0 }} esta semana · +{{ stats.resumen.leads_hoy || 0 }} hoy</span>
         </div>
       </div>
     </div>
@@ -71,7 +71,7 @@
     <div class="chart-card">
       <div class="chart-header">
         <h3>Tráfico — Últimos 30 días</h3>
-        <span class="chart-total">Total: {{ (stats.resumen?.visitas_mes || 0) | number }} visitas</span>
+        <span class="chart-total">Total: {{ (stats.resumen.visitas_mes || 0) | number }} visitas</span>
       </div>
       <div class="chart-body" *ngIf="stats.grafico_visitas && stats.grafico_visitas.length > 0; else sinDatosVisitas">
         <svg [attr.viewBox]="'0 0 ' + chartWidth + ' ' + chartHeight" class="line-chart" preserveAspectRatio="none">

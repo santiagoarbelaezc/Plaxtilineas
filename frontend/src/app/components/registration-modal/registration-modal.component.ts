@@ -89,7 +89,7 @@ export class RegistrationModalComponent implements OnInit {
         },
         error: (err) => {
           this.isSubmitting = false;
-          this.errorMessage = 'Ocurrió un error al registrar. Por favor intenta de nuevo.';
+          this.errorMessage = err.error?.error || 'Ocurrió un error al registrar. Por favor intenta de nuevo.';
           console.error('Error al registrar lead:', err);
         }
       });
