@@ -30,6 +30,10 @@ require_once __DIR__ . '/controllers/VarianteController.php';
 require_once __DIR__ . '/controllers/PqrsController.php';
 require_once __DIR__ . '/controllers/ImportarController.php';
 require_once __DIR__ . '/controllers/StatsController.php';
+require_once __DIR__ . '/controllers/LeadsController.php';
+require_once __DIR__ . '/controllers/ComponentesController.php';
+require_once __DIR__ . '/controllers/EstadisticasController.php';
+require_once __DIR__ . '/controllers/DashboardAssistantController.php';
 
 // ─── CORS headers (siempre primero) ──────────────────────────────────────────
 ResponseHandler::setCorsHeaders();
@@ -59,6 +63,15 @@ function matchRoute(string $pattern, string $uri): array|false
 
 // ─── Dispatch (con try/catch global) ─────────────────────────────────────────
 try {
+
+    // ── Estadísticas Catálogo ───────────────────────────────────────────────
+    if (str_starts_with($uri, '/estadisticas/catalogo')) {
+        AuthMiddleware::verify();
+        if ($method === 'GET') {
+            EstadisticasController::getCatalogStats();
+            exit;
+        }
+    }
 
     // ── Health check ──────────────────────────────────────────────────────────────
     if ($uri === '/' || $uri === '/health') {
@@ -273,6 +286,16 @@ try {
     // IMPORTAR  /api/importar/*
     // ═════════════════════════════════════════════════════════════════════════════
 
+    // ═════════════════════════════════════════════════════════════════════════════
+    // DASHBOARD ASSISTANT  /api/dashboard-assistant
+    // ═════════════════════════════════════════════════════════════════════════════
+
+    if ($uri === '/dashboard-assistant' && $method === 'POST') {
+        AuthMiddleware::verify();
+        $controller = new DashboardAssistantController();
+        $controller->chat();
+    }
+
     if ($uri === '/importar/ejecutar' && $method === 'POST') {
         AuthMiddleware::verify();
         ImportarController::importarProductosHostinger();
@@ -295,6 +318,52 @@ try {
     if ($uri === '/stats/dashboard' && $method === 'GET') {
         AuthMiddleware::verify();
         StatsController::getDashboardStats();
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════════
+    // LEADS / REGISTRO DE PERSONAS  /api/leads/*
+    // ═════════════════════════════════════════════════════════════════════════════
+    if ($uri === '/leads' && $method === 'POST') {
+        LeadsController::create();
+    }
+    if ($uri === '/leads' && $method === 'GET') {
+        AuthMiddleware::verify();
+        LeadsController::getAll();
+    }
+    if ($uri === '/leads/stats' && $method === 'GET') {
+        AuthMiddleware::verify();
+        LeadsController::getStats();
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════════
+    // COMPONENTES DINÁMICOS /api/componentes/*
+    // ═════════════════════════════════════════════════════════════════════════════
+    if ($uri === '/componentes' && $method === 'GET') {
+        ComponentesController::index();
+    }
+    if ($uri === '/componentes' && $method === 'POST') {
+        AuthMiddleware::verify();
+        ComponentesController::create();
+    }
+    if ($uri === '/componentes/reordenar' && $method === 'PUT') {
+        AuthMiddleware::verify();
+        ComponentesController::reordenar();
+        exit;
+    }
+    if ($uri === '/componentes/upload' && $method === 'POST') {
+        AuthMiddleware::verify();
+        ComponentesController::uploadImage();
+        exit;
+    }
+    if ($p = matchRoute('/componentes/:id', $uri)) {
+        if ($method === 'PUT') {
+            AuthMiddleware::verify();
+            ComponentesController::update((int)$p['id']);
+        }
+        if ($method === 'DELETE') {
+            AuthMiddleware::verify();
+            ComponentesController::delete((int)$p['id']);
+        }
     }
 
     // ═════════════════════════════════════════════════════════════════════════════

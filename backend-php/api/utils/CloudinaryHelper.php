@@ -42,14 +42,18 @@ class CloudinaryHelper
             CURLOPT_POSTFIELDS     => $postFields,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT        => 60,
+            CURLOPT_SSL_VERIFYPEER => false, // Evita errores de certificado SSL local en Windows
         ]);
 
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+        $curlError = curl_error($ch);
 
-        if ($response === false || $httpCode >= 400) {
-            throw new RuntimeException('Error al subir imagen a Cloudinary: ' . $response);
+        if ($response === false) {
+            throw new RuntimeException('Error de cURL al subir a Cloudinary: ' . $curlError);
+        }
+        if ($httpCode >= 400) {
+            throw new RuntimeException('Error HTTP ' . $httpCode . ' al subir a Cloudinary: ' . $response);
         }
 
         $data = json_decode($response, true);
@@ -94,10 +98,10 @@ class CloudinaryHelper
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER     => ['Content-Type: application/x-www-form-urlencoded'],
             CURLOPT_TIMEOUT        => 30,
+            CURLOPT_SSL_VERIFYPEER => false, // Evita errores de certificado SSL local en Windows
         ]);
 
         $response = curl_exec($ch);
-        curl_close($ch);
 
         $data = json_decode($response, true);
         return isset($data['result']) && $data['result'] === 'ok';

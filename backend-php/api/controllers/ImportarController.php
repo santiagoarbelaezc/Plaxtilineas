@@ -8,31 +8,58 @@ require_once __DIR__ . '/../utils/Logger.php';
  */
 class ImportarController
 {
-    // ─── POST /api/importar/hostinger (protegido) ─────────────────────────────
+    // ─── POST /api/importar/ejecutar (protegido) ─────────────────────────────
     public static function importarProductosHostinger(): void
     {
-        // El proceso de sincronización puede tardar más de 60s por latencia a Hostinger
         set_time_limit(0); 
 
         try {
             $dbLocal     = Database::getConnection();
             $dbHostinger = Database::getHostingerConnection();
 
-            // Auto-migración mágica: Agregar la columna id_hostinger si no existe
+            // Auto-migración: Agregar la columna id_hostinger si no existe
             try {
                 $dbLocal->query("SELECT id_hostinger FROM productos LIMIT 1");
             } catch (PDOException $e) {
-                // La columna no existe, la creamos
                 $dbLocal->exec("ALTER TABLE productos ADD COLUMN id_hostinger INT NULL UNIQUE");
             }
 
-            // 1. Obtener todos los productos
+            // 1. Obtener todos los productos de Hostinger
             $stmt     = $dbHostinger->query(
                 "SELECT * FROM products WHERE deleted_at IS NULL AND category='Plaxtilineas' ORDER BY id DESC"
             );
             $products = $stmt->fetchAll();
 
-            // 2. Obtener todas las imágenes en una sola consulta
+            // 2. Verificar cuántos necesitan sincronización real
+            $idsHostinger = array_map(fn($p) => (int)$p['id'], $products);
+            
+            if (!empty($idsHostinger)) {
+                $placeholders = implode(',', array_fill(0, count($idsHostinger), '?'));
+                $existStmt = $dbLocal->prepare("SELECT id_hostinger FROM productos WHERE id_hostinger IN ($placeholders)");
+                $existStmt->execute($idsHostinger);
+                $existentes = $existStmt->fetchAll(PDO::FETCH_COLUMN);
+            } else {
+                $existentes = [];
+            }
+            
+            $nuevosCount = count($idsHostinger) - count($existentes);
+            
+            // Si TODOS ya existen y no hay nada nuevo, responder inmediato
+            if ($nuevosCount === 0 && count($existentes) === count($idsHostinger)) {
+                ResponseHandler::success([
+                    'mensaje'                 => '✅ Todo está actualizado. No hay productos nuevos para importar.',
+                    'todo_actualizado'        => true,
+                    'total_procesados'        => count($products),
+                    'importados_exitosamente' => 0,
+                    'actualizados'            => count($existentes),
+                    'errores'                 => 0,
+                    'detalles_errores'        => null,
+                    'logs_detallados'         => ['Todos los productos de Hostinger ya están sincronizados en la base de datos local.'],
+                ]);
+                return;
+            }
+
+            // 3. Obtener todas las imágenes en una sola consulta
             $imgStmt = $dbHostinger->query("SELECT product_id, url FROM product_images");
             $allImages = $imgStmt->fetchAll();
             $imageMap = [];
@@ -42,7 +69,7 @@ class ImportarController
                 }
             }
 
-            // 3. Obtener todas las variantes activas en una sola consulta
+            // 4. Obtener todas las variantes activas
             $varStmt = $dbHostinger->query("SELECT product_id, name, price FROM product_variants WHERE available=1 ORDER BY price ASC");
             $allVariants = $varStmt->fetchAll();
             $variantMap = [];
@@ -55,7 +82,6 @@ class ImportarController
 
             $importados  = 0;
             $actualizados= 0;
-            $duplicados  = [];
             $errores     = [];
             $logs        = [];
 
@@ -66,7 +92,6 @@ class ImportarController
                     $nombreProd  = $product['name'] ?? 'Sin nombre';
                     $logs[] = "Procesando Hostinger ID: {$hostingerId} | Nombre: '{$nombreProd}'";
 
-                    // Conseguir datos de los mapas en memoria (instantáneo)
                     $imagenUrl = $imageMap[$hostingerId] ?? null;
                     $variantes = $variantMap[$hostingerId] ?? [];
                     
@@ -76,16 +101,14 @@ class ImportarController
                     $descripcion = $product['description'] ?? '';
 
                     try {
-                        // 2. Verificar si ya existe SOLAMENTE por ID (ignorando el nombre para permitir a voluntad del usuario importar e identificar duplicados)
                         $matchStmt = $dbLocal->prepare('SELECT id, id_hostinger FROM productos WHERE id_hostinger = ? LIMIT 1');
                         $matchStmt->execute([$hostingerId]);
                         $row = $matchStmt->fetch();
 
                         if ($row) {
                             $localId = (int)$row['id'];
-                            $logs[] = "  -> VINCULANDO: Ya existe en la BD local (Local ID: {$localId}). Actualizando datos...";
+                            $logs[] = "  -> VINCULANDO: Ya existe (Local ID: {$localId}). Actualizando...";
 
-                            // 2a. Actualizar el producto existente (esto también actualiza el id_hostinger si solo coincidió el nombre)
                             $updStmt = $dbLocal->prepare("
                                 UPDATE productos 
                                 SET nombre=?, descripcion=?, precio=?, imagen_url=?, subcategoria_id=?, id_hostinger=? 
@@ -93,7 +116,6 @@ class ImportarController
                             ");
                             $updStmt->execute([$nombreProd, $descripcion, $precio, $imagenUrl, $subcatId, $hostingerId, $localId]);
 
-                            // 2b. Recrear las variantes (borramos las viejas e insertamos las nuevas para sincronizar perfecto)
                             $dbLocal->prepare("DELETE FROM variantes WHERE producto_id=?")->execute([$localId]);
                             foreach ($variantes as $v) {
                                 $dbLocal->prepare('INSERT INTO variantes (producto_id, nombre, precio) VALUES (?, ?, ?)')
@@ -105,8 +127,7 @@ class ImportarController
                             continue;
                         }
 
-                        // 3. Si NO existe, Insertar como nuevo
-                        $logs[] = "  -> NUEVO: No existe localmente. Intentando insertar...";
+                        $logs[] = "  -> NUEVO: Insertando...";
                         $pStmt = $dbLocal->prepare("
                             INSERT INTO productos (nombre, descripcion, cantidad, precio, imagen_url, subcategoria_id, unidad, creado_en, id_hostinger)
                             VALUES (?, ?, 1, ?, ?, ?, 'unidad', NOW(), ?)
@@ -122,7 +143,7 @@ class ImportarController
 
                         $importados++;
                     } catch (Throwable $e) {
-                        $logs[] = "  -> ERROR FATAL: " . $e->getMessage();
+                        $logs[] = "  -> ERROR: " . $e->getMessage();
                         $errores[] = ['nombre' => $nombreProd, 'error' => $e->getMessage()];
                     }
                 }
@@ -135,6 +156,7 @@ class ImportarController
 
             ResponseHandler::success([
                 'mensaje'                 => 'Importación y sincronización completadas',
+                'todo_actualizado'        => ($importados === 0),
                 'total_procesados'        => count($products),
                 'importados_exitosamente' => $importados,
                 'actualizados'            => $actualizados,
@@ -150,7 +172,7 @@ class ImportarController
             ]);
         } catch (Throwable $e) {
             Logger::error('ImportarController::importarProductosHostinger – inesperado', ['exception' => $e->getMessage()]);
-            ResponseHandler::error('Error inesperado en ImportarController::importarProductosHostinger', 500, [
+            ResponseHandler::error('Error inesperado en ImportarController', 500, [
                 'detalle' => APP_ENV === 'development' ? $e->getMessage() : null,
             ]);
         }
@@ -187,7 +209,7 @@ class ImportarController
             ]);
         } catch (Throwable $e) {
             Logger::error('ImportarController::obtenerEstadisticasHostinger – inesperado', ['exception' => $e->getMessage()]);
-            ResponseHandler::error('Error inesperado en ImportarController::obtenerEstadisticasHostinger', 500, [
+            ResponseHandler::error('Error inesperado', 500, [
                 'detalle' => APP_ENV === 'development' ? $e->getMessage() : null,
             ]);
         }
@@ -198,8 +220,50 @@ class ImportarController
     {
         try {
             $limite = min((int)(ResponseHandler::query('limite') ?? 5), 20);
-            $db     = Database::getHostingerConnection();
-            $stmt   = $db->prepare(
+            $dbHostinger = Database::getHostingerConnection();
+            $dbLocal     = Database::getConnection();
+
+            // 1. Contar total en Hostinger
+            $totalHostStmt = $dbHostinger->query(
+                "SELECT COUNT(*) as total FROM products WHERE deleted_at IS NULL AND category='Plaxtilineas'"
+            );
+            $totalHostinger = (int)$totalHostStmt->fetch()['total'];
+
+            // 2. Obtener todos los IDs de Hostinger
+            $allIdsStmt = $dbHostinger->query(
+                "SELECT id FROM products WHERE deleted_at IS NULL AND category='Plaxtilineas'"
+            );
+            $allHostingerIds = $allIdsStmt->fetchAll(PDO::FETCH_COLUMN);
+
+            // 3. Verificar cuáles ya existen localmente
+            $yaImportados = 0;
+            $nuevos = 0;
+            $nuevosNombres = [];
+
+            if (!empty($allHostingerIds)) {
+                $placeholders = implode(',', array_fill(0, count($allHostingerIds), '?'));
+                $existStmt = $dbLocal->prepare("SELECT id_hostinger FROM productos WHERE id_hostinger IN ($placeholders)");
+                $existStmt->execute($allHostingerIds);
+                $existentes = $existStmt->fetchAll(PDO::FETCH_COLUMN);
+                $yaImportados = count($existentes);
+                $nuevos = $totalHostinger - $yaImportados;
+                
+                // Obtener nombres de los nuevos
+                $nuevosIds = array_diff($allHostingerIds, $existentes);
+                if (!empty($nuevosIds)) {
+                    $plNuevos = implode(',', array_fill(0, count($nuevosIds), '?'));
+                    $nombresStmt = $dbHostinger->prepare("SELECT name FROM products WHERE id IN ($plNuevos) LIMIT 10");
+                    $nombresStmt->execute(array_values($nuevosIds));
+                    $nuevosNombres = $nombresStmt->fetchAll(PDO::FETCH_COLUMN);
+                }
+            }
+
+            // 4. Contar productos locales totales
+            $totalLocalStmt = $dbLocal->query("SELECT COUNT(*) as total FROM productos");
+            $totalLocal = (int)$totalLocalStmt->fetch()['total'];
+
+            // 5. Obtener preview (muestra limitada)
+            $stmt = $dbHostinger->prepare(
                 "SELECT * FROM products WHERE deleted_at IS NULL AND category='Plaxtilineas' ORDER BY id DESC LIMIT ?"
             );
             $stmt->execute([$limite]);
@@ -207,11 +271,11 @@ class ImportarController
 
             $preview = [];
             foreach ($products as $p) {
-                $imgStmt = $db->prepare('SELECT url FROM product_images WHERE product_id=? LIMIT 1');
+                $imgStmt = $dbHostinger->prepare('SELECT url FROM product_images WHERE product_id=? LIMIT 1');
                 $imgStmt->execute([$p['id']]);
                 $img = $imgStmt->fetch();
 
-                $varStmt = $db->prepare('SELECT COUNT(*) as total, MIN(price) as precio_min FROM product_variants WHERE product_id=?');
+                $varStmt = $dbHostinger->prepare('SELECT COUNT(*) as total, MIN(price) as precio_min FROM product_variants WHERE product_id=?');
                 $varStmt->execute([$p['id']]);
                 $var = $varStmt->fetch();
 
@@ -222,7 +286,21 @@ class ImportarController
                 ]);
             }
 
-            ResponseHandler::success(['total_en_preview' => count($preview), 'productos' => $preview]);
+            // 6. Determinar estado
+            $todoActualizado = ($nuevos === 0);
+
+            ResponseHandler::success([
+                'total_en_preview' => count($preview),
+                'productos'        => $preview,
+                'analisis'         => [
+                    'total_hostinger'     => $totalHostinger,
+                    'total_local'         => $totalLocal,
+                    'ya_importados'       => $yaImportados,
+                    'nuevos_por_importar' => $nuevos,
+                    'todo_actualizado'    => $todoActualizado,
+                    'nuevos_nombres'      => $nuevosNombres,
+                ],
+            ]);
 
         } catch (PDOException $e) {
             Logger::error('ImportarController::previewProductosHostinger – DB', ['exception' => $e->getMessage()]);
@@ -231,7 +309,7 @@ class ImportarController
             ]);
         } catch (Throwable $e) {
             Logger::error('ImportarController::previewProductosHostinger – inesperado', ['exception' => $e->getMessage()]);
-            ResponseHandler::error('Error inesperado en ImportarController::previewProductosHostinger', 500, [
+            ResponseHandler::error('Error inesperado', 500, [
                 'detalle' => APP_ENV === 'development' ? $e->getMessage() : null,
             ]);
         }

@@ -22,7 +22,7 @@ class ChatController
     public function chat(): void
     {
         try {
-            $input = json_decode(file_get_contents('php://input'), true);
+            $input = ResponseHandler::getBody();
             $mensajeUsuario = $input['mensaje'] ?? '';
             $sessionId = $input['session_id'] ?? uniqid('session_', true);
 
@@ -35,13 +35,14 @@ class ChatController
             $this->guardarMensaje($sessionId, 'user', $mensajeUsuario);
 
             // 2. Capa 1: Keywords (Respuestas rápidas)
-            $keywordResponse = $this->verificarKeywords($mensajeUsuario);
-            if ($keywordResponse) {
-                $this->guardarMensaje($sessionId, 'assistant', $keywordResponse);
+            $keywordResult = $this->verificarKeywords($mensajeUsuario);
+            if ($keywordResult) {
+                $this->guardarMensaje($sessionId, 'assistant', $keywordResult['respuesta']);
                 ResponseHandler::success([
-                    'respuesta' => $keywordResponse,
+                    'respuesta' => $keywordResult['respuesta'],
                     'session_id' => $sessionId,
                     'productos' => [],
+                    'redirect' => $keywordResult['redirect'] ?? null,
                     'timestamp' => date('c')
                 ]);
                 return;
@@ -51,11 +52,21 @@ class ChatController
             // Obtener historial (últimos 10 mensajes)
             $historial = $this->obtenerHistorialParaIA($sessionId, 10);
             
-            // Obtener productos para contexto (máx 20)
-            $productosContexto = $this->obtenerProductosContexto(20);
+            // Obtener productos para contexto (máx 300)
+            $productosContexto = $this->obtenerProductosContexto(300);
 
             try {
                 $respuestaIA = $this->llamarGroq($historial, $productosContexto);
+                
+                // Parsear Redirecciones y enlaces de la IA
+                $redirect = null;
+                if (preg_match('/\[(?:REDIRECT|EXTERNAL):(.*?)\]/', $respuestaIA, $matches)) {
+                    $redirect = trim($matches[1]);
+                }
+                
+                // Limpiar tags [REDIRECT:...] o [EXTERNAL:...] del mensaje final
+                $respuestaIA = preg_replace('/\[(?:REDIRECT|EXTERNAL):.*?\]/', '', $respuestaIA);
+
                 $parseado = $this->parsearProductos($respuestaIA);
                 
                 $this->guardarMensaje($sessionId, 'assistant', $parseado['respuesta']);
@@ -64,6 +75,7 @@ class ChatController
                     'respuesta' => $parseado['respuesta'],
                     'session_id' => $sessionId,
                     'productos' => $parseado['productos'],
+                    'redirect' => $redirect,
                     'timestamp' => date('c')
                 ]);
             } catch (Throwable $e) {
@@ -73,6 +85,7 @@ class ChatController
                     'respuesta' => $this->fallbackResponse,
                     'session_id' => $sessionId,
                     'productos' => [],
+                    'redirect' => 'https://wa.me/573006680125',
                     'timestamp' => date('c')
                 ]);
             }
@@ -143,32 +156,95 @@ class ChatController
         $stmt->execute([$sessionId, $rol, $mensaje]);
     }
 
-    private function verificarKeywords(string $input): ?string
+    private function verificarKeywords(string $input): ?array
     {
         $input = mb_strtolower($input);
         
         $keywords = [
             'saludo' => ['hola', 'buenas', 'buenos días', 'buenas tardes', 'hey', 'buenos dias'],
-            'catalogo' => ['catálogo', 'catalogo', 'productos', 'qué venden', 'referencias', 'que venden'],
+            'catalogo' => ['catálogo', 'catalogo', 'productos', 'qué venden', 'referencias', 'que venden', 'ver productos'],
             'precio' => ['precio', 'cuánto cuesta', 'cuanto cuesta', 'valor', 'cotización', 'cotizacion'],
             'envio' => ['envío', 'envio', 'domicilio', 'despacho', 'entrega'],
-            'asesor' => ['asesor', 'humano', 'persona', 'hablar con alguien', 'whatsapp']
+            'asesor' => ['asesor', 'humano', 'persona', 'hablar con alguien', 'whatsapp', 'teléfono', 'contacto']
         ];
 
         foreach ($keywords['saludo'] as $k) {
-            if (str_contains($input, $k)) return "¡Hola! Soy Mateo, tu asistente de Plaxtilineas. ¿En qué puedo ayudarte hoy?";
+            if (str_contains($input, $k)) {
+                return [
+                    'respuesta' => "¡Hola! Soy Mateo, tu asistente de Plaxtilineas. ¿En qué puedo ayudarte hoy?",
+                    'redirect' => null
+                ];
+            }
         }
         foreach ($keywords['catalogo'] as $k) {
-            if (str_contains($input, $k)) return "Contamos con una amplia variedad de productos plásticos para el hogar y la construcción. Puedes explorar todo nuestro catálogo en la sección de productos del menú superior.";
+            if (str_contains($input, $k)) {
+                return [
+                    'respuesta' => "Contamos con una amplia variedad de productos plásticos. Te redirijo de inmediato al Catálogo oficial para que los explores.",
+                    'redirect' => "/productos"
+                ];
+            }
         }
         foreach ($keywords['precio'] as $k) {
-            if (str_contains($input, $k)) return "Nuestros precios son muy competitivos y varían según la cantidad. Si buscas algo específico, dime qué producto te interesa y te daré una referencia o puedo conectarte con un asesor.";
+            if (str_contains($input, $k)) {
+                return [
+                    'respuesta' => "Nuestros precios varían según la cantidad. Te redirijo a la sección de Contacto para cotizaciones o puedes hablar con un asesor.",
+                    'redirect' => "/contacto"
+                ];
+            }
         }
         foreach ($keywords['envio'] as $k) {
-            if (str_contains($input, $k)) return "Realizamos envíos a todo el departamento del Quindío. Para otras ciudades, podemos coordinar el despacho a través de una transportadora con la ayuda de un asesor.";
+            if (str_contains($input, $k)) {
+                return [
+                    'respuesta' => "Hacemos envíos rápidos a todo el Quindío. Si tienes dudas de tarifas fuera del departamento, puedes consultar a nuestro asesor.",
+                    'redirect' => "https://wa.me/573006680125"
+                ];
+            }
         }
         foreach ($keywords['asesor'] as $k) {
-            if (str_contains($input, $k)) return "Claro que sí, puedes hablar directamente con un asesor humano a través de nuestro WhatsApp oficial: https://wa.me/573006680125";
+            if (str_contains($input, $k)) {
+                return [
+                    'respuesta' => "Entendido. Te estoy conectando con nuestro chat oficial de asesoría en WhatsApp. ¡Un momento, por favor!",
+                    'redirect' => "https://wa.me/573006680125"
+                ];
+            }
+        }
+
+        // Subcategorías específicas por palabra clave en la Capa 1
+        $subcatKeywords = [
+            'colchones' => '/busqueda?q=colchones',
+            'colchón' => '/busqueda?q=colchones',
+            'pisos' => '/busqueda?q=pisos',
+            'piso' => '/busqueda?q=pisos',
+            'espumas' => '/busqueda?q=espumas',
+            'espuma' => '/busqueda?q=espumas',
+            'canastos' => '/busqueda?q=canastos',
+            'canasto' => '/busqueda?q=canastos',
+            'tanques' => '/busqueda?q=tanques',
+            'tanque' => '/busqueda?q=tanques',
+            'yumbolon' => '/busqueda?q=yumbolon',
+            'termoflon' => '/busqueda?q=termoflon'
+        ];
+        foreach ($subcatKeywords as $key => $route) {
+            if (str_contains($input, $key)) {
+                return [
+                    'respuesta' => "Buscando productos de la sección \"" . ucfirst($key) . "\" en nuestro catálogo...",
+                    'redirect' => $route
+                ];
+            }
+        }
+
+        // Redirección de empresas del grupo
+        if (str_contains($input, 'districol')) {
+            return [
+                'respuesta' => "Redirigiéndote al sitio oficial de Colchones Districol...",
+                'redirect' => "https://colchonesdistricol.com/"
+            ];
+        }
+        if (str_contains($input, 'espumas y plásticos') || str_contains($input, 'espumasyplasticos')) {
+            return [
+                'respuesta' => "Redirigiéndote al sitio oficial de Espumas y Plásticos...",
+                'redirect' => "https://espumasyplasticos.com/"
+            ];
         }
 
         return null;
@@ -230,11 +306,11 @@ class ChatController
                 'Authorization: Bearer ' . $apiKey,
             ],
             CURLOPT_TIMEOUT => 30,
+            CURLOPT_SSL_VERIFYPEER => false, // Evita problemas de certificado SSL local en Windows
         ]);
 
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
 
         if ($httpCode !== 200) {
             throw new Exception('Error en Groq API: ' . $httpCode . ' - ' . $response);
@@ -283,18 +359,27 @@ class ChatController
         return "Eres Mateo, el asistente virtual oficial de Plaxtilineas, una empresa colombiana ubicada en el Quindío que vende productos plásticos de alta calidad para el hogar, la construcción y la industria.
 
 Tu personalidad:
-- Amigable, cálido y profesional. Hablas en español colombiano natural (no muy formal, no muy informal).
+- Amigable, cálido y profesional. Hablas en español colombiano natural.
 - Eres conocedor de todos los productos del catálogo.
-- Siempre buscas ayudar al cliente a encontrar lo que necesita.
-- Nunca inventas productos, precios ni información que no tengas.
 
-Reglas de respuesta:
-1. Respuestas cortas y directas (máx. 3 párrafos).
-2. Si puedes recomendar un producto del catálogo, hazlo usando el tag [PRODUCTO:ID] donde ID es el id del producto. Ejemplo: \"Te recomiendo este canasto [PRODUCTO:42]\".
-3. Si el usuario pregunta por envíos: Plaxtilineas hace entregas en todo el Quindío. Para pedidos fuera del departamento, el cliente debe coordinar con un asesor.
-4. Si el usuario quiere hablar con un humano, dale el enlace: https://wa.me/573006680125
-5. Si no sabes algo o no tienes la información, sé honesto y ofrece conectar al cliente con un asesor.
-6. No hables de competidores ni hagas comparaciones de precios con otras tiendas.
+REGLAS ESTRICTAS DE RESPUESTA:
+1. Respuestas cortas y directas (máx. 2 párrafos).
+2. Para recomendar productos del catálogo, DEBES usar ESTRICTAMENTE el formato literal [PRODUCTO:ID] (donde ID es el id numérico). ¡NUNCA cambies la palabra 'PRODUCTO'! Ejemplo correcto: [PRODUCTO:141].
+3. SIEMPRE que recomiendes un producto o el usuario busque algo, DEBES agregar al final de tu mensaje una etiqueta literal de redirección usando la palabra clave de búsqueda. Ejemplos:
+   - Búsqueda general: [REDIRECT:/busqueda?q=palabra_clave]
+   - Para telas: [REDIRECT:/busqueda?q=tela]
+   - Para colchones: [REDIRECT:/busqueda?q=colchones]
+   - Para pisos: [REDIRECT:/busqueda?q=pisos]
+   - Para espumas: [REDIRECT:/busqueda?q=espumas]
+4. Si el usuario pide hablar con un humano, agrega la etiqueta: [EXTERNAL:https://wa.me/573006680125]
+5. Si el usuario pide ir a secciones específicas, usa estas etiquetas exactas:
+   - Colchones Districol: [EXTERNAL:https://colchonesdistricol.com/]
+   - Espumas y Plásticos: [EXTERNAL:https://espumasyplasticos.com/]
+   - Facebook: [EXTERNAL:https://www.facebook.com/p/Plaxtilineas-100080040966300/]
+   - Instagram: [EXTERNAL:https://www.instagram.com/plaxtilineas/]
+   - Nosotros: [REDIRECT:/nosotros]
+   - Contacto: [REDIRECT:/contacto]
+   - Catálogo general: [REDIRECT:/productos]
 
 Catálogo disponible actualmente:
 {{PRODUCTOS_JSON}}";

@@ -191,7 +191,7 @@ class ProductoController
     {
         try {
             $db   = Database::getConnection();
-            $stmt = $db->prepare(self::$baseSelect . ' WHERE p.creado_en IS NOT NULL ORDER BY p.creado_en DESC LIMIT 6');
+            $stmt = $db->prepare(self::$baseSelect . ' WHERE p.creado_en IS NOT NULL ORDER BY p.creado_en DESC LIMIT 15');
             $stmt->execute();
             ResponseHandler::success($stmt->fetchAll());
 
