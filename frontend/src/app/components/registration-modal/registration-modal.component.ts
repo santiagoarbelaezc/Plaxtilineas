@@ -55,15 +55,26 @@ export class RegistrationModalComponent implements OnInit {
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.checkAndShowModal();
+      
+      this.leadsService.showRegistrationModal$.subscribe(() => {
+        this.isVisible = true;
+      });
     }
   }
 
   private checkAndShowModal(): void {
-    // Solo mostrar si no lo han registrado todavía en esta sesión
-    const yaRegistrado = localStorage.getItem('plaxtilineas_lead_registered');
-    setTimeout(() => {
-      this.isVisible = true;
-    }, 1500);
+    // Suscribirse al estado de registro
+    this.leadsService.registered$.subscribe(isRegistered => {
+      if (!isRegistered) {
+        setTimeout(() => {
+          if (!localStorage.getItem('registrationModalShown')) {
+            this.isVisible = true;
+          }
+        }, 1500);
+      } else {
+        this.isVisible = false;
+      }
+    });
   }
 
   closeModal(): void {
@@ -82,7 +93,7 @@ export class RegistrationModalComponent implements OnInit {
         next: (res: any) => {
           this.isSubmitting = false;
           this.registroExitoso = true;
-          localStorage.setItem('plaxtilineas_lead_registered', 'true');
+          this.leadsService.markAsRegistered();
           setTimeout(() => {
             this.closeModal();
           }, 2000);

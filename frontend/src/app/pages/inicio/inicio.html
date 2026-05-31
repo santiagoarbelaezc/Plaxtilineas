@@ -5,76 +5,140 @@
   <app-header></app-header>
 
   <!-- Categorías Destacadas -->
-  <section class="home-section" id="categories">
+  <section class="home-section" id="categories" style="padding-bottom: 0;">
     <app-categorias-destacadas></app-categorias-destacadas>
   </section>
 
+  <!-- Nuevos Productos -->
+  <section class="home-section" style="padding-top: 0;">
+    <app-feature-new-products></app-feature-new-products>
+  </section>
+
+
   <!-- Banner de Asistente Mateo (REUBICADO) -->
   <app-banner-asistente></app-banner-asistente>
+
+  <!-- Showcase de Producto -->
+  <section class="home-section no-padding">
+    <app-card-container [precio]="'Desde $ 2.800'" [nombreProducto]="'Catálogo General'"
+      [imagenProducto]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767225513/card1_ipfxoo.jpg'"
+      [categoriaNombre]="'Plaxtilineas'"
+      [bannerImagenUrl]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767297309/feature2-project_wypdpt.jpg'"
+      [bannerTitulo]="'Nuestros Productos'"
+      [bannerDescripcion]="'Descubre toda la variedad de productos Plaxtilíneas: pisos, espumas, canastos, tanques y mucho más para tu hogar e industria.'"
+      [bannerAltText]="'Banner catálogo general Plaxtilineas'" [promoTitulo]="'ENVIOS A PARTIR DE $70.000'"
+      [promoDescripcion]="'Ventas por mas de $70.000 envíos gratis a todo el Quindio'"
+      [promoImagen]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1768884810/envio3_qatfoe.jpg'"
+      [promoLogoUrl]="''" [linkUrl]="['/productos']" [promoQueryParams]="{ }" [cardLinkUrl]="['/productos']"
+      [cardQueryParams]="{ }">
+    </app-card-container>
+  </section>
 
   <!-- Nosotros Inicio (Completo: Texto + Categorías) -->
   <section class="home-section intro-nosotros">
     <app-nosotros-inicio></app-nosotros-inicio>
   </section>
 
-  <!-- Showcase de Producto -->
-  <section class="home-section no-padding">
-    <app-card-container
-      [precio]="'$ 99.000'"
-      [nombreProducto]="'Pisos Vinílicos'"
-      [imagenProducto]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767225513/card1_ipfxoo.jpg'"
-      [categoriaNombre]="'Pisos'"
-      [bannerImagenUrl]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767297309/feature2-project_wypdpt.jpg'"
-      [bannerTitulo]="'Pisos'"
-      [bannerDescripcion]="'Pisos Vinílicos Plaxtilíneas. La combinación ideal entre diseño, resistencia y funcionalidad para hogares y espacios comerciales.'"
-      [bannerAltText]="'Banner de pisos vinílicos'"
-      [promoTitulo]="'ENVIOS A PARTIR DE $70.000'"
-      [promoDescripcion]="'Ventas por mas de $70.000 envíos gratis a todo el Quindio'"
-      [promoImagen]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1768884810/envio3_qatfoe.jpg'"
-      [promoLogoUrl]="''"
-      [linkUrl]="['/productos']"
-      [promoQueryParams]="{ }"
-      [cardLinkUrl]="['/productos']"
-      [cardQueryParams]="{ subcategoria_id: 10 }">
-    </app-card-container>
-  </section>
 
-  <!-- Grilla de Productos 1 -->
-  <section class="home-section">
-    <div class="container">
-      <app-util-grid-producto></app-util-grid-producto>
-    </div>
-  </section>
 
-  <!-- ════════════ ZONA DE COMPONENTES DINÁMICOS (Personalizable) ════════════ -->
+  <!-- ════════════ ZONA DE COMPONENTES DINÁMICOS SUPERIORES ════════════ -->
   <ng-container *ngFor="let comp of componentesDinamicos">
-    <div class="dynamic-wrapper">
-      
+    <div class="dynamic-wrapper" *ngIf="comp.contenido?.posicion !== 'inferior'">
+
       <!-- 1. TIPO BANNER DINÁMICO -->
       <div class="full-banner-container" *ngIf="comp.tipo === 'banner'">
-        <app-full-banner
-          [imageUrl]="comp.contenido?.imageUrl"
-          [description]="comp.contenido?.descripcion"
-          [vPosition]="'top'"
-          [hPosition]="'left'"
-          [linkUrl]="comp.contenido?.linkUrl">
+        <app-full-banner [imageUrl]="comp.contenido?.imageUrl" [description]="comp.contenido?.descripcion"
+          [vPosition]="'top'" [hPosition]="'left'" [linkUrl]="comp.contenido?.linkUrl">
         </app-full-banner>
       </div>
 
       <!-- 2. TIPO ANUNCIO (Novedad Elegante de la Semana) -->
       <section class="home-section" *ngIf="comp.tipo === 'anuncio'">
         <div class="elegant-news-container">
-          <div class="elegant-news-card">
+
+          <!-- Si hay 2 imágenes configuradas, mostramos layout dual (grilla) -->
+          <div class="elegant-news-grid" *ngIf="comp.contenido?.imageUrl2">
+
+            <!-- Anuncio 1 -->
+            <div class="elegant-news-card">
+              <div class="news-image-wrapper">
+                <img [src]="comp.contenido?.imageUrl" [alt]="comp.contenido?.titulo" class="news-img">
+              </div>
+              <div class="news-info-content">
+                <h3 class="news-card-title">{{ comp.contenido?.titulo }}</h3>
+                <p class="news-card-desc">{{ comp.contenido?.texto }}</p>
+
+                <!-- Lista de Características / Beneficios -->
+                <ul class="news-features-list" *ngIf="getBullets(comp).length > 0">
+                  <li *ngFor="let item of getBullets(comp)">
+                    <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="3">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>{{ item }}</span>
+                  </li>
+                </ul>
+
+                <a [routerLink]="comp.contenido?.linkUrl" class="news-card-link-btn">
+                  {{ comp.contenido?.btnText || 'Descubrir más →' }}
+                </a>
+              </div>
+            </div>
+
+            <!-- Anuncio 2 -->
+            <div class="elegant-news-card">
+              <div class="news-image-wrapper">
+                <img [src]="comp.contenido?.imageUrl2" [alt]="comp.contenido?.titulo2" class="news-img">
+              </div>
+              <div class="news-info-content">
+                <h3 class="news-card-title">{{ comp.contenido?.titulo2 }}</h3>
+                <p class="news-card-desc">{{ comp.contenido?.texto2 }}</p>
+
+                <!-- Lista de Características / Beneficios -->
+                <ul class="news-features-list" *ngIf="getBullets(comp).length > 0">
+                  <li *ngFor="let item of getBullets(comp)">
+                    <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="3">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>{{ item }}</span>
+                  </li>
+                </ul>
+
+                <a [routerLink]="comp.contenido?.linkUrl" class="news-card-link-btn">
+                  {{ comp.contenido?.btnText || 'Descubrir más →' }}
+                </a>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Si solo hay 1 imagen configurada, mostramos el layout de ancho completo tradicional -->
+          <div class="elegant-news-card" *ngIf="!comp.contenido?.imageUrl2">
             <div class="news-image-wrapper">
               <img [src]="comp.contenido?.imageUrl" [alt]="comp.contenido?.titulo" class="news-img">
             </div>
             <div class="news-info-content">
-              <span class="news-badge-weekly">⭐️ NOVEDAD DE LA SEMANA</span>
               <h3 class="news-card-title">{{ comp.contenido?.titulo }}</h3>
               <p class="news-card-desc">{{ comp.contenido?.texto }}</p>
-              <a [routerLink]="comp.contenido?.linkUrl" class="news-card-link-btn">Descubrir más →</a>
+
+              <!-- Lista de Características -->
+              <ul class="news-features-list" *ngIf="getBullets(comp).length > 0">
+                <li *ngFor="let item of getBullets(comp)">
+                  <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span>{{ item }}</span>
+                </li>
+              </ul>
+
+              <a [routerLink]="comp.contenido?.linkUrl" class="news-card-link-btn">
+                {{ comp.contenido?.btnText || 'Descubrir más →' }}
+              </a>
             </div>
           </div>
+
         </div>
       </section>
 
@@ -92,76 +156,152 @@
 
   <!-- Carrusel de Banners -->
   <section class="home-section" id="soluciones">
-    <app-plaxti-banner
-      [images]="bannerImages"
-      [height]="'500px'"
-      [hoverScale]="1.1"
-      [minScale]="0.95"
-      [fullWidth]="false"
-      [showHeader]="true"
-      [headerTitle]="'Nuestras <span>Soluciones</span>'"
+    <app-plaxti-banner [images]="bannerImages" [height]="'500px'" [hoverScale]="1.1" [minScale]="0.95"
+      [fullWidth]="false" [showHeader]="true" [headerTitle]="'Nuestras <span>Soluciones</span>'"
       [headerSubtitle]="'Descubre todo lo que Plaxtilineas tiene para ofrecerte'">
     </app-plaxti-banner>
   </section>
 
-  <!-- Nuevos Productos -->
+  <!-- Nuevo Carrusel de Productos Filtrable por Categorías -->
   <section class="home-section">
-    <app-feature-new-products></app-feature-new-products>
+    <app-category-products-carousel></app-category-products-carousel>
   </section>
-
-  <!-- Full Banner 2 -->
-  <div class="full-banner-container">
-    <app-full-banner
-      [imageUrl]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1768343765/banner3-project_guqon6.png'"
-      [description]="'Lonas de cerramiento y protección de alta resistencia, ideales para aplicaciones industriales.'"
-      [vPosition]="'top'"
-      [hPosition]="'left'"
-      [linkUrl]="'/productos?subcategoria_id=11'"
-      [subcategoriaId]="11">
-    </app-full-banner>
-  </div>
 
   <!-- Showcase Yumbolon -->
   <section class="home-section no-padding">
-    <app-card-container
-      [precio]="'$ 99.000'"
-      [nombreProducto]="'YUMBOLON - THERMOLON'"
+    <app-card-container [precio]="'$ 99.000'" [nombreProducto]="'YUMBOLON - THERMOLON'"
       [imagenProducto]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767412446/card-template3_iwmedg.jpg'"
       [categoriaNombre]="'Yumbolon'"
       [bannerImagenUrl]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767412449/feature5-project_zhqhxr.jpg'"
       [bannerTitulo]="'Yumbolon - Thermolon'"
       [bannerDescripcion]="'Material para aislamiento térmico ideal para obras, techos en PVC y aislamiento acústico.'"
-      [bannerAltText]="'Banner de Yumbolon - Thermolon'"
-      [promoTitulo]="'ENVIOS A PARTIR DE $70.000'"
+      [bannerAltText]="'Banner de Yumbolon - Thermolon'" [promoTitulo]="'ENVIOS A PARTIR DE $70.000'"
       [promoDescripcion]="'Ventas por mas de $70.000 envíos gratis a todo el Quindio'"
       [promoImagen]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1768884810/envio3_qatfoe.jpg'"
-      [promoLogoUrl]="''"
-      [linkUrl]="['/productos']"
-      [promoQueryParams]="{ subcategoria_id: 19 }"
-      [cardLinkUrl]="['/productos']"
-      [cardQueryParams]="{ subcategoria_id: 12 }">
+      [promoLogoUrl]="''" [linkUrl]="['/productos']" [promoQueryParams]="{ subcategoria_id: 19 }"
+      [cardLinkUrl]="['/productos']" [cardQueryParams]="{ subcategoria_id: 12 }">
     </app-card-container>
   </section>
+
+  <!-- ════════════ ZONA DE COMPONENTES DINÁMICOS INFERIORES ════════════ -->
+  <ng-container *ngFor="let comp of componentesDinamicos">
+    <div class="dynamic-wrapper" *ngIf="comp.contenido?.posicion === 'inferior'">
+
+      <!-- 1. TIPO BANNER DINÁMICO -->
+      <div class="full-banner-container" *ngIf="comp.tipo === 'banner'">
+        <app-full-banner [imageUrl]="comp.contenido?.imageUrl" [description]="comp.contenido?.descripcion"
+          [vPosition]="'top'" [hPosition]="'left'" [linkUrl]="comp.contenido?.linkUrl">
+        </app-full-banner>
+      </div>
+
+      <!-- 2. TIPO ANUNCIO (Novedad Elegante de la Semana) -->
+      <section class="home-section" *ngIf="comp.tipo === 'anuncio'">
+        <div class="elegant-news-container">
+
+          <!-- Si hay 2 imágenes configuradas, mostramos layout dual (grilla) -->
+          <div class="elegant-news-grid" *ngIf="comp.contenido?.imageUrl2">
+
+            <!-- Anuncio 1 -->
+            <div class="elegant-news-card">
+              <div class="news-image-wrapper">
+                <img [src]="comp.contenido?.imageUrl" [alt]="comp.contenido?.titulo" class="news-img">
+              </div>
+              <div class="news-info-content">
+                <h3 class="news-card-title">{{ comp.contenido?.titulo }}</h3>
+                <p class="news-card-desc">{{ comp.contenido?.texto }}</p>
+
+                <!-- Lista de Características / Beneficios -->
+                <ul class="news-features-list" *ngIf="getBullets(comp).length > 0">
+                  <li *ngFor="let item of getBullets(comp)">
+                    <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="3">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>{{ item }}</span>
+                  </li>
+                </ul>
+
+                <a [routerLink]="comp.contenido?.linkUrl" class="news-card-link-btn">
+                  {{ comp.contenido?.btnText || 'Descubrir más →' }}
+                </a>
+              </div>
+            </div>
+
+            <!-- Anuncio 2 -->
+            <div class="elegant-news-card">
+              <div class="news-image-wrapper">
+                <img [src]="comp.contenido?.imageUrl2" [alt]="comp.contenido?.titulo2" class="news-img">
+              </div>
+              <div class="news-info-content">
+                <h3 class="news-card-title">{{ comp.contenido?.titulo2 }}</h3>
+                <p class="news-card-desc">{{ comp.contenido?.texto2 }}</p>
+
+                <!-- Lista de Características / Beneficios -->
+                <ul class="news-features-list" *ngIf="getBullets(comp).length > 0">
+                  <li *ngFor="let item of getBullets(comp)">
+                    <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="3">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>{{ item }}</span>
+                  </li>
+                </ul>
+
+                <a [routerLink]="comp.contenido?.linkUrl" class="news-card-link-btn">
+                  {{ comp.contenido?.btnText || 'Descubrir más →' }}
+                </a>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Si solo hay 1 imagen configurada, mostramos el layout de ancho completo tradicional -->
+          <div class="elegant-news-card" *ngIf="!comp.contenido?.imageUrl2">
+            <div class="news-image-wrapper">
+              <img [src]="comp.contenido?.imageUrl" [alt]="comp.contenido?.titulo" class="news-img">
+            </div>
+            <div class="news-info-content">
+              <h3 class="news-card-title">{{ comp.contenido?.titulo }}</h3>
+              <p class="news-card-desc">{{ comp.contenido?.texto }}</p>
+
+              <!-- Lista de Características -->
+              <ul class="news-features-list" *ngIf="getBullets(comp).length > 0">
+                <li *ngFor="let item of getBullets(comp)">
+                  <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span>{{ item }}</span>
+                </li>
+              </ul>
+
+              <a [routerLink]="comp.contenido?.linkUrl" class="news-card-link-btn">
+                {{ comp.contenido?.btnText || 'Descubrir más →' }}
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 3. TIPO TEXTO (Bloque de Texto Centrado o Lateral) -->
+      <section class="home-section text-block-section" *ngIf="comp.tipo === 'texto'">
+        <div class="container text-block-container" [style.text-align]="comp.contenido?.alineacion || 'center'">
+          <h2 class="text-block-title">{{ comp.contenido?.titulo }}</h2>
+          <p class="text-block-body">{{ comp.contenido?.cuerpo }}</p>
+        </div>
+      </section>
+
+    </div>
+  </ng-container>
 
   <!-- Grilla de Productos 2 -->
   <section class="home-section">
     <app-util-grid-producto-other></app-util-grid-producto-other>
   </section>
 
-  <!-- Trio Presentation Servicios -->
-  <section class="home-section">
-    <app-plaxti-trio-presentation
-      [cards]="serviciosCards"
-      [showHeader]="true"
-      [headerTitle]="'Nuestros Servicios'"
-      [headerSubtitle]="'Soluciones integrales diseñadas para impulsar el crecimiento de tu empresa'"
-      [backgroundColor]="'transparent'"
-      [cardHeight]="'450px'"
-      [gap]="'30px'"
-      [hoverEffect]="true"
-      [layout]="'alternate'">
-    </app-plaxti-trio-presentation>
-  </section>
+  <!-- Grupo Empresas -->
+  <app-grupo-empresas></app-grupo-empresas>
 
   <!-- Ubicación y Partners -->
   <div class="footer-stack">

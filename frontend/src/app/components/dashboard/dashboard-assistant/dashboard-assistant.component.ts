@@ -1,6 +1,9 @@
 import { Component, ElementRef, ViewChild, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { environment } from '../../../../enviroments/environment';
 
 interface Message {
   id: number;
@@ -22,15 +25,18 @@ export class DashboardAssistantComponent implements AfterViewChecked {
   isOpen = false;
   isTyping = false;
   newMessage = '';
+  private apiUrl = `${environment.apiUrl}/dashboard-assistant`;
   
   messages: Message[] = [
     {
       id: 1,
-      text: '¡Hola! Soy Mateo, el asistente del sistema. ¿En qué te puedo ayudar hoy con el panel de administración?',
+      text: '¡Hola! Soy Mateo, el asistente inteligente del sistema. ¿En qué te puedo ayudar hoy con el panel de administración?',
       sender: 'assistant',
       timestamp: new Date()
     }
   ];
+
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngAfterViewChecked() {
     this.scrollToBottom();
@@ -59,42 +65,60 @@ export class DashboardAssistantComponent implements AfterViewChecked {
     };
     
     this.messages.push(userMessage);
-    const query = this.newMessage;
     this.newMessage = '';
     this.isTyping = true;
     
     setTimeout(() => this.scrollToBottom(), 50);
 
-    // Simular respuesta del asistente
-    setTimeout(() => {
-      this.isTyping = false;
-      this.simulateResponse(query);
-    }, 1500 + Math.random() * 1000); // 1.5 - 2.5s
-  }
-
-  private simulateResponse(query: string) {
-    const textLower = query.toLowerCase();
-    let responseText = 'He registrado tu consulta. Por el momento soy un asistente en pruebas, pronto tendré acceso a todos los datos del sistema.';
-
-    if (textLower.includes('inventario') || textLower.includes('stock') || textLower.includes('productos')) {
-      responseText = 'Para gestionar los productos y el inventario, dirígete a la pestaña "Catálogo" > "Productos". Allí podrás actualizar el stock de las variantes.';
-    } else if (textLower.includes('pqr') || textLower.includes('queja') || textLower.includes('reclamo')) {
-      responseText = 'Puedes gestionar todos los tickets de PQR en la sección correspondiente. El sistema ahora soporta estados (Pendiente, En Proceso, Resuelto).';
-    } else if (textLower.includes('hola') || textLower.includes('buenos dias') || textLower.includes('buenas')) {
-      responseText = '¡Hola! ¿Cómo está yendo la gestión de la tienda hoy?';
-    } else if (textLower.includes('gracias')) {
-      responseText = '¡De nada! Aquí estoy para lo que necesites.';
-    }
-
-    const assistantMsg: Message = {
-      id: Date.now(),
-      text: responseText,
-      sender: 'assistant',
-      timestamp: new Date()
+    // Preparar payload de historial para backend
+    const payload = {
+      mensajes: this.messages.map(m => ({
+        sender: m.sender,
+        text: m.text
+      }))
     };
 
-    this.messages.push(assistantMsg);
-    setTimeout(() => this.scrollToBottom(), 50);
+    // Llamada real al backend
+    this.http.post<any>(this.apiUrl, payload).subscribe({
+      next: (res) => {
+        this.isTyping = false;
+        
+        const assistantMsg: Message = {
+          id: Date.now(),
+          text: res.respuesta || 'Respuesta vacía',
+          sender: 'assistant',
+          timestamp: new Date()
+        };
+        this.messages.push(assistantMsg);
+
+        // Procesar Redirección
+        if (res.redirect) {
+          setTimeout(() => {
+            this.router.navigateByUrl(res.redirect);
+          }, 1500); // 1.5s delay para que el usuario lea el mensaje
+        }
+
+        // Procesar Impresión
+        if (res.print) {
+          setTimeout(() => {
+            window.print();
+          }, 1000);
+        }
+
+        setTimeout(() => this.scrollToBottom(), 50);
+      },
+      error: (err) => {
+        this.isTyping = false;
+        const errorMsg: Message = {
+          id: Date.now(),
+          text: 'Lo siento, hubo un error de conexión con la IA.',
+          sender: 'assistant',
+          timestamp: new Date()
+        };
+        this.messages.push(errorMsg);
+        setTimeout(() => this.scrollToBottom(), 50);
+      }
+    });
   }
 
   private scrollToBottom(): void {

@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { AddToCartBtnComponent } from '../../cart/add-to-cart-btn/add-to-cart-btn.component';
 import { ProductosService } from '../../services/productos.service';
 import { MenuStateService } from '../../services/menu-state.service';
 import { ProductoEditable } from '../../models/producto.model';
@@ -11,7 +10,7 @@ import { faChevronLeft, faChevronRight, faBoxOpen } from '@fortawesome/free-soli
 @Component({
   selector: 'app-feature-new-products',
   standalone: true,
-  imports: [CommonModule, RouterModule, AddToCartBtnComponent, FontAwesomeModule],
+  imports: [CommonModule, RouterModule, FontAwesomeModule],
   templateUrl: './feature-new-products.html',
   styleUrls: ['./feature-new-products.css']
 })

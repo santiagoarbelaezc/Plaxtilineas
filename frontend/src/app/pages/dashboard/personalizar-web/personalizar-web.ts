@@ -17,6 +17,7 @@ export class PersonalizarWeb implements OnInit {
   cargando = true;
   error = '';
   mensajeExito = '';
+  subiendoImagen = false;
 
   // ─── Vista previa iframe ────────────────────────────
   vistaPrevia = false;
@@ -41,9 +42,17 @@ export class PersonalizarWeb implements OnInit {
   cTitulo = '';
   cSubtitulo = '';
   cTexto = '';
+  cImageUrl2 = '';
+  cTitulo2 = '';
+  cTexto2 = '';
   cCuerpo = '';
   cLinkUrl = '';
   cAlineacion: 'left' | 'center' | 'right' = 'center';
+  cBadge = '';
+  cBtnText = '';
+  cCaracteristicas = '';
+  cPosicion: 'superior' | 'inferior' = 'superior';
+  subiendoImagen2 = false;
 
   constructor(
     private componentesService: ComponentesService,
@@ -149,7 +158,6 @@ export class PersonalizarWeb implements OnInit {
     }
   }
 
-  // ─── Modal de creación ──────────────────────────────
   abrirCreador(tipo: 'banner' | 'anuncio' | 'texto'): void {
     this.editando = false;
     this.tempTipo = tipo;
@@ -158,13 +166,20 @@ export class PersonalizarWeb implements OnInit {
     this.cTitulo = '';
     this.cSubtitulo = '';
     this.cTexto = '';
+    this.cImageUrl2 = '';
+    this.cTitulo2 = '';
+    this.cTexto2 = '';
+    this.subiendoImagen2 = false;
     this.cCuerpo = '';
     this.cLinkUrl = '';
     this.cAlineacion = 'center';
+    this.cBadge = '⭐️ NOVEDAD DE LA SEMANA';
+    this.cBtnText = 'Descubrir más →';
+    this.cCaracteristicas = '';
+    this.cPosicion = 'superior';
     this.modalAbierto = true;
   }
 
-  // ─── Modal de edición ───────────────────────────────
   abrirEditor(comp: ComponenteDinamico): void {
     this.editando = true;
     this.tempId = comp.id;
@@ -175,9 +190,17 @@ export class PersonalizarWeb implements OnInit {
     this.cTitulo = content.titulo || '';
     this.cSubtitulo = content.subtitulo || '';
     this.cTexto = content.texto || '';
+    this.cImageUrl2 = content.imageUrl2 || '';
+    this.cTitulo2 = content.titulo2 || '';
+    this.cTexto2 = content.texto2 || '';
+    this.subiendoImagen2 = false;
     this.cCuerpo = content.cuerpo || '';
     this.cLinkUrl = content.linkUrl || '';
     this.cAlineacion = content.alineacion || 'center';
+    this.cBadge = content.badge || '⭐️ NOVEDAD DE LA SEMANA';
+    this.cBtnText = content.btnText || 'Descubrir más →';
+    this.cCaracteristicas = content.caracteristicas || '';
+    this.cPosicion = content.posicion || 'superior';
     this.modalAbierto = true;
   }
 
@@ -185,15 +208,59 @@ export class PersonalizarWeb implements OnInit {
     this.modalAbierto = false;
   }
 
+  onFileSelected(event: any, target: number = 1): void {
+    const file: File = event.target.files[0];
+    if (file) {
+      if (target === 2) {
+        this.subiendoImagen2 = true;
+      } else {
+        this.subiendoImagen = true;
+      }
+      this.componentesService.subirImagen(file).subscribe({
+        next: (res) => {
+          if (target === 2) {
+            this.cImageUrl2 = res.url;
+            this.subiendoImagen2 = false;
+          } else {
+            this.cImageUrl = res.url;
+            this.subiendoImagen = false;
+          }
+          this.mostrarMensaje('Imagen subida con éxito a Cloudinary');
+        },
+        error: (err) => {
+          if (target === 2) {
+            this.subiendoImagen2 = false;
+          } else {
+            this.subiendoImagen = false;
+          }
+          console.error('Error al subir imagen:', err);
+          alert('Error al subir la imagen. Intenta de nuevo.');
+        }
+      });
+    }
+  }
+
   // ─── Guardar ────────────────────────────────────────
   guardarComponente(): void {
     let contenido: any = {};
     if (this.tempTipo === 'banner') {
-      contenido = { imageUrl: this.cImageUrl, descripcion: this.cTexto, linkUrl: this.cLinkUrl };
+      contenido = { imageUrl: this.cImageUrl, descripcion: this.cTexto, linkUrl: this.cLinkUrl, posicion: this.cPosicion };
     } else if (this.tempTipo === 'anuncio') {
-      contenido = { imageUrl: this.cImageUrl, titulo: this.cTitulo, texto: this.cTexto, linkUrl: this.cLinkUrl };
+      contenido = { 
+        imageUrl: this.cImageUrl, 
+        titulo: this.cTitulo, 
+        texto: this.cTexto, 
+        imageUrl2: this.cImageUrl2,
+        titulo2: this.cTitulo2,
+        texto2: this.cTexto2,
+        linkUrl: this.cLinkUrl,
+        badge: this.cBadge,
+        btnText: this.cBtnText,
+        caracteristicas: this.cCaracteristicas,
+        posicion: this.cPosicion
+      };
     } else if (this.tempTipo === 'texto') {
-      contenido = { titulo: this.cTitulo, cuerpo: this.cCuerpo, alineacion: this.cAlineacion };
+      contenido = { titulo: this.cTitulo, cuerpo: this.cCuerpo, alineacion: this.cAlineacion, posicion: this.cPosicion };
     }
 
     const payload: Partial<ComponenteDinamico> = {

@@ -40,13 +40,6 @@
                   <span class="price-amount">{{ formatearPrecio(producto.precio) }}</span>
                 </div>
                 
-                <div class="cart-btn-wrapper" (click)="$event.stopPropagation()">
-                  <app-add-to-cart-btn 
-                    [producto]="producto" 
-                    [cantidad]="1"
-                    [isMinimal]="true">
-                  </app-add-to-cart-btn>
-                </div>
               </div>
             </div>
           </div>
@@ -70,7 +63,7 @@
 
     <!-- Loading template -->
     <div class="loading-container" *ngIf="loading">
-      <div class="loading-spinner"></div>
+      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Plaxtilineas Logo" class="loading-logo">
       <p>Cargando nuevos productos...</p>
     </div>
     

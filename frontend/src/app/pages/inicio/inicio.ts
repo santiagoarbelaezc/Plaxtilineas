@@ -24,6 +24,8 @@ import { UtilGridProductoOther } from "../../components/grid-producto/util-grid-
 import { NosotrosInicioComponent } from '../../components/nosotros-inicio/nosotros-inicio.component';
 import { BannerAsistenteComponent } from '../../components/banner-asistente/banner-asistente.component';
 import { ComponentesService, ComponenteDinamico } from '../../services/componentes.service';
+import { CategoryProductsCarouselComponent } from '../../components/category-products-carousel/category-products-carousel.component';
+import { GrupoEmpresasComponent } from '../../components/grupo-empresas/grupo-empresas.component';
 
 @Component({
   selector: 'app-inicio',
@@ -38,15 +40,15 @@ import { ComponentesService, ComponenteDinamico } from '../../services/component
     SocialButtonsComponent,
     LongMap,
     CategoriasDestacadasComponent,
-    PlaxtiTrioPresentationComponent,
     PlaxtiBannerComponent,
     FeatureNewProducts,
     CardContainerComponent,
     FullBanner,
-    UtilGridProducto,
     UtilGridProductoOther,
     NosotrosInicioComponent,
-    BannerAsistenteComponent
+    BannerAsistenteComponent,
+    CategoryProductsCarouselComponent,
+    GrupoEmpresasComponent
   ],
   templateUrl: './inicio.html',
   styleUrls: ['./inicio.css']
@@ -120,7 +122,7 @@ export class Inicio implements OnInit {
   // Componentes dinámicos cargados de la base de datos
   componentesDinamicos: ComponenteDinamico[] = [];
 
-  constructor(private componentesService: ComponentesService) {}
+  constructor(private componentesService: ComponentesService) { }
 
   ngOnInit(): void {
     // Aseguramos el fondo blanco estático
@@ -144,5 +146,11 @@ export class Inicio implements OnInit {
         console.error('❌ Error al obtener componentes dinámicos para el Inicio:', err);
       }
     });
+  }
+
+  getBullets(comp: any): string[] {
+    const list = comp.contenido?.caracteristicas || '';
+    if (!list) return [];
+    return list.split(',').map((item: string) => item.trim()).filter((item: string) => item.length > 0);
   }
 }

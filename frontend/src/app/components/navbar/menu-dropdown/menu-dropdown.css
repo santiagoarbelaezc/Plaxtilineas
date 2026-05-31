@@ -143,6 +143,7 @@
   padding: 0 0 12px 0;
   margin-bottom: 12px;
   border-bottom: 2px solid rgba(54, 140, 68, 0.1);
+  min-height: 48px;
 }
 
 .categoria-name {

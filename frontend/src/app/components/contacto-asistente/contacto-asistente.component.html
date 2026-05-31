@@ -34,7 +34,30 @@
       <!-- Messages Loop -->
       <div *ngFor="let msg of messages" [class]="'message-wrapper ' + msg.sender">
         <div class="message-bubble">
-          {{ msg.text }}
+          <div class="bubble-text">{{ msg.text }}</div>
+          
+          <!-- Productos Recomendados -->
+          <div class="recommended-products" *ngIf="msg.productos && msg.productos.length > 0">
+            <div class="product-mini-card" *ngFor="let prod of msg.productos" (click)="navegarA('/productos/' + prod.id)">
+              <img [src]="prod.imagen || 'assets/images/placeholder.jpg'" [alt]="prod.nombre" class="prod-thumb">
+              <div class="prod-details">
+                <span class="prod-name">{{ prod.nombre }}</span>
+                <span class="prod-price">{{ prod.precio | currency:'USD':'symbol':'1.0-0' }}</span>
+              </div>
+              <button class="prod-view-btn">Ver</button>
+            </div>
+          </div>
+
+          <!-- Botones de Acción / Enlaces -->
+          <div class="action-buttons-list" *ngIf="msg.links && msg.links.length > 0">
+            <button 
+              *ngFor="let link of msg.links" 
+              class="quick-action-btn" 
+              (click)="navegarA(link.url, link.external)">
+              {{ link.label }}
+            </button>
+          </div>
+
           <span class="message-time">{{ msg.timestamp | date:'HH:mm' }}</span>
         </div>
       </div>

@@ -80,6 +80,12 @@
             <fa-icon [icon]="['fas', 'search']"></fa-icon>
           </button>
 
+          <!-- Register Button -->
+          <button *ngIf="!isUserRegistered" class="action-btn-premium register-btn" (click)="openRegistrationModal()" aria-label="Promociones Exclusivas" title="Recibir Promociones">
+            <fa-icon [icon]="['fas', 'envelope']" class="register-icon"></fa-icon>
+            <span class="register-text">¡Ofertas VIP!</span>
+          </button>
+
           <!-- WhatsApp Icon -->
           <a href="https://wa.me/573000000000" target="_blank" class="action-btn whatsapp-btn" aria-label="WhatsApp">
             <fa-icon [icon]="['fab', 'whatsapp']" *ngIf="false"></fa-icon> <!-- Fallback -->

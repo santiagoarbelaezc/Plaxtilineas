@@ -62,6 +62,8 @@ export class DashboardViewComponent {
   datosPreview: any = null;
   datosEstadisticas: any = null;
   respuestaImportacion: any = null;
+  analisisPreview: any = null;
+  todoActualizado = false;
   
   // Mensajes
   mensajeError = '';
@@ -130,9 +132,19 @@ export class DashboardViewComponent {
     this.importService.obtenerPreview(5).subscribe({
       next: (response) => {
         this.datosPreview = response;
+        this.analisisPreview = response.analisis || null;
         this.cargandoPreview = false;
-        this.mensajeExito = `✅ Preview cargado: ${response.total_en_preview} productos encontrados`;
-        setTimeout(() => this.mensajeExito = '', 5000);
+        
+        if (this.analisisPreview?.todo_actualizado) {
+          this.todoActualizado = true;
+          this.mensajeExito = `✅ ¡Todo está sincronizado! Los ${this.analisisPreview.total_hostinger} productos de Hostinger ya están en tu catálogo local.`;
+        } else if (this.analisisPreview) {
+          this.todoActualizado = false;
+          this.mensajeExito = `⚠️ Hay ${this.analisisPreview.nuevos_por_importar} producto(s) nuevo(s) pendiente(s) de importar.`;
+        } else {
+          this.mensajeExito = `✅ Preview cargado: ${response.total_en_preview} productos encontrados`;
+        }
+        setTimeout(() => this.mensajeExito = '', 8000);
       },
       error: (err) => {
         this.cargandoPreview = false;
@@ -169,6 +181,12 @@ export class DashboardViewComponent {
    * Ejecutar importación de productos
    */
   ejecutarImportacion(): void {
+    if (this.todoActualizado) {
+      this.mensajeExito = '✅ No es necesario importar. Todos los productos ya están sincronizados.';
+      setTimeout(() => this.mensajeExito = '', 5000);
+      return;
+    }
+
     if (!confirm('⚠️ Esta operación importará todos los productos de Hostinger.\n¿Estás seguro de continuar?')) {
       return;
     }
@@ -181,21 +199,28 @@ export class DashboardViewComponent {
       next: (response) => {
         this.respuestaImportacion = response;
         this.cargandoImportacion = false;
-        
-        let msg = `✅ Sincronización completada: ${response.importados_exitosamente} nuevos`;
-        if (response.actualizados > 0) msg += `, ${response.actualizados} actualizados`;
-        if (response.errores > 0) msg += `, ${response.errores} errores`;
+
+        if (response.todo_actualizado) {
+          this.todoActualizado = true;
+          this.mensajeExito = '✅ ' + (response.mensaje || 'Todo está actualizado. No hay productos nuevos.');
+        } else {
+          let msg = `✅ Sincronización completada: ${response.importados_exitosamente} nuevos`;
+          if (response.actualizados > 0) msg += `, ${response.actualizados} actualizados`;
+          if (response.errores > 0) msg += `, ${response.errores} errores`;
+          this.mensajeExito = msg;
+          // Refresh analysis
+          this.todoActualizado = true;
+        }
         
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        console.log('📄 LOGS DE IMPORTACIÓN (Línea por línea):');
-        if (response.logs_detallados && response.logs_detallados.length > 0) {
+        console.log('📄 LOGS DE IMPORTACIÓN:');
+        if (response.logs_detallados?.length > 0) {
             response.logs_detallados.forEach((log: string) => console.log(log));
         } else {
-            console.log('No se recibieron logs detallados.');
+            console.log('Sin logs detallados.');
         }
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         
-        this.mensajeExito = msg;
         setTimeout(() => this.mensajeExito = '', 8000);
       },
       error: (err) => {
@@ -213,6 +238,8 @@ export class DashboardViewComponent {
     this.datosPreview = null;
     this.datosEstadisticas = null;
     this.respuestaImportacion = null;
+    this.analisisPreview = null;
+    this.todoActualizado = false;
     this.mensajeError = '';
     this.mensajeExito = '';
   }

@@ -141,8 +141,8 @@
             <button class="import-btn import-btn-preview" (click)="obtenerPreview()"
               [disabled]="cargandoPreview || cargandoEstadisticas || cargandoImportacion">
               <fa-icon [icon]="faEye"></fa-icon>
-              <span *ngIf="!cargandoPreview">Ver Preview</span>
-              <span *ngIf="cargandoPreview">Cargando...</span>
+              <span *ngIf="!cargandoPreview">Analizar Catálogo</span>
+              <span *ngIf="cargandoPreview">Analizando...</span>
             </button>
             <button class="import-btn import-btn-stats" (click)="obtenerEstadisticas()"
               [disabled]="cargandoEstadisticas || cargandoPreview || cargandoImportacion">
@@ -151,15 +151,62 @@
               <span *ngIf="cargandoEstadisticas">Cargando...</span>
             </button>
             <button class="import-btn import-btn-execute" (click)="ejecutarImportacion()"
-              [disabled]="cargandoImportacion || cargandoPreview || cargandoEstadisticas">
+              [disabled]="cargandoImportacion || cargandoPreview || cargandoEstadisticas || todoActualizado">
               <fa-icon [icon]="faDownload"></fa-icon>
-              <span *ngIf="!cargandoImportacion">Ejecutar Importación</span>
+              <span *ngIf="!cargandoImportacion && !todoActualizado">Ejecutar Importación</span>
+              <span *ngIf="!cargandoImportacion && todoActualizado">✅ Todo Sincronizado</span>
               <span *ngIf="cargandoImportacion">Importando...</span>
             </button>
             <button class="import-btn import-btn-clear" (click)="limpiarDatos()"
               [disabled]="!datosPreview && !datosEstadisticas && !respuestaImportacion">
               Limpiar
             </button>
+          </div>
+
+          <!-- Panel de Análisis (aparece después de "Analizar Catálogo") -->
+          <div *ngIf="analisisPreview" class="import-data-section analysis-section">
+            <h3 class="data-section-title">
+              📊 Análisis de Sincronización
+            </h3>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-value">{{ analisisPreview.total_hostinger }}</div>
+                <div class="stat-label">En Hostinger</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">{{ analisisPreview.total_local }}</div>
+                <div class="stat-label">En Catálogo Local</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">{{ analisisPreview.ya_importados }}</div>
+                <div class="stat-label">Ya Sincronizados</div>
+              </div>
+              <div class="stat-card" [style.border-color]="analisisPreview.nuevos_por_importar > 0 ? 'rgba(245,158,11,0.5)' : 'rgba(34,197,94,0.5)'">
+                <div class="stat-value" [style.color]="analisisPreview.nuevos_por_importar > 0 ? '#fbbf24' : '#4ade80'">
+                  {{ analisisPreview.nuevos_por_importar }}
+                </div>
+                <div class="stat-label">Pendientes de Importar</div>
+              </div>
+            </div>
+
+            <!-- Estado global -->
+            <div *ngIf="analisisPreview.todo_actualizado" class="sync-status sync-ok">
+              <span class="sync-icon">✅</span>
+              <div>
+                <strong>¡Todo está al día!</strong>
+                <p>No hay productos nuevos por importar. Tu catálogo local está completamente sincronizado con Hostinger.</p>
+              </div>
+            </div>
+            <div *ngIf="!analisisPreview.todo_actualizado" class="sync-status sync-pending">
+              <span class="sync-icon">⚠️</span>
+              <div>
+                <strong>Hay {{ analisisPreview.nuevos_por_importar }} producto(s) nuevo(s)</strong>
+                <p>Presiona "Ejecutar Importación" para sincronizarlos.</p>
+                <ul *ngIf="analisisPreview.nuevos_nombres?.length" class="nuevos-list">
+                  <li *ngFor="let nombre of analisisPreview.nuevos_nombres">{{ nombre }}</li>
+                </ul>
+              </div>
+            </div>
           </div>
 
           <div *ngIf="datosPreview" class="import-data-section preview-section">
@@ -218,26 +265,30 @@
               <fa-icon [icon]="faDownload"></fa-icon>
               Resultado de Importación
             </h3>
-            <div class="result-summary">
+            
+            <!-- Si todo está actualizado, mostrar mensaje limpio -->
+            <div *ngIf="respuestaImportacion.todo_actualizado" class="sync-status sync-ok">
+              <span class="sync-icon">✅</span>
+              <div>
+                <strong>{{ respuestaImportacion.mensaje }}</strong>
+                <p>{{ respuestaImportacion.actualizados }} productos ya estaban sincronizados.</p>
+              </div>
+            </div>
+
+            <!-- Si hubo importación real -->
+            <div *ngIf="!respuestaImportacion.todo_actualizado" class="result-summary">
               <div class="result-item success">
                 <span class="result-label">Importados Exitosamente:</span>
                 <span class="result-value">{{ respuestaImportacion.importados_exitosamente }}/{{ respuestaImportacion.total_procesados }}</span>
               </div>
-              <div *ngIf="respuestaImportacion.duplicados_ignorados > 0" class="result-item warning">
-                <span class="result-label">Duplicados Ignorados:</span>
-                <span class="result-value">{{ respuestaImportacion.duplicados_ignorados }}</span>
+              <div *ngIf="respuestaImportacion.actualizados > 0" class="result-item warning">
+                <span class="result-label">Actualizados:</span>
+                <span class="result-value">{{ respuestaImportacion.actualizados }}</span>
               </div>
               <div *ngIf="respuestaImportacion.errores > 0" class="result-item error">
                 <span class="result-label">Errores:</span>
                 <span class="result-value">{{ respuestaImportacion.errores }}</span>
               </div>
-            </div>
-            <div *ngIf="respuestaImportacion.detalles_duplicados && respuestaImportacion.detalles_duplicados.length"
-              class="details-section">
-              <h4>Duplicados ({{ respuestaImportacion.detalles_duplicados.length }})</h4>
-              <ul class="details-list">
-                <li *ngFor="let dup of respuestaImportacion.detalles_duplicados">{{ dup.nombre }}</li>
-              </ul>
             </div>
             <div *ngIf="respuestaImportacion.detalles_errores && respuestaImportacion.detalles_errores.length"
               class="details-section">

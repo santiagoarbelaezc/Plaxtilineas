@@ -1,11 +1,16 @@
 import { Component, Output, EventEmitter, OnInit, ElementRef, ViewChild, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { environment } from '../../../enviroments/environment';
 
 interface Message {
   text: string;
   sender: 'user' | 'assistant';
   timestamp: Date;
+  productos?: any[];
+  links?: { label: string; url: string; external?: boolean }[];
 }
 
 @Component({
@@ -21,15 +26,26 @@ export class ContactoAsistente implements OnInit, AfterViewChecked {
 
   newMessage: string = '';
   messages: Message[] = [];
+  sessionId: string = '';
 
   isTyping = false;
 
+  constructor(private http: HttpClient, private router: Router) {}
+
   ngOnInit() {
-    this.scrollToBottom();
+    this.sessionId = localStorage.getItem('mateo_session_id') || this.generateUUID();
+    localStorage.setItem('mateo_session_id', this.sessionId);
+    
+    // Cargar historial del chat si existe
+    this.cargarHistorial();
   }
 
   ngAfterViewChecked() {
     this.scrollToBottom();
+  }
+
+  generateUUID(): string {
+    return 'session_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
   }
 
   scrollToBottom(): void {
@@ -38,47 +54,102 @@ export class ContactoAsistente implements OnInit, AfterViewChecked {
     } catch(err) { }
   }
 
+  cargarHistorial() {
+    this.http.get<any>(`${environment.apiUrl}/chat/historial?session_id=${this.sessionId}`).subscribe({
+      next: (res) => {
+        // En PHP el ResponseHandler mete todo en una propiedad "data" o directamente en la raíz dependiendo de la estructura
+        const mensajes = res?.mensajes || res?.data?.mensajes;
+        if (mensajes && Array.isArray(mensajes)) {
+          this.messages = mensajes.map((m: any) => ({
+            text: m.mensaje,
+            sender: m.rol === 'user' ? 'user' : 'assistant',
+            timestamp: new Date(m.created_at || new Date())
+          }));
+        }
+      },
+      error: (err) => console.error('Error al cargar historial', err)
+    });
+  }
+
   sendMessage() {
-    if (!this.newMessage.trim()) return;
+    const textToSend = this.newMessage.trim();
+    if (!textToSend) return;
 
     // Agregar mensaje del usuario
     this.messages.push({
-      text: this.newMessage,
+      text: textToSend,
       sender: 'user',
       timestamp: new Date()
     });
 
-    const userMsg = this.newMessage.toLowerCase();
     this.newMessage = '';
-
-    // Simular respuesta del asistente
     this.isTyping = true;
-    setTimeout(() => {
-      this.isTyping = false;
-      this.generateResponse(userMsg);
-    }, 1500);
+    this.scrollToBottom();
+
+    // Enviar al backend
+    this.http.post<any>(`${environment.apiUrl}/chat`, {
+      mensaje: textToSend,
+      session_id: this.sessionId
+    }).subscribe({
+      next: (res) => {
+        this.isTyping = false;
+        if (res) {
+          const respuestaText = res.respuesta;
+          const productos = res.productos || [];
+          const redirect = res.redirect;
+          
+          const links: { label: string; url: string; external?: boolean }[] = [];
+
+          // Si hay una redirección especificada por el backend (vía regex o palabra clave)
+          if (redirect) {
+            const isExternal = redirect.startsWith('http://') || redirect.startsWith('https://');
+            links.push({
+              label: isExternal ? 'Ir al enlace' : 'Ver Sección',
+              url: redirect,
+              external: isExternal
+            });
+
+            // Redirigir automáticamente después de 1.8 segundos para dejar que el usuario lea
+            setTimeout(() => {
+              this.closeChat.emit();
+              if (isExternal) {
+                window.open(redirect, '_blank');
+              } else {
+                this.router.navigateByUrl(redirect);
+              }
+            }, 1800);
+          }
+
+          // Agregar respuesta
+          this.messages.push({
+            text: respuestaText,
+            sender: 'assistant',
+            timestamp: new Date(),
+            productos: productos,
+            links: links
+          });
+        }
+      },
+      error: (err) => {
+        this.isTyping = false;
+        console.error('Error en el chat', err);
+        this.messages.push({
+          text: 'Lo siento, he tenido problemas para responder. ¿Te gustaría que te comunique con un asesor?',
+          sender: 'assistant',
+          timestamp: new Date(),
+          links: [{ label: 'Hablar con Asesor en WhatsApp', url: 'https://wa.me/573006680125', external: true }]
+        });
+      }
+    });
   }
 
-  generateResponse(input: string) {
-    let response = '';
-
-    if (input.includes('hola') || input.includes('buenos dias')) {
-      response = '¡Hola de nuevo! Cuéntame, ¿buscas algún producto específico o información sobre envíos?';
-    } else if (input.includes('producto') || input.includes('catalogo')) {
-      response = 'Puedes ver todos nuestros productos en la sección de Catálogo. ¿Te gustaría que te lleve allí?';
-    } else if (input.includes('precio') || input.includes('cuanto vale')) {
-      response = 'Los precios varían según la cantidad. Si deseas una cotización formal, puedo conectarte con un asesor comercial por WhatsApp.';
-    } else if (input.includes('envio') || input.includes('domicilio')) {
-      response = 'Hacemos envíos a todo el Quindío. ¡En Armenia son muy rápidos!';
+  navegarA(url: string, external?: boolean) {
+    if (external) {
+      window.open(url, '_blank');
     } else {
-      response = 'Entiendo. Para darte una respuesta más precisa sobre "' + input + '", ¿te gustaría hablar con un asesor humano por WhatsApp?';
+      this.closeChat.emit();
+      this.router.navigateByUrl(url);
     }
-
-    this.messages.push({
-      text: response,
-      sender: 'assistant',
-      timestamp: new Date()
-    });
   }
 
   onClose() {

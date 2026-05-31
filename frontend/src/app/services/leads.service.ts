@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { environment } from '../../enviroments/environment';
 
 export interface Lead {
@@ -32,7 +32,33 @@ export interface LeadsStats {
 export class LeadsService {
   private apiUrl = `${environment.apiUrl}/leads`;
 
-  constructor(private http: HttpClient) {}
+  private showRegistrationModalSubject = new Subject<void>();
+  showRegistrationModal$ = this.showRegistrationModalSubject.asObservable();
+
+  private registeredSubject = new BehaviorSubject<boolean>(false);
+  registered$ = this.registeredSubject.asObservable();
+
+  constructor(private http: HttpClient) {
+    this.checkRegistration();
+  }
+
+  checkRegistration() {
+    if (typeof localStorage !== 'undefined') {
+      const isReg = localStorage.getItem('plaxtilineas_lead_registered') === 'true';
+      this.registeredSubject.next(isReg);
+    }
+  }
+
+  markAsRegistered() {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('plaxtilineas_lead_registered', 'true');
+      this.registeredSubject.next(true);
+    }
+  }
+
+  openRegistrationModal() {
+    this.showRegistrationModalSubject.next();
+  }
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');

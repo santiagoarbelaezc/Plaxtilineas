@@ -12,6 +12,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { filter, takeUntil, Subject, throttleTime } from 'rxjs';
 import { SearchStateService } from '../../services/search-state.service';
 import { MenuStateService } from '../../services/menu-state.service';
+import { LeadsService } from '../../services/leads.service';
 import { MenuDropdown } from './menu-dropdown/menu-dropdown';
 import { EmpresasDropdown } from './empresas-dropdown/empresas-dropdown';
 import { CartIconComponent } from '../../cart/cart-icon/cart-icon.component';
@@ -28,6 +29,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   menuAbierto = false;
   isScrolled = false;
   searchActive = false;
+  isUserRegistered = false;
   
   // Variables para el buscador
   searchQuery: string = '';
@@ -42,7 +44,8 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     private aosService: AosService,
     private router: Router,
     private searchStateService: SearchStateService,
-    private menuStateService: MenuStateService
+    private menuStateService: MenuStateService,
+    private leadsService: LeadsService
   ) {
     library.addIcons(
       faKey, faSearch, faTimes, faHome, faUsers, faMapMarkerAlt,
@@ -55,6 +58,10 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.setupSearchStateListener();
     this.setupScrollListener();
     this.checkInitialScroll();
+    
+    this.leadsService.registered$.pipe(takeUntil(this.destroy$)).subscribe(isReg => {
+      this.isUserRegistered = isReg;
+    });
   }
 
   private setupScrollListener(): void {
@@ -125,6 +132,10 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   closeMenu(): void {
     this.menuAbierto = false;
     document.body.style.overflow = 'auto';
+  }
+
+  openRegistrationModal(): void {
+    this.leadsService.openRegistrationModal();
   }
 
   toggleSearch(): void {

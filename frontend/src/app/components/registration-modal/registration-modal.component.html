@@ -15,9 +15,12 @@
       
       <!-- Estado de éxito -->
       <div *ngIf="registroExitoso" class="success-state">
-        <fa-icon [icon]="['fas', 'check-circle']" class="success-icon"></fa-icon>
-        <h2>¡Registro exitoso!</h2>
-        <p>Gracias por registrarte. Pronto recibirás nuestras novedades y promociones.</p>
+        <div class="success-icon-wrapper">
+          <fa-icon [icon]="['fas', 'check-circle']" class="success-icon"></fa-icon>
+        </div>
+        <h2 class="success-title">¡Registro exitoso!</h2>
+        <p class="success-desc">Gracias por registrarte. Pronto recibirás nuestras novedades y promociones exclusivas.</p>
+        <button (click)="closeModal()" class="btn-continue">Continuar navegando</button>
       </div>
 
       <!-- Formulario normal -->
@@ -27,7 +30,10 @@
           Regístrate para recibir nuestras últimas promociones y novedades directamente en tu celular.
         </p>
 
-        <div *ngIf="errorMessage" class="error-banner">{{ errorMessage }}</div>
+        <div *ngIf="errorMessage" class="error-banner">
+          <fa-icon [icon]="['fas', 'exclamation-circle']"></fa-icon>
+          <span>{{ errorMessage }}</span>
+        </div>
 
         <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="registration-form">
           <!-- Full Name -->
@@ -49,7 +55,7 @@
 
           <!-- Phone -->
           <div class="form-group">
-            <label for="phone">Teléfono</label>
+            <label for="phone">Teléfono (WhatsApp)</label>
             <div class="input-container" [class.error]="registrationForm.get('phone')?.invalid && registrationForm.get('phone')?.touched">
               <fa-icon [icon]="['fas', 'phone']" class="input-icon"></fa-icon>
               <input 
@@ -74,8 +80,8 @@
     </div>
 
     <!-- Footer decoration -->
-    <div class="modal-footer">
-      <p>Tus datos están seguros con nosotros.</p>
+    <div class="modal-footer" *ngIf="!registroExitoso">
+      <p><fa-icon [icon]="['fas', 'lock']" class="lock-icon"></fa-icon> Tus datos están seguros con nosotros.</p>
     </div>
   </div>
 </div>

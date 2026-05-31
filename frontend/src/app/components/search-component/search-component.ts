@@ -151,42 +151,37 @@ export class SearchComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * Configura búsqueda en tiempo real
-   */
   private setupRealTimeSearch(): void {
     this.searchSubject.pipe(
-      debounceTime(300),
+      debounceTime(400),
       distinctUntilChanged(),
       takeUntil(this.destroy$)
     ).subscribe(termino => {
       if (termino.trim().length >= 2) {
-        this.performRealTimeSearch(termino);
+        // En lugar de solo mostrar sugerencias, ejecutar la búsqueda principal
+        this.buscar();
+      } else if (termino.trim().length === 0 && this.hasSearched) {
+        this.limpiarBusqueda();
       } else {
         this.clearSuggestions();
       }
     });
   }
 
-  /**
-   * Procesa búsqueda inicial desde query params
-   */
   private processInitialSearch(): void {
     this.route.queryParams.pipe(
       takeUntil(this.destroy$)
     ).subscribe(params => {
       const term = params['q'];
       
-      // Solo procesar si es diferente al término actual y no es la carga inicial
+      // Solo procesar si es diferente al término actual
       if (term && term !== this.terminoBusqueda) {
         this.terminoBusqueda = term;
         this.lastSearchTerm = term;
         this.searchStateService.setSearchTerm(term);
         
-        // Ejecutar búsqueda solo si no es la carga inicial
-        if (!this.isInitialLoad) {
-          this.performSearch(term);
-        }
+        // Ejecutar búsqueda automáticamente
+        this.performSearch(term);
         this.isInitialLoad = false;
       } else if (!term && this.hasSearched) {
         // Si no hay término pero ya se había buscado, resetear
@@ -218,11 +213,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Ejecuta búsqueda principal
-   */
   private performSearch(termino: string): void {
-    if (!this.isSearchInProgress && termino.trim()) {
+    if (termino.trim()) {
       this.searchTriggerSubject.next(termino.trim());
     }
   }

@@ -1,0 +1,58 @@
+<section class="grupo-section">
+  <div class="grupo-container">
+    
+    <!-- Encabezado de la Sección -->
+    <div class="section-header">
+      <h2 class="section-title">Conoce el Grupo <span>Espumas y Plásticos</span></h2>
+      <p class="section-subtitle">
+        Sinergia e innovación a través de nuestras empresas aliadas para ofrecerte las mejores soluciones en empaques, confort y descanso.
+      </p>
+    </div>
+
+    <!-- Grilla de Empresas -->
+    <div class="empresas-grid">
+      <div 
+        *ngFor="let empresa of empresas" 
+        class="empresa-card" 
+        [style.--hover-glow]="empresa.colorTheme"
+      >
+        <!-- Logo y Nombre de la Empresa -->
+        <div class="empresa-header-card">
+          <div class="empresa-logo-container">
+            <img [src]="empresa.logo" [alt]="empresa.nombre" class="empresa-logo">
+          </div>
+          <h3 class="empresa-name" [style.color]="empresa.colorTheme">{{ empresa.nombre }}</h3>
+        </div>
+
+        <!-- Vista en Vivo del Sitio Web -->
+        <div class="empresa-preview">
+          <div class="preview-browser-bar">
+            <span class="browser-dot red"></span>
+            <span class="browser-dot yellow"></span>
+            <span class="browser-dot green"></span>
+            <span class="browser-url">{{ empresa.url }}</span>
+          </div>
+          <div class="preview-image-container">
+            <img [src]="empresa.imagenEnvivo" [alt]="'Sitio web de ' + empresa.nombre" class="preview-image">
+            <div class="preview-overlay">
+              <a [href]="empresa.url" target="_blank" rel="noopener noreferrer" class="visit-overlay-btn">
+                <span>Visitar Sitio</span>
+                <fa-icon [icon]="['fas', 'external-link-alt']"></fa-icon>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Descripción y Acción -->
+        <div class="empresa-body">
+          <p class="empresa-description">{{ empresa.descripcion }}</p>
+          <a [href]="empresa.url" target="_blank" rel="noopener noreferrer" class="empresa-link" [style.--btn-color]="empresa.colorTheme">
+            <span>Visitar Sitio Oficial</span>
+            <fa-icon [icon]="['fas', 'external-link-alt']"></fa-icon>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>

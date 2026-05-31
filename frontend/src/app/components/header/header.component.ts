@@ -29,8 +29,8 @@ export class HeaderComponent implements AfterViewInit {
         const video = this.videoRef?.nativeElement;
         if (video) {
           video.muted = true;
-          video.pause();
-          console.log('[Header Video] Video pausado por petición del usuario');
+          video.play().catch(err => console.log('[Header Video] Autoplay blocked or failed:', err));
+          console.log('[Header Video] Video reproduciéndose por petición del usuario');
         }
       }, 1000); // Dar tiempo al preloader
     });

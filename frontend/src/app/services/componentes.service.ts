@@ -69,4 +69,18 @@ export class ComponentesService {
       headers: this.getAuthHeaders()
     });
   }
+
+  /**
+   * Subir una imagen a Cloudinary para un componente dinámico (solo admin)
+   */
+  subirImagen(file: File): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+    });
+    const formData = new FormData();
+    formData.append('imagen', file);
+
+    return this.http.post(`${this.apiUrl}/upload`, formData, { headers });
+  }
 }
