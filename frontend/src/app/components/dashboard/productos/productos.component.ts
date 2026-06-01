@@ -179,7 +179,7 @@ export class ProductosComponent implements OnInit {
     this.categoriasDisponibles = Array.from(mapa.entries()).map(([id, nombre]) => ({ id, nombre }));
   }
 
-  cargarProductos(): void {
+  cargarProductos(resetPage: boolean = true): void {
     const id = this.filtroSubcategoriaId ? parseInt(this.filtroSubcategoriaId) : undefined;
     this.productosService.obtenerProductos(id).subscribe({
       next: data => {
@@ -188,7 +188,7 @@ export class ProductosComponent implements OnInit {
           editando: false,
           nuevaImagen: undefined
         }));
-        this.filtrarProductos();
+        this.filtrarProductos(resetPage);
       },
       error: err => {
         console.error('Error al cargar productos:', err);
@@ -493,7 +493,7 @@ export class ProductosComponent implements OnInit {
   }
 
   // Métodos para productos (sin cambios)
-  filtrarProductos(): void {
+  filtrarProductos(resetPage: boolean = true): void {
     let filtrados = [...this.productos];
 
     // Filtro por término de búsqueda
@@ -546,7 +546,9 @@ export class ProductosComponent implements OnInit {
 
     this.productosFiltrados = filtrados;
     
-    this.paginaActual = 1;
+    if (resetPage) {
+      this.paginaActual = 1;
+    }
     this.calcularPaginacion();
     this.actualizarDatosPaginados();
   }
@@ -653,7 +655,7 @@ export class ProductosComponent implements OnInit {
       if (result.isConfirmed) {
         prod.editando = false;
         prod.nuevaImagen = undefined;
-        this.cargarProductos();
+        this.cargarProductos(false);
       }
     });
   }
@@ -687,7 +689,7 @@ export class ProductosComponent implements OnInit {
           next: () => {
             prod.editando = false;
             prod.nuevaImagen = undefined;
-            this.cargarProductos();
+            this.cargarProductos(false);
             Swal.fire('✅ Actualizado', 'El producto fue actualizado correctamente.', 'success');
           },
           error: err => {
@@ -714,7 +716,7 @@ export class ProductosComponent implements OnInit {
       if (result.isConfirmed) {
         this.productosService.eliminarProducto(this.token!, id).subscribe({
           next: () => {
-            this.cargarProductos();
+            this.cargarProductos(false);
             Swal.fire('✅ Eliminado', 'El producto y sus variantes han sido eliminados.', 'success');
           },
           error: err => {
