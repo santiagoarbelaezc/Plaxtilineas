@@ -1,0 +1,81 @@
+<section class="products-carousel-section" *ngIf="!loading && productos.length > 0">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">
+        {{ contenido.titulo || ('Productos en ' + categoriaNombre) }}
+      </h2>
+      <p class="section-subtitle" *ngIf="contenido.subtitulo || categoriaNombre">
+        {{ contenido.subtitulo || 'Explora nuestras mejores soluciones' }}
+      </p>
+      <div class="title-underline"></div>
+    </div>
+
+    <!-- Carrusel -->
+    <div class="carousel-wrapper">
+      <!-- Botón Anterior -->
+      <button 
+        class="nav-btn prev-btn" 
+        (click)="scrollCarrusel('prev')" 
+        [disabled]="currentPage === 0"
+        aria-label="Productos anteriores">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
+      <!-- Viewport / Track -->
+      <div class="carousel-viewport">
+        <div class="products-grid" #productosGrid>
+          <div class="product-card" *ngFor="let prod of productos" (click)="verDetalles(prod.id, prod.nombre)">
+            <div class="card-image-wrapper">
+              <img [src]="prod.imagen_url" [alt]="prod.nombre" class="product-img" loading="lazy">
+              <span class="badge" *ngIf="prod.subcategoria">{{ prod.subcategoria }}</span>
+            </div>
+
+            <div class="card-info">
+              <h3 class="product-name">{{ prod.nombre }}</h3>
+              <p class="product-description" *ngIf="prod.descripcion">{{ prod.descripcion }}</p>
+              
+              <div class="price-row">
+                <span class="price">{{ formatearPrecio(prod.precio) }}</span>
+                <span class="unit" *ngIf="prod.unidad">/ {{ prod.unidad }}</span>
+              </div>
+            </div>
+            
+            <div class="card-footer">
+              <button class="view-details-btn">
+                <span>Ver Detalles</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón Siguiente -->
+      <button 
+        class="nav-btn next-btn" 
+        (click)="scrollCarrusel('next')" 
+        [disabled]="currentPage === pagesArray.length - 1"
+        aria-label="Productos siguientes">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Indicadores -->
+    <div class="carousel-indicators" *ngIf="pagesArray.length > 1">
+      <button 
+        *ngFor="let page of pagesArray" 
+        class="indicator-dot" 
+        [class.active]="page === currentPage"
+        (click)="goToPage(page)"
+        [attr.aria-label]="'Ir a la página ' + (page + 1)">
+      </button>
+    </div>
+  </div>
+</section>

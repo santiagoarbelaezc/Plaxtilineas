@@ -34,7 +34,7 @@ export class PersonalizarWeb implements OnInit {
 
   // Modelos para formulario reactivo simple
   tempId?: number;
-  tempTipo: 'banner' | 'anuncio' | 'texto' = 'banner';
+  tempTipo: 'banner' | 'anuncio' | 'texto' | 'testimonios' | 'faq' | 'galeria' | 'carrusel_productos' = 'banner';
   tempActivo = true;
 
   // Campos específicos de contenido
@@ -158,7 +158,7 @@ export class PersonalizarWeb implements OnInit {
     }
   }
 
-  abrirCreador(tipo: 'banner' | 'anuncio' | 'texto'): void {
+  abrirCreador(tipo: 'banner' | 'anuncio' | 'texto' | 'testimonios' | 'faq' | 'galeria' | 'carrusel_productos'): void {
     this.editando = false;
     this.tempTipo = tipo;
     this.tempActivo = true;

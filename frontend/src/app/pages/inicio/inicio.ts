@@ -27,6 +27,12 @@ import { ComponentesService, ComponenteDinamico } from '../../services/component
 import { CategoryProductsCarouselComponent } from '../../components/category-products-carousel/category-products-carousel.component';
 import { GrupoEmpresasComponent } from '../../components/grupo-empresas/grupo-empresas.component';
 
+// Nuevos componentes dinámicos
+import { DynamicTestimoniosComponent } from '../../components/dynamic-testimonios/dynamic-testimonios.component';
+import { DynamicFaqComponent } from '../../components/dynamic-faq/dynamic-faq.component';
+import { DynamicGaleriaComponent } from '../../components/dynamic-galeria/dynamic-galeria.component';
+import { DynamicProductCarouselComponent } from '../../components/dynamic-product-carousel/dynamic-product-carousel.component';
+
 @Component({
   selector: 'app-inicio',
   standalone: true,
@@ -48,7 +54,11 @@ import { GrupoEmpresasComponent } from '../../components/grupo-empresas/grupo-em
     NosotrosInicioComponent,
     BannerAsistenteComponent,
     CategoryProductsCarouselComponent,
-    GrupoEmpresasComponent
+    GrupoEmpresasComponent,
+    DynamicTestimoniosComponent,
+    DynamicFaqComponent,
+    DynamicGaleriaComponent,
+    DynamicProductCarouselComponent
   ],
   templateUrl: './inicio.html',
   styleUrls: ['./inicio.css']

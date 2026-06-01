@@ -150,6 +150,22 @@
         </div>
       </section>
 
+      <!-- 4. TIPO TESTIMONIOS -->
+      <app-dynamic-testimonios *ngIf="comp.tipo === 'testimonios'" [contenido]="comp.contenido">
+      </app-dynamic-testimonios>
+
+      <!-- 5. TIPO FAQ -->
+      <app-dynamic-faq *ngIf="comp.tipo === 'faq'" [contenido]="comp.contenido">
+      </app-dynamic-faq>
+
+      <!-- 6. TIPO GALERIA -->
+      <app-dynamic-galeria *ngIf="comp.tipo === 'galeria'" [contenido]="comp.contenido">
+      </app-dynamic-galeria>
+
+      <!-- 7. TIPO CARRUSEL PRODUCTOS -->
+      <app-dynamic-product-carousel *ngIf="comp.tipo === 'carrusel_productos'" [contenido]="comp.contenido">
+      </app-dynamic-product-carousel>
+
     </div>
   </ng-container>
   <!-- ════════════════════════════════════════════════════════════════════════ -->
@@ -291,6 +307,22 @@
           <p class="text-block-body">{{ comp.contenido?.cuerpo }}</p>
         </div>
       </section>
+
+      <!-- 4. TIPO TESTIMONIOS -->
+      <app-dynamic-testimonios *ngIf="comp.tipo === 'testimonios'" [contenido]="comp.contenido">
+      </app-dynamic-testimonios>
+
+      <!-- 5. TIPO FAQ -->
+      <app-dynamic-faq *ngIf="comp.tipo === 'faq'" [contenido]="comp.contenido">
+      </app-dynamic-faq>
+
+      <!-- 6. TIPO GALERIA -->
+      <app-dynamic-galeria *ngIf="comp.tipo === 'galeria'" [contenido]="comp.contenido">
+      </app-dynamic-galeria>
+
+      <!-- 7. TIPO CARRUSEL PRODUCTOS -->
+      <app-dynamic-product-carousel *ngIf="comp.tipo === 'carrusel_productos'" [contenido]="comp.contenido">
+      </app-dynamic-product-carousel>
 
     </div>
   </ng-container>
