@@ -2,10 +2,16 @@
 <button 
   class="assistant-fab" 
   [class.hidden]="isOpen" 
-  (click)="toggleChat()" 
-  title="Hablar con Mateo">
-  <div class="fab-avatar-container">
-    <img src="assets/images/mateo4.png" alt="Mateo" class="fab-avatar">
+  [class.dragging]="isDragging"
+  [style.right.px]="positionRight"
+  [style.bottom.px]="positionBottom"
+  (mousedown)="onMouseDown($event)"
+  (touchstart)="onTouchStart($event)"
+  (click)="onFabClick($event)" 
+  title="Hablar con Mateo"
+  draggable="false">
+  <div class="fab-avatar-container" draggable="false">
+    <img src="assets/images/mateo4.png" alt="Mateo" class="fab-avatar" draggable="false">
     <span class="status-dot"></span>
   </div>
 </button>

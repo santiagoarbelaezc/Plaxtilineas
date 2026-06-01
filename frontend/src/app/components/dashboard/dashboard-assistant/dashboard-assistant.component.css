@@ -11,16 +11,22 @@
      height: 100px;
      background: transparent;
      border: none;
-     cursor: pointer;
+     cursor: grab;
      z-index: 9999;
      padding: 0;
      display: flex;
      align-items: center;
      justify-content: center;
      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+     user-select: none;
+     touch-action: none;
    }
-   .assistant-fab:hover {
+   .assistant-fab:hover:not(.dragging) {
      transform: scale(1.1) translateY(-10px);
+   }
+   .assistant-fab.dragging {
+     transition: none !important;
+     cursor: grabbing !important;
    }
    .assistant-fab.hidden {
      transform: scale(0);
