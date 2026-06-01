@@ -5,7 +5,7 @@ import { environment } from '../../enviroments/environment';
 
 export interface ComponenteDinamico {
   id?: number;
-  tipo: 'banner' | 'anuncio' | 'texto';
+  tipo: 'banner' | 'anuncio' | 'texto' | 'testimonios' | 'faq' | 'galeria' | 'carrusel_productos';
   orden: number;
   activo: boolean | number;
   contenido: any; // Mapeado a JSON dinámico según el tipo
