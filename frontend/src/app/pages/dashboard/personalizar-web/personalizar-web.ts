@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ComponentesService, ComponenteDinamico } from '../../../services/componentes.service';
+import { CategoriasService } from '../../../services/categorias.service';
 
 @Component({
   selector: 'app-personalizar-web',
@@ -14,6 +15,7 @@ import { ComponentesService, ComponenteDinamico } from '../../../services/compon
 export class PersonalizarWeb implements OnInit {
 
   componentes: ComponenteDinamico[] = [];
+  categoriasLista: any[] = [];
   cargando = true;
   error = '';
   mensajeExito = '';
@@ -54,8 +56,15 @@ export class PersonalizarWeb implements OnInit {
   cPosicion: 'superior' | 'inferior' = 'superior';
   subiendoImagen2 = false;
 
+  // Listas temporales para formularios dinámicos
+  tempTestimonios: any[] = [];
+  tempPreguntas: any[] = [];
+  tempImagenes: any[] = [];
+  tempCategoriaId: number | null = null;
+
   constructor(
     private componentesService: ComponentesService,
+    private categoriasService: CategoriasService,
     private sanitizer: DomSanitizer
   ) {
     this.previewSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.PREVIEW_URL);
@@ -63,6 +72,7 @@ export class PersonalizarWeb implements OnInit {
 
   ngOnInit(): void {
     this.cargarComponentes();
+    this.cargarCategorias();
   }
 
   // ─── Métodos del panel de vista previa ─────────────
@@ -158,6 +168,62 @@ export class PersonalizarWeb implements OnInit {
     }
   }
 
+  cargarCategorias(): void {
+    this.categoriasService.getCategorias().subscribe({
+      next: (cats) => {
+        this.categoriasLista = cats;
+      },
+      error: (err) => {
+        console.error('Error al cargar categorías:', err);
+      }
+    });
+  }
+
+  // Métodos controladores de listas temporales
+  addTestimonio() {
+    this.tempTestimonios.push({ nombre: '', puesto: '', comentario: '', estrellas: 5, avatar: '' });
+  }
+
+  removeTestimonio(index: number) {
+    this.tempTestimonios.splice(index, 1);
+  }
+
+  addPregunta() {
+    this.tempPreguntas.push({ pregunta: '', respuesta: '' });
+  }
+
+  removePregunta(index: number) {
+    this.tempPreguntas.splice(index, 1);
+  }
+
+  addImagen() {
+    this.tempImagenes.push({ url: '', caption: '' });
+  }
+
+  removeImagen(index: number) {
+    this.tempImagenes.splice(index, 1);
+  }
+
+  onItemFileSelected(event: any, item: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      item.subiendo = true;
+      this.componentesService.subirImagen(file).subscribe({
+        next: (res) => {
+          item.avatar = res.url;
+          item.url = res.url;
+          item.subiendo = false;
+          this.mostrarMensaje('Imagen subida con éxito');
+        },
+        error: (err) => {
+          item.subiendo = false;
+          console.error(err);
+          alert('Error al subir imagen.');
+        }
+      });
+    }
+  }
+
   abrirCreador(tipo: 'banner' | 'anuncio' | 'texto' | 'testimonios' | 'faq' | 'galeria' | 'carrusel_productos'): void {
     this.editando = false;
     this.tempTipo = tipo;
@@ -177,6 +243,13 @@ export class PersonalizarWeb implements OnInit {
     this.cBtnText = 'Descubrir más →';
     this.cCaracteristicas = '';
     this.cPosicion = 'superior';
+
+    // Limpiar listas
+    this.tempTestimonios = [];
+    this.tempPreguntas = [];
+    this.tempImagenes = [];
+    this.tempCategoriaId = null;
+
     this.modalAbierto = true;
   }
 
@@ -201,6 +274,13 @@ export class PersonalizarWeb implements OnInit {
     this.cBtnText = content.btnText || 'Descubrir más →';
     this.cCaracteristicas = content.caracteristicas || '';
     this.cPosicion = content.posicion || 'superior';
+
+    // Cargar listas desde contenido
+    this.tempTestimonios = Array.isArray(content.testimonios) ? JSON.parse(JSON.stringify(content.testimonios)) : [];
+    this.tempPreguntas = Array.isArray(content.preguntas) ? JSON.parse(JSON.stringify(content.preguntas)) : [];
+    this.tempImagenes = Array.isArray(content.imagenes) ? JSON.parse(JSON.stringify(content.imagenes)) : [];
+    this.tempCategoriaId = content.categoriaId || null;
+
     this.modalAbierto = true;
   }
 
@@ -261,6 +341,14 @@ export class PersonalizarWeb implements OnInit {
       };
     } else if (this.tempTipo === 'texto') {
       contenido = { titulo: this.cTitulo, cuerpo: this.cCuerpo, alineacion: this.cAlineacion, posicion: this.cPosicion };
+    } else if (this.tempTipo === 'testimonios') {
+      contenido = { titulo: this.cTitulo, subtitulo: this.cSubtitulo, testimonios: this.tempTestimonios, posicion: this.cPosicion };
+    } else if (this.tempTipo === 'faq') {
+      contenido = { titulo: this.cTitulo, subtitulo: this.cSubtitulo, preguntas: this.tempPreguntas, posicion: this.cPosicion };
+    } else if (this.tempTipo === 'galeria') {
+      contenido = { titulo: this.cTitulo, subtitulo: this.cSubtitulo, imagenes: this.tempImagenes, posicion: this.cPosicion };
+    } else if (this.tempTipo === 'carrusel_productos') {
+      contenido = { titulo: this.cTitulo, subtitulo: this.cSubtitulo, categoriaId: this.tempCategoriaId, posicion: this.cPosicion };
     }
 
     const payload: Partial<ComponenteDinamico> = {
