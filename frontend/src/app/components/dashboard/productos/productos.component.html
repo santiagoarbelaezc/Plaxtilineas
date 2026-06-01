@@ -114,10 +114,16 @@
           </div>
 
           <div class="form-group">
-            <label for="descripcion" class="form-label">
-              <fa-icon [icon]="faAlignLeft"></fa-icon>
-              Descripción (opcional)
-            </label>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <label for="descripcion" class="form-label" style="margin-bottom: 0;">
+                <fa-icon [icon]="faAlignLeft"></fa-icon>
+                Descripción (opcional)
+              </label>
+              <button type="button" class="btn-secondary btn-sm ai-btn" (click)="generarDescripcionConIA('crear')" [disabled]="generandoDescCrear">
+                <fa-icon [icon]="faMagic"></fa-icon>
+                {{ generandoDescCrear ? 'Generando...' : 'Generar con IA' }}
+              </button>
+            </div>
             <textarea
               id="descripcion"
               placeholder="Descripción detallada del producto..."
@@ -381,118 +387,47 @@
           <div class="image-preview">
             <img [src]="prod.imagen_url" alt="{{ prod.nombre }}" class="product-image" />
           </div>
-          <div *ngIf="prod.editando" class="image-upload">
-            <input
-              type="file"
-              id="imagen-{{prod.id}}"
-              (change)="seleccionarNuevaImagen($event, prod)"
-              accept="image/*"
-              class="hidden-file-input"
-            />
-            <label for="imagen-{{prod.id}}" class="upload-btn">
-              <fa-icon [icon]="faSyncAlt"></fa-icon>
-              Cambiar
-            </label>
-          </div>
         </div>
       </td>
 
       <td>
-        <div class="name-cell" *ngIf="!prod.editando">
+        <div class="name-cell">
           {{ prod.nombre }}
         </div>
-        <input
-          *ngIf="prod.editando"
-          type="text"
-          [(ngModel)]="prod.nombre"
-          class="edit-input"
-          placeholder="Nombre del producto"
-        />
       </td>
 
       <td>
-        <div class="price-cell" *ngIf="!prod.editando">
+        <div class="price-cell">
           {{ prod.precio | currency:'USD':'symbol':'1.2-2' }}
         </div>
-        <input
-          *ngIf="prod.editando"
-          type="number"
-          [(ngModel)]="prod.precio"
-          class="edit-input"
-          min="0"
-          step="0.01"
-        />
       </td>
 
       <td>
-        <div class="description-cell" *ngIf="!prod.editando">
+        <div class="description-cell">
           {{ prod.descripcion || 'Sin descripción' }}
         </div>
-        <textarea
-          *ngIf="prod.editando"
-          [(ngModel)]="prod.descripcion"
-          class="edit-textarea"
-          placeholder="Descripción del producto"
-          rows="2"
-        ></textarea>
       </td>
 
       <td>
-        <div class="subcategory-cell" *ngIf="!prod.editando">
+        <div class="subcategory-cell">
           {{ prod.subcategoria }}
         </div>
-        <select
-          *ngIf="prod.editando"
-          [(ngModel)]="prod.subcategoria_id"
-          class="edit-select"
-        >
-          <option *ngFor="let s of subcategorias" [value]="s.id">{{ s.nombre }}</option>
-        </select>
       </td>
 
       <td>
-        <div class="unit-cell" *ngIf="!prod.editando">
+        <div class="unit-cell">
           {{ prod.unidad || 'unidad' }}
         </div>
-        <select
-          *ngIf="prod.editando"
-          [(ngModel)]="prod.unidad"
-          class="edit-select"
-        >
-          <option value="unidad">Unidad (pieza)</option>
-          <option value="metro">Metro (m)</option>
-          <option value="metro cuadrado">Metro cuadrado (m²)</option>
-          <option value="kg">Kilogramo (kg)</option>
-          <option value="litro">Litro (L)</option>
-          <option value="rollo">Rollo</option>
-          <option value="paquete">Paquete</option>
-          <option value="caja">Caja</option>
-          <option value="bolsa">Bolsa</option>
-          <option value="tubo">Tubo</option>
-          <option value="lámina">Lámina</option>
-          <option value="carrete">Carrete</option>
-          <option value="galón">Galón</option>
-        </select>
       </td>
 
       <td>
         <div class="action-buttons">
-          <ng-container *ngIf="!prod.editando">
-            <button class="btn-action edit" (click)="activarEdicion(prod)" title="Editar">
-              <fa-icon [icon]="faEdit"></fa-icon>
-            </button>
-            <button class="btn-action delete" (click)="eliminarProducto(prod.id)" title="Eliminar">
-              <fa-icon [icon]="faTrashAlt"></fa-icon>
-            </button>
-          </ng-container>
-          <ng-container *ngIf="prod.editando">
-            <button class="btn-action save" (click)="actualizarProducto(prod)" title="Guardar">
-              <fa-icon [icon]="faSave"></fa-icon>
-            </button>
-            <button class="btn-action cancel" (click)="cancelarEdicion(prod)" title="Cancelar">
-              <fa-icon [icon]="faTimes"></fa-icon>
-            </button>
-          </ng-container>
+          <button class="btn-action edit" (click)="activarEdicion(prod)" title="Editar">
+            <fa-icon [icon]="faEdit"></fa-icon>
+          </button>
+          <button class="btn-action delete" (click)="eliminarProducto(prod.id)" title="Eliminar">
+            <fa-icon [icon]="faTrashAlt"></fa-icon>
+          </button>
         </div>
       </td>
     </tr>
@@ -718,4 +653,128 @@
       </div>
     </section>
   </main>
+</div>
+
+<!-- Modal de Edición de Producto -->
+<div class="modal-overlay" *ngIf="mostrarModalEdicion" (click)="cerrarModalEdicion()">
+  <div class="modal-container admin-card create-card" (click)="$event.stopPropagation()">
+    <div class="card-header modal-header">
+      <h2 class="card-title">
+        <fa-icon [icon]="faEdit" class="card-icon"></fa-icon>
+        Editar Producto #{{ productoEnEdicion?.id }}
+      </h2>
+      <button class="close-btn" (click)="cerrarModalEdicion()">
+        <fa-icon [icon]="faTimes"></fa-icon>
+      </button>
+    </div>
+    
+    <div class="card-body" *ngIf="productoEnEdicion">
+      <div class="product-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">
+              <fa-icon [icon]="faTag"></fa-icon>
+              Nombre del producto
+            </label>
+            <input type="text" [(ngModel)]="productoEnEdicion.nombre" class="form-input" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <fa-icon [icon]="faDollarSign"></fa-icon>
+              Precio Base
+            </label>
+            <input type="number" [(ngModel)]="productoEnEdicion.precio" class="form-input" min="0" step="0.01" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <label class="form-label" style="margin-bottom: 0;">
+                <fa-icon [icon]="faFolder"></fa-icon>
+                Subcategoría
+              </label>
+              <button type="button" class="btn-secondary btn-sm ai-btn" (click)="sugerirSubcategoriaConIA()" [disabled]="sugiriendoSubcategoria">
+                <fa-icon [icon]="faMagic"></fa-icon>
+                {{ sugiriendoSubcategoria ? 'Pensando...' : 'Sugerir con IA' }}
+              </button>
+            </div>
+            <select [(ngModel)]="productoEnEdicion.subcategoria_id" class="form-select">
+              <option *ngFor="let sub of subcategorias" [value]="sub.id">
+                {{ sub.nombre }} ({{ sub.categoria }})
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <fa-icon [icon]="faRuler"></fa-icon>
+              Unidad de medida
+            </label>
+            <select [(ngModel)]="productoEnEdicion.unidad" class="form-select">
+              <option value="unidad">Unidad (pieza)</option>
+              <option value="metro">Metro (m)</option>
+              <option value="metro cuadrado">Metro cuadrado (m²)</option>
+              <option value="kg">Kilogramo (kg)</option>
+              <option value="litro">Litro (L)</option>
+              <option value="rollo">Rollo</option>
+              <option value="paquete">Paquete</option>
+              <option value="caja">Caja</option>
+              <option value="bolsa">Bolsa</option>
+              <option value="tubo">Tubo</option>
+              <option value="lámina">Lámina</option>
+              <option value="carrete">Carrete</option>
+              <option value="galón">Galón</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <label class="form-label" style="margin-bottom: 0;">
+              <fa-icon [icon]="faAlignLeft"></fa-icon>
+              Descripción
+            </label>
+            <button type="button" class="btn-secondary btn-sm ai-btn" (click)="generarDescripcionConIA('editar')" [disabled]="generandoDescEditar">
+              <fa-icon [icon]="faMagic"></fa-icon>
+              {{ generandoDescEditar ? 'Generando...' : 'Generar con IA' }}
+            </button>
+          </div>
+          <textarea [(ngModel)]="productoEnEdicion.descripcion" class="form-textarea" rows="4"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <fa-icon [icon]="faImage"></fa-icon>
+            Actualizar Imagen
+          </label>
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <img [src]="productoEnEdicion.imagen_url" alt="Actual" class="product-image" style="width: 50px; height: 50px; border-radius: 4px;" *ngIf="!productoEnEdicion.nuevaImagen" />
+            <div class="file-upload" style="flex: 1;">
+              <input type="file" id="imagen-modal" (change)="seleccionarNuevaImagen($event, productoEnEdicion)" accept="image/*" class="file-input" />
+              <label for="imagen-modal" class="file-label">
+                <fa-icon [icon]="faUpload"></fa-icon>
+                Seleccionar nueva imagen
+              </label>
+              <span class="file-name" *ngIf="productoEnEdicion.nuevaImagen">
+                {{ productoEnEdicion.nuevaImagen.name }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions" style="margin-top: 2rem;">
+          <button type="button" class="btn-primary" (click)="guardarEdicionModal()">
+            <fa-icon [icon]="faSave"></fa-icon>
+            Guardar Cambios
+          </button>
+          <button type="button" class="btn-secondary" (click)="cerrarModalEdicion()">
+            <fa-icon [icon]="faTimes"></fa-icon>
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

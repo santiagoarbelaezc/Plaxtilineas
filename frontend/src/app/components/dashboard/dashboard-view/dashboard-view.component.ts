@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import Swal from 'sweetalert2';
 import { ImportProductsService } from '../../../services/import-products.service';
 import { DashboardAssistantComponent } from '../dashboard-assistant/dashboard-assistant.component';
 import {
@@ -137,18 +138,17 @@ export class DashboardViewComponent {
         
         if (this.analisisPreview?.todo_actualizado) {
           this.todoActualizado = true;
-          this.mensajeExito = `✅ ¡Todo está sincronizado! Los ${this.analisisPreview.total_hostinger} productos de Hostinger ya están en tu catálogo local.`;
+          Swal.fire('✅ Sincronizado', `¡Todo está sincronizado! Los ${this.analisisPreview.total_hostinger} productos de Hostinger ya están en tu catálogo local.`, 'success');
         } else if (this.analisisPreview) {
           this.todoActualizado = false;
-          this.mensajeExito = `⚠️ Hay ${this.analisisPreview.nuevos_por_importar} producto(s) nuevo(s) pendiente(s) de importar.`;
+          Swal.fire('⚠️ Pendientes', `Hay ${this.analisisPreview.nuevos_por_importar} producto(s) nuevo(s) pendiente(s) de importar.`, 'info');
         } else {
-          this.mensajeExito = `✅ Preview cargado: ${response.total_en_preview} productos encontrados`;
+          Swal.fire('✅ Cargado', `Preview cargado: ${response.total_en_preview} productos encontrados`, 'success');
         }
-        setTimeout(() => this.mensajeExito = '', 8000);
       },
       error: (err) => {
         this.cargandoPreview = false;
-        this.mensajeError = `❌ Error al obtener preview: ${err.error?.error || err.message}`;
+        Swal.fire('❌ Error', `Error al obtener preview: ${err.error?.error || err.message}`, 'error');
         console.error('Error en preview:', err);
       }
     });
@@ -166,12 +166,11 @@ export class DashboardViewComponent {
       next: (response) => {
         this.datosEstadisticas = response;
         this.cargandoEstadisticas = false;
-        this.mensajeExito = `✅ Estadísticas cargadas: ${response.total_productos} productos disponibles`;
-        setTimeout(() => this.mensajeExito = '', 5000);
+        Swal.fire('✅ Estadísticas cargadas', `${response.total_productos} productos disponibles`, 'success');
       },
       error: (err) => {
         this.cargandoEstadisticas = false;
-        this.mensajeError = `❌ Error al obtener estadísticas: ${err.error?.error || err.message}`;
+        Swal.fire('❌ Error', `Error al obtener estadísticas: ${err.error?.error || err.message}`, 'error');
         console.error('Error en estadísticas:', err);
       }
     });
@@ -182,51 +181,45 @@ export class DashboardViewComponent {
    */
   ejecutarImportacion(): void {
     if (this.todoActualizado) {
-      this.mensajeExito = '✅ No es necesario importar. Todos los productos ya están sincronizados.';
-      setTimeout(() => this.mensajeExito = '', 5000);
+      Swal.fire('✅ Sincronizado', 'No es necesario importar. Todos los productos ya están sincronizados.', 'success');
       return;
     }
 
-    if (!confirm('⚠️ Esta operación importará todos los productos de Hostinger.\n¿Estás seguro de continuar?')) {
-      return;
-    }
+    Swal.fire({
+      title: '¿Iniciar importación?',
+      text: '⚠️ Esta operación importará todos los productos nuevos de Hostinger.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, importar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.cargandoImportacion = true;
+        this.mensajeError = '';
+        this.mensajeExito = '';
 
-    this.mensajeError = '';
-    this.mensajeExito = '';
-    this.cargandoImportacion = true;
+        this.importService.ejecutarImportacion().subscribe({
+          next: (response) => {
+            this.respuestaImportacion = response;
+            this.cargandoImportacion = false;
 
-    this.importService.ejecutarImportacion().subscribe({
-      next: (response) => {
-        this.respuestaImportacion = response;
-        this.cargandoImportacion = false;
-
-        if (response.todo_actualizado) {
-          this.todoActualizado = true;
-          this.mensajeExito = '✅ ' + (response.mensaje || 'Todo está actualizado. No hay productos nuevos.');
-        } else {
-          let msg = `✅ Sincronización completada: ${response.importados_exitosamente} nuevos`;
-          if (response.actualizados > 0) msg += `, ${response.actualizados} actualizados`;
-          if (response.errores > 0) msg += `, ${response.errores} errores`;
-          this.mensajeExito = msg;
-          // Refresh analysis
-          this.todoActualizado = true;
-        }
-        
-        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        console.log('📄 LOGS DE IMPORTACIÓN:');
-        if (response.logs_detallados?.length > 0) {
-            response.logs_detallados.forEach((log: string) => console.log(log));
-        } else {
-            console.log('Sin logs detallados.');
-        }
-        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        
-        setTimeout(() => this.mensajeExito = '', 8000);
-      },
-      error: (err) => {
-        this.cargandoImportacion = false;
-        this.mensajeError = `❌ Error en importación: ${err.error?.error || err.message}`;
-        console.error('Error en importación:', err);
+            if (response.todo_actualizado) {
+              this.todoActualizado = true;
+              Swal.fire('✅ Todo Actualizado', response.mensaje || 'Todo está actualizado. No hay productos nuevos.', 'success');
+            } else {
+              let msg = `Sincronización completada: ${response.importados_exitosamente} nuevos`;
+              if (response.actualizados > 0) msg += `, ${response.actualizados} actualizados`;
+              if (response.errores > 0) msg += `, ${response.errores} errores`;
+              Swal.fire('✅ Completado', msg, 'success');
+              this.todoActualizado = true;
+            }
+          },
+          error: (err) => {
+            this.cargandoImportacion = false;
+            Swal.fire('❌ Error', `Error en importación: ${err.error?.error || err.message}`, 'error');
+            console.error('Error en importación:', err);
+          }
+        });
       }
     });
   }

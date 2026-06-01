@@ -243,3 +243,97 @@
 .pagination-btn:hover:not(:disabled), .pagination-number:hover:not(.active) { background: rgba(255,255,255,0.1); color: white; }
 .pagination-number.active { background: #368C44; color: white; }
 .pagination-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* ===========================
+   ESTILOS DEL MODAL DE EDICIÓN
+   =========================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-container {
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  border-radius: 12px;
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-container::-webkit-scrollbar {
+  width: 8px;
+}
+.modal-container::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.15);
+  border-radius: 10px;
+}
+
+.modal-header {
+  position: sticky;
+  top: 0;
+  background: #1e293b;
+  z-index: 10;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.close-btn:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* ===========================
+   ESTILOS DEL BOTÓN DE IA
+   =========================== */
+.ai-btn {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2)) !important;
+  border: 1px solid rgba(139, 92, 246, 0.4) !important;
+  color: #e879f9 !important;
+  font-weight: 600;
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.1);
+  transition: all 0.3s ease !important;
+}
+
+.ai-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(236, 72, 153, 0.4)) !important;
+  border-color: rgba(236, 72, 153, 0.6) !important;
+  box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+  transform: translateY(-1px);
+  color: #fff !important;
+}
+
+.ai-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}

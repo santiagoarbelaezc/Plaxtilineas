@@ -43,6 +43,8 @@ import { VariantesService } from '../../../services/variantes.service';
 import { CrearVarianteDTO, ActualizarVarianteDTO, Variante, VarianteEditable } from '../../../models/variante.model';
 import { ProductoEditable } from '../../../models/producto.model';
 import { Subcategoria } from '../../../models/subcategoria.model';
+import { AiService } from '../../../services/ai.service';
+import { faMagic } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-productos-component',
@@ -83,6 +85,7 @@ export class ProductosComponent implements OnInit {
   faPen = faPen;
   faCheck = faCheck;
   faXmark = faXmark;
+  faMagic = faMagic;
 
   // Propiedades del componente
   token: string | null = null;
@@ -100,6 +103,13 @@ export class ProductosComponent implements OnInit {
   
   // Propiedades de UI
   mostrarFormularioCrear: boolean = false;
+  mostrarModalEdicion: boolean = false;
+  productoEnEdicion: ProductoEditable | null = null;
+  
+  // Estados de IA
+  generandoDescCrear: boolean = false;
+  generandoDescEditar: boolean = false;
+  sugiriendoSubcategoria: boolean = false;
 
   // Propiedades para variantes
   mostrarVariantesForm: boolean = false;
@@ -127,6 +137,7 @@ export class ProductosComponent implements OnInit {
     private productosService: ProductosService,
     private subcategoriasService: SubcategoriasService,
     private variantesService: VariantesService,
+    private aiService: AiService,
     library: FaIconLibrary
   ) {
     library.addIcons(
@@ -134,7 +145,7 @@ export class ProductosComponent implements OnInit {
       faBoxes, faTag, faDollarSign, faFolder, faRuler, faAlignLeft,
       faUpload, faEraser, faFilter, faList, faSearch, faInbox,
       faChevronLeft, faChevronRight, faListAlt, faSyncAlt,
-      faLayerGroup, faMinus, faCaretDown, faCaretUp, faPen, faCheck, faXmark
+      faLayerGroup, faMinus, faCaretDown, faCaretUp, faPen, faCheck, faXmark, faMagic
     );
   }
 
@@ -637,31 +648,37 @@ export class ProductosComponent implements OnInit {
   }
 
   activarEdicion(prod: ProductoEditable): void {
-    prod.editando = true;
-    this.productosFiltrados = [...this.productosFiltrados];
+    // Clona el producto para no mutar directamente la tabla antes de guardar
+    this.productoEnEdicion = { ...prod, nuevaImagen: undefined };
+    this.mostrarModalEdicion = true;
   }
 
-  cancelarEdicion(prod: ProductoEditable): void {
+  cerrarModalEdicion(): void {
     Swal.fire({
       title: '¿Cancelar edición?',
-      text: 'Se descartarán los cambios realizados.',
+      text: 'Se descartarán los cambios no guardados.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#e74c3c',
       cancelButtonColor: '#aaa',
       confirmButtonText: 'Sí, cancelar',
-      cancelButtonText: 'Volver'
+      cancelButtonText: 'Seguir editando'
     }).then(result => {
       if (result.isConfirmed) {
-        prod.editando = false;
-        prod.nuevaImagen = undefined;
-        this.cargarProductos(false);
+        this.productoEnEdicion = null;
+        this.mostrarModalEdicion = false;
       }
     });
   }
 
-  actualizarProducto(prod: ProductoEditable): void {
-    if (!this.token) return;
+  guardarEdicionModal(): void {
+    if (!this.productoEnEdicion || !this.token) return;
+
+    // Validación básica
+    if (!this.productoEnEdicion.nombre || !this.productoEnEdicion.precio || !this.productoEnEdicion.subcategoria_id) {
+      Swal.fire('Campos incompletos', 'Asegúrate de llenar nombre, precio y subcategoría', 'warning');
+      return;
+    }
 
     Swal.fire({
       title: '¿Guardar cambios?',
@@ -674,6 +691,7 @@ export class ProductosComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then(result => {
       if (result.isConfirmed) {
+        const prod = this.productoEnEdicion!;
         const formData = new FormData();
         formData.append('nombre', prod.nombre);
         formData.append('precio', prod.precio.toString());
@@ -687,8 +705,8 @@ export class ProductosComponent implements OnInit {
 
         this.productosService.actualizarProducto(this.token!, prod.id, formData).subscribe({
           next: () => {
-            prod.editando = false;
-            prod.nuevaImagen = undefined;
+            this.productoEnEdicion = null;
+            this.mostrarModalEdicion = false;
             this.cargarProductos(false);
             Swal.fire('✅ Actualizado', 'El producto fue actualizado correctamente.', 'success');
           },
@@ -697,6 +715,95 @@ export class ProductosComponent implements OnInit {
             console.error(err);
           }
         });
+      }
+    });
+  }
+
+  // ─── INTEGRACIÓN IA (GROQ) ────────────────────────────────────────────────────────
+
+  generarDescripcionConIA(modo: 'crear' | 'editar'): void {
+    if (!this.token) return;
+
+    let nombreProducto = '';
+    
+    if (modo === 'crear') {
+      nombreProducto = this.formProducto.get('nombre')?.value;
+    } else if (modo === 'editar' && this.productoEnEdicion) {
+      nombreProducto = this.productoEnEdicion.nombre;
+    }
+
+    if (!nombreProducto || nombreProducto.trim().length < 3) {
+      Swal.fire('Nombre muy corto', 'Ingresa un nombre de producto más descriptivo antes de generar una descripción.', 'warning');
+      return;
+    }
+
+    if (modo === 'crear') this.generandoDescCrear = true;
+    if (modo === 'editar') this.generandoDescEditar = true;
+
+    this.aiService.generarDescripcion(this.token, nombreProducto).subscribe({
+      next: (res) => {
+        if (modo === 'crear') {
+          this.formProducto.patchValue({ descripcion: res.descripcion });
+          this.generandoDescCrear = false;
+        } else if (modo === 'editar' && this.productoEnEdicion) {
+          this.productoEnEdicion.descripcion = res.descripcion;
+          this.generandoDescEditar = false;
+        }
+        
+        // Notificación Toast bonita
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true
+        });
+        Toast.fire({ icon: 'success', title: 'Descripción generada con IA' });
+      },
+      error: (err) => {
+        console.error('Error generando descripción:', err);
+        Swal.fire('Error', 'No se pudo generar la descripción con IA.', 'error');
+        if (modo === 'crear') this.generandoDescCrear = false;
+        if (modo === 'editar') this.generandoDescEditar = false;
+      }
+    });
+  }
+
+  sugerirSubcategoriaConIA(): void {
+    if (!this.token || !this.productoEnEdicion) return;
+
+    const nombreProducto = this.productoEnEdicion.nombre;
+    const descripcionProducto = this.productoEnEdicion.descripcion || '';
+    
+    if (!nombreProducto || nombreProducto.trim().length < 3) {
+      Swal.fire('Nombre muy corto', 'Ingresa un nombre de producto antes de sugerir la categoría.', 'warning');
+      return;
+    }
+
+    this.sugiriendoSubcategoria = true;
+
+    this.aiService.sugerirSubcategoria(this.token, nombreProducto, descripcionProducto, this.subcategorias).subscribe({
+      next: (res) => {
+        this.sugiriendoSubcategoria = false;
+        if (res.subcategoria_id) {
+          this.productoEnEdicion!.subcategoria_id = res.subcategoria_id;
+          
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+          });
+          Toast.fire({ icon: 'success', title: 'Subcategoría asignada por IA' });
+        } else {
+          Swal.fire('Sin coincidencias', 'La IA no encontró una subcategoría clara para este producto. Por favor, selecciona una manualmente.', 'info');
+        }
+      },
+      error: (err) => {
+        this.sugiriendoSubcategoria = false;
+        console.error('Error sugiriendo subcategoría:', err);
+        Swal.fire('Error', 'Hubo un problema al contactar a la IA.', 'error');
       }
     });
   }
