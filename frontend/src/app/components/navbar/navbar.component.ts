@@ -36,6 +36,8 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   searchQuery: string = '';
   showSuggestions: boolean = false;
   isSearchRoute: boolean = false;
+  
+  isChatOpen: boolean = false;
 
   private destroy$ = new Subject<void>();
   private scrollSubject = new Subject<void>();
@@ -63,6 +65,10 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     
     this.leadsService.registered$.pipe(takeUntil(this.destroy$)).subscribe(isReg => {
       this.isUserRegistered = isReg;
+    });
+
+    this.chatService.isChatOpen$.pipe(takeUntil(this.destroy$)).subscribe(isOpen => {
+      this.isChatOpen = isOpen;
     });
   }
 

@@ -272,8 +272,44 @@
 
 @keyframes blink { 0%, 80%, 100% { opacity: 0.2; } 40% { opacity: 1; } }
 
-@media (max-width: 500px) {
-  .chat-window { width: 100vw; height: 100vh; border-radius: 0; }
+@media (max-width: 768px) {
+  .chat-overlay {
+    padding: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 65px; /* Deja libre el Bottom Navigation Bar */
+    background: #000000 !important; /* Fondo negro sólido para tapar el sitio web */
+    z-index: 2000; /* Por encima del top navbar */
+    pointer-events: auto; /* Para asegurar que el fondo negro bloquee clics al sitio */
+  }
+  .chat-window { 
+    width: 100%; 
+    height: 100%; 
+    max-height: 100%;
+    max-width: 100%;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    background: #000000;
+    animation: none; /* Quitar animación de slide para que se sienta como una pantalla estática */
+  }
+  .chat-header {
+    background: #000000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 15px 20px;
+  }
+  .chat-messages {
+    background: #000000;
+  }
+  .chat-footer {
+    background: #000000;
+    border-top: none;
+  }
+  .input-form input {
+    background: #111111; /* Ligeramente más claro que el negro puro para contraste */
+    border-color: transparent;
+  }
 }
 
 /* Recomendaciones de Productos y Botones de Enlace */

@@ -163,3 +163,10 @@
   gap: 10px;
   white-space: nowrap;
 }
+
+/* === OCULTAR EN MÓVIL (Por petición del usuario, ya que están en el Bottom Nav / Drawer) === */
+@media (max-width: 768px) {
+  .social-buttons-container {
+    display: none !important;
+  }
+}

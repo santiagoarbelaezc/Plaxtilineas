@@ -158,28 +158,28 @@
       </a>
     </div>
   </div>
+</header>
 
-  <!-- Mobile Bottom Navigation (PWA style) -->
-  <nav class="mobile-bottom-nav">
-    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="bottom-nav-item">
-      <fa-icon [icon]="['fas', 'home']"></fa-icon>
-      <span>Inicio</span>
-    </a>
-    <a routerLink="/productos" routerLinkActive="active" class="bottom-nav-item">
-      <fa-icon [icon]="['fas', 'shopping-bag']"></fa-icon>
-      <span>Productos</span>
-    </a>
-    <button class="bottom-nav-item" (click)="toggleSearch()">
-      <fa-icon [icon]="['fas', 'search']"></fa-icon>
-      <span>Buscar</span>
-    </button>
-    <button class="bottom-nav-item bottom-nav-ai" (click)="abrirAsistente()">
-      <fa-icon [icon]="['fas', 'robot']"></fa-icon>
-      <span>Asistente IA</span>
-    </button>
-    <a routerLink="/nosotros" routerLinkActive="active" class="bottom-nav-item">
-      <fa-icon [icon]="['fas', 'users']"></fa-icon>
-      <span>Nosotros</span>
-    </a>
-  </nav>
-</header>
+<!-- Mobile Bottom Navigation (PWA style) -->
+<nav class="mobile-bottom-nav">
+  <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="bottom-nav-item">
+    <fa-icon [icon]="['fas', 'home']"></fa-icon>
+    <span>Inicio</span>
+  </a>
+  <a routerLink="/productos" routerLinkActive="active" class="bottom-nav-item">
+    <fa-icon [icon]="['fas', 'shopping-bag']"></fa-icon>
+    <span>Productos</span>
+  </a>
+  <button class="bottom-nav-item" (click)="toggleSearch()">
+    <fa-icon [icon]="['fas', 'search']"></fa-icon>
+    <span>Buscar</span>
+  </button>
+  <button class="bottom-nav-item bottom-nav-ai" (click)="abrirAsistente()">
+    <fa-icon [icon]="['fas', 'robot']"></fa-icon>
+    <span>Asistente IA</span>
+  </button>
+  <a routerLink="/nosotros" routerLinkActive="active" class="bottom-nav-item">
+    <fa-icon [icon]="['fas', 'users']"></fa-icon>
+    <span>Nosotros</span>
+  </a>
+</nav>
