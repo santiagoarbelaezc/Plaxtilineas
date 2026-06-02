@@ -188,6 +188,12 @@ app-menu-categorias-component {
   .section-subtitle { font-size: 0.9rem; }
 }
 
+@media (max-width: 768px) {
+  app-root {
+    padding-bottom: 60px !important; /* Espacio para el Bottom Navigation Bar en móvil */
+  }
+}
+
 /* ===========================
    SWEETALERT2 - DARK PREMIUM THEME
    =========================== */
