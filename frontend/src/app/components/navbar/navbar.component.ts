@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { 
   faKey, faSearch, faTimes, faHome, faUsers, faMapMarkerAlt, 
-  faShoppingBag, faClock, faUser, faEnvelope, faLock, faArrowLeft 
+  faShoppingBag, faClock, faUser, faEnvelope, faLock, faArrowLeft, faRobot
 } from '@fortawesome/free-solid-svg-icons';
 import { FormsModule } from '@angular/forms';
 import { AosService } from '../../services/aos.service';
@@ -16,6 +16,7 @@ import { LeadsService } from '../../services/leads.service';
 import { MenuDropdown } from './menu-dropdown/menu-dropdown';
 import { EmpresasDropdown } from './empresas-dropdown/empresas-dropdown';
 import { CartIconComponent } from '../../cart/cart-icon/cart-icon.component';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-navbar',
@@ -45,11 +46,12 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private searchStateService: SearchStateService,
     private menuStateService: MenuStateService,
-    private leadsService: LeadsService
+    private leadsService: LeadsService,
+    private chatService: ChatService
   ) {
     library.addIcons(
       faKey, faSearch, faTimes, faHome, faUsers, faMapMarkerAlt,
-      faShoppingBag, faClock, faUser, faEnvelope, faLock, faArrowLeft
+      faShoppingBag, faClock, faUser, faEnvelope, faLock, faArrowLeft, faRobot
     );
   }
 
@@ -136,6 +138,10 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   openRegistrationModal(): void {
     this.leadsService.openRegistrationModal();
+  }
+
+  abrirAsistente(): void {
+    this.chatService.toggleChat();
   }
 
   toggleSearch(): void {

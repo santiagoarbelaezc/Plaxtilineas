@@ -499,8 +499,126 @@
     display: none;
   }
   .action-btn-premium {
-    padding: 0;
-    width: 40px;
-    justify-content: center;
+    display: none; /* Oculto en móvil, disponible en Sidebar/Drawer si se requiere */
   }
+  .whatsapp-btn, .user-btn {
+    display: none !important; /* Movidos al drawer en móvil */
+  }
+  .search-toggle {
+    display: none !important; /* Ahora está en el Bottom Nav */
+  }
+}
+
+/* ===========================
+   BOTTOM NAVIGATION BAR (PWA)
+   =========================== */
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 65px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    z-index: 1000;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: var(--gray-500);
+    text-decoration: none;
+    background: none;
+    border: none;
+    font-size: 10px;
+    font-weight: 600;
+    width: 20%;
+    height: 100%;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .bottom-nav-item fa-icon {
+    font-size: 20px;
+    margin-bottom: 2px;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .bottom-nav-item:hover, .bottom-nav-item.active {
+    color: var(--primary-green);
+  }
+
+  .bottom-nav-item.active fa-icon {
+    transform: translateY(-2px) scale(1.1);
+    color: var(--primary-green);
+  }
+
+  /* Botón especial IA */
+  .bottom-nav-ai {
+    position: relative;
+    color: #8b5cf6; /* Morado/Violeta para IA */
+  }
+
+  .bottom-nav-ai fa-icon {
+    color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.1);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -8px; /* Lo sube un poquito */
+  }
+
+  .bottom-nav-ai:hover fa-icon {
+    background: #8b5cf6;
+    color: white;
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  }
+}
+
+/* ===========================
+   DRAWER EXTRAS
+   =========================== */
+.drawer-divider {
+  border: none;
+  height: 1px;
+  background: var(--gray-200);
+  margin: 0.5rem 0;
+}
+
+.drawer-section-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gray-500);
+  padding: 0 1rem;
+  margin-top: 0.5rem;
+  font-weight: 700;
+}
+
+.drawer-social {
+  color: var(--gray-600);
+  font-weight: 500;
+  font-size: 1rem;
+}
+.drawer-social:hover {
+  color: var(--primary-green);
 }

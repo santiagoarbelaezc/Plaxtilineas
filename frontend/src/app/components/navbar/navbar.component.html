@@ -138,18 +138,48 @@
       <button class="drawer-close" (click)="closeMenu()"><fa-icon [icon]="['fas', 'times']"></fa-icon></button>
     </div>
     <div class="drawer-body">
-      <a routerLink="/" class="drawer-link" (click)="closeMenu()">
-        <fa-icon [icon]="['fas', 'home']"></fa-icon> Inicio
-      </a>
-      <a routerLink="/nosotros" class="drawer-link" (click)="closeMenu()">
-        <fa-icon [icon]="['fas', 'users']"></fa-icon> Nosotros
-      </a>
+      <!-- Opciones secundarias para el menú hamburguesa -->
       <a routerLink="/contacto" class="drawer-link" (click)="closeMenu()">
         <fa-icon [icon]="['fas', 'envelope']"></fa-icon> Contacto
       </a>
       <a routerLink="/login" class="drawer-link" (click)="closeMenu()">
         <fa-icon [icon]="['fas', 'lock']"></fa-icon> Acceso Admin
       </a>
+      <hr class="drawer-divider">
+      <div class="drawer-section-title">Redes Sociales</div>
+      <a href="https://wa.me/573000000000" target="_blank" class="drawer-link drawer-social" (click)="closeMenu()">
+        <fa-icon [icon]="['fab', 'whatsapp']" *ngIf="false"></fa-icon> WhatsApp
+      </a>
+      <a href="https://www.facebook.com/p/Plaxtilineas-100080040966300/" target="_blank" class="drawer-link drawer-social" (click)="closeMenu()">
+        Facebook
+      </a>
+      <a href="https://www.instagram.com/plaxtilineas/" target="_blank" class="drawer-link drawer-social" (click)="closeMenu()">
+        Instagram
+      </a>
     </div>
   </div>
+
+  <!-- Mobile Bottom Navigation (PWA style) -->
+  <nav class="mobile-bottom-nav">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="bottom-nav-item">
+      <fa-icon [icon]="['fas', 'home']"></fa-icon>
+      <span>Inicio</span>
+    </a>
+    <a routerLink="/productos" routerLinkActive="active" class="bottom-nav-item">
+      <fa-icon [icon]="['fas', 'shopping-bag']"></fa-icon>
+      <span>Productos</span>
+    </a>
+    <button class="bottom-nav-item" (click)="toggleSearch()">
+      <fa-icon [icon]="['fas', 'search']"></fa-icon>
+      <span>Buscar</span>
+    </button>
+    <button class="bottom-nav-item bottom-nav-ai" (click)="abrirAsistente()">
+      <fa-icon [icon]="['fas', 'robot']"></fa-icon>
+      <span>Asistente IA</span>
+    </button>
+    <a routerLink="/nosotros" routerLinkActive="active" class="bottom-nav-item">
+      <fa-icon [icon]="['fas', 'users']"></fa-icon>
+      <span>Nosotros</span>
+    </a>
+  </nav>
 </header>
