@@ -161,7 +161,7 @@
 </header>
 
 <!-- Mobile Bottom Navigation (PWA style) -->
-<nav class="mobile-bottom-nav">
+<nav class="mobile-bottom-nav" [class.dark-mode]="isChatOpen">
   <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="bottom-nav-item">
     <fa-icon [icon]="['fas', 'home']"></fa-icon>
     <span>Inicio</span>

@@ -622,3 +622,28 @@
 .drawer-social:hover {
   color: var(--primary-green);
 }
+
+/* ===========================
+   BOTTOM NAVIGATION BAR - DARK MODE (Cuando el Chat IA está abierto)
+   =========================== */
+.mobile-bottom-nav.dark-mode {
+  background: #000000;
+  border-top-color: rgba(255, 255, 255, 0.05);
+}
+
+.mobile-bottom-nav.dark-mode .bottom-nav-item {
+  color: #64748b; /* Gris oscuro para el estado inactivo */
+}
+
+.mobile-bottom-nav.dark-mode .bottom-nav-item.active,
+.mobile-bottom-nav.dark-mode .bottom-nav-item:hover {
+  color: #ffffff; /* Blanco brillante para hover/activo */
+}
+
+.mobile-bottom-nav.dark-mode .bottom-nav-item.active fa-icon {
+  color: #ffffff;
+}
+
+.mobile-bottom-nav.dark-mode .bottom-nav-ai fa-icon {
+  background: rgba(139, 92, 246, 0.2); /* Morado un poco más visible en fondo negro */
+}
