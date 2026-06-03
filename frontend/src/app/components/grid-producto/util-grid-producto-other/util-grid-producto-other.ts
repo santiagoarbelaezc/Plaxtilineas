@@ -1,98 +1,43 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Producto, GridProductoComponent } from '../grid-producto';
+import { ProductosService } from '../../../services/productos.service';
+import { ProductoEditable } from '../../../models/producto.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-util-grid-producto-other',
-  imports: [GridProductoComponent],
+  imports: [GridProductoComponent, CommonModule],
   templateUrl: './util-grid-producto-other.html',
   styleUrl: './util-grid-producto-other.css',
 })
-export class UtilGridProductoOther {
+export class UtilGridProductoOther implements OnInit {
 
-  productos: Producto[] = [
-      {
-        id: 1,
-        imagen: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1768448897/malla-img3_umwtgi.jpg',
-        descripcion: 'Malla plástica de alta resistencia',
-        nombre: 'Malla Plástica Azul',
-        precio: 89900,
-        link: '/productos?categoria_id=5&subcategoria_id=6',
-        categoria_id: 5,
-        subcategoria_id: 6,
-        altura: 'baja'
+  productos: Producto[] = [];
+
+  constructor(private productosService: ProductosService) {}
+
+  ngOnInit(): void {
+    this.productosService.obtenerProductosAleatorios(8).subscribe({
+      next: (data: ProductoEditable[]) => {
+        if (data && data.length > 0) {
+          this.productos = data.map((prod, index) => {
+            return {
+              id: prod.id,
+              imagen: prod.imagen_url || 'assets/placeholder.jpg', // Fallback en caso de que no tenga imagen
+              descripcion: prod.descripcion || '',
+              nombre: prod.nombre,
+              precio: prod.precio,
+              link: `/producto/${prod.id}`, // Enlace directo a la página del producto
+              subcategoria_id: prod.subcategoria_id,
+              altura: index % 2 === 0 ? 'baja' : 'alta' // Alternar altura para el efecto masonry (Mosaico)
+            };
+          });
+        }
       },
-      {
-        id: 2,
-        imagen: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1768448902/mimbre-img2_lnw60f.jpg',
-        descripcion: 'Silla de mimbre estilo vintage',
-        nombre: 'Silla Mimbre Vintage',
-        precio: 129000,
-        link: '/productos?categoria_id=2&subcategoria_id=3',
-        categoria_id: 2,
-        subcategoria_id: 3,
-        altura: 'alta'
-      },
-      {
-        id: 3,
-        imagen: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1769099535/piso2_bvskat.jpg',
-        descripcion: 'Piso',
-        nombre: 'Piso Multifuncional',
-        precio: 45900,
-        link: '/productos?categoria=papeles',
-        altura: 'baja'
-      },
-      {
-        id: 4,
-        imagen: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1768448886/espuma-img_jwvz5l.jpg',
-        descripcion: 'Espuma de poliuretano',
-        nombre: 'Espuma Negra',
-        precio: 145000,
-        link: '/productos?categoria_id=3&subcategoria_id=5',
-        categoria_id: 3,
-        subcategoria_id: 5,
-        altura: 'alta'
-      },
-      {
-        id: 5,
-        imagen: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1769099533/piso3_go1wyr.jpg',
-        
-        descripcion: 'Piso Vinilico en varios tonos',
-        nombre: 'Piso Vinilico',
-        precio: 189900,
-        link: '/productos?categoria=muebles',
-        altura: 'alta'
-      },
-      {
-        id: 6,
-        imagen: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1768448898/mimbre-img_gcvoyc.jpg',
-        descripcion: 'Sillas en Mimbre Plastica',
-        nombre: 'Silla de Mimbre',
-        precio: 110900,
-        link: '/productos?categoria_id=2&subcategoria_id=3',
-        categoria_id: 2,
-        subcategoria_id: 3,
-        altura: 'alta'
-      },
-      {
-        id: 7,
-        imagen: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1768446214/piso-img1_v5gmze.jpg',
-        descripcion: 'Papel decorativo para paredes',
-        nombre: 'Papel Colgadura Decorativo',
-        precio: 52900,
-        link: '/productos?categoria_id=11&subcategoria_id=12',
-        categoria_id: 11,
-        subcategoria_id: 12,
-        altura: 'baja'
-      },
-      {
-        id: 8,
-        imagen: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1769099829/mantel_zp5vph.jpg',
-        descripcion: 'Mantel para comedor',
-        nombre: 'Mantel para Comedor',
-        precio: 42500,
-        link: '/productos?categoria=muebles',
-        altura: 'baja'
+      error: (error) => {
+        console.error('Error al obtener productos aleatorios para la grilla:', error);
       }
-    ];
+    });
+  }
 
 }
