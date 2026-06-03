@@ -17,8 +17,8 @@
   </div>
 
   <!-- Viewport -->
-  <div class="carousel-viewport" #carouselViewport>
-    <div class="carousel-track" [style.transform]="getTransform()">
+  <div class="carousel-viewport" #carouselViewport (scroll)="onScroll()" (wheel)="onWheel($event)">
+    <div class="carousel-track">
       <div class="carousel-item" *ngFor="let producto of productos">
         <div class="product-mini-card" [routerLink]="['/producto', producto.id]">
           <div class="mini-img-box">

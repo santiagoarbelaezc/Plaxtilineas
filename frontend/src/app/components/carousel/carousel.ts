@@ -321,35 +321,82 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
     return descripcion.substring(0, this.maxDescLength) + '...';
   }
   
-  // New Methods for Redesign
-  moveNext(): void {
-    if (this.currentIndex < this.productos.length - this.itemsPerView) {
-      this.currentIndex++;
+  @ViewChild('carouselViewport') carouselViewport!: ElementRef;
+
+  isAtStart: boolean = true;
+  isAtEnd: boolean = false;
+  scrollProgress: number = 0;
+
+  // New Methods for Native Scrolling
+  onScroll(): void {
+    if (!this.carouselViewport) return;
+    
+    const el = this.carouselViewport.nativeElement;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    
+    if (maxScroll <= 0) {
+      this.scrollProgress = 100;
+      this.isAtStart = true;
+      this.isAtEnd = true;
+      return;
     }
+    
+    this.scrollProgress = (el.scrollLeft / maxScroll) * 100;
+    this.isAtStart = el.scrollLeft <= 0;
+    this.isAtEnd = el.scrollLeft >= maxScroll - 1; // 1px threshold for fractional pixels
+  }
+
+  onWheel(event: WheelEvent): void {
+    if (!this.carouselViewport) return;
+    
+    // Solo prevenir scroll vertical si estamos haciendo scroll horizontal explícito
+    // O si el usuario usa la rueda en un mouse estándar
+    if (event.deltaY !== 0) {
+      event.preventDefault(); // Previene scroll de la página
+      this.carouselViewport.nativeElement.scrollBy({
+        left: event.deltaY,
+        behavior: 'auto'
+      });
+    }
+  }
+
+  moveNext(): void {
+    if (!this.carouselViewport) return;
+    const itemWidth = 240; // 220px width + 20px gap
+    this.carouselViewport.nativeElement.scrollBy({ left: itemWidth * this.itemsPerView, behavior: 'smooth' });
   }
 
   movePrev(): void {
-    if (this.currentIndex > 0) {
-      this.currentIndex--;
+    if (!this.carouselViewport) return;
+    const itemWidth = 240;
+    this.carouselViewport.nativeElement.scrollBy({ left: -(itemWidth * this.itemsPerView), behavior: 'smooth' });
+  }
+
+  next(): void {
+    if (!this.carouselViewport) return;
+    
+    const el = this.carouselViewport.nativeElement;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    
+    if (el.scrollLeft >= maxScroll - 1) {
+      // Loop back to start
+      el.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+      this.moveNext();
     }
   }
 
-  get isAtStart(): boolean {
-    return this.currentIndex === 0;
-  }
-
-  get isAtEnd(): boolean {
-    return this.currentIndex >= this.productos.length - this.itemsPerView;
-  }
-
-  get scrollProgress(): number {
-    if (this.productos.length <= this.itemsPerView) return 100;
-    const maxIndex = this.productos.length - this.itemsPerView;
-    return (this.currentIndex / maxIndex) * 100;
-  }
-
-  getTransform(): string {
-    const itemWidth = 220 + 20; // item width + gap
-    return `translateX(-${this.currentIndex * itemWidth}px)`;
+  prev(): void {
+    if (!this.carouselViewport) return;
+    
+    const el = this.carouselViewport.nativeElement;
+    
+    if (el.scrollLeft <= 0) {
+      // Loop to end
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      el.scrollTo({ left: maxScroll, behavior: 'smooth' });
+    } else {
+      this.movePrev();
+    }
   }
 }

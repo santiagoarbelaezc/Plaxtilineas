@@ -69,19 +69,29 @@
   flex: 1;
   display: flex;
   align-items: center;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   padding: 10px 0;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.carousel-viewport::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
 }
 
 .carousel-track {
   display: flex;
   gap: 20px;
-  transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+  width: max-content;
 }
 
 .carousel-item {
   flex: 0 0 220px;
   display: flex;
+  scroll-snap-align: start;
 }
 
 /* Mini Card */
