@@ -188,28 +188,6 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   
   // Navegación del carrusel
-  next(): void {
-    if (this.productos.length <= this.itemsPerView) return;
-    
-    const maxIndex = Math.max(0, this.productos.length - this.itemsPerView);
-    
-    if (this.currentIndex + 1 <= maxIndex) {
-      this.currentIndex++;
-    } else {
-      this.currentIndex = 0;
-    }
-  }
-  
-  prev(): void {
-    if (this.productos.length <= this.itemsPerView) return;
-    
-    if (this.currentIndex > 0) {
-      this.currentIndex--;
-    } else {
-      const maxIndex = Math.max(0, this.productos.length - this.itemsPerView);
-      this.currentIndex = maxIndex;
-    }
-  }
   
   goToSlide(index: number): void {
     const maxIndex = Math.max(0, this.productos.length - this.itemsPerView);
@@ -347,17 +325,9 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onWheel(event: WheelEvent): void {
-    if (!this.carouselViewport) return;
-    
-    // Solo prevenir scroll vertical si estamos haciendo scroll horizontal explícito
-    // O si el usuario usa la rueda en un mouse estándar
-    if (event.deltaY !== 0) {
-      event.preventDefault(); // Previene scroll de la página
-      this.carouselViewport.nativeElement.scrollBy({
-        left: event.deltaY,
-        behavior: 'auto'
-      });
-    }
+    // Retirado: Dejamos que el navegador maneje el scroll nativamente.
+    // El scroll horizontal (Shift + Scroll o Trackpad) funcionará por defecto gracias a overflow-x: auto.
+    // El scroll vertical (Rueda normal) bajará la página con naturalidad.
   }
 
   moveNext(): void {
