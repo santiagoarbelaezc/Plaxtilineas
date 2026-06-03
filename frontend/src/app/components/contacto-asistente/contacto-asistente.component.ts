@@ -137,7 +137,7 @@ export class ContactoAsistente implements OnInit, AfterViewChecked {
           text: 'Lo siento, he tenido problemas para responder. ¿Te gustaría que te comunique con un asesor?',
           sender: 'assistant',
           timestamp: new Date(),
-          links: [{ label: 'Hablar con Asesor en WhatsApp', url: 'https://wa.me/573006680125', external: true }]
+          links: [{ label: 'Hablar con Asesor en WhatsApp', url: 'https://wa.me/573007365939', external: true }]
         });
       }
     });

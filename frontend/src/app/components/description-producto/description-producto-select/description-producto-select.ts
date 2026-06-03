@@ -251,7 +251,7 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   generarWhatsAppLink(): string {
     if (!this.producto) return '';
     
-    const numeroWhatsApp = '+573006680125';
+    const numeroWhatsApp = '573007365939';
     const nombreCompleto = this.nombreCompleto;
     
     // Construir mensaje limpio y bien formateado

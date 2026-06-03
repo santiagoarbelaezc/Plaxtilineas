@@ -97,7 +97,7 @@ export class AddToCartBtnComponent {
     this.isAdded = true;
     
     // Preparar redirección a WhatsApp provisionalmente
-    const numeroWhatsApp = '573006680125';
+    const numeroWhatsApp = '573007365939';
     let itemName = this.producto.nombre;
     if (this.variante) {
       itemName += ` - ${this.variante.nombre}`;
