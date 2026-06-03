@@ -2,7 +2,7 @@
   position: relative;
   width: 100%;
   max-width: 100%;
-  height: 520px;
+  height: auto; /* Cambiado a auto para no recortar la imagen */
   overflow: hidden;
   margin: 0 auto 40px auto;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -26,21 +26,23 @@
 
 .banner-image {
   width: 100%;
-  height: 100%;
+  height: auto;
   overflow: hidden;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
 }
 
 .banner-img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  object-fit: contain; /* Evita que los bordes con texto se recorten */
+  display: block;
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Zoom y brillo sutil en la imagen al hover */
 .banner-container:hover .banner-img {
-  transform: scale(1.025);
+  transform: scale(1.015); /* Reducido el scale para que no recorte el texto al hacer hover */
   filter: brightness(1.02);
 }
 
@@ -50,7 +52,6 @@
 
 @media (max-width: 1200px) {
   .banner-container {
-    height: 400px;
     margin: 25px auto;
     border-radius: 20px;
   }
@@ -58,7 +59,6 @@
 
 @media (max-width: 768px) {
   .banner-container {
-    height: 300px;
     margin: 20px auto;
     border-radius: 16px;
   }
@@ -66,7 +66,6 @@
 
 @media (max-width: 576px) {
   .banner-container {
-    height: 220px;
     margin: 15px auto;
     border-radius: 12px;
   }
@@ -74,7 +73,6 @@
 
 @media (max-width: 375px) {
   .banner-container {
-    height: 180px;
     border-radius: 10px;
   }
 }
