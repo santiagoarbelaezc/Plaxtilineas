@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 16px;
+  padding: 130px 16px 16px 16px; /* Aumentado padding-top a 130px */
   width: 100%; /* Ocupa el 100% del ancho disponible */
   margin: 0; /* Elimina el margen automático */
   box-sizing: border-box;
@@ -15,7 +15,7 @@
   .productos-layout {
     flex-direction: row;
     gap: 30px;
-    padding: 20px;
+    padding: 130px 20px 20px 20px; /* Aumentado padding-top a 130px */
     width: 100%; /* Asegura el 100% en tablet */
     max-width: 100%;
   }
@@ -39,7 +39,7 @@
   .productos-layout {
     flex-direction: row;
     gap: 40px;
-    padding: 24px 40px;
+    padding: 130px 40px 24px 40px; /* Aumentado padding-top a 130px */
     width: 100%; /* 100% en escritorio también */
     max-width: 100%;
   }
@@ -66,7 +66,7 @@
   .productos-layout {
     width: 100%;
     max-width: 100%;
-    padding: 16px; /* Mantén el padding para respiro */
+    padding: 130px 16px 16px 16px; /* Aumentado padding-top a 130px */
   }
   
   app-menu-categorias-component {

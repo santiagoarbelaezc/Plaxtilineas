@@ -118,15 +118,33 @@
       <button class="close-search" (click)="toggleSearch()">
         <fa-icon [icon]="['fas', 'arrow-left']"></fa-icon>
       </button>
-      <input 
-        type="text" 
-        class="mobile-search-input" 
-        [(ngModel)]="searchQuery" 
-        (keydown.enter)="onSearch()"
-        placeholder="Buscar productos...">
+      <div class="mobile-search-input-wrapper">
+        <fa-icon [icon]="['fas', 'search']" class="mobile-search-icon"></fa-icon>
+        <input 
+          type="text" 
+          class="mobile-search-input" 
+          [(ngModel)]="searchQuery" 
+          (keydown.enter)="onSearch()"
+          (focus)="onSearchFocus()"
+          placeholder="Buscar productos...">
+        <button class="clear-search-btn" *ngIf="searchQuery" (click)="clearSearch()">
+          <fa-icon [icon]="['fas', 'times']"></fa-icon>
+        </button>
+      </div>
     </div>
     <div class="search-overlay-body">
-      <p class="search-hint">Escribe para buscar en nuestro catálogo</p>
+      <p class="search-hint" *ngIf="!searchQuery">Explora nuestro catálogo de productos</p>
+      
+      <!-- Sugerencias Móvil -->
+      <div class="mobile-suggestions">
+        <h4 class="suggestion-title">Búsquedas Frecuentes</h4>
+        <div class="mobile-suggestion-tags">
+          <button class="suggestion-tag" (click)="navigateToSearch('Espumas')">Espumas</button>
+          <button class="suggestion-tag" (click)="navigateToSearch('Plásticos')">Plásticos</button>
+          <button class="suggestion-tag" (click)="navigateToSearch('Empaques')">Empaques</button>
+          <button class="suggestion-tag" (click)="navigateToSearch('Mallas')">Mallas</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -162,15 +180,15 @@
 
 <!-- Mobile Bottom Navigation (PWA style) -->
 <nav class="mobile-bottom-nav" [class.dark-mode]="isChatOpen">
-  <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="bottom-nav-item">
+  <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="bottom-nav-item" (click)="cerrarAsistente()">
     <fa-icon [icon]="['fas', 'home']"></fa-icon>
     <span>Inicio</span>
   </a>
-  <a routerLink="/productos" routerLinkActive="active" class="bottom-nav-item">
+  <a routerLink="/productos" routerLinkActive="active" class="bottom-nav-item" (click)="cerrarAsistente()">
     <fa-icon [icon]="['fas', 'shopping-bag']"></fa-icon>
     <span>Productos</span>
   </a>
-  <button class="bottom-nav-item" (click)="toggleSearch()">
+  <button class="bottom-nav-item" (click)="cerrarAsistente(); toggleSearch()">
     <fa-icon [icon]="['fas', 'search']"></fa-icon>
     <span>Buscar</span>
   </button>
@@ -178,7 +196,7 @@
     <fa-icon [icon]="['fas', 'robot']"></fa-icon>
     <span>Asistente IA</span>
   </button>
-  <a routerLink="/nosotros" routerLinkActive="active" class="bottom-nav-item">
+  <a routerLink="/nosotros" routerLinkActive="active" class="bottom-nav-item" (click)="cerrarAsistente()">
     <fa-icon [icon]="['fas', 'users']"></fa-icon>
     <span>Nosotros</span>
   </a>

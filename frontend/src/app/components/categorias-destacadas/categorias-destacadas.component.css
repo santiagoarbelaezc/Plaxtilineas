@@ -35,6 +35,7 @@
   scroll-behavior: smooth;
   scrollbar-width: none;
   padding: 10px;
+  scroll-snap-type: x mandatory; /* Mejora la experiencia táctil en móvil */
 }
 
 .categories-grid::-webkit-scrollbar {
@@ -45,6 +46,7 @@
 .category-item {
   display: flex;
   justify-content: center;
+  scroll-snap-align: start; /* Para el snap al hacer scroll */
 }
 
 .category-card {
@@ -100,6 +102,11 @@
   text-transform: uppercase;
   letter-spacing: 0.02em;
   transition: color 0.3s ease;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Máximo 2 líneas de texto */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.2;
 }
 
 .explore-text {
@@ -225,14 +232,40 @@
 }
 
 @media (max-width: 768px) {
-  .categories-grid { grid-auto-columns: calc(100% / 4); gap: 0.5rem; }
+  .categories-grid { 
+    grid-auto-columns: calc(100% / 5); /* Muestra 5 elementos */
+    gap: 0.5rem; 
+    padding: 10px 0;
+  }
   .section-title { font-size: 1.75rem; }
-  .card-visual { width: 85px; height: 85px; border-radius: 18px; }
+  .card-visual { width: 75px; height: 75px; border-radius: 16px; }
+  .category-card { gap: 0.5rem; }
 }
 
 @media (max-width: 480px) {
-  .categories-grid { grid-auto-columns: calc(100% / 3); }
+  .categories-grid { 
+    grid-auto-columns: calc(100% / 4); /* Muestra 4 elementos completos, juntándolos más */
+    gap: 0.25rem; /* Reduce el espacio entre ellos */
+    padding: 10px 0;
+  }
   .section-title { font-size: 1.5rem; }
   .section-subtitle { font-size: 0.9rem; }
   .container { padding: 0 1rem; }
+  
+  .card-visual { width: 65px; height: 65px; border-radius: 14px; }
+  .card-content h3 { font-size: 0.65rem; }
+  .explore-text { display: none; } 
+  
+  /* Indicators */
+  .carousel-indicators {
+    margin-top: 10px;
+    gap: 6px;
+  }
+  .indicator-dot {
+    width: 10px;
+    height: 10px;
+  }
+  .indicator-dot.active {
+    width: 20px;
+  }
 }

@@ -14,7 +14,7 @@
       </button>
       
       <div class="carousel-viewport">
-        <div class="categories-grid" #categoriasGrid>
+        <div class="categories-grid" #categoriasGrid (scroll)="onScroll($event)">
           <!-- Category Card -->
           <div class="category-item" *ngFor="let cat of categorias; let i = index">
             

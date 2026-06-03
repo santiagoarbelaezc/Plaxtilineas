@@ -1,5 +1,5 @@
 <app-navbar></app-navbar>
-<app-header-product></app-header-product>
+
 
 <div class="productos-layout">
   <app-menu-categorias-component #menuCategorias></app-menu-categorias-component>
@@ -12,9 +12,7 @@
 </button>
 
 <!-- Overlay para cerrar menú tocando fuera -->
-<div class="menu-overlay" 
-     [class.visible]="menuVisible" 
-     (click)="closeMenu()"></div>
+<div class="menu-overlay" [class.visible]="menuVisible" (click)="closeMenu()"></div>
 
 <app-social-buttons></app-social-buttons>
 <app-footer></app-footer>

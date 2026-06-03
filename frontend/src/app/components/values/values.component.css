@@ -2,7 +2,7 @@
 .seccion-nosotros {
   width: 100%;
   background-color: #ffffff;
-  padding: 150px 0 80px 0; /* Aumentado el padding superior para evitar solapamiento con el navbar */
+  padding: 180px 0 80px 0; /* Aumentado a 180px para dar más espacio bajo el navbar */
   font-family: 'Montserrat', sans-serif;
   overflow: hidden;
 }
@@ -256,7 +256,7 @@
 
 @media (max-width: 768px) {
   .seccion-nosotros {
-    padding: 50px 0;
+    padding: 180px 0 50px 0; /* Aumentado a 180px para dar más espacio bajo el navbar */
   }
   .nosotros-container {
     padding: 0 20px;

@@ -150,6 +150,12 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.chatService.toggleChat();
   }
 
+  cerrarAsistente(): void {
+    if (this.isChatOpen) {
+      this.chatService.closeChat();
+    }
+  }
+
   toggleSearch(): void {
     this.searchActive = !this.searchActive;
     if (this.searchActive) {
@@ -181,6 +187,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
         replaceUrl: true
       }).then(() => {
         this.showSuggestions = false;
+        this.searchActive = false; // Cerrar el modal en móvil
       }).catch(error => {
         console.error('Error al navegar a búsqueda:', error);
       });

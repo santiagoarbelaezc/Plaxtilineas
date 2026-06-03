@@ -151,6 +151,24 @@ export class CategoriasDestacadasComponent implements OnInit {
   }
 
   /**
+   * Actualizar indicadores al hacer scroll manual (swipe)
+   */
+  onScroll(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (this.categorias.length === 0) return;
+    
+    const itemWidth = target.scrollWidth / this.categorias.length;
+    const pageWidth = itemWidth * this.itemsPerPage;
+    
+    // Usamos round para que cambie de dot cuando pase de la mitad de la página
+    const newPage = Math.round(target.scrollLeft / pageWidth);
+    
+    if (newPage >= 0 && newPage < this.pagesArray.length && this.currentPage !== newPage) {
+      this.currentPage = newPage;
+    }
+  }
+
+  /**
    * El resto de los métodos se mantienen igual...
    */
   private cargarCategoriasConSubcategorias(): void {
