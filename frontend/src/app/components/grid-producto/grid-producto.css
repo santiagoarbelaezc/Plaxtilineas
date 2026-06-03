@@ -179,15 +179,33 @@
   line-height: 1.3;
 }
 
-/* === VARIANTES DE ALTURA === */
-.producto-item.alta { grid-row: span 7; }
-.producto-item.baja { grid-row: span 5; }
+/* === VARIANTES DE ALTURA (Mosaico Dinámico Intercalado) === */
+/* Por defecto: 4 Columnas (>1200px) - Patrón Ajedrez compensando grid-auto-flow: dense */
+/*
+   Al usar dense flow, las columnas con ítems 'baja' liberan espacio antes.
+   El navegador rellenará primero esos huecos con los siguientes elementos de la lista.
+   Patrón para 4 columnas equilibradas: 1, 3, 5, 6 deben ser altas.
+*/
+.producto-item { grid-row: span 5; /* por defecto baja */ }
+.producto-item:nth-child(8n+1),
+.producto-item:nth-child(8n+3),
+.producto-item:nth-child(8n+5),
+.producto-item:nth-child(8n+6) {
+  grid-row: span 7; /* alta */
+}
 
 /* === RESPONSIVE === */
 @media (max-width: 1200px) {
   .grid-container {
     grid-template-columns: repeat(3, 1fr);
     padding: 0 30px;
+  }
+  /* 3 Columnas - Patrón Ajedrez compensado */
+  .producto-item { grid-row: span 5; } /* fallback baja */
+  .producto-item:nth-child(6n+1),
+  .producto-item:nth-child(6n+3),
+  .producto-item:nth-child(6n+4) {
+    grid-row: span 7; /* alta */
   }
 }
 
@@ -197,8 +215,12 @@
     gap: 20px;
   }
   .producto-item { border-radius: 20px; }
-  .producto-item.alta { grid-row: span 6; }
-  .producto-item.baja { grid-row: span 4; }
+  
+  /* 2 Columnas - Patrón Ajedrez compensado */
+  .producto-item { grid-row: span 4; } /* baja mobile */
+  .producto-item:nth-child(odd) {
+    grid-row: span 6; /* alta mobile */
+  }
 }
 
 @media (max-width: 600px) {
@@ -209,6 +231,7 @@
     grid-auto-rows: minmax(300px, auto);
     gap: 20px;
   }
+  /* 1 Columna */
   .producto-item { grid-row: span 1 !important; }
   
   .punto-medio {
