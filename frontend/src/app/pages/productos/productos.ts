@@ -7,13 +7,12 @@ import { MenuCategoriasComponent } from "../../components/menu-categorias/menu-c
 import {ProductListComponent} from "../../components/product-list/product-list.component"
 import { HeaderComponent } from "../../components/header/header.component";
 import {ModalProductoComponent} from "../../components/modal-producto/modal-producto.component";
-import { HeaderProduct } from '../../components/header-product/header-product';
 
 @Component({
   selector: 'app-productos',
   standalone: true,
   imports: [CommonModule, NavbarComponent, Footer, SocialButtonsComponent, MenuCategoriasComponent,
-    HeaderProduct, ProductListComponent, ModalProductoComponent],
+    ProductListComponent, ModalProductoComponent],
   templateUrl: './productos.html',
   styleUrls: ['./productos.css']
 })
