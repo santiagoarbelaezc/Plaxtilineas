@@ -34,6 +34,7 @@ require_once __DIR__ . '/controllers/LeadsController.php';
 require_once __DIR__ . '/controllers/ComponentesController.php';
 require_once __DIR__ . '/controllers/EstadisticasController.php';
 require_once __DIR__ . '/controllers/DashboardAssistantController.php';
+require_once __DIR__ . '/controllers/AiController.php';
 
 // ─── CORS headers (siempre primero) ──────────────────────────────────────────
 ResponseHandler::setCorsHeaders();
@@ -364,6 +365,18 @@ try {
             AuthMiddleware::verify();
             ComponentesController::delete((int)$p['id']);
         }
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════════
+    // INTELIGENCIA ARTIFICIAL  /api/ia/*
+    // ═════════════════════════════════════════════════════════════════════════════
+    if ($uri === '/ia/sugerir-subcategoria' && $method === 'POST') {
+        AuthMiddleware::verify();
+        AiController::sugerirSubcategoria();
+    }
+    if ($uri === '/ia/generar-descripcion' && $method === 'POST') {
+        AuthMiddleware::verify();
+        AiController::generarDescripcion();
     }
 
     // ═════════════════════════════════════════════════════════════════════════════
