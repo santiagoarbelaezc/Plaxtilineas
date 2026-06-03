@@ -6,6 +6,7 @@ import {
   faKey, faSearch, faTimes, faHome, faUsers, faMapMarkerAlt, 
   faShoppingBag, faClock, faUser, faEnvelope, faLock, faArrowLeft, faRobot
 } from '@fortawesome/free-solid-svg-icons';
+import { faFacebook, faInstagram, faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import { FormsModule } from '@angular/forms';
 import { AosService } from '../../services/aos.service';
 import { Router, NavigationEnd } from '@angular/router';
@@ -53,7 +54,8 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {
     library.addIcons(
       faKey, faSearch, faTimes, faHome, faUsers, faMapMarkerAlt,
-      faShoppingBag, faClock, faUser, faEnvelope, faLock, faArrowLeft, faRobot
+      faShoppingBag, faClock, faUser, faEnvelope, faLock, faArrowLeft, faRobot,
+      faFacebook, faInstagram, faWhatsapp
     );
   }
 

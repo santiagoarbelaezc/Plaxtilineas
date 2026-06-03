@@ -525,25 +525,59 @@
 
 .drawer-link {
   text-decoration: none;
-  color: var(--gray-900);
-  font-size: 1.1rem;
+  color: var(--gray-800);
+  font-size: 1.05rem;
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  border-radius: 12px;
-  transition: all 0.3s ease;
+  gap: 1.2rem;
+  padding: 1.2rem;
+  border-radius: 16px;
+  background: white;
+  border: 1px solid var(--gray-100);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
 }
 
-.drawer-link:hover {
+.drawer-link:hover,
+.drawer-link:active {
+  transform: translateY(-2px);
   background: var(--gray-50);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+  border-color: var(--primary-green);
   color: var(--primary-green);
 }
 
 .drawer-link fa-icon {
-  width: 24px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: var(--primary-green);
+  background: rgba(54, 140, 68, 0.08);
+  border-radius: 10px;
+  transition: all 0.3s ease;
 }
+
+/* Hover effect on icons */
+.drawer-link:hover fa-icon,
+.drawer-link:active fa-icon {
+  background: var(--primary-green);
+  color: white;
+  transform: scale(1.05);
+}
+
+/* Redes sociales (Colores específicos de marca al hacer hover/active) */
+.drawer-social.whatsapp:hover, .drawer-social.whatsapp:active { border-color: #25D366; color: #25D366; }
+.drawer-social.whatsapp:hover fa-icon, .drawer-social.whatsapp:active fa-icon { background: #25D366; }
+
+.drawer-social.facebook:hover, .drawer-social.facebook:active { border-color: #1877F2; color: #1877F2; }
+.drawer-social.facebook:hover fa-icon, .drawer-social.facebook:active fa-icon { background: #1877F2; }
+
+.drawer-social.instagram:hover, .drawer-social.instagram:active { border-color: #E1306C; color: #E1306C; }
+.drawer-social.instagram:hover fa-icon, .drawer-social.instagram:active fa-icon { background: #E1306C; }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1024px) {

@@ -158,21 +158,21 @@
     <div class="drawer-body">
       <!-- Opciones secundarias para el menú hamburguesa -->
       <a routerLink="/contacto" class="drawer-link" (click)="closeMenu()">
-        <fa-icon [icon]="['fas', 'envelope']"></fa-icon> Contacto
+        <fa-icon [icon]="['fas', 'envelope']"></fa-icon> <span>Contacto</span>
       </a>
       <a routerLink="/login" class="drawer-link" (click)="closeMenu()">
-        <fa-icon [icon]="['fas', 'lock']"></fa-icon> Acceso Admin
+        <fa-icon [icon]="['fas', 'lock']"></fa-icon> <span>Acceso Admin</span>
       </a>
       <hr class="drawer-divider">
       <div class="drawer-section-title">Redes Sociales</div>
-      <a href="https://wa.me/573000000000" target="_blank" class="drawer-link drawer-social" (click)="closeMenu()">
-        <fa-icon [icon]="['fab', 'whatsapp']" *ngIf="false"></fa-icon> WhatsApp
+      <a href="https://wa.me/573000000000" target="_blank" class="drawer-link drawer-social whatsapp" (click)="closeMenu()">
+        <fa-icon [icon]="['fab', 'whatsapp']"></fa-icon> <span>WhatsApp</span>
       </a>
-      <a href="https://www.facebook.com/p/Plaxtilineas-100080040966300/" target="_blank" class="drawer-link drawer-social" (click)="closeMenu()">
-        Facebook
+      <a href="https://www.facebook.com/p/Plaxtilineas-100080040966300/" target="_blank" class="drawer-link drawer-social facebook" (click)="closeMenu()">
+        <fa-icon [icon]="['fab', 'facebook']"></fa-icon> <span>Facebook</span>
       </a>
-      <a href="https://www.instagram.com/plaxtilineas/" target="_blank" class="drawer-link drawer-social" (click)="closeMenu()">
-        Instagram
+      <a href="https://www.instagram.com/plaxtilineas/" target="_blank" class="drawer-link drawer-social instagram" (click)="closeMenu()">
+        <fa-icon [icon]="['fab', 'instagram']"></fa-icon> <span>Instagram</span>
       </a>
     </div>
   </div>
