@@ -148,35 +148,36 @@
     </div>
   </div>
 
-  <!-- Mobile Menu Drawer -->
-  <div class="mobile-drawer-overlay" *ngIf="menuAbierto" (click)="closeMenu()"></div>
-  <div class="mobile-drawer" [class.active]="menuAbierto">
-    <div class="drawer-header">
-      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Logo" class="drawer-logo">
-      <button class="drawer-close" (click)="closeMenu()"><fa-icon [icon]="['fas', 'times']"></fa-icon></button>
-    </div>
-    <div class="drawer-body">
-      <!-- Opciones secundarias para el menú hamburguesa -->
-      <a routerLink="/contacto" class="drawer-link" (click)="closeMenu()">
-        <fa-icon [icon]="['fas', 'envelope']"></fa-icon> <span>Contacto</span>
-      </a>
-      <a routerLink="/login" class="drawer-link" (click)="closeMenu()">
-        <fa-icon [icon]="['fas', 'lock']"></fa-icon> <span>Acceso Admin</span>
-      </a>
-      <hr class="drawer-divider">
-      <div class="drawer-section-title">Redes Sociales</div>
-      <a href="https://wa.me/573000000000" target="_blank" class="drawer-link drawer-social whatsapp" (click)="closeMenu()">
-        <fa-icon [icon]="['fab', 'whatsapp']"></fa-icon> <span>WhatsApp</span>
-      </a>
-      <a href="https://www.facebook.com/p/Plaxtilineas-100080040966300/" target="_blank" class="drawer-link drawer-social facebook" (click)="closeMenu()">
-        <fa-icon [icon]="['fab', 'facebook']"></fa-icon> <span>Facebook</span>
-      </a>
-      <a href="https://www.instagram.com/plaxtilineas/" target="_blank" class="drawer-link drawer-social instagram" (click)="closeMenu()">
-        <fa-icon [icon]="['fab', 'instagram']"></fa-icon> <span>Instagram</span>
-      </a>
-    </div>
-  </div>
 </header>
+
+<!-- Mobile Menu Drawer (Movido fuera del header para evitar problemas con transform: translateY) -->
+<div class="mobile-drawer-overlay" *ngIf="menuAbierto" (click)="closeMenu()"></div>
+<div class="mobile-drawer" [class.active]="menuAbierto">
+  <div class="drawer-header">
+    <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Logo" class="drawer-logo">
+    <button class="drawer-close" (click)="closeMenu()"><fa-icon [icon]="['fas', 'times']"></fa-icon></button>
+  </div>
+  <div class="drawer-body">
+    <!-- Opciones secundarias para el menú hamburguesa -->
+    <a routerLink="/contacto" class="drawer-link" (click)="closeMenu()">
+      <fa-icon [icon]="['fas', 'envelope']"></fa-icon> <span>Contacto</span>
+    </a>
+    <a routerLink="/login" class="drawer-link" (click)="closeMenu()">
+      <fa-icon [icon]="['fas', 'lock']"></fa-icon> <span>Acceso Admin</span>
+    </a>
+    <hr class="drawer-divider">
+    <div class="drawer-section-title">Redes Sociales</div>
+    <a href="https://wa.me/573000000000" target="_blank" class="drawer-link drawer-social whatsapp" (click)="closeMenu()">
+      <fa-icon [icon]="['fab', 'whatsapp']"></fa-icon> <span>WhatsApp</span>
+    </a>
+    <a href="https://www.facebook.com/p/Plaxtilineas-100080040966300/" target="_blank" class="drawer-link drawer-social facebook" (click)="closeMenu()">
+      <fa-icon [icon]="['fab', 'facebook']"></fa-icon> <span>Facebook</span>
+    </a>
+    <a href="https://www.instagram.com/plaxtilineas/" target="_blank" class="drawer-link drawer-social instagram" (click)="closeMenu()">
+      <fa-icon [icon]="['fab', 'instagram']"></fa-icon> <span>Instagram</span>
+    </a>
+  </div>
+</div>
 
 <!-- Mobile Bottom Navigation (PWA style) -->
 <nav class="mobile-bottom-nav" [class.dark-mode]="isChatOpen">

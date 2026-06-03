@@ -136,12 +136,16 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   toggleMenu(): void {
     this.menuAbierto = !this.menuAbierto;
-    document.body.style.overflow = this.menuAbierto ? 'hidden' : 'auto';
+    if (this.menuAbierto) {
+      document.body.classList.add('no-scroll');
+    } else {
+      document.body.classList.remove('no-scroll');
+    }
   }
 
   closeMenu(): void {
     this.menuAbierto = false;
-    document.body.style.overflow = 'auto';
+    document.body.classList.remove('no-scroll');
   }
 
   openRegistrationModal(): void {

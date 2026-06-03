@@ -471,6 +471,11 @@
 }
 
 /* Drawer */
+body.no-scroll {
+  overflow: hidden !important;
+  touch-action: none !important;
+}
+
 .mobile-drawer-overlay {
   position: fixed;
   inset: 0;
