@@ -1,5 +1,5 @@
-// DESARROLLO LOCAL — Apuntando al backend PHP local (php -S localhost:8000)
+// DESARROLLO — Apuntando al backend en producción
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8000/api'
+  apiUrl: 'https://plaxtilineas.com/api'
 };
