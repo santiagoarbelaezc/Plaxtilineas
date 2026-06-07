@@ -5,11 +5,9 @@ import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 
 interface Empresa {
   nombre: string;
-  logo: string;
-  imagenEnvivo: string;
+  imagenBanner: string;
   url: string;
   colorTheme: string;
-  descripcion: string;
 }
 
 @Component({
@@ -23,27 +21,21 @@ export class GrupoEmpresasComponent {
   empresas: Empresa[] = [
     {
       nombre: 'Colchones Districol',
-      logo: 'assets/icons/logo-distri.png',
-      imagenEnvivo: 'assets/images/districolenvivo.png',
+      imagenBanner: 'assets/images/grupoempresas/districol.png',
       url: 'https://colchonesdistricol.com/',
       colorTheme: '#2b4260',
-      descripcion: 'Líderes en descanso y confort. Descubre nuestra amplia gama de colchones, bases y accesorios de descanso diseñados para tu bienestar.'
     },
     {
       nombre: 'Espumas y Plásticos',
-      logo: 'assets/icons/espumas.png',
-      imagenEnvivo: 'assets/images/espumasenvivo.png',
+      imagenBanner: 'assets/images/grupoempresas/espumas.png',
       url: 'https://espumasyplasticos.com/',
       colorTheme: '#008ac7',
-      descripcion: 'Especialistas en espumas industriales, bloques de poliuretano y soluciones plásticas de alta densidad para la industria y el hogar.'
     },
     {
       nombre: 'Camascotas',
-      logo: 'assets/icons/logo.png',
-      imagenEnvivo: 'assets/images/camascotasenvivo.png',
+      imagenBanner: 'assets/images/grupoempresas/camascotas.png',
       url: 'https://camascotas.com/home',
-      colorTheme: '#81C784', // Verde claro
-      descripcion: 'Amor y comodidad para tus mejores amigos. Camas y colchonetas ergonómicas diseñadas para el descanso y felicidad de tus mascotas.'
+      colorTheme: '#81C784',
     }
   ];
 

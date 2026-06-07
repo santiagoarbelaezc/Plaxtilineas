@@ -1,63 +1,58 @@
-/* ===========================
-   SECCIÓN PQR - DISEÑO COMPACTO Y EFICIENTE
-   =========================== */
+/* ====== SECCIÓN PQR PREMIUM ====== */
 
-.seccion-pqr {
-  padding: 40px 20px;
-  background: rgba(255, 255, 255, 0.98);
-  font-family: 'Segoe UI', system-ui, sans-serif;
+.seccion-nosotros {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 180px 0 80px 0;
+  font-family: 'Montserrat', sans-serif;
+  overflow: hidden;
   position: relative;
   min-height: 100vh;
-
 }
 
-.pqr-container {
-  max-width: 1000px;
+.nosotros-container {
+  max-width: 1500px;
   margin: 0 auto;
-  margin-top: 90px;
+  padding: 0 40px;
 }
 
-/* Header compacto */
-.pqr-header {
-  text-align: center;
-  margin-bottom: 30px;
+.badge-new {
+  background: #368C44;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  width: fit-content;
+  letter-spacing: 0.1em;
+  box-shadow: 0 4px 15px rgba(54, 140, 68, 0.3);
+  margin-bottom: 24px;
 }
 
-.pqr-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--primary-darker, #1a202c);
-  margin-bottom: 15px;
-  position: relative;
-  display: inline-block;
-  letter-spacing: -0.5px;
-  line-height: 1.2;
+.title {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: #1e293b;
+  line-height: 1.1;
+  margin: 0 0 20px 0;
 }
 
-.pqr-title::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(90deg, #368c44, #25d366);
-  border-radius: 2px;
+.title span {
+  color: #368C44;
 }
 
-.pqr-subtitle {
-  color: #4a5568;
-  font-size: 1rem;
-  line-height: 1.5;
-  max-width: 700px;
-  margin: 20px auto 0;
-  font-weight: 400;
+.description {
+  font-size: 1.15rem;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0 0 40px 0;
+  max-width: 900px;
 }
 
-.pqr-subtitle strong {
-  color: #368c44;
-  font-weight: 600;
+.description strong {
+  color: #1e293b;
+  font-weight: 800;
 }
 
 /* Selector de modo compacto */

@@ -3,22 +3,25 @@
   <div class="top-bar">
     <div class="container">
       <div class="top-bar-content">
-        <div class="info-group">
-          <a routerLink="/productos" class="top-info-item">
-            <fa-icon [icon]="['fas', 'shopping-bag']"></fa-icon>
-            <span>Compra ahora lo mejor en plásticos</span>
-          </a>
-          <a href="https://www.google.com/maps/dir/?api=1&destination=Cra.19+%23+19-35+Armenia+Quindio" target="_blank" class="top-info-item">
-            <fa-icon [icon]="['fas', 'map-marker-alt']"></fa-icon>
-            <span>Cra. 19 #19-35, Armenia</span>
-          </a>
+        <div class="top-info-item hide-mobile">
+          <fa-icon [icon]="['fas', 'clock']"></fa-icon>
+          <span>Lunes - Sábado: 8:00 AM - 6:00 PM</span>
         </div>
-        <div class="info-group hide-mobile">
-          <div class="top-info-item">
-            <fa-icon [icon]="['fas', 'clock']"></fa-icon>
-            <span>Lunes - Sábado: 8:00 AM - 6:00 PM</span>
-          </div>
-        </div>
+        
+        <a routerLink="/productos" class="top-info-item highlight">
+          <fa-icon [icon]="['fas', 'shopping-bag']"></fa-icon>
+          <span>Compra ahora lo mejor en plásticos</span>
+        </a>
+
+        <a href="https://www.google.com/maps/dir/4.5696779,-75.6521222/PLAXTILINEAS,+630001,+Armenia,+Quind%C3%ADo/@4.553645,-75.6819289,14z/data=!3m1!4b1!4m9!4m8!1m1!4e1!1m5!1m1!1s0x8e38f5bd543fc99f:0x2bd98af1d04068f8!2m2!1d-75.6749092!2d4.5355891?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" class="top-info-item">
+          <fa-icon [icon]="['fas', 'map-marker-alt']"></fa-icon>
+          <span>Cra. 19 #19-35, Armenia</span>
+        </a>
+
+        <a href="https://api.whatsapp.com/send/?phone=573007365939&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer" class="top-info-item">
+          <fa-icon [icon]="['fas', 'phone-alt']"></fa-icon>
+          <span>+57 300 7365939</span>
+        </a>
       </div>
     </div>
   </div>

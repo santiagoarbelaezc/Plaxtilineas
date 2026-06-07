@@ -21,6 +21,18 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/pqr/pqr').then(m => m.Pqr)
   },
   {
+    path: 'terminos',
+    loadComponent: () => import('./pages/terminos-condiciones/terminos').then(m => m.Terminos)
+  },
+  {
+    path: 'cookies',
+    loadComponent: () => import('./pages/cookies/cookies').then(m => m.Cookies)
+  },
+  {
+    path: 'aviso-legal',
+    loadComponent: () => import('./pages/aviso-legal/aviso-legal').then(m => m.AvisoLegal)
+  },
+  {
     path: 'productos',
     loadComponent: () => import('./pages/productos/productos').then(m => m.Productos)
   },
