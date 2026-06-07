@@ -1,427 +1,299 @@
-<div class="seccion-nosotros">
+<div class="seccion-nosotros pqrs-premium-section">
   <div class="nosotros-container">
     
-    <!-- Header -->
-    <div class="pqr-header" style="margin-bottom: 40px;">
-      <div class="badge-new">Soporte</div>
-      <h1 class="title">Gestión de <span>PQRS</span></h1>
-      <div class="description">
-        <p>En PLAXTILINEAS nos importa tu opinión. ¿Tienes alguna petición, queja, reclamo o sugerencia? Estamos aquí para escucharte y ayudarte.</p>
-        <p><strong>¡Tu voz es importante para nosotros!</strong></p>
-      </div>
-    </div>
-
-    <!-- Selector de modo -->
-    <div class="modo-selector">
-      <div class="modo-buttons">
-        <button 
-          [class.active]="modo === 'crear'"
-          (click)="cambiarModo('crear')"
-          class="modo-btn"
-        >
-          📝 Crear Nueva PQR
-        </button>
-        <button 
-          [class.active]="modo === 'consultar'"
-          (click)="cambiarModo('consultar')"
-          class="modo-btn"
-        >
-          🔍 Consultar Estado
-        </button>
-      </div>
-    </div>
-
-    <!-- Mensajes -->
-    <div *ngIf="mensaje" class="mensaje-alerta" [class]="'mensaje-' + mensajeTipo">
-      <div class="mensaje-icono">
-        <span *ngIf="mensajeTipo === 'success'">✅</span>
-        <span *ngIf="mensajeTipo === 'error'">❌</span>
-        <span *ngIf="mensajeTipo === 'info'">ℹ️</span>
-      </div>
-      <div class="mensaje-texto">{{ mensaje }}</div>
-    </div>
-
-    <!-- Contenido dinámico -->
-    <div class="pqr-content">
-      
-      <!-- MODO CREAR PQR -->
-      <div *ngIf="modo === 'crear'" class="crear-pqr">
+    <div class="layout-grid">
+      <!-- COLUMNA IZQUIERDA: FORMULARIO INTERACTIVO (1.5fr) -->
+      <div class="pqr-main-column">
         
-        <div class="formulario-container">
-          <h2 class="formulario-titulo">Crear Nueva PQR</h2>
-          <p class="formulario-descripcion">Completa el siguiente formulario para enviar tu PQR. Todos los campos marcados con * son obligatorios.</p>
+        <!-- Tarjeta Principal de Cristal / Premium -->
+        <div class="pqr-glass-card">
           
-          <form (ngSubmit)="crearPQR()" #pqrForm="ngForm" class="pqr-formulario">
+          <!-- Encabezado y Switch Integrado -->
+          <div class="pqr-card-header">
+            <h2 class="pqr-card-title">{{ modo === 'crear' ? 'Radicar Solicitud' : 'Consultar Solicitud' }}</h2>
             
-            <!-- Tipo de PQR -->
-            <div class="form-group">
-              <label for="tipo" class="form-label">
-                <span class="required">*</span> Tipo de PQR
-              </label>
-              <div class="tipos-grid">
-                <div *ngFor="let tipo of tiposPQR" class="tipo-option">
-                  <input
-                    type="radio"
-                    id="tipo_{{ tipo.valor }}"
-                    name="tipo"
-                    [(ngModel)]="pqrData.tipo"
-                    [value]="tipo.valor"
-                    required
-                    class="tipo-radio"
-                  >
-                  <label for="tipo_{{ tipo.valor }}" class="tipo-label">
-                    <span class="tipo-icono">{{ obtenerIconoTipo(tipo.valor) }}</span>
-                    <span class="tipo-texto">{{ tipo.texto }}</span>
-                  </label>
-                </div>
-              </div>
+            <div class="premium-switch">
+              <button [class.active]="modo === 'crear'" (click)="cambiarModo('crear')" class="switch-btn">
+                <span class="icon">📝</span> Crear
+              </button>
+              <button [class.active]="modo === 'consultar'" (click)="cambiarModo('consultar')" class="switch-btn">
+                <span class="icon">🔍</span> Consultar
+              </button>
             </div>
+          </div>
+
+          <!-- Alertas -->
+          <div *ngIf="mensaje" class="premium-alert" [class]="'alert-' + mensajeTipo">
+            <div class="alert-icon">
+              <span *ngIf="mensajeTipo === 'success'">✅</span>
+              <span *ngIf="mensajeTipo === 'error'">⚠️</span>
+              <span *ngIf="mensajeTipo === 'info'">ℹ️</span>
+            </div>
+            <div class="alert-text">{{ mensaje }}</div>
+          </div>
+
+          <div class="pqr-card-body">
             
-            <!-- Información personal -->
-            <div class="form-row">
-              <div class="form-group">
-                <label for="nombre_completo" class="form-label">
-                  <span class="required">*</span> Nombre completo
-                </label>
-                <input
-                  type="text"
-                  id="nombre_completo"
-                  [(ngModel)]="pqrData.nombre_completo"
-                  name="nombre_completo"
-                  required
-                  class="form-input"
-                  placeholder=""
-                >
-              </div>
+            <!-- ========================= MODO CREAR ========================= -->
+            <div *ngIf="modo === 'crear'" class="fade-in-content">
+              <p class="pqr-subtitle">Todos los campos marcados con <span class="text-asterisk">*</span> son obligatorios.</p>
               
-              <div class="form-group">
-                <label for="email" class="form-label">
-                  <span class="required">*</span> Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  [(ngModel)]="pqrData.email"
-                  name="email"
-                  required
-                  class="form-input"
-                  placeholder="Ej: usuario@email.com"
-                >
-              </div>
-            </div>
-            
-            <!-- Teléfono y Producto -->
-            <div class="form-row">
-              <div class="form-group">
-                <label for="telefono" class="form-label">
-                  <span class="required">*</span> Teléfono
-                </label>
-                <input
-                  type="tel"
-                  id="telefono"
-                  [(ngModel)]="pqrData.telefono"
-                  name="telefono"
-                  required
-                  class="form-input"
-                  placeholder="Ej: 3001234567"
-                >
-              </div>
-              
-              <div class="form-group">
-                <label for="producto_relacionado" class="form-label">
-                  Producto relacionado (opcional)
-                </label>
-                <select
-                  id="producto_relacionado"
-                  [(ngModel)]="pqrData.producto_relacionado"
-                  name="producto_relacionado"
-                  class="form-select"
-                >
-                  <option value="">Selecciona un producto</option>
-                  <option *ngFor="let producto of productosRelacionados" [value]="producto">
-                    {{ producto }}
-                  </option>
-                </select>
-              </div>
-            </div>
-            
-            <!-- Descripción -->
-            <div class="form-group">
-              <label for="descripcion" class="form-label">
-                <span class="required">*</span> Descripción detallada
-              </label>
-              <textarea
-                id="descripcion"
-                [(ngModel)]="pqrData.descripcion"
-                name="descripcion"
-                required
-                class="form-textarea"
-                rows="5"
-                placeholder="Describe tu petición, queja, reclamo o sugerencia con el mayor detalle posible..."
-              ></textarea>
-              <div class="form-hint">Máximo 1000 caracteres</div>
-            </div>
-            
-            <!-- Archivos adjuntos -->
-            <div class="form-group">
-              <label class="form-label">
-                Archivos adjuntos (opcional)
-              </label>
-              <div class="archivos-info">
-                <p class="archivos-descripcion">Puedes adjuntar hasta 5 archivos (PDF, JPG, PNG, DOC, DOCX, XLS, XLSX). Máximo 10MB por archivo.</p>
+              <form (ngSubmit)="crearPQR()" #pqrForm="ngForm" class="premium-form">
                 
-                <div class="archivos-upload">
-                  <label for="archivos" class="upload-button">
-                    <span class="upload-icon">📎</span>
-                    <span class="upload-text">Seleccionar archivos</span>
-                    <input
-                      type="file"
-                      id="archivos"
-                      (change)="onFileSelected($event)"
-                      multiple
-                      accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx"
-                      class="upload-input"
-                    >
-                  </label>
-                  <div class="archivos-count">
-                    {{ archivos.length }} / 5 archivos seleccionados
+                <!-- Tipos de PQR -->
+                <div class="form-section">
+                  <label class="premium-label"><span class="text-asterisk">*</span> Tipo de Solicitud</label>
+                  <div class="tipo-cards-grid">
+                    <label *ngFor="let tipo of tiposPQR" class="tipo-card" [class.selected]="pqrData.tipo === tipo.valor">
+                      <input type="radio" name="tipo" [(ngModel)]="pqrData.tipo" [value]="tipo.valor" required class="hidden-radio">
+                      <span class="tipo-icon">{{ obtenerIconoTipo(tipo.valor) }}</span>
+                      <span class="tipo-text">{{ tipo.texto }}</span>
+                    </label>
                   </div>
                 </div>
+
+                <!-- Datos Personales -->
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="nombre_completo" class="premium-label"><span class="text-asterisk">*</span> Nombre completo</label>
+                    <div class="input-wrapper">
+                      <input type="text" id="nombre_completo" [(ngModel)]="pqrData.nombre_completo" name="nombre_completo" required class="premium-input" placeholder="Ej: Juan Pérez">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="email" class="premium-label"><span class="text-asterisk">*</span> Correo Electrónico</label>
+                    <div class="input-wrapper">
+                      <input type="email" id="email" [(ngModel)]="pqrData.email" name="email" required class="premium-input" placeholder="Ej: usuario@correo.com">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Contacto Adicional -->
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="telefono" class="premium-label"><span class="text-asterisk">*</span> Teléfono Móvil</label>
+                    <div class="input-wrapper">
+                      <input type="tel" id="telefono" [(ngModel)]="pqrData.telefono" name="telefono" required class="premium-input" placeholder="Ej: 300 123 4567">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="producto_relacionado" class="premium-label">Producto relacionado (Opcional)</label>
+                    <div class="input-wrapper select-wrapper">
+                      <select id="producto_relacionado" [(ngModel)]="pqrData.producto_relacionado" name="producto_relacionado" class="premium-input">
+                        <option value="">Selecciona un producto...</option>
+                        <option *ngFor="let producto of productosRelacionados" [value]="producto">{{ producto }}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Detalle -->
+                <div class="form-group">
+                  <label for="descripcion" class="premium-label"><span class="text-asterisk">*</span> Detalles de la Solicitud</label>
+                  <textarea id="descripcion" [(ngModel)]="pqrData.descripcion" name="descripcion" required class="premium-textarea" rows="4" placeholder="Describe al detalle tu caso. Nos ayudará a resolverlo más rápido."></textarea>
+                  <span class="input-hint">Máximo 1000 caracteres</span>
+                </div>
+
+                <!-- Adjuntos -->
+                <div class="form-group">
+                  <label class="premium-label">Evidencia o Archivos (Opcional)</label>
+                  
+                  <div class="premium-dropzone">
+                    <input type="file" id="archivos" (change)="onFileSelected($event)" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx" class="dropzone-input">
+                    <div class="dropzone-content">
+                      <span class="dropzone-icon">📁</span>
+                      <h4>Arrastra tus archivos aquí o haz clic para buscar</h4>
+                      <p>Soporta PDF, JPG, PNG, DOCX. Máx 5 archivos (10MB c/u).</p>
+                    </div>
+                  </div>
+
+                  <!-- Lista de archivos -->
+                  <div *ngIf="archivos.length > 0" class="files-preview-list">
+                    <div *ngFor="let archivo of archivos; let i = index" class="file-item">
+                      <div class="file-info">
+                        <span class="file-icon">📄</span>
+                        <div class="file-details">
+                          <span class="file-name">{{ archivo.name }}</span>
+                          <span class="file-size">{{ (archivo.size / 1024 / 1024).toFixed(2) }} MB</span>
+                        </div>
+                      </div>
+                      <button type="button" (click)="eliminarArchivo(i)" class="file-remove-btn" title="Eliminar archivo">×</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Enviar -->
+                <div class="form-submit-area">
+                  <button type="submit" class="premium-submit-btn" [disabled]="cargando || !pqrData.nombre_completo.trim() || !pqrData.email.trim() || !pqrData.telefono.trim() || !pqrData.descripcion.trim()">
+                    <span *ngIf="!cargando" class="btn-content">📤 Enviar Solicitud</span>
+                    <span *ngIf="cargando" class="btn-content loading">
+                      <div class="spinner"></div> Enviando...
+                    </span>
+                  </button>
+                  <p class="submit-note">Recibirás un <strong>número de ticket único</strong> para hacer seguimiento.</p>
+                </div>
+              </form>
+            </div>
+
+            <!-- ========================= MODO CONSULTAR ========================= -->
+            <div *ngIf="modo === 'consultar'" class="fade-in-content">
+              
+              <div class="search-hero">
+                <p class="pqr-subtitle text-center" style="text-align: center; margin-bottom: 25px;">Ingresa tu número de ticket para conocer el estado y leer las respuestas de nuestro equipo.</p>
                 
-                <!-- Lista de archivos -->
-                <div *ngIf="archivos.length > 0" class="archivos-lista">
-                  <div *ngFor="let archivo of archivos; let i = index" class="archivo-item">
-                    <div class="archivo-info">
-                      <span class="archivo-icono">
-                        📄
-                      </span>
-                      <div class="archivo-detalles">
-                        <div class="archivo-nombre">{{ archivo.name }}</div>
-                        <div class="archivo-tamano">{{ (archivo.size / 1024 / 1024).toFixed(2) }} MB</div>
+                <div class="premium-search-box">
+                  <input type="text" [(ngModel)]="numeroTicketConsulta" (keyup.enter)="consultarPQR()" placeholder="Ej: PQR-20260105-081" class="search-input">
+                  <button (click)="consultarPQR()" [disabled]="cargando || !numeroTicketConsulta.trim()" class="search-btn">
+                    <span *ngIf="!cargando">Buscar</span>
+                    <span *ngIf="cargando"><div class="spinner small"></div></span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Resultado Exitoso -->
+              <div *ngIf="pqrConsultada" class="ticket-result">
+                
+                <div class="ticket-header-card">
+                  <div class="ticket-id-area">
+                    <span class="ticket-icon-large">🎫</span>
+                    <div>
+                      <h3 class="ticket-number">{{ pqrConsultada.numero_ticket }}</h3>
+                      <span class="ticket-date">Creado el {{ formatearFecha(pqrConsultada.fecha_creacion) }}</span>
+                    </div>
+                  </div>
+                  
+                  <div class="ticket-badges">
+                    <div class="t-badge" [class]="obtenerClaseTipo(pqrConsultada.tipo)">
+                      {{ obtenerIconoTipo(pqrConsultada.tipo) }} {{ traducirTipo(pqrConsultada.tipo) }}
+                    </div>
+                    <div class="t-badge" [class]="obtenerClaseEstado(pqrConsultada.estado)">
+                      {{ obtenerIconoEstado(pqrConsultada.estado) }} {{ traducirEstado(pqrConsultada.estado) }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="ticket-details-grid">
+                  <div class="detail-block">
+                    <span class="detail-label">👤 Solicitante</span>
+                    <span class="detail-value">{{ pqrConsultada.nombre_completo }}</span>
+                  </div>
+                  <div class="detail-block">
+                    <span class="detail-label">📧 Email</span>
+                    <span class="detail-value">{{ pqrConsultada.email }}</span>
+                  </div>
+                  <div class="detail-block">
+                    <span class="detail-label">📱 Teléfono</span>
+                    <span class="detail-value">{{ pqrConsultada.telefono }}</span>
+                  </div>
+                  <div *ngIf="pqrConsultada.producto_relacionado" class="detail-block">
+                    <span class="detail-label">📦 Producto</span>
+                    <span class="detail-value">{{ pqrConsultada.producto_relacionado }}</span>
+                  </div>
+                </div>
+
+                <div class="ticket-description-box">
+                  <h4>📄 Descripción de la Solicitud</h4>
+                  <p>{{ pqrConsultada.descripcion }}</p>
+                </div>
+
+                <!-- Archivos Adjuntos Consultados -->
+                <div *ngIf="pqrConsultada.archivos && pqrConsultada.archivos.length > 0" class="ticket-files-section">
+                  <h4>📎 Archivos Adjuntos</h4>
+                  <div class="download-files-grid">
+                    <div *ngFor="let archivo of pqrConsultada.archivos" class="download-card">
+                      <span class="d-icon">📄</span>
+                      <div class="d-info">
+                        <span class="d-name">{{ archivo.nombre_archivo }}</span>
+                      </div>
+                      <button (click)="descargarArchivo(archivo.url_archivo, archivo.nombre_archivo)" class="d-btn" title="Descargar">⬇️</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Timeline de Respuestas -->
+                <div class="ticket-timeline-section">
+                  <h4>💬 Historial de Respuestas ({{ pqrConsultada.respuestas ? pqrConsultada.respuestas.length : 0 }})</h4>
+                  
+                  <div *ngIf="!pqrConsultada.respuestas || pqrConsultada.respuestas.length === 0" class="empty-timeline">
+                    <span class="empty-icon">⏳</span>
+                    <h5>En Revisión</h5>
+                    <p>Aún no hay respuestas de nuestro equipo. Te notificaremos por correo electrónico apenas haya novedades.</p>
+                  </div>
+
+                  <div *ngIf="pqrConsultada.respuestas && pqrConsultada.respuestas.length > 0" class="timeline">
+                    <div *ngFor="let respuesta of pqrConsultada.respuestas" class="timeline-item" [class.admin-reply]="respuesta.tipo === 'ADMINISTRACION'">
+                      <div class="timeline-avatar">
+                        {{ respuesta.tipo === 'ADMINISTRACION' ? '👨‍💼' : '👤' }}
+                      </div>
+                      <div class="timeline-content">
+                        <div class="timeline-meta">
+                          <span class="timeline-author">{{ respuesta.tipo === 'ADMINISTRACION' ? 'Soporte Plaxtilineas' : 'Tú' }}</span>
+                          <span class="timeline-date">{{ formatearFecha(respuesta.fecha_respuesta || respuesta.fecha_creacion) }}</span>
+                        </div>
+                        <div class="timeline-message">
+                          {{ respuesta.mensaje }}
+                        </div>
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      (click)="eliminarArchivo(i)"
-                      class="archivo-eliminar"
-                    >
-                      ×
-                    </button>
                   </div>
                 </div>
+
               </div>
+
             </div>
-            
-            <!-- Botón enviar -->
-            <div class="form-actions">
-              <button
-                type="submit"
-                [disabled]="cargando || !pqrData.nombre_completo.trim() || !pqrData.email.trim() || !pqrData.telefono.trim() || !pqrData.descripcion.trim()"
-                class="submit-button"
-                [class.loading]="cargando"
-              >
-                <span *ngIf="!cargando">📤 Enviar PQR</span>
-                <span *ngIf="cargando" class="loading-text">
-                  <span class="loading-spinner"></span>
-                  Enviando...
-                </span>
-              </button>
-              
-              <div class="form-nota">
-                <p>Al enviar esta PQR, recibirás un número de ticket único que podrás usar para consultar el estado.</p>
-              </div>
-            </div>
-          </form>
+
+          </div>
         </div>
-        
-        <!-- Información adicional -->
-        <div class="info-ayuda">
-          <h3 class="info-titulo">📋 ¿Cómo crear una PQR efectiva?</h3>
-          <ul class="info-lista">
-            <li><strong>Sé específico:</strong> Describe claramente tu situación.</li>
-            <li><strong>Proporciona detalles:</strong> Incluye fechas, números de pedido, etc.</li>
-            <li><strong>Adjunta evidencia:</strong> Fotos, documentos o facturas ayudan.</li>
-            <li><strong>Mantén un tono respetuoso:</strong> Nos ayuda a resolver mejor.</li>
-            <li><strong>Guarda tu número de ticket:</strong> Es único e importante.</li>
+
+      </div>
+
+      <!-- COLUMNA DERECHA: INTRO Y AYUDA (1fr) -->
+      <div class="intro-column pqr-intro-premium">
+        <div class="badge-new">Atención al Cliente</div>
+        <h1 class="title">Gestión de<br><span>PQRS</span></h1>
+        <div class="description">
+          <p>En <strong>PLAXTILINEAS</strong> escuchamos tu voz. Estamos comprometidos con la transparencia y rapidez para resolver cualquier inquietud.</p>
+        </div>
+
+        <div class="premium-help-card">
+          <div class="help-header">
+            <h3>💡 Tips para una PQR exitosa</h3>
+          </div>
+          <ul class="help-list">
+            <li>
+              <span class="bullet-icon">🎯</span>
+              <div>
+                <strong>Ve al grano:</strong> Describe detalladamente el problema sin rodeos.
+              </div>
+            </li>
+            <li>
+              <span class="bullet-icon">📎</span>
+              <div>
+                <strong>Evidencias:</strong> Sube fotos claras o facturas en formato PDF/JPG.
+              </div>
+            </li>
+            <li>
+              <span class="bullet-icon">🎫</span>
+              <div>
+                <strong>Guarda tu Ticket:</strong> Lo necesitarás para seguir el estado de la solicitud.
+              </div>
+            </li>
           </ul>
-          
-          <div class="info-contacto">
-            <h4>📞 ¿Necesitas ayuda inmediata?</h4>
-            <p>También puedes contactarnos por WhatsApp:</p>
-            <div class="contacto-info">
-              <div class="contacto-item">📱 +57 (606) 7390968</div>
-              <div class="contacto-item">📱 +57 3006680125</div>
+        </div>
+
+        <div class="premium-contact-card">
+          <div class="contact-icon-wrapper">🎧</div>
+          <div class="contact-text">
+            <h4>¿Atención Inmediata?</h4>
+            <p>Escríbenos por WhatsApp o llámanos directamente:</p>
+            <div class="contact-phones">
+              <a href="https://api.whatsapp.com/send/?phone=573006680125" target="_blank">📱 +57 300 668 0125</a>
+              <a href="tel:+576067390968">📞 (606) 739 0968</a>
             </div>
           </div>
         </div>
       </div>
-      
-      <!-- MODO CONSULTAR PQR -->
-      <div *ngIf="modo === 'consultar'" class="consultar-pqr">
-        
-        <div class="consulta-formulario">
-          <h2 class="formulario-titulo">Consultar Estado de PQR</h2>
-          <p class="formulario-descripcion">Ingresa tu número de ticket para ver el estado y respuestas de tu PQR.</p>
-          
-          <div class="busqueda-container">
-            <div class="busqueda-input-group">
-              <input
-                type="text"
-                [(ngModel)]="numeroTicketConsulta"
-                (keyup.enter)="consultarPQR()"
-                class="busqueda-input"
-                placeholder="Ej: PQR-260105-081"
-              >
-              <button
-                (click)="consultarPQR()"
-                [disabled]="cargando || !numeroTicketConsulta.trim()"
-                class="busqueda-button"
-                [class.loading]="cargando"
-              >
-                <span *ngIf="!cargando">🔍 Buscar</span>
-                <span *ngIf="cargando" class="loading-text">
-                  <span class="loading-spinner"></span>
-                  Buscando...
-                </span>
-              </button>
-            </div>
-            <div class="busqueda-hint">
-              <p>El número de ticket tiene formato: <code>PQR-AAAAMMDD-NNN</code></p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Resultado de la consulta -->
-        <div *ngIf="pqrConsultada" class="resultado-consulta">
-          
-          <!-- Tarjeta de resumen -->
-          <div class="pqr-resumen">
-            <div class="resumen-header">
-              <div class="resumen-ticket">
-                <span class="ticket-icon">🎫</span>
-                <h3 class="ticket-numero">{{ pqrConsultada.numero_ticket }}</h3>
-              </div>
-              <div class="resumen-estados">
-                <div class="estado-badge" [class]="obtenerClaseEstado(pqrConsultada.estado)">
-                  <span class="estado-icono">{{ obtenerIconoEstado(pqrConsultada.estado) }}</span>
-                  {{ traducirEstado(pqrConsultada.estado) }}
-                </div>
-                <div class="tipo-badge" [class]="obtenerClaseTipo(pqrConsultada.tipo)">
-                  <span class="tipo-icono">{{ obtenerIconoTipo(pqrConsultada.tipo) }}</span>
-                  {{ traducirTipo(pqrConsultada.tipo) }}
-                </div>
-              </div>
-            </div>
-            
-            <div class="resumen-body">
-              <div class="resumen-fecha">
-                <strong>Fecha de creación:</strong> {{ formatearFecha(pqrConsultada.fecha_creacion) }}
-              </div>
-            <div class="resumen-fecha" *ngIf="pqrConsultada.fecha_actualizacion">
-              <strong>Última actualización:</strong> {{ formatearFecha(pqrConsultada.fecha_actualizacion) }}
-                <div class="info-item">
-                  <span class="info-label">👤 Nombre:</span>
-                  <span class="info-valor">{{ pqrConsultada.nombre_completo }}</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">📧 Email:</span>
-                  <span class="info-valor">{{ pqrConsultada.email }}</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">📱 Teléfono:</span>
-                  <span class="info-valor">{{ pqrConsultada.telefono }}</span>
-                </div>
-                <div *ngIf="pqrConsultada.producto_relacionado" class="info-item">
-                  <span class="info-label">📦 Producto:</span>
-                  <span class="info-valor">{{ pqrConsultada.producto_relacionado }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Descripción -->
-          <div class="pqr-descripcion">
-            <h4 class="descripcion-titulo">📄 Descripción</h4>
-            <div class="descripcion-contenido">
-              {{ pqrConsultada.descripcion }}
-            </div>
-          </div>
-          
-          <!-- Archivos adjuntos -->
-          <div *ngIf="pqrConsultada.archivos && pqrConsultada.archivos.length > 0" class="pqr-archivos">
-            <h4 class="archivos-titulo">📎 Archivos adjuntos</h4>
-            <div class="archivos-grid">
-              <div *ngFor="let archivo of pqrConsultada.archivos" class="archivo-card">
-                <div class="archivo-icono">📄</div>
-                <div class="archivo-info">
-                  <div class="archivo-nombre">{{ archivo.nombre_archivo }}</div>
-                  <div class="archivo-fecha" *ngIf="archivo.fecha_subida">
-                    Subido: {{ archivo.fecha_subida }}
-                  </div>
-                </div>
-                <button
-                  (click)="descargarArchivo(archivo.url_archivo, archivo.nombre_archivo)"
-                  class="archivo-descargar"
-                >
-                  ⬇️
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Respuestas -->
-          <div *ngIf="pqrConsultada.respuestas && pqrConsultada.respuestas.length > 0" class="pqr-respuestas">
-            <h4 class="respuestas-titulo">💬 Respuestas ({{ pqrConsultada.respuestas.length }})</h4>
-            <div class="respuestas-lista">
-              <div *ngFor="let respuesta of pqrConsultada.respuestas" class="respuesta-item">
-                <div class="respuesta-header">
-                  <div class="respuesta-tipo" [class]="respuesta.tipo === 'ADMINISTRACION' ? 'admin' : 'cliente'">
-                    {{ respuesta.tipo === 'ADMINISTRACION' ? '👨‍💼 Administración' : '👤 Tú' }}
-                  </div>
-                  <div class="respuesta-fecha" *ngIf="respuesta.fecha_respuesta || respuesta.fecha_creacion">
-                    {{ formatearFecha(respuesta.fecha_respuesta || respuesta.fecha_creacion) }}
-                  </div>
-                </div>
-                <div class="respuesta-mensaje">
-                  {{ respuesta.mensaje }}
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Sin respuestas -->
-          <div *ngIf="pqrConsultada.respuestas && pqrConsultada.respuestas.length === 0" class="sin-respuestas">
-            <div class="sin-respuestas-icono">⏳</div>
-            <div class="sin-respuestas-texto">
-              <h4>Tu PQR está siendo revisada</h4>
-              <p>No hay respuestas aún. Te notificaremos por email cuando tengamos novedades.</p>
-            </div>
-          </div>
-          
-          <!-- Acciones -->
-          <div class="pqr-acciones">
-            <button (click)="cambiarModo('crear')" class="accion-btn">
-              📝 Crear Nueva PQR
-            </button>
-            <button (click)="consultarPQR()" class="accion-btn secundario">
-              🔄 Actualizar
-            </button>
-          </div>
-        </div>
-        
-        <!-- Mensaje cuando no hay consulta -->
-        <div *ngIf="!pqrConsultada && !cargando" class="sin-consulta">
-          <div class="sin-consulta-icono">🔍</div>
-          <div class="sin-consulta-texto">
-            <h3>Consulta tu PQR</h3>
-            <p>Ingresa tu número de ticket arriba para ver el estado de tu Petición, Queja, Reclamo o Sugerencia.</p>
-            <div class="sin-consulta-ayuda">
-              <p><strong>¿No tienes un número de ticket?</strong></p>
-              <p>Crea una nueva PQR usando el botón "Crear Nueva PQR" arriba.</p>
-            </div>
-          </div>
-        </div>
-      </div>
+
     </div>
   </div>
 </div>

@@ -89,7 +89,7 @@
 
 .valor-card:hover .valor-icono-container {
   background: #368C44;
-  transform: rotate(-10deg) scale(1.1);
+  transform: translateY(-3px);
   box-shadow: 0 10px 20px rgba(54, 140, 68, 0.3);
   color: white;
 }

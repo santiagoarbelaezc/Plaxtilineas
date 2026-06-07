@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { NavbarComponent } from '../navbar/navbar.component';
+import { Footer } from '../footer/footer.component';
 
 @Component({
   selector: 'app-politica',
-  imports: [],
+  imports: [NavbarComponent, Footer],
   templateUrl: './politica.html',
   styleUrls: ['./politica.css']
 })
