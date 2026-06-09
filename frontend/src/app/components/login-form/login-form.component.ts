@@ -4,6 +4,9 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { environment } from '../../../enviroments/environment';
+import { AuthService } from '../../services/auth.service';
+
+declare var google: any;
 
 @Component({
   selector: 'app-login-form',
@@ -19,7 +22,7 @@ import { environment } from '../../../enviroments/environment';
 })
 export class LoginFormComponent implements OnInit {
   private fb = inject(FormBuilder);
-  private http = inject(HttpClient);
+  private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
@@ -27,6 +30,23 @@ export class LoginFormComponent implements OnInit {
     correo: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
+
+  registerForm: FormGroup = this.fb.group({
+    nombre: ['', [Validators.required, Validators.minLength(2)]],
+    apellidos: ['', [Validators.required, Validators.minLength(2)]],
+    correo: ['', [Validators.required, Validators.email]],
+    password: ['', [
+      Validators.required, 
+      Validators.minLength(8),
+      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/)
+    ]],
+    telefono: ['', [Validators.required, Validators.pattern('^[0-9\\+\\s]{7,15}$')]],
+    edad: ['', [Validators.required, Validators.min(18), Validators.max(100)]],
+    direccion: ['', [Validators.required, Validators.minLength(5)]],
+    ciudad: ['', [Validators.required]]
+  });
+
+  mode: 'login' | 'register' = 'login';
 
   isSubmitting = false;
   showErrorModal = false;
@@ -43,6 +63,57 @@ export class LoginFormComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit(): void {
+    this.renderGoogleButton();
+  }
+
+  toggleMode(): void {
+    this.mode = this.mode === 'login' ? 'register' : 'login';
+    this.errorMsg = '';
+    this.showPassword = false;
+    setTimeout(() => {
+      if (this.mode === 'register') {
+        this.renderGoogleButton();
+      }
+    }, 100);
+  }
+
+  private renderGoogleButton(): void {
+    if (typeof google !== 'undefined' && google.accounts && document.getElementById('google-btn-login')) {
+      google.accounts.id.initialize({
+        client_id: (environment as any).googleClientId || 'AQUI_TU_CLIENT_ID_DE_GOOGLE',
+        callback: this.handleGoogleResponse.bind(this)
+      });
+      google.accounts.id.renderButton(
+        document.getElementById('google-btn-login'),
+        { theme: 'outline', size: 'large', width: '100%' }
+      );
+    }
+  }
+
+  private handleGoogleResponse(response: any): void {
+    this.isSubmitting = true;
+    this.authService.loginWithGoogle(response.credential).subscribe({
+      next: (res) => {
+        this.isSubmitting = false;
+        this.redirectUser(res.usuario);
+      },
+      error: (err) => {
+        this.isSubmitting = false;
+        this.errorMsg = err.error?.error || 'Error en inicio de sesión con Google.';
+        this.showErrorModal = true;
+      }
+    });
+  }
+
+  private redirectUser(user: any): void {
+    if (user && user.rol === 'admin') {
+      this.router.navigate(['/admin']);
+    } else {
+      this.router.navigate(['/']);
+    }
+  }
+
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
@@ -52,22 +123,22 @@ export class LoginFormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched();
-      this.errorMsg = 'Por favor, completa todos los campos correctamente.';
-      this.showErrorModal = true;
-      return;
-    }
+    if (this.mode === 'login') {
+      if (this.loginForm.invalid) {
+        this.loginForm.markAllAsTouched();
+        this.errorMsg = 'Por favor, completa todos los campos correctamente.';
+        this.showErrorModal = true;
+        return;
+      }
 
-    this.isSubmitting = true;
-    this.sessionExpired = false;
-    const { correo, password } = this.loginForm.value;
+      this.isSubmitting = true;
+      this.sessionExpired = false;
+      const { correo, password } = this.loginForm.value;
 
-    this.http.post<{ token: string }>(`${environment.apiUrl}/auth/login`, { correo, password })
-      .subscribe({
+      this.authService.login(correo, password).subscribe({
         next: (res) => {
-          localStorage.setItem('token', res.token);
-          this.router.navigate(['/admin']);
+          this.isSubmitting = false;
+          this.redirectUser(res.usuario);
         },
         error: () => {
           this.errorMsg = 'Correo o contraseña incorrectos. Por favor, verifica tus datos e inténtalo de nuevo.';
@@ -75,5 +146,30 @@ export class LoginFormComponent implements OnInit {
           this.isSubmitting = false;
         }
       });
+    } else {
+      if (this.registerForm.invalid) {
+        this.registerForm.markAllAsTouched();
+        this.errorMsg = 'Por favor, completa todos los campos correctamente.';
+        this.showErrorModal = true;
+        return;
+      }
+
+      this.isSubmitting = true;
+      const userData = { ...this.registerForm.value, rol: 'cliente' };
+
+      this.authService.register(userData).subscribe({
+        next: (res) => {
+          this.isSubmitting = false;
+          this.redirectUser(res.usuario);
+        },
+        error: (err) => {
+          this.isSubmitting = false;
+          this.errorMsg = err.error?.error || 'Error al registrar. Intenta con otro correo.';
+          this.showErrorModal = true;
+        }
+      });
+    }
   }
+
+  get pwdCtrl() { return this.registerForm.get('password'); }
 }

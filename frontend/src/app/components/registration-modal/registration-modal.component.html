@@ -1,87 +1,138 @@
-<div *ngIf="isVisible" class="modal-overlay" [@fadeInOut] (click)="closeModal()">
-  <div class="modal-container" [@slideUpIn] (click)="$event.stopPropagation()">
-    <!-- Header -->
-    <div class="modal-header">
-      <div class="brand-logo">
-        <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Plaxtilineas Logo" class="logo-img">
+<div *ngIf="isVisible" class="modal-overlay" @fadeInOut>
+  <div class="modal-container" @slideUpIn>
+    
+    <button class="close-btn" (click)="closeModal()">
+      <fa-icon [icon]="['fas', 'times']"></fa-icon>
+    </button>
+
+    <!-- Estado Exitoso -->
+    <div *ngIf="registroExitoso" class="success-state fade-in">
+      <div class="success-icon-wrapper">
+        <fa-icon [icon]="['fas', 'check-circle']" class="success-icon"></fa-icon>
       </div>
-      <button (click)="closeModal()" class="btn-close" aria-label="Cerrar">
-        <fa-icon [icon]="['fas', 'times']"></fa-icon>
-      </button>
+      <h2>¡Bienvenido a Plaxtilineas!</h2>
+      <p>Tu cuenta ha sido creada exitosamente y hemos iniciado sesión por ti.</p>
     </div>
 
-    <!-- Content -->
-    <div class="modal-body">
+    <!-- Formulario -->
+    <div *ngIf="!registroExitoso" class="modal-content">
       
-      <!-- Estado de éxito -->
-      <div *ngIf="registroExitoso" class="success-state">
-        <div class="success-icon-wrapper">
-          <fa-icon [icon]="['fas', 'check-circle']" class="success-icon"></fa-icon>
-        </div>
-        <h2 class="success-title">¡Registro exitoso!</h2>
-        <p class="success-desc">Gracias por registrarte. Pronto recibirás nuestras novedades y promociones exclusivas.</p>
-        <button (click)="closeModal()" class="btn-continue">Continuar navegando</button>
+      <div class="modal-header text-center">
+        <div class="brand-badge">Premium</div>
+        <h2>Crea tu Cuenta</h2>
+        <p>Regístrate para gestionar tus PQRS, ver historial y acceder a beneficios exclusivos.</p>
       </div>
 
-      <!-- Formulario normal -->
-      <div *ngIf="!registroExitoso">
-        <h2 class="modal-title">¡Bienvenido a Plaxtilineas!</h2>
-        <p class="modal-description">
-          Regístrate para recibir nuestras últimas promociones y novedades directamente en tu celular.
-        </p>
+      <!-- Google SSO Button -->
+      <div class="google-sso-wrapper">
+        <div id="google-btn"></div>
+      </div>
 
-        <div *ngIf="errorMessage" class="error-banner">
-          <fa-icon [icon]="['fas', 'exclamation-circle']"></fa-icon>
-          <span>{{ errorMessage }}</span>
-        </div>
+      <div class="divider">
+        <span>o regístrate con tu correo</span>
+      </div>
 
-        <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="registration-form">
-          <!-- Full Name -->
+      <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="premium-form">
+        
+        <div class="form-row">
+          <!-- Nombre -->
           <div class="form-group">
-            <label for="fullName">Nombre y apellidos</label>
-            <div class="input-container" [class.error]="registrationForm.get('fullName')?.invalid && registrationForm.get('fullName')?.touched">
+            <label>Nombres</label>
+            <div class="input-wrapper" [class.invalid]="registrationForm.get('nombre')?.invalid && registrationForm.get('nombre')?.touched">
               <fa-icon [icon]="['fas', 'user']" class="input-icon"></fa-icon>
-              <input 
-                type="text" 
-                id="fullName" 
-                formControlName="fullName" 
-                placeholder="Ej. Juan Pérez"
-                autocomplete="name">
+              <input type="text" formControlName="nombre" placeholder="Ej: Juan">
             </div>
-            <small *ngIf="registrationForm.get('fullName')?.invalid && registrationForm.get('fullName')?.touched" class="error-text">
-              Ingresa tu nombre completo.
-            </small>
           </div>
-
-          <!-- Phone -->
+          
+          <!-- Apellidos -->
           <div class="form-group">
-            <label for="phone">Teléfono (WhatsApp)</label>
-            <div class="input-container" [class.error]="registrationForm.get('phone')?.invalid && registrationForm.get('phone')?.touched">
-              <fa-icon [icon]="['fas', 'phone']" class="input-icon"></fa-icon>
-              <input 
-                type="tel" 
-                id="phone" 
-                formControlName="phone" 
-                placeholder="Ej. 300 123 4567"
-                autocomplete="tel">
+            <label>Apellidos</label>
+            <div class="input-wrapper" [class.invalid]="registrationForm.get('apellidos')?.invalid && registrationForm.get('apellidos')?.touched">
+              <fa-icon [icon]="['fas', 'user']" class="input-icon"></fa-icon>
+              <input type="text" formControlName="apellidos" placeholder="Ej: Pérez">
             </div>
-            <small *ngIf="registrationForm.get('phone')?.invalid && registrationForm.get('phone')?.touched" class="error-text">
-              Ingresa un número de teléfono válido.
-            </small>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <!-- Correo -->
+          <div class="form-group">
+            <label>Correo Electrónico</label>
+            <div class="input-wrapper" [class.invalid]="registrationForm.get('correo')?.invalid && registrationForm.get('correo')?.touched">
+              <fa-icon [icon]="['fas', 'envelope']" class="input-icon"></fa-icon>
+              <input type="email" formControlName="correo" placeholder="correo@ejemplo.com">
+            </div>
           </div>
 
-          <button type="submit" [disabled]="isSubmitting" class="btn-submit">
-            <span *ngIf="!isSubmitting">Registrarme ahora</span>
-            <span *ngIf="isSubmitting" class="loading-spinner"></span>
-            <fa-icon *ngIf="!isSubmitting" [icon]="['fas', 'paper-plane']" class="submit-icon"></fa-icon>
-          </button>
-        </form>
-      </div>
+          <!-- Teléfono -->
+          <div class="form-group">
+            <label>Teléfono Celular</label>
+            <div class="input-wrapper" [class.invalid]="registrationForm.get('telefono')?.invalid && registrationForm.get('telefono')?.touched">
+              <fa-icon [icon]="['fas', 'phone']" class="input-icon"></fa-icon>
+              <input type="tel" formControlName="telefono" placeholder="300 123 4567">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <!-- Edad -->
+          <div class="form-group">
+            <label>Edad</label>
+            <div class="input-wrapper" [class.invalid]="registrationForm.get('edad')?.invalid && registrationForm.get('edad')?.touched">
+              <fa-icon [icon]="['fas', 'calendar-alt']" class="input-icon"></fa-icon>
+              <input type="number" formControlName="edad" placeholder="Ej: 30" min="18" max="100">
+            </div>
+          </div>
+
+          <!-- Ciudad -->
+          <div class="form-group">
+            <label>Ciudad</label>
+            <div class="input-wrapper" [class.invalid]="registrationForm.get('ciudad')?.invalid && registrationForm.get('ciudad')?.touched">
+              <fa-icon [icon]="['fas', 'map-marker-alt']" class="input-icon"></fa-icon>
+              <input type="text" formControlName="ciudad" placeholder="Ej: Armenia">
+            </div>
+          </div>
+        </div>
+
+        <!-- Dirección -->
+        <div class="form-group">
+          <label>Dirección de Residencia/Envío</label>
+          <div class="input-wrapper" [class.invalid]="registrationForm.get('direccion')?.invalid && registrationForm.get('direccion')?.touched">
+            <fa-icon [icon]="['fas', 'map-marker-alt']" class="input-icon"></fa-icon>
+            <input type="text" formControlName="direccion" placeholder="Ej: Calle 1 # 2-3">
+          </div>
+        </div>
+
+        <!-- Contraseña Segura -->
+        <div class="form-group">
+          <label>Contraseña Segura</label>
+          <div class="input-wrapper" [class.invalid]="pwdCtrl?.invalid && pwdCtrl?.touched">
+            <fa-icon [icon]="['fas', 'lock']" class="input-icon"></fa-icon>
+            <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Min. 8 caracteres, mayúscula y número">
+            <button type="button" class="toggle-pwd-btn" (click)="togglePassword()">
+              <fa-icon [icon]="['fas', showPassword ? 'user' : 'lock']"></fa-icon>
+            </button>
+          </div>
+          <small class="hint-text" *ngIf="pwdCtrl?.invalid && pwdCtrl?.touched">
+            Debe tener al menos 8 caracteres, una mayúscula y un número.
+          </small>
+        </div>
+
+        <div *ngIf="errorMessage" class="error-alert">
+          {{ errorMessage }}
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="registrationForm.invalid || isSubmitting">
+          <span *ngIf="!isSubmitting">
+            <fa-icon [icon]="['fas', 'paper-plane']"></fa-icon> Crear Cuenta
+          </span>
+          <span *ngIf="isSubmitting" class="loader"></span>
+        </button>
+        
+      </form>
+      
+      <p class="terms">Al registrarte, aceptas nuestras <a href="/terminos-condiciones">Políticas de Privacidad</a>.</p>
     </div>
 
-    <!-- Footer decoration -->
-    <div class="modal-footer" *ngIf="!registroExitoso">
-      <p><fa-icon [icon]="['fas', 'lock']" class="lock-icon"></fa-icon> Tus datos están seguros con nosotros.</p>
-    </div>
   </div>
 </div>
