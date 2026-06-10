@@ -506,8 +506,8 @@
    =========================== */
 .mateo-hero-banner {
   position: relative;
-  background: linear-gradient(135deg, #0d1f1a 0%, #0f1420 40%, #111827 100%);
-  border: 1px solid rgba(54, 140, 68, 0.25);
+  background: var(--dash-bg-card);
+  border: 1px solid var(--dash-border-strong);
   border-radius: 16px;
   padding: 0;
   margin-bottom: 30px;
@@ -516,7 +516,7 @@
   justify-content: space-between;
   overflow: hidden;
   min-height: 260px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(54,140,68,0.1);
+  box-shadow: var(--dash-shadow);
 }
 
 .mateo-banner-bg {
@@ -583,7 +583,7 @@
 }
 
 .mateo-banner-title {
-  color: #ffffff;
+  color: var(--dash-text-main);
   font-size: 2rem;
   font-weight: 800;
   line-height: 1.25;
@@ -597,7 +597,7 @@
 }
 
 .mateo-banner-desc {
-  color: #94a3b8;
+  color: var(--dash-text-muted);
   font-size: 1.05rem;
   line-height: 1.6;
   margin: 0 0 22px 0;
@@ -610,9 +610,9 @@
 }
 
 .mateo-tag {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #cbd5e1;
+  background: var(--dash-bg-hover);
+  border: 1px solid var(--dash-border);
+  color: var(--dash-text-muted);
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 0.85rem;
@@ -622,7 +622,7 @@
 .mateo-tag:hover {
   background: rgba(54, 140, 68, 0.15);
   border-color: rgba(54, 140, 68, 0.4);
-  color: #4ade80;
+  color: var(--dash-text-accent);
 }
 
 .mateo-banner-image-wrapper {
@@ -696,7 +696,7 @@
 }
 
 .nuevos-list li {
-  color: #e2e8f0;
+  color: var(--dash-text-main);
   font-size: 0.85rem;
   padding: 4px 0 4px 16px;
   position: relative;
@@ -711,7 +711,7 @@
 
 .nombres-preview {
   margin-top: 15px;
-  background: rgba(0,0,0,0.2);
+  background: var(--dash-bg-input);
   padding: 12px;
   border-radius: 8px;
 }
@@ -719,7 +719,7 @@
 .nombres-preview strong {
   display: block;
   margin-bottom: 8px;
-  color: #e2e8f0;
+  color: var(--dash-text-main);
   font-size: 0.95rem;
 }
 
@@ -728,7 +728,7 @@
   padding: 0;
   margin: 0;
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: var(--dash-text-muted);
 }
 
 .nombres-preview li {
