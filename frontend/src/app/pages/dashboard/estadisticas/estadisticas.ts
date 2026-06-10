@@ -78,6 +78,69 @@ export class Estadisticas implements OnInit {
     this.paginaActual = 1; // Reiniciar página al buscar
   }
 
+  // Paginación Categorías
+  paginaCategorias = 1;
+  itemsPorPaginaCategorias = 4;
+
+  get categoriasPaginadas(): any[] {
+    if (!this.stats?.distribucion_categorias) return [];
+    const inicio = (this.paginaCategorias - 1) * this.itemsPorPaginaCategorias;
+    return this.stats.distribucion_categorias.slice(inicio, inicio + this.itemsPorPaginaCategorias);
+  }
+
+  get totalPaginasCategorias(): number {
+    return Math.ceil((this.stats?.distribucion_categorias?.length || 0) / this.itemsPorPaginaCategorias) || 1;
+  }
+
+  cambiarPaginaCategorias(delta: number): void {
+    const nuevaPag = this.paginaCategorias + delta;
+    if (nuevaPag >= 1 && nuevaPag <= this.totalPaginasCategorias) {
+      this.paginaCategorias = nuevaPag;
+    }
+  }
+
+  // Paginación Alertas
+  paginaAlertas = 1;
+  itemsPorPaginaAlertas = 3;
+
+  get alertasPaginadas(): any[] {
+    if (!this.stats?.alertas) return [];
+    const inicio = (this.paginaAlertas - 1) * this.itemsPorPaginaAlertas;
+    return this.stats.alertas.slice(inicio, inicio + this.itemsPorPaginaAlertas);
+  }
+
+  get totalPaginasAlertas(): number {
+    return Math.ceil((this.stats?.alertas?.length || 0) / this.itemsPorPaginaAlertas) || 1;
+  }
+
+  cambiarPaginaAlertas(delta: number): void {
+    const nuevaPag = this.paginaAlertas + delta;
+    if (nuevaPag >= 1 && nuevaPag <= this.totalPaginasAlertas) {
+      this.paginaAlertas = nuevaPag;
+    }
+  }
+
+  // Paginación PQRs
+  paginaPqrs = 1;
+  itemsPorPaginaPqrs = 3;
+
+  get pqrsPaginadas(): any[] {
+    if (!this.stats?.pqrs_recientes) return [];
+    const inicio = (this.paginaPqrs - 1) * this.itemsPorPaginaPqrs;
+    return this.stats.pqrs_recientes.slice(inicio, inicio + this.itemsPorPaginaPqrs);
+  }
+
+  get totalPaginasPqrs(): number {
+    return Math.ceil((this.stats?.pqrs_recientes?.length || 0) / this.itemsPorPaginaPqrs) || 1;
+  }
+
+  cambiarPaginaPqrs(delta: number): void {
+    const nuevaPag = this.paginaPqrs + delta;
+    if (nuevaPag >= 1 && nuevaPag <= this.totalPaginasPqrs) {
+      this.paginaPqrs = nuevaPag;
+    }
+  }
+
   getMaxCategorias(): number {
     if (!this.stats?.distribucion_categorias?.length) return 1;
     return Math.max(...this.stats.distribucion_categorias.map(c => c.cantidad));

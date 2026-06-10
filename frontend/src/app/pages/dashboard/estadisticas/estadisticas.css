@@ -153,6 +153,21 @@
 .page-btn[disabled] { opacity: 0.5; cursor: not-allowed; }
 .page-current { color: #cbd5e1; font-size: 0.85rem; font-weight: 600; }
 
+/* Mini Paginación */
+.pagination-mini {
+  display: flex; justify-content: center; align-items: center; gap: 15px;
+  padding: 10px 15px; border-top: 1px solid rgba(255,255,255,0.06);
+  background: rgba(0,0,0,0.1); font-size: 0.8rem; color: #94a3b8; font-weight: 600;
+}
+.page-btn-mini {
+  background: rgba(255,255,255,0.05); color: #e2e8f0; border: 1px solid rgba(255,255,255,0.1);
+  width: 26px; height: 26px; border-radius: 6px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 1rem;
+  transition: all 0.2s; padding: 0; line-height: 1;
+}
+.page-btn-mini:hover:not([disabled]) { background: rgba(255,255,255,0.1); }
+.page-btn-mini[disabled] { opacity: 0.3; cursor: not-allowed; }
+
 /* ─── PANELES LATERALES/INFERIORES ───────────────────────────── */
 
 /* Barras de categoría */

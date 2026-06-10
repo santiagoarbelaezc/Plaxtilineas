@@ -141,8 +141,9 @@
           <div class="panel-header">
             <h3>📂 Distribución por Categoría</h3>
           </div>
-          <div class="cat-bars" *ngIf="stats.distribucion_categorias.length; else noCats">
-            <div class="cat-bar-item" *ngFor="let cat of stats.distribucion_categorias">
+          <div class="cat-bars" *ngIf="stats.distribucion_categorias.length; else noCats" style="display: flex; flex-direction: column; justify-content: space-between; flex: 1;">
+            <div>
+              <div class="cat-bar-item" *ngFor="let cat of categoriasPaginadas">
               <div class="cat-bar-info">
                 <span class="cat-bar-name">{{ cat.categoria }}</span>
                 <span class="cat-bar-count">{{ cat.cantidad }}</span>
@@ -150,6 +151,12 @@
               <div class="progress-bg">
                 <div class="progress-fill" [style.width]="getBarWidth(cat.cantidad)"></div>
               </div>
+            </div>
+            </div>
+            <div class="pagination-mini" *ngIf="totalPaginasCategorias > 1">
+              <button class="page-btn-mini" [disabled]="paginaCategorias === 1" (click)="cambiarPaginaCategorias(-1)">‹</button>
+              <span>{{ paginaCategorias }} / {{ totalPaginasCategorias }}</span>
+              <button class="page-btn-mini" [disabled]="paginaCategorias === totalPaginasCategorias" (click)="cambiarPaginaCategorias(1)">›</button>
             </div>
           </div>
           <ng-template #noCats><p class="empty-state">No hay categorías con productos.</p></ng-template>
@@ -161,8 +168,9 @@
             <h3>⚠️ Alertas de Calidad</h3>
             <span class="alert-count" *ngIf="stats.alertas.length">{{ stats.alertas.length }}</span>
           </div>
-          <div class="alert-list" *ngIf="stats.alertas.length; else noAlerts">
-            <div class="alert-item" *ngFor="let alerta of stats.alertas">
+          <div class="alert-list" *ngIf="stats.alertas.length; else noAlerts" style="display: flex; flex-direction: column; justify-content: space-between; flex: 1;">
+            <div>
+              <div class="alert-item" *ngFor="let alerta of alertasPaginadas">
               <div class="alert-icon">
                 <span *ngIf="alerta.tipo === 'imagen'">🖼️</span>
                 <span *ngIf="alerta.tipo === 'descripcion'">📝</span>
@@ -172,6 +180,12 @@
                 <p>{{ alerta.mensaje }}</p>
                 <a [routerLink]="['/admin/productos']" class="alert-link">Corregir →</a>
               </div>
+            </div>
+            </div>
+            <div class="pagination-mini" *ngIf="totalPaginasAlertas > 1">
+              <button class="page-btn-mini" [disabled]="paginaAlertas === 1" (click)="cambiarPaginaAlertas(-1)">‹</button>
+              <span>{{ paginaAlertas }} / {{ totalPaginasAlertas }}</span>
+              <button class="page-btn-mini" [disabled]="paginaAlertas === totalPaginasAlertas" (click)="cambiarPaginaAlertas(1)">›</button>
             </div>
           </div>
           <ng-template #noAlerts>
@@ -188,14 +202,21 @@
             <h3>✉️ Últimas PQRs</h3>
             <a [routerLink]="['/admin/pqr-admin']" class="view-all">Ver todas</a>
           </div>
-          <div class="pqr-list" *ngIf="stats.pqrs_recientes.length; else noPqrs">
-            <div class="pqr-item" *ngFor="let pqr of stats.pqrs_recientes">
+          <div class="pqr-list" *ngIf="stats.pqrs_recientes.length; else noPqrs" style="display: flex; flex-direction: column; justify-content: space-between; flex: 1;">
+            <div>
+              <div class="pqr-item" *ngFor="let pqr of pqrsPaginadas">
               <div class="pqr-meta">
                 <span class="pqr-name">{{ pqr.nombre }}</span>
                 <span class="pqr-date">{{ formatDate(pqr.created_at) }}</span>
               </div>
               <div class="pqr-subject">{{ pqr.asunto }}</div>
               <span class="pqr-badge" [ngClass]="'badge-' + pqr.estado">{{ pqr.estado }}</span>
+            </div>
+            </div>
+            <div class="pagination-mini" *ngIf="totalPaginasPqrs > 1">
+              <button class="page-btn-mini" [disabled]="paginaPqrs === 1" (click)="cambiarPaginaPqrs(-1)">‹</button>
+              <span>{{ paginaPqrs }} / {{ totalPaginasPqrs }}</span>
+              <button class="page-btn-mini" [disabled]="paginaPqrs === totalPaginasPqrs" (click)="cambiarPaginaPqrs(1)">›</button>
             </div>
           </div>
           <ng-template #noPqrs><p class="empty-state">No hay PQRs recientes.</p></ng-template>
