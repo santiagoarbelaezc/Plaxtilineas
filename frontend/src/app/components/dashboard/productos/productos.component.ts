@@ -106,6 +106,13 @@ export class ProductosComponent implements OnInit {
   mostrarModalEdicion: boolean = false;
   productoEnEdicion: ProductoEditable | null = null;
   
+  // Estadísticas
+  mostrarModalEstadisticas: boolean = false;
+  productoEnEstadisticas: ProductoEditable | null = null;
+
+  // Selección múltiple
+  productosSeleccionados: Set<number> = new Set<number>();
+  
   // Estados de IA
   generandoDescCrear: boolean = false;
   generandoDescEditar: boolean = false;
@@ -161,7 +168,11 @@ export class ProductosComponent implements OnInit {
       precio: ['', [Validators.required, Validators.min(0)]],
       descripcion: [''],
       subcategoria_id: ['', Validators.required],
-      unidad: ['', Validators.required]
+      unidad: ['', Validators.required],
+      sku: [''],
+      stock: [0, Validators.min(0)],
+      stock_minimo: [0, Validators.min(0)],
+      controlar_stock: [true]
     });
 
     this.cargarSubcategorias();
@@ -210,6 +221,58 @@ export class ProductosComponent implements OnInit {
   // MÉTODOS DE UI
   toggleFormularioCrear(): void {
     this.mostrarFormularioCrear = !this.mostrarFormularioCrear;
+  }
+
+  // MÉTODOS DE SELECCIÓN MÚLTIPLE
+  toggleSeleccion(productoId: number): void {
+    if (this.productosSeleccionados.has(productoId)) {
+      this.productosSeleccionados.delete(productoId);
+    } else {
+      this.productosSeleccionados.add(productoId);
+    }
+  }
+
+  toggleSeleccionarTodos(event: any): void {
+    if (event.target.checked) {
+      this.productosPaginadas.forEach(p => this.productosSeleccionados.add(p.id));
+    } else {
+      this.productosSeleccionados.clear();
+    }
+  }
+
+  todosSeleccionados(): boolean {
+    return this.productosPaginadas.length > 0 && 
+           this.productosPaginadas.every(p => this.productosSeleccionados.has(p.id));
+  }
+
+  eliminarProductosSeleccionados(): void {
+    if (!this.token || this.productosSeleccionados.size === 0) return;
+
+    Swal.fire({
+      title: '¿Eliminar productos seleccionados?',
+      text: `Se eliminarán ${this.productosSeleccionados.size} productos de forma permanente.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e74c3c',
+      cancelButtonColor: '#aaa',
+      confirmButtonText: 'Sí, eliminar todos',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const ids = Array.from(this.productosSeleccionados);
+        this.productosService.eliminarProductosMasivo(this.token!, ids).subscribe({
+          next: () => {
+            Swal.fire('Éxito', 'Productos eliminados correctamente', 'success');
+            this.productosSeleccionados.clear();
+            this.cargarProductos();
+          },
+          error: (err) => {
+            console.error('Error eliminando productos masivamente:', err);
+            Swal.fire('Error', 'Hubo un problema al eliminar algunos productos', 'error');
+          }
+        });
+      }
+    });
   }
 
   // MÉTODOS PARA VARIANTES (CREACIÓN EN FORMULARIO)
@@ -444,6 +507,10 @@ export class ProductosComponent implements OnInit {
     formData.append('descripcion', formValues.descripcion || '');
     formData.append('unidad', formValues.unidad);
     formData.append('subcategoria_id', formValues.subcategoria_id);
+    formData.append('sku', formValues.sku || '');
+    formData.append('stock', formValues.stock?.toString() || '0');
+    formData.append('stock_minimo', formValues.stock_minimo?.toString() || '0');
+    formData.append('controlar_stock', formValues.controlar_stock ? '1' : '0');
     if (this.imagenSeleccionada) {
       formData.append('imagen', this.imagenSeleccionada);
     }
@@ -671,6 +738,17 @@ export class ProductosComponent implements OnInit {
     });
   }
 
+  // Estadísticas
+  abrirEstadisticas(prod: ProductoEditable): void {
+    this.productoEnEstadisticas = prod;
+    this.mostrarModalEstadisticas = true;
+  }
+
+  cerrarModalEstadisticas(): void {
+    this.productoEnEstadisticas = null;
+    this.mostrarModalEstadisticas = false;
+  }
+
   guardarEdicionModal(): void {
     if (!this.productoEnEdicion || !this.token) return;
 
@@ -699,6 +777,10 @@ export class ProductosComponent implements OnInit {
         formData.append('cantidad', prod.cantidad.toString());
         formData.append('subcategoria_id', prod.subcategoria_id.toString());
         formData.append('unidad', prod.unidad || 'unidad');
+        formData.append('sku', prod.sku || '');
+        formData.append('stock', prod.stock?.toString() || '0');
+        formData.append('stock_minimo', prod.stock_minimo?.toString() || '0');
+        formData.append('controlar_stock', prod.controlar_stock ? '1' : '0');
         if (prod.nuevaImagen) {
           formData.append('imagen', prod.nuevaImagen);
         }

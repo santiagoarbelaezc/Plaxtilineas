@@ -173,4 +173,12 @@ busquedaAvanzada(filtros: {
     })
   );
 }
+
+  // NUEVO: Eliminar productos masivamente
+  eliminarProductosMasivo(token: string, ids: number[]): Observable<any> {
+    return this.http.post(`${this.apiUrl}/bulk-delete`, { ids }, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
+    });
+  }
+
 }

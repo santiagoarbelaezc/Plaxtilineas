@@ -25,9 +25,14 @@ class ImportarController
             }
 
             // 1. Obtener todos los productos de Hostinger
-            $stmt     = $dbHostinger->query(
-                "SELECT * FROM products WHERE deleted_at IS NULL AND category='Plaxtilineas' ORDER BY id DESC"
-            );
+            $stmt     = $dbHostinger->query("
+                SELECT p.*, c.name AS cat_name, s.name AS subcat_name 
+                FROM products p
+                LEFT JOIN categories c ON p.category_id = c.id
+                LEFT JOIN subcategories s ON p.subcategory_id = s.id
+                WHERE p.deleted_at IS NULL AND p.category='Plaxtilineas' 
+                ORDER BY p.id DESC
+            ");
             $products = $stmt->fetchAll();
 
             // 2. Verificar cuántos necesitan sincronización real
@@ -95,7 +100,7 @@ class ImportarController
                     $imagenUrl = $imageMap[$hostingerId] ?? null;
                     $variantes = $variantMap[$hostingerId] ?? [];
                     
-                    $subcatId = self::obtenerOCrearSubcategoria($dbLocal, $product['category'] ?? null);
+                    $subcatId = self::obtenerOCrearSubcategoria($dbLocal, $product['cat_name'] ?? null, $product['subcat_name'] ?? null);
 
                     $precio = $variantes ? (float)($variantes[0]['price'] ?? 0) : 0;
                     $descripcion = $product['description'] ?? '';
@@ -111,7 +116,7 @@ class ImportarController
 
                             $updStmt = $dbLocal->prepare("
                                 UPDATE productos 
-                                SET nombre=?, descripcion=?, precio=?, imagen_url=?, subcategoria_id=?, id_hostinger=? 
+                                SET nombre=?, descripcion=?, precio=?, imagen_url=?, subcategoria_id=?, id_hostinger=?, stock=20 
                                 WHERE id=?
                             ");
                             $updStmt->execute([$nombreProd, $descripcion, $precio, $imagenUrl, $subcatId, $hostingerId, $localId]);
@@ -129,8 +134,8 @@ class ImportarController
 
                         $logs[] = "  -> NUEVO: Insertando...";
                         $pStmt = $dbLocal->prepare("
-                            INSERT INTO productos (nombre, descripcion, cantidad, precio, imagen_url, subcategoria_id, unidad, creado_en, id_hostinger)
-                            VALUES (?, ?, 1, ?, ?, ?, 'unidad', NOW(), ?)
+                            INSERT INTO productos (nombre, descripcion, cantidad, precio, imagen_url, subcategoria_id, unidad, creado_en, id_hostinger, stock)
+                            VALUES (?, ?, 1, ?, ?, ?, 'unidad', NOW(), ?, 20)
                         ");
                         $pStmt->execute([$nombreProd, $descripcion, $precio, $imagenUrl, $subcatId, $hostingerId]);
                         $productoId = (int)$dbLocal->lastInsertId();
@@ -263,9 +268,14 @@ class ImportarController
             $totalLocal = (int)$totalLocalStmt->fetch()['total'];
 
             // 5. Obtener preview (muestra limitada)
-            $stmt = $dbHostinger->prepare(
-                "SELECT * FROM products WHERE deleted_at IS NULL AND category='Plaxtilineas' ORDER BY id DESC LIMIT ?"
-            );
+            $stmt = $dbHostinger->prepare("
+                SELECT p.*, c.name AS cat_name, s.name AS subcat_name 
+                FROM products p
+                LEFT JOIN categories c ON p.category_id = c.id
+                LEFT JOIN subcategories s ON p.subcategory_id = s.id
+                WHERE p.deleted_at IS NULL AND p.category='Plaxtilineas' 
+                ORDER BY p.id DESC LIMIT ?
+            ");
             $stmt->execute([$limite]);
             $products = $stmt->fetchAll();
 
@@ -316,27 +326,31 @@ class ImportarController
     }
 
     // ─── Helper: obtener o crear subcategoría ─────────────────────────────────
-    private static function obtenerOCrearSubcategoria(PDO $db, ?string $nombreCategoria): int
+    private static function obtenerOCrearSubcategoria(PDO $db, ?string $nombreCategoria, ?string $nombreSubcategoria): int
     {
-        $nombre = $nombreCategoria ?? 'Plaxtilineas';
+        // Fallbacks en caso de que en Hostinger la category_id o subcategory_id sean null
+        $catName = $nombreCategoria ?: 'Plaxtilineas';
+        $subName = $nombreSubcategoria ?: 'General';
 
+        // 1. Buscar o crear Categoría local
         $cStmt = $db->prepare('SELECT id FROM categorias WHERE nombre=? LIMIT 1');
-        $cStmt->execute([$nombre]);
+        $cStmt->execute([$catName]);
         $cat = $cStmt->fetch();
 
         if (!$cat) {
-            $db->prepare('INSERT INTO categorias (nombre) VALUES (?)')->execute([$nombre]);
+            $db->prepare('INSERT INTO categorias (nombre) VALUES (?)')->execute([$catName]);
             $catId = (int)$db->lastInsertId();
         } else {
             $catId = (int)$cat['id'];
         }
 
-        $sStmt = $db->prepare('SELECT id FROM subcategorias WHERE categoria_id=? LIMIT 1');
-        $sStmt->execute([$catId]);
+        // 2. Buscar o crear Subcategoría local enlazada a la Categoría
+        $sStmt = $db->prepare('SELECT id FROM subcategorias WHERE nombre=? AND categoria_id=? LIMIT 1');
+        $sStmt->execute([$subName, $catId]);
         $sub = $sStmt->fetch();
 
         if (!$sub) {
-            $db->prepare('INSERT INTO subcategorias (nombre, categoria_id) VALUES (?, ?)')->execute(['General', $catId]);
+            $db->prepare('INSERT INTO subcategorias (nombre, categoria_id) VALUES (?, ?)')->execute([$subName, $catId]);
             return (int)$db->lastInsertId();
         }
 

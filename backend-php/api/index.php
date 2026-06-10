@@ -141,6 +141,10 @@ try {
         AuthMiddleware::verify();
         ProductoController::crearProducto();
     }
+    if ($uri === '/productos/bulk-delete' && $method === 'POST') {
+        AuthMiddleware::verify();
+        ProductoController::eliminarProductosMasivo();
+    }
 
     if ($uri === '/productos/buscar' && $method === 'GET') {
         ProductoController::buscarProductosPorNombre();

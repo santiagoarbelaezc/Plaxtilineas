@@ -15,6 +15,7 @@ class ProductoController
         SELECT
             p.id, p.nombre, p.descripcion, p.cantidad, p.precio,
             p.imagen_url, p.unidad, p.subcategoria_id, p.creado_en,
+            p.stock, p.stock_minimo, p.controlar_stock, p.sku, p.vistas,
             s.nombre AS subcategoria,
             c.id    AS categoria_id,
             c.nombre AS categoria,
@@ -451,6 +452,10 @@ class ProductoController
             $precio      = (float)($_POST['precio'] ?? 0);
             $subcatId    = (int)($_POST['subcategoria_id'] ?? 0);
             $unidad      = ResponseHandler::sanitize($_POST['unidad'] ?? 'unidad');
+            $sku         = ResponseHandler::sanitize($_POST['sku'] ?? null);
+            $stock       = (int)($_POST['stock'] ?? 0);
+            $stockMinimo = (int)($_POST['stock_minimo'] ?? 0);
+            $controlStock= isset($_POST['controlar_stock']) ? (int)filter_var($_POST['controlar_stock'], FILTER_VALIDATE_BOOLEAN) : 1;
 
             if (!$nombre) {
                 throw new InvalidArgumentException("El campo 'nombre' es requerido");
@@ -477,10 +482,10 @@ class ProductoController
 
             $db   = Database::getConnection();
             $stmt = $db->prepare("
-                INSERT INTO productos (nombre, descripcion, cantidad, precio, imagen_url, public_id, subcategoria_id, unidad)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO productos (nombre, descripcion, cantidad, precio, imagen_url, public_id, subcategoria_id, unidad, sku, stock, stock_minimo, controlar_stock)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
-            $stmt->execute([$nombre, $descripcion, $cantidad, $precio, $imagenUrl, $publicId, $subcatId, $unidad]);
+            $stmt->execute([$nombre, $descripcion, $cantidad, $precio, $imagenUrl, $publicId, $subcatId, $unidad, $sku, $stock, $stockMinimo, $controlStock]);
 
             ResponseHandler::success([
                 'mensaje'    => 'Producto creado con éxito',
@@ -518,6 +523,10 @@ class ProductoController
             $precio      = (float)($_POST['precio'] ?? 0);
             $subcatId    = (int)($_POST['subcategoria_id'] ?? 0);
             $unidad      = ResponseHandler::sanitize($_POST['unidad'] ?? 'unidad');
+            $sku         = ResponseHandler::sanitize($_POST['sku'] ?? null);
+            $stock       = (int)($_POST['stock'] ?? 0);
+            $stockMinimo = (int)($_POST['stock_minimo'] ?? 0);
+            $controlStock= isset($_POST['controlar_stock']) ? (int)filter_var($_POST['controlar_stock'], FILTER_VALIDATE_BOOLEAN) : 1;
 
             if (!$nombre) {
                 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
@@ -557,8 +566,10 @@ class ProductoController
             $publicIdFinal = $nuevoPublicId   ?? $actual['public_id'];
 
             $db->prepare("
-                UPDATE productos SET nombre=?, descripcion=?, cantidad=?, precio=?, imagen_url=?, public_id=?, subcategoria_id=?, unidad=? WHERE id=?
-            ")->execute([$nombre, $descripcion, $cantidad, $precio, $imagenFinal, $publicIdFinal, $subcatId, $unidad, $id]);
+                UPDATE productos 
+                SET nombre=?, descripcion=?, cantidad=?, precio=?, imagen_url=?, public_id=?, subcategoria_id=?, unidad=?, sku=?, stock=?, stock_minimo=?, controlar_stock=?
+                WHERE id=?
+            ")->execute([$nombre, $descripcion, $cantidad, $precio, $imagenFinal, $publicIdFinal, $subcatId, $unidad, $sku, $stock, $stockMinimo, $controlStock, $id]);
 
             ResponseHandler::success([
                 'mensaje'            => 'Producto actualizado con éxito',
@@ -613,6 +624,57 @@ class ProductoController
         } catch (Throwable $e) {
             Logger::error('ProductoController::eliminarProducto – inesperado', ['exception' => $e->getMessage()]);
             ResponseHandler::error('Error inesperado en ProductoController::eliminarProducto', 500, [
+                'detalle' => APP_ENV === 'development' ? $e->getMessage() : null,
+            ]);
+        }
+    }
+
+    // ─── POST /api/productos/bulk-delete (protegido) ─────────────────────────
+    public static function eliminarProductosMasivo(): void
+    {
+        try {
+            $input = json_decode(file_get_contents('php://input'), true);
+            $ids = $input['ids'] ?? [];
+
+            if (empty($ids) || !is_array($ids)) {
+                throw new InvalidArgumentException('Debe proporcionar un array de IDs');
+            }
+
+            $db = Database::getConnection();
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+            
+            // Buscar public_ids para eliminar de Cloudinary
+            $stmt = $db->prepare("SELECT public_id FROM productos WHERE id IN ($placeholders) AND public_id IS NOT NULL");
+            $stmt->execute($ids);
+            $productosParaBorrar = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+            foreach ($productosParaBorrar as $publicId) {
+                try {
+                    CloudinaryHelper::delete($publicId);
+                } catch (Throwable $e) {
+                    Logger::error('Cloudinary bulk delete error', ['public_id' => $publicId, 'error' => $e->getMessage()]);
+                }
+            }
+
+            // Eliminar de base de datos
+            $delStmt = $db->prepare("DELETE FROM productos WHERE id IN ($placeholders)");
+            $delStmt->execute($ids);
+
+            ResponseHandler::success([
+                'mensaje' => 'Productos eliminados masivamente con éxito',
+                'eliminados' => $delStmt->rowCount()
+            ]);
+
+        } catch (PDOException $e) {
+            Logger::error('ProductoController::eliminarProductosMasivo – DB', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error al eliminar productos de base de datos', 500, [
+                'detalle' => APP_ENV === 'development' ? $e->getMessage() : null,
+            ]);
+        } catch (InvalidArgumentException $e) {
+            ResponseHandler::error($e->getMessage(), 400);
+        } catch (Throwable $e) {
+            Logger::error('ProductoController::eliminarProductosMasivo – inesperado', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error inesperado', 500, [
                 'detalle' => APP_ENV === 'development' ? $e->getMessage() : null,
             ]);
         }
