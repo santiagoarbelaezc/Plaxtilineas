@@ -114,7 +114,18 @@ try {
         AuthController::login();
     }
 
+    if ($uri === '/auth/register' && $method === 'POST') {
+        AuthController::register();
+    }
+
+    if ($uri === '/auth/google' && $method === 'POST') {
+        AuthController::googleLogin();
+    }
+
     if ($uri === '/auth/perfil' && $method === 'GET') {
+        $user = AuthMiddleware::verify();
+        AuthController::perfil($user);
+    }
         $user = AuthMiddleware::verify();
         AuthController::perfil($user);
     }
