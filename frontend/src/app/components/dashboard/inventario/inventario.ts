@@ -11,7 +11,7 @@ import {
   faBoxes, faTag, faDollarSign, faFolder, faRuler, faAlignLeft,
   faFilter, faList, faSearch, faInbox, faChevronLeft, faChevronRight,
   faListAlt, faSyncAlt, faCaretDown, faCaretUp, faCheck, faXmark,
-  faImage, faLayerGroup
+  faImage, faLayerGroup, faEye, faBox
 } from '@fortawesome/free-solid-svg-icons';
 
 import { ProductosService } from '../../../services/productos.service';
@@ -29,6 +29,8 @@ interface ProductoInventario {
   unidad?: string;
   imagen_url: string;
   stock?: number;
+  vistas?: number;
+  categoria?: string;
   editando?: boolean;
   stockOriginal?: number;
 }
@@ -78,6 +80,8 @@ export class InventarioComponent implements OnInit {
   faXmark = faXmark;
   faImage = faImage;
   faLayerGroup = faLayerGroup;
+  faEye = faEye;
+  faBox = faBox;
 
   // Propiedades del componente
   token: string | null = null;
@@ -87,7 +91,11 @@ export class InventarioComponent implements OnInit {
   productosPaginadas: ProductoInventario[] = [];
   subcategorias: Subcategoria[] = [];
   
+  filtroCategoria: string = '';
   filtroSubcategoriaId: string = '';
+  filtroPrecioMin: number | null = null;
+  filtroPrecioMax: number | null = null;
+  ordenSeleccionado: string = 'recientes';
   searchTerm: string = '';
 
   // Variantes
@@ -110,7 +118,7 @@ export class InventarioComponent implements OnInit {
       faEdit, faTrashAlt, faSave, faTimes, faPlus, faArrowLeft,
       faBoxes, faTag, faDollarSign, faFolder, faRuler, faAlignLeft,
       faFilter, faList, faSearch, faInbox, faChevronLeft, faChevronRight,
-      faListAlt, faSyncAlt, faCaretDown, faCaretUp, faCheck, faXmark, faImage, faLayerGroup
+      faListAlt, faSyncAlt, faCaretDown, faCaretUp, faCheck, faXmark, faImage, faLayerGroup, faEye, faBox
     );
   }
 
@@ -144,7 +152,8 @@ export class InventarioComponent implements OnInit {
         this.productos = data.map(p => ({
           ...p,
           editando: false,
-          stock: 0
+          stock: p.stock || 0,
+          vistas: p.vistas || 0
         }));
         this.filtrarProductos();
       },
@@ -155,20 +164,93 @@ export class InventarioComponent implements OnInit {
     });
   }
 
+  get categoriasUnicas(): string[] {
+    const categorias = this.productos.map(p => p.categoria).filter((c): c is string => !!c);
+    const catSet = new Set(categorias);
+    return Array.from(catSet).sort();
+  }
+
+  get subcategoriasUnicasFiltradas(): Subcategoria[] {
+    if (!this.filtroCategoria) {
+      return this.subcategorias;
+    }
+    // Asumiendo que la categoría del producto coincide con lo que queremos filtrar,
+    // extraemos qué subcategorías corresponden a los productos de esa categoría.
+    const subCatIds = new Set(
+      this.productos
+        .filter(p => p.categoria === this.filtroCategoria)
+        .map(p => p.subcategoria_id)
+    );
+    return this.subcategorias.filter(sub => subCatIds.has(sub.id));
+  }
+
   filtrarProductos(): void {
-    if (this.searchTerm.trim() === '') {
-      this.productosFiltrados = [...this.productos];
-    } else {
-      const termino = this.searchTerm.toLowerCase();
-      this.productosFiltrados = this.productos.filter(p =>
-        p.nombre.toLowerCase().includes(termino) ||
-        p.descripcion.toLowerCase().includes(termino)
+    let filtrados = [...this.productos];
+
+    // 1. Filtro por Categoría
+    if (this.filtroCategoria) {
+      filtrados = filtrados.filter(p => p.categoria === this.filtroCategoria);
+    }
+
+    // 2. Filtro por Subcategoría
+    if (this.filtroSubcategoriaId) {
+      const subId = parseInt(this.filtroSubcategoriaId);
+      filtrados = filtrados.filter(p => p.subcategoria_id === subId);
+    }
+
+    // 3. Filtro por Búsqueda (nombre o descripción)
+    if (this.searchTerm.trim() !== '') {
+      const termino = this.searchTerm.toLowerCase().trim();
+      filtrados = filtrados.filter(p =>
+        p.nombre?.toLowerCase().includes(termino) ||
+        p.descripcion?.toLowerCase().includes(termino) ||
+        p.categoria?.toLowerCase().includes(termino)
       );
     }
-    
+
+    // 4. Filtro por Precio Mínimo
+    if (this.filtroPrecioMin !== null) {
+      filtrados = filtrados.filter(p => p.precio >= this.filtroPrecioMin!);
+    }
+
+    // 5. Filtro por Precio Máximo
+    if (this.filtroPrecioMax !== null) {
+      filtrados = filtrados.filter(p => p.precio <= this.filtroPrecioMax!);
+    }
+
+    // 6. Ordenamiento
+    filtrados.sort((a, b) => {
+      switch (this.ordenSeleccionado) {
+        case 'vistas_desc':
+          return (b.vistas || 0) - (a.vistas || 0);
+        case 'stock_asc':
+          return (a.stock || 0) - (b.stock || 0);
+        case 'stock_desc':
+          return (b.stock || 0) - (a.stock || 0);
+        case 'precio_asc':
+          return a.precio - b.precio;
+        case 'precio_desc':
+          return b.precio - a.precio;
+        case 'recientes':
+        default:
+          return b.id - a.id;
+      }
+    });
+
+    this.productosFiltrados = filtrados;
     this.paginaActual = 1;
     this.calcularPaginacion();
     this.actualizarDatosPaginados();
+  }
+
+  limpiarFiltros(): void {
+    this.filtroCategoria = '';
+    this.filtroSubcategoriaId = '';
+    this.searchTerm = '';
+    this.filtroPrecioMin = null;
+    this.filtroPrecioMax = null;
+    this.ordenSeleccionado = 'recientes';
+    this.filtrarProductos();
   }
 
   calcularPaginacion(): void {

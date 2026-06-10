@@ -49,12 +49,12 @@
   overflow: visible;
 }
 
-/* Filtros */
-.filter-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-@media (max-width: 768px) { .filter-controls { grid-template-columns: 1fr; } }
-.filter-group { display: flex; flex-direction: column; gap: 6px; }
-.form-label { color: #cbd5e1; font-size: 0.95rem; font-weight: 500; display: flex; align-items: center; gap: 6px; }
-.form-label fa-icon { color: #368C44; }
+/* Filtros Avanzados */
+.filters-container {
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  width: 100%; margin-top: 10px;
+}
+
 .filter-select {
   background: rgba(15, 20, 32, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -73,10 +73,32 @@
 }
 .filter-select option { background: #1e293b; color: white; }
 .filter-select:focus { outline: none; border-color: #368C44; }
+.filter-select[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+.price-filter-group {
+  display: flex; align-items: center; background: rgba(15,20,32,0.6);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0 10px;
+  transition: all 0.2s; height: 42px;
+}
+.price-filter-group:focus-within { border-color: #368C44; }
+.currency-symbol { color: #94a3b8; font-size: 0.85rem; margin-right: 4px; }
+.filter-input-price {
+  background: transparent; border: none; color: #fff; font-size: 0.95rem;
+  width: 70px; padding: 10px 0; outline: none;
+}
+.filter-input-price::-webkit-inner-spin-button, .filter-input-price::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.price-separator { color: #94a3b8; margin: 0 8px; font-size: 0.85rem; }
+
+.btn-clear-filters {
+  background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.2);
+  width: 42px; height: 42px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s; padding: 0;
+}
+.btn-clear-filters:hover { background: rgba(248,113,113,0.2); transform: scale(1.05); }
 
 /* Controles de Lista */
 .table-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; margin-bottom: 16px;}
-.search-box { position: relative; width: 100%; }
+.search-box { position: relative; display: flex; flex: 1; min-width: 250px; }
 .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 0.95rem; }
 .search-input { width: 100%; padding: 10px 14px 10px 38px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(15,20,32,0.6); color: white; font-size: 0.95rem; }
 .search-input:focus { outline: none; border-color: #368C44; }

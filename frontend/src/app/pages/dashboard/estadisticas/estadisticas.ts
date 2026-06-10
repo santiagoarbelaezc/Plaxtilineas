@@ -19,6 +19,11 @@ export class Estadisticas implements OnInit {
   
   // Filtros y paginación para la tabla de inventario
   busquedaInventario = '';
+  filtroCategoria = '';
+  filtroSubcategoria = '';
+  filtroPrecioMin: number | null = null;
+  filtroPrecioMax: number | null = null;
+
   paginaActual = 1;
   itemsPorPagina = 8;
   Math = Math;
@@ -45,16 +50,72 @@ export class Estadisticas implements OnInit {
     });
   }
 
+  get categoriasUnicas(): string[] {
+    if (!this.stats?.inventario) return [];
+    const catSet = new Set(this.stats.inventario.map(p => p.categoria).filter(c => !!c));
+    return Array.from(catSet);
+  }
+
+  get subcategoriasUnicas(): string[] {
+    if (!this.stats?.inventario) return [];
+    let items = this.stats.inventario;
+    if (this.filtroCategoria) {
+      items = items.filter(p => p.categoria === this.filtroCategoria);
+    }
+    const subCatSet = new Set(items.map(p => p.subcategoria).filter(s => !!s));
+    return Array.from(subCatSet);
+  }
+
+  alCambiarFiltros(): void {
+    this.paginaActual = 1;
+  }
+
+  limpiarFiltros(): void {
+    this.busquedaInventario = '';
+    this.filtroCategoria = '';
+    this.filtroSubcategoria = '';
+    this.filtroPrecioMin = null;
+    this.filtroPrecioMax = null;
+    this.paginaActual = 1;
+  }
+
   get inventarioFiltrado(): any[] {
     if (!this.stats?.inventario) return [];
-    if (!this.busquedaInventario.trim()) return this.stats.inventario;
     
-    const search = this.busquedaInventario.toLowerCase().trim();
-    return this.stats.inventario.filter(p => 
-      p.nombre?.toLowerCase().includes(search) || 
-      p.categoria?.toLowerCase().includes(search) ||
-      p.subcategoria?.toLowerCase().includes(search)
-    );
+    return this.stats.inventario.filter(p => {
+      // 1. Búsqueda por texto
+      if (this.busquedaInventario.trim()) {
+        const search = this.busquedaInventario.toLowerCase().trim();
+        const matchText = p.nombre?.toLowerCase().includes(search) || 
+                          p.categoria?.toLowerCase().includes(search) ||
+                          p.subcategoria?.toLowerCase().includes(search);
+        if (!matchText) return false;
+      }
+      
+      // 2. Filtro Categoría
+      if (this.filtroCategoria && p.categoria !== this.filtroCategoria) {
+        return false;
+      }
+      
+      // 3. Filtro Subcategoría
+      if (this.filtroSubcategoria && p.subcategoria !== this.filtroSubcategoria) {
+        return false;
+      }
+      
+      // 4. Filtro Precio Mínimo
+      // Si el precio máximo del producto es menor que el filtro mínimo, se excluye
+      if (this.filtroPrecioMin !== null && p.precio_max < this.filtroPrecioMin) {
+        return false;
+      }
+      
+      // 5. Filtro Precio Máximo
+      // Si el precio mínimo del producto es mayor que el filtro máximo, se excluye
+      if (this.filtroPrecioMax !== null && p.precio_min > this.filtroPrecioMax) {
+        return false;
+      }
+      
+      return true;
+    });
   }
 
   get totalPaginas(): number {

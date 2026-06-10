@@ -63,11 +63,35 @@
         
         <!-- Tabla de Inventario -->
         <div class="panel-card panel-inventario">
-          <div class="panel-header">
+          <div class="panel-header" style="flex-wrap: wrap; gap: 15px;">
             <h3>📊 Resumen de Inventario</h3>
-            <div class="search-box">
-              <input type="text" [(ngModel)]="busquedaInventario" (input)="alBuscar()" placeholder="Buscar producto, categoría...">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <div class="filters-container">
+              <div class="search-box">
+                <input type="text" [(ngModel)]="busquedaInventario" (input)="alBuscar()" placeholder="Buscar producto...">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </div>
+              
+              <select [(ngModel)]="filtroCategoria" (change)="alCambiarFiltros()" class="filter-select">
+                <option value="">Todas las categorías</option>
+                <option *ngFor="let cat of categoriasUnicas" [value]="cat">{{ cat }}</option>
+              </select>
+              
+              <select [(ngModel)]="filtroSubcategoria" (change)="alCambiarFiltros()" class="filter-select" [disabled]="!filtroCategoria">
+                <option value="">Subcategorías</option>
+                <option *ngFor="let sub of subcategoriasUnicas" [value]="sub">{{ sub }}</option>
+              </select>
+              
+              <div class="price-filter-group">
+                <span class="currency-symbol">$</span>
+                <input type="number" [(ngModel)]="filtroPrecioMin" (input)="alCambiarFiltros()" placeholder="Min" class="filter-input-price">
+                <span class="price-separator">-</span>
+                <span class="currency-symbol">$</span>
+                <input type="number" [(ngModel)]="filtroPrecioMax" (input)="alCambiarFiltros()" placeholder="Max" class="filter-input-price">
+              </div>
+              
+              <button class="btn-clear-filters" (click)="limpiarFiltros()" *ngIf="busquedaInventario || filtroCategoria || filtroSubcategoria || filtroPrecioMin !== null || filtroPrecioMax !== null" title="Limpiar filtros">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
             </div>
           </div>
           

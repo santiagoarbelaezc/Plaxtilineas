@@ -3,47 +3,54 @@
   <main class="admin-main-content">
     <!-- Card: Filtros -->
     <section class="admin-card filter-card">
-      <div class="card-header">
+      <div class="card-header" style="flex-wrap: wrap; gap: 15px;">
         <h2 class="card-title">
           <fa-icon [icon]="faFilter" class="card-icon"></fa-icon>
           Filtrar Productos
         </h2>
-      </div>
-      <div class="card-body">
-        <div class="filter-controls">
-          <div class="filter-group">
-            <label for="filtroSubcategoria" class="form-label">
-              <fa-icon [icon]="faFolder"></fa-icon>
-              Subcategoría
-            </label>
-            <select
-              id="filtroSubcategoria"
-              [(ngModel)]="filtroSubcategoriaId"
-              (change)="filtrarPorSubcategoria()"
-              class="filter-select"
-            >
-              <option value="">Todas las subcategorías</option>
-              <option *ngFor="let sub of subcategorias" [value]="sub.id">{{ sub.nombre }}</option>
-            </select>
+        
+        <div class="filters-container">
+          <div class="search-box">
+            <fa-icon [icon]="faSearch" class="search-icon"></fa-icon>
+            <input
+              type="text"
+              [(ngModel)]="searchTerm"
+              (input)="filtrarProductos()"
+              class="search-input"
+              placeholder="Buscar producto..."
+            />
           </div>
+          
+          <select [(ngModel)]="filtroCategoria" (change)="filtrarProductos()" class="filter-select">
+            <option value="">Todas las categorías</option>
+            <option *ngFor="let cat of categoriasUnicas" [value]="cat">{{ cat }}</option>
+          </select>
+          
+          <select [(ngModel)]="filtroSubcategoriaId" (change)="filtrarProductos()" class="filter-select" [disabled]="!filtroCategoria && subcategoriasUnicasFiltradas.length === subcategorias.length">
+            <option value="">Todas las subcategorías</option>
+            <option *ngFor="let sub of subcategoriasUnicasFiltradas" [value]="sub.id">{{ sub.nombre }}</option>
+          </select>
+          
+          <div class="price-filter-group">
+            <span class="currency-symbol">$</span>
+            <input type="number" [(ngModel)]="filtroPrecioMin" (input)="filtrarProductos()" placeholder="Min" class="filter-input-price">
+            <span class="price-separator">-</span>
+            <span class="currency-symbol">$</span>
+            <input type="number" [(ngModel)]="filtroPrecioMax" (input)="filtrarProductos()" placeholder="Max" class="filter-input-price">
+          </div>
+          
+          <select [(ngModel)]="ordenSeleccionado" (change)="filtrarProductos()" class="filter-select" style="background-color: rgba(54, 140, 68, 0.1); border-color: rgba(54, 140, 68, 0.3);">
+            <option value="recientes">Más recientes</option>
+            <option value="vistas_desc">Más vistos</option>
+            <option value="stock_asc">Menos stock</option>
+            <option value="stock_desc">Más stock</option>
+            <option value="precio_asc">Menor precio</option>
+            <option value="precio_desc">Mayor precio</option>
+          </select>
 
-          <div class="filter-group">
-            <label for="searchTerm" class="form-label">
-              <fa-icon [icon]="faSearch"></fa-icon>
-              Buscar producto
-            </label>
-            <div class="search-box">
-              <fa-icon [icon]="faSearch" class="search-icon"></fa-icon>
-              <input
-                id="searchTerm"
-                type="text"
-                [(ngModel)]="searchTerm"
-                (input)="filtrarProductos()"
-                class="search-input"
-                placeholder="Busca por nombre o descripción..."
-              />
-            </div>
-          </div>
+          <button class="btn-clear-filters" (click)="limpiarFiltros()" *ngIf="searchTerm || filtroCategoria || filtroSubcategoriaId || filtroPrecioMin !== null || filtroPrecioMax !== null || ordenSeleccionado !== 'recientes'" title="Limpiar filtros">
+            <fa-icon [icon]="faTimes"></fa-icon>
+          </button>
         </div>
       </div>
     </section>
@@ -76,13 +83,14 @@
             <thead>
               <tr>
                 <th style="width: 5%">ID</th>
-                <th style="width: 12%">Imagen</th>
-                <th style="width: 18%">Producto</th>
+                <th style="width: 8%">Imagen</th>
+                <th style="width: 16%">Producto</th>
                 <th style="width: 12%">Precio</th>
-                <th style="width: 15%">Descripción</th>
+                <th style="width: 13%">Categoría</th>
                 <th style="width: 13%">Subcategoría</th>
-                <th style="width: 12%">Unidad</th>
-                <th style="width: 13%">Acciones</th>
+                <th style="width: 13%">Stock / Vistas</th>
+                <th style="width: 10%">Unidad</th>
+                <th style="width: 10%">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -121,14 +129,25 @@
                   </td>
 
                   <td>
-                    <div class="description-cell">
-                      {{ prod.descripcion || 'Sin descripción' }}
+                    <div class="category-cell">
+                      {{ prod.categoria || 'Sin categoría' }}
                     </div>
                   </td>
 
                   <td>
                     <div class="subcategory-cell">
                       {{ getNombreSubcategoria(prod.subcategoria_id) }}
+                    </div>
+                  </td>
+
+                  <td>
+                    <div class="metrics-cell" style="display: flex; flex-direction: column; gap: 6px;">
+                      <span [ngStyle]="{'color': (prod.stock || 0) <= 5 ? '#f87171' : '#4ade80'}" style="font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 6px;">
+                        <fa-icon [icon]="faBox"></fa-icon> {{ prod.stock || 0 }} en stock
+                      </span>
+                      <span style="color: #94a3b8; font-size: 0.8rem; display: flex; align-items: center; gap: 6px;">
+                        <fa-icon [icon]="faEye"></fa-icon> {{ prod.vistas || 0 }} vistas
+                      </span>
                     </div>
                   </td>
 

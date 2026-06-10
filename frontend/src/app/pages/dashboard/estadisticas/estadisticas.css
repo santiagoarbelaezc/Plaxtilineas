@@ -97,6 +97,45 @@
 .search-box input:focus { outline: none; border-color: #368C44; background: rgba(255,255,255,0.06); }
 .search-box svg { position: absolute; left: 12px; color: #64748b; }
 
+/* Filtros Avanzados Inventario */
+.filters-container {
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  justify-content: flex-end; flex: 1;
+}
+
+.filter-select {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+  color: #fff; padding: 8px 12px; border-radius: 8px; font-size: 0.85rem;
+  transition: all 0.2s; cursor: pointer; outline: none; appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat; background-position: right 10px top 50%; background-size: 10px auto;
+  padding-right: 28px;
+}
+.filter-select:focus { border-color: #368C44; background-color: rgba(255,255,255,0.06); }
+.filter-select[disabled] { opacity: 0.5; cursor: not-allowed; }
+.filter-select option { background: #1e293b; color: #fff; }
+
+.price-filter-group {
+  display: flex; align-items: center; background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0 10px;
+  transition: all 0.2s;
+}
+.price-filter-group:focus-within { border-color: #368C44; background: rgba(255,255,255,0.06); }
+.currency-symbol { color: #94a3b8; font-size: 0.85rem; margin-right: 4px; }
+.filter-input-price {
+  background: transparent; border: none; color: #fff; font-size: 0.85rem;
+  width: 70px; padding: 8px 0; outline: none;
+}
+.filter-input-price::-webkit-inner-spin-button, .filter-input-price::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.price-separator { color: #94a3b8; margin: 0 8px; font-size: 0.85rem; }
+
+.btn-clear-filters {
+  background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.2);
+  width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s; padding: 0;
+}
+.btn-clear-filters:hover { background: rgba(248,113,113,0.2); transform: scale(1.05); }
+
 .table-responsive { overflow-x: auto; }
 .table-responsive::-webkit-scrollbar { width: 6px; height: 6px; }
 .table-responsive::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
