@@ -4,14 +4,21 @@ import { FormsModule } from '@angular/forms';
 import { StatsService, DashboardStats } from '../../../services/stats.service';
 import { LeadsService } from '../../../services/leads.service';
 
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faEye, faCalendarAlt, faBox, faUsers } from '@fortawesome/free-solid-svg-icons';
+
 @Component({
   selector: 'app-analiticas',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule],
   templateUrl: './analiticas.html',
   styleUrls: ['./analiticas.css']
 })
 export class Analiticas implements OnInit {
+  faEye = faEye;
+  faCalendarAlt = faCalendarAlt;
+  faBox = faBox;
+  faUsers = faUsers;
   
   stats: DashboardStats | null = null;
   cargando = true;

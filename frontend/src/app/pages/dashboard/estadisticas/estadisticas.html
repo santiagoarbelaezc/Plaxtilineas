@@ -25,7 +25,7 @@
     <!-- 1. KPIs SUPERIORES -->
     <div class="kpi-grid">
       <div class="kpi-card">
-        <div class="kpi-icon icon-blue">📦</div>
+        <div class="kpi-icon icon-blue"><fa-icon [icon]="faBox"></fa-icon></div>
         <div class="kpi-info">
           <span class="kpi-label">Productos Activos</span>
           <span class="kpi-value">{{ stats.kpis.total_productos || 0 }}</span>
@@ -33,7 +33,7 @@
       </div>
       
       <div class="kpi-card" [class.alert]="(stats.kpis.productos_sin_variantes || 0) > 0">
-        <div class="kpi-icon icon-yellow">⚠️</div>
+        <div class="kpi-icon icon-yellow"><fa-icon [icon]="faExclamationTriangle"></fa-icon></div>
         <div class="kpi-info">
           <span class="kpi-label">Sin Stock/Variantes</span>
           <span class="kpi-value">{{ stats.kpis.productos_sin_variantes || 0 }}</span>
@@ -41,7 +41,7 @@
       </div>
 
       <div class="kpi-card" [class.alert-red]="(stats.kpis.pqrs_pendientes || 0) > 0">
-        <div class="kpi-icon icon-red">✉️</div>
+        <div class="kpi-icon icon-red"><fa-icon [icon]="faEnvelope"></fa-icon></div>
         <div class="kpi-info">
           <span class="kpi-label">PQRs Pendientes</span>
           <span class="kpi-value">{{ stats.kpis.pqrs_pendientes || 0 }}</span>
@@ -49,7 +49,7 @@
       </div>
 
       <div class="kpi-card">
-        <div class="kpi-icon icon-green">📂</div>
+        <div class="kpi-icon icon-green"><fa-icon [icon]="faFolder"></fa-icon></div>
         <div class="kpi-info">
           <span class="kpi-label">Categorías Activas</span>
           <span class="kpi-value">{{ stats.kpis.total_categorias || 0 }}</span>

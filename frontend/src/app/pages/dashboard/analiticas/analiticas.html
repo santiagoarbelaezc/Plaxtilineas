@@ -28,7 +28,7 @@
     <!-- ═══════════════════════════════════ KPIS ═══════════════════════════ -->
     <div class="kpi-grid">
       <div class="kpi-card kpi-visitas">
-        <div class="kpi-icon">👁️</div>
+        <div class="kpi-icon"><fa-icon [icon]="faEye"></fa-icon></div>
         <div class="kpi-info">
           <span class="kpi-label">Visitas Hoy</span>
           <span class="kpi-value">{{ (stats.resumen.visitas_hoy || 0) | number }}</span>
@@ -40,7 +40,7 @@
       </div>
 
       <div class="kpi-card kpi-semana">
-        <div class="kpi-icon">📅</div>
+        <div class="kpi-icon"><fa-icon [icon]="faCalendarAlt"></fa-icon></div>
         <div class="kpi-info">
           <span class="kpi-label">Visitas esta semana</span>
           <span class="kpi-value">{{ (stats.resumen.visitas_semana || 0) | number }}</span>
@@ -49,7 +49,7 @@
       </div>
 
       <div class="kpi-card kpi-productos">
-        <div class="kpi-icon">📦</div>
+        <div class="kpi-icon"><fa-icon [icon]="faBox"></fa-icon></div>
         <div class="kpi-info">
           <span class="kpi-label">Productos Registrados</span>
           <span class="kpi-value">{{ (stats.resumen.total_productos || 0) | number }}</span>
@@ -58,7 +58,7 @@
       </div>
 
       <div class="kpi-card kpi-leads">
-        <div class="kpi-icon">👥</div>
+        <div class="kpi-icon"><fa-icon [icon]="faUsers"></fa-icon></div>
         <div class="kpi-info">
           <span class="kpi-label">Personas Registradas</span>
           <span class="kpi-value">{{ (stats.resumen.total_leads || 0) | number }}</span>

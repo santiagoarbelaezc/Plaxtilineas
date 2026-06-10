@@ -4,6 +4,7 @@ import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import Swal from 'sweetalert2';
 import { ImportProductsService } from '../../../services/import-products.service';
+import { ThemeService, Theme } from '../../../services/theme.service';
 import { DashboardAssistantComponent } from '../dashboard-assistant/dashboard-assistant.component';
 import {
   faBoxes,
@@ -23,7 +24,10 @@ import {
   faChartLine,
   faPaintBrush,
   faChartPie,
-  faFileAlt
+  faFileAlt,
+  faShoppingCart,
+  faSun,
+  faMoon
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -53,6 +57,9 @@ export class DashboardViewComponent {
   faPaintBrush = faPaintBrush;
   faChartPie = faChartPie;
   faFileAlt = faFileAlt;
+  faShoppingCart = faShoppingCart;
+  faSun = faSun;
+  faMoon = faMoon;
 
   // Estados para la importación
   cargandoPreview = false;
@@ -73,7 +80,8 @@ export class DashboardViewComponent {
   constructor(
     private router: Router,
     library: FaIconLibrary,
-    private importService: ImportProductsService
+    private importService: ImportProductsService,
+    public themeService: ThemeService
   ) {
     library.addIcons(
       faBoxes, 
@@ -89,8 +97,15 @@ export class DashboardViewComponent {
       faEye,
       faChartBar,
       faArrowRight,
-      faArrowLeft
+      faArrowLeft,
+      faShoppingCart,
+      faSun,
+      faMoon
     );
+  }
+
+  toggleTheme(): void {
+    this.themeService.toggleTheme();
   }
 
   logout(): void {

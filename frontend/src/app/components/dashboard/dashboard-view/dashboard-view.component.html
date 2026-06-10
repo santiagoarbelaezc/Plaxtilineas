@@ -11,10 +11,20 @@
         <span>Volver al Dashboard</span>
       </button>
     </div>
-    <button class="admin-logout-btn" (click)="logout()" title="Cerrar sesión">
-      <fa-icon [icon]="faSignOutAlt" class="logout-icon"></fa-icon>
-      <span>Cerrar Sesión</span>
-    </button>
+    
+    <!-- Header Actions -->
+    <div class="admin-header-actions">
+      <!-- Theme Toggle -->
+      <button class="theme-toggle-btn" (click)="toggleTheme()" 
+              [title]="(themeService.theme$ | async) === 'light' ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'">
+        <fa-icon [icon]="(themeService.theme$ | async) === 'light' ? faMoon : faSun"></fa-icon>
+      </button>
+
+      <button class="admin-logout-btn" (click)="logout()" title="Cerrar sesión">
+        <fa-icon [icon]="faSignOutAlt" class="logout-icon"></fa-icon>
+        <span>Cerrar Sesión</span>
+      </button>
+    </div>
   </header>
 
   <!-- Contenido principal -->
@@ -111,10 +121,10 @@
               Usa el chat en la esquina inferior derecha para comenzar.
             </p>
             <div class="mateo-banner-tags">
-              <span class="mateo-tag">📦 Inventario</span>
-              <span class="mateo-tag">🛒 Ventas</span>
-              <span class="mateo-tag">📋 PQR</span>
-              <span class="mateo-tag">📊 Analíticas</span>
+              <span class="mateo-tag"><fa-icon [icon]="faWarehouse"></fa-icon> Inventario</span>
+              <span class="mateo-tag"><fa-icon [icon]="faShoppingCart"></fa-icon> Ventas</span>
+              <span class="mateo-tag"><fa-icon [icon]="faClipboardList"></fa-icon> PQR</span>
+              <span class="mateo-tag"><fa-icon [icon]="faChartBar"></fa-icon> Analíticas</span>
             </div>
           </div>
 

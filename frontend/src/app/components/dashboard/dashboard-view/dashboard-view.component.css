@@ -4,21 +4,22 @@
 
 .admin-dashboard-container {
   min-height: 100vh;
-  background: #0f1420;
+  background: var(--dash-bg-main);
   font-family: var(--font-primary, 'Montserrat', sans-serif);
   position: relative;
-  color: #e2e8f0;
+  color: var(--dash-text-main);
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* Header del Dashboard */
 .admin-dashboard-header {
-  background: #111827;
+  background: var(--dash-bg-header);
   padding: 15px 30px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid var(--dash-border);
+  box-shadow: var(--dash-shadow-header);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -45,21 +46,48 @@
 .admin-title {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--dash-text-main);
   margin: 0;
 }
 
 .admin-subtitle {
-  color: #94a3b8;
+  color: var(--dash-text-muted);
   font-size: 0.85rem;
   margin: 0;
 }
 
+.admin-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Theme Toggle */
+.theme-toggle-btn {
+  background: var(--dash-bg-hover);
+  border: 1px solid var(--dash-border);
+  color: var(--dash-text-main);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+  background: rgba(54, 140, 68, 0.1);
+  color: var(--dash-text-accent);
+  transform: rotate(15deg);
+}
+
 /* Botón de logout */
 .admin-logout-btn {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #e2e8f0;
+  background: var(--dash-bg-hover);
+  border: 1px solid var(--dash-border);
+  color: var(--dash-text-main);
   padding: 8px 20px;
   border-radius: 8px;
   font-weight: 500;
@@ -86,8 +114,8 @@
 /* Sidebar */
 .admin-sidebar {
   width: 260px;
-  background: #111827;
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--dash-bg-sidebar);
+  border-right: 1px solid var(--dash-border);
   padding: 25px 0;
   min-height: calc(100vh - 76px);
   display: flex;
@@ -118,7 +146,7 @@
   align-items: center;
   gap: 15px;
   padding: 12px 20px;
-  color: #94a3b8;
+  color: var(--dash-text-muted);
   text-decoration: none;
   font-weight: 500;
   font-size: 15px;
@@ -142,8 +170,8 @@
 
 .menu-item.active .menu-link,
 .menu-link:hover {
-  background: rgba(54, 140, 68, 0.1);
-  color: #ffffff;
+  background: var(--dash-bg-hover);
+  color: var(--dash-text-main);
 }
 
 .menu-item.active .menu-link::before {
@@ -152,7 +180,7 @@
 
 .menu-icon {
   font-size: 18px;
-  color: #64748b;
+  color: var(--dash-text-muted);
   transition: all 0.3s ease;
 }
 
@@ -165,7 +193,7 @@
 .admin-main-content {
   flex: 1;
   padding: 30px 20px;
-  background: #0f1420;
+  background: var(--dash-bg-main);
   min-height: calc(100vh - 76px);
 }
 
@@ -174,28 +202,28 @@
   margin: 0 auto;
 }
 
-/* Tarjetas generales (Glassmorphism oscuro) */
+/* Tarjetas generales */
 .admin-card {
-  background: #1e293b;
+  background: var(--dash-bg-card);
   border-radius: 16px;
   padding: 30px;
   margin-bottom: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--dash-border);
+  box-shadow: var(--dash-shadow);
   position: relative;
 }
 
 .import-header,
 .card-header {
   margin-bottom: 25px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid var(--dash-border);
   padding-bottom: 15px;
 }
 
 .card-title {
   font-size: 1.4rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--dash-text-main);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -209,7 +237,7 @@
 
 .card-subtitle,
 .page-subtitle {
-  color: #94a3b8;
+  color: var(--dash-text-muted);
   margin-top: 8px;
   font-size: 0.95rem;
 }

@@ -102,6 +102,42 @@ app-root {
   --color-shadow: rgba(0, 0, 0, 0.1);
   --color-text: #333333;
   --transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* ===== DASHBOARD THEME (LIGHT - DEFAULT) ===== */
+  --dash-bg-main: #f8fafc;
+  --dash-bg-sidebar: #ffffff;
+  --dash-bg-card: #ffffff;
+  --dash-bg-header: #ffffff;
+  --dash-bg-input: #f1f5f9;
+  --dash-bg-hover: rgba(0, 0, 0, 0.04);
+  --dash-bg-glass: rgba(255, 255, 255, 0.8);
+  --dash-border: rgba(0, 0, 0, 0.08);
+  --dash-border-strong: rgba(0, 0, 0, 0.15);
+  
+  --dash-text-main: #0f172a;
+  --dash-text-muted: #64748b;
+  --dash-text-accent: #368C44;
+  --dash-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  --dash-shadow-header: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] {
+  /* ===== DASHBOARD THEME (DARK) ===== */
+  --dash-bg-main: #0f1420;
+  --dash-bg-sidebar: #111827;
+  --dash-bg-card: #1e293b;
+  --dash-bg-header: #111827;
+  --dash-bg-input: rgba(15, 20, 32, 0.6);
+  --dash-bg-hover: rgba(255, 255, 255, 0.05);
+  --dash-bg-glass: rgba(0, 0, 0, 0.1);
+  --dash-border: rgba(255, 255, 255, 0.05);
+  --dash-border-strong: rgba(255, 255, 255, 0.1);
+  
+  --dash-text-main: #f8fafc;
+  --dash-text-muted: #94a3b8;
+  --dash-text-accent: #4ade80;
+  --dash-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
+  --dash-shadow-header: 0 4px 25px rgba(0, 0, 0, 0.5);
 }
 .productos-layout {
   display: flex;

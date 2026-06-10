@@ -3,15 +3,21 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { EstadisticasService, CatalogStats } from '../../../services/estadisticas.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faBox, faExclamationTriangle, faEnvelope, faFolder } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-estadisticas',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, FontAwesomeModule],
   templateUrl: './estadisticas.html',
   styleUrls: ['./estadisticas.css'],
 })
 export class Estadisticas implements OnInit {
+  faBox = faBox;
+  faExclamationTriangle = faExclamationTriangle;
+  faEnvelope = faEnvelope;
+  faFolder = faFolder;
   
   stats: CatalogStats | null = null;
   cargando = true;
