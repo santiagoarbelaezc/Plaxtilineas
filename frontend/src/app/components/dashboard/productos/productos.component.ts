@@ -917,6 +917,43 @@ export class ProductosComponent implements OnInit {
     });
   }
 
+  eliminarTodosLosProductos(): void {
+    if (!this.token) return;
+
+    Swal.fire({
+      title: '¿Estás seguro de eliminar todos los productos?',
+      text: 'Esta acción eliminará todos los productos y sus variantes. Escribe "eliminar" para confirmar.',
+      icon: 'warning',
+      input: 'text',
+      inputPlaceholder: 'Escribe eliminar',
+      showCancelButton: true,
+      confirmButtonColor: '#e74c3c',
+      cancelButtonColor: '#aaa',
+      confirmButtonText: 'Sí, eliminar todo',
+      cancelButtonText: 'Cancelar',
+      preConfirm: (inputValue) => {
+        if (inputValue !== 'eliminar') {
+          Swal.showValidationMessage('Debes escribir "eliminar" para confirmar');
+          return false;
+        }
+        return true;
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.productosService.eliminarTodosProductos(this.token!).subscribe({
+          next: (res) => {
+            Swal.fire('✅ Éxito', `Se han eliminado ${res.eliminados || 'todos los'} productos.`, 'success');
+            this.cargarProductos();
+          },
+          error: (err) => {
+            console.error('Error al eliminar todos los productos:', err);
+            Swal.fire('❌ Error', 'Hubo un problema al eliminar todos los productos.', 'error');
+          }
+        });
+      }
+    });
+  }
+
   seleccionarNuevaImagen(event: any, prod: ProductoEditable): void {
     const archivo = event.target.files?.[0];
     if (archivo) {

@@ -302,6 +302,43 @@ export class SubcategoriasComponent implements OnInit {
     });
   }
 
+  eliminarTodasLasSubcategorias(): void {
+    if (!this.token) return;
+
+    Swal.fire({
+      title: '¿Estás seguro de eliminar todas las subcategorías?',
+      text: 'Solo se podrán eliminar si no hay productos asociados. Escribe "eliminar" para confirmar.',
+      icon: 'warning',
+      input: 'text',
+      inputPlaceholder: 'Escribe eliminar',
+      showCancelButton: true,
+      confirmButtonColor: '#e74c3c',
+      cancelButtonColor: '#aaa',
+      confirmButtonText: 'Sí, eliminar todas',
+      cancelButtonText: 'Cancelar',
+      preConfirm: (inputValue) => {
+        if (inputValue !== 'eliminar') {
+          Swal.showValidationMessage('Debes escribir "eliminar" para confirmar');
+          return false;
+        }
+        return true;
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.subcategoriasService.eliminarTodasSubcategorias(this.token!).subscribe({
+          next: (res) => {
+            Swal.fire('✅ Éxito', `Se han eliminado ${res.eliminadas || 'todas las'} subcategorías.`, 'success');
+            this.cargarSubcategorias();
+          },
+          error: (err) => {
+            console.error('Error al eliminar todas las subcategorías:', err);
+            Swal.fire('❌ Error', err.error?.error || 'Hubo un problema al eliminar todas las subcategorías.', 'error');
+          }
+        });
+      }
+    });
+  }
+
   cancelarEdicion(sub: SubcategoriaEditable): void {
     Swal.fire({
       title: '¿Cancelar edición?',

@@ -94,6 +94,12 @@
           <div class="pagination-info">
             Mostrando {{ getItemsMostrados() }} de {{ totalCategorias }} categorías
           </div>
+          
+          <div class="bulk-actions" style="margin-left: 20px;">
+            <button class="btn-action delete bulk-btn" (click)="eliminarTodasLasCategorias()" style="width: auto; height: auto; padding: 6px 16px; border-radius: 20px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); white-space: nowrap; gap: 8px; font-size: 0.85rem; font-weight: 600;">
+              <fa-icon [icon]="faTrashAlt"></fa-icon> Eliminar Todo
+            </button>
+          </div>
         </div>
       </div>
 

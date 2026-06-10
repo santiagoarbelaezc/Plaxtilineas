@@ -36,4 +36,10 @@ export class CategoriasService {
       headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
     });
   }
+
+  eliminarTodasCategorias(token: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/eliminar-todas`, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
+    });
+  }
 }

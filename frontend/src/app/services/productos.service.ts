@@ -181,4 +181,11 @@ busquedaAvanzada(filtros: {
     });
   }
 
+  // NUEVO: Eliminar todos los productos
+  eliminarTodosProductos(token: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/eliminar-todos`, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
+    });
+  }
+
 }

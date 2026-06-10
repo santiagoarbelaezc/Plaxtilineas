@@ -31,4 +31,10 @@ export class SubcategoriasService {
       headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
     });
   }
+
+  eliminarTodasSubcategorias(token: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/eliminar-todas`, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
+    });
+  }
 }

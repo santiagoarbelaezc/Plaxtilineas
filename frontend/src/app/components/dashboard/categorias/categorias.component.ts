@@ -4,7 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { CategoriasService } from '../../../services/categorias.service';
+import { SubcategoriasService } from '../../../services/subcategorias.service';
 import { CategoriaEditable } from '../../../models/categoria.model';
+import { Subcategoria } from '../../../models/subcategoria.model';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import {
   faEdit,
@@ -72,6 +74,7 @@ export class CategoriasComponent implements OnInit {
   categorias: CategoriaEditable[] = [];
   categoriasFiltradas: CategoriaEditable[] = [];
   categoriasPaginadas: CategoriaEditable[] = [];
+  subcategorias: Subcategoria[] = [];
   
   // Propiedades para paginación
   paginaActual: number = 1;
@@ -82,6 +85,7 @@ export class CategoriasComponent implements OnInit {
   constructor(
     private router: Router,
     private categoriaService: CategoriasService,
+    private subcategoriasService: SubcategoriasService,
     library: FaIconLibrary
   ) {
     // Agregar todos los iconos a la librería
@@ -102,6 +106,16 @@ export class CategoriasComponent implements OnInit {
     }
 
     this.cargarCategorias();
+    this.cargarSubcategorias();
+  }
+
+  cargarSubcategorias(): void {
+    this.subcategoriasService.getSubcategorias().subscribe({
+      next: subs => {
+        this.subcategorias = subs;
+      },
+      error: err => console.error('Error al cargar subcategorías:', err)
+    });
   }
 
   cargarCategorias(): void {
@@ -247,6 +261,17 @@ export class CategoriasComponent implements OnInit {
   }
 
   eliminarCategoria(id: number): void {
+    const tieneSubcategorias = this.subcategorias.some(sub => sub.categoria_id === id);
+    if (tieneSubcategorias) {
+      Swal.fire({
+        title: 'No se puede eliminar',
+        text: 'Esta categoría tiene subcategorías activas. Tienes que eliminar primero las subcategorías.',
+        icon: 'error',
+        confirmButtonColor: '#e74c3c'
+      });
+      return;
+    }
+
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'Esta acción eliminará la categoría permanentemente.',
@@ -266,6 +291,43 @@ export class CategoriasComponent implements OnInit {
           error: err => {
             Swal.fire('Error', 'No se pudo eliminar la categoría.', 'error');
             console.error('Error al eliminar:', err);
+          }
+        });
+      }
+    });
+  }
+
+  eliminarTodasLasCategorias(): void {
+    if (!this.token) return;
+
+    Swal.fire({
+      title: '¿Estás seguro de eliminar todas las categorías?',
+      text: 'Solo se podrán eliminar si no hay subcategorías activas. Escribe "eliminar" para confirmar.',
+      icon: 'warning',
+      input: 'text',
+      inputPlaceholder: 'Escribe eliminar',
+      showCancelButton: true,
+      confirmButtonColor: '#e74c3c',
+      cancelButtonColor: '#aaa',
+      confirmButtonText: 'Sí, eliminar todas',
+      cancelButtonText: 'Cancelar',
+      preConfirm: (inputValue) => {
+        if (inputValue !== 'eliminar') {
+          Swal.showValidationMessage('Debes escribir "eliminar" para confirmar');
+          return false;
+        }
+        return true;
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.categoriaService.eliminarTodasCategorias(this.token!).subscribe({
+          next: (res) => {
+            Swal.fire('✅ Éxito', `Se han eliminado ${res.eliminadas || 'todas las'} categorías.`, 'success');
+            this.cargarCategorias();
+          },
+          error: (err) => {
+            console.error('Error al eliminar todas las categorías:', err);
+            Swal.fire('❌ Error', err.error?.error || 'Hubo un problema al eliminar todas las categorías.', 'error');
           }
         });
       }

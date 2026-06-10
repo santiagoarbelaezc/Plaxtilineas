@@ -200,11 +200,28 @@
             <div *ngIf="!analisisPreview.todo_actualizado" class="sync-status sync-pending">
               <span class="sync-icon">⚠️</span>
               <div>
-                <strong>Hay {{ analisisPreview.nuevos_por_importar }} producto(s) nuevo(s)</strong>
-                <p>Presiona "Ejecutar Importación" para sincronizarlos.</p>
-                <ul *ngIf="analisisPreview.nuevos_nombres?.length" class="nuevos-list">
-                  <li *ngFor="let nombre of analisisPreview.nuevos_nombres">{{ nombre }}</li>
-                </ul>
+                <strong>Hay {{ analisisPreview.nuevos_por_importar }} producto(s) nuevo(s)</strong> listos para integrarse a tu catálogo.
+                
+                <div *ngIf="analisisPreview.nuevos_nombres?.length > 0" class="nombres-preview">
+                  <strong>Algunos productos a importar:</strong>
+                  <ul>
+                    <li *ngFor="let nombre of analisisPreview.nuevos_nombres">{{ nombre }}</li>
+                  </ul>
+                </div>
+                
+                <div *ngIf="analisisPreview.nuevas_categorias?.length > 0" class="nombres-preview nuevas-categorias">
+                  <strong><fa-icon [icon]="faFolderOpen"></fa-icon> Categorías Nuevas:</strong>
+                  <div class="tags-container">
+                    <span class="badge new-cat" *ngFor="let cat of analisisPreview.nuevas_categorias">{{ cat }}</span>
+                  </div>
+                </div>
+
+                <div *ngIf="analisisPreview.nuevas_subcategorias?.length > 0" class="nombres-preview nuevas-subcategorias">
+                  <strong><fa-icon [icon]="faFolder"></fa-icon> Subcategorías Nuevas:</strong>
+                  <div class="tags-container">
+                    <span class="badge new-subcat" *ngFor="let sub of analisisPreview.nuevas_subcategorias">{{ sub }}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
