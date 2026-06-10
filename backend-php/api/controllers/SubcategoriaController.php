@@ -171,4 +171,41 @@ class SubcategoriaController
             ]);
         }
     }
+
+    // ─── DELETE /api/subcategorias/eliminar-todas (protegido) ────────────────
+    public static function eliminarTodas(): void
+    {
+        try {
+            $db = Database::getConnection();
+
+            $prod = $db->query('SELECT COUNT(*) as total FROM productos');
+            $totalProd = (int)$prod->fetch()['total'];
+
+            if ($totalProd > 0) {
+                ResponseHandler::error(
+                    "No se pueden eliminar todas las subcategorías porque aún existen {$totalProd} producto(s). Elimina los productos primero.",
+                    400
+                );
+            }
+
+            $delStmt = $db->prepare('DELETE FROM subcategorias');
+            $delStmt->execute();
+
+            ResponseHandler::success([
+                'mensaje' => 'Todas las subcategorías han sido eliminadas con éxito',
+                'eliminadas' => $delStmt->rowCount()
+            ]);
+
+        } catch (PDOException $e) {
+            Logger::error('SubcategoriaController::eliminarTodas – DB', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error al eliminar todas las subcategorías de base de datos', 500, [
+                'detalle' => APP_ENV === 'development' ? $e->getMessage() : null,
+            ]);
+        } catch (Throwable $e) {
+            Logger::error('SubcategoriaController::eliminarTodas – inesperado', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error inesperado', 500, [
+                'detalle' => APP_ENV === 'development' ? $e->getMessage() : null,
+            ]);
+        }
+    }
 }

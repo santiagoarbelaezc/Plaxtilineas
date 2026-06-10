@@ -126,9 +126,6 @@ try {
         $user = AuthMiddleware::verify();
         AuthController::perfil($user);
     }
-        $user = AuthMiddleware::verify();
-        AuthController::perfil($user);
-    }
 
     // ═════════════════════════════════════════════════════════════════════════════
     // PRODUCTOS  /api/productos/*
@@ -144,6 +141,10 @@ try {
     if ($uri === '/productos/bulk-delete' && $method === 'POST') {
         AuthMiddleware::verify();
         ProductoController::eliminarProductosMasivo();
+    }
+    if ($uri === '/productos/eliminar-todos' && $method === 'DELETE') {
+        AuthMiddleware::verify();
+        ProductoController::eliminarTodos();
     }
 
     if ($uri === '/productos/buscar' && $method === 'GET') {
@@ -194,6 +195,10 @@ try {
         AuthMiddleware::verify();
         CategoriaController::crearCategoria();
     }
+    if ($uri === '/categorias/eliminar-todas' && $method === 'DELETE') {
+        AuthMiddleware::verify();
+        CategoriaController::eliminarTodas();
+    }
     if ($uri === '/categorias/con-subcategorias' && $method === 'GET') {
         CategoriaController::obtenerCategoriasConSubcategorias();
     }
@@ -221,6 +226,10 @@ try {
     if ($uri === '/subcategorias' && $method === 'POST') {
         AuthMiddleware::verify();
         SubcategoriaController::crearSubcategoria();
+    }
+    if ($uri === '/subcategorias/eliminar-todas' && $method === 'DELETE') {
+        AuthMiddleware::verify();
+        SubcategoriaController::eliminarTodas();
     }
     if ($p = matchRoute('/subcategorias/por-categoria/:categoria_id', $uri)) {
         if ($method === 'GET') SubcategoriaController::obtenerSubcategoriasPorCategoria((int)$p['categoria_id']);

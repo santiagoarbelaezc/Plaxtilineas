@@ -679,4 +679,47 @@ class ProductoController
             ]);
         }
     }
+
+    // ─── DELETE /api/productos/eliminar-todos (protegido) ────────────────────
+    public static function eliminarTodos(): void
+    {
+        try {
+            $db = Database::getConnection();
+            
+            // Buscar todos los public_ids para eliminar de Cloudinary
+            $stmt = $db->query("SELECT public_id FROM productos WHERE public_id IS NOT NULL");
+            $productosParaBorrar = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+            foreach ($productosParaBorrar as $publicId) {
+                try {
+                    CloudinaryHelper::delete($publicId);
+                } catch (Throwable $e) {
+                    Logger::error('Cloudinary delete all error', ['public_id' => $publicId, 'error' => $e->getMessage()]);
+                }
+            }
+
+            // Eliminar todos los registros de la base de datos
+            $delVariantes = $db->prepare("DELETE FROM variantes");
+            $delVariantes->execute();
+
+            $delProductos = $db->prepare("DELETE FROM productos");
+            $delProductos->execute();
+
+            ResponseHandler::success([
+                'mensaje' => 'Todos los productos han sido eliminados con éxito',
+                'eliminados' => $delProductos->rowCount()
+            ]);
+
+        } catch (PDOException $e) {
+            Logger::error('ProductoController::eliminarTodos – DB', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error al eliminar todos los productos de base de datos', 500, [
+                'detalle' => APP_ENV === 'development' ? $e->getMessage() : null,
+            ]);
+        } catch (Throwable $e) {
+            Logger::error('ProductoController::eliminarTodos – inesperado', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error inesperado', 500, [
+                'detalle' => APP_ENV === 'development' ? $e->getMessage() : null,
+            ]);
+        }
+    }
 }

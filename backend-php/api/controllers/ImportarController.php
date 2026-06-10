@@ -92,6 +92,40 @@ class ImportarController
 
             $dbLocal->beginTransaction();
             try {
+                // 0. Sincronizar TODAS las categorías y subcategorías primero
+                $catStmt = $dbHostinger->query("SELECT * FROM categories");
+                $hostingerCats = $catStmt->fetchAll();
+
+                $subcatStmt = $dbHostinger->query("SELECT * FROM subcategories");
+                $hostingerSubcats = $subcatStmt->fetchAll();
+
+                $catMap = []; 
+                foreach ($hostingerCats as $hCat) {
+                    $cStmt = $dbLocal->prepare('SELECT id FROM categorias WHERE nombre=? LIMIT 1');
+                    $cStmt->execute([$hCat['name']]);
+                    $cat = $cStmt->fetch();
+
+                    if (!$cat) {
+                        $dbLocal->prepare('INSERT INTO categorias (nombre) VALUES (?)')->execute([$hCat['name']]);
+                        $catMap[$hCat['id']] = (int)$dbLocal->lastInsertId();
+                    } else {
+                        $catMap[$hCat['id']] = (int)$cat['id'];
+                    }
+                }
+
+                foreach ($hostingerSubcats as $hSub) {
+                    if (!isset($catMap[$hSub['category_id']])) continue;
+                    $localCatId = $catMap[$hSub['category_id']];
+
+                    $sStmt = $dbLocal->prepare('SELECT id FROM subcategorias WHERE nombre=? AND categoria_id=? LIMIT 1');
+                    $sStmt->execute([$hSub['name'], $localCatId]);
+                    $sub = $sStmt->fetch();
+
+                    if (!$sub) {
+                        $dbLocal->prepare('INSERT INTO subcategorias (nombre, categoria_id) VALUES (?, ?)')->execute([$hSub['name'], $localCatId]);
+                    }
+                }
+
                 foreach ($products as $product) {
                     $hostingerId = (int)$product['id'];
                     $nombreProd  = $product['name'] ?? 'Sin nombre';
@@ -253,13 +287,42 @@ class ImportarController
                 $yaImportados = count($existentes);
                 $nuevos = $totalHostinger - $yaImportados;
                 
-                // Obtener nombres de los nuevos
+                $nuevasCategorias = [];
+                $nuevasSubcategorias = [];
+
+                // Obtener nombres de los nuevos y sus cat/subcat
                 $nuevosIds = array_diff($allHostingerIds, $existentes);
                 if (!empty($nuevosIds)) {
                     $plNuevos = implode(',', array_fill(0, count($nuevosIds), '?'));
                     $nombresStmt = $dbHostinger->prepare("SELECT name FROM products WHERE id IN ($plNuevos) LIMIT 10");
                     $nombresStmt->execute(array_values($nuevosIds));
                     $nuevosNombres = $nombresStmt->fetchAll(PDO::FETCH_COLUMN);
+                }
+                
+                // Extraer TODAS las categorías de Hostinger
+                $hostCatStmt = $dbHostinger->query("SELECT name FROM categories");
+                $allHostCats = $hostCatStmt->fetchAll(PDO::FETCH_COLUMN);
+
+                // Extraer TODAS las subcategorías de Hostinger
+                $hostSubcatStmt = $dbHostinger->query("SELECT name FROM subcategories");
+                $allHostSubcats = $hostSubcatStmt->fetchAll(PDO::FETCH_COLUMN);
+
+                // Ver cuáles categorías no existen localmente
+                if (!empty($allHostCats)) {
+                    $plCats = implode(',', array_fill(0, count($allHostCats), '?'));
+                    $locCatsStmt = $dbLocal->prepare("SELECT nombre FROM categorias WHERE nombre IN ($plCats)");
+                    $locCatsStmt->execute(array_values($allHostCats));
+                    $existCats = $locCatsStmt->fetchAll(PDO::FETCH_COLUMN);
+                    $nuevasCategorias = array_values(array_diff($allHostCats, $existCats));
+                }
+
+                // Ver cuáles subcategorías no existen localmente
+                if (!empty($allHostSubcats)) {
+                    $plSubcats = implode(',', array_fill(0, count($allHostSubcats), '?'));
+                    $locSubcatsStmt = $dbLocal->prepare("SELECT nombre FROM subcategorias WHERE nombre IN ($plSubcats)");
+                    $locSubcatsStmt->execute(array_values($allHostSubcats));
+                    $existSubcats = $locSubcatsStmt->fetchAll(PDO::FETCH_COLUMN);
+                    $nuevasSubcategorias = array_values(array_diff($allHostSubcats, $existSubcats));
                 }
             }
 
@@ -309,6 +372,8 @@ class ImportarController
                     'nuevos_por_importar' => $nuevos,
                     'todo_actualizado'    => $todoActualizado,
                     'nuevos_nombres'      => $nuevosNombres,
+                    'nuevas_categorias'   => $nuevasCategorias ?? [],
+                    'nuevas_subcategorias'=> $nuevasSubcategorias ?? [],
                 ],
             ]);
 

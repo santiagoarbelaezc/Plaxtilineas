@@ -327,4 +327,53 @@ class CategoriaController
             ]);
         }
     }
+
+    // ─── DELETE /api/categorias/eliminar-todas (protegido) ───────────────────
+    public static function eliminarTodas(): void
+    {
+        try {
+            $db = Database::getConnection();
+
+            $sub = $db->query('SELECT COUNT(*) as total FROM subcategorias');
+            $totalSub = (int)$sub->fetch()['total'];
+
+            if ($totalSub > 0) {
+                ResponseHandler::error(
+                    "No se pueden eliminar todas las categorías porque aún existen {$totalSub} subcategoría(s). Elimina las subcategorías primero.",
+                    400
+                );
+            }
+
+            // Eliminar de Cloudinary
+            $stmt = $db->query('SELECT icono_public_id FROM categorias WHERE icono_public_id IS NOT NULL');
+            $iconosParaBorrar = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+            foreach ($iconosParaBorrar as $publicId) {
+                try {
+                    CloudinaryHelper::delete($publicId);
+                } catch (Throwable $e) {
+                    Logger::error('Cloudinary delete all categories error', ['public_id' => $publicId, 'error' => $e->getMessage()]);
+                }
+            }
+
+            $delStmt = $db->prepare('DELETE FROM categorias');
+            $delStmt->execute();
+
+            ResponseHandler::success([
+                'mensaje' => 'Todas las categorías han sido eliminadas con éxito',
+                'eliminadas' => $delStmt->rowCount()
+            ]);
+
+        } catch (PDOException $e) {
+            Logger::error('CategoriaController::eliminarTodas – DB', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error al eliminar todas las categorías de base de datos', 500, [
+                'detalle' => APP_ENV === 'development' ? $e->getMessage() : null,
+            ]);
+        } catch (Throwable $e) {
+            Logger::error('CategoriaController::eliminarTodas – inesperado', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error inesperado', 500, [
+                'detalle' => APP_ENV === 'development' ? $e->getMessage() : null,
+            ]);
+        }
+    }
 }

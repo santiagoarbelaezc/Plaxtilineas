@@ -97,6 +97,7 @@ class AuthController
             ResponseHandler::error('Error inesperado en AuthController::perfil', 500, [
                 'detalle' => APP_ENV === 'development' ? $e->getMessage() : null,
             ]);
+        }
     }
 
     /**
