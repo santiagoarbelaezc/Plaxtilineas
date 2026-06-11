@@ -16,8 +16,31 @@
     </div>
   </div>
 
+  <!-- Loading State (Skeleton) -->
+  <div *ngIf="cargando" class="carousel-viewport" style="overflow: hidden;">
+    <div class="carousel-track">
+      <div class="carousel-item" *ngFor="let i of [1, 2, 3, 4]">
+        <div class="product-mini-card skeleton-card">
+          <div class="mini-img-box skeleton-box"></div>
+          <div class="mini-info">
+            <div class="skeleton-text skeleton-title"></div>
+            <div class="skeleton-text skeleton-price"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error o Vacío -->
+  <div *ngIf="!cargando && error" class="carousel-error">
+    <p>{{ error }}</p>
+  </div>
+  <div *ngIf="!cargando && !error && productos.length === 0" class="carousel-error info">
+    <p>No hay productos disponibles en esta categoría.</p>
+  </div>
+
   <!-- Viewport -->
-  <div class="carousel-viewport" #carouselViewport (scroll)="onScroll()" (wheel)="onWheel($event)">
+  <div *ngIf="!cargando && !error && productos.length > 0" class="carousel-viewport" #carouselViewport (scroll)="onScroll()" (wheel)="onWheel($event)">
     <div class="carousel-track">
       <div class="carousel-item" *ngFor="let producto of productos">
         <div class="product-mini-card" [routerLink]="['/producto', producto.id]">
@@ -34,7 +57,7 @@
   </div>
 
   <!-- Mobile Scroll Indicator -->
-  <div class="scroll-indicator">
+  <div *ngIf="!cargando && !error && productos.length > 0" class="scroll-indicator">
     <div class="indicator-bar" [style.width.%]="scrollProgress"></div>
   </div>
 </div>

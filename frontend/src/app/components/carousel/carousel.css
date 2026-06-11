@@ -184,3 +184,58 @@
   .carousel-item { flex: 0 0 160px; }
   .carousel-title { font-size: 1.25rem; }
 }
+
+/* --- Skeleton Loading States --- */
+.skeleton-card {
+  pointer-events: none;
+  background: #ffffff !important;
+}
+
+.skeleton-box {
+  background: #e5e7eb;
+  animation: carousel-pulse 1.5s infinite ease-in-out;
+  border: none;
+}
+
+.skeleton-text {
+  background: #e5e7eb;
+  border-radius: 4px;
+  animation: carousel-pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-title {
+  height: 16px;
+  width: 80%;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.skeleton-price {
+  height: 18px;
+  width: 40%;
+  margin-top: 4px;
+}
+
+@keyframes carousel-pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* Mensajes de error/info */
+.carousel-error {
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+  color: #ef4444;
+  background: #fef2f2;
+  border-radius: 16px;
+  margin: 10px 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.carousel-error.info {
+  color: #6b7280;
+  background: #f9fafb;
+}

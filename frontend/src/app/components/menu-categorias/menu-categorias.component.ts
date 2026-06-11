@@ -22,6 +22,7 @@ interface CategoriaExtendida extends CategoriaConSubcategorias {
 export class MenuCategoriasComponent implements OnInit {
   categorias: CategoriaExtendida[] = [];
   mostrarTodosProductos: boolean = false; // Nueva variable de estado
+  cargandoCategorias: boolean = true; // Estado de carga
 
   constructor(
     private categoriaService: CategoriaMenuService,
@@ -60,7 +61,9 @@ export class MenuCategoriasComponent implements OnInit {
       }
     });
 
+    this.cargandoCategorias = true;
     this.categoriaService.obtenerCategorias().subscribe(data => {
+      this.cargandoCategorias = false;
       const expandedIds = this.menuStateService.getExpandedCategories();
       
       this.categorias = data.map(c => ({ 

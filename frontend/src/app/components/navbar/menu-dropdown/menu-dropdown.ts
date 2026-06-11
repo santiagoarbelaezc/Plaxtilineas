@@ -141,6 +141,16 @@ export class MenuDropdown implements OnInit, OnDestroy {
     console.log(`📌 Subcategoría ${subcategoriaId} seleccionada desde dropdown`);
   }
 
+  onVerTodosClick(event: Event): void {
+    event.preventDefault();
+    console.log('🔍 Ver todos los productos desde menú desplegable');
+    this.menuStateService.clearLastSelectedSubcategory();
+    this.closeMenu();
+    setTimeout(() => {
+      this.router.navigate(['/productos']);
+    }, 50);
+  }
+
   closeMenu(): void {
     this.menuVisible = false;
     this.hoveredCategoriaId = null;

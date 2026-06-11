@@ -523,3 +523,32 @@
 .categoria:nth-child(6) { animation-delay: 0.6s; }
 .categoria:nth-child(7) { animation-delay: 0.7s; }
 .categoria:nth-child(8) { animation-delay: 0.8s; }
+
+/* Skeleton Loading Menu Categorías */
+.skeleton-btn {
+  cursor: default !important;
+  pointer-events: none;
+  background: white !important;
+}
+
+.skeleton-cat-icon {
+  width: 24px;
+  height: 24px;
+  background: #e5e7eb;
+  border-radius: 6px;
+  animation: menu-pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-cat-name {
+  height: 16px;
+  width: 60%;
+  background: #e5e7eb;
+  border-radius: 4px;
+  animation: menu-pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes menu-pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}

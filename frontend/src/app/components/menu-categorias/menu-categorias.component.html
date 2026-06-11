@@ -13,7 +13,19 @@
     </button>
   </div>
   
-  <div class="categorias-container">
+  <!-- Contenedor Skeletons -->
+  <div class="categorias-container" *ngIf="cargandoCategorias">
+    <div class="categoria" *ngFor="let i of [1,2,3,4,5,6]">
+      <button class="categoria-btn skeleton-btn">
+        <div class="categoria-content" style="width: 100%;">
+          <div class="skeleton-cat-icon"></div>
+          <div class="skeleton-cat-name"></div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <div class="categorias-container" *ngIf="!cargandoCategorias">
     <div *ngFor="let cat of categorias" class="categoria" [id]="'cat-' + cat.id" [class.active]="cat.expanded">
       <button class="categoria-btn" (click)="toggle(cat)" [attr.aria-expanded]="cat.expanded">
         <div class="categoria-content">

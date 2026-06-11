@@ -5,6 +5,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { environment } from '../../../enviroments/environment';
 import { AuthService } from '../../services/auth.service';
+import { ThemeService, Theme } from '../../services/theme.service';
 
 declare var google: any;
 
@@ -25,6 +26,7 @@ export class LoginFormComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  public themeService = inject(ThemeService);
 
   loginForm: FormGroup = this.fb.group({
     correo: ['', [Validators.required, Validators.email]],
@@ -71,11 +73,8 @@ export class LoginFormComponent implements OnInit {
     this.mode = this.mode === 'login' ? 'register' : 'login';
     this.errorMsg = '';
     this.showPassword = false;
-    setTimeout(() => {
-      if (this.mode === 'register') {
-        this.renderGoogleButton();
-      }
-    }, 100);
+    // Ya no es necesario volver a renderizar el botón de Google
+    // porque su contenedor está fuera del *ngIf y siempre está en el DOM.
   }
 
   private renderGoogleButton(): void {
@@ -84,9 +83,17 @@ export class LoginFormComponent implements OnInit {
         client_id: (environment as any).googleClientId || 'AQUI_TU_CLIENT_ID_DE_GOOGLE',
         callback: this.handleGoogleResponse.bind(this)
       });
+      const activeTheme = this.themeService.getCurrentTheme();
       google.accounts.id.renderButton(
         document.getElementById('google-btn-login'),
-        { theme: 'outline', size: 'large', width: '100%' }
+        { 
+          theme: activeTheme === 'dark' ? 'filled_black' : 'outline', 
+          size: 'large', 
+          width: 400, // Google soporta hasta un máximo de 400px
+          shape: 'pill', 
+          logo_alignment: 'left', 
+          text: 'signin_with' 
+        }
       );
     }
   }

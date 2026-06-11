@@ -14,14 +14,34 @@
     </h2>
   </div>
 
-  <!-- Estados de carga -->
-  <div *ngIf="cargando" class="loading-state">
-    <div class="loading-animation">
-      <div class="loading-dot"></div>
-      <div class="loading-dot"></div>
-      <div class="loading-dot"></div>
+  <!-- Estados de carga (Skeleton Premium) -->
+  <div *ngIf="cargando" class="products-grid-container">
+    <div class="products-grid">
+      <div class="product-card-wrapper skeleton-wrapper" *ngFor="let i of [1, 2, 3, 4, 5, 6]">
+        <div class="product-card-container skeleton-card">
+          <!-- Imagen -->
+          <div class="product-image-section skeleton-box"></div>
+          
+          <!-- Información -->
+          <div class="product-info-section">
+            <div class="product-text-container">
+              <div class="skeleton-text skeleton-title"></div>
+              <div class="skeleton-text skeleton-subtitle"></div>
+              <div class="skeleton-text skeleton-desc"></div>
+              <div class="skeleton-text skeleton-desc-short"></div>
+            </div>
+            
+            <!-- Detalles / Precio -->
+            <div class="product-details-container mt-auto">
+              <div class="price-display skeleton-price-box">
+                <div class="skeleton-text skeleton-label"></div>
+                <div class="skeleton-text skeleton-price"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <p class="loading-text">Cargando productos...</p>
   </div>
 
   <!-- Estado sin productos -->
