@@ -66,10 +66,10 @@
      width: 420px;
      height: 650px;
      max-height: calc(100vh - 40px);
-     background: #000000;
-     border: 1px solid rgba(255, 255, 255, 0.15);
+     background: var(--dash-bg-card);
+     border: 1px solid var(--dash-border);
      border-radius: 20px;
-     box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(54, 140, 68, 0.2);
+     box-shadow: var(--dash-shadow);
      display: flex;
      flex-direction: column;
      z-index: 10000;
@@ -88,8 +88,8 @@
    
    /* Cabecera del Panel */
    .chat-header {
-     background: #111111;
-     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+     background: var(--dash-bg-glass);
+     border-bottom: 1px solid var(--dash-border);
      padding: 20px 25px;
      display: flex;
      justify-content: space-between;
@@ -110,7 +110,7 @@
    }
    .header-text h4 {
      margin: 0;
-     color: #ffffff;
+     color: var(--dash-text-main);
      font-size: 1.2rem;
      font-weight: 700;
    }
@@ -120,9 +120,9 @@
      font-weight: 500;
    }
    .close-btn {
-     background: rgba(255, 255, 255, 0.1);
+     background: var(--dash-bg-hover);
      border: none;
-     color: #ffffff;
+     color: var(--dash-text-muted);
      width: 36px;
      height: 36px;
      border-radius: 50%;
@@ -140,7 +140,7 @@
    /* Cuerpo del Chat */
    .chat-body {
      flex: 1;
-     background: #050505;
+     background: var(--dash-bg-main);
      padding: 25px;
      overflow-y: auto;
      display: flex;
@@ -153,10 +153,10 @@
      text-align: center;
      padding: 25px 10px;
      margin-bottom: 25px;
-     background: #000000;
+     background: var(--dash-bg-card);
      border-radius: 16px;
-     box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-     border: 1px solid rgba(255, 255, 255, 0.05);
+     box-shadow: var(--dash-shadow);
+     border: 1px solid var(--dash-border);
    }
    .welcome-mateo-img {
      width: 350px;
@@ -169,7 +169,7 @@
      margin-bottom: 20px;
    }
    .welcome-banner p {
-     color: #cbd5e1;
+     color: var(--dash-text-muted);
      font-size: 1.05rem;
      line-height: 1.6;
      margin: 0;
@@ -205,9 +205,9 @@
      position: relative;
    }
    .assistant .message-bubble {
-     background: #111111;
-     border: 1px solid rgba(255, 255, 255, 0.1);
-     color: #ffffff;
+     background: var(--dash-bg-glass);
+     border: 1px solid var(--dash-border);
+     color: var(--dash-text-main);
      border-bottom-left-radius: 4px;
      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
    }
@@ -219,13 +219,13 @@
    }
    .message-time {
      font-size: 0.8rem;
-     color: #64748b;
+     color: var(--dash-text-muted);
      margin-top: 6px;
      padding: 0 5px;
    }
    .user .message-time {
      text-align: right;
-     color: #cbd5e1;
+     color: var(--dash-text-muted);
    }
    
    /* Indicador escribiendo */
@@ -252,8 +252,8 @@
    
    /* Footer de Chat */
    .chat-footer {
-     background: #000000;
-     border-top: 1px solid rgba(255, 255, 255, 0.1);
+     background: var(--dash-bg-card);
+     border-top: 1px solid var(--dash-border);
      padding: 20px;
    }
    .chat-footer form {
@@ -262,11 +262,11 @@
    }
    .chat-footer input {
      flex: 1;
-     background: #111111;
-     border: 1px solid rgba(255, 255, 255, 0.15);
+     background: var(--dash-bg-input);
+     border: 1px solid var(--dash-border);
      border-radius: 25px;
      padding: 14px 20px;
-     color: #ffffff;
+     color: var(--dash-text-main);
      font-size: 1rem;
      transition: all 0.2s;
    }
@@ -274,10 +274,10 @@
      outline: none;
      border-color: #368C44;
      box-shadow: 0 0 0 3px rgba(54, 140, 68, 0.2);
-     background: #000000;
+     background: var(--dash-bg-hover);
    }
    .chat-footer input::placeholder {
-     color: #64748b;
+     color: var(--dash-text-muted);
    }
    .send-btn {
      width: 48px;
@@ -301,8 +301,8 @@
    .send-btn:disabled {
      opacity: 0.5;
      cursor: not-allowed;
-     background: #1e293b;
-     color: #64748b;
+     background: var(--dash-bg-hover);
+     color: var(--dash-text-muted);
      box-shadow: none;
    }
    

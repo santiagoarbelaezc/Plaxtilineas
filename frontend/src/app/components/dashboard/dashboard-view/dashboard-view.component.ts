@@ -14,11 +14,11 @@ import {
   faUserShield,
   faHome,
   faBolt,
-  faWarehouse,      // Icono para Inventario
-  faClipboardList,   // Icono para PQR
-  faDownload,        // Icono para descargar/importar
-  faEye,            // Icono para preview
-  faChartBar,        // Icono para estadísticas
+  faWarehouse,
+  faClipboardList,
+  faDownload,
+  faEye,
+  faChartBar,
   faArrowRight,
   faArrowLeft,
   faChartLine,
@@ -27,7 +27,11 @@ import {
   faFileAlt,
   faShoppingCart,
   faSun,
-  faMoon
+  faMoon,
+  faCheckCircle,
+  faExclamationTriangle,
+  faCubes,
+  faDollarSign
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -60,6 +64,10 @@ export class DashboardViewComponent {
   faShoppingCart = faShoppingCart;
   faSun = faSun;
   faMoon = faMoon;
+  faCheckCircle = faCheckCircle;
+  faExclamationTriangle = faExclamationTriangle;
+  faCubes = faCubes;
+  faDollarSign = faDollarSign;
 
   // Estados para la importación
   cargandoPreview = false;

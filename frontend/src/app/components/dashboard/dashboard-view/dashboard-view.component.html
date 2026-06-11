@@ -176,7 +176,8 @@
           <!-- Panel de Análisis (aparece después de "Analizar Catálogo") -->
           <div *ngIf="analisisPreview" class="import-data-section analysis-section">
             <h3 class="data-section-title">
-              📊 Análisis de Sincronización
+              <fa-icon [icon]="faChartBar" class="section-icon-blue"></fa-icon>
+              Análisis de Sincronización
             </h3>
             <div class="stats-grid">
               <div class="stat-card">
@@ -201,14 +202,14 @@
 
             <!-- Estado global -->
             <div *ngIf="analisisPreview.todo_actualizado" class="sync-status sync-ok">
-              <span class="sync-icon">✅</span>
+              <fa-icon [icon]="faCheckCircle" class="sync-icon-fa ok"></fa-icon>
               <div>
                 <strong>¡Todo está al día!</strong>
                 <p>No hay productos nuevos por importar. Tu catálogo local está completamente sincronizado con Hostinger.</p>
               </div>
             </div>
             <div *ngIf="!analisisPreview.todo_actualizado" class="sync-status sync-pending">
-              <span class="sync-icon">⚠️</span>
+              <fa-icon [icon]="faExclamationTriangle" class="sync-icon-fa pending"></fa-icon>
               <div>
                 <strong>Hay {{ analisisPreview.nuevos_por_importar }} producto(s) nuevo(s)</strong> listos para integrarse a tu catálogo.
                 
@@ -249,8 +250,14 @@
                 <div class="product-preview-info">
                   <h4 class="product-name">{{ producto.name }}</h4>
                   <p class="product-cat">{{ producto.category || 'Sin categoría' }}</p>
-                  <p class="product-variants">📦 {{ producto.variantes_count }} variantes</p>
-                  <p *ngIf="producto.primer_precio" class="product-price">💰 ${{ producto.primer_precio }}</p>
+                  <p class="product-variants">
+                    <fa-icon [icon]="faCubes"></fa-icon>
+                    {{ producto.variantes_count }} variantes
+                  </p>
+                  <p *ngIf="producto.primer_precio" class="product-price">
+                    <fa-icon [icon]="faDollarSign"></fa-icon>
+                    ${{ producto.primer_precio }}
+                  </p>
                 </div>
               </div>
             </div>
