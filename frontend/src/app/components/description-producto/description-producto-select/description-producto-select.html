@@ -184,7 +184,7 @@
                 <button 
                   class="btn-cantidad-minimal" 
                   (click)="cambiarCantidad(cantidadSeleccionada + 1)"
-                  [disabled]="cantidadSeleccionada >= 20 || (controlaStock() && cantidadSeleccionada >= getStockRealDisponible())">
+                  [disabled]="(controlaStock() && cantidadSeleccionada >= getStockRealDisponible()) || (!controlaStock() && cantidadSeleccionada >= 99)">
                   +
                 </button>
                 <span class="unidad-texto-elegante">{{producto.unidad || 'Unidades'}}</span>

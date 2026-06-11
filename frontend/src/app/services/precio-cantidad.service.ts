@@ -32,9 +32,10 @@ export class PrecioCantidadService {
   /**
    * Valida que la cantidad sea un entero válido
    * @param cantidad - Valor a validar
+   * @param maxLimit - Límite máximo (por defecto 99)
    * @returns Cantidad válida (entero positivo)
    */
-  validarCantidad(cantidad: number): number {
+  validarCantidad(cantidad: number, maxLimit: number = 99): number {
     // Convertir a entero
     let cantidadEntera = Math.floor(cantidad);
     
@@ -43,20 +44,21 @@ export class PrecioCantidadService {
       cantidadEntera = 1;
     }
     
-    // Máximo 6
-    if (cantidadEntera > 6) {
-      cantidadEntera = 6;
+    // Validar límite máximo
+    if (cantidadEntera > maxLimit) {
+      cantidadEntera = maxLimit;
     }
     
     return cantidadEntera;
   }
 
   /**
-   * Obtiene el rango válido de cantidades
-   * @returns Array con valores de 1 a 6
+   * Obtiene el rango válido de cantidades predeterminado
+   * @param max - Límite máximo (por defecto 10)
+   * @returns Array con valores de 1 a max
    */
-  obtenerOpcionesCantidad(): number[] {
-    return [1, 2, 3, 4, 5, 6];
+  obtenerOpcionesCantidad(max: number = 10): number[] {
+    return Array.from({ length: max }, (_, i) => i + 1);
   }
 
   /**
