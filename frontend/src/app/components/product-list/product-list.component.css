@@ -274,18 +274,19 @@
 }
 
 .product-description {
-  font-size: 0.95rem;
-  color: #4b5563;
-  line-height: 1.5;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #374151;
   margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  transition: color 0.3s ease;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 2; /* Máximo 2 líneas de texto */
   -webkit-box-orient: vertical;
   overflow: hidden;
-  min-height: 2.4em;
+  line-height: 1.2;
   font-family: var(--font-primary);
-  letter-spacing: 0.01em;
 }
 
 /* Sección de precio y acción - MÁS ELEGANTE */
@@ -416,6 +417,10 @@
 
 .product-card-container:hover::before {
   opacity: 1;
+}
+
+.product-card-container:hover .product-description {
+  color: #368c44;
 }
 
 /* Animaciones */

@@ -90,6 +90,10 @@
   border-color: rgba(54, 140, 68, 0.2);
 }
 
+.product-card:hover .product-description {
+  color: #368c44;
+}
+
 .card-image-wrapper {
   position: relative;
   width: 100%;
@@ -151,14 +155,17 @@
 
 .product-description {
   font-size: 0.85rem;
-  color: #6b7280;
+  font-weight: 700;
+  color: #374151;
   margin: 0 0 16px 0;
-  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  transition: color 0.3s ease;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 2; /* Máximo 2 líneas de texto */
   -webkit-box-orient: vertical;
   overflow: hidden;
-  height: 2.5rem;
+  line-height: 1.2;
 }
 
 .price-row {
