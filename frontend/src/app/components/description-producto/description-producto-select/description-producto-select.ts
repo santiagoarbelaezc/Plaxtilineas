@@ -45,6 +45,8 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   
   // Propiedad para el modal de descripción
   mostrarModalDescripcion = false;
+  mostrarModalEntrega = false;
+  mostrarModalStock = false;
   
   // Propiedad para el mensaje de enlace copiado
   enlaceCopiado = false;
@@ -368,13 +370,17 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   formatearPrecio(precio: number): string {
     if (precio === null || precio === undefined) return '$ 0';
     
-    // Redondear el precio a entero si tiene decimales
-    const precioEntero = Math.round(precio);
-    
-    // Formatear sin decimales
-    const precioFormateado = precioEntero.toLocaleString('es-ES');
-    
-    return `$ ${precioFormateado}`;
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(precio).replace('COP', '$').trim();
+  }
+
+  formatearPrecioNumero(precio: number): string {
+    if (precio === null || precio === undefined) return '0';
+    return new Intl.NumberFormat('es-CO').format(precio);
   }
 
   /**
@@ -432,6 +438,22 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     document.body.style.overflow = 'auto';
   }
 
+  abrirModalEntrega() {
+    this.mostrarModalEntrega = true;
+  }
+
+  cerrarModalEntrega() {
+    this.mostrarModalEntrega = false;
+  }
+
+  abrirModalStock() {
+    this.mostrarModalStock = true;
+  }
+
+  cerrarModalStock() {
+    this.mostrarModalStock = false;
+  }
+
   // Cerrar modales con tecla Esc
   @HostListener('document:keydown.escape')
   onEscapeKey() {
@@ -440,6 +462,12 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     }
     if (this.mostrarModalDescripcion) {
       this.cerrarModalDescripcion();
+    }
+    if (this.mostrarModalEntrega) {
+      this.cerrarModalEntrega();
+    }
+    if (this.mostrarModalStock) {
+      this.cerrarModalStock();
     }
   }
 

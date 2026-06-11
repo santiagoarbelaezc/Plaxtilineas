@@ -54,70 +54,127 @@
                 [style.--zoom-y]="zoomY + '%'"
                 (error)="producto.imagen_url = 'assets/images/producto-default.jpg'"
               />
-              <div class="imagen-overlay-fixed"></div>
-              
-              <!-- Notificación flotante sobre la imagen (¡Compra Ahora!) -->
-              <div class="conversion-notification" [class.mostrar]="mostrarAvisoNotificacion">
-                <div class="notification-body">
-                  <span class="conversion-icon">🛍️</span>
-                  <p class="conversion-text">¡Compra Ahora!</p>
-                </div>
-              </div>
-
-              <div class="imagen-zoom-indicator">
-                <span class="zoom-icon">🔍</span>
-                <span class="zoom-text">Acerca el cursor para hacer zoom</span>
-              </div>
+              <!-- Imagen sin overlays para look IKEA -->
             </div>
           </div>
         </div>
 
-        <!-- Resumen de Precio -->
-        <div class="subtotal-minimal">
-          <span class="subtotal-label">Subtotal del pedido:</span>
-          <span class="subtotal-valor">{{formatearPrecio(precioConCantidad)}}</span>
-        </div>
-
-        <!-- Acciones rápidas en columna izquierda -->
-        <div class="acciones-rapidas-container">
-          <a [href]="generarWhatsAppLink()"
-             target="_blank"
-             rel="noopener noreferrer nofollow"
-             class="btn-whatsapp-fixed"
-             aria-label="Consultar sobre este producto por WhatsApp"
-             title="Consultar sobre este producto por WhatsApp">
-            <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1768854880/whatsapp-logo-whatsapp-logo-transparent-whatsapp-icon-transparent-free-free-png_awplkn.png" alt="WhatsApp" class="btn-icon-img">
-            <span class="btn-text-fixed">Consultar por WhatsApp</span>
-          </a>
-          
-          <button class="btn-compartir-fixed" (click)="copiarEnlace()" title="Copiar enlace del producto">
-            <svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-            </svg>
-            <span class="btn-text-fixed">Copiar enlace</span>
-          </button>
-          
-          <div class="mensaje-copiado-fixed" *ngIf="enlaceCopiado">
-            ✓ Enlace copiado al portapapeles
+        <!-- Precio Corporativo (Debajo de imagen, Elegante y Centrado) -->
+        <div class="corporate-price-left">
+          <div class="ikea-stock-status" style="margin-bottom: 8px; justify-content: center;">
+            <span class="ikea-stock-dot" [ngClass]="{'green': getStockRealDisponible() > 0, 'red': getStockRealDisponible() === 0}"></span>
+            <span *ngIf="getStockRealDisponible() > 0">Disponible ({{getStockRealDisponible()}})</span>
+            <span *ngIf="getStockRealDisponible() === 0">Agotado</span>
           </div>
+          <div class="corporate-price-display">
+            <span class="corporate-currency">$</span>
+            <span class="corporate-amount">{{formatearPrecioNumero(precioConCantidad)}}</span>
+          </div>
+          <div class="corporate-price-subtext">Precio válido hasta agotar existencias</div>
+          
+          <a [href]="generarWhatsAppLink()" target="_blank" class="asesor-whatsapp-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="asesor-wa-icon"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            Consultar con asesor
+          </a>
         </div>
 
+        <!-- Se ha movido todo a la derecha para el diseño IKEA -->
       </div>
 
       <!-- Columna Derecha Fija: Información del Producto -->
-      <div class="producto-columna-derecha">
+      <div class="producto-columna-derecha ikea-style-right">
         
-        <!-- Encabezado -->
-        <div class="producto-header-fixed">
-          <div class="producto-categorias-fixed">
-            <span class="categoria-badge-fixed">{{producto.categoria}}</span>
-            <span class="subcategoria-badge-fixed">{{producto.subcategoria}}</span>
+        <!-- Header -->
+        <div class="product-top-row" style="margin-bottom: 12px;">
+          <!-- Área de Título y Subtítulo -->
+          <div class="product-title-area">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between;">
+              <h1 class="ikea-product-title">{{productoBaseNombre}}</h1>
+              <button class="ikea-fav-btn" title="Añadir a favoritos">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="ikea-product-subtitle" style="margin-bottom: 0;">{{producto.subcategoria}}, {{producto.categoria}}</div>
           </div>
-          <h1 class="producto-nombre-fixed">{{productoBaseNombre}}</h1>
+        </div>
 
-          <!-- Botón de compra inmediata (estilo WhatsApp) -->
-          <div class="header-action-container">
+        <!-- El precio se ha movido a la izquierda -->
+
+        <!-- Reseñas -->
+        <div class="ikea-reviews">
+          <span class="ikea-stars">★★★★☆</span>
+          <span class="ikea-reviews-count">(55)</span>
+        </div>
+
+        <!-- Variantes -->
+        <div *ngIf="variantes.length > 0" class="ikea-variants-container">
+          <div class="ikea-variants-title">Elige variante</div>
+          <div class="ikea-variants-subtitle">{{varianteSeleccionada?.nombre}}</div>
+          
+          <div class="ikea-variants-grid">
+            <div 
+              *ngFor="let variante of variantes" 
+              class="ikea-variant-box"
+              [class.ikea-variant-selected]="varianteSeleccionada?.id === variante.id"
+              (click)="seleccionarVariante(variante)">
+              <div class="ikea-variant-text">{{variante.nombre}}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ikea-customization-link" (click)="abrirModalDescripcion()">
+          <div class="ikea-customization-text">
+            <strong>Ver descripción del producto</strong><br>
+            <span class="light-text">Conoce todos los detalles y especificaciones</span>
+          </div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ikea-link-icon"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </div>
+
+        <!-- Como conseguirlo (Delivery box) -->
+        <div class="ikea-delivery-section">
+          <h3 class="ikea-delivery-title">Cómo conseguirlo</h3>
+          <div class="ikea-delivery-box">
+            
+            <div class="ikea-delivery-row clickable" (click)="abrirModalEntrega()">
+              <svg class="ikea-delivery-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+              <div class="ikea-delivery-info">
+                <strong>Entrega</strong>
+                <span class="ikea-delivery-subtext">Ver opciones al finalizar la compra</span>
+              </div>
+              <svg class="ikea-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+
+            <div class="ikea-delivery-divider"></div>
+
+            <div class="ikea-delivery-row clickable" (click)="abrirModalStock()">
+              <svg class="ikea-delivery-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+              <div class="ikea-delivery-info">
+                <strong>Tienda</strong>
+                <span class="ikea-delivery-subtext">Consultar stock en tienda</span>
+              </div>
+              <svg class="ikea-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Acciones (Cantidad + Agregar al carrito) -->
+        <div class="ikea-actions-row">
+          <div class="ikea-quantity-selector" style="width: 140px;">
+            <button 
+              class="ikea-qty-btn" 
+              (click)="cambiarCantidad(cantidadSeleccionada - 1)"
+              [disabled]="cantidadSeleccionada <= 1">−</button>
+            <span class="ikea-qty-number" style="flex:1; text-align:center;">{{cantidadSeleccionada}}</span>
+            <button 
+              class="ikea-qty-btn" 
+              (click)="cambiarCantidad(cantidadSeleccionada + 1)"
+              [disabled]="(controlaStock() && cantidadSeleccionada >= getStockRealDisponible()) || (!controlaStock() && cantidadSeleccionada >= 99)">+</button>
+          </div>
+
+          <div class="ikea-add-btn-wrapper">
             <app-add-to-cart-btn 
               [producto]="producto!" 
               [variante]="varianteSeleccionada!" 
@@ -125,93 +182,15 @@
               [isPremium]="true"
               [disabled]="!puedeComprar"
               size="lg"
-              theme="whatsapp">
+              theme="black">
             </app-add-to-cart-btn>
           </div>
         </div>
-
-        <!-- Contenedor de información SIN SCROLL -->
-        <div class="producto-info-container">
-          
-          <!-- Selección de variantes -->
-          <div *ngIf="variantes.length > 0" class="opciones-fixed-container">
-            <div class="section-header-fixed">
-              <h3 class="section-title-fixed">Seleccionar variante</h3>
-              <span class="section-subtitle">Selecciona una opción para actualizar el precio</span>
-            </div>
-            
-            <div class="opciones-fixed-grid">
-              <div 
-                *ngFor="let variante of variantes" 
-                class="opcion-fixed-item"
-                [class.opcion-fixed-seleccionada]="varianteSeleccionada?.id === variante.id"
-                (click)="seleccionarVariante(variante)">
-                <div class="opcion-fixed-contenido">
-                  <div class="opcion-fixed-info">
-                    <span class="opcion-fixed-texto">{{variante.nombre}}</span>
-                    <span class="opcion-fixed-precio">{{formatearPrecio(variante.precio)}}</span>
-                  </div>
-                  <div class="opcion-fixed-checkbox">
-                    <div class="opcion-fixed-checkmark" *ngIf="varianteSeleccionada?.id === variante.id">✓</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Wrapper para cantidad y descripción en la misma línea -->
-          <div class="acciones-secundarias-row">
-            <!-- Selector de cantidad Elegante -->
-            <div class="cantidad-selector-elegante">
-              <div class="section-header-compact" style="display:flex; justify-content:space-between; align-items:center; width: 100%">
-                <span class="section-subtitle-compact">Cantidad</span>
-                <!-- Badge de Stock -->
-                <div *ngIf="controlaStock()" class="stock-badge" [ngClass]="{'stock-high': getStockRealDisponible() > 5, 'stock-low': getStockRealDisponible() <= 5 && getStockRealDisponible() > 0, 'stock-out': getStockRealDisponible() === 0}">
-                  <span class="stock-dot"></span>
-                  <span class="stock-text" *ngIf="getStockRealDisponible() > 0">{{getStockRealDisponible()}} disp.</span>
-                  <span class="stock-text" *ngIf="getStockRealDisponible() === 0">Agotado</span>
-                </div>
-              </div>
-              
-              <div class="cantidad-control-grupo">
-                <button 
-                  class="btn-cantidad-minimal" 
-                  (click)="cambiarCantidad(cantidadSeleccionada - 1)"
-                  [disabled]="cantidadSeleccionada <= 1">
-                  −
-                </button>
-                <span class="cantidad-numero-elegante">{{cantidadSeleccionada}}</span>
-                <button 
-                  class="btn-cantidad-minimal" 
-                  (click)="cambiarCantidad(cantidadSeleccionada + 1)"
-                  [disabled]="(controlaStock() && cantidadSeleccionada >= getStockRealDisponible()) || (!controlaStock() && cantidadSeleccionada >= 99)">
-                  +
-                </button>
-                <span class="unidad-texto-elegante">{{producto.unidad || 'Unidades'}}</span>
-              </div>
-            </div>
-
-            <!-- Botón para abrir descripción en modal -->
-            <button class="btn-ver-descripcion-minimal" (click)="abrirModalDescripcion()" title="Ver descripción del producto">
-              <svg class="icon-desc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-              <span>Ver descripción detallada</span>
-            </button>
-          </div>
-
-          <!-- Acciones adicionales -->
-          <div class="acciones-adicionales-container">
-            <button class="btn-volver-fixed" (click)="volverAProductos()" title="Volver al catálogo de productos">
-              <span class="btn-icon-fixed">←</span>
-              <span class="btn-text-fixed">Volver</span>
-            </button>
-            
-            <button class="btn-categoria-fixed" (click)="verMasDeEstaCategoria()" *ngIf="producto.categoria" [title]="'Ver más productos de ' + producto.categoria">
-              <span class="btn-icon-fixed">→</span>
-              <span class="btn-text-fixed">Más de {{producto.categoria}}</span>
-            </button>
-          </div>
-
-        </div> <!-- Fin del contenedor info -->
+        
+        <div class="ikea-footer-links">
+           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="ikea-footer-icon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+           <span>Derecho a retracto: <a href="#">Conoce los plazos y exclusiones</a></span>
+        </div>
 
       </div> <!-- Fin columna derecha -->
 
@@ -224,7 +203,10 @@
 <div *ngIf="mostrarModalDescripcion" class="descripcion-modal-backdrop" (click)="cerrarModalDescripcion()">
   <div class="descripcion-modal-container" (click)="$event.stopPropagation()">
     <button class="descripcion-modal-close" (click)="cerrarModalDescripcion()" title="Cerrar (Esc)">
-      ✕
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
     </button>
     <div class="descripcion-modal-content">
       <h2 class="descripcion-modal-title">Descripción del producto</h2>
@@ -232,6 +214,84 @@
         {{descripcionBase || 'Descripción no disponible'}}
       </div>
       <button class="descripcion-modal-button" (click)="cerrarModalDescripcion()">
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Entrega -->
+<div *ngIf="mostrarModalEntrega" class="descripcion-modal-backdrop" (click)="cerrarModalEntrega()">
+  <div class="descripcion-modal-container" (click)="$event.stopPropagation()">
+    <button class="descripcion-modal-close" (click)="cerrarModalEntrega()" title="Cerrar (Esc)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div class="descripcion-modal-content">
+      <h2 class="descripcion-modal-title" style="display: flex; align-items: center; gap: 12px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+        Especificaciones de Entrega
+      </h2>
+      <div class="descripcion-modal-text">
+        <div style="margin-bottom: 24px;">
+          <h3 style="font-size: 1.1rem; color: #111; margin-bottom: 8px;">Envíos en Armenia, Quindío</h3>
+          <p style="margin: 0; color: #444; display: flex; align-items: center; gap: 8px;">
+            <span style="display: inline-block; width: 8px; height: 8px; background: #25d366; border-radius: 50%;"></span>
+            <strong>1 a 3 días hábiles</strong>
+          </p>
+          <p style="margin: 8px 0 0 16px; font-size: 0.95rem;">Entregas rápidas directamente a la puerta de tu domicilio u obra. Los despachos locales cuentan con prioridad.</p>
+        </div>
+        <div style="margin-bottom: 24px;">
+          <h3 style="font-size: 1.1rem; color: #111; margin-bottom: 8px;">Envíos Nacionales</h3>
+          <p style="margin: 0; color: #444; display: flex; align-items: center; gap: 8px;">
+            <span style="display: inline-block; width: 8px; height: 8px; background: #25d366; border-radius: 50%;"></span>
+            <strong>3 a 7 días hábiles</strong>
+          </p>
+          <p style="margin: 8px 0 0 16px; font-size: 0.95rem;">Despachamos a toda Colombia a través de nuestras transportadoras aliadas. El tiempo de tránsito depende del municipio de destino y la gestión de la transportadora.</p>
+        </div>
+        <div style="padding: 16px; background: #f9f9f9; border-radius: 8px; border-left: 4px solid #111;">
+          <h4 style="margin: 0 0 8px 0; color: #111; font-size: 0.95rem;">Información Adicional</h4>
+          <ul style="margin: 0; padding-left: 20px; font-size: 0.9rem; color: #555;">
+            <li style="margin-bottom: 4px;">Los tiempos comienzan a contar a partir de la confirmación del pago.</li>
+            <li style="margin-bottom: 4px;">Pedidos realizados en fines de semana o festivos se procesan el siguiente día hábil.</li>
+            <li>Para pedidos de gran volumen, los tiempos y costos de flete pueden variar y serán notificados.</li>
+          </ul>
+        </div>
+      </div>
+      <button class="descripcion-modal-button" (click)="cerrarModalEntrega()">
+        Entendido
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Tienda / Stock -->
+<div *ngIf="mostrarModalStock" class="descripcion-modal-backdrop" (click)="cerrarModalStock()">
+  <div class="descripcion-modal-container" (click)="$event.stopPropagation()">
+    <button class="descripcion-modal-close" (click)="cerrarModalStock()" title="Cerrar (Esc)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div class="descripcion-modal-content">
+      <h2 class="descripcion-modal-title" style="display: flex; align-items: center; gap: 12px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        Disponibilidad en Tienda
+      </h2>
+      <div class="descripcion-modal-text">
+        <div style="text-align: center; margin: 30px 0;">
+          <div class="ikea-stock-status" style="display: inline-flex; font-size: 1.4rem; justify-content: center; background: #f5f5f5; padding: 16px 32px; border-radius: 12px;">
+            <span class="ikea-stock-dot" style="width: 12px; height: 12px;" [ngClass]="{'green': getStockRealDisponible() > 0, 'red': getStockRealDisponible() === 0}"></span>
+            <span *ngIf="getStockRealDisponible() > 0" style="color: #111;"><strong>{{getStockRealDisponible()}}</strong> unidades disponibles</span>
+            <span *ngIf="getStockRealDisponible() === 0" style="color: #111;">Producto actualmente agotado</span>
+          </div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+          <h3 style="font-size: 1.1rem; color: #111; margin-bottom: 8px;">Punto de Venta Principal</h3>
+          <p style="margin: 0; color: #444;">
+            Puedes acercarte a nuestra sede principal para compras directas o para recoger pedidos web (opción de recogida en tienda).
+          </p>
+        </div>
+      </div>
+      <button class="descripcion-modal-button" (click)="cerrarModalStock()">
         Cerrar
       </button>
     </div>
