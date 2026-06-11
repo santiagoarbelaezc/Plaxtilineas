@@ -1,9 +1,17 @@
 <div class="description-producto-container">
   
   <!-- Estado de carga -->
-  <div *ngIf="cargando" class="loading-container">
-    <div class="loading-spinner"></div>
-    <p class="loading-text">Cargando detalles del producto...</p>
+  <div *ngIf="cargando" class="producto-layout-container skeleton-layout">
+    <div class="producto-columna-izquierda">
+      <div class="skeleton-box skeleton-image"></div>
+      <div class="skeleton-box skeleton-price"></div>
+    </div>
+    <div class="producto-columna-derecha">
+      <div class="skeleton-box skeleton-header"></div>
+      <div class="skeleton-box skeleton-text"></div>
+      <div class="skeleton-box skeleton-options"></div>
+      <div class="skeleton-box skeleton-text-large"></div>
+    </div>
   </div>
 
   <!-- Estado de error -->
@@ -64,17 +72,11 @@
           </div>
         </div>
 
-        <!-- Precio fijo debajo de la imagen -->
-        <div class="precio-fixed-container">
-          <div class="precio-fixed-header">
-            <span class="precio-fixed-label">Precio:</span>
-            <span class="precio-fixed-badge" *ngIf="varianteSeleccionada">Seleccionado</span>
-          </div>
-          <div class="precio-fixed-valor">
-            <span class="precio-numero-fixed">{{formatearPrecio(precioConCantidad)}}</span>
-          </div>
-          <div class="precio-fixed-nota" *ngIf="variantes.length > 0">
-            <small>{{cantidadSeleccionada}} {{cantidadSeleccionada === 1 ? 'unidad' : 'unidades'}} x {{formatearPrecio(precioActual)}}</small>
+        <!-- Resumen de Precio (ZONA DE CONVERSIÓN RÁPIDA) -->
+        <div class="conversion-quick-container">
+          <div class="precio-total-preview">
+            <span class="total-label">Subtotal del pedido</span>
+            <span class="total-valor-destacado">{{formatearPrecio(precioConCantidad)}}</span>
           </div>
         </div>
 
@@ -122,7 +124,7 @@
               [producto]="producto!" 
               [variante]="varianteSeleccionada!" 
               [cantidad]="cantidadSeleccionada"
-              [isMinimal]="true"
+              [isPremium]="true"
               size="lg"
               theme="whatsapp">
             </app-add-to-cart-btn>
@@ -158,44 +160,38 @@
             </div>
           </div>
 
-          <!-- Selector de cantidad -->
-          <!-- Selector de cantidad Elegante -->
-          <div class="cantidad-selector-elegante">
-            <div class="section-header-compact">
-              <span class="section-subtitle-compact">Cantidad</span>
+          <!-- Wrapper para cantidad y descripción en la misma línea -->
+          <div class="acciones-secundarias-row">
+            <!-- Selector de cantidad Elegante -->
+            <div class="cantidad-selector-elegante">
+              <div class="section-header-compact">
+                <span class="section-subtitle-compact">Cantidad</span>
+              </div>
+              
+              <div class="cantidad-control-grupo">
+                <button 
+                  class="btn-cantidad-minimal" 
+                  (click)="cambiarCantidad(cantidadSeleccionada - 1)"
+                  [disabled]="cantidadSeleccionada <= 1">
+                  −
+                </button>
+                <span class="cantidad-numero-elegante">{{cantidadSeleccionada}}</span>
+                <button 
+                  class="btn-cantidad-minimal" 
+                  (click)="cambiarCantidad(cantidadSeleccionada + 1)"
+                  [disabled]="cantidadSeleccionada >= 20">
+                  +
+                </button>
+                <span class="unidad-texto-elegante">{{producto.unidad || 'Unidades'}}</span>
+              </div>
             </div>
-            
-            <div class="cantidad-control-grupo">
-              <button 
-                class="btn-cantidad-minimal" 
-                (click)="cambiarCantidad(cantidadSeleccionada - 1)"
-                [disabled]="cantidadSeleccionada <= 1">
-                −
-              </button>
-              <span class="cantidad-numero-elegante">{{cantidadSeleccionada}}</span>
-              <button 
-                class="btn-cantidad-minimal" 
-                (click)="cambiarCantidad(cantidadSeleccionada + 1)"
-                [disabled]="cantidadSeleccionada >= 20">
-                +
-              </button>
-              <span class="unidad-texto-elegante">{{producto.unidad || 'Unidades'}}</span>
-            </div>
-          </div>
 
-          <!-- Resumen de Precio (ZONA DE CONVERSIÓN RÁPIDA) -->
-          <div class="conversion-quick-container">
-            <div class="precio-total-preview">
-              <span class="total-label">Subtotal del pedido</span>
-              <span class="total-valor-destacado">{{formatearPrecio(precioConCantidad)}}</span>
-            </div>
+            <!-- Botón para abrir descripción en modal -->
+            <button class="btn-ver-descripcion-minimal" (click)="abrirModalDescripcion()" title="Ver descripción del producto">
+              <svg class="icon-desc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              <span>Ver descripción detallada</span>
+            </button>
           </div>
-
-          <!-- Botón para abrir descripción en modal -->
-          <button class="btn-ver-descripcion-minimal" (click)="abrirModalDescripcion()" title="Ver descripción del producto">
-            <svg class="icon-desc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            Ver descripción detallada
-          </button>
 
           <!-- Acciones adicionales -->
           <div class="acciones-adicionales-container">
