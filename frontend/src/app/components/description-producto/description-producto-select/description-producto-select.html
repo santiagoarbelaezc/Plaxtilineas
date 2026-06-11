@@ -72,12 +72,10 @@
           </div>
         </div>
 
-        <!-- Resumen de Precio (ZONA DE CONVERSIÓN RÁPIDA) -->
-        <div class="conversion-quick-container">
-          <div class="precio-total-preview">
-            <span class="total-label">Subtotal del pedido</span>
-            <span class="total-valor-destacado">{{formatearPrecio(precioConCantidad)}}</span>
-          </div>
+        <!-- Resumen de Precio -->
+        <div class="subtotal-minimal">
+          <span class="subtotal-label">Subtotal del pedido:</span>
+          <span class="subtotal-valor">{{formatearPrecio(precioConCantidad)}}</span>
         </div>
 
         <!-- Acciones rápidas en columna izquierda -->
@@ -125,6 +123,7 @@
               [variante]="varianteSeleccionada!" 
               [cantidad]="cantidadSeleccionada"
               [isPremium]="true"
+              [disabled]="!puedeComprar"
               size="lg"
               theme="whatsapp">
             </app-add-to-cart-btn>
@@ -164,8 +163,14 @@
           <div class="acciones-secundarias-row">
             <!-- Selector de cantidad Elegante -->
             <div class="cantidad-selector-elegante">
-              <div class="section-header-compact">
+              <div class="section-header-compact" style="display:flex; justify-content:space-between; align-items:center; width: 100%">
                 <span class="section-subtitle-compact">Cantidad</span>
+                <!-- Badge de Stock -->
+                <div *ngIf="controlaStock()" class="stock-badge" [ngClass]="{'stock-high': getStockRealDisponible() > 5, 'stock-low': getStockRealDisponible() <= 5 && getStockRealDisponible() > 0, 'stock-out': getStockRealDisponible() === 0}">
+                  <span class="stock-dot"></span>
+                  <span class="stock-text" *ngIf="getStockRealDisponible() > 0">{{getStockRealDisponible()}} disp.</span>
+                  <span class="stock-text" *ngIf="getStockRealDisponible() === 0">Agotado</span>
+                </div>
               </div>
               
               <div class="cantidad-control-grupo">
@@ -179,7 +184,7 @@
                 <button 
                   class="btn-cantidad-minimal" 
                   (click)="cambiarCantidad(cantidadSeleccionada + 1)"
-                  [disabled]="cantidadSeleccionada >= 20">
+                  [disabled]="cantidadSeleccionada >= 20 || (controlaStock() && cantidadSeleccionada >= getStockRealDisponible())">
                   +
                 </button>
                 <span class="unidad-texto-elegante">{{producto.unidad || 'Unidades'}}</span>

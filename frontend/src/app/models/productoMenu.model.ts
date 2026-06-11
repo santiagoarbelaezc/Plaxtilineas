@@ -9,6 +9,8 @@ export interface ProductoMenu {
   subcategoria: string; // nombre de la subcategoría
   categoria: string;    // nombre de la categoría (viene del JOIN)
   unidad?: string; // ej: kg, litros, metros, piezas
+  stock?: number;
+  controlar_stock?: boolean | number;
   nuevaImagen?: File;   // para carga de nueva imagen (opcional)
 }
 

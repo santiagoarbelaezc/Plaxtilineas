@@ -12,6 +12,7 @@ import { MenuStateService } from '../../../services/menu-state.service';
 import { CarouselSignalService } from '../../../services/carousel-signal.service';
 import { PrecioCantidadService } from '../../../services/precio-cantidad.service';
 import { AddToCartBtnComponent } from '../../../cart/add-to-cart-btn/add-to-cart-btn.component';
+import { CartService } from '../../../services/cart.service';
 
 @Component({
   selector: 'app-description-producto-select',
@@ -62,7 +63,8 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     private variantesService: VariantesService,
     private menuStateService: MenuStateService,
     private carouselSignalService: CarouselSignalService,
-    private precioCantidadService: PrecioCantidadService
+    private precioCantidadService: PrecioCantidadService,
+    private cartService: CartService
   ) {}
 
   ngOnInit() {
@@ -222,8 +224,44 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
    * Cambiar cantidad seleccionada y actualizar precio
    */
   cambiarCantidad(cantidad: number): void {
-    this.cantidadSeleccionada = this.precioCantidadService.validarCantidad(cantidad);
+    // [Seguridad] Validar que no se pueda exceder el stock físico real
+    const stockDisponible = this.getStockRealDisponible();
+    
+    // Si hay control de stock y se intenta pedir más de lo disponible, forzamos al límite
+    let cantidadAValidar = cantidad;
+    if (this.controlaStock() && cantidad > stockDisponible) {
+      console.warn(`[Seguridad] Intento de seleccionar más del stock disponible (${stockDisponible}). Forzando al máximo permitido.`);
+      cantidadAValidar = stockDisponible > 0 ? stockDisponible : 1; // Si es 0 no dejamos pedir pero el botón de compra se deshabilita
+    }
+
+    this.cantidadSeleccionada = this.precioCantidadService.validarCantidad(cantidadAValidar);
     this.actualizarPrecioConCantidad();
+  }
+
+  // --- MÉTODOS DE MANEJO DE STOCK Y SEGURIDAD --- //
+  
+  controlaStock(): boolean {
+    return this.producto?.controlar_stock === true || this.producto?.controlar_stock === 1;
+  }
+
+  getStockRealDisponible(): number {
+    if (!this.producto || !this.controlaStock() || this.producto.stock === undefined) {
+      return 999; // Límite arbitrario alto si no hay control
+    }
+    
+    // El stock real es el stock en base de datos MENOS lo que ya tiene en el carrito de este producto
+    const id = this.cartService.generateItemId(this.producto.id, this.varianteSeleccionada?.id);
+    const cartItems = (this.cartService as any).itemsSubject?.getValue() || [];
+    const itemInCart = cartItems.find((i: any) => i.id === id);
+    const cantidadEnCarrito = itemInCart ? itemInCart.cantidad : 0;
+    
+    const disponible = this.producto.stock - cantidadEnCarrito;
+    return disponible > 0 ? disponible : 0;
+  }
+  
+  get puedeComprar(): boolean {
+    if (!this.controlaStock()) return true;
+    return this.getStockRealDisponible() > 0 && this.cantidadSeleccionada <= this.getStockRealDisponible();
   }
 
   /**
@@ -489,7 +527,9 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
       subcategoria_id: productoEditable.subcategoria_id,
       subcategoria: productoEditable.subcategoria,
       categoria: productoEditable.categoria,
-      unidad: productoEditable.unidad || 'unidades'
+      unidad: productoEditable.unidad || 'unidades',
+      stock: productoEditable.stock,
+      controlar_stock: productoEditable.controlar_stock
     };
   }
 }

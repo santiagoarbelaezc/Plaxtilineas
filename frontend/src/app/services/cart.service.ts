@@ -34,13 +34,29 @@ export class CartService {
     return varianteId ? `${productoId}-${varianteId}` : `${productoId}`;
   }
 
-  addToCart(producto: Producto, cantidad: number = 1, variante?: Variante) {
+  addToCart(producto: Producto, cantidad: number = 1, variante?: Variante): boolean {
     const items = this.itemsSubject.getValue();
     const id = this.generateItemId(producto.id, variante?.id);
     const existingIndex = items.findIndex(item => item.id === id);
+    
+    let cantidadResultante = cantidad;
+    if (existingIndex > -1) {
+      cantidadResultante = items[existingIndex].cantidad + cantidad;
+    }
+
+    // Validación estricta de stock
+    // (Asumimos controlar_stock true/1 si la base de datos lo manda)
+    const controlaStock = producto.controlar_stock === true || producto.controlar_stock === 1;
+    if (controlaStock && producto.stock !== undefined) {
+      if (cantidadResultante > producto.stock) {
+        console.warn(`[Seguridad] Intento de añadir más cantidad (${cantidadResultante}) del stock disponible (${producto.stock}).`);
+        // Bloqueamos la acción devolviendo falso
+        return false;
+      }
+    }
 
     if (existingIndex > -1) {
-      items[existingIndex].cantidad += cantidad;
+      items[existingIndex].cantidad = cantidadResultante;
     } else {
       const precioUnitario = variante ? variante.precio : producto.precio;
       items.push({
@@ -55,6 +71,7 @@ export class CartService {
     this.saveCart(items);
     // Disparar evento para abrir el drawer automáticamente
     this.openDrawer();
+    return true;
   }
 
   removeFromCart(id: string) {
@@ -63,14 +80,25 @@ export class CartService {
     this.saveCart(updated);
   }
 
-  updateQuantity(id: string, cantidad: number) {
-    if (cantidad < 1) return;
+  updateQuantity(id: string, cantidad: number): boolean {
+    if (cantidad < 1) return false;
     const items = this.itemsSubject.getValue();
     const item = items.find(i => i.id === id);
     if (item) {
+      // Validación estricta de stock
+      const controlaStock = item.producto.controlar_stock === true || item.producto.controlar_stock === 1;
+      if (controlaStock && item.producto.stock !== undefined) {
+        if (cantidad > item.producto.stock) {
+          console.warn(`[Seguridad] Intento de actualizar a una cantidad (${cantidad}) mayor al stock (${item.producto.stock}).`);
+          return false;
+        }
+      }
+
       item.cantidad = cantidad;
       this.saveCart(items);
+      return true;
     }
+    return false;
   }
 
   clearCart() {

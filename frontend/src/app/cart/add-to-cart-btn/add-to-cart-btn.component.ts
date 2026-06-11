@@ -10,7 +10,7 @@ import { Variante } from '../../models/variante.model';
   imports: [CommonModule],
   template: `
     @if (!isAdded) {
-      <button (click)="addToCart()" [class]="getButtonClasses()" [ngStyle]="getButtonStyle()">
+      <button (click)="addToCart()" [disabled]="disabled" [class]="getButtonClasses()" [ngStyle]="getButtonStyle()">
         <svg xmlns="http://www.w3.org/2000/svg" [attr.width]="getIconSize()" [attr.height]="getIconSize()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:rotate-90"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         Agregar al Carrito
       </button>
@@ -30,6 +30,7 @@ export class AddToCartBtnComponent {
   @Input() isMinimal: boolean = false;
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
   @Input() theme: 'corporate' | 'whatsapp' = 'corporate';
+  @Input() disabled: boolean = false;
 
   isAdded = false;
   private cartService = inject(CartService);
@@ -72,6 +73,10 @@ export class AddToCartBtnComponent {
       return `w-full ${hClass} ${roundedClass} bg-white border-2 border-[${primaryGreen}] text-[${primaryGreen}] ${textClass} font-bold flex items-center justify-center gap-2 cursor-default transition-all shadow-sm`;
     }
     
+    if (this.disabled) {
+      return `w-full ${hClass} ${roundedClass} bg-gray-200 text-gray-500 ${textClass} font-bold flex items-center justify-center gap-2 cursor-not-allowed transition-all border-none`;
+    }
+
     const standardBg = isWp 
       ? 'bg-gradient-to-br from-[#1ba852] to-[#0d6a5d]' 
       : 'bg-gradient-to-br from-[#368c44] to-[#25d366]';
@@ -91,7 +96,10 @@ export class AddToCartBtnComponent {
   }
 
   addToCart() {
-    if (!this.producto) return;
+    if (!this.producto || this.disabled) {
+      console.warn('[Seguridad] Intento de agregar al carrito bloqueado (botón deshabilitado o sin producto).');
+      return;
+    }
     
     // Activa la notificación visual de 'En Desarrollo'
     this.isAdded = true;

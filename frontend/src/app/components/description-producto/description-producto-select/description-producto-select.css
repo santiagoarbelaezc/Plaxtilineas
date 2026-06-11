@@ -623,44 +623,65 @@
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
-}
-
-.conversion-quick-container:hover {
-  background: white;
-  border-color: #368C44;
-  box-shadow: 0 10px 15px -3px rgba(54, 140, 68, 0.1);
-}
-
-.conversion-quick-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, #368c44, #25d366);
-}
-
-.precio-total-preview {
+/* ====== SUBTOTAL MINIMAL ====== */
+.subtotal-minimal {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0 24px 0;
+  margin-top: 16px;
+  border-top: 1px solid #f3f4f6;
+  font-family: var(--font-primary);
 }
 
-.total-label {
+.subtotal-label {
+  font-size: 1.05rem;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.subtotal-valor {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.5px;
+}
+
+/* ====== STOCK BADGE ====== */
+.stock-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
   font-size: 0.75rem;
-  text-transform: uppercase;
-  color: #718096;
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.05em;
+  font-weight: 700;
+  font-family: var(--font-primary);
 }
 
-.total-valor-destacado {
-  font-size: 1.75rem;
-  font-weight: var(--font-weight-bold);
-  color: #2d3748;
-  letter-spacing: -0.02em;
+.stock-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
 }
+
+.stock-high {
+  background-color: #dcfce7;
+  color: #166534;
+}
+.stock-high .stock-dot { background-color: #16a34a; }
+
+.stock-low {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+.stock-low .stock-dot { background-color: #d97706; }
+
+.stock-out {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+.stock-out .stock-dot { background-color: #dc2626; }
 
 /* ====== BOTON DESCRIPCION MINIMAL ====== */
 .acciones-secundarias-row {
@@ -677,28 +698,29 @@
 
 .btn-ver-descripcion-minimal {
   flex: 1;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  color: #166534;
+  background: white;
+  border: 1px solid #d1d5db;
+  color: #4b5563;
   font-size: 0.95rem;
-  font-weight: var(--font-weight-bold);
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   cursor: pointer;
-  padding: 10px 16px;
-  border-radius: 16px;
-  transition: all 0.3s ease;
+  padding: 12px 16px;
+  border-radius: 12px;
+  transition: all 0.2s ease-in-out;
   margin-bottom: 0;
-  box-shadow: 0 2px 4px rgba(54, 140, 68, 0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .btn-ver-descripcion-minimal:hover {
-  background: #dcfce7;
-  border-color: #86efac;
+  background: #f8fafc;
+  border-color: #368C44;
+  color: #368C44;
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px -1px rgba(54, 140, 68, 0.15);
+  box-shadow: 0 4px 12px rgba(54, 140, 68, 0.1);
 }
 
 .icon-desc {
@@ -901,30 +923,30 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 16px;
+  padding: 14px 20px;
   border-radius: 12px;
   font-size: 0.95rem;
-  font-weight: var(--font-weight-semibold);
-  transition: all 0.3s ease;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
   cursor: pointer;
   flex: 1;
   min-width: 140px;
-  border: 1px solid transparent;
   font-family: var(--font-primary);
 }
 
 .btn-volver-fixed {
-  background: #f1f5f9;
-  color: #475569;
-  border-color: transparent;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+  background: white;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .btn-volver-fixed:hover {
-  background: #e2e8f0;
-  color: #1e293b;
+  background: #f9fafb;
+  color: #111827;
+  border-color: #9ca3af;
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .btn-volver-fixed:active {
@@ -933,17 +955,17 @@
 
 .btn-categoria-fixed {
   background: #f0fdf4;
-  color: #166534;
-  border-color: #bbf7d0;
-  box-shadow: 0 2px 4px 0 rgba(54, 140, 68, 0.05);
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+  box-shadow: 0 1px 2px rgba(22, 163, 74, 0.05);
 }
 
 .btn-categoria-fixed:hover {
   background: #dcfce7;
-  color: #14532d;
+  color: #15803d;
   border-color: #86efac;
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px -1px rgba(54, 140, 68, 0.15);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.15);
 }
 
 .btn-categoria-fixed:active {
