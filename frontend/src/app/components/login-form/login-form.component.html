@@ -321,3 +321,24 @@
     </button>
   </div>
 </div>
+
+<!-- Modal Éxito (Login) -->
+<div class="success-modal-overlay" *ngIf="showSuccessModal" (click)="closeSuccessModal()">
+  <div class="success-modal-card" 
+       [ngClass]="(themeService.theme$ | async) === 'dark' ? 'modal-dark' : 'modal-light'"
+       (click)="$event.stopPropagation()">
+    
+    <div class="success-modal-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+    
+    <h3 class="success-modal-title">¡Bienvenido!</h3>
+    <p class="success-modal-body">{{ successMsg }}</p>
+    
+    <button type="button" class="btn-success-confirm" (click)="closeSuccessModal()">
+      Aceptar
+    </button>
+  </div>
+</div>
