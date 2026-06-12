@@ -7,11 +7,12 @@ import { SocialButtonsComponent } from '../social-buttons/social-buttons.compone
 import { CarouselInteres } from './carousel-interes/carousel-interes';
 import { CarouselRelacionados } from './carousel-relacionados/carousel-relacionados';
 import { DescriptionProductoSelect } from './description-producto-select/description-producto-select';
+import { UtilGridProductoOther } from '../grid-producto/util-grid-producto-other/util-grid-producto-other';
 
 @Component({
   selector: 'app-description-producto',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, Footer, SocialButtonsComponent, CarouselInteres, DescriptionProductoSelect, CarouselRelacionados],
+  imports: [CommonModule, NavbarComponent, Footer, SocialButtonsComponent, CarouselInteres, DescriptionProductoSelect, CarouselRelacionados, UtilGridProductoOther],
   templateUrl: './description-producto.html',
   styleUrl: './description-producto.css'
 })

@@ -1,7 +1,7 @@
 .product-card {
   width: 100%;
   background: white;
-  border-radius: 24px;
+  border-radius: 8px; /* Borde corporativo elegante */
   overflow: hidden;
   border: 1px solid #f3f4f6;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -29,7 +29,7 @@
   position: absolute;
   width: 150%;
   height: 150%;
-  background: radial-gradient(circle, rgba(54, 140, 68, 0.05) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.03) 0%, transparent 70%); /* Glow neutral */
   z-index: 1;
 }
 
@@ -43,7 +43,7 @@
 .category-label {
   font-size: 10px;
   font-weight: 700;
-  color: #368C44;
+  color: #666;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -58,8 +58,8 @@
 
 .price-tag {
   font-size: 1.25rem;
-  font-weight: 800;
-  color: #368C44;
+  font-weight: 600; /* Menos grueso */
+  color: #111;
 }
 
 .view-btn {
@@ -80,9 +80,9 @@
 }
 
 .view-btn:hover {
-  background: #368C44;
+  background: #111;
   color: white;
-  border-color: #368C44;
+  border-color: #111;
 }
 
 /* Hover States */

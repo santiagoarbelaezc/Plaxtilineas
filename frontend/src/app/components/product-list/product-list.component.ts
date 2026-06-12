@@ -14,7 +14,7 @@ import { ProductoBackgroundService } from '../../services/producto-background.se
 @Component({
   selector: 'app-product-list-component',
   standalone: true,
-  imports: [CommonModule, ProductoBackgroundComponent, AddToCartBtnComponent],
+  imports: [CommonModule, ProductoBackgroundComponent],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css'],
   animations: [

@@ -28,7 +28,7 @@
 }
 
 .section-title span {
-  color: #368C44;
+  color: #111;
 }
 
 .section-subtitle {
@@ -82,7 +82,7 @@
   gap: 0;
   width: 100%;
   background: #ffffff;
-  border-radius: 16px;
+  border-radius: 8px; /* Borde elegante */
   border: 1px solid #f3f4f6;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -93,8 +93,8 @@
 
 .product-card-styled:hover {
   transform: translateY(-8px);
-  border-color: #368C44;
-  box-shadow: 0 20px 25px -5px rgba(54, 140, 68, 0.15);
+  border-color: #dfdfdf;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
 }
 
 .card-visual {
@@ -124,7 +124,7 @@
 .card-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(54, 140, 68, 0.1) 0%, rgba(54, 140, 68, 0) 100%);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, transparent 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
   z-index: 3;
@@ -140,7 +140,7 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  background: #368C44;
+  background: #111;
   color: #fff;
   padding: 4px 10px;
   border-radius: 6px;
@@ -189,7 +189,7 @@
 }
 
 .product-card-styled:hover .product-title {
-  color: #368C44;
+  color: #111;
 }
 
 .product-price {
@@ -199,7 +199,7 @@
 .price-amount {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #368C44;
+  color: #111;
 }
 
 .cart-btn-wrapper {
@@ -228,10 +228,10 @@
 }
 
 .nav-btn:hover {
-  background: #368C44;
+  background: #111;
   color: white;
-  border-color: #368C44;
-  box-shadow: 0 10px 15px -3px rgba(54, 140, 68, 0.3);
+  border-color: #111;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
   transform: scale(1.1);
 }
 
@@ -256,7 +256,7 @@
 
 .indicator-dot.active {
   width: 24px;
-  background: #368C44;
+  background: #111;
 }
 
 /* Empty & Loading States */
@@ -289,12 +289,12 @@
   height: auto;
   margin-bottom: 12px;
   animation: pulse-logo 1.5s ease-in-out infinite;
-  filter: drop-shadow(0 4px 6px rgba(54, 140, 68, 0.2));
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
 }
 
 @keyframes pulse-logo {
   0% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 8px 12px rgba(54, 140, 68, 0.4)); }
+  50% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.2)); }
   100% { transform: scale(1); opacity: 0.8; }
 }
 
@@ -309,9 +309,9 @@
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: #ffffff;
-  color: #368C44;
-  border: 1px solid #e5e7eb;
+  background: #111;
+  color: white;
+  border: none;
   border-radius: 8px;
   font-size: 0.9rem;
   font-weight: 600;
@@ -320,11 +320,10 @@
 }
 
 .view-all-btn:hover {
-  background: #f9fafb;
-  border-color: #368C44;
-  color: #368C44;
+  background: #000;
+  color: white;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(54, 140, 68, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .arrow-icon {

@@ -17,7 +17,7 @@
 .small-tag {
   font-size: 10px;
   font-weight: 700;
-  color: #368C44;
+  color: #111;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -30,7 +30,7 @@
 }
 
 .carousel-title span {
-  color: #368C44;
+  color: #111;
 }
 
 .nav-controls {
@@ -53,9 +53,9 @@
 }
 
 .nav-btn:hover:not(:disabled) {
-  background: #368C44;
+  background: #111;
   color: white;
-  border-color: #368C44;
+  border-color: #111;
   transform: scale(1.05);
 }
 
@@ -103,7 +103,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   padding: 10px;
-  border-radius: 20px;
+  border-radius: 8px; /* Borde elegante */
 }
 
 .product-mini-card:hover {
@@ -114,7 +114,7 @@
   width: 100%;
   aspect-ratio: 1 / 1;
   background: #ffffff;
-  border-radius: 18px;
+  border-radius: 6px; /* Borde interior proporcional */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -151,8 +151,8 @@
 
 .mini-price {
   font-size: 0.9rem;
-  font-weight: 800;
-  color: #368C44;
+  font-weight: 600; /* Menos grueso */
+  color: #111;
 }
 
 /* Hover States */
@@ -161,7 +161,7 @@
 }
 
 .product-mini-card:hover h5 {
-  color: #368C44;
+  color: #111;
 }
 
 /* Scroll Indicator */
@@ -175,7 +175,7 @@
 
 .indicator-bar {
   height: 100%;
-  background: #368C44;
+  background: #111;
   transition: width 0.3s ease;
 }
 

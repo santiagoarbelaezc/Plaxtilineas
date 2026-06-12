@@ -24,7 +24,7 @@
 .productos-relacionados-section .section-title {
   font-size: 1.8rem;
   font-weight: var(--font-weight-bold);
-  color: #2d3748;
+  color: #111; /* Color negro elegante */
   margin-bottom: 0.5rem;
   letter-spacing: -0.02em;
   position: relative;
