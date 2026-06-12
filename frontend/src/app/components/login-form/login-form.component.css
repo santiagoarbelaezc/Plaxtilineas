@@ -11,13 +11,9 @@
   position: relative;
 }
 
-.login-wrapper.bg-light {
-  /* Fondo verde más visible y elegante */
-  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-}
-
+.login-wrapper.bg-light,
 .login-wrapper.bg-dark {
-  background-color: #0b0f19;
+  background-color: #111827;
 }
 
 /* Botón regresar estilo píldora flotante */
@@ -41,20 +37,20 @@
   box-shadow: 0 4px 15px rgba(0,0,0,0.06);
   transition: all 0.3s ease;
   text-decoration: none;
-  border: 1px solid rgba(54, 140, 68, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .btn-regresar-pill:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(54, 140, 68, 0.15);
-  color: #368C44;
-  border-color: rgba(54, 140, 68, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  color: #111;
+  border-color: rgba(0, 0, 0, 0.15);
 }
 
 .btn-regresar-pill svg {
   width: 18px;
   height: 18px;
-  color: #368C44;
+  color: #111;
   transition: transform 0.3s ease;
 }
 
@@ -62,39 +58,43 @@
   transform: translateX(-3px);
 }
 
-/* Contenedor de Scroll para Registro */
-.register-scroll-container {
-  max-height: 360px;
-  overflow-y: auto;
-  padding-right: 12px;
-  margin-right: -4px;
+/* Contenedor de Registro (sin scroll) */
+.register-form-container {
+  padding: 4px 0;
 }
 
-/* Custom Scrollbar para el Registro */
-.register-scroll-container::-webkit-scrollbar {
-  width: 6px;
+.register-grid-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
 }
-.register-scroll-container::-webkit-scrollbar-track {
-  background: rgba(0,0,0,0.03);
-  border-radius: 10px;
+
+.register-submit-wrapper {
+  grid-column: span 2;
+  margin-top: 0.5rem;
 }
-.register-scroll-container::-webkit-scrollbar-thumb {
-  background: rgba(54, 140, 68, 0.25);
-  border-radius: 10px;
-}
-.register-scroll-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(54, 140, 68, 0.5);
+
+@media (max-width: 768px) {
+  .register-grid-form {
+    grid-template-columns: 1fr;
+  }
+  .register-submit-wrapper {
+    grid-column: span 1;
+  }
 }
 
 .login-card {
   width: 100%;
-  max-w: 480px; /* Contenedor más ancho como se solicitó */
+  max-width: 480px; /* Contenedor normal */
   border-radius: 20px;
   padding: 40px 32px;
-  transition: all 0.3s ease;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   z-index: 10;
-  max-width: 480px;
+}
+
+.login-card.register-mode {
+  max-width: 850px; /* Ancho para registro sin scroll */
 }
 
 .login-card.card-light {
@@ -147,8 +147,8 @@
 
 .form-input.input-light:focus {
   background-color: #ffffff;
-  border-color: #368C44;
-  box-shadow: 0 0 0 3px rgba(54, 140, 68, 0.1);
+  border-color: #111;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
 }
 
 .form-input.input-dark {
@@ -158,8 +158,8 @@
 }
 
 .form-input.input-dark:focus {
-  border-color: #368C44;
-  box-shadow: 0 0 0 3px rgba(54, 140, 68, 0.2);
+  border-color: #111;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
 }
 
 /* Grid for Registration */
@@ -173,7 +173,7 @@
 .btn-primary {
   width: 100%;
   padding: 12px;
-  background-color: #368C44;
+  background-color: #111;
   color: white;
   border-radius: 10px;
   font-weight: 600;
@@ -182,13 +182,13 @@
   transition: all 0.2s ease;
   border: none;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(54, 140, 68, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #2e7a3a;
+  background-color: #000;
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(54, 140, 68, 0.3);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
 .btn-primary:disabled {
@@ -211,7 +211,7 @@
 }
 
 .pwd-toggle:hover {
-  color: #368C44;
+  color: #111;
 }
 
 /* Divider */
@@ -289,4 +289,15 @@
   font-size: 0.85rem;
   font-weight: 600;
   margin-bottom: 20px;
+}
+
+/* Estilos para las opciones de selección según el tema activo */
+select.form-input option {
+  background-color: #ffffff;
+  color: #1e293b;
+}
+
+.card-dark select.form-input option {
+  background-color: #1e293b;
+  color: #f8fafc;
 }

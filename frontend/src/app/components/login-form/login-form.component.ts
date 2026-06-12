@@ -45,8 +45,48 @@ export class LoginFormComponent implements OnInit {
     telefono: ['', [Validators.required, Validators.pattern('^[0-9\\+\\s]{7,15}$')]],
     edad: ['', [Validators.required, Validators.min(18), Validators.max(100)]],
     direccion: ['', [Validators.required, Validators.minLength(5)]],
+    departamento: ['', [Validators.required]],
     ciudad: ['', [Validators.required]]
   });
+
+  departamentos: { [key: string]: string[] } = {
+    "Amazonas": ["Leticia", "Puerto Nariño"],
+    "Antioquia": ["Medellín", "Bello", "Envigado", "Itagüí", "Rionegro"],
+    "Arauca": ["Arauca", "Saravena", "Tame"],
+    "Atlántico": ["Barranquilla", "Soledad", "Malambo", "Puerto Colombia"],
+    "Bolívar": ["Cartagena", "Magangué", "Turbaco", "Arjona"],
+    "Boyacá": ["Tunja", "Duitama", "Sogamoso", "Chiquinquirá"],
+    "Caldas": ["Manizales", "La Dorada", "Chinchiná", "Villamaría"],
+    "Caquetá": ["Florencia", "San Vicente del Caguán", "El Doncello"],
+    "Casanare": ["Yopal", "Aguazul", "Villanueva"],
+    "Cauca": ["Popayán", "Santander de Quilichao", "Puerto Tejada"],
+    "Cesar": ["Valledupar", "Aguachica", "Bosconia"],
+    "Chocó": ["Quibdó", "Istmina", "Condoto"],
+    "Córdoba": ["Montería", "Cereté", "Lorica", "Sahagún"],
+    "Cundinamarca": ["Soacha", "Zipaquirá", "Facatativá", "Chía", "Fusagasugá"],
+    "Guainía": ["Inírida"],
+    "Guaviare": ["San José del Guaviare", "Calamar"],
+    "Huila": ["Neiva", "Pitalito", "Garzón", "La Plata"],
+    "La Guajira": ["Riohacha", "Maicao", "Uribia", "Fonseca"],
+    "Magdalena": ["Santa Marta", "Ciénaga", "Fundación"],
+    "Meta": ["Villavicencio", "Acacías", "Granada", "Puerto López"],
+    "Nariño": ["Pasto", "Ipiales", "Tumaco", "Túquerres"],
+    "Norte de Santander": ["Cúcuta", "Ocaña", "Pamplona", "Villa del Rosario"],
+    "Putumayo": ["Mocoa", "Puerto Asís", "Orito"],
+    "Quindío": ["Armenia", "Calarcá", "Montenegro", "La Tebaida"],
+    "Risaralda": ["Pereira", "Dosquebradas", "Santa Rosa de Cabal"],
+    "San Andrés y Providencia": ["San Andrés", "Providencia"],
+    "Santander": ["Bucaramanga", "Floridablanca", "Girón", "Piedecuesta", "Barrancabermeja"],
+    "Sucre": ["Sincelejo", "Corozal", "San Marcos"],
+    "Tolima": ["Ibagué", "Espinal", "Melgar", "Honda"],
+    "Valle del Cauca": ["Cali", "Palmira", "Buenaventura", "Tuluá", "Cartago", "Buga"],
+    "Vaupés": ["Mitú"],
+    "Vichada": ["Puerto Carreño", "La Primavera"],
+    "Bogotá D.C.": ["Bogotá"]
+  };
+
+  departamentosList: string[] = Object.keys(this.departamentos);
+  ciudadesDisponibles: string[] = [];
 
   mode: 'login' | 'register' = 'login';
 
@@ -65,6 +105,12 @@ export class LoginFormComponent implements OnInit {
       if (params['mode'] === 'register') {
         this.mode = 'register';
       }
+    });
+
+    // Escuchar cambios de departamento para actualizar ciudades
+    this.registerForm.get('departamento')?.valueChanges.subscribe(dept => {
+      this.ciudadesDisponibles = dept ? (this.departamentos[dept] || []) : [];
+      this.registerForm.get('ciudad')?.setValue('');
     });
   }
 
@@ -165,7 +211,9 @@ export class LoginFormComponent implements OnInit {
       }
 
       this.isSubmitting = true;
-      const userData = { ...this.registerForm.value, rol: 'cliente' };
+      const { departamento, ciudad, ...rest } = this.registerForm.value;
+      const fullCiudad = `${ciudad}, ${departamento}`;
+      const userData = { ...rest, ciudad: fullCiudad, rol: 'cliente' };
 
       this.authService.register(userData).subscribe({
         next: (res) => {

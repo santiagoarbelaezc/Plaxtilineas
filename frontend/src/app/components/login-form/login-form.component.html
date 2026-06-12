@@ -126,9 +126,21 @@
         </div>
 
         <div class="form-group">
-          <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Ciudad</label>
-          <input formControlName="ciudad" type="text" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+          <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Departamento</label>
+          <select formControlName="departamento" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+            <option value="" disabled selected>Selecciona un departamento</option>
+            <option *ngFor="let dept of departamentosList" [value]="dept">{{ dept }}</option>
+          </select>
         </div>
+
+        <div class="form-group">
+          <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Ciudad</label>
+          <select formControlName="ciudad" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+            <option value="" disabled selected>Selecciona una ciudad</option>
+            <option *ngFor="let city of ciudadesDisponibles" [value]="city">{{ city }}</option>
+          </select>
+        </div>
+
         <div class="form-group">
           <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Dirección</label>
           <input formControlName="direccion" type="text" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
