@@ -12,88 +12,85 @@ import { toSignal } from '@angular/core/rxjs-interop';
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule],
   template: `
-    <div class="min-h-screen bg-white flex flex-col font-sans mb-10" style="padding-top: calc(var(--navbar-height) + 40px);">
+    <!-- Main Container matches description-producto-select -->
+    <div class="bg-white min-h-screen" style="padding-top: calc(var(--navbar-height, 80px)); font-family: var(--font-primary, 'Inter', sans-serif); color: #111;">
       
-      <div class="w-full max-w-[1000px] mx-auto px-4 md:px-8">
+      <div style="max-width: 1550px; margin: 40px auto; padding: 0 2rem;">
         
-        <!-- Top Actions -->
-        <div class="mb-6 flex justify-start">
-          <a routerLink="/productos" class="inline-flex items-center gap-2 text-gray-500 hover:text-black font-bold text-sm uppercase tracking-wider transition-colors no-underline">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        <!-- Breadcrumb & Top Action -->
+        <nav style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #718096; margin-bottom: 2rem;">
+          <a routerLink="/productos" style="color: #111; font-weight: 700; text-decoration: none; text-transform: uppercase; display: flex; align-items: center; gap: 4px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
             Seguir comprando
           </a>
+          <span>›</span>
+          <span style="font-weight: 500; text-transform: uppercase;">Finalizar Compra</span>
+        </nav>
+
+        <!-- Header matches description-producto-select Title Area -->
+        <div style="margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #111;">
+          <h1 style="font-size: 2.2rem; font-weight: 800; color: #111; margin: 0; text-transform: uppercase; letter-spacing: -0.02em;">Finalizar Compra</h1>
         </div>
 
-        <!-- Header -->
-        <div class="mb-10 flex items-center gap-4 border-b border-black pb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black">
-            <circle cx="9" cy="21" r="1"></circle>
-            <circle cx="20" cy="21" r="1"></circle>
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-          </svg>
-          <h1 class="text-3xl font-extrabold text-black uppercase tracking-wide m-0 leading-none mt-1">Finalizar Compra</h1>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10">
+        <!-- Layout matches producto-layout-container -->
+        <div style="display: grid; grid-template-columns: 1fr 420px; gap: 3rem; min-height: 600px; align-items: start;">
           
           <!-- Columna Izquierda: Los Productos -->
-          <div class="flex flex-col gap-6">
+          <div style="display: flex; flex-direction: column; gap: 2rem;">
             
-            <div class="bg-white border border-gray-200 p-0 flex flex-col rounded-sm">
-              <div class="p-5 border-b border-gray-200 bg-gray-50/50">
-                <h2 class="text-sm font-bold text-black uppercase m-0 tracking-wider">
-                  Tus Productos ({{ totalCount() }})
-                </h2>
-              </div>
+            <div style="display: flex; flex-direction: column;">
+              <h2 style="font-size: 1rem; font-weight: 800; color: #111; margin: 0 0 1rem 0; text-transform: uppercase; letter-spacing: 0.05em;">
+                Tus Productos ({{ totalCount() }})
+              </h2>
               
-              <div class="flex flex-col">
+              <div style="display: flex; flex-direction: column; border-top: 1px solid #e5e5e5;">
                 @if (items().length === 0) {
-                  <div class="py-16 flex flex-col items-center justify-center text-center">
-                    <svg class="mb-4 text-gray-300" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-                    <p class="text-gray-500 font-medium text-base">No hay productos en tu carrito.</p>
+                  <div style="padding: 4rem 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                    <svg style="color: #ccc; margin-bottom: 1rem;" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                    <p style="color: #555; font-size: 1rem; margin: 0;">No hay productos en tu carrito.</p>
                   </div>
                 } @else {
                   @for (item of items(); track item.id; let last = $last) {
                     <!-- Item -->
-                    <div class="grid grid-cols-[100px_1fr_auto] gap-5 items-center p-5 transition-all relative" [class.border-b]="!last" [class.border-gray-200]="!last">
-                      <div class="bg-[#f9f9f9] border border-gray-200 rounded-sm w-[100px] h-[100px] flex items-center justify-center shrink-0">
+                    <div style="display: grid; grid-template-columns: 120px 1fr auto; gap: 1.5rem; align-items: center; padding: 1.5rem 0; border-bottom: 1px solid #e5e5e5; position: relative;">
+                      <div style="background: #f9f9f9; width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; border: 1px solid #eee;">
                         @if (item.producto.imagen_url) {
-                          <img [src]="item.producto.imagen_url" [alt]="item.producto.nombre" class="w-full h-full object-contain p-2 mix-blend-multiply">
+                          <img [src]="item.producto.imagen_url" [alt]="item.producto.nombre" style="width: 100%; height: 100%; object-fit: contain; padding: 8px; mix-blend-mode: multiply;">
                         } @else {
-                          <svg class="text-gray-300 w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                          <svg style="color: #ccc;" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                         }
                       </div>
                       
-                      <div class="flex flex-col gap-1.5">
-                        <h3 class="text-base font-bold text-black uppercase m-0 leading-tight pr-6">{{ item.producto.nombre }}</h3>
-                        <p class="text-xs text-gray-500 m-0 font-medium">
+                      <div style="display: flex; flex-direction: column; gap: 0.5rem; padding-right: 2rem;">
+                        <h3 style="font-size: 1.1rem; font-weight: 800; color: #111; margin: 0; text-transform: uppercase; line-height: 1.2;">{{ item.producto.nombre }}</h3>
+                        <p style="font-size: 0.85rem; color: #555; margin: 0; font-weight: 500;">
                           {{ item.variante ? item.variante.nombre : (item.producto.subcategoria || 'Genérico') }} 
-                          <span class="mx-1">|</span> {{ item.producto.unidad || 'Unidades' }}
+                          <span style="margin: 0 4px;">|</span> {{ item.producto.unidad || 'Unidades' }}
                         </p>
-                        <div class="mt-1 flex items-center gap-4">
-                          <span class="text-xs text-gray-500 font-bold tracking-wide">C/U: {{ formatearPrecio(item.precioUnitario) }}</span>
+                        <div style="margin-top: 0.25rem;">
+                          <span style="font-size: 0.85rem; color: #555; font-weight: 700;">C/U: {{ formatearPrecio(item.precioUnitario) }}</span>
                         </div>
                       </div>
                       
-                      <div class="flex flex-col items-end gap-3 justify-center">
-                        <div class="text-[18px] font-extrabold text-black">{{ formatearPrecio(item.precioUnitario * item.cantidad) }}</div>
-                        <div class="flex items-center gap-0 border border-black rounded-sm overflow-hidden h-8">
+                      <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 1rem;">
+                        <div style="font-size: 1.3rem; font-weight: 800; color: #111;">{{ formatearPrecio(item.precioUnitario * item.cantidad) }}</div>
+                        <div style="display: flex; align-items: center; border: 1px solid #111; height: 36px; width: 100px;">
                           <button 
                             (click)="decreaseQuantity(item.id, item.cantidad)"
-                            class="w-8 h-full bg-white border-r border-black flex items-center justify-center text-black hover:bg-gray-100 transition-colors cursor-pointer text-lg">
+                            style="width: 30px; height: 100%; background: #fff; border: none; border-right: 1px solid #111; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #111;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                           </button>
-                          <span class="w-10 text-center font-bold text-black text-sm">{{ item.cantidad }}</span>
+                          <span style="flex: 1; text-align: center; font-weight: 800; font-size: 0.9rem; color: #111;">{{ item.cantidad }}</span>
                           <button 
                             (click)="increaseQuantity(item.id, item.cantidad)"
-                            class="w-8 h-full bg-white border-l border-black flex items-center justify-center text-black hover:bg-gray-100 transition-colors cursor-pointer text-lg">
+                            style="width: 30px; height: 100%; background: #fff; border: none; border-left: 1px solid #111; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #111;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                           </button>
                         </div>
                       </div>
                       
-                      <button (click)="removeItem(item.id)" class="absolute right-4 top-4 text-gray-400 hover:text-black transition-colors p-1 cursor-pointer bg-transparent border-none rounded-full" title="Eliminar producto">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                      <button (click)="removeItem(item.id)" style="position: absolute; right: 0; top: 1.5rem; background: transparent; border: none; color: #999; cursor: pointer; padding: 0;" title="Eliminar producto">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                       </button>
                     </div>
                   }
@@ -101,16 +98,16 @@ import { toSignal } from '@angular/core/rxjs-interop';
               </div>
             </div>
 
-            <!-- WhatsApp Support Block -->
-            <div class="bg-gray-50 border border-gray-200 rounded-sm p-6 flex items-center gap-5">
-              <div class="w-12 h-12 bg-[#25D366] rounded-full flex items-center justify-center shrink-0 text-white shadow-sm">
+            <!-- WhatsApp Support Block (IKEA Style) -->
+            <div style="background: #f9f9f9; border: 1px solid #eee; padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem; margin-top: 1rem;">
+              <div style="width: 48px; height: 48px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
               </div>
-              <div class="flex-1">
-                <h3 class="text-sm font-bold text-black uppercase m-0 tracking-wide">¿Tienes dudas?</h3>
-                <p class="text-sm text-gray-600 m-0 mt-1">Habla con un asesor directamente para resolver cualquier inquietud sobre tu pedido.</p>
+              <div style="flex: 1;">
+                <h3 style="font-size: 0.95rem; font-weight: 800; color: #111; text-transform: uppercase; margin: 0 0 0.25rem 0; letter-spacing: 0.05em;">¿Tienes dudas?</h3>
+                <p style="font-size: 0.9rem; color: #555; margin: 0;">Habla con un asesor directamente para resolver cualquier inquietud sobre tu pedido.</p>
               </div>
-              <a href="https://wa.me/573000000000" target="_blank" rel="noopener noreferrer" class="shrink-0 px-5 py-2.5 bg-white border border-gray-300 rounded-sm text-sm font-bold text-black uppercase tracking-wider hover:border-black hover:bg-gray-100 transition-colors no-underline">
+              <a href="https://wa.me/573000000000" target="_blank" rel="noopener noreferrer" style="flex-shrink: 0; padding: 0.75rem 1.5rem; background: #fff; border: 1px solid #111; color: #111; font-weight: 800; text-transform: uppercase; font-size: 0.85rem; text-decoration: none; display: inline-block;">
                 Contactar
               </a>
             </div>
@@ -118,57 +115,58 @@ import { toSignal } from '@angular/core/rxjs-interop';
           </div>
 
           <!-- Columna Derecha: Tarjeta de Resumen / Checkout Fija -->
-          <div class="flex flex-col">
-            <div class="bg-white border border-gray-200 rounded-sm p-6 flex flex-col sticky top-[calc(var(--navbar-height)+40px)]">
-              <h2 class="text-sm font-bold text-black uppercase mb-5 m-0 border-b border-black pb-3 tracking-wider">
-                Resumen
+          <div style="position: sticky; top: calc(var(--navbar-height, 80px) + 20px);">
+            <div style="background: #fff; border: 1px solid #e5e5e5; padding: 2rem;">
+              <h2 style="font-size: 1rem; font-weight: 800; color: #111; text-transform: uppercase; margin: 0 0 1.5rem 0; padding-bottom: 1rem; border-bottom: 2px solid #111; letter-spacing: 0.05em;">
+                Resumen del Pedido
               </h2>
               
-              <div class="flex flex-col gap-3 text-gray-600 mb-6 font-medium text-sm">
-                <div class="flex justify-between items-center">
+              <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; font-size: 0.9rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; color: #333;">
                   <span>Subtotal ({{ totalCount() }} items)</span>
-                  <span class="text-black font-bold">{{ formatearPrecio(totalPrice()) }}</span>
+                  <span style="font-weight: 800; color: #111;">{{ formatearPrecio(totalPrice()) }}</span>
                 </div>
                 
-                <div class="flex justify-between items-center">
+                <div style="display: flex; justify-content: space-between; align-items: center; color: #333;">
                   <span>Envío estimado</span>
-                  <span class="text-gray-500 font-medium">A calcular</span>
+                  <span style="color: #666;">A calcular</span>
                 </div>
                 
-                <div class="flex justify-between items-center">
+                <div style="display: flex; justify-content: space-between; align-items: center; color: #333;">
                   <span>Impuestos (IVA)</span>
-                  <span class="text-black font-bold">$0</span>
+                  <span style="font-weight: 800; color: #111;">$0</span>
                 </div>
               </div>
               
-              <div class="flex flex-col gap-1 mb-6 border-t border-gray-200 pt-5">
-                <div class="flex justify-between items-baseline">
-                  <span class="text-base font-bold text-black uppercase tracking-wider">Total</span>
-                  <span class="text-[26px] font-extrabold text-black tracking-tight">{{ formatearPrecio(totalPrice()) }}</span>
+              <div style="border-top: 1px solid #e5e5e5; padding-top: 1.5rem; margin-bottom: 2rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                  <span style="font-size: 1.1rem; font-weight: 800; color: #111; text-transform: uppercase;">Total</span>
+                  <span style="font-size: 1.8rem; font-weight: 800; color: #111; letter-spacing: -0.02em;">{{ formatearPrecio(totalPrice()) }}</span>
                 </div>
-                <span class="text-xs text-gray-500 self-end mt-1">Sujeto a costos extra de envío</span>
+                <span style="font-size: 0.75rem; color: #777; text-align: right;">Sujeto a costos extra de envío</span>
               </div>
               
               <button 
                 (click)="iniciarCheckout()"
                 [disabled]="items().length === 0"
-                class="w-full h-12 rounded-sm bg-black text-white text-[14px] font-bold flex items-center justify-center gap-2 uppercase tracking-wider hover:bg-gray-800 transition-colors cursor-pointer border border-black mb-3 disabled:opacity-50 disabled:cursor-not-allowed">
+                style="width: 100%; padding: 1.2rem; background: #111; color: #fff; border: none; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.9rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 0.75rem; margin-bottom: 1rem;"
+                [style.opacity]="items().length === 0 ? '0.5' : '1'">
                 Continuar a pago
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
               </button>
               
-              <a routerLink="/productos" class="w-full h-12 rounded-sm bg-white border border-gray-300 text-black text-[13px] font-bold uppercase tracking-wider flex items-center justify-center gap-2 hover:border-black transition-colors cursor-pointer no-underline mb-4">
+              <a routerLink="/productos" style="width: 100%; padding: 1rem; background: #fff; color: #111; border: 1px solid #ccc; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.85rem; cursor: pointer; text-decoration: none; display: flex; justify-content: center; align-items: center; box-sizing: border-box;">
                 Seguir comprando
               </a>
 
               <!-- Beneficios -->
-               <div class="mt-2 flex flex-col gap-3 border-t border-gray-200 pt-5">
-                 <div class="flex items-center gap-3 text-xs text-gray-600 font-medium">
-                   <svg class="text-black" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+               <div style="margin-top: 2rem; border-top: 1px solid #e5e5e5; padding-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+                 <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.8rem; color: #555; font-weight: 600;">
+                   <svg style="color: #111;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
                    Pago 100% Seguro
                  </div>
-                 <div class="flex items-center gap-3 text-xs text-gray-600 font-medium">
-                   <svg class="text-black" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                 <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.8rem; color: #555; font-weight: 600;">
+                   <svg style="color: #111;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                    Datos Encriptados y Protegidos
                  </div>
               </div>
@@ -180,74 +178,74 @@ import { toSignal } from '@angular/core/rxjs-interop';
       </div>
     </div>
 
-    <!-- Checkout Modal -->
-    <div *ngIf="showCheckoutModal()" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80" (click)="closeCheckout()">
-      <div class="bg-white rounded-sm w-full max-w-xl shadow-2xl flex flex-col border border-gray-200" (click)="$event.stopPropagation()">
+    <!-- Checkout Modal (Minimalista / Corporativo) -->
+    <div *ngIf="showCheckoutModal()" style="position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(0,0,0,0.6);" (click)="closeCheckout()">
+      <div style="background: #fff; width: 100%; max-width: 600px; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);" (click)="$event.stopPropagation()">
         
-        <div class="p-5 border-b border-black flex justify-between items-center bg-gray-50">
-          <h2 class="text-base font-bold text-black uppercase tracking-wider m-0 flex items-center gap-3">
-            <svg class="text-black" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+        <div style="padding: 1.5rem 2rem; border-bottom: 2px solid #111; display: flex; justify-content: space-between; align-items: center; background: #fff;">
+          <h2 style="font-size: 1.1rem; font-weight: 800; color: #111; text-transform: uppercase; letter-spacing: 0.05em; margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+            <svg style="color: #111;" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
             Detalles de Envío
           </h2>
-          <button (click)="closeCheckout()" class="text-gray-400 hover:text-black transition-colors bg-transparent border-none cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <button (click)="closeCheckout()" style="background: transparent; border: none; cursor: pointer; padding: 0; color: #999; display: flex;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
         </div>
 
-        <div class="p-6 overflow-y-auto max-h-[75vh] bg-white">
-          <form #checkoutForm="ngForm" (ngSubmit)="confirmarPedido()" class="flex flex-col gap-5">
+        <div style="padding: 2rem; overflow-y: auto; max-height: 75vh; background: #fff;">
+          <form #checkoutForm="ngForm" (ngSubmit)="confirmarPedido()" style="display: flex; flex-direction: column; gap: 1.5rem;">
             
-            <div class="flex flex-col gap-2">
-              <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Dirección completa *</label>
-              <input type="text" [(ngModel)]="checkoutData.direccion_envio" name="direccion" required placeholder="Ej: Cra. 14 # 22-10 Apto 301" class="w-full px-4 py-2.5 rounded-sm border border-gray-300 focus:border-black outline-none transition-colors text-black font-medium text-sm">
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <label style="font-size: 0.75rem; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 0.05em;">Dirección completa *</label>
+              <input type="text" [(ngModel)]="checkoutData.direccion_envio" name="direccion" required placeholder="Ej: Cra. 14 # 22-10 Apto 301" style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ccc; font-family: var(--font-primary); font-size: 0.95rem; color: #111; outline: none; box-sizing: border-box;">
             </div>
 
-            <div class="grid grid-cols-2 gap-5">
-              <div class="flex flex-col gap-2">
-                <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Ciudad *</label>
-                <input type="text" [(ngModel)]="checkoutData.ciudad" name="ciudad" required placeholder="Ej: Armenia" class="w-full px-4 py-2.5 rounded-sm border border-gray-300 focus:border-black outline-none transition-colors text-black font-medium text-sm">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+              <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <label style="font-size: 0.75rem; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 0.05em;">Ciudad *</label>
+                <input type="text" [(ngModel)]="checkoutData.ciudad" name="ciudad" required placeholder="Ej: Armenia" style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ccc; font-family: var(--font-primary); font-size: 0.95rem; color: #111; outline: none; box-sizing: border-box;">
               </div>
-              <div class="flex flex-col gap-2">
-                <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Departamento *</label>
-                <input type="text" [(ngModel)]="checkoutData.departamento" name="departamento" required placeholder="Ej: Quindío" class="w-full px-4 py-2.5 rounded-sm border border-gray-300 focus:border-black outline-none transition-colors text-black font-medium text-sm">
+              <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <label style="font-size: 0.75rem; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 0.05em;">Departamento *</label>
+                <input type="text" [(ngModel)]="checkoutData.departamento" name="departamento" required placeholder="Ej: Quindío" style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ccc; font-family: var(--font-primary); font-size: 0.95rem; color: #111; outline: none; box-sizing: border-box;">
               </div>
             </div>
 
-            <div class="flex flex-col gap-2">
-              <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Teléfono de contacto *</label>
-              <input type="tel" [(ngModel)]="checkoutData.telefono_contacto" name="telefono" required placeholder="Ej: 300 123 4567" class="w-full px-4 py-2.5 rounded-sm border border-gray-300 focus:border-black outline-none transition-colors text-black font-medium text-sm">
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <label style="font-size: 0.75rem; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 0.05em;">Teléfono de contacto *</label>
+              <input type="tel" [(ngModel)]="checkoutData.telefono_contacto" name="telefono" required placeholder="Ej: 300 123 4567" style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ccc; font-family: var(--font-primary); font-size: 0.95rem; color: #111; outline: none; box-sizing: border-box;">
             </div>
 
-            <div class="flex flex-col gap-2">
-              <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Método de pago</label>
-              <select [(ngModel)]="checkoutData.metodo_pago" name="pago" class="w-full px-4 py-2.5 rounded-sm border border-gray-300 focus:border-black outline-none transition-colors text-black font-medium text-sm bg-white">
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <label style="font-size: 0.75rem; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 0.05em;">Método de pago</label>
+              <select [(ngModel)]="checkoutData.metodo_pago" name="pago" style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ccc; font-family: var(--font-primary); font-size: 0.95rem; color: #111; outline: none; box-sizing: border-box; background: #fff;">
                 <option value="contraentrega">Contraentrega (Pago al recibir)</option>
                 <option value="transferencia">Transferencia Bancaria</option>
               </select>
             </div>
 
-            <div class="flex flex-col gap-2">
-              <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Notas adicionales (Opcional)</label>
-              <textarea [(ngModel)]="checkoutData.notas" name="notas" rows="2" placeholder="Instrucciones para llegar..." class="w-full px-4 py-2.5 rounded-sm border border-gray-300 focus:border-black outline-none transition-colors text-black font-medium text-sm resize-none"></textarea>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <label style="font-size: 0.75rem; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 0.05em;">Notas adicionales (Opcional)</label>
+              <textarea [(ngModel)]="checkoutData.notas" name="notas" rows="2" placeholder="Instrucciones para llegar..." style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ccc; font-family: var(--font-primary); font-size: 0.95rem; color: #111; outline: none; box-sizing: border-box; resize: vertical;"></textarea>
             </div>
 
             <!-- Error Feedback -->
-            <div *ngIf="checkoutError()" class="p-3 border border-red-500 text-red-600 bg-red-50 rounded-sm text-sm flex items-center gap-2 font-bold">
+            <div *ngIf="checkoutError()" style="padding: 1rem; border: 1px solid #d0021b; color: #d0021b; background: #fff0f0; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
               {{ checkoutError() }}
             </div>
 
-            <div class="mt-2 pt-5 border-t border-gray-200 flex flex-col gap-5">
-              <div class="flex justify-between items-center bg-gray-50 p-4 border border-gray-200 rounded-sm">
-                <span class="text-xs text-gray-500 font-bold uppercase tracking-wider">Total a pagar</span>
-                <span class="text-xl font-extrabold text-black tracking-tight">{{ formatearPrecio(totalPrice()) }}</span>
+            <div style="margin-top: 0.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e5e5; display: flex; flex-direction: column; gap: 1.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; background: #f9f9f9; padding: 1rem; border: 1px solid #eee;">
+                <span style="font-size: 0.8rem; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 0.05em;">Total a pagar</span>
+                <span style="font-size: 1.4rem; font-weight: 800; color: #111; letter-spacing: -0.02em;">{{ formatearPrecio(totalPrice()) }}</span>
               </div>
               <button 
                 type="submit" 
                 [disabled]="checkoutForm.invalid || isSubmitting()"
-                class="w-full py-3.5 rounded-sm bg-black hover:bg-gray-800 text-white font-bold uppercase tracking-wider transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-black flex justify-center items-center gap-3 cursor-pointer text-sm">
-                <span *ngIf="isSubmitting()" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                <svg *ngIf="!isSubmitting()" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                style="width: 100%; padding: 1.2rem; background: #111; color: #fff; border: none; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.9rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 0.75rem;"
+                [style.opacity]="(checkoutForm.invalid || isSubmitting()) ? '0.5' : '1'">
+                <span *ngIf="isSubmitting()" style="width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite;"></span>
                 Confirmar Compra
               </button>
             </div>
