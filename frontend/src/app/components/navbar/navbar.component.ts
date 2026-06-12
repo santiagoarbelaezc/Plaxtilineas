@@ -36,6 +36,11 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   
   public authService = inject(AuthService);
   
+  userDropdownOpen = false;
+  showToast = false;
+  toastMessage = '';
+  private toastTimeout: any;
+  
   // Variables para el buscador
   searchQuery: string = '';
   showSuggestions: boolean = false;
@@ -151,6 +156,50 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     document.body.classList.remove('no-scroll');
   }
 
+  toggleUserDropdown(event: Event): void {
+    event.stopPropagation();
+    this.userDropdownOpen = !this.userDropdownOpen;
+  }
+
+  logoutUser(): void {
+    this.userDropdownOpen = false;
+    this.authService.logout();
+  }
+
+  onUserAction(action: string): void {
+    this.userDropdownOpen = false;
+    let message = '';
+    switch (action) {
+      case 'editar-perfil':
+        message = 'La sección de "Editar datos personales" estará disponible próximamente.';
+        break;
+      case 'actualizar-direccion':
+        message = 'La sección de "Actualizar dirección" estará disponible próximamente.';
+        break;
+      case 'pedidos':
+        message = 'La sección de "Pedidos" estará disponible próximamente.';
+        break;
+      case 'configuracion':
+        message = 'La sección de "Configuración" estará disponible próximamente.';
+        break;
+    }
+
+    if (message) {
+      this.showToastMessage(message);
+    }
+  }
+
+  showToastMessage(message: string): void {
+    if (this.toastTimeout) {
+      clearTimeout(this.toastTimeout);
+    }
+    this.toastMessage = message;
+    this.showToast = true;
+    this.toastTimeout = setTimeout(() => {
+      this.showToast = false;
+    }, 4000);
+  }
+
   openRegistrationModal(): void {
     this.router.navigate(['/login'], { queryParams: { mode: 'register' } });
   }
@@ -244,5 +293,10 @@ navigateToSearch(term: string): void {
   @HostListener('window:scroll')
   onScroll(): void {
     this.scrollSubject.next();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    this.userDropdownOpen = false;
   }
 }

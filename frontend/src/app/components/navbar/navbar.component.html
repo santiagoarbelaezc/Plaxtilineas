@@ -98,8 +98,50 @@
           <!-- Shopping Cart -->
           <app-cart-icon></app-cart-icon>
 
-          <!-- User/Login -->
-          <a routerLink="/login" class="action-btn user-btn" aria-label="Mi Cuenta">
+          <!-- User Profile Area (Logged In) -->
+          <div *ngIf="authService.isLoggedIn | async" class="user-nav-container">
+            <div class="welcome-text-nav">
+              <span class="welcome-label">Bienvenido,</span>
+              <span class="welcome-name">{{ (authService.currentUser | async)?.nombre }}</span>
+            </div>
+            
+            <button class="action-btn user-btn" (click)="toggleUserDropdown($event)" aria-label="Mi Cuenta">
+              <fa-icon [icon]="['fas', 'user']"></fa-icon>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div *ngIf="userDropdownOpen" class="user-dropdown-menu" (click)="$event.stopPropagation()">
+              <div class="user-dropdown-header">
+                <span class="user-dropdown-title">Mi Cuenta</span>
+                <span class="user-dropdown-subtitle">{{ (authService.currentUser | async)?.correo }}</span>
+              </div>
+              <div class="user-dropdown-divider"></div>
+              <a class="user-dropdown-item" (click)="onUserAction('editar-perfil')">
+                <fa-icon [icon]="['fas', 'user']" class="dropdown-item-icon"></fa-icon>
+                <span>Editar datos personales</span>
+              </a>
+              <a class="user-dropdown-item" (click)="onUserAction('actualizar-direccion')">
+                <fa-icon [icon]="['fas', 'map-marker-alt']" class="dropdown-item-icon"></fa-icon>
+                <span>Actualizar dirección</span>
+              </a>
+              <a class="user-dropdown-item" (click)="onUserAction('pedidos')">
+                <fa-icon [icon]="['fas', 'shopping-bag']" class="dropdown-item-icon"></fa-icon>
+                <span>Pedidos</span>
+              </a>
+              <a class="user-dropdown-item" (click)="onUserAction('configuracion')">
+                <fa-icon [icon]="['fas', 'key']" class="dropdown-item-icon"></fa-icon>
+                <span>Configuración</span>
+              </a>
+              <div class="user-dropdown-divider"></div>
+              <a class="user-dropdown-item logout-item" (click)="logoutUser()">
+                <fa-icon [icon]="['fas', 'times']" class="dropdown-item-icon"></fa-icon>
+                <span>Cerrar sesión</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- User/Login (Not Logged In) -->
+          <a *ngIf="!(authService.isLoggedIn | async)" routerLink="/login" class="action-btn user-btn" aria-label="Mi Cuenta">
             <fa-icon [icon]="['fas', 'user']"></fa-icon>
           </a>
 
@@ -165,7 +207,29 @@
     <a routerLink="/contacto" class="drawer-link" (click)="closeMenu()">
       <fa-icon [icon]="['fas', 'envelope']"></fa-icon> <span>Contacto</span>
     </a>
-    <a routerLink="/login" class="drawer-link" (click)="closeMenu()">
+    <!-- Logged in user options in mobile drawer -->
+    <div *ngIf="authService.isLoggedIn | async" class="drawer-user-section">
+      <div class="drawer-section-title">Bienvenido, {{ (authService.currentUser | async)?.nombre }}</div>
+      <a class="drawer-link" (click)="closeMenu(); onUserAction('editar-perfil')">
+        <fa-icon [icon]="['fas', 'user']"></fa-icon> <span>Editar datos personales</span>
+      </a>
+      <a class="drawer-link" (click)="closeMenu(); onUserAction('actualizar-direccion')">
+        <fa-icon [icon]="['fas', 'map-marker-alt']"></fa-icon> <span>Actualizar dirección</span>
+      </a>
+      <a class="drawer-link" (click)="closeMenu(); onUserAction('pedidos')">
+        <fa-icon [icon]="['fas', 'shopping-bag']"></fa-icon> <span>Pedidos</span>
+      </a>
+      <a class="drawer-link" (click)="closeMenu(); onUserAction('configuracion')">
+        <fa-icon [icon]="['fas', 'key']"></fa-icon> <span>Configuración</span>
+      </a>
+      <a class="drawer-link logout-item-drawer" (click)="closeMenu(); logoutUser()">
+        <fa-icon [icon]="['fas', 'times']"></fa-icon> <span>Cerrar sesión</span>
+      </a>
+      <hr class="drawer-divider">
+    </div>
+
+    <!-- For guests or just admin access link when not logged in -->
+    <a *ngIf="!(authService.isLoggedIn | async)" routerLink="/login" class="drawer-link" (click)="closeMenu()">
       <fa-icon [icon]="['fas', 'lock']"></fa-icon> <span>Acceso Admin</span>
     </a>
     <hr class="drawer-divider">
@@ -204,4 +268,15 @@
     <fa-icon [icon]="['fas', 'users']"></fa-icon>
     <span>Nosotros</span>
   </a>
-</nav>
+</nav>
+
+<!-- Custom premium Toast notification for sections under development -->
+<div class="toast-nav-notification" *ngIf="showToast" [class.show]="showToast">
+  <div class="toast-nav-icon">
+    <fa-icon [icon]="['fas', 'robot']"></fa-icon>
+  </div>
+  <div class="toast-nav-content">
+    <h5 class="toast-nav-title">Próximamente</h5>
+    <p class="toast-nav-body">{{ toastMessage }}</p>
+  </div>
+</div>
