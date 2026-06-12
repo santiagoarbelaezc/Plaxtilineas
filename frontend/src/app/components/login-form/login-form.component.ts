@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { environment } from '../../../enviroments/environment';
@@ -8,6 +8,77 @@ import { AuthService } from '../../services/auth.service';
 import { ThemeService, Theme } from '../../services/theme.service';
 
 declare var google: any;
+
+export function emailDomainValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (!value) return null;
+
+    // 1. Debe contener '@'
+    if (!value.includes('@')) {
+      return { noAtSymbol: true };
+    }
+
+    const parts = value.split('@');
+    if (parts.length !== 2 || !parts[0] || !parts[1]) {
+      return { invalidFormat: true };
+    }
+
+    const domain = parts[1].toLowerCase().trim();
+
+    // 2. Formato del dominio básico
+    const domainRegex = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!domainRegex.test(domain)) {
+      return { invalidDomainFormat: true };
+    }
+
+    // 3. Typos comunes de correo
+    const commonTypos: { [key: string]: string } = {
+      'gamil.com': 'gmail.com',
+      'gmal.com': 'gmail.com',
+      'gmeil.com': 'gmail.com',
+      'gmial.com': 'gmail.com',
+      'gmaill.com': 'gmail.com',
+      'gmail.con': 'gmail.com',
+      'gmail.co': 'gmail.com',
+      'gamil.co': 'gmail.com',
+      'gmal.co': 'gmail.com',
+      'gmeil.co': 'gmail.com',
+      'hotmal.com': 'hotmail.com',
+      'hormail.com': 'hotmail.com',
+      'hotmial.com': 'hotmail.com',
+      'hotmaill.com': 'hotmail.com',
+      'hotmail.con': 'hotmail.com',
+      'hotmail.co': 'hotmail.com',
+      'outlok.com': 'outlook.com',
+      'outloo.com': 'outlook.com',
+      'outluk.com': 'outlook.com',
+      'outlook.con': 'outlook.com',
+      'outlook.co': 'outlook.com',
+      'yaho.com': 'yahoo.com',
+      'yahoo.con': 'yahoo.com',
+      'yahoo.co': 'yahoo.com'
+    };
+
+    if (commonTypos[domain]) {
+      return { domainTypo: { correct: commonTypos[domain], current: domain } };
+    }
+
+    // Buscar si el nombre principal del dominio tiene typos obvios
+    const domainParts = domain.split('.');
+    const namePart = domainParts[0];
+    const invalidNames = ['gamil', 'gmal', 'gmel', 'gmial', 'outlok', 'outluk', 'hotmal', 'hormail', 'hotmial', 'yaho'];
+    if (invalidNames.includes(namePart)) {
+      let suggestion = 'gmail.com';
+      if (['outlok', 'outluk'].includes(namePart)) suggestion = 'outlook.com';
+      if (['hotmal', 'hormail', 'hotmial'].includes(namePart)) suggestion = 'hotmail.com';
+      if (namePart === 'yaho') suggestion = 'yahoo.com';
+      return { domainTypo: { correct: suggestion, current: domain } };
+    }
+
+    return null;
+  };
+}
 
 @Component({
   selector: 'app-login-form',
@@ -67,7 +138,7 @@ export class LoginFormComponent implements OnInit {
     correo: ['', [
       Validators.required, 
       Validators.email,
-      Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)
+      emailDomainValidator()
     ]],
     password: ['', [
       Validators.required, 
@@ -81,7 +152,7 @@ export class LoginFormComponent implements OnInit {
     ]],
     edad: ['', [
       Validators.required, 
-      Validators.min(18), 
+      Validators.min(0), 
       Validators.max(120),
       Validators.pattern(/^[0-9]+$/)
     ]],

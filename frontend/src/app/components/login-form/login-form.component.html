@@ -96,7 +96,10 @@
 
       <button type="submit" [disabled]="isSubmitting" class="btn-primary">
         {{ isSubmitting ? 'Ingresando...' : 'Ingresar' }}
-         <!-- FORMULARIO REGISTRO (REORGANIZADO SIN SCROLL INTERNO) -->
+      </button>
+    </form>
+
+    <!-- FORMULARIO REGISTRO (REORGANIZADO SIN SCROLL INTERNO) -->
     <div class="register-form-container" *ngIf="mode === 'register'">
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-grid-form">
         <div class="form-group">
@@ -123,7 +126,14 @@
           <input formControlName="correo" type="email" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
           <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="registerForm.get('correo')?.touched && registerForm.get('correo')?.invalid">
             <span *ngIf="registerForm.get('correo')?.errors?.['required']">El correo es obligatorio.</span>
-            <span *ngIf="registerForm.get('correo')?.errors?.['email'] || registerForm.get('correo')?.errors?.['pattern']">Ingresa un correo electrónico válido (ej. usuario@gmail.com).</span>
+            <span *ngIf="registerForm.get('correo')?.errors?.['noAtSymbol']">El correo electrónico debe contener un '@'.</span>
+            <span *ngIf="registerForm.get('correo')?.errors?.['invalidDomainFormat']">El formato del dominio no es válido (ej. correo.com).</span>
+            <span *ngIf="registerForm.get('correo')?.errors?.['domainTypo']">
+              ¿Quisiste decir <strong>{{ registerForm.get('correo')?.errors?.['domainTypo']?.correct }}</strong> en lugar de "{{ registerForm.get('correo')?.errors?.['domainTypo']?.current }}"?
+            </span>
+            <span *ngIf="!registerForm.get('correo')?.errors?.['required'] && !registerForm.get('correo')?.errors?.['noAtSymbol'] && !registerForm.get('correo')?.errors?.['invalidDomainFormat'] && !registerForm.get('correo')?.errors?.['domainTypo']">
+              Ingresa un correo electrónico válido (ej. usuario@gmail.com).
+            </span>
           </small>
         </div>
 
@@ -140,9 +150,9 @@
           <input formControlName="edad" type="number" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
           <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="registerForm.get('edad')?.touched && registerForm.get('edad')?.invalid">
             <span *ngIf="registerForm.get('edad')?.errors?.['required']">La edad es obligatoria.</span>
-            <span *ngIf="registerForm.get('edad')?.errors?.['min']">Debes ser mayor de 18 años.</span>
+            <span *ngIf="registerForm.get('edad')?.errors?.['min']">La edad no puede ser negativa.</span>
             <span *ngIf="registerForm.get('edad')?.errors?.['max']">La edad no puede ser mayor de 120 años.</span>
-            <span *ngIf="registerForm.get('edad')?.errors?.['pattern']">Debe ser un número entero (sin decimales).</span>
+            <span *ngIf="registerForm.get('edad')?.errors?.['pattern']">La edad debe ser un número entero (sin decimales).</span>
           </small>
         </div>
 
@@ -202,21 +212,21 @@
         <!-- Indicaciones de Contraseña (Ancho Completo abajo de los campos) -->
         <div class="password-requirements-wrapper">
           <div class="password-requirements">
-            <p class="req-title text-xs font-semibold" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#94a3b8]' : 'text-[#64748b]'">La contraseña debe tener:</p>
-            <ul class="req-list text-xs mt-1 space-y-1 pl-1">
-              <li class="flex items-center gap-1.5" [class.met]="hasMinLength()" [class.unmet]="!hasMinLength() && pwdCtrl?.touched">
+            <p class="req-title text-xs font-semibold mb-2" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#475569]'">La contraseña debe tener:</p>
+            <ul class="req-list">
+              <li class="req-item" [class.met]="hasMinLength()" [class.unmet]="!hasMinLength() && pwdCtrl?.touched">
                 <span class="indicator-icon">{{ hasMinLength() ? '✓' : '•' }}</span>
                 <span>Mínimo 8 caracteres</span>
               </li>
-              <li class="flex items-center gap-1.5" [class.met]="hasUppercase()" [class.unmet]="!hasUppercase() && pwdCtrl?.touched">
+              <li class="req-item" [class.met]="hasUppercase()" [class.unmet]="!hasUppercase() && pwdCtrl?.touched">
                 <span class="indicator-icon">{{ hasUppercase() ? '✓' : '•' }}</span>
                 <span>Al menos 1 mayúscula</span>
               </li>
-              <li class="flex items-center gap-1.5" [class.met]="hasLowercase()" [class.unmet]="!hasLowercase() && pwdCtrl?.touched">
+              <li class="req-item" [class.met]="hasLowercase()" [class.unmet]="!hasLowercase() && pwdCtrl?.touched">
                 <span class="indicator-icon">{{ hasLowercase() ? '✓' : '•' }}</span>
                 <span>Al menos 1 minúscula</span>
               </li>
-              <li class="flex items-center gap-1.5" [class.met]="hasNumber()" [class.unmet]="!hasNumber() && pwdCtrl?.touched">
+              <li class="req-item" [class.met]="hasNumber()" [class.unmet]="!hasNumber() && pwdCtrl?.touched">
                 <span class="indicator-icon">{{ hasNumber() ? '✓' : '•' }}</span>
                 <span>Al menos 1 número</span>
               </li>
