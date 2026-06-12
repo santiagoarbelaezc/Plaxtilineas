@@ -130,6 +130,46 @@
   transition: transform 0.5s ease;
 }
 
+/* Badges Decorativos */
+.product-badges {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  z-index: 10;
+}
+
+.badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  font-family: var(--font-primary);
+}
+
+.badge-discount {
+  background: #111;
+  color: white;
+}
+
+.badge-stock {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.badge-new {
+  background: white;
+  color: #111;
+  border: 1px solid #dfdfdf;
+}
+
 .mini-info {
   display: flex;
   flex-direction: column;

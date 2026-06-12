@@ -325,9 +325,29 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onWheel(event: WheelEvent): void {
-    // Retirado: Dejamos que el navegador maneje el scroll nativamente.
-    // El scroll horizontal (Shift + Scroll o Trackpad) funcionará por defecto gracias a overflow-x: auto.
-    // El scroll vertical (Rueda normal) bajará la página con naturalidad.
+    if (event.deltaY !== 0 && !event.shiftKey) {
+      if (this.carouselViewport) {
+        const el = this.carouselViewport.nativeElement;
+        
+        // Verificar si podemos scrollear
+        const isAtLeftEnd = el.scrollLeft <= 0;
+        const isAtRightEnd = Math.abs(el.scrollWidth - el.clientWidth - el.scrollLeft) < 1;
+        
+        const scrollingLeft = event.deltaY < 0;
+        const scrollingRight = event.deltaY > 0;
+        
+        // Solo prevenir el scroll vertical de la página si el carrusel AÚN puede moverse en esa dirección
+        if ((scrollingLeft && !isAtLeftEnd) || (scrollingRight && !isAtRightEnd)) {
+          event.preventDefault();
+          this.detenerAutoSlide();
+          
+          el.scrollBy({
+            left: event.deltaY > 0 ? 200 : -200,
+            behavior: 'auto' // 'auto' responde mejor a la rueda del ratón que 'smooth'
+          });
+        }
+      }
+    }
   }
 
   moveNext(): void {

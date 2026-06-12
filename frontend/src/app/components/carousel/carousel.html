@@ -45,6 +45,12 @@
       <div class="carousel-item" *ngFor="let producto of productos">
         <div class="product-mini-card" [routerLink]="['/producto', producto.id]">
           <div class="mini-img-box">
+            <!-- Badges Decorativos (Simulados basados en ID) -->
+            <div class="product-badges">
+              <span class="badge badge-discount" *ngIf="producto.id % 2 !== 0">-15% OFF</span>
+              <span class="badge badge-stock" *ngIf="producto.id % 5 === 0">Pocas Unidades</span>
+              <span class="badge badge-new" *ngIf="producto.id % 6 === 0">Nuevo</span>
+            </div>
             <img [src]="producto.imagen_url" [alt]="producto.nombre">
           </div>
           <div class="mini-info">
