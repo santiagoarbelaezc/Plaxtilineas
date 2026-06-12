@@ -13,12 +13,14 @@
   </div>
 
   <!-- Tarjeta de Login Premium -->
-  <div class="login-card" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'card-dark' : 'card-light'">
+  <div class="login-card" 
+       [ngClass]="(themeService.theme$ | async) === 'dark' ? 'card-dark' : 'card-light'"
+       [class.register-mode]="mode === 'register'">
     
     <!-- Logo o Icono Superior (Opcional, ayuda a darle el toque premium) -->
     <div class="flex justify-center mb-6">
-      <div class="w-16 h-16 rounded-full bg-[#368C44]/10 flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#368C44]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <div class="w-16 h-16 rounded-full bg-[#111]/10 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#111]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
         </svg>
       </div>
@@ -42,14 +44,14 @@
       <button (click)="mode = 'login'" 
               class="flex-1 py-2 text-sm font-semibold rounded-md transition-all duration-300"
               [ngClass]="mode === 'login' 
-                ? ((themeService.theme$ | async) === 'dark' ? 'bg-[#368C44] text-white shadow' : 'bg-white text-[#368C44] shadow-sm') 
+                ? ((themeService.theme$ | async) === 'dark' ? 'bg-[#111] text-white shadow' : 'bg-white text-[#111] shadow-sm') 
                 : ((themeService.theme$ | async) === 'dark' ? 'text-[#94a3b8] hover:text-white' : 'text-[#64748b] hover:text-[#1e293b]')">
         Ingresar
       </button>
       <button (click)="toggleMode()" 
               class="flex-1 py-2 text-sm font-semibold rounded-md transition-all duration-300"
               [ngClass]="mode === 'register' 
-                ? ((themeService.theme$ | async) === 'dark' ? 'bg-[#368C44] text-white shadow' : 'bg-white text-[#368C44] shadow-sm') 
+                ? ((themeService.theme$ | async) === 'dark' ? 'bg-[#111] text-white shadow' : 'bg-white text-[#111] shadow-sm') 
                 : ((themeService.theme$ | async) === 'dark' ? 'text-[#94a3b8] hover:text-white' : 'text-[#64748b] hover:text-[#1e293b]')">
         Registrarse
       </button>
@@ -97,18 +99,16 @@
       </button>
     </form>
 
-    <!-- FORMULARIO REGISTRO CON SCROLL -->
-    <div class="register-scroll-container" *ngIf="mode === 'register'">
-      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="form-container">
-        <div class="grid-2-cols">
-          <div class="form-group">
-            <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Nombres</label>
-            <input formControlName="nombre" type="text" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
-          </div>
-          <div class="form-group">
-            <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Apellidos</label>
-            <input formControlName="apellidos" type="text" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
-          </div>
+    <!-- FORMULARIO REGISTRO (REORGANIZADO SIN SCROLL INTERNO) -->
+    <div class="register-form-container" *ngIf="mode === 'register'">
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-grid-form">
+        <div class="form-group">
+          <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Nombres</label>
+          <input formControlName="nombre" type="text" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+        </div>
+        <div class="form-group">
+          <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Apellidos</label>
+          <input formControlName="apellidos" type="text" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
         </div>
 
         <div class="form-group">
@@ -116,26 +116,22 @@
           <input formControlName="correo" type="email" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
         </div>
 
-        <div class="grid-2-cols">
-          <div class="form-group">
-            <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Teléfono</label>
-            <input formControlName="telefono" type="tel" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
-          </div>
-          <div class="form-group">
-            <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Edad</label>
-            <input formControlName="edad" type="number" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
-          </div>
+        <div class="form-group">
+          <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Teléfono</label>
+          <input formControlName="telefono" type="tel" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+        </div>
+        <div class="form-group">
+          <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Edad</label>
+          <input formControlName="edad" type="number" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
         </div>
 
-        <div class="grid-2-cols">
-          <div class="form-group">
-            <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Ciudad</label>
-            <input formControlName="ciudad" type="text" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
-          </div>
-          <div class="form-group">
-            <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Dirección</label>
-            <input formControlName="direccion" type="text" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
-          </div>
+        <div class="form-group">
+          <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Ciudad</label>
+          <input formControlName="ciudad" type="text" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+        </div>
+        <div class="form-group">
+          <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Dirección</label>
+          <input formControlName="direccion" type="text" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
         </div>
 
         <div class="form-group">
@@ -153,9 +149,11 @@
           </small>
         </div>
 
-        <button type="submit" [disabled]="isSubmitting" class="btn-primary mt-2">
-          {{ isSubmitting ? 'Procesando...' : 'Crear Cuenta' }}
-        </button>
+        <div class="register-submit-wrapper">
+          <button type="submit" [disabled]="isSubmitting" class="btn-primary">
+            {{ isSubmitting ? 'Procesando...' : 'Crear Cuenta' }}
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -173,6 +171,6 @@
     </div>
     <h3 class="text-xl font-bold mb-2">Atención</h3>
     <p class="text-sm font-medium mb-6 leading-relaxed" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#64748b]'">{{ errorMsg }}</p>
-    <button class="w-full py-3 bg-[#368C44] hover:bg-[#2e7a3a] text-white rounded-xl font-bold transition-colors" (click)="closeErrorModal()">Entendido</button>
+    <button class="w-full py-3 bg-[#111] hover:bg-black text-white rounded-xl font-bold transition-colors" (click)="closeErrorModal()">Entendido</button>
   </div>
 </div>

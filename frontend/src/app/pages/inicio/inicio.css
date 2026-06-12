@@ -336,6 +336,7 @@
   letter-spacing: -0.8px;
   position: relative;
   display: inline-block;
+  text-transform: uppercase;
 }
 
 /* Decoración premium debajo del título del bloque de texto */
