@@ -1,0 +1,147 @@
+<div class="admin-pedidos">
+
+  <!-- Header -->
+  <div class="admin-header">
+    <div class="header-left">
+      <h1>📦 Gestión de Pedidos</h1>
+      <p class="header-sub">Administra todos los pedidos de clientes</p>
+    </div>
+    <button class="refresh-btn" (click)="cargarPedidos()" [disabled]="loading()">
+      🔄 Actualizar
+    </button>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="admin-stats" *ngIf="stats()">
+    <div class="admin-stat-card">
+      <span class="admin-stat-num">{{ stats().total_pedidos || 0 }}</span>
+      <span class="admin-stat-label">Total Pedidos</span>
+    </div>
+    <div class="admin-stat-card green">
+      <span class="admin-stat-num">{{ formatPrice(stats().ingresos_totales || 0) }}</span>
+      <span class="admin-stat-label">Ingresos Totales</span>
+    </div>
+    <div class="admin-stat-card blue">
+      <span class="admin-stat-num">{{ stats().pedidos_activos || 0 }}</span>
+      <span class="admin-stat-label">Activos</span>
+    </div>
+    <div class="admin-stat-card purple">
+      <span class="admin-stat-num">{{ stats().pedidos_entregados || 0 }}</span>
+      <span class="admin-stat-label">Entregados</span>
+    </div>
+    <div class="admin-stat-card red">
+      <span class="admin-stat-num">{{ stats().pedidos_cancelados || 0 }}</span>
+      <span class="admin-stat-label">Cancelados</span>
+    </div>
+  </div>
+
+  <!-- Search & Filter -->
+  <div class="admin-toolbar">
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="Buscar por código, cliente o correo..."
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event)"
+      />
+    </div>
+    <div class="filter-pills">
+      <button class="pill" [class.active]="filtroEstado() === 'todos'" (click)="filtroEstado.set('todos')">Todos</button>
+      <button *ngFor="let e of estadosList" class="pill" [class.active]="filtroEstado() === e.key" (click)="filtroEstado.set(e.key)">
+        {{ e.icon }} {{ e.label }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="admin-loading" *ngIf="loading()">
+    <div class="spinner"></div>
+    <p>Cargando pedidos...</p>
+  </div>
+
+  <!-- Empty -->
+  <div class="admin-empty" *ngIf="!loading() && filteredPedidos.length === 0">
+    <p>No se encontraron pedidos.</p>
+  </div>
+
+  <!-- Pedidos Table -->
+  <div class="pedidos-table-wrapper" *ngIf="!loading() && filteredPedidos.length > 0">
+    <table class="pedidos-table">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Cliente</th>
+          <th>Fecha</th>
+          <th>Total</th>
+          <th>Items</th>
+          <th>Estado</th>
+          <th>Cambiar Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let pedido of filteredPedidos">
+          <tr [class.expanded-row]="expandedPedidoId() === pedido.id">
+            <td class="code-cell">{{ pedido.codigo_pedido }}</td>
+            <td class="client-cell">
+              <span class="client-name">{{ pedido.cliente_nombre || 'N/A' }}</span>
+              <span class="client-email">{{ pedido.cliente_correo || '' }}</span>
+            </td>
+            <td>{{ formatDate(pedido.fecha) }}</td>
+            <td class="total-cell">{{ formatPrice(pedido.total) }}</td>
+            <td class="center">{{ pedido.total_items }}</td>
+            <td>
+              <span class="table-estado-badge" [style.--estado-color]="getEstadoInfo(pedido.estado).color">
+                {{ getEstadoInfo(pedido.estado).icon }} {{ getEstadoInfo(pedido.estado).label }}
+              </span>
+            </td>
+            <td>
+              <select
+                class="estado-select"
+                [ngModel]="pedido.estado"
+                (ngModelChange)="actualizarEstado(pedido.id, $event)"
+                [disabled]="updatingId() === pedido.id">
+                <option *ngFor="let opt of estadosOptions" [value]="opt">{{ getEstadoLabel(opt) }}</option>
+              </select>
+              <span class="updating-indicator" *ngIf="updatingId() === pedido.id">⏳</span>
+            </td>
+            <td>
+              <button class="expand-btn" (click)="toggleExpand(pedido.id)">
+                {{ expandedPedidoId() === pedido.id ? '▲' : '▼' }}
+              </button>
+            </td>
+          </tr>
+
+          <!-- Expanded Detail Row -->
+          <tr *ngIf="expandedPedidoId() === pedido.id" class="detail-row">
+            <td colspan="8">
+              <div class="detail-content">
+                <div class="detail-section">
+                  <h4>📍 Envío</h4>
+                  <p>{{ pedido.direccion_envio }}</p>
+                  <p *ngIf="pedido.ciudad">{{ pedido.ciudad }}, {{ pedido.departamento }}</p>
+                  <p *ngIf="pedido.telefono_contacto">📞 {{ pedido.telefono_contacto }}</p>
+                  <p *ngIf="pedido.notas" class="notes-text">📝 {{ pedido.notas }}</p>
+                </div>
+                <div class="detail-section">
+                  <h4>🛒 Productos</h4>
+                  <div class="detail-products">
+                    <div *ngFor="let d of pedido.detalles" class="detail-product-row">
+                      <img *ngIf="d.imagen_url" [src]="d.imagen_url" class="detail-prod-img" />
+                      <div class="detail-prod-placeholder" *ngIf="!d.imagen_url">📦</div>
+                      <span class="detail-prod-name">{{ d.nombre_producto }}</span>
+                      <span class="detail-prod-qty">x{{ d.cantidad }}</span>
+                      <span class="detail-prod-price">{{ formatPrice(d.precio_unitario) }}</span>
+                      <span class="detail-prod-subtotal">{{ formatPrice(d.subtotal || d.precio_unitario * d.cantidad) }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+
+</div>

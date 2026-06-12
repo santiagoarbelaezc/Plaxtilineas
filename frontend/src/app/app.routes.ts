@@ -92,12 +92,21 @@ export const routes: Routes = [
       {
         path: 'reportes',
         loadComponent: () => import('./pages/dashboard/reportes/reportes').then(m => m.Reportes)
+      },
+      {
+        path: 'pedidos',
+        loadComponent: () => import('./pages/dashboard/pedidos/admin-pedidos').then(m => m.AdminPedidos)
       }
     ]
   },
   {
     path: 'carrito',
     loadComponent: () => import('./cart/cart-summary/cart-summary.component').then(m => m.CartSummaryComponent)
+  },
+  {
+    path: 'pedidos',
+    canActivate: [AuthGuard],
+    loadComponent: () => import('./pages/mis-pedidos/mis-pedidos').then(m => m.MisPedidos)
   },
   {
     path: 'verificar-email',

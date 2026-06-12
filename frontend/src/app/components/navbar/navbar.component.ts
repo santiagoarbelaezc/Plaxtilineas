@@ -177,8 +177,8 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
         message = 'La sección de "Actualizar dirección" estará disponible próximamente.';
         break;
       case 'pedidos':
-        message = 'La sección de "Pedidos" estará disponible próximamente.';
-        break;
+        this.router.navigate(['/pedidos']);
+        return;
       case 'configuracion':
         message = 'La sección de "Configuración" estará disponible próximamente.';
         break;

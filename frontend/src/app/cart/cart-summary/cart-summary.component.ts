@@ -1,13 +1,16 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { CartService } from '../../services/cart.service';
+import { PedidoService } from '../../services/pedido.service';
+import { AuthService } from '../../services/auth.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-cart-summary',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   template: `
     <div class="min-h-screen bg-gray-50 flex flex-col font-sans mb-10" style="padding-top: calc(var(--navbar-height) + 40px);">
       
@@ -134,6 +137,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
               </div>
               
               <button 
+                (click)="iniciarCheckout()"
                 [disabled]="items().length === 0"
                 class="w-full h-14 rounded-xl bg-gradient-to-br from-[#368c44] to-[#25d366] text-white text-[17px] font-bold flex items-center justify-center gap-2.5 hover:-translate-y-1 hover:shadow-[0_8px_25px_rgba(37,211,102,0.35)] transition-all cursor-pointer border-none shadow-[0_4px_15px_rgba(54,140,68,0.2)] group mb-4 disabled:opacity-50 disabled:cursor-not-allowed">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:scale-110 transition-transform"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
@@ -168,10 +172,89 @@ import { toSignal } from '@angular/core/rxjs-interop';
         </div>
       </div>
     </div>
+
+    <!-- Checkout Modal -->
+    <div *ngIf="showCheckoutModal()" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" (click)="closeCheckout()">
+      <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col" (click)="$event.stopPropagation()">
+        
+        <div class="p-6 bg-gradient-to-r from-gray-900 to-gray-800 text-white flex justify-between items-center relative overflow-hidden">
+          <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNykiLz48L3N2Zz4=')] opacity-30"></div>
+          <h2 class="text-xl font-bold m-0 relative z-10 flex items-center gap-2">
+            <svg class="text-emerald-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            Detalles de Envío
+          </h2>
+          <button (click)="closeCheckout()" class="relative z-10 text-gray-300 hover:text-white transition-colors bg-transparent border-none cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+
+        <div class="p-6 overflow-y-auto max-h-[70vh]">
+          <form #checkoutForm="ngForm" (ngSubmit)="confirmarPedido()" class="flex flex-col gap-4">
+            
+            <div class="flex flex-col gap-1">
+              <label class="text-sm font-semibold text-gray-700">Dirección completa *</label>
+              <input type="text" [(ngModel)]="checkoutData.direccion_envio" name="direccion" required placeholder="Ej: Cra. 14 # 22-10 Apto 301" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all text-gray-800">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex flex-col gap-1">
+                <label class="text-sm font-semibold text-gray-700">Ciudad *</label>
+                <input type="text" [(ngModel)]="checkoutData.ciudad" name="ciudad" required placeholder="Ej: Armenia" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all text-gray-800">
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-sm font-semibold text-gray-700">Departamento *</label>
+                <input type="text" [(ngModel)]="checkoutData.departamento" name="departamento" required placeholder="Ej: Quindío" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all text-gray-800">
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label class="text-sm font-semibold text-gray-700">Teléfono de contacto *</label>
+              <input type="tel" [(ngModel)]="checkoutData.telefono_contacto" name="telefono" required placeholder="Ej: 300 123 4567" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all text-gray-800">
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label class="text-sm font-semibold text-gray-700">Método de pago</label>
+              <select [(ngModel)]="checkoutData.metodo_pago" name="pago" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all text-gray-800 bg-white">
+                <option value="contraentrega">Contraentrega (Pago al recibir)</option>
+                <option value="transferencia">Transferencia Bancaria</option>
+              </select>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label class="text-sm font-semibold text-gray-700">Notas adicionales (Opcional)</label>
+              <textarea [(ngModel)]="checkoutData.notas" name="notas" rows="2" placeholder="Instrucciones para llegar, quien recibe..." class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all text-gray-800 resize-none"></textarea>
+            </div>
+
+            <!-- Error Feedback -->
+            <div *ngIf="checkoutError()" class="mt-2 p-3 bg-red-50 text-red-600 rounded-lg text-sm flex items-center gap-2 font-medium">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              {{ checkoutError() }}
+            </div>
+
+            <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+              <div class="flex flex-col">
+                <span class="text-sm text-gray-500">Total a pagar</span>
+                <span class="text-xl font-bold text-gray-900">{{ formatearPrecio(totalPrice()) }}</span>
+              </div>
+              <button 
+                type="submit" 
+                [disabled]="checkoutForm.invalid || isSubmitting()"
+                class="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-emerald-200 border-none flex items-center gap-2 cursor-pointer">
+                <span *ngIf="isSubmitting()" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                Confirmar Compra
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   `
 })
 export class CartSummaryComponent {
   private cartService = inject(CartService);
+  private pedidoService = inject(PedidoService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
   
   items = toSignal(this.cartService.items$, { initialValue: [] });
   
@@ -182,6 +265,19 @@ export class CartSummaryComponent {
   totalPrice = computed(() => {
     return this.items().reduce((acc, item) => acc + (item.precioUnitario * item.cantidad), 0);
   });
+
+  showCheckoutModal = signal(false);
+  isSubmitting = signal(false);
+  checkoutError = signal<string | null>(null);
+
+  checkoutData = {
+    direccion_envio: '',
+    ciudad: '',
+    departamento: '',
+    telefono_contacto: '',
+    metodo_pago: 'contraentrega',
+    notas: ''
+  };
 
   increaseQuantity(id: string, current: number) {
     this.cartService.updateQuantity(id, current + 1);
@@ -197,6 +293,49 @@ export class CartSummaryComponent {
     if (confirm('¿Deseas eliminar este producto del carrito?')) {
       this.cartService.removeFromCart(id);
     }
+  }
+
+  iniciarCheckout(): void {
+    if (!this.authService.isLoggedIn.getValue()) {
+      alert('Debes iniciar sesión para finalizar tu compra.');
+      this.router.navigate(['/login'], { queryParams: { returnUrl: '/carrito' } });
+      return;
+    }
+    this.showCheckoutModal.set(true);
+  }
+
+  closeCheckout(): void {
+    this.showCheckoutModal.set(false);
+    this.checkoutError.set(null);
+  }
+
+  confirmarPedido(): void {
+    if (this.isSubmitting()) return;
+    
+    this.isSubmitting.set(true);
+    this.checkoutError.set(null);
+
+    const payload = {
+      items: this.items().map(i => ({
+        producto_id: i.producto.id,
+        variante_id: i.variante?.id,
+        cantidad: i.cantidad
+      })),
+      ...this.checkoutData
+    };
+
+    this.pedidoService.crearPedido(payload).subscribe({
+      next: (res) => {
+        this.cartService.clearCart();
+        this.closeCheckout();
+        // Redirigir al cliente a su historial de pedidos
+        this.router.navigate(['/pedidos']);
+      },
+      error: (err) => {
+        this.isSubmitting.set(false);
+        this.checkoutError.set(err.error?.error || 'Ocurrió un error al procesar tu pedido. Inténtalo de nuevo.');
+      }
+    });
   }
 
   formatearPrecio(precio: number): string {

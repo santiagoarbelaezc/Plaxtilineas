@@ -5,11 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { PedidoService } from '../../services/pedido.service';
 import { AuthService } from '../../services/auth.service';
 import { Pedido, PedidoDetalle, ESTADOS_PEDIDO, EstadoPedido } from '../../models/pedido.model';
+import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { Footer } from '../../components/footer/footer.component';
 
 @Component({
   selector: 'app-mis-pedidos',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, NavbarComponent, Footer],
   templateUrl: './mis-pedidos.html',
   styleUrls: ['./mis-pedidos.css'],
 })
@@ -134,6 +136,10 @@ export class MisPedidos implements OnInit {
 
   setFiltro(estado: string): void {
     this.filtroEstado.set(estado);
+  }
+
+  trackByPedidoId(index: number, pedido: Pedido): number {
+    return pedido.id;
   }
 
   readonly timelineSteps = [

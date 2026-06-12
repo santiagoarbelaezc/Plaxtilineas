@@ -361,7 +361,15 @@ export class LoginFormComponent implements OnInit {
     this.authService.register(userData).subscribe({
       next: (res) => {
         this.isSubmitting = false;
-        this.router.navigate(['/verificar-email']);
+        this.successMsg = '¡Registro exitoso! Bienvenido a Plaxtilineas.';
+        this.showSuccessModal = true;
+        this.userToRedirect = res.usuario;
+        
+        setTimeout(() => {
+          if (this.showSuccessModal) {
+            this.closeSuccessModal();
+          }
+        }, 1500);
       },
       error: (err) => {
         this.isSubmitting = false;
