@@ -1,0 +1,305 @@
+<div class="mis-pedidos-page">
+
+  <!-- ═══ HERO HEADER ════════════════════════════════════════════════════ -->
+  <div class="pedidos-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1 class="page-title">
+          <span class="title-icon">📦</span>
+          Mis Pedidos
+        </h1>
+        <p class="page-subtitle">Historial completo de tus compras en Plaxtilineas</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STATS CARDS ════════════════════════════════════════════════════ -->
+  <div class="stats-section" *ngIf="!loading() && pedidos().length > 0">
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-total">🛒</div>
+      <div class="stat-info">
+        <span class="stat-value">{{ totalPedidos() }}</span>
+        <span class="stat-label">Pedidos Totales</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-money">💰</div>
+      <div class="stat-info">
+        <span class="stat-value">{{ formatPrice(totalInvertido()) }}</span>
+        <span class="stat-label">Total Invertido</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-active">🔄</div>
+      <div class="stat-info">
+        <span class="stat-value">{{ pedidosActivos() }}</span>
+        <span class="stat-label">Pedidos Activos</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FILTERS ════════════════════════════════════════════════════════ -->
+  <div class="filters-section" *ngIf="!loading() && pedidos().length > 0">
+    <button
+      class="filter-chip"
+      [class.active]="filtroEstado() === 'todos'"
+      (click)="setFiltro('todos')">
+      Todos
+    </button>
+    <button
+      *ngFor="let estado of estadosList"
+      class="filter-chip"
+      [class.active]="filtroEstado() === estado.key"
+      (click)="setFiltro(estado.key)"
+      [style.--chip-color]="estado.color">
+      {{ estado.icon }} {{ estado.label }}
+    </button>
+  </div>
+
+  <!-- ═══ LOADING STATE ══════════════════════════════════════════════════ -->
+  <div class="loading-state" *ngIf="loading()">
+    <div class="loading-spinner"></div>
+    <p>Cargando tus pedidos...</p>
+  </div>
+
+  <!-- ═══ ERROR STATE ════════════════════════════════════════════════════ -->
+  <div class="error-state" *ngIf="error()">
+    <span class="error-icon">⚠️</span>
+    <p>{{ error() }}</p>
+    <button class="retry-btn" (click)="cargarPedidos()">Reintentar</button>
+  </div>
+
+  <!-- ═══ EMPTY STATE ════════════════════════════════════════════════════ -->
+  <div class="empty-state" *ngIf="!loading() && !error() && pedidos().length === 0">
+    <div class="empty-icon">🛍️</div>
+    <h2>Aún no tienes pedidos</h2>
+    <p>Cuando realices tu primera compra, podrás ver todo el historial aquí.</p>
+    <a routerLink="/productos" class="shop-btn">Ir a la tienda</a>
+  </div>
+
+  <!-- ═══ PEDIDOS LIST ═══════════════════════════════════════════════════ -->
+  <div class="pedidos-list" *ngIf="!loading() && !error() && pedidosFiltrados().length > 0">
+    <div
+      *ngFor="let pedido of pedidosFiltrados(); trackBy: trackByPedidoId"
+      class="pedido-card"
+      [class.expanded]="isPedidoExpanded(pedido)"
+      [class.cancelado]="pedido.estado === 'cancelado'">
+
+      <!-- Card Header (siempre visible) -->
+      <div class="pedido-card-header" (click)="togglePedido(pedido)">
+        <div class="pedido-main-info">
+          <div class="pedido-code-badge">
+            <span class="code-label">Pedido</span>
+            <span class="code-value">#{{ pedido.codigo_pedido }}</span>
+          </div>
+          <div class="pedido-meta">
+            <span class="pedido-date">{{ formatShortDate(pedido.fecha) }}</span>
+            <span class="pedido-items-count">{{ pedido.total_items }} {{ pedido.total_items === 1 ? 'producto' : 'productos' }}</span>
+          </div>
+        </div>
+
+        <div class="pedido-right-info">
+          <span class="pedido-total">{{ formatPrice(pedido.total) }}</span>
+          <span
+            class="estado-badge"
+            [style.--estado-color]="getEstadoInfo(pedido.estado).color">
+            {{ getEstadoInfo(pedido.estado).icon }} {{ getEstadoInfo(pedido.estado).label }}
+          </span>
+        </div>
+
+        <div class="expand-arrow" [class.rotated]="isPedidoExpanded(pedido)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Card Body (expandible) -->
+      <div class="pedido-card-body" *ngIf="isPedidoExpanded(pedido)">
+
+        <!-- Timeline Stepper -->
+        <div class="timeline-section">
+          <h3 class="section-title">Estado del Pedido</h3>
+          <div class="timeline-stepper" [class.cancelled]="pedido.estado === 'cancelado'">
+            <div
+              *ngFor="let step of timelineSteps; let i = index"
+              class="timeline-step"
+              [class.completed]="isStepCompleted(pedido.estado, i)"
+              [class.active]="isStepActive(pedido.estado, i)">
+              <div class="step-connector" *ngIf="i > 0"
+                [class.completed]="isStepCompleted(pedido.estado, i)">
+              </div>
+              <div class="step-dot">
+                <span class="step-emoji">{{ step.icon }}</span>
+              </div>
+              <span class="step-label">{{ step.label }}</span>
+            </div>
+          </div>
+          <div class="cancelled-badge" *ngIf="pedido.estado === 'cancelado'">
+            ❌ Este pedido fue cancelado
+          </div>
+        </div>
+
+        <!-- Productos -->
+        <div class="productos-section">
+          <h3 class="section-title">Productos del Pedido</h3>
+          <div class="productos-grid">
+            <div *ngFor="let detalle of pedido.detalles" class="producto-item">
+              <div class="producto-img-wrapper">
+                <img *ngIf="detalle.imagen_url" [src]="detalle.imagen_url" [alt]="detalle.nombre_producto" class="producto-img">
+                <div *ngIf="!detalle.imagen_url" class="producto-img-placeholder">📦</div>
+              </div>
+              <div class="producto-info">
+                <span class="producto-nombre">{{ detalle.nombre_producto }}</span>
+                <div class="producto-pricing">
+                  <span class="producto-qty">x{{ detalle.cantidad }}</span>
+                  <span class="producto-precio">{{ formatPrice(detalle.precio_unitario) }}</span>
+                </div>
+                <span class="producto-subtotal">{{ formatPrice(detalle.subtotal || (detalle.precio_unitario * detalle.cantidad)) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detalles de Envío y Pago -->
+        <div class="info-grid">
+          <div class="info-block">
+            <h3 class="section-title">📍 Dirección de Envío</h3>
+            <p class="info-text">{{ pedido.direccion_envio }}</p>
+            <p class="info-text" *ngIf="pedido.ciudad || pedido.departamento">
+              {{ pedido.ciudad }}<span *ngIf="pedido.ciudad && pedido.departamento">, </span>{{ pedido.departamento }}
+            </p>
+            <p class="info-text" *ngIf="pedido.telefono_contacto">📞 {{ pedido.telefono_contacto }}</p>
+          </div>
+          <div class="info-block">
+            <h3 class="section-title">💳 Método de Pago</h3>
+            <p class="info-text capitalize">{{ pedido.metodo_pago }}</p>
+            <p class="info-text muted" *ngIf="pedido.notas">Notas: {{ pedido.notas }}</p>
+          </div>
+        </div>
+
+        <!-- Resumen financiero -->
+        <div class="financial-summary">
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span>{{ formatPrice(pedido.subtotal) }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Envío</span>
+            <span class="envio-text">Incluido</span>
+          </div>
+          <div class="summary-row total-row">
+            <span>Total Pagado</span>
+            <span class="total-value">{{ formatPrice(pedido.total) }}</span>
+          </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="pedido-actions">
+          <button class="action-btn-invoice" (click)="openInvoice(pedido); $event.stopPropagation()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            Ver Comprobante
+          </button>
+          <span class="pedido-updated">Última actualización: {{ formatDate(pedido.fecha_actualizacion) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- No results for filter -->
+  <div class="empty-filter" *ngIf="!loading() && !error() && pedidos().length > 0 && pedidosFiltrados().length === 0">
+    <p>No hay pedidos con el estado seleccionado.</p>
+    <button class="filter-reset-btn" (click)="setFiltro('todos')">Ver todos</button>
+  </div>
+
+  <!-- ═══ INVOICE MODAL ══════════════════════════════════════════════════ -->
+  <div class="invoice-overlay" *ngIf="showInvoiceModal()" (click)="closeInvoice()">
+    <div class="invoice-modal" (click)="$event.stopPropagation()">
+
+      <!-- Print-only content -->
+      <div class="invoice-content" id="invoice-print-area">
+        <div class="invoice-header-section">
+          <div class="invoice-brand">
+            <h2 class="invoice-brand-name">PLAXTILINEAS</h2>
+            <p class="invoice-brand-sub">Plaxtilineas SAS · NIT: 000.000.000-0</p>
+            <p class="invoice-brand-address">Cra. 19 #19-35, Armenia, Quindío</p>
+            <p class="invoice-brand-phone">Tel: +57 (606) 7390968</p>
+          </div>
+          <div class="invoice-meta-block">
+            <h3 class="invoice-title-label">COMPROBANTE DE COMPRA</h3>
+            <p class="invoice-code">{{ invoicePedido()?.codigo_pedido }}</p>
+            <p class="invoice-date">{{ formatDate(invoicePedido()?.fecha || '') }}</p>
+            <p class="invoice-estado">
+              Estado: <strong>{{ getEstadoInfo(invoicePedido()?.estado || 'pendiente').label }}</strong>
+            </p>
+          </div>
+        </div>
+
+        <div class="invoice-divider"></div>
+
+        <div class="invoice-client-info">
+          <h4>Datos del Cliente</h4>
+          <p><strong>Nombre:</strong> {{ (authService.currentUser | async)?.nombre }}</p>
+          <p><strong>Email:</strong> {{ (authService.currentUser | async)?.correo }}</p>
+          <p><strong>Dirección:</strong> {{ invoicePedido()?.direccion_envio }}</p>
+          <p *ngIf="invoicePedido()?.telefono_contacto"><strong>Teléfono:</strong> {{ invoicePedido()?.telefono_contacto }}</p>
+        </div>
+
+        <table class="invoice-table">
+          <thead>
+            <tr>
+              <th class="th-producto">Producto</th>
+              <th class="th-cant">Cant.</th>
+              <th class="th-precio">P. Unitario</th>
+              <th class="th-subtotal">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let d of invoicePedido()?.detalles">
+              <td>{{ d.nombre_producto }}</td>
+              <td class="center">{{ d.cantidad }}</td>
+              <td class="right">{{ formatPrice(d.precio_unitario) }}</td>
+              <td class="right bold">{{ formatPrice(d.subtotal || (d.precio_unitario * d.cantidad)) }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="subtotal-row">
+              <td colspan="3" class="right">Subtotal</td>
+              <td class="right">{{ formatPrice(invoicePedido()?.subtotal || 0) }}</td>
+            </tr>
+            <tr class="total-row-invoice">
+              <td colspan="3" class="right">TOTAL</td>
+              <td class="right total-cell">{{ formatPrice(invoicePedido()?.total || 0) }}</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="invoice-footer-section">
+          <p class="invoice-thanks">¡Gracias por tu compra!</p>
+          <p class="invoice-legal">Este comprobante es un documento informativo. Plaxtilineas SAS © 2026</p>
+        </div>
+      </div>
+
+      <!-- Non-print actions -->
+      <div class="invoice-actions no-print">
+        <button class="btn-print" (click)="printInvoice()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          Imprimir / Guardar PDF
+        </button>
+        <button class="btn-close-invoice" (click)="closeInvoice()">Cerrar</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
