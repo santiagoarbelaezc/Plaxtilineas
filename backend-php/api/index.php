@@ -122,6 +122,10 @@ try {
         AuthController::googleLogin();
     }
 
+    if ($uri === '/auth/verificar-email' && $method === 'GET') {
+        AuthController::verificarEmail();
+    }
+
     if ($uri === '/auth/perfil' && $method === 'GET') {
         $user = AuthMiddleware::verify();
         AuthController::perfil($user);

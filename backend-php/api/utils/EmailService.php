@@ -187,4 +187,75 @@ class EmailService
         </html>
         HTML;
     }
+
+    /**
+     * Enviar email de verificación de cuenta al registrarse
+     */
+    public static function enviarConfirmacionEmail(string $to, string $nombre, string $codigo): array
+    {
+        $subject = "[" . COMPANY_NAME . "] Tu código de verificación";
+        $html = self::templateVerificacionEmail($nombre, $codigo);
+
+        return self::send($to, $subject, $html);
+    }
+
+    private static function templateVerificacionEmail(string $nombre, string $codigo): string
+    {
+        return <<<HTML
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Verificación de Correo - Plaxtilineas</title>
+        </head>
+        <body style="font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #111827; margin: 0; padding: 0; color: #ffffff;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #111827; padding: 40px 20px;">
+            <tr>
+              <td>
+                <table align="center" cellpadding="0" cellspacing="0" width="600" style="background-color: #1e293b; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); overflow: hidden; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);">
+                  <!-- Header/Logo -->
+                  <tr>
+                    <td style="padding: 30px 40px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                      <h1 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;">PLAXTILINEAS</h1>
+                    </td>
+                  </tr>
+                  <!-- Body -->
+                  <tr>
+                    <td style="padding: 40px 40px; color: #e2e8f0;">
+                      <h2 style="color: #ffffff; margin-top: 0; font-size: 20px; font-weight: 700;">¡Hola {$nombre}!</h2>
+                      <p style="font-size: 15px; line-height: 1.6; color: #cbd5e1; margin-bottom: 30px;">
+                        Gracias por registrarte en **Plaxtilineas**. Para completar la activación de tu cuenta, por favor introduce el siguiente código de verificación de 6 dígitos en la página de confirmación:
+                      </p>
+                      
+                      <!-- Código de verificación -->
+                      <table cellpadding="0" cellspacing="0" align="center" style="margin-bottom: 35px;">
+                        <tr>
+                          <td style="background-color: #111827; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 18px 40px; text-align: center;">
+                            <span style="font-family: monospace; font-size: 32px; font-weight: 700; color: #ffffff; letter-spacing: 0.25em;">{$codigo}</span>
+                          </td>
+                        </tr>
+                      </table>
+
+                      <p style="font-size: 14px; line-height: 1.6; color: #94a3b8; text-align: center; margin-top: 20px;">
+                        Este código es válido por 24 horas y solo se puede utilizar una vez.
+                      </p>
+                    </td>
+                  </tr>
+                  <!-- Footer -->
+                  <tr>
+                    <td style="background-color: #0f172a; padding: 25px 40px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                      <p style="margin: 0 0 6px 0;">&copy; 2026 Plaxtilineas SAS. Todos los derechos reservados.</p>
+                      <p style="margin: 0;">Cra. 19 #19-35, Armenia, Quindío | Tel: +57 (606) 7390968</p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
+        HTML;
+    }
 }
+

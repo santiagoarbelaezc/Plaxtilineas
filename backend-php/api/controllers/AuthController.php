@@ -37,6 +37,10 @@ class AuthController
                 ResponseHandler::error('Contraseña incorrecta', 401);
             }
 
+            if ($usuario['google_id'] === null && (int)$usuario['email_verificado'] === 0) {
+                ResponseHandler::error('Debes confirmar tu correo electrónico antes de iniciar sesión. Por favor, revisa tu bandeja de entrada.', 403);
+            }
+
             $token = TokenHelper::encode([
                 'id'     => $usuario['id'],
                 'correo' => $usuario['correo'],
@@ -146,35 +150,52 @@ class AuthController
             // Cifrado de contraseña
             $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 
+            // Generar código de verificación de 6 dígitos
+            $tokenVerificacion = strval(rand(100000, 999999));
+            $tokenExpiraEn = date('Y-m-d H:i:s', strtotime('+24 hours'));
+
             // Insertar
             $stmtInsert = $db->prepare('
-                INSERT INTO usuarios (nombre, apellidos, edad, direccion, ciudad, correo, password, rol) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO usuarios (nombre, apellidos, edad, direccion, ciudad, correo, password, rol, email_verificado, token_verificacion, token_expira_en) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)
             ');
-            $stmtInsert->execute([$nombre, $apellidos, $edad, $direccion, $ciudad, $correo, $hash, $rol]);
+            $stmtInsert->execute([$nombre, $apellidos, $edad, $direccion, $ciudad, $correo, $hash, $rol, $tokenVerificacion, $tokenExpiraEn]);
             $userId = $db->lastInsertId();
 
-            // Auto-login para clientes
-            if ($rol === 'cliente') {
-                $token = TokenHelper::encode([
-                    'id' => $userId,
-                    'correo' => $correo,
-                    'rol' => $rol
-                ]);
-
-                ResponseHandler::success([
-                    'mensaje' => 'Registro y login exitosos',
-                    'token' => $token,
-                    'usuario' => [
-                        'id' => $userId,
+            // Enviar email de verificación con el código
+            try {
+                require_once __DIR__ . '/../utils/EmailService.php';
+                $emailResult = EmailService::enviarConfirmacionEmail($correo, $nombre, $tokenVerificacion);
+                if (!$emailResult['success']) {
+                    Logger::error('AuthController::register – Error enviando correo de verificación', [
                         'correo' => $correo,
-                        'nombre' => $nombre,
-                        'rol' => $rol
-                    ]
-                ], 201);
-            } else {
-                ResponseHandler::success(['mensaje' => 'Usuario registrado exitosamente'], 201);
+                        'error' => $emailResult['error'] ?? 'desconocido'
+                    ]);
+                }
+            } catch (Throwable $mailEx) {
+                Logger::error('AuthController::register – Excepción enviando correo', [
+                    'correo' => $correo,
+                    'exception' => $mailEx->getMessage()
+                ]);
             }
+
+            $tokenJwt = TokenHelper::encode([
+                'id'     => $userId,
+                'correo' => $correo,
+                'rol'    => $rol,
+            ]);
+
+            ResponseHandler::success([
+                'mensaje' => 'Registro exitoso. Se ha enviado un código de confirmación a tu correo.',
+                'token'   => $tokenJwt,
+                'usuario' => [
+                    'id'     => $userId,
+                    'correo' => $correo,
+                    'nombre' => $nombre,
+                    'rol'    => $rol,
+                ],
+                'pendiente_verificacion' => true
+            ], 201);
 
         } catch (PDOException $e) {
             Logger::error('AuthController::register - DB', ['exception' => $e->getMessage()]);
@@ -228,19 +249,17 @@ class AuthController
             $usuario = $stmt->fetch();
 
             if ($usuario) {
-                // Actualizar google_id si es null
-                if (!$usuario['google_id']) {
-                    $update = $db->prepare('UPDATE usuarios SET google_id = ? WHERE id = ?');
-                    $update->execute([$googleId, $usuario['id']]);
-                }
+                // Actualizar google_id y marcar como verificado
+                $update = $db->prepare('UPDATE usuarios SET google_id = ?, email_verificado = 1 WHERE id = ?');
+                $update->execute([$googleId, $usuario['id']]);
                 
                 $userId = $usuario['id'];
                 $rol = $usuario['rol'];
             } else {
                 // Registrar silenciosamente como cliente
                 $insert = $db->prepare('
-                    INSERT INTO usuarios (nombre, apellidos, correo, google_id, rol) 
-                    VALUES (?, ?, ?, ?, ?)
+                    INSERT INTO usuarios (nombre, apellidos, correo, google_id, rol, email_verificado) 
+                    VALUES (?, ?, ?, ?, ?, 1)
                 ');
                 $insert->execute([$nombre, $apellidos, $correo, $googleId, $rol]);
                 $userId = $db->lastInsertId();
@@ -271,6 +290,71 @@ class AuthController
         } catch (Throwable $e) {
             Logger::error('AuthController::googleLogin - inesperado', ['exception' => $e->getMessage()]);
             ResponseHandler::error('Error inesperado en login de Google', 500);
+        }
+    }
+
+    /**
+     * GET /api/auth/verificar-email
+     * Query: ?token=TOKEN
+     */
+    public static function verificarEmail(): void
+    {
+        try {
+            $token = ResponseHandler::sanitize($_GET['token'] ?? $_GET['codigo'] ?? '');
+
+            if (!$token) {
+                throw new InvalidArgumentException('El código de verificación es obligatorio');
+            }
+
+            $db = Database::getConnection();
+            $stmt = $db->prepare('SELECT * FROM usuarios WHERE token_verificacion = ? LIMIT 1');
+            $stmt->execute([$token]);
+            $usuario = $stmt->fetch();
+
+            if (!$usuario) {
+                ResponseHandler::error('El código de verificación es inválido o ya fue utilizado.', 400);
+            }
+
+            // Validar expiración del token
+            $expiraEn = $usuario['token_expira_en'];
+            if ($expiraEn && strtotime($expiraEn) < time()) {
+                ResponseHandler::error('El código de verificación ha expirado. Por favor, regístrate de nuevo.', 400);
+            }
+
+            // Marcar como verificado y vaciar token
+            $update = $db->prepare('
+                UPDATE usuarios 
+                SET email_verificado = 1, token_verificacion = NULL, token_expira_en = NULL 
+                WHERE id = ?
+            ');
+            $update->execute([$usuario['id']]);
+
+            // Generar token JWT para iniciar sesión automáticamente tras verificar
+            $tokenJwt = TokenHelper::encode([
+                'id'     => $usuario['id'],
+                'correo' => $usuario['correo'],
+                'rol'    => $usuario['rol'],
+            ]);
+
+            ResponseHandler::success([
+                'mensaje' => 'Correo verificado exitosamente. Tu cuenta ha sido activada.',
+                'token'   => $tokenJwt,
+                'usuario' => [
+                    'id'     => $usuario['id'],
+                    'correo' => $usuario['correo'],
+                    'nombre' => $usuario['nombre'] ?? '',
+                    'rol'    => $usuario['rol'],
+                ],
+            ]);
+
+        } catch (PDOException $e) {
+            Logger::error('AuthController::verificarEmail - DB', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error de base de datos al verificar el correo', 500);
+        } catch (InvalidArgumentException $e) {
+            ResponseHandler::error($e->getMessage(), 400);
+        } catch (Throwable $e) {
+            Logger::error('AuthController::verificarEmail - inesperado', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error inesperado al verificar el correo', 500);
         }
     }
 }

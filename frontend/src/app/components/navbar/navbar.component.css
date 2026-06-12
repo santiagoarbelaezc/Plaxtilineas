@@ -790,3 +790,236 @@ body.no-scroll {
 .mobile-bottom-nav.dark-mode .bottom-nav-ai fa-icon {
   background: rgba(139, 92, 246, 0.2); /* Morado un poco más visible en fondo negro */
 }
+
+/* ===== USER NAV CONTAINER & DROPDOWN ===== */
+.user-nav-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+}
+
+.welcome-text-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-family: 'Montserrat', sans-serif;
+  line-height: 1.2;
+}
+
+.welcome-label {
+  font-size: 10px;
+  color: var(--gray-700);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.welcome-name {
+  font-size: 13px;
+  color: var(--gray-900);
+  font-weight: 700;
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-dropdown-menu {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  width: 250px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 8px 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  animation: dropdownFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.user-dropdown-header {
+  padding: 12px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-dropdown-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.user-dropdown-subtitle {
+  font-size: 11px;
+  color: var(--gray-700);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-dropdown-divider {
+  height: 1px;
+  background: var(--gray-100);
+  margin: 6px 0;
+}
+
+.user-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  color: var(--gray-700);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.user-dropdown-item:hover {
+  background: var(--gray-100);
+  color: var(--primary-green);
+  padding-left: 22px;
+}
+
+.dropdown-item-icon {
+  font-size: 14px;
+  width: 16px;
+  text-align: center;
+  color: var(--gray-700);
+  transition: color 0.2s ease;
+}
+
+.user-dropdown-item:hover .dropdown-item-icon {
+  color: var(--primary-green);
+}
+
+.user-dropdown-item.logout-item {
+  color: #dc2626;
+}
+
+.user-dropdown-item.logout-item:hover {
+  background: rgba(220, 38, 38, 0.05);
+  color: #b91c1c;
+}
+
+.user-dropdown-item.logout-item:hover .dropdown-item-icon {
+  color: #b91c1c;
+}
+
+/* Drawer user options */
+.drawer-user-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.logout-item-drawer fa-icon {
+  background: rgba(220, 38, 38, 0.08) !important;
+  color: #dc2626 !important;
+}
+
+.logout-item-drawer:hover fa-icon {
+  background: #dc2626 !important;
+  color: white !important;
+}
+
+.logout-item-drawer:hover {
+  color: #dc2626 !important;
+  border-color: #dc2626 !important;
+}
+
+/* Custom premium toast notification */
+.toast-nav-notification {
+  position: fixed;
+  bottom: 80px; /* Over bottom navigation on mobile, or bottom right on desktop */
+  right: 24px;
+  background: #111827;
+  color: white;
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 99999;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  animation: toastNavSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  max-width: 320px;
+}
+
+@keyframes toastNavSlideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.toast-nav-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.toast-nav-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toast-nav-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+  color: #a78bfa;
+}
+
+.toast-nav-body {
+  font-size: 11px;
+  margin: 0;
+  color: #cbd5e1;
+}
+
+/* Hide welcome text on tiny mobile views */
+@media (max-width: 480px) {
+  .welcome-text-nav {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .toast-nav-notification {
+    left: 20px;
+    right: 20px;
+    max-width: none;
+    bottom: 80px;
+  }
+}
