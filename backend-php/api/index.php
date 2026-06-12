@@ -35,6 +35,7 @@ require_once __DIR__ . '/controllers/ComponentesController.php';
 require_once __DIR__ . '/controllers/EstadisticasController.php';
 require_once __DIR__ . '/controllers/DashboardAssistantController.php';
 require_once __DIR__ . '/controllers/AiController.php';
+require_once __DIR__ . '/controllers/PedidoController.php';
 
 // ─── CORS headers (siempre primero) ──────────────────────────────────────────
 ResponseHandler::setCorsHeaders();
@@ -411,6 +412,33 @@ try {
     // ASISTENTE VIRTUAL MATEO  /api/chat/*
     // ═════════════════════════════════════════════════════════════════════════════
     require_once __DIR__ . '/routes/chat.routes.php';
+
+    // ═════════════════════════════════════════════════════════════════════════════
+    // PEDIDOS  /api/pedidos/*
+    // ═════════════════════════════════════════════════════════════════════════════
+
+    if ($uri === '/pedidos' && $method === 'POST') {
+        $user = AuthMiddleware::verify();
+        PedidoController::crearPedido($user);
+        exit;
+    }
+    if ($uri === '/pedidos/mis-pedidos' && $method === 'GET') {
+        $user = AuthMiddleware::verify();
+        PedidoController::obtenerMisPedidos($user);
+        exit;
+    }
+    if ($uri === '/pedidos/admin/todos' && $method === 'GET') {
+        $user = AuthMiddleware::verify();
+        PedidoController::adminObtenerTodos($user);
+        exit;
+    }
+    if ($p = matchRoute('/pedidos/admin/actualizar-estado/:id', $uri)) {
+        if ($method === 'PUT') {
+            $user = AuthMiddleware::verify();
+            PedidoController::adminActualizarEstado((int)$p['id'], $user);
+            exit;
+        }
+    }
 
     // ─── 404 fallback ────────────────────────────────────────────────────────────
     ResponseHandler::error(

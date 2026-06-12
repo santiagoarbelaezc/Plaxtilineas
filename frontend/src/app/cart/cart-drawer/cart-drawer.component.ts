@@ -208,11 +208,10 @@ export class CartDrawerComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Escuchar señal de apertura forzada desde el servicio
-    this.drawerSub = this.cartService.isOpenDrawer.subscribe(open => {
-      if (open && this.isAllowedRoute) {
-        this.isOpen = true;
-      }
+    // El panel flotante del social-buttons ahora maneja la apertura automática.
+    // El cart-drawer lateral ya no se abre automáticamente al añadir un producto.
+    this.drawerSub = this.cartService.isOpenDrawer.subscribe(_open => {
+      // No-op: gestionado por SocialButtonsComponent
     });
 
     this.intervalId = setInterval(() => {

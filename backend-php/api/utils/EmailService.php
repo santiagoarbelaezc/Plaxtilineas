@@ -257,5 +257,198 @@ class EmailService
         </html>
         HTML;
     }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // EMAILS DE PEDIDOS
+    // ═══════════════════════════════════════════════════════════════════════
+
+    /**
+     * Enviar email de confirmación de pedido al cliente
+     */
+    public static function enviarConfirmacionPedido(
+        string $to, string $nombre, string $codigoPedido,
+        array $detalles, float $total
+    ): array {
+        $subject = "[" . COMPANY_NAME . "] Pedido Confirmado - {$codigoPedido}";
+        $html = self::templateConfirmacionPedido($nombre, $codigoPedido, $detalles, $total);
+        return self::send($to, $subject, $html);
+    }
+
+    /**
+     * Enviar notificación de cambio de estado del pedido
+     */
+    public static function enviarNotificacionEstadoPedido(
+        string $to, string $nombre, string $codigoPedido,
+        string $estadoAnterior, string $estadoNuevo
+    ): array {
+        $estadoLabel = self::getEstadoLabel($estadoNuevo);
+        $subject = "[" . COMPANY_NAME . "] Tu pedido {$codigoPedido} - {$estadoLabel}";
+        $html = self::templateEstadoPedido($nombre, $codigoPedido, $estadoAnterior, $estadoNuevo);
+        return self::send($to, $subject, $html);
+    }
+
+    private static function getEstadoLabel(string $estado): string
+    {
+        return match ($estado) {
+            'pendiente'       => 'Pendiente',
+            'confirmado'      => 'Confirmado',
+            'en_preparacion'  => 'En Preparación',
+            'en_camino'       => 'En Camino',
+            'entregado'       => 'Entregado',
+            'cancelado'       => 'Cancelado',
+            default           => ucfirst($estado),
+        };
+    }
+
+    private static function getEstadoEmoji(string $estado): string
+    {
+        return match ($estado) {
+            'pendiente'       => '🕐',
+            'confirmado'      => '✅',
+            'en_preparacion'  => '📦',
+            'en_camino'       => '🚚',
+            'entregado'       => '🎉',
+            'cancelado'       => '❌',
+            default           => '📋',
+        };
+    }
+
+    private static function templateConfirmacionPedido(
+        string $nombre, string $codigoPedido, array $detalles, float $total
+    ): string {
+        $productRows = '';
+        foreach ($detalles as $d) {
+            $subtotalItem = number_format($d['precio_unitario'] * $d['cantidad'], 0, ',', '.');
+            $precioUnit = number_format($d['precio_unitario'], 0, ',', '.');
+            $productRows .= "
+                <tr>
+                    <td style='padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #e2e8f0; font-size: 14px;'>{$d['nombre_producto']}</td>
+                    <td style='padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #cbd5e1; text-align: center; font-size: 14px;'>{$d['cantidad']}</td>
+                    <td style='padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #cbd5e1; text-align: right; font-size: 14px;'>$ {$precioUnit}</td>
+                    <td style='padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #ffffff; text-align: right; font-weight: 600; font-size: 14px;'>$ {$subtotalItem}</td>
+                </tr>";
+        }
+        $totalFormateado = number_format($total, 0, ',', '.');
+        $fecha = date('d/m/Y H:i');
+
+        return <<<HTML
+        <!DOCTYPE html>
+        <html lang="es">
+        <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+        <body style="font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif; background-color: #111827; margin: 0; padding: 0; color: #ffffff;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #111827; padding: 40px 20px;">
+            <tr><td>
+              <table align="center" cellpadding="0" cellspacing="0" width="600" style="background-color: #1e293b; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
+                <tr><td style="padding: 30px 40px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                  <h1 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;">PLAXTILINEAS</h1>
+                </td></tr>
+                <tr><td style="padding: 40px 40px; color: #e2e8f0;">
+                  <div style="text-align: center; margin-bottom: 30px;">
+                    <span style="font-size: 48px;">🛒</span>
+                    <h2 style="color: #ffffff; margin: 15px 0 5px 0; font-size: 22px;">¡Pedido Confirmado!</h2>
+                    <p style="color: #94a3b8; margin: 0; font-size: 14px;">Tu pedido ha sido recibido exitosamente.</p>
+                  </div>
+                  <table cellpadding="0" cellspacing="0" align="center" style="margin-bottom: 25px;">
+                    <tr><td style="background-color: #111827; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 14px 30px; text-align: center;">
+                      <span style="color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em;">N° de Pedido</span><br>
+                      <span style="font-family: monospace; font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: 0.1em;">{$codigoPedido}</span>
+                    </td></tr>
+                  </table>
+                  <p style="font-size: 15px; color: #cbd5e1;">Hola <strong>{$nombre}</strong>,</p>
+                  <p style="font-size: 14px; color: #94a3b8; line-height: 1.6;">Gracias por tu compra. Aquí tienes el resumen de tu pedido realizado el <strong style="color: #cbd5e1;">{$fecha}</strong>:</p>
+                  <table width="100%" cellpadding="0" cellspacing="0" style="margin: 20px 0; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                    <thead>
+                      <tr style="background-color: rgba(255,255,255,0.05);">
+                        <th style="padding: 12px 16px; text-align: left; color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Producto</th>
+                        <th style="padding: 12px 16px; text-align: center; color: #94a3b8; font-size: 12px; text-transform: uppercase;">Cant.</th>
+                        <th style="padding: 12px 16px; text-align: right; color: #94a3b8; font-size: 12px; text-transform: uppercase;">Precio</th>
+                        <th style="padding: 12px 16px; text-align: right; color: #94a3b8; font-size: 12px; text-transform: uppercase;">Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>{$productRows}</tbody>
+                    <tfoot>
+                      <tr style="background-color: rgba(255,255,255,0.03);">
+                        <td colspan="3" style="padding: 16px; text-align: right; color: #ffffff; font-weight: 700; font-size: 16px;">TOTAL</td>
+                        <td style="padding: 16px; text-align: right; color: #10b981; font-weight: 700; font-size: 18px;">$ {$totalFormateado}</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                  <p style="font-size: 13px; color: #64748b; text-align: center; margin-top: 25px;">Te notificaremos cuando tu pedido cambie de estado.</p>
+                </td></tr>
+                <tr><td style="background-color: #0f172a; padding: 25px 40px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid rgba(255,255,255,0.05);">
+                  <p style="margin: 0 0 6px 0;">&copy; 2026 Plaxtilineas SAS. Todos los derechos reservados.</p>
+                  <p style="margin: 0;">Cra. 19 #19-35, Armenia, Quindío | Tel: +57 (606) 7390968</p>
+                </td></tr>
+              </table>
+            </td></tr>
+          </table>
+        </body>
+        </html>
+        HTML;
+    }
+
+    private static function templateEstadoPedido(
+        string $nombre, string $codigoPedido,
+        string $estadoAnterior, string $estadoNuevo
+    ): string {
+        $emoji = self::getEstadoEmoji($estadoNuevo);
+        $label = self::getEstadoLabel($estadoNuevo);
+        $labelAnterior = self::getEstadoLabel($estadoAnterior);
+        $fecha = date('d/m/Y H:i');
+
+        $mensajeEstado = match ($estadoNuevo) {
+            'confirmado'     => 'Tu pedido ha sido confirmado y será procesado pronto.',
+            'en_preparacion' => 'Estamos preparando tu pedido con mucho cuidado.',
+            'en_camino'      => '¡Tu pedido va en camino! Pronto lo recibirás.',
+            'entregado'      => '¡Tu pedido ha sido entregado! Esperamos que lo disfrutes.',
+            'cancelado'      => 'Tu pedido ha sido cancelado. Si tienes dudas, contáctanos.',
+            default          => 'El estado de tu pedido ha sido actualizado.',
+        };
+
+        return <<<HTML
+        <!DOCTYPE html>
+        <html lang="es">
+        <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+        <body style="font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif; background-color: #111827; margin: 0; padding: 0; color: #ffffff;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #111827; padding: 40px 20px;">
+            <tr><td>
+              <table align="center" cellpadding="0" cellspacing="0" width="600" style="background-color: #1e293b; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
+                <tr><td style="padding: 30px 40px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                  <h1 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;">PLAXTILINEAS</h1>
+                </td></tr>
+                <tr><td style="padding: 40px 40px; color: #e2e8f0;">
+                  <div style="text-align: center; margin-bottom: 30px;">
+                    <span style="font-size: 48px;">{$emoji}</span>
+                    <h2 style="color: #ffffff; margin: 15px 0 5px 0; font-size: 22px;">Actualización de Pedido</h2>
+                    <p style="color: #94a3b8; margin: 0; font-size: 14px;">Pedido <strong style="color: #e2e8f0;">{$codigoPedido}</strong></p>
+                  </div>
+                  <p style="font-size: 15px; color: #cbd5e1;">Hola <strong>{$nombre}</strong>,</p>
+                  <p style="font-size: 14px; color: #94a3b8; line-height: 1.6;">{$mensajeEstado}</p>
+                  <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                    <tr>
+                      <td style="padding: 16px; text-align: center; width: 45%; background: rgba(255,255,255,0.03);">
+                        <span style="color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">Estado anterior</span><br>
+                        <span style="color: #94a3b8; font-size: 15px; font-weight: 600; margin-top: 6px; display: inline-block;">{$labelAnterior}</span>
+                      </td>
+                      <td style="padding: 16px; text-align: center; width: 10%; color: #475569;">→</td>
+                      <td style="padding: 16px; text-align: center; width: 45%; background: rgba(16,185,129,0.08);">
+                        <span style="color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">Nuevo estado</span><br>
+                        <span style="color: #10b981; font-size: 15px; font-weight: 700; margin-top: 6px; display: inline-block;">{$label}</span>
+                      </td>
+                    </tr>
+                  </table>
+                  <p style="font-size: 12px; color: #475569; text-align: center;">Actualizado el {$fecha}</p>
+                </td></tr>
+                <tr><td style="background-color: #0f172a; padding: 25px 40px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid rgba(255,255,255,0.05);">
+                  <p style="margin: 0 0 6px 0;">&copy; 2026 Plaxtilineas SAS. Todos los derechos reservados.</p>
+                  <p style="margin: 0;">Cra. 19 #19-35, Armenia, Quindío | Tel: +57 (606) 7390968</p>
+                </td></tr>
+              </table>
+            </td></tr>
+          </table>
+        </body>
+        </html>
+        HTML;
+    }
 }
 

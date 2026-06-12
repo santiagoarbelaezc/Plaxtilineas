@@ -18,6 +18,7 @@ export class SocialButtonsComponent implements OnInit, OnDestroy {
   
   private helpMessageTimeout: any;
   private chatSubscription?: Subscription;
+  private drawerSubscription?: Subscription;
   private cartService = inject(CartService);
 
   // Estado para mostrar/ocultar mensajes
@@ -47,6 +48,19 @@ export class SocialButtonsComponent implements OnInit, OnDestroy {
       this.isChatOpen = isOpen;
     });
 
+    // Auto-abrir el panel cuando se agrega un producto al carrito
+    this.drawerSubscription = this.cartService.isOpenDrawer.subscribe(open => {
+      if (open) {
+        this.isCartOpen = true;
+        // Cerrar el asistente si estaba abierto
+        if (this.isChatOpen) {
+          this.chatService.toggleChat();
+        }
+      } else {
+        this.isCartOpen = false;
+      }
+    });
+
     if (isPlatformBrowser(this.platformId)) {
       this.helpMessageTimeout = setTimeout(() => {
         this.showHelpMessage = true;
@@ -58,6 +72,7 @@ export class SocialButtonsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.helpMessageTimeout) clearTimeout(this.helpMessageTimeout);
     if (this.chatSubscription) this.chatSubscription.unsubscribe();
+    if (this.drawerSubscription) this.drawerSubscription.unsubscribe();
   }
 
   toggleChat(): void {
@@ -73,6 +88,7 @@ export class SocialButtonsComponent implements OnInit, OnDestroy {
 
   closeCartPanel(): void {
     this.isCartOpen = false;
+    this.cartService.closeDrawer(); // Sincroniza el estado con el servicio
   }
 
   increaseQuantity(id: string, current: number) {
