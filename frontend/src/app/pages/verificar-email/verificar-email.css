@@ -1,7 +1,7 @@
 /* verificar-email.css */
 
 .verificar-container {
-  min-height: calc(100vh - var(--navbar-height, 80px) - 200px); /* Ajustar según tamaño promedio */
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;

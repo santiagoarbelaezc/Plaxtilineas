@@ -205,8 +205,11 @@ export class LoginFormComponent implements OnInit {
   isSubmitting = false;
   showErrorModal = false;
   showConfirmModal = false;
+  showSuccessModal = false;
   showPassword = false;
   errorMsg = '';
+  successMsg = '';
+  private userToRedirect: any = null;
 
   // Aviso de sesión expirada
   sessionExpired = false;
@@ -265,7 +268,15 @@ export class LoginFormComponent implements OnInit {
     this.authService.loginWithGoogle(response.credential).subscribe({
       next: (res) => {
         this.isSubmitting = false;
-        this.redirectUser(res.usuario);
+        this.successMsg = '¡Ingreso exitoso con Google! Bienvenido a Plaxtilineas.';
+        this.showSuccessModal = true;
+        this.userToRedirect = res.usuario;
+        
+        setTimeout(() => {
+          if (this.showSuccessModal) {
+            this.closeSuccessModal();
+          }
+        }, 1500);
       },
       error: (err) => {
         this.isSubmitting = false;
@@ -291,6 +302,11 @@ export class LoginFormComponent implements OnInit {
     this.showErrorModal = false;
   }
 
+  closeSuccessModal(): void {
+    this.showSuccessModal = false;
+    this.redirectUser(this.userToRedirect);
+  }
+
   onSubmit(): void {
     if (this.mode === 'login') {
       if (this.loginForm.invalid) {
@@ -307,7 +323,15 @@ export class LoginFormComponent implements OnInit {
       this.authService.login(correo, password).subscribe({
         next: (res) => {
           this.isSubmitting = false;
-          this.redirectUser(res.usuario);
+          this.successMsg = '¡Ingreso exitoso! Bienvenido a Plaxtilineas.';
+          this.showSuccessModal = true;
+          this.userToRedirect = res.usuario;
+          
+          setTimeout(() => {
+            if (this.showSuccessModal) {
+              this.closeSuccessModal();
+            }
+          }, 1500);
         },
         error: () => {
           this.errorMsg = 'Correo o contraseña incorrectos. Por favor, verifica tus datos e inténtalo de nuevo.';

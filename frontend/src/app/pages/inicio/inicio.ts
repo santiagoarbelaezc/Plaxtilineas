@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 // Importa todos los componentes que quieres mostrar en la vista de inicio
 import { NavbarComponent } from '../../components/navbar/navbar.component';
@@ -133,6 +134,8 @@ export class Inicio implements OnInit {
 
   // Componentes dinámicos cargados de la base de datos
   componentesDinamicos: ComponenteDinamico[] = [];
+
+  public authService = inject(AuthService);
 
   constructor(private componentesService: ComponentesService) { }
 

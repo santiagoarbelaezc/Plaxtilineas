@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, HostListener, ViewEncapsulation, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, HostListener, ViewEncapsulation, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
@@ -18,6 +18,7 @@ import { MenuDropdown } from './menu-dropdown/menu-dropdown';
 import { EmpresasDropdown } from './empresas-dropdown/empresas-dropdown';
 import { CartIconComponent } from '../../cart/cart-icon/cart-icon.component';
 import { ChatService } from '../../services/chat.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -32,6 +33,8 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   isScrolled = false;
   searchActive = false;
   isUserRegistered = false;
+  
+  public authService = inject(AuthService);
   
   // Variables para el buscador
   searchQuery: string = '';
