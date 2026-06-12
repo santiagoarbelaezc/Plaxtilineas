@@ -3,13 +3,42 @@
 <main class="verificar-container">
   <div class="verificar-card animate-fade-in">
     
+    <!-- Estado: Formulario de Código -->
+    <div *ngIf="status === 'formulario'" class="state-content">
+      <div class="icon-circle verification">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+      </div>
+      <h1 class="state-title">Código de verificación</h1>
+      <p class="state-description">Hemos enviado un código de seguridad de 6 dígitos a tu correo electrónico. Por favor, ingrésalo aquí para activar tu cuenta.</p>
+      
+      <form (ngSubmit)="onSubmitCode()" class="code-form">
+        <div class="w-full mb-1">
+          <input 
+            type="text" 
+            [(ngModel)]="codigo" 
+            name="codigo" 
+            placeholder="000000" 
+            maxlength="6"
+            class="code-input"
+            autocomplete="one-time-code"
+          />
+        </div>
+        <button type="submit" [disabled]="codigo.length !== 6" class="btn-primary">
+          Confirmar Código
+        </button>
+      </form>
+    </div>
+
     <!-- Estado: Cargando -->
     <div *ngIf="status === 'cargando'" class="state-content">
       <div class="spinner-wrapper">
         <div class="custom-spinner"></div>
       </div>
-      <h1 class="state-title">Verificando tu cuenta</h1>
-      <p class="state-description">Estamos procesando tu token de seguridad. Esto tomará solo unos segundos...</p>
+      <h1 class="state-title">Verificando código</h1>
+      <p class="state-description">Estamos procesando tu código de seguridad. Esto tomará solo unos segundos...</p>
     </div>
 
     <!-- Estado: Éxito -->
@@ -19,9 +48,9 @@
           <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
       </div>
-      <h1 class="state-title">¡Cuenta verificada!</h1>
-      <p class="state-description">Tu dirección de correo electrónico ha sido confirmada exitosamente.</p>
-      <p class="redirect-hint">Redirigiéndote al inicio automáticamente en unos segundos...</p>
+      <h1 class="state-title">¡Cuenta activada!</h1>
+      <p class="state-description">Tu cuenta ha sido activada y verificada exitosamente.</p>
+      <p class="redirect-hint">Redirigiéndote al inicio automáticamente...</p>
       <a routerLink="/" class="btn-primary">Ir al Inicio ahora</a>
     </div>
 
@@ -36,7 +65,7 @@
       <h1 class="state-title">Error de Verificación</h1>
       <p class="state-description">{{ errorMessage }}</p>
       <div class="btn-group">
-        <a routerLink="/login" class="btn-primary">Volver a Intentar</a>
+        <button type="button" (click)="intentarDeNuevo()" class="btn-primary">Volver a Intentar</button>
         <a href="https://wa.me/573007365939" target="_blank" class="btn-secondary">Soporte Técnico</a>
       </div>
     </div>

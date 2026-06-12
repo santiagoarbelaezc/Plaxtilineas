@@ -337,7 +337,7 @@ export class LoginFormComponent implements OnInit {
     this.authService.register(userData).subscribe({
       next: (res) => {
         this.isSubmitting = false;
-        this.redirectUser(res.usuario);
+        this.router.navigate(['/verificar-email']);
       },
       error: (err) => {
         this.isSubmitting = false;

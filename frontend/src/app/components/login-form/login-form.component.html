@@ -245,55 +245,56 @@
 </div>
 
 <!-- Modal de Confirmación de Datos -->
-<div class="fixed inset-0 w-full h-full bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999]" *ngIf="showConfirmModal" (click)="showConfirmModal = false">
-  <div class="w-[90%] max-w-[500px] p-8 rounded-2xl shadow-2xl transition-transform transform scale-100" 
-       [ngClass]="(themeService.theme$ | async) === 'dark' ? 'bg-[#1e293b] border border-white/10 text-white' : 'bg-white border border-gray-100 text-[#1e293b]'"
+<div class="confirm-modal-overlay" *ngIf="showConfirmModal" (click)="showConfirmModal = false">
+  <div class="confirm-modal-card" 
+       [ngClass]="(themeService.theme$ | async) === 'dark' ? 'modal-dark' : 'modal-light'"
        (click)="$event.stopPropagation()">
     
-    <div class="text-center mb-6">
-      <div class="mx-auto w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-3">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    <div class="confirm-modal-header">
+      <div class="confirm-modal-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
         </svg>
       </div>
-      <h3 class="text-xl font-bold">¿Los datos son correctos?</h3>
-      <p class="text-sm font-medium mt-1" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#64748b]'">Por favor, verifica la información de tu registro antes de continuar.</p>
+      <h3 class="confirm-modal-title">¿Los datos son correctos?</h3>
+      <p class="confirm-modal-subtitle">Por favor, verifica la información de tu registro antes de continuar.</p>
     </div>
 
     <!-- Lista de Datos Registrados -->
-    <div class="data-preview-list space-y-3 p-4 rounded-xl mb-6 text-sm"
-         [ngClass]="(themeService.theme$ | async) === 'dark' ? 'bg-[#0f1420]/50' : 'bg-gray-50'">
-      <div class="flex justify-between border-b border-gray-200/50 pb-2">
-        <span class="font-semibold text-gray-500">Nombre:</span>
-        <span class="font-medium text-right">{{ registerForm.value.nombre }} {{ registerForm.value.apellidos }}</span>
+    <div class="confirm-data-list">
+      <div class="confirm-data-item">
+        <span class="confirm-data-label">Nombre:</span>
+        <span class="confirm-data-value">{{ registerForm.value.nombre }} {{ registerForm.value.apellidos }}</span>
       </div>
-      <div class="flex justify-between border-b border-gray-200/50 pb-2">
-        <span class="font-semibold text-gray-500">Correo:</span>
-        <span class="font-medium text-right">{{ registerForm.value.correo }}</span>
+      <div class="confirm-data-item">
+        <span class="confirm-data-label">Correo:</span>
+        <span class="confirm-data-value">{{ registerForm.value.correo }}</span>
       </div>
-      <div class="flex justify-between border-b border-gray-200/50 pb-2">
-        <span class="font-semibold text-gray-500">Teléfono:</span>
-        <span class="font-medium text-right">{{ registerForm.value.telefono }}</span>
+      <div class="confirm-data-item">
+        <span class="confirm-data-label">Teléfono:</span>
+        <span class="confirm-data-value">{{ registerForm.value.telefono }}</span>
       </div>
-      <div class="flex justify-between border-b border-gray-200/50 pb-2">
-        <span class="font-semibold text-gray-500">Edad:</span>
-        <span class="font-medium text-right">{{ registerForm.value.edad }} años</span>
+      <div class="confirm-data-item">
+        <span class="confirm-data-label">Edad:</span>
+        <span class="confirm-data-value">{{ registerForm.value.edad }} años</span>
       </div>
-      <div class="flex justify-between border-b border-gray-200/50 pb-2">
-        <span class="font-semibold text-gray-500">Ciudad:</span>
-        <span class="font-medium text-right">{{ registerForm.value.ciudad }}, {{ registerForm.value.departamento }}</span>
+      <div class="confirm-data-item">
+        <span class="confirm-data-label">Ciudad:</span>
+        <span class="confirm-data-value">{{ registerForm.value.ciudad }}, {{ registerForm.value.departamento }}</span>
       </div>
-      <div class="flex justify-between pb-1">
-        <span class="font-semibold text-gray-500">Dirección:</span>
-        <span class="font-medium text-right">{{ registerForm.value.direccion }}</span>
+      <div class="confirm-data-item no-border">
+        <span class="confirm-data-label">Dirección:</span>
+        <span class="confirm-data-value">{{ registerForm.value.direccion }}</span>
       </div>
     </div>
 
-    <div class="flex gap-4">
-      <button class="flex-1 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-bold transition-colors" (click)="showConfirmModal = false">
+    <div class="confirm-modal-actions">
+      <button type="button" class="btn-confirm-secondary" (click)="showConfirmModal = false">
         No, corregir
       </button>
-      <button class="flex-1 py-3 bg-[#111] hover:bg-black text-white rounded-xl font-bold transition-colors" (click)="onConfirmRegister()">
+      <button type="button" class="btn-confirm-primary" (click)="onConfirmRegister()">
         Sí, registrarme
       </button>
     </div>
