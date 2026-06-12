@@ -3,13 +3,11 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { NavbarComponent } from '../../components/navbar/navbar.component';
-import { Footer } from '../../components/footer/footer.component';
 
 @Component({
   selector: 'app-verificar-email',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, NavbarComponent, Footer],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './verificar-email.html',
   styleUrls: ['./verificar-email.css']
 })
