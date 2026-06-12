@@ -7,7 +7,7 @@
     <div class="header-content">
       <div class="header-text">
         <h1 class="page-title">
-          <span class="title-icon">📦</span>
+          <svg class="title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
           Mis Pedidos
         </h1>
         <p class="page-subtitle">Historial completo de tus compras en Plaxtilineas</p>
@@ -18,21 +18,27 @@
   <!-- ═══ STATS CARDS ════════════════════════════════════════════════════ -->
   <div class="stats-section" *ngIf="!loading() && pedidos().length > 0">
     <div class="stat-card">
-      <div class="stat-icon stat-icon-total">🛒</div>
+      <div class="stat-icon stat-icon-total">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+      </div>
       <div class="stat-info">
         <span class="stat-value">{{ totalPedidos() }}</span>
         <span class="stat-label">Pedidos Totales</span>
       </div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon stat-icon-money">💰</div>
+      <div class="stat-icon stat-icon-money">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+      </div>
       <div class="stat-info">
         <span class="stat-value">{{ formatPrice(totalInvertido()) }}</span>
         <span class="stat-label">Total Invertido</span>
       </div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon stat-icon-active">🔄</div>
+      <div class="stat-icon stat-icon-active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+      </div>
       <div class="stat-info">
         <span class="stat-value">{{ pedidosActivos() }}</span>
         <span class="stat-label">Pedidos Activos</span>
@@ -66,14 +72,14 @@
 
   <!-- ═══ ERROR STATE ════════════════════════════════════════════════════ -->
   <div class="error-state" *ngIf="error()">
-    <span class="error-icon">⚠️</span>
+    <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 48px; height: 48px; margin: 0 auto 16px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
     <p>{{ error() }}</p>
     <button class="retry-btn" (click)="cargarPedidos()">Reintentar</button>
   </div>
 
   <!-- ═══ EMPTY STATE ════════════════════════════════════════════════════ -->
   <div class="empty-state" *ngIf="!loading() && !error() && pedidos().length === 0">
-    <div class="empty-icon">🛍️</div>
+    <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 64px; height: 64px; margin: 0 auto 24px; color: #111;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
     <h2>Aún no tienes pedidos</h2>
     <p>Cuando realices tu primera compra, podrás ver todo el historial aquí.</p>
     <a routerLink="/productos" class="shop-btn">Ir a la tienda</a>
@@ -138,7 +144,8 @@
             </div>
           </div>
           <div class="cancelled-badge" *ngIf="pedido.estado === 'cancelado'">
-            ❌ Este pedido fue cancelado
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+            Este pedido fue cancelado
           </div>
         </div>
 
@@ -149,7 +156,9 @@
             <div *ngFor="let detalle of pedido.detalles" class="producto-item">
               <div class="producto-img-wrapper">
                 <img *ngIf="detalle.imagen_url" [src]="detalle.imagen_url" [alt]="detalle.nombre_producto" class="producto-img">
-                <div *ngIf="!detalle.imagen_url" class="producto-img-placeholder">📦</div>
+                <div *ngIf="!detalle.imagen_url" class="producto-img-placeholder">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 32px; height: 32px; color: #ccc;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                </div>
               </div>
               <div class="producto-info">
                 <span class="producto-nombre">{{ detalle.nombre_producto }}</span>
@@ -166,15 +175,24 @@
         <!-- Detalles de Envío y Pago -->
         <div class="info-grid">
           <div class="info-block">
-            <h3 class="section-title">📍 Dirección de Envío</h3>
+            <h3 class="section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              Dirección de Envío
+            </h3>
             <p class="info-text">{{ pedido.direccion_envio }}</p>
             <p class="info-text" *ngIf="pedido.ciudad || pedido.departamento">
               {{ pedido.ciudad }}<span *ngIf="pedido.ciudad && pedido.departamento">, </span>{{ pedido.departamento }}
             </p>
-            <p class="info-text" *ngIf="pedido.telefono_contacto">📞 {{ pedido.telefono_contacto }}</p>
+            <p class="info-text" *ngIf="pedido.telefono_contacto">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; display: inline-block; margin-right: 4px; vertical-align: middle;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              {{ pedido.telefono_contacto }}
+            </p>
           </div>
           <div class="info-block">
-            <h3 class="section-title">💳 Método de Pago</h3>
+            <h3 class="section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+              Método de Pago
+            </h3>
             <p class="info-text capitalize">{{ pedido.metodo_pago }}</p>
             <p class="info-text muted" *ngIf="pedido.notas">Notas: {{ pedido.notas }}</p>
           </div>
