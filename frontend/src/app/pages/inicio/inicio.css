@@ -159,41 +159,26 @@
 /* ─── Contenedor Anuncio Semanal (Bloque) ────────────────────── */
 .elegant-news-container {
   max-width: 1550px;
-  margin: 80px auto;
+  margin: 40px auto;
   padding: 10px 2rem;
 }
 
 .elegant-news-card {
   display: flex;
   background: #ffffff;
-  border-radius: 28px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+  border: 1px solid #e5e7eb;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   min-height: 260px;
   position: relative;
 }
 
-.elegant-news-card::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: #368C44;
-  transition: all 0.3s;
-}
-
 .elegant-news-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 25px 60px rgba(54, 140, 68, 0.15);
-  border-color: rgba(54, 140, 68, 0.25);
-}
-
-.elegant-news-card:hover::after {
-  width: 6px;
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  border-color: #d1d5db;
 }
 
 .news-image-wrapper {
@@ -206,11 +191,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .elegant-news-card:hover .news-img {
-  transform: scale(1.04);
+  transform: scale(1.02);
 }
 
 .news-info-content {
@@ -220,37 +205,38 @@
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  background: linear-gradient(135deg, #ffffff 0%, #fcfdfe 100%);
+  background: #ffffff;
   position: relative;
 }
 
 .news-badge-weekly {
-  background: rgba(54, 140, 68, 0.06);
-  border: 1px solid rgba(54, 140, 68, 0.15);
-  color: #368C44;
-  padding: 6px 18px;
-  border-radius: 30px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  color: #4b5563;
+  padding: 6px 14px;
+  border-radius: 4px;
   font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  margin-bottom: 24px;
+  font-weight: 750;
+  letter-spacing: 0.05em;
+  margin-bottom: 20px;
   text-transform: uppercase;
 }
 
 .news-card-title {
+  font-family: 'Montserrat', sans-serif;
   font-size: 1.85rem;
-  font-weight: 800;
-  color: #0f172a;
-  margin: 0 0 10px 0;
+  font-weight: 850;
+  color: #111827;
+  margin: 0 0 12px 0;
   line-height: 1.25;
-  letter-spacing: -0.6px;
+  letter-spacing: -0.02em;
 }
 
 .news-card-desc {
   font-size: 0.95rem;
-  color: #64748b;
+  color: #6b7280;
   line-height: 1.6;
-  margin: 0 0 14px 0;
+  margin: 0 0 16px 0;
 }
 
 .news-features-list {
@@ -259,7 +245,7 @@
   margin: 0 0 20px 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
 }
 
@@ -267,43 +253,43 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #475569;
-  font-size: 1rem;
+  color: #374151;
+  font-size: 0.95rem;
   font-weight: 500;
 }
 
 .feature-check-icon {
-  color: #368C44;
+  color: #111827;
   flex-shrink: 0;
-  background: rgba(54, 140, 68, 0.08);
+  background: #f3f4f6;
   border-radius: 50%;
-  padding: 3px;
-  width: 20px;
-  height: 20px;
+  padding: 4px;
+  width: 18px;
+  height: 18px;
 }
 
 .news-card-link-btn {
-  background: linear-gradient(135deg, #368C44 0%, #2a7337 100%);
+  background: #111;
   color: #ffffff;
-  padding: 12px 32px;
-  border-radius: 50px;
-  font-weight: 700;
-  font-size: 0.92rem;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
   text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 6px 20px rgba(54, 140, 68, 0.25);
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   align-self: center;
   margin-top: 12px;
-  letter-spacing: 0.3px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
 .news-card-link-btn:hover {
-  background: linear-gradient(135deg, #42a352 0%, #368c44 100%);
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 10px 25px rgba(54, 140, 68, 0.38);
+  background: #000;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
 
 /* Responsivo para el anuncio semanal */
@@ -365,7 +351,7 @@
   left: 0;
   width: 60px;
   height: 4px;
-  background: linear-gradient(90deg, #368C44, #86efac);
+  background: #111;
   border-radius: 2px;
 }
 

@@ -1,20 +1,15 @@
 .banner-container {
   position: relative;
   width: 100%;
-  max-width: 100%;
-  height: auto; /* Cambiado a auto para no recortar la imagen */
-  overflow: hidden;
+  max-width: 1550px;
+  padding: 0 2rem;
   margin: 0 auto 40px auto;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
-  border: none;
-  border-radius: 0;
 }
 
 /* Elevación sutil al hacer hover */
 .banner-container:hover {
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
 }
 
@@ -28,8 +23,16 @@
   width: 100%;
   height: auto;
   overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
+}
+
+.banner-container:hover .banner-image {
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+  border-color: #dfdfdf;
 }
 
 .banner-img {
@@ -53,26 +56,22 @@
 @media (max-width: 1200px) {
   .banner-container {
     margin: 25px auto;
-    border-radius: 20px;
   }
 }
 
 @media (max-width: 768px) {
   .banner-container {
     margin: 20px auto;
-    border-radius: 16px;
+    padding: 0 1rem;
+  }
+  .banner-image {
+    border-radius: 8px;
   }
 }
 
 @media (max-width: 576px) {
   .banner-container {
     margin: 15px auto;
-    border-radius: 12px;
   }
 }
 
-@media (max-width: 375px) {
-  .banner-container {
-    border-radius: 10px;
-  }
-}

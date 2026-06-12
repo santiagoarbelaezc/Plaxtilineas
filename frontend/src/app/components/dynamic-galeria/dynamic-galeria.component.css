@@ -33,11 +33,7 @@
 }
 
 .title-underline {
-  width: 60px;
-  height: 4px;
-  background: #368C44;
-  margin: 20px auto 0;
-  border-radius: 2px;
+  display: none;
 }
 
 /* Grid de Galería */
@@ -49,7 +45,7 @@
 
 .galeria-item {
   cursor: pointer;
-  border-radius: 20px;
+  border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -85,7 +81,7 @@
 .item-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(54, 140, 68, 0.85) 100%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(17, 24, 39, 0.85) 100%);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -105,7 +101,7 @@
   height: 44px;
   border-radius: 50%;
   background: #ffffff;
-  color: #368C44;
+  color: #111;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -233,8 +229,8 @@
 }
 
 .lightbox-nav:hover {
-  background: #368C44;
-  border-color: #368C44;
+  background: #111;
+  border-color: #111;
   transform: translateY(-50%) scale(1.05);
 }
 

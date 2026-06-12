@@ -34,11 +34,7 @@
 }
 
 .title-underline {
-  width: 60px;
-  height: 4px;
-  background: #368C44;
-  margin: 20px auto 0;
-  border-radius: 2px;
+  display: none;
 }
 
 /* Wrapper y Viewport */
@@ -73,7 +69,7 @@
 /* Tarjeta de Producto */
 .product-card {
   background: #ffffff;
-  border-radius: 20px;
+  border-radius: 8px;
   border: 1px solid #f3f4f6;
   overflow: hidden;
   display: flex;
@@ -86,12 +82,12 @@
 
 .product-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 25px -5px rgba(54, 140, 68, 0.1), 0 10px 10px -5px rgba(54, 140, 68, 0.04);
-  border-color: rgba(54, 140, 68, 0.2);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  border-color: #dfdfdf;
 }
 
 .product-card:hover .product-description {
-  color: #368c44;
+  color: #111;
 }
 
 .card-image-wrapper {
@@ -120,10 +116,10 @@
   position: absolute;
   top: 15px;
   left: 15px;
-  background: rgba(54, 140, 68, 0.9);
+  background: #111;
   color: #ffffff;
   padding: 6px 12px;
-  border-radius: 20px;
+  border-radius: 6px;
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -178,7 +174,7 @@
 .price {
   font-size: 1.25rem;
   font-weight: 800;
-  color: #368C44;
+  color: #111;
 }
 
 .unit {
@@ -210,10 +206,10 @@
 }
 
 .product-card:hover .view-details-btn {
-  background: #368C44;
+  background: #111;
   color: #ffffff;
-  border-color: #368C44;
-  box-shadow: 0 4px 12px rgba(54, 140, 68, 0.15);
+  border-color: #111;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Nav Buttons */
@@ -235,11 +231,11 @@
 }
 
 .nav-btn:hover:not([disabled]) {
-  background: #368C44;
+  background: #111;
   color: #ffffff;
-  border-color: #368C44;
-  box-shadow: 0 10px 20px rgba(54, 140, 68, 0.2);
-  transform: scale(1.05);
+  border-color: #111;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
 }
 
 .nav-btn[disabled] {
@@ -268,7 +264,7 @@
 
 .indicator-dot.active {
   width: 24px;
-  background: #368C44;
+  background: #111;
 }
 
 /* Responsive Grid Columns */
