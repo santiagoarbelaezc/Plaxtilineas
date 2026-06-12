@@ -96,33 +96,54 @@
 
       <button type="submit" [disabled]="isSubmitting" class="btn-primary">
         {{ isSubmitting ? 'Ingresando...' : 'Ingresar' }}
-      </button>
-    </form>
-
-    <!-- FORMULARIO REGISTRO (REORGANIZADO SIN SCROLL INTERNO) -->
+         <!-- FORMULARIO REGISTRO (REORGANIZADO SIN SCROLL INTERNO) -->
     <div class="register-form-container" *ngIf="mode === 'register'">
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-grid-form">
         <div class="form-group">
           <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Nombres</label>
           <input formControlName="nombre" type="text" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+          <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="registerForm.get('nombre')?.touched && registerForm.get('nombre')?.invalid">
+            <span *ngIf="registerForm.get('nombre')?.errors?.['required']">El nombre es obligatorio.</span>
+            <span *ngIf="registerForm.get('nombre')?.errors?.['minlength']">Mínimo 2 caracteres.</span>
+            <span *ngIf="registerForm.get('nombre')?.errors?.['pattern']">El nombre solo puede contener letras.</span>
+          </small>
         </div>
         <div class="form-group">
           <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Apellidos</label>
           <input formControlName="apellidos" type="text" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+          <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="registerForm.get('apellidos')?.touched && registerForm.get('apellidos')?.invalid">
+            <span *ngIf="registerForm.get('apellidos')?.errors?.['required']">Los apellidos son obligatorios.</span>
+            <span *ngIf="registerForm.get('apellidos')?.errors?.['minlength']">Mínimo 2 caracteres.</span>
+            <span *ngIf="registerForm.get('apellidos')?.errors?.['pattern']">Los apellidos solo pueden contener letras.</span>
+          </small>
         </div>
 
         <div class="form-group">
           <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Correo electrónico</label>
           <input formControlName="correo" type="email" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+          <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="registerForm.get('correo')?.touched && registerForm.get('correo')?.invalid">
+            <span *ngIf="registerForm.get('correo')?.errors?.['required']">El correo es obligatorio.</span>
+            <span *ngIf="registerForm.get('correo')?.errors?.['email'] || registerForm.get('correo')?.errors?.['pattern']">Ingresa un correo electrónico válido (ej. usuario@gmail.com).</span>
+          </small>
         </div>
 
         <div class="form-group">
           <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Teléfono</label>
           <input formControlName="telefono" type="tel" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+          <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="registerForm.get('telefono')?.touched && registerForm.get('telefono')?.invalid">
+            <span *ngIf="registerForm.get('telefono')?.errors?.['required']">El teléfono es obligatorio.</span>
+            <span *ngIf="registerForm.get('telefono')?.errors?.['pattern']">Debe contener entre 7 y 10 dígitos (solo números).</span>
+          </small>
         </div>
         <div class="form-group">
           <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Edad</label>
           <input formControlName="edad" type="number" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+          <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="registerForm.get('edad')?.touched && registerForm.get('edad')?.invalid">
+            <span *ngIf="registerForm.get('edad')?.errors?.['required']">La edad es obligatoria.</span>
+            <span *ngIf="registerForm.get('edad')?.errors?.['min']">Debes ser mayor de 18 años.</span>
+            <span *ngIf="registerForm.get('edad')?.errors?.['max']">La edad no puede ser mayor de 120 años.</span>
+            <span *ngIf="registerForm.get('edad')?.errors?.['pattern']">Debe ser un número entero (sin decimales).</span>
+          </small>
         </div>
 
         <div class="form-group">
@@ -131,34 +152,76 @@
             <option value="" disabled selected>Selecciona un departamento</option>
             <option *ngFor="let dept of departamentosList" [value]="dept">{{ dept }}</option>
           </select>
+          <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="registerForm.get('departamento')?.touched && registerForm.get('departamento')?.invalid">
+            El departamento es obligatorio.
+          </small>
         </div>
-
         <div class="form-group">
           <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Ciudad</label>
           <select formControlName="ciudad" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
             <option value="" disabled selected>Selecciona una ciudad</option>
             <option *ngFor="let city of ciudadesDisponibles" [value]="city">{{ city }}</option>
           </select>
+          <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="registerForm.get('ciudad')?.touched && registerForm.get('ciudad')?.invalid">
+            La ciudad es obligatoria.
+          </small>
         </div>
 
         <div class="form-group">
           <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Dirección</label>
           <input formControlName="direccion" type="text" class="form-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+          <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="registerForm.get('direccion')?.touched && registerForm.get('direccion')?.invalid">
+            <span *ngIf="registerForm.get('direccion')?.errors?.['required']">La dirección es obligatoria.</span>
+            <span *ngIf="registerForm.get('direccion')?.errors?.['minlength']">Mínimo 5 caracteres.</span>
+          </small>
         </div>
 
         <div class="form-group">
           <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Contraseña Segura</label>
           <div class="relative">
-            <input formControlName="password" [type]="showPassword ? 'text' : 'password'" placeholder="Min. 8 caracteres, mayúscula y número" class="form-input pr-12"
+            <input formControlName="password" [type]="showPassword ? 'text' : 'password'" placeholder="••••••••" class="form-input pr-12"
                    [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
             <button type="button" class="pwd-toggle" (click)="togglePasswordVisibility()">
               <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
               <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
             </button>
           </div>
-          <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="pwdCtrl?.invalid && pwdCtrl?.touched">
-            Mínimo 8 caracteres, 1 mayúscula y 1 número.
+        </div>
+
+        <div class="form-group">
+          <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Confirmar Contraseña</label>
+          <div class="relative">
+            <input formControlName="confirmPassword" [type]="showPassword ? 'text' : 'password'" placeholder="••••••••" class="form-input pr-12"
+                   [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+          </div>
+          <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.hasError('mismatch')">
+            Las contraseñas no coinciden.
           </small>
+        </div>
+
+        <!-- Indicaciones de Contraseña (Ancho Completo abajo de los campos) -->
+        <div class="password-requirements-wrapper">
+          <div class="password-requirements">
+            <p class="req-title text-xs font-semibold" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#94a3b8]' : 'text-[#64748b]'">La contraseña debe tener:</p>
+            <ul class="req-list text-xs mt-1 space-y-1 pl-1">
+              <li class="flex items-center gap-1.5" [class.met]="hasMinLength()" [class.unmet]="!hasMinLength() && pwdCtrl?.touched">
+                <span class="indicator-icon">{{ hasMinLength() ? '✓' : '•' }}</span>
+                <span>Mínimo 8 caracteres</span>
+              </li>
+              <li class="flex items-center gap-1.5" [class.met]="hasUppercase()" [class.unmet]="!hasUppercase() && pwdCtrl?.touched">
+                <span class="indicator-icon">{{ hasUppercase() ? '✓' : '•' }}</span>
+                <span>Al menos 1 mayúscula</span>
+              </li>
+              <li class="flex items-center gap-1.5" [class.met]="hasLowercase()" [class.unmet]="!hasLowercase() && pwdCtrl?.touched">
+                <span class="indicator-icon">{{ hasLowercase() ? '✓' : '•' }}</span>
+                <span>Al menos 1 minúscula</span>
+              </li>
+              <li class="flex items-center gap-1.5" [class.met]="hasNumber()" [class.unmet]="!hasNumber() && pwdCtrl?.touched">
+                <span class="indicator-icon">{{ hasNumber() ? '✓' : '•' }}</span>
+                <span>Al menos 1 número</span>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div class="register-submit-wrapper">
@@ -167,6 +230,62 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Confirmación de Datos -->
+<div class="fixed inset-0 w-full h-full bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999]" *ngIf="showConfirmModal" (click)="showConfirmModal = false">
+  <div class="w-[90%] max-w-[500px] p-8 rounded-2xl shadow-2xl transition-transform transform scale-100" 
+       [ngClass]="(themeService.theme$ | async) === 'dark' ? 'bg-[#1e293b] border border-white/10 text-white' : 'bg-white border border-gray-100 text-[#1e293b]'"
+       (click)="$event.stopPropagation()">
+    
+    <div class="text-center mb-6">
+      <div class="mx-auto w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold">¿Los datos son correctos?</h3>
+      <p class="text-sm font-medium mt-1" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#64748b]'">Por favor, verifica la información de tu registro antes de continuar.</p>
+    </div>
+
+    <!-- Lista de Datos Registrados -->
+    <div class="data-preview-list space-y-3 p-4 rounded-xl mb-6 text-sm"
+         [ngClass]="(themeService.theme$ | async) === 'dark' ? 'bg-[#0f1420]/50' : 'bg-gray-50'">
+      <div class="flex justify-between border-b border-gray-200/50 pb-2">
+        <span class="font-semibold text-gray-500">Nombre:</span>
+        <span class="font-medium text-right">{{ registerForm.value.nombre }} {{ registerForm.value.apellidos }}</span>
+      </div>
+      <div class="flex justify-between border-b border-gray-200/50 pb-2">
+        <span class="font-semibold text-gray-500">Correo:</span>
+        <span class="font-medium text-right">{{ registerForm.value.correo }}</span>
+      </div>
+      <div class="flex justify-between border-b border-gray-200/50 pb-2">
+        <span class="font-semibold text-gray-500">Teléfono:</span>
+        <span class="font-medium text-right">{{ registerForm.value.telefono }}</span>
+      </div>
+      <div class="flex justify-between border-b border-gray-200/50 pb-2">
+        <span class="font-semibold text-gray-500">Edad:</span>
+        <span class="font-medium text-right">{{ registerForm.value.edad }} años</span>
+      </div>
+      <div class="flex justify-between border-b border-gray-200/50 pb-2">
+        <span class="font-semibold text-gray-500">Ciudad:</span>
+        <span class="font-medium text-right">{{ registerForm.value.ciudad }}, {{ registerForm.value.departamento }}</span>
+      </div>
+      <div class="flex justify-between pb-1">
+        <span class="font-semibold text-gray-500">Dirección:</span>
+        <span class="font-medium text-right">{{ registerForm.value.direccion }}</span>
+      </div>
+    </div>
+
+    <div class="flex gap-4">
+      <button class="flex-1 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-bold transition-colors" (click)="showConfirmModal = false">
+        No, corregir
+      </button>
+      <button class="flex-1 py-3 bg-[#111] hover:bg-black text-white rounded-xl font-bold transition-colors" (click)="onConfirmRegister()">
+        Sí, registrarme
+      </button>
     </div>
   </div>
 </div>

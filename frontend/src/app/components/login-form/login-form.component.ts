@@ -33,21 +33,62 @@ export class LoginFormComponent implements OnInit {
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
+  private passwordMatchValidator = (g: FormGroup) => {
+    const password = g.get('password')?.value;
+    const confirmPassword = g.get('confirmPassword')?.value;
+    if (password !== confirmPassword) {
+      g.get('confirmPassword')?.setErrors({ mismatch: true });
+      return { mismatch: true };
+    } else {
+      const errors = g.get('confirmPassword')?.errors;
+      if (errors) {
+        delete errors['mismatch'];
+        if (Object.keys(errors).length === 0) {
+          g.get('confirmPassword')?.setErrors(null);
+        } else {
+          g.get('confirmPassword')?.setErrors(errors);
+        }
+      }
+      return null;
+    }
+  };
+
   registerForm: FormGroup = this.fb.group({
-    nombre: ['', [Validators.required, Validators.minLength(2)]],
-    apellidos: ['', [Validators.required, Validators.minLength(2)]],
-    correo: ['', [Validators.required, Validators.email]],
+    nombre: ['', [
+      Validators.required, 
+      Validators.minLength(2), 
+      Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
+    ]],
+    apellidos: ['', [
+      Validators.required, 
+      Validators.minLength(2), 
+      Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
+    ]],
+    correo: ['', [
+      Validators.required, 
+      Validators.email,
+      Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)
+    ]],
     password: ['', [
       Validators.required, 
       Validators.minLength(8),
       Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/)
     ]],
-    telefono: ['', [Validators.required, Validators.pattern('^[0-9\\+\\s]{7,15}$')]],
-    edad: ['', [Validators.required, Validators.min(18), Validators.max(100)]],
+    confirmPassword: ['', [Validators.required]],
+    telefono: ['', [
+      Validators.required, 
+      Validators.pattern(/^[0-9]{7,10}$/)
+    ]],
+    edad: ['', [
+      Validators.required, 
+      Validators.min(18), 
+      Validators.max(120),
+      Validators.pattern(/^[0-9]+$/)
+    ]],
     direccion: ['', [Validators.required, Validators.minLength(5)]],
     departamento: ['', [Validators.required]],
     ciudad: ['', [Validators.required]]
-  });
+  }, { validators: this.passwordMatchValidator });
 
   departamentos: { [key: string]: string[] } = {
     "Amazonas": ["Leticia", "Puerto Nariño"],
@@ -92,6 +133,7 @@ export class LoginFormComponent implements OnInit {
 
   isSubmitting = false;
   showErrorModal = false;
+  showConfirmModal = false;
   showPassword = false;
   errorMsg = '';
 
@@ -210,24 +252,49 @@ export class LoginFormComponent implements OnInit {
         return;
       }
 
-      this.isSubmitting = true;
-      const { departamento, ciudad, ...rest } = this.registerForm.value;
-      const fullCiudad = `${ciudad}, ${departamento}`;
-      const userData = { ...rest, ciudad: fullCiudad, rol: 'cliente' };
-
-      this.authService.register(userData).subscribe({
-        next: (res) => {
-          this.isSubmitting = false;
-          this.redirectUser(res.usuario);
-        },
-        error: (err) => {
-          this.isSubmitting = false;
-          this.errorMsg = err.error?.error || 'Error al registrar. Intenta con otro correo.';
-          this.showErrorModal = true;
-        }
-      });
+      this.showConfirmModal = true;
     }
   }
 
+  onConfirmRegister(): void {
+    this.showConfirmModal = false;
+    this.isSubmitting = true;
+    const { departamento, ciudad, confirmPassword, ...rest } = this.registerForm.value;
+    const fullCiudad = `${ciudad}, ${departamento}`;
+    const userData = { ...rest, ciudad: fullCiudad, rol: 'cliente' };
+
+    this.authService.register(userData).subscribe({
+      next: (res) => {
+        this.isSubmitting = false;
+        this.redirectUser(res.usuario);
+      },
+      error: (err) => {
+        this.isSubmitting = false;
+        this.errorMsg = err.error?.error || 'Error al registrar. Intenta con otro correo.';
+        this.showErrorModal = true;
+      }
+    });
+  }
+
   get pwdCtrl() { return this.registerForm.get('password'); }
+
+  hasMinLength(): boolean {
+    const val = this.pwdCtrl?.value || '';
+    return val.length >= 8;
+  }
+
+  hasUppercase(): boolean {
+    const val = this.pwdCtrl?.value || '';
+    return /[A-Z]/.test(val);
+  }
+
+  hasLowercase(): boolean {
+    const val = this.pwdCtrl?.value || '';
+    return /[a-z]/.test(val);
+  }
+
+  hasNumber(): boolean {
+    const val = this.pwdCtrl?.value || '';
+    return /\d/.test(val);
+  }
 }

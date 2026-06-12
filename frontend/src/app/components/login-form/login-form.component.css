@@ -301,3 +301,68 @@ select.form-input option {
   background-color: #1e293b;
   color: #f8fafc;
 }
+
+/* Indicadores de requisitos de contraseña (Ancho Completo) */
+.password-requirements-wrapper {
+  grid-column: span 2;
+  margin-top: -0.25rem;
+}
+
+@media (max-width: 768px) {
+  .password-requirements-wrapper {
+    grid-column: span 1;
+  }
+}
+
+.password-requirements {
+  padding: 14px 20px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.card-dark .password-requirements {
+  background-color: #0f1420;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.req-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columns inside the wide requirements box */
+  gap: 8px 16px;
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0 0;
+}
+
+@media (max-width: 576px) {
+  .req-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+.req-list li {
+  color: #64748b;
+  font-size: 0.8rem;
+  transition: color 0.2s ease;
+}
+
+.card-dark .req-list li {
+  color: #94a3b8;
+}
+
+.req-list li.met {
+  color: #16a34a !important; /* Green */
+}
+
+.req-list li.unmet {
+  color: #dc2626 !important; /* Red */
+}
+
+.indicator-icon {
+  font-weight: 700;
+  width: 12px;
+  display: inline-block;
+}
