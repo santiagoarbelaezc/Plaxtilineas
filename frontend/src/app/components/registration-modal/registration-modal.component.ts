@@ -47,6 +47,7 @@ export class RegistrationModalComponent implements OnInit, AfterViewInit {
   registrationForm: FormGroup;
   isSubmitting = false;
   registroExitoso = false;
+  requireVerification = false;
   errorMessage = '';
   showPassword = false;
 
@@ -107,6 +108,7 @@ export class RegistrationModalComponent implements OnInit, AfterViewInit {
     this.authService.loginWithGoogle(response.credential).subscribe({
       next: (res) => {
         this.isSubmitting = false;
+        this.requireVerification = false;
         this.registroExitoso = true;
         this.leadsService.markAsRegistered();
         setTimeout(() => this.closeModal(), 2000);
@@ -158,13 +160,15 @@ export class RegistrationModalComponent implements OnInit, AfterViewInit {
       
       this.authService.register(userData).subscribe({
         next: (res) => {
-          // Si es rol cliente, el backend autologuea
           this.isSubmitting = false;
+          this.requireVerification = res.pendiente_verificacion || false;
           this.registroExitoso = true;
           this.leadsService.markAsRegistered();
+          
+          const timeoutDelay = this.requireVerification ? 6000 : 2000;
           setTimeout(() => {
             this.closeModal();
-          }, 2000);
+          }, timeoutDelay);
         },
         error: (err) => {
           this.isSubmitting = false;

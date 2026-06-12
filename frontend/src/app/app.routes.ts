@@ -100,6 +100,10 @@ export const routes: Routes = [
     loadComponent: () => import('./cart/cart-summary/cart-summary.component').then(m => m.CartSummaryComponent)
   },
   {
+    path: 'verificar-email',
+    loadComponent: () => import('./pages/verificar-email/verificar-email').then(m => m.VerificarEmail)
+  },
+  {
     path: '**',
     redirectTo: ''
   }

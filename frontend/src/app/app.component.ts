@@ -8,7 +8,6 @@ import { CommonModule } from '@angular/common';
 import { CartDrawerComponent } from './cart/cart-drawer/cart-drawer.component';
 import { PwaService } from './services/pwa.service';
 import { LoadingScreenComponent } from './components/loading-screen/loading-screen';
-import { RegistrationModalComponent } from './components/registration-modal/registration-modal.component';
 
 @Component({
   selector: 'app-root',
@@ -17,8 +16,7 @@ import { RegistrationModalComponent } from './components/registration-modal/regi
     CommonModule,
     RouterModule,
     CartDrawerComponent,
-    LoadingScreenComponent,
-    RegistrationModalComponent
+    LoadingScreenComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']

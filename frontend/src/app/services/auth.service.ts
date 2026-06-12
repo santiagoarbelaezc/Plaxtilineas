@@ -50,7 +50,21 @@ export class AuthService {
   }
 
   register(userData: any): Observable<any> {
-    return this.http.post<{ token: string, usuario: any }>(`${environment.apiUrl}/auth/register`, userData).pipe(
+    return this.http.post<{ token?: string, usuario?: any }>(`${environment.apiUrl}/auth/register`, userData).pipe(
+      tap(res => {
+        if (res.token) {
+          localStorage.setItem('token', res.token);
+          this.isLoggedIn.next(true);
+          this.currentUser.next(res.usuario);
+        }
+      })
+    );
+  }
+
+  verificarEmail(token: string): Observable<any> {
+    return this.http.get<{ token: string, usuario: any }>(`${environment.apiUrl}/auth/verificar-email`, {
+      params: { token }
+    }).pipe(
       tap(res => {
         if (res.token) {
           localStorage.setItem('token', res.token);

@@ -26,6 +26,7 @@ import { BannerAsistenteComponent } from '../../components/banner-asistente/bann
 import { ComponentesService, ComponenteDinamico } from '../../services/componentes.service';
 import { CategoryProductsCarouselComponent } from '../../components/category-products-carousel/category-products-carousel.component';
 import { GrupoEmpresasComponent } from '../../components/grupo-empresas/grupo-empresas.component';
+import { BannerRegistroComponent } from '../../components/banner-registro/banner-registro.component';
 
 // Nuevos componentes dinámicos
 import { DynamicTestimoniosComponent } from '../../components/dynamic-testimonios/dynamic-testimonios.component';
@@ -55,6 +56,7 @@ import { DynamicProductCarouselComponent } from '../../components/dynamic-produc
     BannerAsistenteComponent,
     CategoryProductsCarouselComponent,
     GrupoEmpresasComponent,
+    BannerRegistroComponent,
     DynamicTestimoniosComponent,
     DynamicFaqComponent,
     DynamicGaleriaComponent,

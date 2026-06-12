@@ -149,7 +149,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   openRegistrationModal(): void {
-    this.leadsService.openRegistrationModal();
+    this.router.navigate(['/login'], { queryParams: { mode: 'register' } });
   }
 
   abrirAsistente(): void {

@@ -1,0 +1,195 @@
+/* banner-registro.component.css */
+
+.banner-registro-section {
+  width: 100%;
+  padding: 25px 0;
+  background-color: #ffffff;
+  font-family: 'Montserrat', sans-serif;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.banner-registro-container {
+  max-width: 1550px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 0.7fr 1.3fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.banner-text-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.banner-tag {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  font-size: 11px;
+  font-weight: 750;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 18px;
+}
+
+.banner-title {
+  font-size: 2.8rem;
+  font-weight: 850;
+  color: #111827;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin: 0 0 16px 0;
+  line-height: 1.15;
+}
+
+.banner-title span {
+  color: #e00751; /* Rojo IKEA / Plaxtilineas para resaltar */
+}
+
+.banner-description {
+  font-size: 1.1rem;
+  color: #6b7280;
+  line-height: 1.7;
+  margin: 0 0 28px 0;
+  max-width: 600px;
+}
+
+.banner-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 35px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.banner-benefits li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #374151;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.benefit-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #111827;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 4px rgba(17, 24, 39, 0.3);
+}
+
+.banner-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: #111;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.banner-btn:hover {
+  background: #000;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.banner-btn svg {
+  transition: transform 0.2s ease;
+}
+
+.banner-btn:hover svg {
+  transform: translateX(4px);
+}
+
+/* Image section */
+.banner-image-content {
+  width: 100%;
+  cursor: pointer;
+}
+
+.image-card-wrapper {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: #f9fafb;
+  width: 100%;
+  max-width: 950px;
+  margin-left: auto;
+}
+
+.promo-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.image-reflection-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.image-card-wrapper:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 50px rgba(0, 0, 0, 0.15);
+  border-color: #d1d5db;
+}
+
+.image-card-wrapper:hover .promo-img {
+  transform: scale(1.02);
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  .banner-registro-section {
+    padding: 25px 0;
+  }
+
+  .banner-registro-container {
+    grid-template-columns: 1fr;
+    gap: 45px;
+  }
+  
+  .banner-title {
+    font-size: 2.2rem;
+  }
+  
+  .banner-text-content {
+    align-items: center;
+    text-align: center;
+  }
+  
+  .banner-description {
+    max-width: 100%;
+  }
+  
+  .banner-benefits {
+    align-items: center;
+  }
+}
+

@@ -10,8 +10,16 @@
       <div class="success-icon-wrapper">
         <fa-icon [icon]="['fas', 'check-circle']" class="success-icon"></fa-icon>
       </div>
-      <h2>¡Bienvenido a Plaxtilineas!</h2>
-      <p>Tu cuenta ha sido creada exitosamente y hemos iniciado sesión por ti.</p>
+      
+      <ng-container *ngIf="requireVerification; else successSession">
+        <h2>¡Registro Exitoso!</h2>
+        <p>Hemos enviado un enlace de confirmación a tu dirección de correo electrónico. Por favor, verifica tu bandeja de entrada para activar tu cuenta.</p>
+      </ng-container>
+      
+      <ng-template #successSession>
+        <h2>¡Bienvenido a Plaxtilineas!</h2>
+        <p>Tu cuenta ha sido creada exitosamente y hemos iniciado sesión por ti.</p>
+      </ng-template>
     </div>
 
     <!-- Formulario -->

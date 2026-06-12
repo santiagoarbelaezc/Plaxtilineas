@@ -1,0 +1,47 @@
+<app-navbar></app-navbar>
+
+<main class="verificar-container">
+  <div class="verificar-card animate-fade-in">
+    
+    <!-- Estado: Cargando -->
+    <div *ngIf="status === 'cargando'" class="state-content">
+      <div class="spinner-wrapper">
+        <div class="custom-spinner"></div>
+      </div>
+      <h1 class="state-title">Verificando tu cuenta</h1>
+      <p class="state-description">Estamos procesando tu token de seguridad. Esto tomará solo unos segundos...</p>
+    </div>
+
+    <!-- Estado: Éxito -->
+    <div *ngIf="status === 'exito'" class="state-content">
+      <div class="icon-circle success">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <h1 class="state-title">¡Cuenta verificada!</h1>
+      <p class="state-description">Tu dirección de correo electrónico ha sido confirmada exitosamente.</p>
+      <p class="redirect-hint">Redirigiéndote al inicio automáticamente en unos segundos...</p>
+      <a routerLink="/" class="btn-primary">Ir al Inicio ahora</a>
+    </div>
+
+    <!-- Estado: Error -->
+    <div *ngIf="status === 'error'" class="state-content">
+      <div class="icon-circle error">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </div>
+      <h1 class="state-title">Error de Verificación</h1>
+      <p class="state-description">{{ errorMessage }}</p>
+      <div class="btn-group">
+        <a routerLink="/login" class="btn-primary">Volver a Intentar</a>
+        <a href="https://wa.me/573007365939" target="_blank" class="btn-secondary">Soporte Técnico</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<app-footer></app-footer>

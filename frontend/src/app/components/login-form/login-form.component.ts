@@ -59,9 +59,12 @@ export class LoginFormComponent implements OnInit {
   sessionExpired = false;
 
   ngOnInit(): void {
-    // Detectar si viene redirigido por sesión expirada
+    // Detectar si viene redirigido por sesión expirada o modo
     this.route.queryParams.subscribe(params => {
       this.sessionExpired = params['expired'] === 'true';
+      if (params['mode'] === 'register') {
+        this.mode = 'register';
+      }
     });
   }
 
