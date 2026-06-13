@@ -15,7 +15,8 @@
     <div class="video-overlay"></div>
   </div>
 
-  <div class="container hero-container">
+  <!-- Desktop Hero Container -->
+  <div class="container hero-container desktop-only">
     <div class="hero-grid">
       <!-- Left: Brand/Logo (Premium) -->
       <div class="hero-visual">
@@ -50,6 +51,62 @@
           </a>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Mobile Hero Content -->
+  <div class="mobile-hero-container w-full px-5 py-6 bg-white text-gray-900 safe-top">
+    <div class="flex flex-col gap-6">
+      
+      <!-- Right Side Visual / Logo IA (Centered/Responsive) - Placed at the top -->
+      <div class="flex justify-center items-center py-4 bg-gradient-to-br from-gray-50 to-transparent rounded-2xl border border-gray-100/50 p-4">
+        <img src="assets/images/logo-ia.png" alt="Asistente IA" class="h-28 object-contain">
+      </div>
+
+      <!-- Content Side (Matches banner-asistente) -->
+      <div class="flex flex-col text-left">
+        <div class="inline-block self-start bg-[#368C44] text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full tracking-wider mb-3 shadow-sm">
+          Asistente IA
+        </div>
+        <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 leading-tight mb-2">
+          Cotiza tus <span class="text-[#368c44] block">productos</span>
+        </h2>
+        <p class="text-[13px] text-gray-500 mb-5 leading-relaxed">
+          ¿Cómo puedo ayudarte?<br>
+          Habla con nuestro asistente inteligente y encuentra exactamente lo que necesitas al mejor precio.
+        </p>
+
+        <!-- Chat pills (horizontal scroll on mobile) -->
+        <div class="flex gap-2 overflow-x-auto pb-4 mb-4 scrollbar-none">
+          <span class="inline-flex items-center gap-1.5 px-3 py-2 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-gray-700 whitespace-nowrap active:scale-95 transition-all cursor-pointer" (click)="abrirAsistenteMobile()">
+            💬 Cotizar productos
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-3 py-2 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-gray-700 whitespace-nowrap active:scale-95 transition-all cursor-pointer" (click)="abrirAsistenteMobile()">
+            📦 Ver disponibilidad
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-3 py-2 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-gray-700 whitespace-nowrap active:scale-95 transition-all cursor-pointer" (click)="abrirAsistenteMobile()">
+            🚚 Consultar envíos
+          </span>
+        </div>
+
+        <!-- CTA button -->
+        <button (click)="abrirAsistenteMobile()" class="w-full py-3.5 bg-[#1e293b] text-white font-extrabold text-xs uppercase tracking-widest rounded-xl shadow-md border-none active:scale-[0.98] transition-all flex items-center justify-center gap-2 mb-2">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+          </svg>
+          <span>Hablar con el Asistente</span>
+        </button>
+      </div>
+
+      <!-- Carousel/List of New Products -->
+      <div class="w-full border-t border-gray-100 pt-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-[11px] font-black text-gray-400 uppercase tracking-widest leading-none">Novedades del catálogo</h3>
+          <a routerLink="/productos" class="text-xs font-bold text-[#368c44] uppercase tracking-wider hover:underline">Ver Todo</a>
+        </div>
+        <app-feature-new-products></app-feature-new-products>
+      </div>
+
     </div>
   </div>
 </header>

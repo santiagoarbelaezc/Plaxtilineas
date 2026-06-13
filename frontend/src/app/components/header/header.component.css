@@ -208,3 +208,33 @@
   .hero-title { font-size: 1.6rem; }
   .hero-logo { max-width: 180px; }
 }
+
+@media (max-width: 768px) {
+  .hero-section {
+    background: #ffffff !important;
+    height: auto !important;
+    min-height: auto !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+}
+
+/* Responsive elements toggling */
+.desktop-only {
+  display: block;
+}
+.mobile-hero-container {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .video-container {
+    display: none !important;
+  }
+  .desktop-only {
+    display: none !important;
+  }
+  .mobile-hero-container {
+    display: block !important;
+  }
+}

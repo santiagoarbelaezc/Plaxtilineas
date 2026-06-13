@@ -8,7 +8,7 @@
           <span>Lunes - Sábado: 8:00 AM - 6:00 PM</span>
         </div>
         
-        <a routerLink="/productos" class="top-info-item highlight">
+        <a routerLink="/productos" class="top-info-item highlight hide-mobile">
           <fa-icon [icon]="['fas', 'shopping-bag']"></fa-icon>
           <span>Compra ahora lo mejor en plásticos</span>
         </a>
@@ -248,15 +248,15 @@
 
 <!-- Mobile Bottom Navigation (PWA style) -->
 <nav class="mobile-bottom-nav" [class.dark-mode]="isChatOpen">
-  <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="bottom-nav-item" (click)="cerrarAsistente()">
+  <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="bottom-nav-item" (click)="cerrarAsistenteYCarrito()">
     <fa-icon [icon]="['fas', 'home']"></fa-icon>
     <span>Inicio</span>
   </a>
-  <a routerLink="/productos" routerLinkActive="active" class="bottom-nav-item" (click)="cerrarAsistente()">
+  <a routerLink="/productos" routerLinkActive="active" class="bottom-nav-item" (click)="cerrarAsistenteYCarrito()">
     <fa-icon [icon]="['fas', 'shopping-bag']"></fa-icon>
     <span>Productos</span>
   </a>
-  <button class="bottom-nav-item" (click)="cerrarAsistente(); toggleSearch()">
+  <button class="bottom-nav-item" (click)="cerrarAsistenteYCarrito(); toggleSearch()">
     <fa-icon [icon]="['fas', 'search']"></fa-icon>
     <span>Buscar</span>
   </button>

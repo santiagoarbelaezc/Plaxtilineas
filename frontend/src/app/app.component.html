@@ -1,6 +1,9 @@
 <app-loading-screen [isVisible]="isLoading"></app-loading-screen>
-<router-outlet></router-outlet>
+<div class="main-app-content">
+  <router-outlet></router-outlet>
+</div>
 <app-cart-drawer></app-cart-drawer>
+<app-mobile-cart></app-mobile-cart>
 
 <!-- Pantalla de Cierre de Sesión Completa -->
 <div class="logout-fullscreen-overlay" *ngIf="authService.isLoggingOut | async"

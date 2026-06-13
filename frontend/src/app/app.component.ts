@@ -6,6 +6,7 @@ import { ScrollService } from './services/scroll.service';
 import { SeoService } from './services/seo.service';
 import { CommonModule } from '@angular/common';
 import { CartDrawerComponent } from './cart/cart-drawer/cart-drawer.component';
+import { MobileCartComponent } from './cart/mobile-cart/mobile-cart.component';
 import { PwaService } from './services/pwa.service';
 import { LoadingScreenComponent } from './components/loading-screen/loading-screen';
 import { AuthService } from './services/auth.service';
@@ -18,6 +19,7 @@ import { ThemeService } from './services/theme.service';
     CommonModule,
     RouterModule,
     CartDrawerComponent,
+    MobileCartComponent,
     LoadingScreenComponent
   ],
   templateUrl: './app.component.html',
