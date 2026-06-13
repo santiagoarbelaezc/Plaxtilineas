@@ -170,6 +170,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   toggleCartDrawer(): void {
     this.cerrarAsistente();
+    this.searchActive = false;
     this.cartService.openDrawer();
   }
 
@@ -213,6 +214,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   abrirAsistente(): void {
     this.cartService.closeDrawer();
+    this.searchActive = false;
     this.chatService.toggleChat();
   }
 
@@ -225,6 +227,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   cerrarAsistenteYCarrito(): void {
     this.cerrarAsistente();
     this.cartService.closeDrawer();
+    this.searchActive = false;
   }
 
   toggleSearch(): void {
