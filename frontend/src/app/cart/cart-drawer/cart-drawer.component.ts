@@ -44,14 +44,14 @@ import { toSignal } from '@angular/core/rxjs-interop';
       </div>
     }
 
-    <!-- Panel Lateral -->
+    <!-- Panel Lateral / Pantalla Completa en Móvil -->
     @if (isOpen) {
-      <div class="fixed left-0 right-0 bottom-0 bg-black/30 z-40 backdrop-blur-sm top-[calc(var(--navbar-height)+40px)] transition-all duration-500 cursor-pointer" (click)="isOpen = false"></div>
+      <div class="fixed left-0 right-0 bottom-0 bg-black/30 z-40 backdrop-blur-sm top-[calc(var(--navbar-height)+40px)] transition-all duration-500 cursor-pointer hidden md:block" (click)="closeDrawer()"></div>
       
-      <div class="fixed right-0 bottom-0 w-[420px] max-w-[95vw] bg-white/95 backdrop-blur-md z-50 flex flex-col shadow-[-8px_0_40px_rgba(0,0,0,0.15)] border-l border-gray-100 rounded-l-[20px] top-[calc(var(--navbar-height)+40px)] transition-all duration-500">
+      <div class="fixed right-0 bottom-0 top-0 w-full max-w-full h-full bg-white/98 backdrop-blur-md z-[100000] flex flex-col shadow-[0_0_50px_rgba(0,0,0,0.08)] transition-all duration-500 md:w-[420px] md:max-w-[95vw] md:top-[calc(var(--navbar-height)+40px)] md:rounded-l-[20px] md:border-l md:border-gray-100 md:h-[calc(100vh-var(--navbar-height)-40px)] md:z-50">
         
         <!-- Header -->
-        <div class="px-6 py-5 border-b border-gray-100/50 flex items-center justify-between">
+        <div class="px-6 py-5 pt-[calc(1.25rem+env(safe-area-inset-top))] md:pt-5 border-b border-gray-100/50 flex items-center justify-between">
           <h3 class="font-bold text-[19px] text-gray-800 m-0 flex items-center gap-2.5">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-800">
               <circle cx="9" cy="21" r="1"></circle>
@@ -119,7 +119,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
           }
         </div>
 
-        <div class="border-t border-gray-100/50 px-5 py-5 mt-2">
+        <div class="border-t border-gray-100/50 px-5 py-5 mt-2 pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
           
           <div class="bg-gradient-to-r from-[#368c44]/5 to-transparent border border-[#368c44]/10 rounded-[14px] p-4 flex justify-between items-center mb-5">
             <span class="text-[16px] font-bold text-gray-600">Total:</span>
