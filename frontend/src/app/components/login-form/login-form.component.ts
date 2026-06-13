@@ -209,7 +209,7 @@ export class LoginFormComponent implements OnInit {
   showPassword = false;
   errorMsg = '';
   successMsg = '';
-  private userToRedirect: any = null;
+  userToRedirect: any = null;
 
   // Aviso de sesión expirada
   sessionExpired = false;
