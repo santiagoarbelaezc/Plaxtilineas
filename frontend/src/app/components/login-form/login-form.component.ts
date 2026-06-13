@@ -272,11 +272,12 @@ export class LoginFormComponent implements OnInit {
         this.showSuccessModal = true;
         this.userToRedirect = res.usuario;
         
+        const delay = res.usuario?.rol === 'admin' ? 1500 : 2700;
         setTimeout(() => {
           if (this.showSuccessModal) {
             this.closeSuccessModal();
           }
-        }, 1500);
+        }, delay);
       },
       error: (err) => {
         this.isSubmitting = false;
@@ -327,11 +328,12 @@ export class LoginFormComponent implements OnInit {
           this.showSuccessModal = true;
           this.userToRedirect = res.usuario;
           
+          const delay = res.usuario?.rol === 'admin' ? 1500 : 2700;
           setTimeout(() => {
             if (this.showSuccessModal) {
               this.closeSuccessModal();
             }
-          }, 1500);
+          }, delay);
         },
         error: () => {
           this.errorMsg = 'Correo o contraseña incorrectos. Por favor, verifica tus datos e inténtalo de nuevo.';
@@ -365,11 +367,12 @@ export class LoginFormComponent implements OnInit {
         this.showSuccessModal = true;
         this.userToRedirect = res.usuario;
         
+        const delay = res.usuario?.rol === 'admin' ? 1500 : 2700;
         setTimeout(() => {
           if (this.showSuccessModal) {
             this.closeSuccessModal();
           }
-        }, 1500);
+        }, delay);
       },
       error: (err) => {
         this.isSubmitting = false;

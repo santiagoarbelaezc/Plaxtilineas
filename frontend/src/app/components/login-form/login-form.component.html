@@ -322,8 +322,8 @@
   </div>
 </div>
 
-<!-- Modal Éxito (Login) -->
-<div class="success-modal-overlay" *ngIf="showSuccessModal" (click)="closeSuccessModal()">
+<!-- Modal Éxito (Admin Login) -->
+<div class="success-modal-overlay" *ngIf="showSuccessModal && userToRedirect?.rol === 'admin'" (click)="closeSuccessModal()">
   <div class="success-modal-card" 
        [ngClass]="(themeService.theme$ | async) === 'dark' ? 'modal-dark' : 'modal-light'"
        (click)="$event.stopPropagation()">
@@ -340,5 +340,39 @@
     <button type="button" class="btn-success-confirm" (click)="closeSuccessModal()">
       Aceptar
     </button>
+  </div>
+</div>
+
+<!-- Pantalla de Éxito Inmersiva (Usuario Normal) -->
+<div class="success-fullscreen-overlay" *ngIf="showSuccessModal && userToRedirect?.rol !== 'admin'"
+     [ngClass]="(themeService.theme$ | async) === 'dark' ? 'success-dark' : 'success-light'">
+  <div class="success-fullscreen-content">
+    
+    <!-- Logo con halo de brillo verde de éxito -->
+    <div class="success-logo-container">
+      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Plaxtilineas" class="success-logo">
+      <div class="success-logo-glow"></div>
+    </div>
+
+    <!-- Checkmark SVG Animado -->
+    <div class="success-checkmark-wrapper">
+      <svg class="success-checkmark-svg" viewBox="0 0 52 52">
+        <circle class="success-checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+        <path class="success-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+      </svg>
+    </div>
+
+    <!-- Título y Mensajes de Bienvenida -->
+    <div class="success-text-container">
+      <h2 class="success-title">¡Ingreso Exitoso!</h2>
+      <p class="success-subtitle">Bienvenido a Plaxtilineas, {{ userToRedirect?.nombre || 'cliente' }}</p>
+    </div>
+
+    <!-- Barra de progreso de redirección -->
+    <div class="success-progress-bar-container">
+      <div class="success-progress-bar"></div>
+    </div>
+
+    <p class="success-status-text">Cargando catálogo premium...</p>
   </div>
 </div>
