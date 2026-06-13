@@ -752,7 +752,7 @@ body.no-scroll {
     align-items: center;
     justify-content: center;
     gap: 4px;
-    color: var(--gray-500);
+    color: #374151;
     text-decoration: none;
     background: none;
     border: none;
@@ -779,29 +779,9 @@ body.no-scroll {
     color: var(--primary-green);
   }
 
-  /* Botón especial IA */
+  /* Botón especial IA integrado */
   .bottom-nav-ai {
     position: relative;
-    color: #8b5cf6; /* Morado/Violeta para IA */
-  }
-
-  .bottom-nav-ai fa-icon {
-    color: #8b5cf6;
-    background: rgba(139, 92, 246, 0.1);
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: -8px; /* Lo sube un poquito */
-  }
-
-  .bottom-nav-ai:hover fa-icon {
-    background: #8b5cf6;
-    color: white;
-    transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
   }
 
   .cart-badge-bottom {
@@ -874,9 +854,7 @@ body.no-scroll {
   color: #ffffff;
 }
 
-.mobile-bottom-nav.dark-mode .bottom-nav-ai fa-icon {
-  background: rgba(139, 92, 246, 0.2); /* Morado un poco más visible en fondo negro */
-}
+
 
 /* ===== USER NAV CONTAINER & DROPDOWN ===== */
 .user-nav-container {

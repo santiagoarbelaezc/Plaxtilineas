@@ -262,7 +262,7 @@
   </button>
   <button class="bottom-nav-item bottom-nav-cart" (click)="toggleCartDrawer()">
     <div class="bottom-cart-icon-wrapper" style="position: relative; display: inline-flex; align-items: center; justify-content: center;">
-      <fa-icon [icon]="['fas', 'shopping-bag']"></fa-icon>
+      <fa-icon [icon]="['fas', 'shopping-cart']"></fa-icon>
       <span *ngIf="cartService.getTotalItems() > 0" class="cart-badge-bottom">
         {{ cartService.getTotalItems() }}
       </span>

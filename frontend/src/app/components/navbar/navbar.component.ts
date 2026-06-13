@@ -4,7 +4,8 @@ import { RouterModule } from '@angular/router';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { 
   faKey, faSearch, faTimes, faHome, faUsers, faMapMarkerAlt, 
-  faShoppingBag, faClock, faUser, faEnvelope, faLock, faArrowLeft, faRobot, faPhoneAlt
+  faShoppingBag, faClock, faUser, faEnvelope, faLock, faArrowLeft, faRobot, faPhoneAlt,
+  faShoppingCart
 } from '@fortawesome/free-solid-svg-icons';
 import { faFacebook, faInstagram, faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import { FormsModule } from '@angular/forms';
@@ -65,6 +66,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     library.addIcons(
       faKey, faSearch, faTimes, faHome, faUsers, faMapMarkerAlt,
       faShoppingBag, faClock, faUser, faEnvelope, faLock, faArrowLeft, faRobot, faPhoneAlt,
+      faShoppingCart,
       faFacebook, faInstagram, faWhatsapp
     );
   }
