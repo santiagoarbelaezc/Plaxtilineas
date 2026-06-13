@@ -7,13 +7,13 @@
   align-items: center;
   min-height: 100vh;
   padding: 2rem 1rem;
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-primary), sans-serif;
   position: relative;
 }
 
 .login-wrapper.bg-light,
 .login-wrapper.bg-dark {
-  background-color: #111827;
+  background-color: #000000;
 }
 
 /* Botón regresar estilo píldora flotante */
@@ -104,9 +104,9 @@
 }
 
 .login-card.card-dark {
-  background-color: #1e293b;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: #121212;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* Form Styles */
@@ -133,7 +133,7 @@
   padding: 12px 16px;
   border-radius: 10px;
   font-size: 0.95rem;
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-primary), sans-serif;
   font-weight: 500;
   transition: all 0.2s ease;
   outline: none;
@@ -152,14 +152,14 @@
 }
 
 .form-input.input-dark {
-  background-color: #0f1420;
-  border: 1px solid rgba(255,255,255,0.05);
+  background-color: #1e1e1e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   color: #f8fafc;
 }
 
 .form-input.input-dark:focus {
-  border-color: #111;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+  border-color: #2d6a4f;
+  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.25);
 }
 
 /* Grid for Registration */
@@ -326,8 +326,8 @@ select.form-input option {
 }
 
 .card-dark .password-requirements {
-  background-color: #0f1420;
-  border-color: rgba(255, 255, 255, 0.05);
+  background-color: #1e1e1e;
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 .req-list {
@@ -366,9 +366,9 @@ select.form-input option {
 }
 
 .card-dark .req-item {
-  background-color: #1e293b;
-  color: #94a3b8;
-  border-color: rgba(255, 255, 255, 0.05);
+  background-color: #27272a;
+  color: #cbd5e1;
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 /* Estado: Cumplido */
@@ -823,7 +823,8 @@ select.form-input option {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-primary), sans-serif;
+  letter-spacing: -0.01em;
   backdrop-filter: blur(12px);
   animation: successFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -920,21 +921,25 @@ select.form-input option {
 
 .success-title {
   font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
   margin: 0;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #2d6a4f, #1ba852);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-family: var(--font-primary), sans-serif;
   animation: successTextPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 .success-subtitle {
   font-size: 1.05rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   line-height: 1.5;
   margin: 0;
   opacity: 0;
+  font-family: var(--font-primary), sans-serif;
+  letter-spacing: -0.01em;
   animation: successFadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
 }
 
@@ -965,7 +970,7 @@ select.form-input option {
   left: 0;
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #10b981, #059669);
+  background: linear-gradient(90deg, #2d6a4f, #1ba852);
   border-radius: 10px;
   animation: fillProgressBar 2.1s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards;
 }
@@ -973,11 +978,12 @@ select.form-input option {
 /* Estado de carga */
 .success-status-text {
   font-size: 11px;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   margin: 0;
+  font-family: var(--font-primary), sans-serif;
   opacity: 0;
   animation: successFadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards;
 }

@@ -8,6 +8,8 @@ import { CommonModule } from '@angular/common';
 import { CartDrawerComponent } from './cart/cart-drawer/cart-drawer.component';
 import { PwaService } from './services/pwa.service';
 import { LoadingScreenComponent } from './components/loading-screen/loading-screen';
+import { AuthService } from './services/auth.service';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -32,7 +34,9 @@ export class AppComponent implements OnInit {
     private scrollService: ScrollService,
     private router: Router,
     private seoService: SeoService,
-    private pwaService: PwaService
+    private pwaService: PwaService,
+    public authService: AuthService,
+    public themeService: ThemeService
   ) {
     this.canInstall$ = this.pwaService.canInstall$;
     this.isIos$ = this.pwaService.isIos$;

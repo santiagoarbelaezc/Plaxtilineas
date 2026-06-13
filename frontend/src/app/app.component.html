@@ -2,6 +2,40 @@
 <router-outlet></router-outlet>
 <app-cart-drawer></app-cart-drawer>
 
+<!-- Pantalla de Cierre de Sesión Completa -->
+<div class="logout-fullscreen-overlay" *ngIf="authService.isLoggingOut | async"
+     [ngClass]="(themeService.theme$ | async) === 'dark' ? 'logout-dark' : 'logout-light'">
+  <div class="logout-fullscreen-content">
+    
+    <!-- Logo con halo de brillo cálido -->
+    <div class="logout-logo-container">
+      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Plaxtilineas" class="logout-logo">
+      <div class="logout-logo-glow"></div>
+    </div>
+
+    <!-- Checkmark SVG Animado -->
+    <div class="logout-checkmark-wrapper">
+      <svg class="logout-checkmark-svg" viewBox="0 0 52 52">
+        <circle class="logout-checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+        <path class="logout-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+      </svg>
+    </div>
+
+    <!-- Mensajes de Cierre de Sesión -->
+    <div class="logout-text-container">
+      <h2 class="logout-title">¡Sesión Cerrada!</h2>
+      <p class="logout-subtitle">Gracias por visitar Plaxtilineas. ¡Vuelve pronto!</p>
+    </div>
+
+    <!-- Barra de progreso -->
+    <div class="logout-progress-bar-container">
+      <div class="logout-progress-bar"></div>
+    </div>
+
+    <p class="logout-status-text">Cerrando sesión de forma segura...</p>
+  </div>
+</div>
+
 
 <!-- Install Prompt for Android/PC -->
 <div *ngIf="canInstall$ | async" class="fixed bottom-0 left-0 right-0 z-[100] bg-blue-600 text-white p-4 shadow-lg flex justify-between items-center transform transition-transform duration-300 sm:bottom-4 sm:left-auto sm:right-4 sm:rounded-xl sm:w-80">

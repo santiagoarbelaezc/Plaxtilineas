@@ -14,6 +14,7 @@ export class AuthService {
   // Estado global de autenticación
   public isLoggedIn = new BehaviorSubject<boolean>(this.hasToken());
   public currentUser = new BehaviorSubject<any>(null);
+  public isLoggingOut = new BehaviorSubject<boolean>(false);
 
   constructor() {
     this.checkToken();
@@ -87,10 +88,22 @@ export class AuthService {
     );
   }
 
-  logout(): void {
+  logout(showAnimation = true): void {
+    if (showAnimation) {
+      this.isLoggingOut.next(true);
+      setTimeout(() => {
+        this.performLogout();
+      }, 2500);
+    } else {
+      this.performLogout();
+    }
+  }
+
+  private performLogout(): void {
     localStorage.removeItem('token');
     this.isLoggedIn.next(false);
     this.currentUser.next(null);
+    this.isLoggingOut.next(false);
     this.router.navigate(['/']);
   }
 }
