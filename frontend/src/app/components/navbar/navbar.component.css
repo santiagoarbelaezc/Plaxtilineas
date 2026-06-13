@@ -600,23 +600,14 @@ body.no-scroll {
   color: white;
 }
 
-/* Tarjeta especial Pedidos (Verde Corporativo) */
-.drawer-pedidos {
-  border: 1.5px solid rgba(22, 163, 74, 0.2);
-  background: #f0fdf4;
-  color: #15803d;
-}
+/* Tarjeta especial Pedidos (Normalizado) */
 .drawer-pedidos fa-icon {
-  background: #16a34a;
-  color: white;
-}
-.drawer-pedidos:hover,
-.drawer-pedidos:active {
-  border-color: #16a34a;
-  background: white;
+  background: rgba(22, 163, 74, 0.08);
+  color: #16a34a;
 }
 .drawer-pedidos:hover fa-icon {
-  transform: scale(1.05);
+  background: #16a34a;
+  color: white;
 }
 
 .drawer-configuracion fa-icon {
@@ -628,23 +619,14 @@ body.no-scroll {
   color: white;
 }
 
-/* Tarjeta especial Cerrar Sesión (Rojo) */
-.drawer-logout {
-  border: 1.5px solid rgba(220, 38, 38, 0.15);
-  background: #fef2f2;
+/* Tarjeta especial Cerrar Sesión (Normalizado) */
+.drawer-logout fa-icon {
+  background: rgba(220, 38, 38, 0.08);
   color: #dc2626;
 }
-.drawer-logout fa-icon {
+.drawer-logout:hover fa-icon {
   background: #dc2626;
   color: white;
-}
-.drawer-logout:hover,
-.drawer-logout:active {
-  border-color: #dc2626;
-  background: white;
-}
-.drawer-logout:hover fa-icon {
-  transform: scale(1.05);
 }
 
 /* Redes sociales (Colores específicos de marca al hacer hover/active) */
@@ -721,6 +703,9 @@ body.no-scroll {
   }
   .logo-main {
     height: 42px !important;
+  }
+  .navbar-content {
+    height: 60px !important;
   }
   .register-text {
     display: none;
