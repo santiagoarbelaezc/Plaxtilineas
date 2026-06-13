@@ -204,25 +204,25 @@
   </div>
   <div class="drawer-body">
     <!-- Opciones secundarias para el menú hamburguesa -->
-    <a routerLink="/contacto" class="drawer-link" (click)="closeMenu()">
+    <a routerLink="/contacto" class="drawer-link drawer-contacto" (click)="closeMenu()">
       <fa-icon [icon]="['fas', 'envelope']"></fa-icon> <span>Contacto</span>
     </a>
     <!-- Logged in user options in mobile drawer -->
     <div *ngIf="authService.isLoggedIn | async" class="drawer-user-section">
       <div class="drawer-section-title">Bienvenido, {{ (authService.currentUser | async)?.nombre }}</div>
-      <a class="drawer-link" (click)="closeMenu(); onUserAction('editar-perfil')">
+      <a class="drawer-link drawer-editar" (click)="closeMenu(); onUserAction('editar-perfil')">
         <fa-icon [icon]="['fas', 'user']"></fa-icon> <span>Editar datos personales</span>
       </a>
-      <a class="drawer-link" (click)="closeMenu(); onUserAction('actualizar-direccion')">
+      <a class="drawer-link drawer-direccion" (click)="closeMenu(); onUserAction('actualizar-direccion')">
         <fa-icon [icon]="['fas', 'map-marker-alt']"></fa-icon> <span>Actualizar dirección</span>
       </a>
-      <a class="drawer-link" (click)="closeMenu(); onUserAction('pedidos')">
+      <a class="drawer-link drawer-pedidos" (click)="closeMenu(); onUserAction('pedidos')">
         <fa-icon [icon]="['fas', 'shopping-bag']"></fa-icon> <span>Pedidos</span>
       </a>
-      <a class="drawer-link" (click)="closeMenu(); onUserAction('configuracion')">
+      <a class="drawer-link drawer-configuracion" (click)="closeMenu(); onUserAction('configuracion')">
         <fa-icon [icon]="['fas', 'key']"></fa-icon> <span>Configuración</span>
       </a>
-      <a class="drawer-link logout-item-drawer" (click)="closeMenu(); logoutUser()">
+      <a class="drawer-link drawer-logout logout-item-drawer" (click)="closeMenu(); logoutUser()">
         <fa-icon [icon]="['fas', 'times']"></fa-icon> <span>Cerrar sesión</span>
       </a>
       <hr class="drawer-divider">
@@ -260,14 +260,19 @@
     <fa-icon [icon]="['fas', 'search']"></fa-icon>
     <span>Buscar</span>
   </button>
+  <button class="bottom-nav-item bottom-nav-cart" (click)="toggleCartDrawer()">
+    <div class="bottom-cart-icon-wrapper" style="position: relative; display: inline-flex; align-items: center; justify-content: center;">
+      <fa-icon [icon]="['fas', 'shopping-bag']"></fa-icon>
+      <span *ngIf="cartService.getTotalItems() > 0" class="cart-badge-bottom">
+        {{ cartService.getTotalItems() }}
+      </span>
+    </div>
+    <span>Carrito</span>
+  </button>
   <button class="bottom-nav-item bottom-nav-ai" (click)="abrirAsistente()">
     <fa-icon [icon]="['fas', 'robot']"></fa-icon>
     <span>Asistente IA</span>
   </button>
-  <a routerLink="/nosotros" routerLinkActive="active" class="bottom-nav-item" (click)="cerrarAsistente()">
-    <fa-icon [icon]="['fas', 'users']"></fa-icon>
-    <span>Nosotros</span>
-  </a>
 </nav>
 
 <!-- Custom premium Toast notification for sections under development -->

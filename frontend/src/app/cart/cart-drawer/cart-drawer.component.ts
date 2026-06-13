@@ -210,8 +210,8 @@ export class CartDrawerComponent implements OnInit, OnDestroy {
 
     // El panel flotante del social-buttons ahora maneja la apertura automática.
     // El cart-drawer lateral ya no se abre automáticamente al añadir un producto.
-    this.drawerSub = this.cartService.isOpenDrawer.subscribe(_open => {
-      // No-op: gestionado por SocialButtonsComponent
+    this.drawerSub = this.cartService.isOpenDrawer.subscribe(open => {
+      this.isOpen = open;
     });
 
     this.intervalId = setInterval(() => {

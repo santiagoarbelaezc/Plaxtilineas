@@ -19,6 +19,7 @@ import { EmpresasDropdown } from './empresas-dropdown/empresas-dropdown';
 import { CartIconComponent } from '../../cart/cart-icon/cart-icon.component';
 import { ChatService } from '../../services/chat.service';
 import { AuthService } from '../../services/auth.service';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-navbar',
@@ -35,6 +36,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   isUserRegistered = false;
   
   public authService = inject(AuthService);
+  public cartService = inject(CartService);
   
   userDropdownOpen = false;
   showToast = false;
@@ -164,6 +166,11 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   logoutUser(): void {
     this.userDropdownOpen = false;
     this.authService.logout();
+  }
+
+  toggleCartDrawer(): void {
+    this.cerrarAsistente();
+    this.cartService.openDrawer();
   }
 
   onUserAction(action: string): void {
