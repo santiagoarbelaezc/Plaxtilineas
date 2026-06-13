@@ -278,9 +278,9 @@
     top: 0;
     left: 0;
     right: 0;
-    bottom: 65px; /* Deja libre el Bottom Navigation Bar */
+    bottom: 0 !important;
     background: #000000 !important; /* Fondo negro sólido para tapar el sitio web */
-    z-index: 2000; /* Por encima del top navbar */
+    z-index: 2000; /* Por debajo del bottom navbar que tiene z-index 2100 */
     pointer-events: auto; /* Para asegurar que el fondo negro bloquee clics al sitio */
   }
   .chat-window { 
@@ -305,6 +305,7 @@
   .chat-footer {
     background: #000000;
     border-top: none;
+    padding-bottom: 95px !important; /* Empuja el input de texto arriba del bottom navbar flotante */
   }
   .input-form input {
     background: #111111; /* Ligeramente más claro que el negro puro para contraste */

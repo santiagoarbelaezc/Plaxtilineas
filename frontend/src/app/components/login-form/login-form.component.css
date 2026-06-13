@@ -1026,3 +1026,74 @@ select.form-input option {
   0% { width: 0%; }
   100% { width: 100%; }
 }
+
+/* Estilos de Registro e Ingreso nativo en móvil */
+@media (max-width: 768px) {
+  .login-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 0 !important;
+    align-items: stretch !important;
+    min-height: 100vh !important;
+  }
+
+  .login-wrapper.bg-light {
+    background-color: #ffffff !important;
+  }
+
+  .login-wrapper.bg-dark {
+    background-color: #121212 !important;
+  }
+
+  .btn-regresar-top-left {
+    position: static !important;
+    padding: 20px 20px 0 20px !important;
+    margin-bottom: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .btn-regresar-pill {
+    background: transparent !important;
+    border: none !important;
+    padding: 8px 0 !important;
+    box-shadow: none !important;
+    color: #475569 !important;
+  }
+
+  .card-dark .btn-regresar-pill {
+    color: #cbd5e1 !important;
+  }
+
+  .login-card {
+    border-radius: 0 !important;
+    min-height: calc(100vh - 70px) !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 20px 20px 40px 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .login-card.card-light {
+    background-color: #ffffff !important;
+  }
+
+  .login-card.card-dark {
+    background-color: #121212 !important;
+  }
+
+  /* Optimización de inputs en móvil */
+  .form-input {
+    font-size: 16px !important; /* Evita zoom automático en iOS */
+    padding: 14px 16px !important;
+  }
+
+  /* Optimizar visualmente el formulario de registro en grilla simple */
+  .register-grid-form {
+    gap: 1rem !important;
+  }
+}

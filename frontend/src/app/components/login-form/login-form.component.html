@@ -65,12 +65,12 @@
       <span>Tu sesión expiró. Inicia sesión nuevamente.</span>
     </div>
 
-    <!-- Google SSO -->
-    <div class="google-btn-wrapper">
+    <!-- Google SSO (Desactivado por ahora) -->
+    <div class="google-btn-wrapper" *ngIf="false">
       <div id="google-btn-login" class="google-btn-container"></div>
     </div>
 
-    <div class="divider">
+    <div class="divider" *ngIf="false">
       <span class="divider-text" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#94a3b8] bg-[#1e293b]' : 'text-[#64748b] bg-white'">o con tu correo</span>
     </div>
 

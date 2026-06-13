@@ -204,7 +204,7 @@
   </div>
   <div class="drawer-body">
     <!-- Opciones secundarias para el menú hamburguesa -->
-    <a routerLink="/contacto" class="drawer-link drawer-contacto" (click)="closeMenu()">
+    <a (click)="goToContact()" class="drawer-link drawer-contacto" style="cursor: pointer;">
       <fa-icon [icon]="['fas', 'envelope']"></fa-icon> <span>Contacto</span>
     </a>
     <!-- Logged in user options in mobile drawer -->
@@ -228,9 +228,12 @@
       <hr class="drawer-divider">
     </div>
 
-    <!-- For guests or just admin access link when not logged in -->
-    <a *ngIf="!(authService.isLoggedIn | async)" routerLink="/login" class="drawer-link" (click)="closeMenu()">
-      <fa-icon [icon]="['fas', 'lock']"></fa-icon> <span>Acceso Admin</span>
+    <!-- For guests: login and register links when not logged in -->
+    <a *ngIf="!(authService.isLoggedIn | async)" routerLink="/login" class="drawer-link drawer-login" (click)="closeMenu()">
+      <fa-icon [icon]="['fas', 'user']"></fa-icon> <span>Iniciar sesión</span>
+    </a>
+    <a *ngIf="!(authService.isLoggedIn | async)" routerLink="/login" [queryParams]="{ mode: 'register' }" class="drawer-link drawer-register" (click)="closeMenu()">
+      <fa-icon [icon]="['fas', 'envelope']"></fa-icon> <span>Registro</span>
     </a>
     <hr class="drawer-divider">
     <div class="drawer-section-title">Redes Sociales</div>
@@ -247,7 +250,14 @@
 </div>
 
 <!-- Mobile Bottom Navigation (PWA style) -->
-<nav class="mobile-bottom-nav" [class.dark-mode]="isChatOpen">
+<nav class="mobile-bottom-nav" [class.dark-mode]="isChatOpen" #bottomNav
+     (touchstart)="onTouchStart($event)"
+     (touchmove)="onTouchMove($event)"
+     (touchend)="onTouchEnd($event)"
+     (mousedown)="onMouseDown($event)">
+  <!-- Sliding indicator background pill -->
+  <div class="active-indicator-pill" [ngStyle]="getIndicatorStyle()"></div>
+
   <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="bottom-nav-item" (click)="cerrarAsistenteYCarrito()">
     <fa-icon [icon]="['fas', 'home']"></fa-icon>
     <span>Inicio</span>

@@ -1,6 +1,11 @@
 <app-navbar></app-navbar>
 
 <main class="home-main">
+  <!-- Banner Promoción Registro VIP (Primero en Móvil) -->
+  <div class="block md:hidden" *ngIf="!(authService.isLoggedIn | async)">
+    <app-banner-registro></app-banner-registro>
+  </div>
+
   <!-- Hero Section -->
   <app-header></app-header>
 
@@ -41,8 +46,10 @@
     <app-nosotros-inicio></app-nosotros-inicio>
   </section>
 
-  <!-- Banner Promoción Registro VIP -->
-  <app-banner-registro *ngIf="!(authService.isLoggedIn | async)"></app-banner-registro>
+  <!-- Banner Promoción Registro VIP (Solo Escritorio) -->
+  <div class="hidden md:block" *ngIf="!(authService.isLoggedIn | async)">
+    <app-banner-registro></app-banner-registro>
+  </div>
 
   <!-- ════════════ ZONA DE COMPONENTES DINÁMICOS SUPERIORES ════════════ -->
   <ng-container *ngFor="let comp of componentesDinamicos">

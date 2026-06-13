@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, HostListener, ViewEncapsulation, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, HostListener, ViewEncapsulation, OnDestroy, inject, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
@@ -50,6 +50,12 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   isSearchRoute: boolean = false;
   
   isChatOpen: boolean = false;
+
+  @ViewChild('bottomNav') bottomNav!: ElementRef;
+  isDragging = false;
+  startX = 0;
+  currentDragX = 0;
+  indicatorTransition = 'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.25s';
 
   private destroy$ = new Subject<void>();
   private scrollSubject = new Subject<void>();
@@ -158,6 +164,11 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   closeMenu(): void {
     this.menuAbierto = false;
     document.body.classList.remove('no-scroll');
+  }
+
+  goToContact(): void {
+    this.closeMenu();
+    this.router.navigate(['/contacto']);
   }
 
   toggleUserDropdown(event: Event): void {
@@ -316,5 +327,120 @@ navigateToSearch(term: string): void {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
     this.userDropdownOpen = false;
+  }
+
+  getActiveTabIndex(): number {
+    if (this.isChatOpen) return 4;
+    if (this.cartService.isDrawerOpen() || this.router.url === '/carrito') return 3;
+    if (this.searchActive) return 2;
+    if (this.router.url.includes('/productos')) return 1;
+    if (this.router.url === '/' || this.router.url === '') return 0;
+    return 0;
+  }
+
+  getIndicatorStyle(): any {
+    if (!this.bottomNav) return {};
+    const W = this.bottomNav.nativeElement.clientWidth || 360;
+    const tabWidth = W / 5;
+    const pillWidth = 50;
+    const offset = (tabWidth - pillWidth) / 2;
+
+    let leftPos = 0;
+    if (this.isDragging) {
+      leftPos = this.currentDragX - pillWidth / 2;
+      leftPos = Math.max(offset, Math.min(W - pillWidth - offset, leftPos));
+    } else {
+      const activeIdx = this.getActiveTabIndex();
+      leftPos = activeIdx * tabWidth + offset;
+    }
+
+    return {
+      'transform': `translate3d(${leftPos}px, 0, 0)`,
+      'transition': this.isDragging ? 'none' : this.indicatorTransition,
+      'background-color': this.isChatOpen ? 'rgba(255, 255, 255, 0.15)' : 'rgba(54, 140, 68, 0.12)'
+    };
+  }
+
+  onTouchStart(event: TouchEvent): void {
+    if (!this.bottomNav) return;
+    const touch = event.touches[0];
+    const rect = this.bottomNav.nativeElement.getBoundingClientRect();
+    const touchX = touch.clientX - rect.left;
+
+    this.isDragging = true;
+    this.startX = touchX;
+    this.currentDragX = touchX;
+  }
+
+  onTouchMove(event: TouchEvent): void {
+    if (!this.isDragging || !this.bottomNav) return;
+    const touch = event.touches[0];
+    const rect = this.bottomNav.nativeElement.getBoundingClientRect();
+    const touchX = touch.clientX - rect.left;
+    this.currentDragX = touchX;
+  }
+
+  onTouchEnd(event: TouchEvent): void {
+    if (!this.isDragging || !this.bottomNav) return;
+    this.isDragging = false;
+
+    const W = this.bottomNav.nativeElement.clientWidth || 360;
+    const tabWidth = W / 5;
+    const finalIndex = Math.max(0, Math.min(4, Math.floor(this.currentDragX / tabWidth)));
+
+    this.navigateTab(finalIndex);
+  }
+
+  onMouseDown(event: MouseEvent): void {
+    if (!this.bottomNav) return;
+    const rect = this.bottomNav.nativeElement.getBoundingClientRect();
+    const mouseX = event.clientX - rect.left;
+
+    this.isDragging = true;
+    this.startX = mouseX;
+    this.currentDragX = mouseX;
+
+    const onMouseMove = (moveEvent: MouseEvent) => {
+      if (!this.isDragging) return;
+      const moveX = moveEvent.clientX - rect.left;
+      this.currentDragX = moveX;
+    };
+
+    const onMouseUp = (upEvent: MouseEvent) => {
+      this.isDragging = false;
+      const upX = upEvent.clientX - rect.left;
+      const W = this.bottomNav.nativeElement.clientWidth || 360;
+      const tabWidth = W / 5;
+      const finalIndex = Math.max(0, Math.min(4, Math.floor(upX / tabWidth)));
+      this.navigateTab(finalIndex);
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  }
+
+  navigateTab(index: number): void {
+    switch (index) {
+      case 0:
+        this.cerrarAsistenteYCarrito();
+        this.router.navigate(['/']);
+        break;
+      case 1:
+        this.cerrarAsistenteYCarrito();
+        this.router.navigate(['/productos']);
+        break;
+      case 2:
+        this.cerrarAsistenteYCarrito();
+        this.toggleSearch();
+        break;
+      case 3:
+        this.toggleCartDrawer();
+        break;
+      case 4:
+        this.abrirAsistente();
+        break;
+    }
   }
 }
