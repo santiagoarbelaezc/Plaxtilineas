@@ -1125,4 +1125,17 @@ body.no-scroll {
     max-width: none;
     bottom: 80px;
   }
+  
+  .main-header.scrolled {
+    transform: none !important;
+  }
+  .main-header.scrolled .top-bar {
+    display: none !important;
+  }
+  .main-header.scrolled .navbar-content {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+  }
 }
