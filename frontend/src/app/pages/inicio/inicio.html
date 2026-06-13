@@ -16,10 +16,12 @@
 
 
   <!-- Banner de Asistente Mateo (REUBICADO) -->
-  <app-banner-asistente></app-banner-asistente>
+  <div class="hidden md:block">
+    <app-banner-asistente></app-banner-asistente>
+  </div>
 
   <!-- Showcase de Producto -->
-  <section class="home-section no-padding">
+  <section class="home-section no-padding hidden md:block">
     <app-card-container [precio]="'Desde $ 2.800'" [nombreProducto]="'Catálogo General'"
       [imagenProducto]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767225513/card1_ipfxoo.jpg'"
       [categoriaNombre]="'Malla'"
@@ -185,7 +187,7 @@
   </section>
 
   <!-- Showcase Yumbolon -->
-  <section class="home-section no-padding">
+  <section class="home-section no-padding hidden md:block">
     <app-card-container [precio]="'$ 99.000'" [nombreProducto]="'YUMBOLON - THERMOLON'"
       [imagenProducto]="'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767412446/card-template3_iwmedg.jpg'"
       [categoriaNombre]="'Plaxtilineas'"
