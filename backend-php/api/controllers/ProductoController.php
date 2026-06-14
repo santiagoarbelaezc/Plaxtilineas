@@ -722,4 +722,54 @@ class ProductoController
             ]);
         }
     }
+
+    // ─── POST /api/productos/verificar-stock ────────────────────────────────
+    public static function verificarStockCarrito(): void {
+        try {
+            $input = json_decode(file_get_contents('php://input'), true);
+            $items = $input['items'] ?? [];
+            
+            $errores = [];
+            $db = Database::getConnection();
+            
+            foreach ($items as $item) {
+                $productoId = (int)($item['producto_id'] ?? 0);
+                $cantidad = (int)($item['cantidad'] ?? 0);
+                
+                $stmt = $db->prepare('SELECT nombre, stock, controlar_stock FROM productos WHERE id = ?');
+                $stmt->execute([$productoId]);
+                $producto = $stmt->fetch();
+                
+                if (!$producto) {
+                    $errores[] = [
+                        'producto_id' => $productoId, 
+                        'error' => 'Producto no encontrado'
+                    ];
+                    continue;
+                }
+                
+                $controlaStock = (bool)($producto['controlar_stock']);
+                if ($controlaStock && $producto['stock'] < $cantidad) {
+                    $errores[] = [
+                        'producto_id' => $productoId,
+                        'nombre' => $producto['nombre'],
+                        'stock_disponible' => (int)$producto['stock'],
+                        'cantidad_solicitada' => $cantidad,
+                        'error' => 'Stock insuficiente'
+                    ];
+                }
+            }
+            
+            ResponseHandler::success([
+                'valido' => empty($errores),
+                'items_con_error' => $errores
+            ]);
+        } catch (PDOException $e) {
+            Logger::error('ProductoController::verificarStockCarrito – DB', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error al verificar stock en base de datos', 500);
+        } catch (Throwable $e) {
+            Logger::error('ProductoController::verificarStockCarrito – inesperado', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error inesperado al verificar stock', 500);
+        }
+    }
 }

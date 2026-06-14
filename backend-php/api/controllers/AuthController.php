@@ -79,11 +79,11 @@ class AuthController
      */
     public static function perfil(array $user): void
     {
-        try {
-            $db   = Database::getConnection();
-            $stmt = $db->prepare('SELECT id, nombre, correo, rol FROM usuarios WHERE id = ? LIMIT 1');
-            $stmt->execute([$user['id']]);
-            $usuario = $stmt->fetch();
+      try {
+        $db   = Database::getConnection();
+        $stmt = $db->prepare('SELECT id, nombre, apellidos, correo, edad, direccion, ciudad, rol FROM usuarios WHERE id = ? LIMIT 1');
+        $stmt->execute([$user['id']]);
+        $usuario = $stmt->fetch();
 
             if (!$usuario) {
                 ResponseHandler::error('Usuario no encontrado', 404);

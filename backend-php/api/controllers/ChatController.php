@@ -37,7 +37,11 @@ class ChatController
             // 2. Capa 1: Keywords (Respuestas rápidas)
             $keywordResult = $this->verificarKeywords($mensajeUsuario);
             if ($keywordResult) {
-                $this->guardarMensaje($sessionId, 'assistant', $keywordResult['respuesta']);
+                $mensajeAGuardar = $keywordResult['respuesta'];
+                if (!empty($keywordResult['redirect'])) {
+                    $mensajeAGuardar .= ' [REDIRECT:' . $keywordResult['redirect'] . ']';
+                }
+                $this->guardarMensaje($sessionId, 'assistant', $mensajeAGuardar);
                 ResponseHandler::success([
                     'respuesta' => $keywordResult['respuesta'],
                     'session_id' => $sessionId,
@@ -49,27 +53,22 @@ class ChatController
             }
 
             // 3. Capa 2: Groq API
-            // Obtener historial (últimos 10 mensajes)
             $historial = $this->obtenerHistorialParaIA($sessionId, 10);
-            
-            // Obtener productos para contexto (máx 300)
             $productosContexto = $this->obtenerProductosContexto(300);
 
             try {
                 $respuestaIA = $this->llamarGroq($historial, $productosContexto);
                 
-                // Parsear Redirecciones y enlaces de la IA
-                $redirect = null;
-                if (preg_match('/\[(?:REDIRECT|EXTERNAL):(.*?)\]/', $respuestaIA, $matches)) {
-                    $redirect = trim($matches[1]);
-                }
-                
-                // Limpiar tags [REDIRECT:...] o [EXTERNAL:...] del mensaje final
-                $respuestaIA = preg_replace('/\[(?:REDIRECT|EXTERNAL):.*?\]/', '', $respuestaIA);
+                // Guardar la respuesta original con los tags [PRODUCTO:...] y [REDIRECT:...] intactos
+                $this->guardarMensaje($sessionId, 'assistant', $respuestaIA);
 
+                // Parsear para el frontend
                 $parseado = $this->parsearProductos($respuestaIA);
                 
-                $this->guardarMensaje($sessionId, 'assistant', $parseado['respuesta']);
+                $redirect = null;
+                if (!empty($parseado['links'])) {
+                    $redirect = $parseado['links'][0]['url'];
+                }
 
                 ResponseHandler::success([
                     'respuesta' => $parseado['respuesta'],
@@ -116,8 +115,30 @@ class ChatController
                 LIMIT 50
             ");
             $stmt->execute([$sessionId]);
+            $rows = $stmt->fetchAll();
+
+            $mensajes = [];
+            foreach ($rows as $row) {
+                if ($row['rol'] === 'assistant') {
+                    // Parsear el mensaje de la BD al vuelo para extraer productos y links
+                    $parsed = $this->parsearProductos($row['mensaje']);
+                    $mensajes[] = [
+                        'rol'        => $row['rol'],
+                        'mensaje'    => $parsed['respuesta'],
+                        'productos'  => $parsed['productos'],
+                        'links'      => $parsed['links'],
+                        'created_at' => $row['created_at']
+                    ];
+                } else {
+                    $mensajes[] = [
+                        'rol'        => $row['rol'],
+                        'mensaje'    => $row['mensaje'],
+                        'created_at' => $row['created_at']
+                    ];
+                }
+            }
             
-            ResponseHandler::success(['mensajes' => $stmt->fetchAll()]);
+            ResponseHandler::success(['mensajes' => $mensajes]);
 
         } catch (Throwable $e) {
             Logger::error('ChatController::historial', ['exception' => $e->getMessage()]);
@@ -209,18 +230,22 @@ class ChatController
             }
         }
 
-        // Subcategorías específicas por palabra clave en la Capa 1
+        // Subcategorías específicas por palabra clave en la Capa 1 (Redirigiendo a singular)
+        // Comentadas para permitir que la Capa 2 (IA Groq) recomiende los productos con sus especificaciones.
+        /*
         $subcatKeywords = [
-            'colchones' => '/busqueda?q=colchones',
-            'colchón' => '/busqueda?q=colchones',
-            'pisos' => '/busqueda?q=pisos',
-            'piso' => '/busqueda?q=pisos',
-            'espumas' => '/busqueda?q=espumas',
-            'espuma' => '/busqueda?q=espumas',
-            'canastos' => '/busqueda?q=canastos',
-            'canasto' => '/busqueda?q=canastos',
-            'tanques' => '/busqueda?q=tanques',
-            'tanque' => '/busqueda?q=tanques',
+            'colchones' => '/busqueda?q=colchon',
+            'colchón' => '/busqueda?q=colchon',
+            'pisos' => '/busqueda?q=piso',
+            'piso' => '/busqueda?q=piso',
+            'espumas' => '/busqueda?q=espuma',
+            'espuma' => '/busqueda?q=espuma',
+            'canastos' => '/busqueda?q=canasto',
+            'canasto' => '/busqueda?q=canasto',
+            'tanques' => '/busqueda?q=tanque',
+            'tanque' => '/busqueda?q=tanque',
+            'mallas' => '/busqueda?q=malla',
+            'malla' => '/busqueda?q=malla',
             'yumbolon' => '/busqueda?q=yumbolon',
             'termoflon' => '/busqueda?q=termoflon'
         ];
@@ -232,6 +257,7 @@ class ChatController
                 ];
             }
         }
+        */
 
         // Redirección de empresas del grupo
         if (str_contains($input, 'districol')) {
@@ -341,16 +367,31 @@ class ChatController
                         'nombre' => $p['nombre'],
                         'precio' => $p['precio'],
                         'imagen' => $p['imagen_url'],
-                        'url'    => '/productos/' . $p['id'],
+                        'url'    => '/producto/' . $p['id'],
                     ];
                 }
             }
         }
 
         $respuestaLimpia = preg_replace('/\[PRODUCTO:\d+\]/', '', $respuesta);
+
+        // Parsear links (REDIRECT o EXTERNAL)
+        $links = [];
+        if (preg_match('/\[(?:REDIRECT|EXTERNAL):(.*?)\]/', $respuestaLimpia, $matchesLink)) {
+            $redirect = trim($matchesLink[1]);
+            $isExternal = str_starts_with($redirect, 'http://') || str_starts_with($redirect, 'https://');
+            $links[] = [
+                'label' => $isExternal ? 'Ir al enlace' : 'Ver Sección',
+                'url' => $redirect,
+                'external' => $isExternal
+            ];
+        }
+        $respuestaLimpia = preg_replace('/\[(?:REDIRECT|EXTERNAL):.*?\]/', '', $respuestaLimpia);
+
         return [
             'respuesta' => trim($respuestaLimpia),
             'productos' => $productos,
+            'links'     => $links
         ];
     }
 
@@ -364,15 +405,17 @@ Tu personalidad:
 
 REGLAS ESTRICTAS DE RESPUESTA:
 1. Respuestas cortas y directas (máx. 2 párrafos).
-2. Para recomendar productos del catálogo, DEBES usar ESTRICTAMENTE el formato literal [PRODUCTO:ID] (donde ID es el id numérico). ¡NUNCA cambies la palabra 'PRODUCTO'! Ejemplo correcto: [PRODUCTO:141].
-3. SIEMPRE que recomiendes un producto o el usuario busque algo, DEBES agregar al final de tu mensaje una etiqueta literal de redirección usando la palabra clave de búsqueda. Ejemplos:
+2. Para recomendar productos del catálogo, DEBES seleccionar exactamente los primeros 4 productos más relevantes y usar ESTRICTAMENTE el formato literal [PRODUCTO:ID] para cada uno de ellos. Además, para cada uno de estos 4 productos debes incluir una especificación corta (por ejemplo: color, dimensiones, material o tipo).
+3. ¡NUNCA cambies la palabra 'PRODUCTO'! Ejemplo correcto: [PRODUCTO:141].
+4. SIEMPRE que recomiendes un producto o el usuario busque algo, DEBES agregar al final de tu mensaje una etiqueta literal de redirección usando la palabra clave de búsqueda EN SINGULAR (por ejemplo, 'colchon' en lugar de 'colchones', 'espuma' en lugar de 'espumas', 'piso' en lugar de 'pisos', 'malla' en lugar de 'mallas'). Ejemplos:
    - Búsqueda general: [REDIRECT:/busqueda?q=palabra_clave]
    - Para telas: [REDIRECT:/busqueda?q=tela]
-   - Para colchones: [REDIRECT:/busqueda?q=colchones]
-   - Para pisos: [REDIRECT:/busqueda?q=pisos]
-   - Para espumas: [REDIRECT:/busqueda?q=espumas]
-4. Si el usuario pide hablar con un humano, agrega la etiqueta: [EXTERNAL:https://wa.me/573006680125]
-5. Si el usuario pide ir a secciones específicas, usa estas etiquetas exactas:
+   - Para colchones: [REDIRECT:/busqueda?q=colchon]
+   - Para pisos: [REDIRECT:/busqueda?q=piso]
+   - Para espumas: [REDIRECT:/busqueda?q=espuma]
+   - Para mallas: [REDIRECT:/busqueda?q=malla]
+5. Si el usuario pide hablar con un humano, agrega la etiqueta: [EXTERNAL:https://wa.me/573006680125]
+6. Si el usuario pide ir a secciones específicas, usa estas etiquetas exactas:
    - Colchones Districol: [EXTERNAL:https://colchonesdistricol.com/]
    - Espumas y Plásticos: [EXTERNAL:https://espumasyplasticos.com/]
    - Facebook: [EXTERNAL:https://www.facebook.com/p/Plaxtilineas-100080040966300/]

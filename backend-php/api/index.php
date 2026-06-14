@@ -167,6 +167,9 @@ try {
     if ($uri === '/productos/novedades/ultimos' && $method === 'GET') {
         ProductoController::obtenerUltimosProductos();
     }
+    if ($uri === '/productos/verificar-stock' && $method === 'POST') {
+        ProductoController::verificarStockCarrito();
+    }
     if ($uri === '/productos/relacionados/por-producto' && $method === 'GET') {
         ProductoController::obtenerProductosRelacionados();
     }
