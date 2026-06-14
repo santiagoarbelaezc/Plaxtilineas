@@ -16,9 +16,9 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
     <app-navbar></app-navbar>
 
     <!-- 1. Diseño Móvil (No Flotante, alineado con el navbar) -->
-    <div class="block md:hidden bg-white min-h-screen font-sans" style="padding-top: 100px; padding-bottom: 100px;">
+    <div class="block md:hidden bg-white min-h-screen font-sans" style="padding-top: 60px; padding-bottom: 100px;">
       <!-- Header del Carrito (Estilo Móvil) -->
-      <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-white sticky top-[100px] z-10">
+      <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-white sticky top-[60px] z-10">
         <button (click)="goBack()" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-800 active:scale-95 transition-all">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="19" y1="12" x2="5" y2="12"></line>
