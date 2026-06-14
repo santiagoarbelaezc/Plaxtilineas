@@ -6,14 +6,16 @@ import { CartService } from '../../services/cart.service';
 import { PedidoService } from '../../services/pedido.service';
 import { AuthService } from '../../services/auth.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { NavbarComponent } from '../../components/navbar/navbar.component';
 
 @Component({
   selector: 'app-cart-summary',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, NavbarComponent],
   template: `
+    <app-navbar></app-navbar>
     <!-- Main Container matches description-producto-select -->
-    <div class="bg-white min-h-screen" style="padding-top: calc(var(--navbar-height, 80px)); font-family: var(--font-primary, 'Inter', sans-serif); color: #111;">
+    <div class="bg-white min-h-screen" style="padding-top: calc(var(--navbar-height, 80px)); padding-bottom: 90px; font-family: var(--font-primary, 'Inter', sans-serif); color: #111;">
       
       <div style="max-width: 1550px; margin: 40px auto; padding: 0 2rem;">
         

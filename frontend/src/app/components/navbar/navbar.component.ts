@@ -331,27 +331,41 @@ navigateToSearch(term: string): void {
 
   getActiveTabIndex(): number {
     if (this.isChatOpen) return 4;
-    if (this.cartService.isDrawerOpen() || this.router.url === '/carrito') return 3;
+    if (this.cartService.isOpenDrawer.value || this.router.url === '/carrito') return 3;
     if (this.searchActive) return 2;
     if (this.router.url.includes('/productos')) return 1;
     if (this.router.url === '/' || this.router.url === '') return 0;
     return 0;
   }
 
-  getIndicatorStyle(): any {
-    if (!this.bottomNav) return {};
+  getTabLeft(index: number): number {
+    if (!this.bottomNav) return 0;
+    const items = this.bottomNav.nativeElement.querySelectorAll('.bottom-nav-item');
+    const pillWidth = 50;
+    if (items && items[index]) {
+      const item = items[index] as HTMLElement;
+      return item.offsetLeft + (item.clientWidth - pillWidth) / 2;
+    }
+    // Fallback matemático si los elementos no están renderizados aún
     const W = this.bottomNav.nativeElement.clientWidth || 360;
     const tabWidth = W / 5;
+    return index * tabWidth + (tabWidth - pillWidth) / 2;
+  }
+
+  getIndicatorStyle(): any {
+    if (!this.bottomNav) return {};
     const pillWidth = 50;
-    const offset = (tabWidth - pillWidth) / 2;
+    const minLeft = this.getTabLeft(0);
+    const maxLeft = this.getTabLeft(4);
 
     let leftPos = 0;
     if (this.isDragging) {
       leftPos = this.currentDragX - pillWidth / 2;
-      leftPos = Math.max(offset, Math.min(W - pillWidth - offset, leftPos));
+      // Clampear exactamente entre los centros de las pestañas de los extremos
+      leftPos = Math.max(minLeft, Math.min(maxLeft, leftPos));
     } else {
       const activeIdx = this.getActiveTabIndex();
-      leftPos = activeIdx * tabWidth + offset;
+      leftPos = this.getTabLeft(activeIdx);
     }
 
     return {

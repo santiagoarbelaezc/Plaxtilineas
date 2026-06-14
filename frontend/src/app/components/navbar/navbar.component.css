@@ -770,6 +770,17 @@ body.no-scroll {
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
+  .active-indicator-pill {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    z-index: 0;
+    pointer-events: none;
+    top: 6px;
+    left: 0;
+  }
+
   .bottom-nav-item {
     display: flex;
     flex-direction: column;
@@ -786,6 +797,7 @@ body.no-scroll {
     cursor: pointer;
     position: relative;
     box-sizing: border-box;
+    z-index: 1;
   }
 
   .bottom-nav-item:active {
@@ -806,7 +818,7 @@ body.no-scroll {
   }
 
   .bottom-nav-item.active {
-    background: rgba(54, 140, 68, 0.12) !important;
+    background: transparent !important;
     color: var(--primary-green) !important;
   }
 
@@ -882,12 +894,29 @@ body.no-scroll {
 }
 
 .mobile-bottom-nav.dark-mode .bottom-nav-item.active {
-  background: rgba(255, 255, 255, 0.15) !important;
+  background: transparent !important;
   color: #ffffff !important;
 }
 
 .mobile-bottom-nav.dark-mode .bottom-nav-item.active fa-icon {
   color: #ffffff !important;
+}
+
+/* Forzar estado activo en el botón Asistente IA y desactivar los otros cuando el chat está abierto */
+.mobile-bottom-nav.dark-mode .bottom-nav-item:not(.bottom-nav-ai) {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.mobile-bottom-nav.dark-mode .bottom-nav-item:not(.bottom-nav-ai) fa-icon {
+  transform: none !important;
+}
+
+.mobile-bottom-nav.dark-mode .bottom-nav-ai {
+  color: #ffffff !important;
+}
+
+.mobile-bottom-nav.dark-mode .bottom-nav-ai fa-icon {
+  transform: scale(1.1) !important;
 }
 
 
