@@ -291,7 +291,8 @@ export class LoginFormComponent implements OnInit {
     if (user && user.rol === 'admin') {
       this.router.navigate(['/admin']);
     } else {
-      this.router.navigate(['/']);
+      const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+      this.router.navigateByUrl(returnUrl);
     }
   }
 

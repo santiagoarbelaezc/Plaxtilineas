@@ -28,6 +28,16 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
           display: block !important;
         }
       }
+      @keyframes modalEnter {
+        from {
+          opacity: 0;
+          transform: scale(0.95) translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
     </style>
     <app-navbar></app-navbar>
 
@@ -390,6 +400,54 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
         </div>
       </div>
     </div>
+
+    <!-- Auth Required Modal -->
+    <div *ngIf="showAuthModal()" style="position: fixed; inset: 0; z-index: 100003; display: flex; align-items: center; justify-content: center; padding: 1.5rem; background: rgba(17, 24, 39, 0.75); backdrop-filter: blur(8px);" (click)="closeAuthModal()">
+      <div style="background: #ffffff; width: 100%; max-width: 460px; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid rgba(229, 231, 235, 0.8); overflow: hidden; animation: modalEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1);" (click)="$event.stopPropagation()">
+        <!-- Header with beautiful icon -->
+        <div style="padding: 2.5rem 2rem 1.5rem 2rem; text-align: center; display: flex; flex-direction: column; align-items: center;">
+          <div style="width: 64px; height: 64px; border-radius: 50%; background: #ecfdf5; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; color: #368c44;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="8.5" cy="7" r="4"></circle>
+              <line x1="20" y1="8" x2="20" y2="14"></line>
+              <line x1="23" y1="11" x2="17" y2="11"></line>
+            </svg>
+          </div>
+          
+          <h2 style="font-size: 1.4rem; font-weight: 800; color: #111827; margin: 0 0 0.75rem 0; letter-spacing: -0.01em; text-transform: uppercase;">
+            Iniciar sesión requerida
+          </h2>
+          
+          <p style="font-size: 0.95rem; color: #4b5563; line-height: 1.5; margin: 0; font-weight: 500;">
+            Para finalizar tu compra y guardar tus productos de manera segura, por favor inicia sesión o crea una cuenta en Plaxtilineas.
+          </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="padding: 0 2rem 2rem 2rem; display: flex; flex-direction: column; gap: 0.75rem;">
+          <!-- Iniciar Sesión Button -->
+          <button (click)="navigateToLogin()" style="width: 100%; padding: 1.1rem; background: #368c44; color: #ffffff; border: none; border-radius: 14px; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 0.5rem; box-shadow: 0 4px 6px -1px rgba(54, 140, 68, 0.2);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+              <polyline points="10 17 15 12 10 7"></polyline>
+              <line x1="15" y1="12" x2="3" y2="12"></line>
+            </svg>
+            Iniciar Sesión
+          </button>
+          
+          <!-- Registrarse Button -->
+          <button (click)="navigateToRegister()" style="width: 100%; padding: 1.1rem; background: #ffffff; color: #368c44; border: 2px solid #368c44; border-radius: 14px; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+            Crear una cuenta
+          </button>
+          
+          <!-- Cancel Button -->
+          <button (click)="closeAuthModal()" style="width: 100%; padding: 0.85rem; background: transparent; color: #6b7280; border: none; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s ease; margin-top: 0.25rem;">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
   `
 })
 export class CartSummaryComponent {
@@ -409,6 +467,7 @@ export class CartSummaryComponent {
   });
 
   showCheckoutModal = signal(false);
+  showAuthModal = signal(false);
   isSubmitting = signal(false);
   checkoutError = signal<string | null>(null);
 
@@ -449,11 +508,24 @@ export class CartSummaryComponent {
 
   iniciarCheckout(): void {
     if (!this.authService.isLoggedIn.getValue()) {
-      alert('Debes iniciar sesión para finalizar tu compra.');
-      this.router.navigate(['/login'], { queryParams: { returnUrl: '/carrito' } });
+      this.showAuthModal.set(true);
       return;
     }
     this.showCheckoutModal.set(true);
+  }
+
+  closeAuthModal(): void {
+    this.showAuthModal.set(false);
+  }
+
+  navigateToLogin(): void {
+    this.closeAuthModal();
+    this.router.navigate(['/login'], { queryParams: { returnUrl: '/carrito' } });
+  }
+
+  navigateToRegister(): void {
+    this.closeAuthModal();
+    this.router.navigate(['/login'], { queryParams: { mode: 'register', returnUrl: '/carrito' } });
   }
 
   closeCheckout(): void {

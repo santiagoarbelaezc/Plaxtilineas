@@ -7,6 +7,22 @@
   background-color: #FFFFFF;
 }
 
+.desktop-only {
+  display: block !important;
+}
+.mobile-only {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+  .mobile-only {
+    display: block !important;
+  }
+}
+
 .home-main {
   overflow-x: hidden;
   background-color: #FFFFFF;
