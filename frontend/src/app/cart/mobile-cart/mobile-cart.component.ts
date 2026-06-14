@@ -10,7 +10,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   imports: [CommonModule, RouterModule],
   template: `
     @if (isOpen && isAllowedRoute) {
-      <div class="fixed inset-0 bg-white z-[100000] flex flex-col animate-slide-in font-sans">
+      <div class="fixed inset-0 bg-white z-[2000] flex flex-col animate-slide-in font-sans">
         
         <!-- Header del Carrito Móvil -->
         <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0 z-10 safe-top">
@@ -33,7 +33,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
         </div>
 
         <!-- Cuerpo / Lista de Productos -->
-        <div class="flex-1 overflow-y-auto px-5 py-4 space-y-4 bg-gray-50/50">
+        <div class="flex-1 overflow-y-auto px-5 py-4 pb-28 space-y-4 bg-gray-50/50">
           
           @if (items().length === 0) {
             <div class="flex flex-col items-center justify-center h-[60vh] text-center px-6">
@@ -130,7 +130,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
         padding-top: calc(env(safe-area-inset-top, 0px) + 1rem);
       }
       .pb-safe {
-        padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 1.25rem);
+        padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);
       }
       .animate-slide-in {
         animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
