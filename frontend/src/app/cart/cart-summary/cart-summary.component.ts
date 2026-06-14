@@ -154,6 +154,20 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
               Finalizar Pedido
             </button>
           </div>
+
+          <!-- Support Block (Móvil) -->
+          <div class="mt-4 bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center gap-3">
+            <div style="width: 40px; height: 40px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide">¿Tienes dudas?</h4>
+              <p class="text-[11px] text-gray-500 leading-tight">Habla con un asesor directamente sobre tu pedido.</p>
+            </div>
+            <a [href]="contactarAsesorWhatsApp()" target="_blank" rel="noopener noreferrer" class="px-3 py-2 bg-white border border-gray-900 text-gray-900 font-extrabold text-[11px] uppercase tracking-wider rounded-xl active:scale-95 transition-all text-center text-decoration-none">
+              Contactar
+            </a>
+          </div>
         }
       </div>
     </div>
@@ -259,7 +273,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
                 <h3 style="font-size: 0.95rem; font-weight: 800; color: #111; text-transform: uppercase; margin: 0 0 0.25rem 0; letter-spacing: 0.05em;">¿Tienes dudas?</h3>
                 <p style="font-size: 0.9rem; color: #555; margin: 0;">Habla con un asesor directamente para resolver cualquier inquietud sobre tu pedido.</p>
               </div>
-              <a href="https://wa.me/573007365939" target="_blank" rel="noopener noreferrer" style="flex-shrink: 0; padding: 0.75rem 1.5rem; background: #fff; border: 1px solid #111; color: #111; font-weight: 800; text-transform: uppercase; font-size: 0.85rem; text-decoration: none; display: inline-block;">
+              <a [href]="contactarAsesorWhatsApp()" target="_blank" rel="noopener noreferrer" style="flex-shrink: 0; padding: 0.75rem 1.5rem; background: #fff; border: 1px solid #111; color: #111; font-weight: 800; text-transform: uppercase; font-size: 0.85rem; text-decoration: none; display: inline-block;">
                 Contactar
               </a>
             </div>
@@ -342,6 +356,14 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
         <div style="padding: 2rem; overflow-y: auto; max-height: 75vh; background: #fff;">
           <form #checkoutForm="ngForm" (ngSubmit)="confirmarPedido()" style="display: flex; flex-direction: column; gap: 1.5rem;">
             
+            <div style="background-color: rgba(54, 140, 68, 0.06); border: 1px solid rgba(54, 140, 68, 0.15); border-radius: 12px; padding: 14px 18px; display: flex; align-items: flex-start; gap: 12px; color: #2d6a4f;">
+              <svg style="flex-shrink: 0; margin-top: 2px;" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              <div style="display: flex; flex-direction: column; gap: 2px; text-align: left;">
+                <span style="font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.02em;">¿Dirección correcta?</span>
+                <span style="font-size: 0.82rem; font-weight: 500; opacity: 0.9;">Hemos rellenado estos campos con los datos de tu registro. Por favor verifica que tu dirección, ciudad y teléfono sean correctos antes de finalizar tu compra.</span>
+              </div>
+            </div>
+
             <div style="display: flex; flex-direction: column; gap: 0.5rem;">
               <label style="font-size: 0.75rem; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 0.05em;">Dirección completa *</label>
               <input type="text" [(ngModel)]="checkoutData.direccion_envio" name="direccion" required placeholder="Ej: Cra. 14 # 22-10 Apto 301" style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ccc; font-family: var(--font-primary); font-size: 0.95rem; color: #111; outline: none; box-sizing: border-box;">
@@ -402,12 +424,12 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
     </div>
 
     <!-- Auth Required Modal -->
-    <div *ngIf="showAuthModal()" style="position: fixed; inset: 0; z-index: 100003; display: flex; align-items: center; justify-content: center; padding: 1.5rem; background: rgba(17, 24, 39, 0.75); backdrop-filter: blur(8px);" (click)="closeAuthModal()">
-      <div style="background: #ffffff; width: 100%; max-width: 460px; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid rgba(229, 231, 235, 0.8); overflow: hidden; animation: modalEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1);" (click)="$event.stopPropagation()">
+    <div *ngIf="showAuthModal()" style="position: fixed; inset: 0; z-index: 100003; display: flex; align-items: center; justify-content: center; padding: 1.5rem; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);" (click)="closeAuthModal()">
+      <div style="background: #ffffff; width: 100%; max-width: 440px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); border: 1px solid rgba(0, 0, 0, 0.05); padding: 36px 32px; overflow: hidden; animation: modalEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1);" (click)="$event.stopPropagation()">
         <!-- Header with beautiful icon -->
-        <div style="padding: 2.5rem 2rem 1.5rem 2rem; text-align: center; display: flex; flex-direction: column; align-items: center;">
-          <div style="width: 64px; height: 64px; border-radius: 50%; background: #ecfdf5; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; color: #368c44;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div style="display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 24px;">
+          <div style="width: 56px; height: 56px; border-radius: 50%; background-color: rgba(54, 140, 68, 0.1); color: #368c44; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
               <circle cx="8.5" cy="7" r="4"></circle>
               <line x1="20" y1="8" x2="20" y2="14"></line>
@@ -415,20 +437,20 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
             </svg>
           </div>
           
-          <h2 style="font-size: 1.4rem; font-weight: 800; color: #111827; margin: 0 0 0.75rem 0; letter-spacing: -0.01em; text-transform: uppercase;">
+          <h2 style="font-size: 1.35rem; font-weight: 800; color: #1e293b; margin: 0 0 10px 0; letter-spacing: -0.02em; text-transform: uppercase;">
             Iniciar sesión requerida
           </h2>
           
-          <p style="font-size: 0.95rem; color: #4b5563; line-height: 1.5; margin: 0; font-weight: 500;">
+          <p style="font-size: 0.9rem; font-weight: 500; color: #64748b; line-height: 1.5; margin: 0;">
             Para finalizar tu compra y guardar tus productos de manera segura, por favor inicia sesión o crea una cuenta en Plaxtilineas.
           </p>
         </div>
 
         <!-- Action Buttons -->
-        <div style="padding: 0 2rem 2rem 2rem; display: flex; flex-direction: column; gap: 0.75rem;">
+        <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
           <!-- Iniciar Sesión Button -->
-          <button (click)="navigateToLogin()" style="width: 100%; padding: 1.1rem; background: #368c44; color: #ffffff; border: none; border-radius: 14px; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 0.5rem; box-shadow: 0 4px 6px -1px rgba(54, 140, 68, 0.2);">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <button (click)="navigateToLogin()" style="width: 100%; padding: 14px; background-color: #111111; color: #ffffff; border-radius: 12px; font-weight: 700; font-size: 0.95rem; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.2s ease;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
               <polyline points="10 17 15 12 10 7"></polyline>
               <line x1="15" y1="12" x2="3" y2="12"></line>
@@ -437,12 +459,12 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
           </button>
           
           <!-- Registrarse Button -->
-          <button (click)="navigateToRegister()" style="width: 100%; padding: 1.1rem; background: #ffffff; color: #368c44; border: 2px solid #368c44; border-radius: 14px; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+          <button (click)="navigateToRegister()" style="width: 100%; padding: 14px; background-color: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; border-radius: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.2s ease;">
             Crear una cuenta
           </button>
           
           <!-- Cancel Button -->
-          <button (click)="closeAuthModal()" style="width: 100%; padding: 0.85rem; background: transparent; color: #6b7280; border: none; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s ease; margin-top: 0.25rem;">
+          <button (click)="closeAuthModal()" style="width: 100%; padding: 10px; background: transparent; color: #64748b; border: none; font-weight: 700; font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s ease; margin-top: 4px;">
             Cancelar
           </button>
         </div>
@@ -511,6 +533,27 @@ export class CartSummaryComponent {
       this.showAuthModal.set(true);
       return;
     }
+
+    // Auto-completar datos con la información del registro del usuario
+    const user = this.authService.currentUser.getValue();
+    if (user) {
+      if (user.direccion) {
+        this.checkoutData.direccion_envio = user.direccion;
+      }
+      if (user.telefono) {
+        this.checkoutData.telefono_contacto = user.telefono;
+      }
+      if (user.ciudad) {
+        const parts = user.ciudad.split(',');
+        if (parts.length > 1) {
+          this.checkoutData.ciudad = parts[0].trim();
+          this.checkoutData.departamento = parts[1].trim();
+        } else {
+          this.checkoutData.ciudad = user.ciudad.trim();
+        }
+      }
+    }
+
     this.showCheckoutModal.set(true);
   }
 
@@ -535,6 +578,21 @@ export class CartSummaryComponent {
 
   isAtMaxStock(item: any): boolean {
     return this.cartService.isAtMaxStock(item);
+  }
+
+  contactarAsesorWhatsApp(): string {
+    const items = this.items();
+    let mensaje = `👋 *Hola, necesito asesoría para mi compra en Plaxtilineas*\n\n`;
+    mensaje += `*Detalle de mi carrito:*\n`;
+    items.forEach(item => {
+      const nombre = item.producto.nombre;
+      const detalle = item.variante ? item.variante.nombre : (item.producto.subcategoria || 'General');
+      mensaje += `🔹 *${nombre}* (${detalle})\n`;
+      mensaje += `   Cantidad: ${item.cantidad} | Subtotal: ${this.formatearPrecio(item.precioUnitario * item.cantidad)}\n\n`;
+    });
+    mensaje += `💰 *Valor Total Estimado:* ${this.formatearPrecio(this.totalPrice())}\n\n`;
+    mensaje += `¿Me podrían ayudar con unas dudas que tengo para finalizar mi pedido? ¡Muchas gracias!`;
+    return `https://wa.me/573007365939?text=${encodeURIComponent(mensaje)}`;
   }
 
   generarMensajeWhatsApp(orderId?: number): string {

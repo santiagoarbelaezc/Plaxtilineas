@@ -57,14 +57,18 @@ export class ContactoAsistente implements OnInit, AfterViewChecked {
   cargarHistorial() {
     this.http.get<any>(`${environment.apiUrl}/chat/historial?session_id=${this.sessionId}`).subscribe({
       next: (res) => {
-        // En PHP el ResponseHandler mete todo en una propiedad "data" o directamente en la raíz dependiendo de la estructura
         const mensajes = res?.mensajes || res?.data?.mensajes;
         if (mensajes && Array.isArray(mensajes)) {
-          this.messages = mensajes.map((m: any) => ({
-            text: m.mensaje,
-            sender: m.rol === 'user' ? 'user' : 'assistant',
-            timestamp: new Date(m.created_at || new Date())
-          }));
+          this.messages = mensajes.map((m: any) => {
+            const sender = (m.rol === 'user' || m.sender === 'user') ? 'user' : 'assistant';
+            return {
+              text: m.mensaje || m.text || '',
+              sender: sender,
+              timestamp: new Date(m.created_at || m.timestamp || new Date()),
+              productos: m.productos || [],
+              links: m.links || []
+            };
+          });
         }
       },
       error: (err) => console.error('Error al cargar historial', err)
@@ -99,6 +103,15 @@ export class ContactoAsistente implements OnInit, AfterViewChecked {
           const redirect = res.redirect;
           
           const links: { label: string; url: string; external?: boolean }[] = [];
+          
+          // Agregar respuesta antes para asegurar que las tarjetas de productos se muestren
+          this.messages.push({
+            text: respuestaText,
+            sender: 'assistant',
+            timestamp: new Date(),
+            productos: productos,
+            links: links
+          });
 
           // Si hay una redirección especificada por el backend (vía regex o palabra clave)
           if (redirect) {
@@ -119,15 +132,6 @@ export class ContactoAsistente implements OnInit, AfterViewChecked {
               }
             }, 1800);
           }
-
-          // Agregar respuesta
-          this.messages.push({
-            text: respuestaText,
-            sender: 'assistant',
-            timestamp: new Date(),
-            productos: productos,
-            links: links
-          });
         }
       },
       error: (err) => {
@@ -154,5 +158,25 @@ export class ContactoAsistente implements OnInit, AfterViewChecked {
 
   onClose() {
     this.closeChat.emit();
+  }
+
+  reiniciarChat() {
+    this.isTyping = true;
+    this.http.delete<any>(`${environment.apiUrl}/chat/limpiar?session_id=${this.sessionId}`).subscribe({
+      next: () => {
+        this.isTyping = false;
+        this.sessionId = this.generateUUID();
+        localStorage.setItem('mateo_session_id', this.sessionId);
+        this.messages = [];
+      },
+      error: (err) => {
+        this.isTyping = false;
+        console.error('Error al reiniciar chat:', err);
+        // Reiniciar de todos modos en el cliente
+        this.sessionId = this.generateUUID();
+        localStorage.setItem('mateo_session_id', this.sessionId);
+        this.messages = [];
+      }
+    });
   }
 }

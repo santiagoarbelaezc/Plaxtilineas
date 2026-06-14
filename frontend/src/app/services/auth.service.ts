@@ -45,6 +45,7 @@ export class AuthService {
           localStorage.setItem('token', res.token);
           this.isLoggedIn.next(true);
           this.currentUser.next(res.usuario);
+          this.checkToken();
         }
       })
     );
@@ -57,6 +58,7 @@ export class AuthService {
           localStorage.setItem('token', res.token);
           this.isLoggedIn.next(true);
           this.currentUser.next(res.usuario);
+          this.checkToken();
         }
       })
     );
@@ -71,6 +73,7 @@ export class AuthService {
           localStorage.setItem('token', res.token);
           this.isLoggedIn.next(true);
           this.currentUser.next(res.usuario);
+          this.checkToken();
         }
       })
     );
@@ -83,6 +86,7 @@ export class AuthService {
           localStorage.setItem('token', res.token);
           this.isLoggedIn.next(true);
           this.currentUser.next(res.usuario);
+          this.checkToken();
         }
       })
     );

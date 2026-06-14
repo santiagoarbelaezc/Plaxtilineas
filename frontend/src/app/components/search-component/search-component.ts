@@ -54,9 +54,6 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.setupSearchTriggers();
     this.setupRealTimeSearch();
     this.setupSearchStateListener();
-    
-    // Procesar búsqueda inicial desde query params
-    this.processInitialSearch();
   }
 
   ngOnDestroy(): void {
@@ -68,24 +65,24 @@ export class SearchComponent implements OnInit, OnDestroy {
    * Configura el listener de cambios en la ruta
    */
   private setupRouterListener(): void {
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
+    // Escuchar los queryParams de la ruta de forma directa y reactiva
+    this.route.queryParams.pipe(
       takeUntil(this.destroy$)
-    ).subscribe((event: NavigationEnd) => {
-      // Solo procesar si estamos en la ruta de búsqueda
-      if (event.url.includes('/busqueda')) {
-        // Resetear flag de carga inicial
-        this.isInitialLoad = true;
-        // Extraer el query param de la URL
-        const urlParams = new URLSearchParams(event.url.split('?')[1]);
-        const searchTerm = urlParams.get('q');
-        
-        if (searchTerm && searchTerm !== this.lastSearchTerm) {
-          this.terminoBusqueda = searchTerm;
-          this.lastSearchTerm = searchTerm;
-          // Actualizar el servicio
-          this.searchStateService.setSearchTerm(searchTerm);
-          this.performSearch(searchTerm);
+    ).subscribe(params => {
+      const searchTerm = params['q'];
+      
+      if (searchTerm !== undefined) {
+        const term = searchTerm ? searchTerm.trim() : '';
+        if (term !== this.lastSearchTerm) {
+          this.terminoBusqueda = term;
+          this.lastSearchTerm = term;
+          this.searchStateService.setSearchTerm(term);
+          
+          if (term) {
+            this.performSearch(term);
+          } else {
+            this.resetSearchState();
+          }
         }
       }
     });
@@ -158,8 +155,8 @@ export class SearchComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(termino => {
       if (termino.trim().length >= 2) {
-        // En lugar de solo mostrar sugerencias, ejecutar la búsqueda principal
-        this.buscar();
+        // Ejecutar búsqueda en tiempo real para mostrar sugerencias en el menú desplegable
+        this.performRealTimeSearch(termino);
       } else if (termino.trim().length === 0 && this.hasSearched) {
         this.limpiarBusqueda();
       } else {
@@ -168,27 +165,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     });
   }
 
-  private processInitialSearch(): void {
-    this.route.queryParams.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(params => {
-      const term = params['q'];
-      
-      // Solo procesar si es diferente al término actual
-      if (term && term !== this.terminoBusqueda) {
-        this.terminoBusqueda = term;
-        this.lastSearchTerm = term;
-        this.searchStateService.setSearchTerm(term);
-        
-        // Ejecutar búsqueda automáticamente
-        this.performSearch(term);
-        this.isInitialLoad = false;
-      } else if (!term && this.hasSearched) {
-        // Si no hay término pero ya se había buscado, resetear
-        this.resetSearchState();
-      }
-    });
-  }
+
 
   /**
    * Inicia búsqueda desde formulario

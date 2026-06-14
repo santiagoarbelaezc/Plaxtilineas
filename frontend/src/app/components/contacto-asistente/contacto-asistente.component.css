@@ -106,6 +106,26 @@
   transform: rotate(90deg);
 }
 
+.reload-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  color: white;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.reload-btn:hover {
+  background: #368C44;
+  transform: rotate(-180deg);
+}
+
 /* Messages Area */
 .chat-messages {
   flex: 1;
