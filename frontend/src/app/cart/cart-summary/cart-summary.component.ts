@@ -14,9 +14,119 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
   imports: [CommonModule, RouterModule, FormsModule, NavbarComponent],
   template: `
     <app-navbar></app-navbar>
-    <!-- Main Container matches description-producto-select -->
-    <div class="bg-white min-h-screen" style="padding-top: calc(var(--navbar-height, 80px)); padding-bottom: 90px; font-family: var(--font-primary, 'Inter', sans-serif); color: #111;">
-      
+
+    <!-- 1. Diseño Móvil (No Flotante, alineado con el navbar) -->
+    <div class="block md:hidden bg-white min-h-screen font-sans" style="padding-top: 100px; padding-bottom: 100px;">
+      <!-- Header del Carrito (Estilo Móvil) -->
+      <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-white sticky top-[100px] z-10">
+        <button (click)="goBack()" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-800 active:scale-95 transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </button>
+        
+        <h2 class="font-extrabold text-[17px] text-gray-900 tracking-tight uppercase">Mi Carrito ({{ totalCount() }})</h2>
+        
+        @if (items().length > 0) {
+          <button (click)="clearCart()" class="text-xs font-bold text-red-500 hover:text-red-600 active:scale-95 transition-all uppercase tracking-wider">
+            Vaciar
+          </button>
+        } @else {
+          <div class="w-10"></div>
+        }
+      </div>
+
+      <!-- Cuerpo / Lista de Productos (Estilo Móvil) -->
+      <div class="px-5 py-4 space-y-4 bg-gray-50/50">
+        @if (items().length === 0) {
+          <div class="flex flex-col items-center justify-center py-16 text-center px-6">
+            <div class="w-24 h-24 bg-white rounded-full shadow-sm flex items-center justify-center mb-6 border border-gray-100/50">
+              <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-300">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">Tu carrito está vacío</h3>
+            <p class="text-sm text-gray-500 max-w-xs mb-6">Agrega los mejores productos plásticos y empaques de nuestro catálogo.</p>
+            <button routerLink="/productos" class="w-full max-w-xs py-3.5 rounded-2xl bg-gradient-to-r from-[#368c44] to-[#25d366] text-white font-extrabold text-sm uppercase tracking-wider shadow-md active:scale-[0.98] transition-all">
+              Ver Catálogo
+            </button>
+          </div>
+        } @else {
+          @for (item of items(); track item.id) {
+            <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex gap-4 relative">
+              <!-- Imagen -->
+              <div class="w-20 h-20 bg-gray-50 rounded-xl flex items-center justify-center flex-shrink-0 border border-gray-100 overflow-hidden">
+                @if (item.producto.imagen_url) {
+                  <img [src]="item.producto.imagen_url" [alt]="item.producto.nombre" class="w-full h-full object-contain p-2 mix-blend-multiply">
+                } @else {
+                  <svg class="text-gray-300" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                }
+              </div>
+
+              <!-- Info y Controles -->
+              <div class="flex-1 flex flex-col justify-between min-w-0">
+                <div>
+                  <h4 class="font-bold text-sm text-gray-900 leading-snug truncate pr-6">{{ item.producto.nombre }}</h4>
+                  <p class="text-xs text-gray-400 font-medium mt-0.5">{{ item.variante?.nombre || item.producto.subcategoria || 'Genérico' }}</p>
+                </div>
+
+                <div class="flex items-center justify-between mt-3">
+                  <!-- Controles Cantidad -->
+                  <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-1 border border-gray-100">
+                    <button (click)="decreaseQuantity(item.id, item.cantidad)" class="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-700 font-extrabold active:scale-90 transition-all border border-gray-100">−</button>
+                    <span class="w-6 text-center text-sm font-bold text-gray-900">{{ item.cantidad }}</span>
+                    <button (click)="increaseQuantity(item.id, item.cantidad)" class="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-700 font-extrabold active:scale-90 transition-all border border-gray-100">+</button>
+                  </div>
+
+                  <!-- Precio Subtotal -->
+                  <div class="text-right">
+                    <span class="text-xs text-gray-400 block font-medium">Subtotal</span>
+                    <span class="font-extrabold text-sm text-[#368c44]">{{ formatearPrecio(item.precioUnitario * item.cantidad) }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Botón Eliminar -->
+              <button (click)="removeItem(item.id)" class="absolute top-3 right-3 text-gray-300 hover:text-red-500 active:scale-90 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          }
+
+          <!-- Resumen y Checkout (Móvil) -->
+          <div class="bg-white rounded-2xl p-5 space-y-4 border border-gray-100 shadow-sm">
+            <div class="flex justify-between items-center bg-gray-50 rounded-2xl p-4 border border-gray-100">
+              <span class="text-sm font-bold text-gray-500 uppercase tracking-wider">Total</span>
+              <span class="text-xl font-extrabold text-[#368c44] tracking-tight">{{ formatearPrecio(totalPrice()) }}</span>
+            </div>
+
+            <button 
+              (click)="iniciarCheckout()"
+              [disabled]="items().length === 0"
+              class="w-full py-4 rounded-2xl bg-gradient-to-r from-[#368c44] to-[#25d366] text-white font-extrabold text-[15px] uppercase tracking-wider shadow-md hover:shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2 border-none">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                <line x1="1" y1="10" x2="23" y2="10"></line>
+              </svg>
+              Finalizar Pedido
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- 2. Diseño Desktop original -->
+    <div class="hidden md:block bg-white min-h-screen" style="padding-top: calc(var(--navbar-height, 80px)); padding-bottom: 90px; font-family: var(--font-primary, 'Montserrat', sans-serif); color: #111;">
       <div style="max-width: 1550px; margin: 40px auto; padding: 0 2rem;">
         
         <!-- Breadcrumb & Top Action -->
@@ -29,17 +139,16 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
           <span style="font-weight: 500; text-transform: uppercase;">Finalizar Compra</span>
         </nav>
 
-        <!-- Header matches description-producto-select Title Area -->
+        <!-- Header -->
         <div style="margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #111;">
           <h1 style="font-size: 2.2rem; font-weight: 800; color: #111; margin: 0; text-transform: uppercase; letter-spacing: -0.02em;">Finalizar Compra</h1>
         </div>
 
-        <!-- Layout matches producto-layout-container -->
+        <!-- Layout -->
         <div style="display: grid; grid-template-columns: 1fr 420px; gap: 3rem; min-height: 600px; align-items: start;">
           
           <!-- Columna Izquierda: Los Productos -->
           <div style="display: flex; flex-direction: column; gap: 2rem;">
-            
             <div style="display: flex; flex-direction: column;">
               <h2 style="font-size: 1rem; font-weight: 800; color: #111; margin: 0 0 1rem 0; text-transform: uppercase; letter-spacing: 0.05em;">
                 Tus Productos ({{ totalCount() }})
@@ -100,7 +209,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
               </div>
             </div>
 
-            <!-- WhatsApp Support Block (IKEA Style) -->
+            <!-- Support Block -->
             <div style="background: #f9f9f9; border: 1px solid #eee; padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem; margin-top: 1rem;">
               <div style="width: 48px; height: 48px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
@@ -109,14 +218,13 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
                 <h3 style="font-size: 0.95rem; font-weight: 800; color: #111; text-transform: uppercase; margin: 0 0 0.25rem 0; letter-spacing: 0.05em;">¿Tienes dudas?</h3>
                 <p style="font-size: 0.9rem; color: #555; margin: 0;">Habla con un asesor directamente para resolver cualquier inquietud sobre tu pedido.</p>
               </div>
-              <a href="https://wa.me/573000000000" target="_blank" rel="noopener noreferrer" style="flex-shrink: 0; padding: 0.75rem 1.5rem; background: #fff; border: 1px solid #111; color: #111; font-weight: 800; text-transform: uppercase; font-size: 0.85rem; text-decoration: none; display: inline-block;">
+              <a href="https://wa.me/573007365939" target="_blank" rel="noopener noreferrer" style="flex-shrink: 0; padding: 0.75rem 1.5rem; background: #fff; border: 1px solid #111; color: #111; font-weight: 800; text-transform: uppercase; font-size: 0.85rem; text-decoration: none; display: inline-block;">
                 Contactar
               </a>
             </div>
-
           </div>
 
-          <!-- Columna Derecha: Tarjeta de Resumen / Checkout Fija -->
+          <!-- Columna Derecha -->
           <div style="position: sticky; top: calc(var(--navbar-height, 80px) + 20px);">
             <div style="background: #fff; border: 1px solid #e5e5e5; padding: 2rem;">
               <h2 style="font-size: 1rem; font-weight: 800; color: #111; text-transform: uppercase; margin: 0 0 1.5rem 0; padding-bottom: 1rem; border-bottom: 2px solid #111; letter-spacing: 0.05em;">
@@ -128,12 +236,10 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
                   <span>Subtotal ({{ totalCount() }} items)</span>
                   <span style="font-weight: 800; color: #111;">{{ formatearPrecio(totalPrice()) }}</span>
                 </div>
-                
                 <div style="display: flex; justify-content: space-between; align-items: center; color: #333;">
                   <span>Envío estimado</span>
                   <span style="color: #666;">A calcular</span>
                 </div>
-                
                 <div style="display: flex; justify-content: space-between; align-items: center; color: #333;">
                   <span>Impuestos (IVA)</span>
                   <span style="font-weight: 800; color: #111;">$0</span>
@@ -161,18 +267,16 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
                 Seguir comprando
               </a>
 
-              <!-- Beneficios -->
-               <div style="margin-top: 2rem; border-top: 1px solid #e5e5e5; padding-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
-                 <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.8rem; color: #555; font-weight: 600;">
-                   <svg style="color: #111;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                   Pago 100% Seguro
-                 </div>
-                 <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.8rem; color: #555; font-weight: 600;">
-                   <svg style="color: #111;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                   Datos Encriptados y Protegidos
-                 </div>
+              <div style="margin-top: 2rem; border-top: 1px solid #e5e5e5; padding-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.8rem; color: #555; font-weight: 600;">
+                  <svg style="color: #111;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                  Pago 100% Seguro
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.8rem; color: #555; font-weight: 600;">
+                  <svg style="color: #111;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                  Datos Encriptados y Protegidos
+                </div>
               </div>
-
             </div>
           </div>
           
@@ -180,8 +284,8 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
       </div>
     </div>
 
-    <!-- Checkout Modal (Minimalista / Corporativo) -->
-    <div *ngIf="showCheckoutModal()" style="position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(0,0,0,0.6);" (click)="closeCheckout()">
+    <!-- Checkout Modal -->
+    <div *ngIf="showCheckoutModal()" style="position: fixed; inset: 0; z-index: 100002; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(0,0,0,0.6);" (click)="closeCheckout()">
       <div style="background: #fff; width: 100%; max-width: 600px; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);" (click)="$event.stopPropagation()">
         
         <div style="padding: 1.5rem 2rem; border-bottom: 2px solid #111; display: flex; justify-content: space-between; align-items: center; background: #fff;">
@@ -302,6 +406,16 @@ export class CartSummaryComponent {
     }
   }
 
+  clearCart() {
+    if (confirm('¿Estás seguro de que deseas vaciar el carrito?')) {
+      this.cartService.clearCart();
+    }
+  }
+
+  goBack(): void {
+    window.history.back();
+  }
+
   iniciarCheckout(): void {
     if (!this.authService.isLoggedIn.getValue()) {
       alert('Debes iniciar sesión para finalizar tu compra.');
@@ -335,7 +449,6 @@ export class CartSummaryComponent {
       next: (res) => {
         this.cartService.clearCart();
         this.closeCheckout();
-        // Redirigir al cliente a su historial de pedidos
         this.router.navigate(['/pedidos']);
       },
       error: (err) => {
@@ -349,3 +462,4 @@ export class CartSummaryComponent {
     return `$ ${Math.round(precio).toLocaleString('es-ES')}`;
   }
 }
+

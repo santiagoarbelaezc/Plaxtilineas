@@ -10,7 +10,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   imports: [CommonModule, RouterModule],
   template: `
     @if (isOpen && isAllowedRoute) {
-      <div class="fixed inset-0 bg-white z-[2000] flex flex-col animate-slide-in font-sans">
+      <div class="fixed inset-0 bg-white flex flex-col animate-slide-in font-sans" style="padding-top: 110px !important; background-color: white !important; z-index: 99000 !important;">
         
         <!-- Header del Carrito Móvil -->
         <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0 z-10 safe-top">
