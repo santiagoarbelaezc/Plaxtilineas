@@ -14,7 +14,7 @@
       </button>
       
       <div class="carousel-viewport">
-        <div class="categories-grid products-carousel-grid" #productosGrid>
+        <div class="categories-grid products-carousel-grid" #productosGrid (scroll)="onScroll($event)">
           <!-- Product Card -->
           <div class="category-item" *ngFor="let producto of productos">
             

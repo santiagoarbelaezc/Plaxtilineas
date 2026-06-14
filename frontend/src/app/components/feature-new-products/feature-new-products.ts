@@ -123,6 +123,20 @@ export class FeatureNewProducts implements OnInit {
     this.currentPage = page;
   }
 
+  onScroll(event: Event): void {
+    if (!this.productosGrid || this.productos.length === 0) return;
+    const grid = this.productosGrid.nativeElement;
+    const scrollLeft = grid.scrollLeft;
+    const itemWidth = grid.scrollWidth / this.productos.length;
+    const pageWidth = itemWidth * this.itemsPerPage;
+    if (pageWidth > 0) {
+      const calculatedPage = Math.round(scrollLeft / pageWidth);
+      if (calculatedPage !== this.currentPage && calculatedPage >= 0 && calculatedPage < this.pagesArray.length) {
+        this.currentPage = calculatedPage;
+      }
+    }
+  }
+
   verDetalles(productoId: number, nombre?: string): void {
     console.log('Navegando a detalles del producto:', productoId);
     this.menuStateService.clearLastSelectedSubcategory();
