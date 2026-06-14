@@ -53,6 +53,11 @@
       <div class="cart-item-info">
         <h4 class="cart-item-name">{{ item.producto.nombre }}</h4>
         <p class="cart-item-variant">{{ item.variante?.nombre || item.producto.subcategoria || 'Genérico' }}</p>
+        @if (item.producto.controlar_stock && item.producto.stock !== undefined) {
+          <p class="text-[10px] text-orange-600 font-semibold mt-0.5" style="font-size: 0.68rem; color: #d97706; font-weight: 600; margin: 2px 0 0 0;">
+            {{ item.producto.stock - item.cantidad }} disponibles
+          </p>
+        }
         <div class="cart-item-price-row">
           <span class="cart-item-unit">C/U: {{ formatearPrecio(item.precioUnitario) }}</span>
         </div>
@@ -66,7 +71,11 @@
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
           </button>
           <span class="cart-qty-val">{{ item.cantidad }}</span>
-          <button class="cart-qty-btn" (click)="increaseQuantity(item.id, item.cantidad)">
+          <button class="cart-qty-btn" 
+                  (click)="increaseQuantity(item.id, item.cantidad)"
+                  [disabled]="isAtMaxStock(item)"
+                  [style.opacity]="isAtMaxStock(item) ? '0.4' : '1'"
+                  [style.cursor]="isAtMaxStock(item) ? 'not-allowed' : 'pointer'">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
           </button>
         </div>

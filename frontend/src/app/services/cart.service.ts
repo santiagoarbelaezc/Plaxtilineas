@@ -27,7 +27,7 @@ export class CartService {
 
   private saveCart(items: CartItem[]) {
     localStorage.setItem('plaxtilineas_cart', JSON.stringify(items));
-    this.itemsSubject.next(items);
+    this.itemsSubject.next([...items]);
   }
 
   private loadCart() {
