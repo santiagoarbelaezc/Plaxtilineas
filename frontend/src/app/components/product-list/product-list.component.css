@@ -541,7 +541,8 @@
   }
   
   .product-image-section {
-    height: 200px;
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
   }
   
   .product-info-section {
@@ -606,7 +607,8 @@
   }
   
   .product-image-section {
-    height: 140px; /* Imagen más baja */
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
   }
   
   .product-info-section {
@@ -700,7 +702,8 @@
   }
   
   .product-image-section {
-    height: 120px; /* Imagen más baja */
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
   }
   
   .product-info-section {
@@ -786,7 +789,8 @@
   }
   
   .product-image-section {
-    height: 100px; /* Imagen más baja */
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
   }
   
   .product-info-section {
