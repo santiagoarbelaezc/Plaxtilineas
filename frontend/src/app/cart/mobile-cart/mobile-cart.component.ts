@@ -9,8 +9,18 @@ import { toSignal } from '@angular/core/rxjs-interop';
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
+    <style>
+      .mobile-cart-container {
+        display: flex !important;
+      }
+      @media (min-width: 768px) {
+        .mobile-cart-container {
+          display: none !important;
+        }
+      }
+    </style>
     @if (isOpen && isAllowedRoute) {
-      <div class="fixed inset-0 bg-white flex flex-col animate-slide-in font-sans" style="padding-top: 60px !important; background-color: white !important; z-index: 99000 !important;">
+      <div class="mobile-cart-container fixed inset-0 bg-white flex flex-col animate-slide-in font-sans" style="padding-top: 60px !important; background-color: white !important; z-index: 99000 !important;">
         
         <!-- Header del Carrito Móvil -->
         <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0 z-10 safe-top">
@@ -71,6 +81,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
                   <div>
                     <h4 class="font-bold text-sm text-gray-900 leading-snug truncate pr-6">{{ item.producto.nombre }}</h4>
                     <p class="text-xs text-gray-400 font-medium mt-0.5">{{ item.variante?.nombre || item.producto.subcategoria || 'Genérico' }}</p>
+                    @if (item.producto.controlar_stock && item.producto.stock !== undefined) {
+                      <p class="text-[10px] text-orange-600 font-semibold mt-0.5">{{ item.producto.stock - item.cantidad }} disponibles</p>
+                    }
                   </div>
 
                   <div class="flex items-center justify-between mt-3">
@@ -78,7 +91,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
                     <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-1 border border-gray-100">
                       <button (click)="decreaseQuantity(item.id, item.cantidad)" class="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-700 font-extrabold active:scale-90 transition-all border border-gray-100">−</button>
                       <span class="w-6 text-center text-sm font-bold text-gray-900">{{ item.cantidad }}</span>
-                      <button (click)="increaseQuantity(item.id, item.cantidad)" class="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-700 font-extrabold active:scale-90 transition-all border border-gray-100">+</button>
+                      <button (click)="increaseQuantity(item.id, item.cantidad)" 
+                              [disabled]="isAtMaxStock(item)"
+                              [class.opacity-40]="isAtMaxStock(item)"
+                              [class.cursor-not-allowed]="isAtMaxStock(item)"
+                              class="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-700 font-extrabold active:scale-90 transition-all border border-gray-100">+</button>
                     </div>
 
                     <!-- Precio Subtotal -->
@@ -194,6 +211,10 @@ export class MobileCartComponent implements OnInit, OnDestroy {
 
   increaseQuantity(id: string, current: number) {
     this.cartService.updateQuantity(id, current + 1);
+  }
+
+  isAtMaxStock(item: any): boolean {
+    return this.cartService.isAtMaxStock(item);
   }
 
   decreaseQuantity(id: string, current: number) {

@@ -40,6 +40,9 @@
                   <span class="price-amount">{{ formatearPrecio(producto.precio) }}</span>
                 </div>
                 
+                <div class="cart-btn-wrapper" (click)="$event.stopPropagation()" style="margin-top: 12px;">
+                  <app-add-to-cart-btn [producto]="producto" size="sm"></app-add-to-cart-btn>
+                </div>
               </div>
             </div>
           </div>

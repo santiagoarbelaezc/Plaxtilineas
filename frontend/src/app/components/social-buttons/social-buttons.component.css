@@ -230,7 +230,7 @@
 .cart-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 950;
+  z-index: 99990;
   background: transparent;
 }
 
@@ -251,12 +251,12 @@
   /* Estilo blanco / corporativo */
   background: #ffffff;
   border: 1px solid #e5e5e5;
-  border-radius: 16px;
+  border-radius: 24px;
 
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  z-index: 1000;
+  z-index: 99999;
   font-family: var(--font-primary, 'Inter', 'Montserrat', sans-serif);
   box-shadow: -4px 8px 40px rgba(0,0,0,0.14);
 
@@ -296,6 +296,7 @@
   height: 36px;
   background: #f5f5f5;
   border: 1px solid #e5e5e5;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -310,7 +311,7 @@
 
 .cart-header-name {
   font-size: 0.9rem;
-  font-weight: 800;
+  font-weight: 600;
   color: #111;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -331,6 +332,7 @@
 .cart-panel-close {
   background: transparent;
   border: 1px solid #e5e5e5;
+  border-radius: 8px;
   color: #999;
   width: 32px;
   height: 32px;
@@ -410,6 +412,7 @@
   height: 68px;
   background: #f9f9f9;
   border: 1px solid #eee;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -436,7 +439,7 @@
 
 .cart-item-name {
   font-size: 0.78rem;
-  font-weight: 800;
+  font-weight: 600;
   color: #111;
   margin: 0;
   text-transform: uppercase;
@@ -458,7 +461,7 @@
 .cart-item-unit {
   font-size: 0.7rem;
   color: #555;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 /* Controles */
@@ -472,7 +475,7 @@
 
 .cart-item-total {
   font-size: 0.88rem;
-  font-weight: 800;
+  font-weight: 600;
   color: #111;
 }
 
@@ -480,6 +483,7 @@
   display: flex;
   align-items: center;
   border: 1px solid #111;
+  border-radius: 8px;
   height: 26px;
   width: 72px;
   overflow: hidden;
@@ -507,7 +511,7 @@
   flex: 1;
   text-align: center;
   font-size: 0.76rem;
-  font-weight: 800;
+  font-weight: 600;
   color: #111;
 }
 
@@ -564,7 +568,7 @@
 
 .cart-total-label {
   font-size: 0.78rem;
-  font-weight: 800;
+  font-weight: 600;
   color: #111;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -572,7 +576,7 @@
 
 .cart-total-value {
   font-size: 1.4rem;
-  font-weight: 800;
+  font-weight: 700;
   color: #111;
   letter-spacing: -0.02em;
 }
@@ -587,6 +591,7 @@
   background: #111;
   color: #fff;
   border: none;
+  border-radius: 12px;
   font-weight: 800;
   font-size: 0.82rem;
   text-transform: uppercase;
@@ -610,6 +615,7 @@
   background: #fff;
   color: #111;
   border: 1px solid #ccc;
+  border-radius: 12px;
   font-weight: 800;
   font-size: 0.78rem;
   text-transform: uppercase;

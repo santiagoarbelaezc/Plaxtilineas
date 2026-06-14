@@ -6,11 +6,12 @@ import { MenuStateService } from '../../services/menu-state.service';
 import { ProductoEditable } from '../../models/producto.model';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faChevronLeft, faChevronRight, faBoxOpen } from '@fortawesome/free-solid-svg-icons';
+import { AddToCartBtnComponent } from '../../cart/add-to-cart-btn/add-to-cart-btn.component';
 
 @Component({
   selector: 'app-feature-new-products',
   standalone: true,
-  imports: [CommonModule, RouterModule, FontAwesomeModule],
+  imports: [CommonModule, RouterModule, FontAwesomeModule, AddToCartBtnComponent],
   templateUrl: './feature-new-products.html',
   styleUrls: ['./feature-new-products.css']
 })

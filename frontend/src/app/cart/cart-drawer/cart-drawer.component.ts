@@ -91,6 +91,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
                   <span class="text-[11px] text-gray-400 mt-1">
                     {{ item.variante?.nombre || item.producto.subcategoria || 'Genérico' }}
                   </span>
+                  @if (item.producto.controlar_stock && item.producto.stock !== undefined) {
+                    <span class="text-[10px] text-orange-600 font-semibold mt-0.5">
+                      {{ item.producto.stock - item.cantidad }} disp.
+                    </span>
+                  }
                 </div>
                 
                 <div class="flex items-center justify-center gap-2 bg-gray-50/80 p-1.5 rounded-lg border border-gray-100 group-hover:bg-white group-hover:border-[#368c44]/20 transition-all">
@@ -100,6 +105,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
                   <span class="min-w-[14px] text-center text-[14px] font-bold text-gray-800">{{ item.cantidad }}</span>
                   <button 
                     (click)="increaseQuantity(item.id, item.cantidad)"
+                    [disabled]="isAtMaxStock(item)"
+                    [class.opacity-40]="isAtMaxStock(item)"
+                    [class.cursor-not-allowed]="isAtMaxStock(item)"
                     class="w-7 h-7 flex items-center justify-center bg-white border border-gray-200 text-gray-600 rounded-md font-bold text-[15px] cursor-pointer hover:bg-[#368c44]/10 hover:text-[#368c44] hover:border-[#368c44]/30 transition-all">+</button>
                 </div>
                 
@@ -239,6 +247,10 @@ export class CartDrawerComponent implements OnInit, OnDestroy {
 
   increaseQuantity(id: string, current: number) {
     this.cartService.updateQuantity(id, current + 1);
+  }
+
+  isAtMaxStock(item: any): boolean {
+    return this.cartService.isAtMaxStock(item);
   }
 
   decreaseQuantity(id: string, current: number) {

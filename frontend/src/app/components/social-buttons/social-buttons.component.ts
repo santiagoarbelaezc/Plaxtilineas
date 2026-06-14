@@ -30,13 +30,15 @@ export class SocialButtonsComponent implements OnInit, OnDestroy {
   // Señales reactivas del carrito
   items = toSignal(this.cartService.items$, { initialValue: [] });
 
-  totalCount = computed(() =>
-    this.items().reduce((acc, item) => acc + item.cantidad, 0)
-  );
+  totalCount = computed(() => {
+    this.items();
+    return this.cartService.getTotalItems();
+  });
 
-  totalPrice = computed(() =>
-    this.items().reduce((acc, item) => acc + (item.precioUnitario * item.cantidad), 0)
-  );
+  totalPrice = computed(() => {
+    this.items();
+    return this.cartService.getTotalPrice();
+  });
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,

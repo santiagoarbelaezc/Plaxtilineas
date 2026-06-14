@@ -14,7 +14,7 @@ import { FeatureRandomProducts } from '../../components/feature-random-products/
   selector: 'app-productos',
   standalone: true,
   imports: [CommonModule, NavbarComponent, Footer, SocialButtonsComponent, MenuCategoriasComponent,
-    ProductListComponent, ModalProductoComponent, FeatureNewProducts, FeatureRandomProducts],
+    ProductListComponent, ModalProductoComponent, FeatureRandomProducts],
   templateUrl: './productos.html',
   styleUrls: ['./productos.css']
 })

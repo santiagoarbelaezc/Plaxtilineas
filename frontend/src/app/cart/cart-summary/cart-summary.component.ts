@@ -13,10 +13,26 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule, NavbarComponent],
   template: `
+    <style>
+      .mobile-only {
+        display: block !important;
+      }
+      .desktop-only {
+        display: none !important;
+      }
+      @media (min-width: 768px) {
+        .mobile-only {
+          display: none !important;
+        }
+        .desktop-only {
+          display: block !important;
+        }
+      }
+    </style>
     <app-navbar></app-navbar>
 
     <!-- 1. Diseño Móvil (No Flotante, alineado con el navbar) -->
-    <div class="block md:hidden bg-white min-h-screen font-sans" style="padding-top: 60px; padding-bottom: 100px;">
+    <div class="mobile-only bg-white min-h-screen font-sans" style="padding-top: 60px; padding-bottom: 100px;">
       <!-- Header del Carrito (Estilo Móvil) -->
       <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-white sticky top-[60px] z-10">
         <button (click)="goBack()" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-800 active:scale-95 transition-all">
@@ -75,6 +91,9 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
                 <div>
                   <h4 class="font-bold text-sm text-gray-900 leading-snug truncate pr-6">{{ item.producto.nombre }}</h4>
                   <p class="text-xs text-gray-400 font-medium mt-0.5">{{ item.variante?.nombre || item.producto.subcategoria || 'Genérico' }}</p>
+                  @if (item.producto.controlar_stock && item.producto.stock !== undefined) {
+                    <p class="text-[10px] text-orange-600 font-semibold mt-0.5">{{ item.producto.stock - item.cantidad }} disponibles</p>
+                  }
                 </div>
 
                 <div class="flex items-center justify-between mt-3">
@@ -82,7 +101,11 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
                   <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-1 border border-gray-100">
                     <button (click)="decreaseQuantity(item.id, item.cantidad)" class="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-700 font-extrabold active:scale-90 transition-all border border-gray-100">−</button>
                     <span class="w-6 text-center text-sm font-bold text-gray-900">{{ item.cantidad }}</span>
-                    <button (click)="increaseQuantity(item.id, item.cantidad)" class="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-700 font-extrabold active:scale-90 transition-all border border-gray-100">+</button>
+                    <button (click)="increaseQuantity(item.id, item.cantidad)" 
+                            [disabled]="isAtMaxStock(item)"
+                            [class.opacity-40]="isAtMaxStock(item)"
+                            [class.cursor-not-allowed]="isAtMaxStock(item)"
+                            class="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-700 font-extrabold active:scale-90 transition-all border border-gray-100">+</button>
                   </div>
 
                   <!-- Precio Subtotal -->
@@ -126,7 +149,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
     </div>
 
     <!-- 2. Diseño Desktop original -->
-    <div class="hidden md:block bg-white min-h-screen" style="padding-top: calc(var(--navbar-height, 80px)); padding-bottom: 90px; font-family: var(--font-primary, 'Montserrat', sans-serif); color: #111;">
+    <div class="desktop-only bg-white min-h-screen" style="padding-top: calc(var(--navbar-height, 80px)); padding-bottom: 90px; font-family: var(--font-primary, 'Montserrat', sans-serif); color: #111;">
       <div style="max-width: 1550px; margin: 40px auto; padding: 0 2rem;">
         
         <!-- Breadcrumb & Top Action -->
@@ -178,6 +201,11 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
                           {{ item.variante ? item.variante.nombre : (item.producto.subcategoria || 'Genérico') }} 
                           <span style="margin: 0 4px;">|</span> {{ item.producto.unidad || 'Unidades' }}
                         </p>
+                        @if (item.producto.controlar_stock && item.producto.stock !== undefined) {
+                          <div style="font-size: 0.75rem; color: #d97706; font-weight: 700; margin-top: 2px;">
+                            {{ item.producto.stock - item.cantidad }} disponibles
+                          </div>
+                        }
                         <div style="margin-top: 0.25rem;">
                           <span style="font-size: 0.85rem; color: #555; font-weight: 700;">C/U: {{ formatearPrecio(item.precioUnitario) }}</span>
                         </div>
@@ -193,10 +221,13 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
                           </button>
                           <span style="flex: 1; text-align: center; font-weight: 800; font-size: 0.9rem; color: #111;">{{ item.cantidad }}</span>
                           <button 
-                            (click)="increaseQuantity(item.id, item.cantidad)"
-                            style="width: 30px; height: 100%; background: #fff; border: none; border-left: 1px solid #111; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #111;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                          </button>
+                             (click)="increaseQuantity(item.id, item.cantidad)"
+                             [disabled]="isAtMaxStock(item)"
+                             [style.opacity]="isAtMaxStock(item) ? '0.4' : '1'"
+                             [style.cursor]="isAtMaxStock(item) ? 'not-allowed' : 'pointer'"
+                             style="width: 30px; height: 100%; background: #fff; border: none; border-left: 1px solid #111; display: flex; align-items: center; justify-content: center; color: #111;">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                           </button>
                         </div>
                       </div>
                       
@@ -430,30 +461,81 @@ export class CartSummaryComponent {
     this.checkoutError.set(null);
   }
 
+  isAtMaxStock(item: any): boolean {
+    return this.cartService.isAtMaxStock(item);
+  }
+
+  generarMensajeWhatsApp(orderId?: number): string {
+    const items = this.items();
+    let mensaje = `🛒 *Nuevo Pedido desde Plaxtilineas${orderId ? ` (#` + orderId + ')' : ''}*\n\n`;
+    mensaje += `*Datos de Envío:*\n`;
+    mensaje += `• *Dirección:* ${this.checkoutData.direccion_envio}\n`;
+    mensaje += `• *Ciudad:* ${this.checkoutData.ciudad} - ${this.checkoutData.departamento}\n`;
+    mensaje += `• *Teléfono:* ${this.checkoutData.telefono_contacto}\n`;
+    mensaje += `• *Método de pago:* ${this.checkoutData.metodo_pago === 'contraentrega' ? 'Contraentrega (Pago al recibir)' : 'Transferencia Bancaria'}\n`;
+    if (this.checkoutData.notas) {
+      mensaje += `• *Notas:* ${this.checkoutData.notas}\n`;
+    }
+    mensaje += `\n*Productos:*\n`;
+    items.forEach(item => {
+      const nombre = item.variante ? `${item.producto.nombre} (${item.variante.nombre})` : item.producto.nombre;
+      mensaje += `• ${nombre} x${item.cantidad} — ${this.formatearPrecio(item.precioUnitario * item.cantidad)}\n`;
+    });
+    mensaje += `\n*Total: ${this.formatearPrecio(this.totalPrice())}*\n\n`;
+    mensaje += `Quedo atento a la confirmación. ¡Gracias!`;
+    return mensaje;
+  }
+
   confirmarPedido(): void {
     if (this.isSubmitting()) return;
     
     this.isSubmitting.set(true);
     this.checkoutError.set(null);
 
-    const payload = {
-      items: this.items().map(i => ({
-        producto_id: i.producto.id,
-        variante_id: i.variante?.id,
-        cantidad: i.cantidad
-      })),
-      ...this.checkoutData
-    };
+    const itemsPayload = this.items().map(i => ({
+      producto_id: i.producto.id,
+      variante_id: i.variante?.id,
+      cantidad: i.cantidad
+    }));
 
-    this.pedidoService.crearPedido(payload).subscribe({
-      next: (res) => {
-        this.cartService.clearCart();
-        this.closeCheckout();
-        this.router.navigate(['/pedidos']);
+    // Primero verificamos el stock en backend
+    this.cartService.verificarStockEnBackend(itemsPayload).subscribe({
+      next: (stockRes) => {
+        if (!stockRes.valido) {
+          this.isSubmitting.set(false);
+          const errores = stockRes.items_con_error.map(err => `${err.nombre || 'Producto'}: ${err.error}`).join(', ');
+          this.checkoutError.set(`Error de stock: ${errores}`);
+          return;
+        }
+
+        // Si el stock es válido, creamos el pedido
+        const payload = {
+          items: itemsPayload,
+          ...this.checkoutData
+        };
+
+        this.pedidoService.crearPedido(payload).subscribe({
+          next: (res: any) => {
+            const orderId = res.pedido_id || res.id;
+            const message = this.generarMensajeWhatsApp(orderId);
+            const whatsappUrl = `https://wa.me/573007365939?text=${encodeURIComponent(message)}`;
+            
+            // Abrir WhatsApp en nueva pestaña/ventana
+            window.open(whatsappUrl, '_blank');
+            
+            this.cartService.clearCart();
+            this.closeCheckout();
+            this.router.navigate(['/pedidos']);
+          },
+          error: (err) => {
+            this.isSubmitting.set(false);
+            this.checkoutError.set(err.error?.error || 'Ocurrió un error al procesar tu pedido. Inténtalo de nuevo.');
+          }
+        });
       },
       error: (err) => {
         this.isSubmitting.set(false);
-        this.checkoutError.set(err.error?.error || 'Ocurrió un error al procesar tu pedido. Inténtalo de nuevo.');
+        this.checkoutError.set('Error al verificar el stock. Inténtalo de nuevo.');
       }
     });
   }

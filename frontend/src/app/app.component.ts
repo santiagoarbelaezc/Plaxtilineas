@@ -11,6 +11,7 @@ import { PwaService } from './services/pwa.service';
 import { LoadingScreenComponent } from './components/loading-screen/loading-screen';
 import { AuthService } from './services/auth.service';
 import { ThemeService } from './services/theme.service';
+import { ToastNotificationComponent } from './components/toast-notification/toast-notification.component';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +21,8 @@ import { ThemeService } from './services/theme.service';
     RouterModule,
     CartDrawerComponent,
     MobileCartComponent,
-    LoadingScreenComponent
+    LoadingScreenComponent,
+    ToastNotificationComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
