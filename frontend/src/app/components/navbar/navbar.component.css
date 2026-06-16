@@ -1167,6 +1167,9 @@ body.no-scroll {
   }
 }
 
-.main-header.chat-active {
-  display: none !important;
+/* Ocultar navbar SOLO en móvil cuando el asistente está abierto */
+@media (max-width: 768px) {
+  .main-header.chat-active {
+    display: none !important;
+  }
 }

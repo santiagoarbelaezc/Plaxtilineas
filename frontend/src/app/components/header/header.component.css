@@ -50,6 +50,16 @@
 }
 
 /* ── Carousel Wrapper ─────────────────────────────────────── */
+.hero-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding-left: 10% !important;
+  padding-right: 4% !important;
+  max-width: none !important;
+  box-sizing: border-box;
+}
+
 .hero-carousel {
   position: relative;
   z-index: 2;
@@ -97,7 +107,6 @@
   grid-template-columns: 0.6fr 1.4fr;
   align-items: center;
   gap: 40px;
-  padding-right: 6%;
 }
 
 .hero-grid--centered {
@@ -240,43 +249,55 @@
   color: white;
 }
 
+/* Envío benefits row */
+.envio-benefits {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
 /* Envío highlight card */
 .envio-highlight {
   display: flex;
   align-items: center;
-  gap: 16px;
-  background: rgba(54, 140, 68, 0.14);
-  border: 1px solid rgba(54, 140, 68, 0.3);
+  gap: 14px;
+  background: rgba(54, 140, 68, 0.12);
+  border: 1px solid rgba(54, 140, 68, 0.28);
   border-radius: 16px;
-  padding: 16px 20px;
+  padding: 14px 18px;
   backdrop-filter: blur(6px);
-  max-width: 400px;
+  flex: 1;
+  min-width: 160px;
 }
 
 .envio-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 42px;
+  height: 42px;
   background: linear-gradient(135deg, #368C44, #25d366);
-  border-radius: 12px;
+  border-radius: 10px;
   color: white;
   flex-shrink: 0;
 }
 
+.envio-icon--blue {
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+}
+
 .envio-label {
-  font-size: 1rem;
+  font-size: 0.82rem;
   font-weight: 800;
   color: #86efac;
   margin: 0 0 2px;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
 }
 
 .envio-desc {
-  font-size: 0.88rem;
-  color: rgba(255,255,255,0.75);
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.72);
   margin: 0;
 }
 

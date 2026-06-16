@@ -71,16 +71,16 @@ export class Inicio implements OnInit {
   // Datos para el Banner Principal
   bannerImages: BannerImage[] = [
     {
-      url: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767030291/ChatGPT_Image_Dec_29_2025_12_10_23_AM_msuluw.png',
-      alt: 'Consultoría en Plaxtilineas',
+      url: 'assets/images/banner-asesoria.png',
+      alt: 'Materiales de plástico de alta calidad Plaxtilineas',
       title: 'Asesoría Personalizada',
       description: 'Te ayudamos a elegir los mejores materiales para tus proyectos, con recomendaciones prácticas y útiles.',
       link: '/contacto',
       category: 'Asesoría'
     },
     {
-      url: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1768884810/envio3_qatfoe.jpg',
-      alt: 'Entrega de productos Plaxtilineas',
+      url: 'assets/images/banner-envio.png',
+      alt: 'Entrega y logística de productos Plaxtilineas',
       title: 'Llegamos hasta tu negocio',
       description: 'Te entregamos plásticos, espumas, mimbres, mallas y sogas justo cuando los necesitas.',
       link: '/contacto',
@@ -95,8 +95,8 @@ export class Inicio implements OnInit {
       category: 'Ayuda'
     },
     {
-      url: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1767030284/ChatGPT_Image_29_dic_2025_12_43_40_kcvskq.png',
-      alt: 'Productos Plaxtilineas',
+      url: 'assets/images/banner-materiales.png',
+      alt: 'Rollos y materiales plásticos Plaxtilineas',
       title: 'Materiales de confianza',
       description: 'Plásticos, espumas, mimbres, mallas y sogas que necesitas para tu trabajo diario.',
       link: '/productos',
