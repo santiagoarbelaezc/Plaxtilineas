@@ -661,6 +661,21 @@
   transform: translateY(0);
 }
 
+/* Filtrado de Logo IA: Blanco y Negro con soporte para tema oscuro */
+.filter-logo-ia {
+  filter: grayscale(100%) brightness(0.2) contrast(1.2) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+  transition: filter 0.3s ease;
+}
+
+/* Cuando se activa el tema oscuro (basado en el cuerpo, el contenedor global o un atributo html) */
+:host-context([data-theme="dark"]) .filter-logo-ia,
+:host-context(.dark-theme) .filter-logo-ia,
+html[data-theme="dark"] .filter-logo-ia,
+.dark-theme .filter-logo-ia,
+body.dark-theme .filter-logo-ia {
+  filter: grayscale(100%) invert(100%) brightness(1.2) contrast(1.2) drop-shadow(0 4px 20px rgba(255, 255, 255, 0.2));
+}
+
 /* ===========================
    ANÁLISIS Y SYNC STATUS
    =========================== */
