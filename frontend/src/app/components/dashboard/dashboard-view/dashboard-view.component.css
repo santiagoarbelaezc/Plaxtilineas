@@ -536,10 +536,7 @@
 }
 
 .mateo-banner-bg {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
+  display: none;
 }
 
 .glow-orb {
@@ -645,17 +642,17 @@
   position: relative;
   z-index: 2;
   flex-shrink: 0;
-  width: 280px;
+  width: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px 20px 0 0;
+  padding: 40px; /* Centrado y con márgenes limpios */
 }
 
 .mateo-banner-image {
   width: 100%;
+  max-width: 240px;
   height: auto;
-  max-height: 290px;
   object-fit: contain;
   transform: translateY(0);
 }
