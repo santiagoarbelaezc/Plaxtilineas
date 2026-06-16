@@ -681,3 +681,37 @@
     animation: none;
   }
 }
+
+/* Badge de Promociones */
+.productos-relacionados-section .tag.promo {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 4;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: white;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.productos-relacionados-section .tag.promo.descuento-15 {
+  background: linear-gradient(135deg, #ff416c, #ff4b2b);
+}
+
+.productos-relacionados-section .tag.promo.ultimas-unidades {
+  background: linear-gradient(135deg, #f2994a, #f2c94c);
+}
+
+.productos-relacionados-section .tag.promo.descuento-50 {
+  background: linear-gradient(135deg, #e53935, #e35d5b);
+}
+
+.productos-relacionados-section .tag.promo.promo-dia {
+  background: linear-gradient(135deg, #11998e, #38ef7d);
+}

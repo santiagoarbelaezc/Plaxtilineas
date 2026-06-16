@@ -47,6 +47,11 @@
                      class="producto-image"
                      (error)="handleImageError($event, producto)">
                 <div class="image-glow"></div>
+                <!-- Tags (Promocionales) -->
+                <span *ngIf="i % 4 === 0" class="tag promo descuento-15">15% descuento</span>
+                <span *ngIf="i % 4 === 1" class="tag promo ultimas-unidades">Últimas unidades</span>
+                <span *ngIf="i % 4 === 2" class="tag promo descuento-50">50% descuento</span>
+                <span *ngIf="i % 4 === 3" class="tag promo promo-dia">Promo del día</span>
               </div>
             </div>
 
