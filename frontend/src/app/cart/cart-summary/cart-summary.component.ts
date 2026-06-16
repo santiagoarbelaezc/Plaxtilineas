@@ -151,7 +151,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
           </div>
 
           <!-- Barra de Finalizar Compra Fija (Estilo App Móvil) -->
-          <div class="fixed bottom-[60px] left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-100 p-4 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex items-center justify-between gap-4 z-50">
+          <div class="fixed left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-100 p-4 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex items-center justify-between gap-4 z-50" style="bottom: 82px;">
             <div class="flex flex-col text-left">
               <span class="text-[10px] text-gray-400 font-extrabold uppercase tracking-wider">Total</span>
               <span class="text-lg font-extrabold text-[#368c44] tracking-tight">{{ formatearPrecio(totalPrice()) }}</span>
