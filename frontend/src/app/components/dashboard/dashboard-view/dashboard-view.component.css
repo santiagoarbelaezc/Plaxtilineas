@@ -657,13 +657,12 @@
   height: auto;
   max-height: 290px;
   object-fit: contain;
-  filter: drop-shadow(0 -10px 30px rgba(54, 140, 68, 0.3)) drop-shadow(0 10px 20px rgba(0,0,0,0.6));
   transform: translateY(0);
 }
 
 /* Filtrado de Logo IA: Blanco y Negro con soporte para tema oscuro */
 .filter-logo-ia {
-  filter: grayscale(100%) brightness(0.2) contrast(1.2) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+  filter: grayscale(100%) brightness(0.2) contrast(1.2);
   transition: filter 0.3s ease;
 }
 
@@ -673,7 +672,7 @@
 html[data-theme="dark"] .filter-logo-ia,
 .dark-theme .filter-logo-ia,
 body.dark-theme .filter-logo-ia {
-  filter: grayscale(100%) invert(100%) brightness(1.2) contrast(1.2) drop-shadow(0 4px 20px rgba(255, 255, 255, 0.2));
+  filter: grayscale(100%) invert(100%) brightness(1.2) contrast(1.2);
 }
 
 /* ===========================
