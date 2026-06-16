@@ -163,9 +163,9 @@
    ICONOS SOCIALES
    ============================================ */
 .social-icon            { width: 22px; height: 22px; }
-.whatsapp-button  .social-icon { color: #25D366; }
-.facebook-button  .social-icon { color: #1877F2; }
-.instagram-button .social-icon { color: #E1306C; }
+.whatsapp-button  .social-icon { color: #111111; }
+.facebook-button  .social-icon { color: #111111; }
+.instagram-button .social-icon { color: #111111; }
 
 /* ============================================
    BADGE / NOTIFICACIÓN
