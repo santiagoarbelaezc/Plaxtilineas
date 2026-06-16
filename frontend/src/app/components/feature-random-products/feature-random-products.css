@@ -354,3 +354,37 @@
   .section-subtitle { font-size: 0.9rem; }
   .container { padding: 0 1rem; }
 }
+
+/* Badge de Promociones */
+.tag.promo {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 4;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  color: white;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.tag.promo.descuento-15 {
+  background: linear-gradient(135deg, #ff416c, #ff4b2b);
+}
+
+.tag.promo.ultimas-unidades {
+  background: linear-gradient(135deg, #f2994a, #f2c94c);
+}
+
+.tag.promo.descuento-50 {
+  background: linear-gradient(135deg, #e53935, #e35d5b);
+}
+
+.tag.promo.promo-dia {
+  background: linear-gradient(135deg, #11998e, #38ef7d);
+}

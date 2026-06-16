@@ -16,7 +16,7 @@
       <div class="carousel-viewport">
         <div class="categories-grid products-carousel-grid" #productosGrid (scroll)="onScroll($event)">
           <!-- Product Card -->
-          <div class="category-item" *ngFor="let producto of productos">
+          <div class="category-item" *ngFor="let producto of productos; let i = index">
             
             <div class="category-card product-card-styled" (click)="verDetalles(producto.id, producto.nombre)">
               
@@ -29,6 +29,11 @@
                   (error)="producto.imagen_url = 'assets/images/default-product.png'"
                 >
                 <div class="card-overlay"></div>
+                <!-- Tags (Promocionales) -->
+                <span *ngIf="i % 4 === 0" class="tag promo descuento-15">15% descuento</span>
+                <span *ngIf="i % 4 === 1" class="tag promo ultimas-unidades">Últimas unidades</span>
+                <span *ngIf="i % 4 === 2" class="tag promo descuento-50">50% descuento</span>
+                <span *ngIf="i % 4 === 3" class="tag promo promo-dia">Promo del día</span>
               </div>
 
               <div class="card-content product-info">

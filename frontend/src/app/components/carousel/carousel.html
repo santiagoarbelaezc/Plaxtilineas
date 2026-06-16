@@ -42,15 +42,18 @@
   <!-- Viewport -->
   <div *ngIf="!cargando && !error && productos.length > 0" class="carousel-viewport" #carouselViewport (scroll)="onScroll()" (wheel)="onWheel($event)">
     <div class="carousel-track">
-      <div class="carousel-item" *ngFor="let producto of productos">
+      <div class="carousel-item" *ngFor="let producto of productos; let i = index">
         <div class="product-mini-card" [routerLink]="['/producto', producto.id]">
           <div class="mini-img-box">
             <!-- Badges Decorativos (Simulados basados en ID) -->
             <div class="product-badges">
-              <span class="badge badge-discount" *ngIf="producto.id % 2 !== 0">-15% OFF</span>
-              <span class="badge badge-stock" *ngIf="producto.id % 5 === 0">Pocas Unidades</span>
               <span class="badge badge-new" *ngIf="producto.id % 6 === 0">Nuevo</span>
             </div>
+            <!-- Tags (Promocionales) -->
+            <span *ngIf="i % 4 === 0" class="tag promo descuento-15">15% descuento</span>
+            <span *ngIf="i % 4 === 1" class="tag promo ultimas-unidades">Últimas unidades</span>
+            <span *ngIf="i % 4 === 2" class="tag promo descuento-50">50% descuento</span>
+            <span *ngIf="i % 4 === 3" class="tag promo promo-dia">Promo del día</span>
             <img [src]="producto.imagen_url" [alt]="producto.nombre">
           </div>
           <div class="mini-info">
