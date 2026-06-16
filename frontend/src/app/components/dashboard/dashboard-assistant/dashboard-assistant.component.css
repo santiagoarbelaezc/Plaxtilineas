@@ -168,6 +168,21 @@
      display: block;
      margin-bottom: 20px;
    }
+
+   /* Filtrado de Logo IA: Blanco y Negro con soporte para tema oscuro */
+   .filter-logo-ia {
+     filter: grayscale(100%) brightness(0.2) contrast(1.2);
+     transition: filter 0.3s ease;
+   }
+
+   /* Invertir colores en el tema oscuro del asistente */
+   :host-context([data-theme="dark"]) .filter-logo-ia,
+   :host-context(.dark-theme) .filter-logo-ia,
+   html[data-theme="dark"] .filter-logo-ia,
+   .dark-theme .filter-logo-ia,
+   body.dark-theme .filter-logo-ia {
+     filter: grayscale(100%) invert(100%) brightness(1.2) contrast(1.2);
+   }
    .welcome-banner p {
      color: var(--dash-text-muted);
      font-size: 1.05rem;
