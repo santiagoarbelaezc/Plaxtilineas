@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StatsService, DashboardStats } from '../../../services/stats.service';
 import { LeadsService } from '../../../services/leads.service';
+import { RouterModule } from '@angular/router';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEye, faCalendarAlt, faBox, faUsers } from '@fortawesome/free-solid-svg-icons';
@@ -10,7 +11,7 @@ import { faEye, faCalendarAlt, faBox, faUsers } from '@fortawesome/free-solid-sv
 @Component({
   selector: 'app-analiticas',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, RouterModule],
   templateUrl: './analiticas.html',
   styleUrls: ['./analiticas.css']
 })

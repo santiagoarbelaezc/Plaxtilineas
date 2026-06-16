@@ -28,6 +28,31 @@ export class CartService {
   private saveCart(items: CartItem[]) {
     localStorage.setItem('plaxtilineas_cart', JSON.stringify(items));
     this.itemsSubject.next([...items]);
+    this.syncCartWithBackend(items);
+  }
+
+  private syncCartWithBackend(items: CartItem[]) {
+    if (typeof localStorage === 'undefined') return;
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    const payload = {
+      items: items.map(item => ({
+        producto_id: item.producto.id,
+        variante_id: item.variante?.id || null,
+        cantidad: item.cantidad,
+        precio_unitario: item.precioUnitario
+      }))
+    };
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+
+    this.http.post(`${environment.apiUrl}/carrito/sync`, payload, { headers }).subscribe({
+      error: (err) => console.warn('Error al sincronizar carrito con backend:', err)
+    });
   }
 
   private loadCart() {

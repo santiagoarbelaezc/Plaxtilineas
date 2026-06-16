@@ -5,6 +5,7 @@ import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontaweso
 import Swal from 'sweetalert2';
 import { ImportProductsService } from '../../../services/import-products.service';
 import { ThemeService, Theme } from '../../../services/theme.service';
+import { AuthService } from '../../../services/auth.service';
 import { DashboardAssistantComponent } from '../dashboard-assistant/dashboard-assistant.component';
 import {
   faBoxes,
@@ -89,7 +90,8 @@ export class DashboardViewComponent {
     private router: Router,
     library: FaIconLibrary,
     private importService: ImportProductsService,
-    public themeService: ThemeService
+    public themeService: ThemeService,
+    private authService: AuthService
   ) {
     library.addIcons(
       faBoxes, 
@@ -118,7 +120,8 @@ export class DashboardViewComponent {
 
   logout(): void {
     localStorage.removeItem('token');
-    this.router.navigate(['/']); // Redirigir al Inicio (Home)
+    localStorage.removeItem('user');
+    this.authService.logout(false);
   }
 
   get estaEnInicio(): boolean {
@@ -132,6 +135,8 @@ export class DashboardViewComponent {
     if (url.includes('/productos')) return 'Gestión de Productos';
     if (url.includes('/inventario')) return 'Gestión de Inventario';
     if (url.includes('/pqr-admin')) return 'Peticiones, Quejas y Reclamos';
+    if (url.includes('/usuarios')) return 'Usuarios Registrados';
+    if (url.includes('/pedidos')) return 'Gestión de Pedidos';
     return 'Panel de Administración';
   }
 
@@ -142,6 +147,8 @@ export class DashboardViewComponent {
     if (url.includes('/productos')) return 'Añade, edita o elimina productos del catálogo';
     if (url.includes('/inventario')) return 'Controla el stock y precios de tus productos';
     if (url.includes('/pqr-admin')) return 'Gestiona los mensajes de contacto de clientes';
+    if (url.includes('/usuarios')) return 'Visualiza clientes, sus carritos de compras activos y pedidos';
+    if (url.includes('/pedidos')) return 'Visualiza e interactúa con el estado de pedidos';
     return 'Gestiona productos, categorías, subcategorías y más';
   }
 

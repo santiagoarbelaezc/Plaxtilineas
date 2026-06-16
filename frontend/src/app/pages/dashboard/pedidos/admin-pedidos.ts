@@ -3,16 +3,61 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PedidoService } from '../../../services/pedido.service';
 import { Pedido, ESTADOS_PEDIDO, EstadoPedido } from '../../../models/pedido.model';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {
+  faClipboardList,
+  faDollarSign,
+  faHourglassHalf,
+  faCheckCircle,
+  faTimesCircle,
+  faSync,
+  faSearch,
+  faChevronDown,
+  faChevronUp,
+  faBoxOpen,
+  faTruck,
+  faCreditCard,
+  faMapMarkerAlt,
+  faUser,
+  faCalendarAlt,
+  faEnvelope,
+  faShoppingBag,
+  faClock,
+  faCheck,
+  faBan
+} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-pedidos',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule],
   templateUrl: './admin-pedidos.html',
   styleUrls: ['./admin-pedidos.css'],
 })
 export class AdminPedidos implements OnInit {
   private pedidoService = inject(PedidoService);
+
+  // Iconos Font Awesome
+  faClipboardList = faClipboardList;
+  faDollarSign = faDollarSign;
+  faHourglassHalf = faHourglassHalf;
+  faCheckCircle = faCheckCircle;
+  faTimesCircle = faTimesCircle;
+  faSync = faSync;
+  faSearch = faSearch;
+  faChevronDown = faChevronDown;
+  faChevronUp = faChevronUp;
+  faBoxOpen = faBoxOpen;
+  faTruck = faTruck;
+  faCreditCard = faCreditCard;
+  faMapMarkerAlt = faMapMarkerAlt;
+  faUser = faUser;
+  faCalendarAlt = faCalendarAlt;
+  faEnvelope = faEnvelope;
+  faShoppingBag = faShoppingBag;
+  faClock = faClock;
+  faCheck = faCheck;
+  faBan = faBan;
 
   pedidos = signal<Pedido[]>([]);
   loading = signal(true);
@@ -85,6 +130,18 @@ export class AdminPedidos implements OnInit {
 
   getEstadoInfo(estado: EstadoPedido) {
     return ESTADOS_PEDIDO.find(e => e.key === estado) || ESTADOS_PEDIDO[0];
+  }
+
+  getEstadoFAIcon(estado: string) {
+    switch (estado) {
+      case 'pendiente': return this.faClock;
+      case 'confirmado': return this.faCheckCircle;
+      case 'en_preparacion': return this.faBoxOpen;
+      case 'en_camino': return this.faTruck;
+      case 'entregado': return this.faCheckCircle;
+      case 'cancelado': return this.faBan;
+      default: return this.faClipboardList;
+    }
   }
 
   formatDate(dateStr: string): string {

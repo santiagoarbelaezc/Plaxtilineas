@@ -96,6 +96,10 @@ export const routes: Routes = [
       {
         path: 'pedidos',
         loadComponent: () => import('./pages/dashboard/pedidos/admin-pedidos').then(m => m.AdminPedidos)
+      },
+      {
+        path: 'usuarios',
+        loadComponent: () => import('./pages/dashboard/pedidos/admin-usuarios').then(m => m.AdminUsuarios)
       }
     ]
   },

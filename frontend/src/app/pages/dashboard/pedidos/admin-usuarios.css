@@ -1,0 +1,142 @@
+@import '../estadisticas/estadisticas.css';
+
+.badge-active-cart {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.total-users-badge {
+  background: var(--dash-bg-input);
+  border: 1px solid var(--dash-border);
+  color: var(--dash-text-main);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.empty-detail-text {
+  color: var(--dash-text-muted);
+  font-size: 0.9rem;
+  padding: 12px;
+  text-align: center;
+  background: var(--dash-bg-input);
+  border-radius: 8px;
+  border: 1px dashed var(--dash-border-strong);
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-muted {
+  color: var(--dash-text-muted);
+}
+
+/* Detalles expandidos de fila estilo premium */
+.detail-row td {
+  padding: 0;
+  border-bottom: 2px solid var(--dash-border-strong);
+}
+
+.detail-content {
+  padding: 24px 32px;
+  background: var(--dash-bg-input);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.detail-section h4 {
+  margin: 0 0 12px 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--dash-text-main);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--dash-border);
+  padding-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.detail-products {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-product-row {
+  display: grid;
+  grid-template-columns: 40px 2fr 1fr 1.2fr 1.2fr;
+  gap: 12px;
+  align-items: center;
+  background: var(--dash-bg-card);
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--dash-border);
+}
+
+.detail-prod-img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--dash-border);
+}
+
+.detail-prod-placeholder {
+  width: 40px;
+  height: 40px;
+  background: var(--dash-bg-input);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--dash-text-muted);
+}
+
+.detail-prod-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--dash-text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.detail-prod-qty {
+  color: var(--dash-text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.detail-prod-price {
+  color: var(--dash-text-muted);
+  font-size: 0.8rem;
+}
+
+.detail-prod-subtotal {
+  font-weight: 700;
+  color: var(--dash-text-main);
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+.table-estado-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--estado-color, #64748b) 15%, transparent);
+  color: var(--estado-color, #64748b);
+  white-space: nowrap;
+}
+

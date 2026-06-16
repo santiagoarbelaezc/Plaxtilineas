@@ -642,16 +642,16 @@
   position: relative;
   z-index: 2;
   flex-shrink: 0;
-  width: 300px;
+  width: 380px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px; /* Centrado y con márgenes limpios */
+  padding: 20px; /* Reducido para permitir un tamaño de imagen más grande */
 }
 
 .mateo-banner-image {
   width: 100%;
-  max-width: 240px;
+  max-width: 340px;
   height: auto;
   object-fit: contain;
   transform: translateY(0);

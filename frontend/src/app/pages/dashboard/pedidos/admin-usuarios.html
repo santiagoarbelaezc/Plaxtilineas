@@ -1,0 +1,193 @@
+<div class="admin-content-wrapper-inner">
+  
+  <!-- Cabecera -->
+  <div class="admin-view-header">
+    <div class="header-left">
+      <h1 class="admin-view-title">Usuarios Registrados</h1>
+      <p class="admin-view-subtitle">Gestión de clientes, compras, carritos activos y pedidos en el sistema</p>
+    </div>
+    <button class="btn-refresh" (click)="cargarUsuarios()" [disabled]="loading()">
+      <fa-icon [icon]="faSync" [class.fa-spin]="loading()"></fa-icon>
+      Actualizar
+    </button>
+  </div>
+
+  <!-- KPIs de Estadísticas -->
+  <div *ngIf="!loading()" class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon icon-blue"><fa-icon [icon]="faUsers"></fa-icon></div>
+      <div class="kpi-info">
+        <span class="kpi-label">Total Clientes</span>
+        <span class="kpi-value">{{ totalUsuarios() }}</span>
+      </div>
+    </div>
+    
+    <div class="kpi-card" [class.alert]="carritosActivos() > 0">
+      <div class="kpi-icon icon-yellow"><fa-icon [icon]="faShoppingCart"></fa-icon></div>
+      <div class="kpi-info">
+        <span class="kpi-label">Carritos Activos</span>
+        <span class="kpi-value">{{ carritosActivos() }}</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon icon-green"><fa-icon [icon]="faDollarSign"></fa-icon></div>
+      <div class="kpi-info">
+        <span class="kpi-label">Total Ventas</span>
+        <span class="kpi-value">{{ formatPrice(totalVentas()) }}</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon icon-red"><fa-icon [icon]="faClipboardList"></fa-icon></div>
+      <div class="kpi-info">
+        <span class="kpi-label">Pedidos Realizados</span>
+        <span class="kpi-value">{{ totalPedidos() }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido Principal -->
+  <div class="main-content-stacked">
+    <div class="full-width-panel">
+      <div class="panel-card">
+        
+        <!-- Header con buscador y filtros -->
+        <div class="panel-header" style="flex-wrap: wrap; gap: 15px;">
+          <h3>👥 Clientes Registrados</h3>
+          <div class="filters-container">
+            <div class="search-box">
+              <input 
+                type="text" 
+                [ngModel]="searchTerm()"
+                (ngModelChange)="searchTerm.set($event)"
+                placeholder="Buscar por nombre, correo, ciudad..."
+              />
+              <fa-icon [icon]="faSearch" style="position: absolute; left: 12px; color: var(--dash-text-muted);"></fa-icon>
+            </div>
+            <span class="total-users-badge">Filtrados: {{ filteredUsuarios.length }}</span>
+          </div>
+        </div>
+
+        <!-- Carga -->
+        <div class="loading-state" *ngIf="loading()">
+          <div class="spinner-grande"></div>
+          <p>Cargando información de usuarios...</p>
+        </div>
+
+        <!-- Vacío -->
+        <div class="empty-state" *ngIf="!loading() && filteredUsuarios.length === 0">
+          <p>No se encontraron usuarios registrados.</p>
+        </div>
+
+        <!-- Tabla de Datos -->
+        <div class="table-responsive" *ngIf="!loading() && filteredUsuarios.length > 0">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 80px;">ID</th>
+                <th>Cliente / Usuario</th>
+                <th>Ubicación</th>
+                <th class="center">Pedidos</th>
+                <th class="center">Carrito Activo</th>
+                <th>Total Compras</th>
+                <th style="width: 150px;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let u of filteredUsuarios">
+                <tr [class.expanded-row]="expandedUserId() === u.id">
+                  <td class="code-cell">#{{ u.id }}</td>
+                  <td>
+                    <div class="prod-cell">
+                      <div class="prod-thumb" style="display: flex; align-items: center; justify-content: center; background: var(--dash-bg-input); color: var(--dash-text-muted);">
+                        <fa-icon [icon]="faUser" style="font-size: 1.2rem;"></fa-icon>
+                      </div>
+                      <div>
+                        <span class="prod-name">{{ u.nombre }} {{ u.apellidos }}</span>
+                        <span style="display: block; font-size: 0.8rem; color: var(--dash-text-muted);">{{ u.correo }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div *ngIf="u.ciudad" style="display: flex; align-items: center; gap: 6px;">
+                      <fa-icon [icon]="faMapMarkerAlt" style="color: var(--dash-text-muted); font-size: 0.8rem;"></fa-icon>
+                      <span>{{ u.ciudad }} <small style="color: var(--dash-text-muted);" *ngIf="u.direccion">({{ u.direccion }})</small></span>
+                    </div>
+                    <span *ngIf="!u.ciudad" class="text-muted">No especificada</span>
+                  </td>
+                  <td class="center font-bold">{{ u.cantidad_pedidos }}</td>
+                  <td class="center">
+                    <span class="var-badge" [class.zero]="u.carrito.length === 0">
+                      <fa-icon [icon]="faShoppingCart" style="margin-right: 4px; font-size: 0.75rem;"></fa-icon>
+                      {{ u.carrito.length }} items
+                    </span>
+                  </td>
+                  <td class="price-range">{{ formatPrice(u.total_compras) }}</td>
+                  <td>
+                    <button class="page-btn" (click)="toggleExpand(u.id)">
+                      <fa-icon [icon]="expandedUserId() === u.id ? faChevronUp : faChevronDown" style="margin-right: 6px;"></fa-icon>
+                      Detalles
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Fila de Detalles Expandida -->
+                <tr *ngIf="expandedUserId() === u.id" class="detail-row">
+                  <td colspan="7">
+                    <div class="detail-content">
+                      
+                      <!-- Columna 1: Pedidos -->
+                      <div class="detail-section">
+                        <h4>
+                          <fa-icon [icon]="faClipboardList" style="margin-right: 6px;"></fa-icon>
+                          Pedidos ({{ u.pedidos.length }})
+                        </h4>
+                        <div *ngIf="u.pedidos.length === 0" class="empty-detail-text">Este usuario no tiene pedidos.</div>
+                        <div class="detail-products" *ngIf="u.pedidos.length > 0">
+                          <div *ngFor="let p of u.pedidos" class="detail-product-row" style="grid-template-columns: 1fr auto auto auto;">
+                            <span class="detail-prod-name font-mono">{{ p.codigo_pedido }}</span>
+                            <span class="detail-prod-qty">{{ formatDate(p.fecha) }}</span>
+                            <span class="table-estado-badge" [style.--estado-color]="getEstadoColor(p.estado)">
+                              {{ p.estado }}
+                            </span>
+                            <span class="detail-prod-subtotal">{{ formatPrice(p.total) }}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Columna 2: Carrito -->
+                      <div class="detail-section">
+                        <h4>
+                          <fa-icon [icon]="faShoppingBag" style="margin-right: 6px;"></fa-icon>
+                          Carrito Activo
+                        </h4>
+                        <div *ngIf="u.carrito.length === 0" class="empty-detail-text">El carrito de este usuario está vacío.</div>
+                        <div class="detail-products" *ngIf="u.carrito.length > 0">
+                          <div *ngFor="let item of u.carrito" class="detail-product-row">
+                            <img *ngIf="item.imagen_url" [src]="item.imagen_url" class="detail-prod-img" />
+                            <div class="detail-prod-placeholder" *ngIf="!item.imagen_url">
+                              <fa-icon [icon]="faShoppingBag"></fa-icon>
+                            </div>
+                            <span class="detail-prod-name">{{ item.producto_nombre }}</span>
+                            <span class="detail-prod-qty">x{{ item.cantidad }}</span>
+                            <span class="detail-prod-price">{{ formatPrice(item.precio_unitario) }}</span>
+                            <span class="detail-prod-subtotal">{{ formatPrice(item.precio_unitario * item.cantidad) }}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+

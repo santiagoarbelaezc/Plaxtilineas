@@ -1,147 +1,220 @@
-<div class="admin-pedidos">
+<div class="admin-content-wrapper-inner">
 
-  <!-- Header -->
-  <div class="admin-header">
+  <!-- Cabecera -->
+  <div class="admin-view-header">
     <div class="header-left">
-      <h1>📦 Gestión de Pedidos</h1>
-      <p class="header-sub">Administra todos los pedidos de clientes</p>
+      <h1 class="admin-view-title">Gestión de Pedidos</h1>
+      <p class="admin-view-subtitle">Administra, filtra y actualiza los pedidos de los clientes</p>
     </div>
-    <button class="refresh-btn" (click)="cargarPedidos()" [disabled]="loading()">
-      🔄 Actualizar
+    <button class="btn-refresh" (click)="cargarPedidos()" [disabled]="loading()">
+      <fa-icon [icon]="faSync" [class.fa-spin]="loading()"></fa-icon>
+      Actualizar
     </button>
   </div>
 
-  <!-- Stats Row -->
-  <div class="admin-stats" *ngIf="stats()">
-    <div class="admin-stat-card">
-      <span class="admin-stat-num">{{ stats().total_pedidos || 0 }}</span>
-      <span class="admin-stat-label">Total Pedidos</span>
+  <!-- KPIs de Pedidos -->
+  <div class="kpi-grid" *ngIf="stats() && !loading()" style="grid-template-columns: repeat(5, 1fr);">
+    <div class="kpi-card">
+      <div class="kpi-icon icon-blue"><fa-icon [icon]="faClipboardList"></fa-icon></div>
+      <div class="kpi-info">
+        <span class="kpi-label">Total Pedidos</span>
+        <span class="kpi-value">{{ stats().total_pedidos || 0 }}</span>
+      </div>
     </div>
-    <div class="admin-stat-card green">
-      <span class="admin-stat-num">{{ formatPrice(stats().ingresos_totales || 0) }}</span>
-      <span class="admin-stat-label">Ingresos Totales</span>
+
+    <div class="kpi-card">
+      <div class="kpi-icon icon-green"><fa-icon [icon]="faDollarSign"></fa-icon></div>
+      <div class="kpi-info">
+        <span class="kpi-label">Ingresos</span>
+        <span class="kpi-value" style="font-size: 1.4rem;">{{ formatPrice(stats().ingresos_totales || 0) }}</span>
+      </div>
     </div>
-    <div class="admin-stat-card blue">
-      <span class="admin-stat-num">{{ stats().pedidos_activos || 0 }}</span>
-      <span class="admin-stat-label">Activos</span>
+
+    <div class="kpi-card">
+      <div class="kpi-icon icon-yellow"><fa-icon [icon]="faClock"></fa-icon></div>
+      <div class="kpi-info">
+        <span class="kpi-label">Activos</span>
+        <span class="kpi-value">{{ stats().pedidos_activos || 0 }}</span>
+      </div>
     </div>
-    <div class="admin-stat-card purple">
-      <span class="admin-stat-num">{{ stats().pedidos_entregados || 0 }}</span>
-      <span class="admin-stat-label">Entregados</span>
+
+    <div class="kpi-card">
+      <div class="kpi-icon icon-blue" style="background: rgba(74,222,128,0.12); border-color: rgba(74,222,128,0.2); color: #4ade80;"><fa-icon [icon]="faCheckCircle"></fa-icon></div>
+      <div class="kpi-info">
+        <span class="kpi-label">Entregados</span>
+        <span class="kpi-value">{{ stats().pedidos_entregados || 0 }}</span>
+      </div>
     </div>
-    <div class="admin-stat-card red">
-      <span class="admin-stat-num">{{ stats().pedidos_cancelados || 0 }}</span>
-      <span class="admin-stat-label">Cancelados</span>
+
+    <div class="kpi-card" [class.alert-red]="stats().pedidos_cancelados > 0">
+      <div class="kpi-icon icon-red"><fa-icon [icon]="faBan"></fa-icon></div>
+      <div class="kpi-info">
+        <span class="kpi-label">Cancelados</span>
+        <span class="kpi-value">{{ stats().pedidos_cancelados || 0 }}</span>
+      </div>
     </div>
   </div>
 
-  <!-- Search & Filter -->
-  <div class="admin-toolbar">
-    <div class="search-box">
-      <input
-        type="text"
-        placeholder="Buscar por código, cliente o correo..."
-        [ngModel]="searchTerm()"
-        (ngModelChange)="searchTerm.set($event)"
-      />
-    </div>
-    <div class="filter-pills">
-      <button class="pill" [class.active]="filtroEstado() === 'todos'" (click)="filtroEstado.set('todos')">Todos</button>
-      <button *ngFor="let e of estadosList" class="pill" [class.active]="filtroEstado() === e.key" (click)="filtroEstado.set(e.key)">
-        {{ e.icon }} {{ e.label }}
-      </button>
-    </div>
-  </div>
+  <!-- Contenido Principal -->
+  <div class="main-content-stacked">
+    <div class="full-width-panel">
+      <div class="panel-card">
 
-  <!-- Loading -->
-  <div class="admin-loading" *ngIf="loading()">
-    <div class="spinner"></div>
-    <p>Cargando pedidos...</p>
-  </div>
+        <!-- Barra de herramientas con buscador y filtros -->
+        <div class="panel-header" style="flex-wrap: wrap; gap: 15px;">
+          <h3><fa-icon [icon]="faClipboardList" style="margin-right: 8px; color: var(--dash-text-accent);"></fa-icon>Historial de Pedidos</h3>
+          <div class="filters-container">
+            <div class="search-box">
+              <input
+                type="text"
+                [ngModel]="searchTerm()"
+                (ngModelChange)="searchTerm.set($event)"
+                placeholder="Buscar por código, cliente o correo..."
+              />
+              <fa-icon [icon]="faSearch" style="position: absolute; left: 12px; color: var(--dash-text-muted);"></fa-icon>
+            </div>
+          </div>
+        </div>
 
-  <!-- Empty -->
-  <div class="admin-empty" *ngIf="!loading() && filteredPedidos.length === 0">
-    <p>No se encontraron pedidos.</p>
-  </div>
+        <!-- Filtros por píldora -->
+        <div class="filter-pills-bar" style="padding: 12px 20px; border-bottom: 1px solid var(--dash-border); background: var(--dash-bg-glass); display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="pill-btn" [class.active]="filtroEstado() === 'todos'" (click)="filtroEstado.set('todos')">
+            <fa-icon [icon]="faClipboardList" style="margin-right: 6px;"></fa-icon> Todos
+          </button>
+          <button *ngFor="let e of estadosList" class="pill-btn" [class.active]="filtroEstado() === e.key" (click)="filtroEstado.set(e.key)">
+            <fa-icon [icon]="getEstadoFAIcon(e.key)" style="margin-right: 6px;"></fa-icon> {{ e.label }}
+          </button>
+        </div>
 
-  <!-- Pedidos Table -->
-  <div class="pedidos-table-wrapper" *ngIf="!loading() && filteredPedidos.length > 0">
-    <table class="pedidos-table">
-      <thead>
-        <tr>
-          <th>Código</th>
-          <th>Cliente</th>
-          <th>Fecha</th>
-          <th>Total</th>
-          <th>Items</th>
-          <th>Estado</th>
-          <th>Cambiar Estado</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <ng-container *ngFor="let pedido of filteredPedidos">
-          <tr [class.expanded-row]="expandedPedidoId() === pedido.id">
-            <td class="code-cell">{{ pedido.codigo_pedido }}</td>
-            <td class="client-cell">
-              <span class="client-name">{{ pedido.cliente_nombre || 'N/A' }}</span>
-              <span class="client-email">{{ pedido.cliente_correo || '' }}</span>
-            </td>
-            <td>{{ formatDate(pedido.fecha) }}</td>
-            <td class="total-cell">{{ formatPrice(pedido.total) }}</td>
-            <td class="center">{{ pedido.total_items }}</td>
-            <td>
-              <span class="table-estado-badge" [style.--estado-color]="getEstadoInfo(pedido.estado).color">
-                {{ getEstadoInfo(pedido.estado).icon }} {{ getEstadoInfo(pedido.estado).label }}
-              </span>
-            </td>
-            <td>
-              <select
-                class="estado-select"
-                [ngModel]="pedido.estado"
-                (ngModelChange)="actualizarEstado(pedido.id, $event)"
-                [disabled]="updatingId() === pedido.id">
-                <option *ngFor="let opt of estadosOptions" [value]="opt">{{ getEstadoLabel(opt) }}</option>
-              </select>
-              <span class="updating-indicator" *ngIf="updatingId() === pedido.id">⏳</span>
-            </td>
-            <td>
-              <button class="expand-btn" (click)="toggleExpand(pedido.id)">
-                {{ expandedPedidoId() === pedido.id ? '▲' : '▼' }}
-              </button>
-            </td>
-          </tr>
+        <!-- Carga -->
+        <div class="loading-state" *ngIf="loading()">
+          <div class="spinner-grande"></div>
+          <p>Cargando pedidos registrados...</p>
+        </div>
 
-          <!-- Expanded Detail Row -->
-          <tr *ngIf="expandedPedidoId() === pedido.id" class="detail-row">
-            <td colspan="8">
-              <div class="detail-content">
-                <div class="detail-section">
-                  <h4>📍 Envío</h4>
-                  <p>{{ pedido.direccion_envio }}</p>
-                  <p *ngIf="pedido.ciudad">{{ pedido.ciudad }}, {{ pedido.departamento }}</p>
-                  <p *ngIf="pedido.telefono_contacto">📞 {{ pedido.telefono_contacto }}</p>
-                  <p *ngIf="pedido.notas" class="notes-text">📝 {{ pedido.notas }}</p>
-                </div>
-                <div class="detail-section">
-                  <h4>🛒 Productos</h4>
-                  <div class="detail-products">
-                    <div *ngFor="let d of pedido.detalles" class="detail-product-row">
-                      <img *ngIf="d.imagen_url" [src]="d.imagen_url" class="detail-prod-img" />
-                      <div class="detail-prod-placeholder" *ngIf="!d.imagen_url">📦</div>
-                      <span class="detail-prod-name">{{ d.nombre_producto }}</span>
-                      <span class="detail-prod-qty">x{{ d.cantidad }}</span>
-                      <span class="detail-prod-price">{{ formatPrice(d.precio_unitario) }}</span>
-                      <span class="detail-prod-subtotal">{{ formatPrice(d.subtotal || d.precio_unitario * d.cantidad) }}</span>
+        <!-- Vacío -->
+        <div class="empty-state" *ngIf="!loading() && filteredPedidos.length === 0">
+          <p>No se encontraron pedidos con los criterios seleccionados.</p>
+        </div>
+
+        <!-- Tabla de Pedidos -->
+        <div class="table-responsive" *ngIf="!loading() && filteredPedidos.length > 0">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th class="center">Items</th>
+                <th>Estado</th>
+                <th>Acción Rápida</th>
+                <th style="width: 120px;">Detalles</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let pedido of filteredPedidos">
+                <tr [class.expanded-row]="expandedPedidoId() === pedido.id">
+                  <td class="code-cell">{{ pedido.codigo_pedido }}</td>
+                  <td>
+                    <div class="prod-cell">
+                      <div class="prod-thumb" style="display: flex; align-items: center; justify-content: center; background: var(--dash-bg-input); color: var(--dash-text-muted);">
+                        <fa-icon [icon]="faUser" style="font-size: 1.1rem;"></fa-icon>
+                      </div>
+                      <div>
+                        <span class="prod-name">{{ pedido.cliente_nombre || 'Invitado/Anónimo' }}</span>
+                        <span style="display: block; font-size: 0.8rem; color: var(--dash-text-muted);">{{ pedido.cliente_correo || '' }}</span>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </td>
-          </tr>
-        </ng-container>
-      </tbody>
-    </table>
+                  </td>
+                  <td style="font-size: 0.85rem; color: var(--dash-text-muted);">{{ formatDate(pedido.fecha) }}</td>
+                  <td class="price-range">{{ formatPrice(pedido.total) }}</td>
+                  <td class="center font-bold">{{ pedido.total_items }}</td>
+                  <td>
+                    <span class="table-estado-badge" [style.--estado-color]="getEstadoInfo(pedido.estado).color">
+                      <fa-icon [icon]="getEstadoFAIcon(pedido.estado)" style="margin-right: 4px; font-size: 0.75rem;"></fa-icon>
+                      {{ getEstadoInfo(pedido.estado).label }}
+                    </span>
+                  </td>
+                  <td>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <select
+                        class="filter-select"
+                        style="padding: 6px 10px; font-size: 0.8rem; background-position: right 8px top 50%;"
+                        [ngModel]="pedido.estado"
+                        (ngModelChange)="actualizarEstado(pedido.id, $event)"
+                        [disabled]="updatingId() === pedido.id">
+                        <option *ngFor="let opt of estadosOptions" [value]="opt">{{ getEstadoLabel(opt) }}</option>
+                      </select>
+                      <fa-icon [icon]="faSync" class="fa-spin" *ngIf="updatingId() === pedido.id" style="color: var(--dash-text-accent); font-size: 0.8rem;"></fa-icon>
+                    </div>
+                  </td>
+                  <td>
+                    <button class="page-btn" (click)="toggleExpand(pedido.id)">
+                      <fa-icon [icon]="expandedPedidoId() === pedido.id ? faChevronUp : faChevronDown" style="margin-right: 6px;"></fa-icon>
+                      Ver
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Fila de Detalles Expandidos -->
+                <tr *ngIf="expandedPedidoId() === pedido.id" class="detail-row">
+                  <td colspan="8">
+                    <div class="detail-content">
+                      
+                      <!-- Columna 1: Envío -->
+                      <div class="detail-section">
+                        <h4>
+                          <fa-icon [icon]="faTruck" style="margin-right: 6px;"></fa-icon>
+                          Información de Envío
+                        </h4>
+                        <p style="font-weight: 600; color: var(--dash-text-main);">Dirección:</p>
+                        <p>{{ pedido.direccion_envio }}</p>
+                        <p *ngIf="pedido.ciudad" style="margin-top: 4px;">
+                          <fa-icon [icon]="faMapMarkerAlt" style="margin-right: 4px; color: var(--dash-text-muted);"></fa-icon>
+                          {{ pedido.ciudad }}, {{ pedido.departamento }}
+                        </p>
+                        <p *ngIf="pedido.telefono_contacto" style="margin-top: 8px;">
+                          <strong>Teléfono:</strong> {{ pedido.telefono_contacto }}
+                        </p>
+                        <p *ngIf="pedido.metodo_pago" style="margin-top: 4px;">
+                          <strong>Método Pago:</strong> {{ pedido.metodo_pago }}
+                        </p>
+                        <p *ngIf="pedido.notas" class="notes-text">
+                          <strong>Notas del Cliente:</strong> {{ pedido.notas }}
+                        </p>
+                      </div>
+
+                      <!-- Columna 2: Productos -->
+                      <div class="detail-section">
+                        <h4>
+                          <fa-icon [icon]="faShoppingBag" style="margin-right: 6px;"></fa-icon>
+                          Productos en el Pedido
+                        </h4>
+                        <div class="detail-products">
+                          <div *ngFor="let d of pedido.detalles" class="detail-product-row">
+                            <img *ngIf="d.imagen_url" [src]="d.imagen_url" class="detail-prod-img" />
+                            <div class="detail-prod-placeholder" *ngIf="!d.imagen_url">
+                              <fa-icon [icon]="faBoxOpen"></fa-icon>
+                            </div>
+                            <span class="detail-prod-name">{{ d.nombre_producto }}</span>
+                            <span class="detail-prod-qty">x{{ d.cantidad }}</span>
+                            <span class="detail-prod-price">{{ formatPrice(d.precio_unitario) }}</span>
+                            <span class="detail-prod-subtotal">{{ formatPrice(d.subtotal || d.precio_unitario * d.cantidad) }}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
   </div>
 
 </div>
