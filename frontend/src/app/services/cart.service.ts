@@ -5,6 +5,7 @@ import { environment } from '../../enviroments/environment';
 import { CartItem } from '../models/cart.model';
 import { Producto } from '../models/producto.model';
 import { Variante } from '../models/variante.model';
+import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
