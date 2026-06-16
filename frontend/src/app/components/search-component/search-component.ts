@@ -6,6 +6,7 @@ import { Subject, debounceTime, distinctUntilChanged, takeUntil, filter, switchM
 import { ProductosService } from '../../services/productos.service';
 import { ProductoEditable } from '../../models/producto.model';
 import { SearchStateService } from '../../services/search-state.service';
+import { optimizeForThumbnail } from '../../utils/cloudinary-optimizer';
 
 @Component({
   selector: 'app-search-component',
@@ -424,5 +425,9 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
   tieneVariantes(producto: ProductoEditable): boolean {
     return !!(producto.variantes && producto.variantes.length > 0);
+  }
+
+  optimizarImagen(url: string): string {
+    return optimizeForThumbnail(url, 200); // 200px es suficiente para listados de búsqueda rápida y sugerencias
   }
 }

@@ -79,7 +79,7 @@
           >
             <div class="suggestion-image">
               <img 
-                [src]="producto.imagen_url || 'assets/images/placeholder.jpg'" 
+                [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/placeholder.jpg'" 
                 [alt]="producto.nombre"
                 loading="lazy"
                 onerror="this.src='assets/images/placeholder.jpg'"
@@ -146,7 +146,7 @@
             >
               <div class="suggestion-card-image-container">
                 <img 
-                  [src]="producto.imagen_url || 'assets/images/placeholder.jpg'" 
+                  [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/placeholder.jpg'" 
                   [alt]="producto.nombre"
                   class="suggestion-card-image"
                   loading="lazy"
@@ -235,7 +235,7 @@
                 <div class="product-image-wrapper">
                   <div class="product-image-container">
                     <img
-                      [src]="producto.imagen_url || 'assets/images/placeholder.jpg'"
+                      [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/placeholder.jpg'"
                       [alt]="producto.nombre"
                       class="product-image"
                       loading="lazy"

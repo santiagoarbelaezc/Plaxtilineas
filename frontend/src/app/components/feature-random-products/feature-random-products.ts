@@ -6,13 +6,12 @@ import { MenuStateService } from '../../services/menu-state.service';
 import { ProductoEditable } from '../../models/producto.model';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faChevronLeft, faChevronRight, faBoxOpen } from '@fortawesome/free-solid-svg-icons';
-import { AddToCartBtnComponent } from '../../cart/add-to-cart-btn/add-to-cart-btn.component';
 import { optimizeForThumbnail } from '../../utils/cloudinary-optimizer';
 
 @Component({
   selector: 'app-feature-random-products',
   standalone: true,
-  imports: [CommonModule, RouterModule, FontAwesomeModule, AddToCartBtnComponent],
+  imports: [CommonModule, RouterModule, FontAwesomeModule],
   templateUrl: './feature-random-products.html',
   styleUrls: ['./feature-random-products.css']
 })

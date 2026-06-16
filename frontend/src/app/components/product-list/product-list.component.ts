@@ -10,6 +10,7 @@ import { ProductSelectService } from '../../services/product-select.service';
 import { MenuStateService } from '../../services/menu-state.service';
 import { ProductoBackgroundComponent, ProductoBackgroundImage } from '../producto-background/producto-background';
 import { ProductoBackgroundService } from '../../services/producto-background.service';
+import { optimizeForCard } from '../../utils/cloudinary-optimizer';
 
 @Component({
   selector: 'app-product-list-component',
@@ -305,5 +306,9 @@ export class ProductListComponent implements OnInit {
       this.mostrarProductoBackground = false;
       console.log(`⚠️ No hay configuración de ProductoBackground para: ${nombreCategoria}`);
     }
+  }
+
+  optimizarImagen(url: string): string {
+    return optimizeForCard(url, 400); // Usamos 400px de ancho para las tarjetas del catálogo
   }
 }

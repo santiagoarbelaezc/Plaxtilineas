@@ -81,7 +81,7 @@
                   <span class="badge badge-new" *ngIf="producto.id % 6 === 0">Nuevo</span>
                 </div>
                 
-                <img [src]="producto.imagen_url" [alt]="producto.nombre" class="product-image">
+                <img [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/placeholder.jpg'" [alt]="producto.nombre" class="product-image" loading="lazy">
                 <div class="image-overlay"></div>
               </div>
             </div>
