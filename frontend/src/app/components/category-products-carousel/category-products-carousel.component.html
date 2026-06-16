@@ -57,10 +57,14 @@
 
         <!-- Grid de Productos -->
         <div class="productos-grid" #productosGrid>
-          <div *ngFor="let producto of productos" class="producto-card">
+          <div *ngFor="let producto of productos; let i = index" class="producto-card">
             <div class="producto-imagen-wrapper" (click)="verDetalles(producto.id, producto.nombre)">
-              <!-- Tags (Removed since novedad doesn't exist) -->
+              <!-- Tags (Promocionales) -->
               <div class="producto-tags">
+                <span *ngIf="i % 4 === 0" class="tag promo descuento-15">15% de descuento</span>
+                <span *ngIf="i % 4 === 1" class="tag promo ultimas-unidades">Últimas unidades</span>
+                <span *ngIf="i % 4 === 2" class="tag promo descuento-50">50% de descuento</span>
+                <span *ngIf="i % 4 === 3" class="tag promo promo-dia">Promo del día</span>
               </div>
               
               <img [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/placeholder.jpg'" 

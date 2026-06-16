@@ -26,10 +26,15 @@
       <!-- Viewport / Track -->
       <div class="carousel-viewport">
         <div class="products-grid" #productosGrid>
-          <div class="product-card" *ngFor="let prod of productos" (click)="verDetalles(prod.id, prod.nombre)">
+          <div class="product-card" *ngFor="let prod of productos; let i = index" (click)="verDetalles(prod.id, prod.nombre)">
             <div class="card-image-wrapper">
               <img [src]="prod.imagen_url ? optimizarImagen(prod.imagen_url) : 'assets/images/placeholder.jpg'" [alt]="prod.nombre" class="product-img" loading="lazy">
               <span class="badge" *ngIf="prod.subcategoria">{{ prod.subcategoria }}</span>
+              <!-- Tags (Promocionales) -->
+              <span *ngIf="i % 4 === 0" class="tag promo descuento-15">15% descuento</span>
+              <span *ngIf="i % 4 === 1" class="tag promo ultimas-unidades">Últimas unidades</span>
+              <span *ngIf="i % 4 === 2" class="tag promo descuento-50">50% descuento</span>
+              <span *ngIf="i % 4 === 3" class="tag promo promo-dia">Promo del día</span>
             </div>
 
             <div class="card-info">
