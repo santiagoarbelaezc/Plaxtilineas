@@ -1,0 +1,46 @@
+<!-- Carrusel Hero para Móvil (Visible solo en pantallas pequeñas) -->
+<div class="hero-carousel-mobile font-poppins">
+  <!-- Brand Header for Mobile landing -->
+  <div class="mobile-brand-header">
+    <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Plaxtilineas" class="mobile-main-logo">
+    <div class="header-text-wrap">
+      <h1 class="header-main-title">PLAXTILINEAS</h1>
+      <p class="header-tagline">Plásticos, Espumas y Empaques</p>
+    </div>
+  </div>
+
+  <div class="carousel-track-container" #scrollContainer (scroll)="onScroll($event)">
+    <div class="carousel-track">
+      <div class="carousel-slide" *ngFor="let item of items; let i = index" [id]="'slide-' + i">
+        <img [src]="item.img" [alt]="item.title" class="slide-img">
+        <div class="slide-overlay">
+          <div class="slide-content">
+            <h2 class="slide-title">{{ item.title }}</h2>
+            <p class="slide-subtitle text-center px-6">{{ item.subtitle }}</p>
+            <a [routerLink]="item.link" class="slide-cta">Descubrir</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Indicadores (Dots) -->
+  <div class="carousel-dots">
+    <button *ngFor="let dot of items; let i = index" 
+            (click)="scrollToSlide(i)" 
+            [class.active]="i === currentSlide"
+            class="dot-btn"></button>
+  </div>
+</div>
+
+<!-- Desktop Side-by-Side View -->
+<section class="section font-poppins">
+  <div class="box group" *ngFor="let item of items" [routerLink]="item.link">
+    <img [src]="item.img" [alt]="item.title" class="bg-img" />
+    <div class="content transition-opacity duration-500 flex flex-col items-center">
+      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Plaxtilineas Logo" class="card-logo">
+      <h3>{{ item.title }}</h3>
+      <span class="btn mt-2 inline-block">Ver Colección</span>
+    </div>
+  </div>
+</section>
