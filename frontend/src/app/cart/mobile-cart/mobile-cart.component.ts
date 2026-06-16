@@ -118,24 +118,24 @@ import { toSignal } from '@angular/core/rxjs-interop';
           }
         </div>
 
-        <!-- Footer / Checkout -->
+        <!-- Footer / Checkout (Estilo App Móvil Horizontal) -->
         @if (items().length > 0) {
-          <div class="border-t border-gray-100 bg-white p-5 space-y-4 pb-safe shadow-[0_-8px_30px_rgba(0,0,0,0.03)]">
-            <div class="flex justify-between items-center bg-gray-50 rounded-2xl p-4 border border-gray-100">
-              <span class="text-sm font-bold text-gray-500 uppercase tracking-wider">Total</span>
-              <span class="text-xl font-extrabold text-[#368c44] tracking-tight">{{ formatearPrecio(totalPrice()) }}</span>
+          <div class="fixed left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-100 p-4 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex items-center justify-between gap-4 z-50" style="bottom: 82px;">
+            <div class="flex flex-col text-left">
+              <span class="text-[10px] text-gray-400 font-extrabold uppercase tracking-wider">Total</span>
+              <span class="text-lg font-extrabold text-[#368c44] tracking-tight">{{ formatearPrecio(totalPrice()) }}</span>
             </div>
 
             <button 
               [disabled]="items().length === 0"
               routerLink="/carrito"
               (click)="closeCart()"
-              class="w-full py-4 rounded-2xl bg-gradient-to-r from-[#368c44] to-[#25d366] text-white font-extrabold text-[15px] uppercase tracking-wider shadow-md hover:shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2 border-none">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                <line x1="1" y1="10" x2="23" y2="10"></line>
+              class="flex-1 max-w-[220px] py-3.5 rounded-2xl bg-gradient-to-r from-[#368c44] to-[#25d366] text-white font-extrabold text-sm uppercase tracking-wider shadow-md hover:shadow-lg active:scale-[0.96] transition-all flex items-center justify-center gap-2 border-none">
+              <span>Finalizar Pedido</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
-              Finalizar Pedido
             </button>
           </div>
         }
