@@ -75,7 +75,7 @@
           <div class="elegant-news-grid" *ngIf="comp.contenido?.imageUrl2">
 
             <!-- Anuncio 1 -->
-            <div class="elegant-news-card">
+            <a [routerLink]="comp.contenido?.linkUrl" class="elegant-news-card">
               <div class="news-image-wrapper">
                 <img [src]="comp.contenido?.imageUrl" [alt]="comp.contenido?.titulo" class="news-img">
               </div>
@@ -94,14 +94,14 @@
                   </li>
                 </ul>
 
-                <a [routerLink]="comp.contenido?.linkUrl" class="news-card-link-btn">
+                <div class="news-card-link-btn">
                   {{ comp.contenido?.btnText || 'Descubrir más →' }}
-                </a>
+                </div>
               </div>
-            </div>
+            </a>
 
             <!-- Anuncio 2 -->
-            <div class="elegant-news-card">
+            <a [routerLink]="comp.contenido?.linkUrl" class="elegant-news-card">
               <div class="news-image-wrapper">
                 <img [src]="comp.contenido?.imageUrl2" [alt]="comp.contenido?.titulo2" class="news-img">
               </div>
@@ -120,16 +120,16 @@
                   </li>
                 </ul>
 
-                <a [routerLink]="comp.contenido?.linkUrl" class="news-card-link-btn">
+                <div class="news-card-link-btn">
                   {{ comp.contenido?.btnText || 'Descubrir más →' }}
-                </a>
+                </div>
               </div>
-            </div>
+            </a>
 
           </div>
 
           <!-- Si solo hay 1 imagen configurada, mostramos el layout de ancho completo tradicional -->
-          <div class="elegant-news-card" *ngIf="!comp.contenido?.imageUrl2">
+          <a [routerLink]="comp.contenido?.linkUrl" class="elegant-news-card" *ngIf="!comp.contenido?.imageUrl2">
             <div class="news-image-wrapper">
               <img [src]="comp.contenido?.imageUrl" [alt]="comp.contenido?.titulo" class="news-img">
             </div>
@@ -148,11 +148,11 @@
                 </li>
               </ul>
 
-              <a [routerLink]="comp.contenido?.linkUrl" class="news-card-link-btn">
+              <div class="news-card-link-btn">
                 {{ comp.contenido?.btnText || 'Descubrir más →' }}
-              </a>
+              </div>
             </div>
-          </div>
+          </a>
 
         </div>
       </section>
@@ -230,7 +230,7 @@
           <div class="elegant-news-grid" *ngIf="comp.contenido?.imageUrl2">
 
             <!-- Anuncio 1 -->
-            <div class="elegant-news-card">
+            <a [routerLink]="comp.contenido?.linkUrl" class="elegant-news-card">
               <div class="news-image-wrapper">
                 <img [src]="comp.contenido?.imageUrl" [alt]="comp.contenido?.titulo" class="news-img">
               </div>
@@ -249,14 +249,14 @@
                   </li>
                 </ul>
 
-                <a [routerLink]="comp.contenido?.linkUrl" class="news-card-link-btn">
+                <div class="news-card-link-btn">
                   {{ comp.contenido?.btnText || 'Descubrir más →' }}
-                </a>
+                </div>
               </div>
-            </div>
+            </a>
 
             <!-- Anuncio 2 -->
-            <div class="elegant-news-card">
+            <a [routerLink]="comp.contenido?.linkUrl" class="elegant-news-card">
               <div class="news-image-wrapper">
                 <img [src]="comp.contenido?.imageUrl2" [alt]="comp.contenido?.titulo2" class="news-img">
               </div>
@@ -275,16 +275,16 @@
                   </li>
                 </ul>
 
-                <a [routerLink]="comp.contenido?.linkUrl" class="news-card-link-btn">
+                <div class="news-card-link-btn">
                   {{ comp.contenido?.btnText || 'Descubrir más →' }}
-                </a>
+                </div>
               </div>
-            </div>
+            </a>
 
           </div>
 
           <!-- Si solo hay 1 imagen configurada, mostramos el layout de ancho completo tradicional -->
-          <div class="elegant-news-card" *ngIf="!comp.contenido?.imageUrl2">
+          <a [routerLink]="comp.contenido?.linkUrl" class="elegant-news-card" *ngIf="!comp.contenido?.imageUrl2">
             <div class="news-image-wrapper">
               <img [src]="comp.contenido?.imageUrl" [alt]="comp.contenido?.titulo" class="news-img">
             </div>
@@ -303,11 +303,11 @@
                 </li>
               </ul>
 
-              <a [routerLink]="comp.contenido?.linkUrl" class="news-card-link-btn">
+              <div class="news-card-link-btn">
                 {{ comp.contenido?.btnText || 'Descubrir más →' }}
-              </a>
+              </div>
             </div>
-          </div>
+          </a>
 
         </div>
       </section>

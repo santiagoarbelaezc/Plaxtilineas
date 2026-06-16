@@ -322,29 +322,8 @@
   </div>
 </div>
 
-<!-- Modal Éxito (Admin Login) -->
-<div class="success-modal-overlay" *ngIf="showSuccessModal && userToRedirect?.rol === 'admin'" (click)="closeSuccessModal()">
-  <div class="success-modal-card" 
-       [ngClass]="(themeService.theme$ | async) === 'dark' ? 'modal-dark' : 'modal-light'"
-       (click)="$event.stopPropagation()">
-    
-    <div class="success-modal-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-      </svg>
-    </div>
-    
-    <h3 class="success-modal-title">¡Ingreso Exitoso!</h3>
-    <p class="success-modal-body">Bienvenido a Plaxtilineas</p>
-    
-    <button type="button" class="btn-success-confirm" (click)="closeSuccessModal()">
-      Aceptar
-    </button>
-  </div>
-</div>
-
-<!-- Pantalla de Éxito Inmersiva (Usuario Normal) -->
-<div class="success-fullscreen-overlay" *ngIf="showSuccessModal && userToRedirect?.rol !== 'admin'"
+<!-- Pantalla de Éxito Inmersiva (Cualquier Usuario/Admin) -->
+<div class="success-fullscreen-overlay" *ngIf="showSuccessModal"
      [ngClass]="(themeService.theme$ | async) === 'dark' ? 'success-dark' : 'success-light'">
   <div class="success-fullscreen-content">
     
@@ -365,7 +344,7 @@
     <!-- Título y Mensajes de Bienvenida -->
     <div class="success-text-container">
       <h2 class="success-title">¡Ingreso Exitoso!</h2>
-      <p class="success-subtitle">Bienvenido a Plaxtilineas, {{ userToRedirect?.nombre || 'cliente' }}</p>
+      <p class="success-subtitle">Bienvenido a Plaxtilineas, {{ userToRedirect?.nombre || (userToRedirect?.rol === 'admin' ? 'Administrador' : 'cliente') }}</p>
     </div>
 
     <!-- Barra de progreso de redirección -->
@@ -373,6 +352,6 @@
       <div class="success-progress-bar"></div>
     </div>
 
-    <p class="success-status-text">Cargando catálogo premium...</p>
+    <p class="success-status-text">{{ userToRedirect?.rol === 'admin' ? 'Cargando panel de administración...' : 'Cargando catálogo premium...' }}</p>
   </div>
 </div>

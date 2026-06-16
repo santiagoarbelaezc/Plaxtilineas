@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ComponentesService, ComponenteDinamico } from '../../../services/componentes.service';
 import { CategoriasService } from '../../../services/categorias.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-personalizar-web',
@@ -218,7 +219,7 @@ export class PersonalizarWeb implements OnInit {
         error: (err) => {
           item.subiendo = false;
           console.error(err);
-          alert('Error al subir imagen.');
+          Swal.fire('Error', 'Error al subir la imagen.', 'error');
         }
       });
     }
@@ -314,7 +315,7 @@ export class PersonalizarWeb implements OnInit {
             this.subiendoImagen = false;
           }
           console.error('Error al subir imagen:', err);
-          alert('Error al subir la imagen. Intenta de nuevo.');
+          Swal.fire('Error', 'Error al subir la imagen. Intenta de nuevo.', 'error');
         }
       });
     }
@@ -381,15 +382,30 @@ export class PersonalizarWeb implements OnInit {
   // ─── Eliminar ───────────────────────────────────────
   eliminarComponente(id: number, event: Event): void {
     event.stopPropagation();
-    if (confirm('¿Estás seguro de que deseas eliminar este componente dinámico? Esta acción no se puede deshacer.')) {
-      this.componentesService.eliminarComponente(id).subscribe({
-        next: () => {
-          this.mostrarMensaje('Componente eliminado correctamente');
-          this.cargarComponentes();
-        },
-        error: (err) => console.error(err)
-      });
-    }
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción eliminará este componente dinámico permanentemente.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e74c3c',
+      cancelButtonColor: '#aaa',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.componentesService.eliminarComponente(id).subscribe({
+          next: () => {
+            this.mostrarMensaje('Componente eliminado correctamente');
+            this.cargarComponentes();
+            Swal.fire('¡Eliminado!', 'El componente ha sido eliminado.', 'success');
+          },
+          error: (err) => {
+            console.error(err);
+            Swal.fire('Error', 'No se pudo eliminar el componente dinámico.', 'error');
+          }
+        });
+      }
+    });
   }
 
   // ─── Toast ──────────────────────────────────────────

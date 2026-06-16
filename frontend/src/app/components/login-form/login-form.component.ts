@@ -271,8 +271,7 @@ export class LoginFormComponent implements OnInit {
         this.successMsg = '¡Ingreso exitoso con Google! Bienvenido a Plaxtilineas.';
         this.showSuccessModal = true;
         this.userToRedirect = res.usuario;
-        
-        const delay = res.usuario?.rol === 'admin' ? 1500 : 2700;
+        const delay = 2700;
         setTimeout(() => {
           if (this.showSuccessModal) {
             this.closeSuccessModal();
@@ -328,8 +327,7 @@ export class LoginFormComponent implements OnInit {
           this.successMsg = '¡Ingreso exitoso! Bienvenido a Plaxtilineas.';
           this.showSuccessModal = true;
           this.userToRedirect = res.usuario;
-          
-          const delay = res.usuario?.rol === 'admin' ? 1500 : 2700;
+          const delay = 2700;
           setTimeout(() => {
             if (this.showSuccessModal) {
               this.closeSuccessModal();
@@ -367,8 +365,7 @@ export class LoginFormComponent implements OnInit {
         this.successMsg = '¡Registro exitoso! Bienvenido a Plaxtilineas.';
         this.showSuccessModal = true;
         this.userToRedirect = res.usuario;
-        
-        const delay = res.usuario?.rol === 'admin' ? 1500 : 2700;
+        const delay = 2700;
         setTimeout(() => {
           if (this.showSuccessModal) {
             this.closeSuccessModal();
