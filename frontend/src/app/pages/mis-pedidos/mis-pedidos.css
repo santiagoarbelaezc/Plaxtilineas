@@ -426,51 +426,108 @@
 }
 .producto-item {
   display: grid;
-  grid-template-columns: 80px 1fr;
-  gap: 20px;
+  grid-template-columns: 120px 1fr auto;
+  gap: 1.5rem;
   align-items: center;
-  padding: 16px;
-  background: #ffffff;
-  border: 1px solid #e5e5e5;
-  border-radius: 2px;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid #e5e5e5;
+  background: transparent;
+}
+.producto-item:last-child {
+  border-bottom: none;
 }
 .producto-img-wrapper {
-  width: 80px;
-  height: 80px;
   background: #f9f9f9;
-  border: 1px solid #eeeeee;
+  width: 120px;
+  height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid #eee;
+  flex-shrink: 0;
 }
 .producto-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: 4px;
+  padding: 8px;
+  mix-blend-mode: multiply;
 }
-.producto-info {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.producto-nombre {
-  font-weight: 700;
-  color: #111111;
-  font-size: 1rem;
-}
-.producto-pricing {
+.producto-img-placeholder {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 0.9rem;
-  color: #555555;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.producto-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-right: 2rem;
+  text-align: left;
+}
+.producto-nombre {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #111;
+  margin: 0;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+.producto-subtitle {
+  font-size: 0.85rem;
+  color: #555;
+  margin: 0;
+  font-weight: 500;
+}
+.producto-cu {
+  font-size: 0.85rem;
+  color: #555;
+  font-weight: 700;
+}
+.producto-pricing-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
 }
 .producto-subtotal {
+  font-size: 1.3rem;
   font-weight: 800;
-  color: #111111;
-  font-size: 1.1rem;
-  margin-top: 4px;
+  color: #111;
+}
+.static-quantity-selector {
+  display: flex;
+  align-items: center;
+  border: 1px solid #111;
+  height: 36px;
+  width: 100px;
+  background: #fff;
+}
+.qty-btn-disabled {
+  width: 30px;
+  height: 100%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ccc;
+  font-weight: bold;
+  user-select: none;
+}
+.static-quantity-selector span:first-child {
+  border-right: 1px solid #111;
+}
+.static-quantity-selector span:last-child {
+  border-left: 1px solid #111;
+}
+.qty-val {
+  flex: 1;
+  text-align: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: #111;
 }
 
 /* ── INFO GRID (envío / pago) ─────────────────────────────────────────── */

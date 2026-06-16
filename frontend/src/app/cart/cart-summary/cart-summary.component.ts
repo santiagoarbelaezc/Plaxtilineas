@@ -42,9 +42,9 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
     <app-navbar></app-navbar>
 
     <!-- 1. Diseño Móvil (No Flotante, alineado con el navbar) -->
-    <div class="mobile-only bg-white min-h-screen font-sans" style="padding-top: 60px; padding-bottom: 100px;">
+    <div class="mobile-only bg-white min-h-screen font-sans" style="padding-top: 100px; padding-bottom: 180px;">
       <!-- Header del Carrito (Estilo Móvil) -->
-      <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-white sticky top-[60px] z-10">
+      <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-white sticky top-[80px] z-10">
         <button (click)="goBack()" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-800 active:scale-95 transition-all">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -136,27 +136,8 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
             </div>
           }
 
-          <!-- Resumen y Checkout (Móvil) -->
-          <div class="bg-white rounded-2xl p-5 space-y-4 border border-gray-100 shadow-sm">
-            <div class="flex justify-between items-center bg-gray-50 rounded-2xl p-4 border border-gray-100">
-              <span class="text-sm font-bold text-gray-500 uppercase tracking-wider">Total</span>
-              <span class="text-xl font-extrabold text-[#368c44] tracking-tight">{{ formatearPrecio(totalPrice()) }}</span>
-            </div>
-
-            <button 
-              (click)="iniciarCheckout()"
-              [disabled]="items().length === 0"
-              class="w-full py-4 rounded-2xl bg-gradient-to-r from-[#368c44] to-[#25d366] text-white font-extrabold text-[15px] uppercase tracking-wider shadow-md hover:shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2 border-none">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                <line x1="1" y1="10" x2="23" y2="10"></line>
-              </svg>
-              Finalizar Pedido
-            </button>
-          </div>
-
           <!-- Support Block (Móvil) -->
-          <div class="mt-4 bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center gap-3">
+          <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center gap-3">
             <div style="width: 40px; height: 40px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0;">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
             </div>
@@ -167,6 +148,25 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
             <a [href]="contactarAsesorWhatsApp()" target="_blank" rel="noopener noreferrer" class="px-3 py-2 bg-white border border-gray-900 text-gray-900 font-extrabold text-[11px] uppercase tracking-wider rounded-xl active:scale-95 transition-all text-center text-decoration-none">
               Contactar
             </a>
+          </div>
+
+          <!-- Barra de Finalizar Compra Fija (Estilo App Móvil) -->
+          <div class="fixed bottom-[60px] left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-100 p-4 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex items-center justify-between gap-4 z-50">
+            <div class="flex flex-col text-left">
+              <span class="text-[10px] text-gray-400 font-extrabold uppercase tracking-wider">Total</span>
+              <span class="text-lg font-extrabold text-[#368c44] tracking-tight">{{ formatearPrecio(totalPrice()) }}</span>
+            </div>
+
+            <button 
+              (click)="iniciarCheckout()"
+              [disabled]="items().length === 0"
+              class="flex-1 max-w-[220px] py-3.5 rounded-2xl bg-gradient-to-r from-[#368c44] to-[#25d366] text-white font-extrabold text-sm uppercase tracking-wider shadow-md hover:shadow-lg active:scale-[0.96] transition-all flex items-center justify-center gap-2 border-none">
+              <span>Finalizar Pedido</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
           </div>
         }
       </div>
