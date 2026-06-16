@@ -8,10 +8,11 @@
       <!-- Barra de Filtros -->
       <div class="category-filters-container">
         <div class="category-filters">
+
           <button class="filter-btn" 
                   [class.active]="categoriaSeleccionadaId === null"
                   (click)="seleccionarCategoria(null)">
-            Destacados
+            Todos los productos
           </button>
           
           <button *ngFor="let cat of categorias" 
