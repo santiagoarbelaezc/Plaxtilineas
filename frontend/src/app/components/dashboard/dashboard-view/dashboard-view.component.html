@@ -140,9 +140,198 @@
             </div>
           </div>
 
-          <!-- Imagen de Mateo -->
           <div class="mateo-banner-image-wrapper">
             <img src="assets/images/logo-ia.png" alt="Logo IA Asistente" class="mateo-banner-image filter-logo-ia">
+          </div>
+        </section>
+
+        <!-- BUSCADOR INTELIGENTE IA -->
+        <section class="admin-card ai-search-section">
+          <div class="ai-search-header">
+            <h2 class="card-title">
+              <fa-icon [icon]="faSearch" class="section-icon"></fa-icon>
+              Centro de Comando IA
+            </h2>
+            <p class="card-subtitle">Pregúntale a nuestro motor inteligente para analizar o navegar el dashboard</p>
+          </div>
+
+          <div class="ai-search-body">
+            <form (submit)="$event.preventDefault(); procesarBusquedaIA(searchQueryInput.value)" class="ai-search-form">
+              <div class="ai-search-input-wrapper">
+                <fa-icon [icon]="faSearch" class="search-input-icon"></fa-icon>
+                <input 
+                  #searchQueryInput
+                  type="text" 
+                  [value]="searchQuery" 
+                  placeholder="Ej: productos con menos stock, usuarios registrados, mas vendidos..." 
+                  class="ai-search-input"
+                  (keyup.enter)="procesarBusquedaIA(searchQueryInput.value)"
+                />
+                <button 
+                  type="button" 
+                  *ngIf="searchQueryInput.value" 
+                  (click)="searchQueryInput.value = ''; limpiarBusqueda()" 
+                  class="clear-search-btn"
+                  title="Limpiar búsqueda"
+                >
+                  ✕
+                </button>
+              </div>
+              <button 
+                type="button" 
+                (click)="procesarBusquedaIA(searchQueryInput.value)" 
+                class="ai-search-btn"
+                [disabled]="isSearching || !searchQueryInput.value.trim()"
+              >
+                <span *ngIf="!isSearching">Consultar IA</span>
+                <span *ngIf="isSearching" class="loading-spinner-search">
+                  Cargando...
+                </span>
+              </button>
+            </form>
+
+            <!-- Sugerencias rápidas (chips) -->
+            <div class="search-suggestions">
+              <span class="suggestion-label">Sugerencias rápidas:</span>
+              <button type="button" class="suggestion-chip" (click)="searchQueryInput.value = 'productos con menos stock'; procesarBusquedaIA('productos con menos stock')">
+                <fa-icon [icon]="faBoxes" class="chip-icon"></fa-icon> Productos con menos stock
+              </button>
+              <button type="button" class="suggestion-chip" (click)="searchQueryInput.value = 'productos mas vendidos'; procesarBusquedaIA('productos mas vendidos')">
+                <fa-icon [icon]="faChartLine" class="chip-icon"></fa-icon> Productos más vendidos
+              </button>
+              <button type="button" class="suggestion-chip" (click)="searchQueryInput.value = 'usuarios registrados'; procesarBusquedaIA('usuarios registrados')">
+                <fa-icon [icon]="faUserShield" class="chip-icon"></fa-icon> Usuarios registrados
+              </button>
+              <button type="button" class="suggestion-chip" (click)="searchQueryInput.value = 'pedidos recientes'; procesarBusquedaIA('pedidos recientes')">
+                <fa-icon [icon]="faShoppingCart" class="chip-icon"></fa-icon> Pedidos recientes
+              </button>
+            </div>
+
+            <!-- Cargando -->
+            <div *ngIf="isSearching" class="ai-search-loading">
+              <div class="ai-loader-bar"></div>
+              <p>Procesando consulta e interpretando intenciones con Mateo IA...</p>
+            </div>
+
+            <!-- Panel de Resultados de Búsqueda -->
+            <div *ngIf="searchResults && !isSearching" class="search-results-panel">
+              <div class="results-header">
+                <h3 class="results-title">
+                  Resultados del análisis para: <span>"{{ searchQuery }}"</span>
+                </h3>
+                <button type="button" class="close-results-btn" (click)="searchQueryInput.value = ''; limpiarBusqueda()">
+                  Cerrar resultados
+                </button>
+              </div>
+
+              <!-- Caso 1: Stock Bajo -->
+              <div *ngIf="searchType === 'stock'" class="results-content scrollable-results">
+                <div class="results-table-wrapper">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Producto</th>
+                        <th>Subcategoría</th>
+                        <th>Precio</th>
+                        <th>Stock Actual</th>
+                        <th>Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let prod of searchResults">
+                        <td class="product-cell">
+                          <img [src]="prod.imagen_url || 'assets/images/placeholder.png'" class="prod-thumb" alt="" />
+                          <span class="prod-name">{{ prod.nombre }}</span>
+                        </td>
+                        <td>{{ prod.subcategoria }}</td>
+                        <td>{{ prod.precio | currency:'USD':'symbol':'1.0-0' }}</td>
+                        <td>
+                          <div class="stock-progress-container">
+                            <span class="stock-num">{{ prod.stock }}</span>
+                            <div class="stock-progress-bar">
+                              <div 
+                                class="stock-fill" 
+                                [style.width.%]="(prod.stock / 20) * 100 > 100 ? 100 : (prod.stock / 20) * 100"
+                                [class.critical]="prod.stock <= 5"
+                                [class.warning]="prod.stock > 5 && prod.stock <= 10"
+                                [class.normal]="prod.stock > 10"
+                              ></div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <span class="status-badge" [class.danger]="prod.stock <= 5" [class.warning]="prod.stock > 5 && prod.stock <= 10" [class.success]="prod.stock > 10">
+                            {{ prod.stock <= 5 ? 'Crítico' : (prod.stock <= 10 ? 'Bajo' : 'Óptimo') }}
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="action-footer">
+                  <a routerLink="/admin/inventario" class="footer-action-link">Ir a Gestión de Inventario completa →</a>
+                </div>
+              </div>
+
+              <!-- Caso 2: Más Vendidos -->
+              <div *ngIf="searchType === 'ventas'" class="results-content scrollable-results">
+                <div class="results-table-wrapper">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Producto</th>
+                        <th>Unidades Vendidas</th>
+                        <th>Total Ingresos (Aprox)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of searchResults">
+                        <td class="product-cell">
+                          <img [src]="item.imagen_url || 'assets/images/placeholder.png'" class="prod-thumb" alt="" />
+                          <span class="prod-name">{{ item.nombre }}</span>
+                        </td>
+                        <td class="bold-text">{{ item.cantidad }} u.</td>
+                        <td class="price-text">{{ item.totalVendido | currency:'USD':'symbol':'1.0-0' }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="action-footer">
+                  <a routerLink="/admin/analiticas" class="footer-action-link">Ver analíticas de ventas detalladas →</a>
+                </div>
+              </div>
+
+              <!-- Caso 3: Fallback (Búsqueda por Nombre) -->
+              <div *ngIf="searchType === 'nombre'" class="results-content">
+                <div *ngIf="searchResults.length === 0" class="no-results-state">
+                  <p>No se encontraron productos que coincidan con la búsqueda.</p>
+                </div>
+                <div *ngIf="searchResults.length > 0" class="results-table-wrapper">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Producto</th>
+                        <th>Subcategoría</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let prod of searchResults">
+                        <td class="product-cell">
+                          <img [src]="prod.imagen_url || 'assets/images/placeholder.png'" class="prod-thumb" alt="" />
+                          <span class="prod-name">{{ prod.nombre }}</span>
+                        </td>
+                        <td>{{ prod.subcategoria || 'General' }}</td>
+                        <td>{{ prod.precio | currency:'USD':'symbol':'1.0-0' }}</td>
+                        <td>{{ prod.stock || 0 }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
           </div>
         </section>
 

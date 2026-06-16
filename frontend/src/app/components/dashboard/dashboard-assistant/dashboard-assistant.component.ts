@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../../../enviroments/environment';
+import { ProductosService } from '../../../services/productos.service';
+import { PedidoService } from '../../../services/pedido.service';
 
 interface Message {
   id: number;
@@ -51,7 +53,12 @@ export class DashboardAssistantComponent implements AfterViewChecked {
     }
   ];
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient, 
+    private router: Router,
+    private productosService: ProductosService,
+    private pedidoService: PedidoService
+  ) {}
 
   ngAfterViewChecked() {
     this.scrollToBottom();
@@ -155,10 +162,11 @@ export class DashboardAssistantComponent implements AfterViewChecked {
   sendMessage() {
     if (!this.newMessage.trim()) return;
 
+    const queryText = this.newMessage;
     // Agregar mensaje del usuario
     const userMessage: Message = {
       id: Date.now(),
-      text: this.newMessage,
+      text: queryText,
       sender: 'user',
       timestamp: new Date()
     };
@@ -169,7 +177,204 @@ export class DashboardAssistantComponent implements AfterViewChecked {
     
     setTimeout(() => this.scrollToBottom(), 50);
 
-    // Preparar payload de historial para backend
+    const normalizedQuery = queryText.toLowerCase().trim();
+
+    // 1. Detectar intención de stock bajo
+    if (
+      normalizedQuery.includes('stock') ||
+      normalizedQuery.includes('inventario') ||
+      normalizedQuery.includes('escasez') ||
+      normalizedQuery.includes('pocos') ||
+      normalizedQuery.includes('bajo') ||
+      normalizedQuery.includes('menos')
+    ) {
+      this.productosService.obtenerProductos().subscribe({
+        next: (productos) => {
+          this.isTyping = false;
+          // Ordenar por stock ascendente
+          const ordenados = [...productos].sort((a, b) => (a.stock || 0) - (b.stock || 0)).slice(0, 5);
+          
+          let responseText = 'Aquí tienes los productos con menor stock:\n';
+          ordenados.forEach(prod => {
+            const stockVal = prod.stock || 0;
+            const alertTag = stockVal <= 5 ? '🚨 CRÍTICO' : (stockVal <= 10 ? '⚠️ BAJO' : '✅ ÓPTIMO');
+            responseText += `\n• **${prod.nombre}**: ${stockVal} unidades (${alertTag}) - Precio: $${prod.precio}`;
+          });
+
+          this.messages.push({
+            id: Date.now(),
+            text: responseText,
+            sender: 'assistant',
+            timestamp: new Date()
+          });
+          setTimeout(() => this.scrollToBottom(), 50);
+        },
+        error: (err) => {
+          console.error(err);
+          this.isTyping = false;
+          this.messages.push({
+            id: Date.now(),
+            text: 'Lo siento, no pude obtener el inventario de productos.',
+            sender: 'assistant',
+            timestamp: new Date()
+          });
+          setTimeout(() => this.scrollToBottom(), 50);
+        }
+      });
+      return;
+    }
+
+    // 2. Detectar intención de productos más vendidos / ventas
+    if (
+      normalizedQuery.includes('vendido') ||
+      normalizedQuery.includes('ventas') ||
+      normalizedQuery.includes('popular') ||
+      normalizedQuery.includes('comprado') ||
+      normalizedQuery.includes('salida')
+    ) {
+      this.pedidoService.adminObtenerTodos().subscribe({
+        next: (res) => {
+          this.isTyping = false;
+          const ventasPorProducto: { [id: number]: { nombre: string, cantidad: number, totalVendido: number } } = {};
+          if (res && res.pedidos) {
+            res.pedidos.forEach(pedido => {
+              if (pedido.detalles) {
+                pedido.detalles.forEach(detalle => {
+                  const pid = detalle.producto_id;
+                  if (!ventasPorProducto[pid]) {
+                    ventasPorProducto[pid] = {
+                      nombre: detalle.nombre_producto,
+                      cantidad: 0,
+                      totalVendido: 0
+                    };
+                  }
+                  ventasPorProducto[pid].cantidad += detalle.cantidad;
+                  ventasPorProducto[pid].totalVendido += (detalle.subtotal || (detalle.cantidad * detalle.precio_unitario));
+                });
+              }
+            });
+          }
+          const ordenados = Object.values(ventasPorProducto).sort((a, b) => b.cantidad - a.cantidad).slice(0, 5);
+          
+          let responseText = 'Aquí tienes los productos más vendidos en el sistema:\n';
+          ordenados.forEach((item, index) => {
+            responseText += `\n${index + 1}. **${item.nombre}**: ${item.cantidad} unidades vendidas (Ingresos: $${item.totalVendido})`;
+          });
+
+          this.messages.push({
+            id: Date.now(),
+            text: responseText,
+            sender: 'assistant',
+            timestamp: new Date()
+          });
+          setTimeout(() => this.scrollToBottom(), 50);
+        },
+        error: (err) => {
+          console.error(err);
+          this.isTyping = false;
+          this.messages.push({
+            id: Date.now(),
+            text: 'Lo siento, no pude obtener los datos de ventas.',
+            sender: 'assistant',
+            timestamp: new Date()
+          });
+          setTimeout(() => this.scrollToBottom(), 50);
+        }
+      });
+      return;
+    }
+
+    // 3. Redirecciones
+    // Usuarios / clientes
+    if (
+      normalizedQuery.includes('usuario') ||
+      normalizedQuery.includes('cliente') ||
+      normalizedQuery.includes('persona') ||
+      normalizedQuery.includes('registrado')
+    ) {
+      this.isTyping = false;
+      this.messages.push({
+        id: Date.now(),
+        text: '¡Entendido! Te estoy llevando a la sección de Usuarios Registrados...',
+        sender: 'assistant',
+        timestamp: new Date()
+      });
+      setTimeout(() => {
+        this.router.navigate(['/admin/usuarios']);
+        this.closeChat();
+      }, 1500);
+      return;
+    }
+
+    // Pedidos / órdenes
+    if (
+      normalizedQuery.includes('pedido') ||
+      normalizedQuery.includes('orden') ||
+      normalizedQuery.includes('compra')
+    ) {
+      this.isTyping = false;
+      this.messages.push({
+        id: Date.now(),
+        text: '¡Entendido! Te estoy llevando a la gestión de Pedidos...',
+        sender: 'assistant',
+        timestamp: new Date()
+      });
+      setTimeout(() => {
+        this.router.navigate(['/admin/pedidos']);
+        this.closeChat();
+      }, 1500);
+      return;
+    }
+
+    // Categorías
+    if (normalizedQuery.includes('categoria')) {
+      this.isTyping = false;
+      this.messages.push({
+        id: Date.now(),
+        text: 'Te estoy redirigiendo a la gestión de Categorías...',
+        sender: 'assistant',
+        timestamp: new Date()
+      });
+      setTimeout(() => {
+        this.router.navigate(['/admin/categorias']);
+        this.closeChat();
+      }, 1500);
+      return;
+    }
+
+    // Subcategorías
+    if (normalizedQuery.includes('subcat')) {
+      this.isTyping = false;
+      this.messages.push({
+        id: Date.now(),
+        text: 'Te estoy redirigiendo a la gestión de Subcategorías...',
+        sender: 'assistant',
+        timestamp: new Date()
+      });
+      setTimeout(() => {
+        this.router.navigate(['/admin/subcategorias']);
+        this.closeChat();
+      }, 1500);
+      return;
+    }
+
+    // PQR
+    if (normalizedQuery.includes('pqr') || normalizedQuery.includes('mensaje') || normalizedQuery.includes('contacto')) {
+      this.isTyping = false;
+      this.messages.push({
+        id: Date.now(),
+        text: 'Te estoy redirigiendo a la gestión de PQR...',
+        sender: 'assistant',
+        timestamp: new Date()
+      });
+      setTimeout(() => {
+        this.router.navigate(['/admin/pqr-admin']);
+        this.closeChat();
+      }, 1500);
+      return;
+    }
+
+    // Fallback: Llamada al backend
     const payload = {
       mensajes: this.messages.map(m => ({
         sender: m.sender,
@@ -177,7 +382,6 @@ export class DashboardAssistantComponent implements AfterViewChecked {
       }))
     };
 
-    // Llamada real al backend
     this.http.post<any>(this.apiUrl, payload).subscribe({
       next: (res) => {
         this.isTyping = false;
@@ -194,7 +398,7 @@ export class DashboardAssistantComponent implements AfterViewChecked {
         if (res.redirect) {
           setTimeout(() => {
             this.router.navigateByUrl(res.redirect);
-          }, 1500); // 1.5s delay para que el usuario lea el mensaje
+          }, 1500);
         }
 
         // Procesar Impresión

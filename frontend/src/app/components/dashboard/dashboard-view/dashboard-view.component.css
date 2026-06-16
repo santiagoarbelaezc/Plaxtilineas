@@ -799,3 +799,353 @@ body.dark-theme .filter-logo-ia {
   color: #a78bfa;
   border: 1px solid rgba(139, 92, 246, 0.3);
 }
+
+/* ===========================
+   BUSCADOR INTELIGENTE IA
+   =========================== */
+.ai-search-section {
+  border-color: rgba(54, 140, 68, 0.2) !important;
+  transition: all 0.3s ease;
+}
+
+.ai-search-header {
+  margin-bottom: 20px;
+}
+
+.ai-search-form {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.ai-search-input-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-icon {
+  position: absolute;
+  left: 15px;
+  color: var(--dash-text-muted);
+  font-size: 1.1rem;
+  pointer-events: none;
+}
+
+.ai-search-input {
+  width: 100%;
+  padding: 14px 45px 14px 45px;
+  background: var(--dash-bg-input);
+  border: 1px solid var(--dash-border);
+  border-radius: 10px;
+  color: var(--dash-text-main);
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.ai-search-input:focus {
+  border-color: #368C44;
+  box-shadow: 0 0 10px rgba(54, 140, 68, 0.2);
+  background: var(--dash-bg-card);
+}
+
+.clear-search-btn {
+  position: absolute;
+  right: 15px;
+  background: none;
+  border: none;
+  color: var(--dash-text-muted);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: color 0.2s;
+}
+
+.clear-search-btn:hover {
+  color: var(--dash-text-main);
+}
+
+.ai-search-btn {
+  padding: 0 25px;
+  background: #368C44;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.ai-search-btn:hover:not(:disabled) {
+  background: #2a6f35;
+  box-shadow: 0 4px 12px rgba(54, 140, 68, 0.35);
+  transform: translateY(-1px);
+}
+
+.ai-search-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Sugerencias */
+.search-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.suggestion-label {
+  font-size: 0.85rem;
+  color: var(--dash-text-muted);
+  margin-right: 5px;
+}
+
+.suggestion-chip {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--dash-border);
+  color: var(--dash-text-muted);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.suggestion-chip:hover {
+  background: rgba(54, 140, 68, 0.12);
+  border-color: rgba(54, 140, 68, 0.35);
+  color: var(--dash-text-accent);
+  transform: scale(1.02);
+}
+
+/* Cargando */
+.ai-search-loading {
+  margin-top: 25px;
+  text-align: center;
+  padding: 20px;
+}
+
+.ai-loader-bar {
+  height: 4px;
+  width: 100%;
+  background: var(--dash-border);
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+  margin-bottom: 15px;
+}
+
+.ai-loader-bar::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 30%;
+  background: #368C44;
+  position: absolute;
+  left: -30%;
+  animation: loading-bar-anim 1.5s infinite linear;
+}
+
+@keyframes loading-bar-anim {
+  0% { left: -30%; }
+  100% { left: 100%; }
+}
+
+.ai-search-loading p {
+  color: var(--dash-text-muted);
+  font-size: 0.9rem;
+}
+
+/* Panel de Resultados */
+.search-results-panel {
+  margin-top: 30px;
+  background: var(--dash-bg-card);
+  border: 1px solid var(--dash-border);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--dash-shadow);
+  animation: fadeInUp 0.4s ease;
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--dash-border);
+}
+
+.results-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--dash-text-main);
+  margin: 0;
+}
+
+.results-title span {
+  color: #4ade80;
+  font-style: italic;
+}
+
+.close-results-btn {
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.close-results-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+/* Tablas de Resultados */
+.results-table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 15px;
+}
+
+.product-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.prod-thumb {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  background: var(--dash-bg-input);
+  border-radius: 6px;
+  border: 1px solid var(--dash-border);
+}
+
+.prod-name {
+  font-weight: 600;
+  color: var(--dash-text-main);
+}
+
+.bold-text {
+  font-weight: 700;
+  color: var(--dash-text-main);
+}
+
+.price-text {
+  color: #4ade80;
+  font-weight: 700;
+}
+
+/* Progress bar de stock */
+.stock-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 120px;
+}
+
+.stock-num {
+  font-weight: 700;
+  font-size: 0.9rem;
+  min-width: 20px;
+}
+
+.stock-progress-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--dash-bg-input);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.stock-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.stock-fill.critical {
+  background: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+}
+
+.stock-fill.warning {
+  background: #f59e0b;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+}
+
+.stock-fill.normal {
+  background: #10b981;
+}
+
+/* Badges */
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.status-badge.warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.status-badge.success {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* Footer de acciones */
+.action-footer {
+  text-align: right;
+  padding-top: 10px;
+}
+
+.footer-action-link {
+  color: #4ade80;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.footer-action-link:hover {
+  color: #368C44;
+  text-decoration: underline;
+}
+
+.no-results-state {
+  text-align: center;
+  padding: 30px 20px;
+  color: var(--dash-text-muted);
+}
+
+.chip-icon {
+  margin-right: 6px;
+  color: #368C44;
+}

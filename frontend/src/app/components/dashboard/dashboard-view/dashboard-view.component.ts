@@ -1,11 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import Swal from 'sweetalert2';
 import { ImportProductsService } from '../../../services/import-products.service';
 import { ThemeService, Theme } from '../../../services/theme.service';
 import { AuthService } from '../../../services/auth.service';
+import { ProductosService } from '../../../services/productos.service';
+import { PedidoService } from '../../../services/pedido.service';
+import { AdminUsuariosService } from '../../../services/admin-usuarios.service';
 import { DashboardAssistantComponent } from '../dashboard-assistant/dashboard-assistant.component';
 import {
   faBoxes,
@@ -32,13 +36,14 @@ import {
   faCheckCircle,
   faExclamationTriangle,
   faCubes,
-  faDollarSign
+  faDollarSign,
+  faSearch
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-dashboard-view',
   standalone: true,
-  imports: [CommonModule, RouterModule, RouterOutlet, FontAwesomeModule, DashboardAssistantComponent],
+  imports: [CommonModule, RouterModule, RouterOutlet, FormsModule, FontAwesomeModule, DashboardAssistantComponent],
   templateUrl: './dashboard-view.component.html',
   styleUrls: ['./dashboard-view.component.css']
 })
@@ -69,6 +74,13 @@ export class DashboardViewComponent {
   faExclamationTriangle = faExclamationTriangle;
   faCubes = faCubes;
   faDollarSign = faDollarSign;
+  faSearch = faSearch;
+
+  // Estados del Buscador Inteligente IA
+  searchQuery = '';
+  isSearching = false;
+  searchResults: any = null;
+  searchType: 'stock' | 'ventas' | 'redireccion' | 'nombre' | null = null;
 
   // Estados para la importación
   cargandoPreview = false;
@@ -91,7 +103,10 @@ export class DashboardViewComponent {
     library: FaIconLibrary,
     private importService: ImportProductsService,
     public themeService: ThemeService,
-    private authService: AuthService
+    private authService: AuthService,
+    private productosService: ProductosService,
+    private pedidoService: PedidoService,
+    private adminUsuariosService: AdminUsuariosService
   ) {
     library.addIcons(
       faBoxes, 
@@ -110,7 +125,8 @@ export class DashboardViewComponent {
       faArrowLeft,
       faShoppingCart,
       faSun,
-      faMoon
+      faMoon,
+      faSearch
     );
   }
 
@@ -265,5 +281,174 @@ export class DashboardViewComponent {
     this.todoActualizado = false;
     this.mensajeError = '';
     this.mensajeExito = '';
+  }
+
+  /**
+   * Procesa la consulta del Buscador Inteligente IA
+   */
+  procesarBusquedaIA(query: string): void {
+    if (!query || query.trim() === '') return;
+    this.searchQuery = query;
+    this.isSearching = true;
+    this.searchResults = null;
+    this.searchType = null;
+
+    const normalizedQuery = query.toLowerCase().trim();
+
+    // 1. Detectar intención de stock bajo
+    if (
+      normalizedQuery.includes('stock') ||
+      normalizedQuery.includes('inventario') ||
+      normalizedQuery.includes('escasez') ||
+      normalizedQuery.includes('pocos') ||
+      normalizedQuery.includes('bajo') ||
+      normalizedQuery.includes('menos')
+    ) {
+      this.searchType = 'stock';
+      this.productosService.obtenerProductos().subscribe({
+        next: (productos) => {
+          // Ordenar por stock ascendente
+          const ordenados = [...productos].sort((a, b) => (a.stock || 0) - (b.stock || 0));
+          this.searchResults = ordenados.slice(0, 6);
+          this.isSearching = false;
+        },
+        error: (err) => {
+          console.error(err);
+          this.isSearching = false;
+          Swal.fire('Error', 'No se pudieron consultar los productos para el stock.', 'error');
+        }
+      });
+      return;
+    }
+
+    // 2. Detectar intención de productos más vendidos / ventas
+    if (
+      normalizedQuery.includes('vendido') ||
+      normalizedQuery.includes('ventas') ||
+      normalizedQuery.includes('popular') ||
+      normalizedQuery.includes('comprado') ||
+      normalizedQuery.includes('salida')
+    ) {
+      this.searchType = 'ventas';
+      this.pedidoService.adminObtenerTodos().subscribe({
+        next: (res) => {
+          // Consolidar cantidades vendidas
+          const ventasPorProducto: { [id: number]: { id: number, nombre: string, cantidad: number, totalVendido: number, imagen_url: string | null } } = {};
+          if (res && res.pedidos) {
+            res.pedidos.forEach(pedido => {
+              if (pedido.detalles) {
+                pedido.detalles.forEach(detalle => {
+                  const pid = detalle.producto_id;
+                  if (!ventasPorProducto[pid]) {
+                    ventasPorProducto[pid] = {
+                      id: pid,
+                      nombre: detalle.nombre_producto,
+                      cantidad: 0,
+                      totalVendido: 0,
+                      imagen_url: detalle.imagen_url
+                    };
+                  }
+                  ventasPorProducto[pid].cantidad += detalle.cantidad;
+                  ventasPorProducto[pid].totalVendido += (detalle.subtotal || (detalle.cantidad * detalle.precio_unitario));
+                });
+              }
+            });
+          }
+          const ordenados = Object.values(ventasPorProducto).sort((a, b) => b.cantidad - a.cantidad);
+          this.searchResults = ordenados.slice(0, 6);
+          this.isSearching = false;
+        },
+        error: (err) => {
+          console.error(err);
+          this.isSearching = false;
+          Swal.fire('Error', 'No se pudieron consultar los pedidos.', 'error');
+        }
+      });
+      return;
+    }
+
+    // 3. Redirecciones
+    // Usuarios / clientes
+    if (
+      normalizedQuery.includes('usuario') ||
+      normalizedQuery.includes('cliente') ||
+      normalizedQuery.includes('persona') ||
+      normalizedQuery.includes('registrado')
+    ) {
+      this.searchType = 'redireccion';
+      this.isSearching = false;
+      Swal.fire({
+        title: 'Redirigiendo...',
+        text: 'Te estamos llevando a la sección de Usuarios Registrados.',
+        icon: 'info',
+        timer: 1500,
+        showConfirmButton: false
+      });
+      this.router.navigate(['/admin/usuarios']);
+      return;
+    }
+
+    // Pedidos / órdenes
+    if (
+      normalizedQuery.includes('pedido') ||
+      normalizedQuery.includes('orden') ||
+      normalizedQuery.includes('compra')
+    ) {
+      this.searchType = 'redireccion';
+      this.isSearching = false;
+      Swal.fire({
+        title: 'Redirigiendo...',
+        text: 'Te estamos llevando a la gestión de Pedidos.',
+        icon: 'info',
+        timer: 1500,
+        showConfirmButton: false
+      });
+      this.router.navigate(['/admin/pedidos']);
+      return;
+    }
+
+    // Categorías
+    if (normalizedQuery.includes('categoria')) {
+      this.searchType = 'redireccion';
+      this.isSearching = false;
+      this.router.navigate(['/admin/categorias']);
+      return;
+    }
+
+    // Subcategorías
+    if (normalizedQuery.includes('subcat')) {
+      this.searchType = 'redireccion';
+      this.isSearching = false;
+      this.router.navigate(['/admin/subcategorias']);
+      return;
+    }
+
+    // PQR
+    if (normalizedQuery.includes('pqr') || normalizedQuery.includes('mensaje') || normalizedQuery.includes('contacto')) {
+      this.searchType = 'redireccion';
+      this.isSearching = false;
+      this.router.navigate(['/admin/pqr-admin']);
+      return;
+    }
+
+    // 4. Búsqueda de productos por nombre como Fallback
+    this.searchType = 'nombre';
+    this.productosService.buscarProductosPorNombre(normalizedQuery).subscribe({
+      next: (res) => {
+        this.searchResults = res.resultados || [];
+        this.isSearching = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.isSearching = false;
+        this.searchResults = [];
+      }
+    });
+  }
+
+  limpiarBusqueda(): void {
+    this.searchQuery = '';
+    this.searchResults = null;
+    this.searchType = null;
   }
 }
