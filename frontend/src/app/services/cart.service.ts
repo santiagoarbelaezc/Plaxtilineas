@@ -68,6 +68,25 @@ export class CartService {
   }
 
   addToCart(producto: Producto, cantidad: number = 1, variante?: Variante): boolean {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      Swal.fire({
+        title: 'Acceso Requerido',
+        text: 'Debes iniciar sesión o registrarte como usuario para añadir productos al carrito.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Iniciar Sesión',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#368C44',
+        cancelButtonColor: '#6c757d'
+      }).then(result => {
+        if (result.isConfirmed) {
+          window.location.href = '/login?returnUrl=' + encodeURIComponent(window.location.pathname);
+        }
+      });
+      return false;
+    }
+
     const items = this.itemsSubject.getValue();
     const id = this.generateItemId(producto.id, variante?.id);
     const existingIndex = items.findIndex(item => item.id === id);

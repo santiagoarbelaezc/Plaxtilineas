@@ -1,4 +1,4 @@
-import { Component, inject, computed, signal } from '@angular/core';
+import { Component, inject, computed, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -65,7 +65,26 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 
       <!-- Cuerpo / Lista de Productos (Estilo Móvil) -->
       <div class="px-5 py-4 space-y-4 bg-gray-50/50">
-        @if (items().length === 0) {
+        @if (!isLoggedIn()) {
+          <div class="flex flex-col items-center justify-center py-16 text-center px-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
+            <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6 border border-gray-100/50 text-[#368c44]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <h3 class="text-lg font-extrabold text-gray-900 mb-2 uppercase tracking-wide">Acceso Requerido</h3>
+            <p class="text-sm text-gray-500 max-w-xs mb-6 leading-relaxed">Debes iniciar sesión o registrarte como usuario para ver o añadir productos a tu carrito.</p>
+            <div class="flex flex-col gap-3 w-full">
+              <button (click)="navigateToLogin()" class="w-full py-3.5 rounded-2xl bg-[#111111] text-white font-bold text-sm uppercase tracking-wider shadow-md active:scale-[0.98] transition-all border-none cursor-pointer">
+                Iniciar Sesión
+              </button>
+              <button (click)="navigateToRegister()" class="w-full py-3.5 rounded-2xl bg-gray-100 text-gray-700 font-bold text-sm uppercase tracking-wider active:scale-[0.98] transition-all border border-gray-200 cursor-pointer">
+                Registrarse
+              </button>
+            </div>
+          </div>
+        } @else if (items().length === 0) {
           <div class="flex flex-col items-center justify-center py-16 text-center px-6">
             <div class="w-24 h-24 bg-white rounded-full shadow-sm flex items-center justify-center mb-6 border border-gray-100/50">
               <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-300">
@@ -192,7 +211,27 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
         </div>
 
         <!-- Layout -->
-        <div style="display: grid; grid-template-columns: 1fr 420px; gap: 3rem; min-height: 600px; align-items: start;">
+        @if (!isLoggedIn()) {
+          <div style="max-width: 500px; margin: 4rem auto; text-align: center; display: flex; flex-direction: column; align-items: center;">
+            <div style="width: 80px; height: 80px; background-color: rgba(54, 140, 68, 0.1); color: #368c44; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <h3 style="font-size: 1.25rem; font-weight: 800; color: #111; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Acceso Requerido</h3>
+            <p style="font-size: 0.95rem; color: #666; margin-bottom: 2rem; line-height: 1.6;">Debes iniciar sesión o registrarte como usuario para ver o añadir productos a tu carrito de compras.</p>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; width: 100%;">
+              <button (click)="navigateToLogin()" style="width: 100%; padding: 1.1rem; background: #111; color: #fff; border: none; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.9rem; cursor: pointer; border-radius: 8px;">
+                Iniciar Sesión
+              </button>
+              <button (click)="navigateToRegister()" style="width: 100%; padding: 1.1rem; background: #f3f4f6; color: #1f2937; border: 1px solid #e5e7eb; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.9rem; cursor: pointer; border-radius: 8px;">
+                Crear una cuenta
+              </button>
+            </div>
+          </div>
+        } @else {
+          <div style="display: grid; grid-template-columns: 1fr 420px; gap: 3rem; min-height: 600px; align-items: start;">
           
           <!-- Columna Izquierda: Los Productos -->
           <div style="display: flex; flex-direction: column; gap: 2rem;">
@@ -336,6 +375,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
           </div>
           
         </div>
+        }
       </div>
     </div>
 
@@ -472,13 +512,20 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
     </div>
   `
 })
-export class CartSummaryComponent {
+export class CartSummaryComponent implements OnInit {
   private cartService = inject(CartService);
   private pedidoService = inject(PedidoService);
   private authService = inject(AuthService);
   private router = inject(Router);
   
   items = toSignal(this.cartService.items$, { initialValue: [] });
+  isLoggedIn = signal(false);
+
+  ngOnInit() {
+    this.authService.isLoggedIn.subscribe(val => {
+      this.isLoggedIn.set(val);
+    });
+  }
   
   totalCount = computed(() => {
     return this.items().reduce((acc, item) => acc + item.cantidad, 0);
