@@ -5,6 +5,7 @@ import { ProductosService } from '../../services/productos.service';
 import { CategoriasService } from '../../services/categorias.service';
 import { MenuStateService } from '../../services/menu-state.service';
 import { ProductoEditable } from '../../models/producto.model';
+import { optimizeForThumbnail } from '../../utils/cloudinary-optimizer';
 
 interface ProductCarouselContenido {
   categoriaId: number;
@@ -156,5 +157,9 @@ export class DynamicProductCarouselComponent implements OnInit {
     if (precio === null || precio === undefined) return '$ 0';
     const precioEntero = Math.round(precio);
     return `$ ${precioEntero.toLocaleString('es-ES')}`;
+  }
+
+  optimizarImagen(url: string): string {
+    return optimizeForThumbnail(url, 300);
   }
 }

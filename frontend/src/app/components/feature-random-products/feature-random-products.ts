@@ -7,6 +7,7 @@ import { ProductoEditable } from '../../models/producto.model';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faChevronLeft, faChevronRight, faBoxOpen } from '@fortawesome/free-solid-svg-icons';
 import { AddToCartBtnComponent } from '../../cart/add-to-cart-btn/add-to-cart-btn.component';
+import { optimizeForThumbnail } from '../../utils/cloudinary-optimizer';
 
 @Component({
   selector: 'app-feature-random-products',
@@ -174,5 +175,9 @@ export class FeatureRandomProducts implements OnInit {
 
   reload(): void {
     this.cargarProductosAleatorios();
+  }
+
+  optimizarImagen(url: string): string {
+    return optimizeForThumbnail(url, 300);
   }
 }

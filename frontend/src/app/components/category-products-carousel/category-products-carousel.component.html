@@ -63,9 +63,10 @@
               <div class="producto-tags">
               </div>
               
-              <img [src]="producto.imagen_url || 'assets/images/placeholder.jpg'" 
+              <img [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/placeholder.jpg'" 
                    [alt]="producto.nombre" 
-                   class="producto-imagen">
+                   class="producto-imagen"
+                   loading="lazy">
                    
               <div class="producto-overlay">
                 <span class="ver-detalles-btn">Ver Detalles</span>

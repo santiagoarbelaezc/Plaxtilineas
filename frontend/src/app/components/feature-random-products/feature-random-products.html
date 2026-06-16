@@ -22,7 +22,7 @@
               
               <div class="card-visual">
                 <img 
-                  [src]="producto.imagen_url || 'assets/placeholder.jpg'" 
+                  [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/placeholder.jpg'" 
                   [alt]="producto.nombre"
                   class="category-icon product-image"
                   loading="lazy"

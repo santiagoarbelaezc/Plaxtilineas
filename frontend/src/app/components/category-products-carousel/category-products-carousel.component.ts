@@ -7,6 +7,7 @@ import { MenuStateService } from '../../services/menu-state.service';
 import { ProductoEditable } from '../../models/producto.model';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faChevronLeft, faChevronRight, faBoxOpen } from '@fortawesome/free-solid-svg-icons';
+import { optimizeForThumbnail } from '../../utils/cloudinary-optimizer';
 
 @Component({
   selector: 'app-category-products-carousel',
@@ -193,5 +194,9 @@ export class CategoryProductsCarouselComponent implements OnInit {
     if (precio === null || precio === undefined) return '$ 0';
     const precioEntero = Math.round(precio);
     return `$ ${precioEntero.toLocaleString('es-ES')}`;
+  }
+
+  optimizarImagen(url: string): string {
+    return optimizeForThumbnail(url, 300);
   }
 }
