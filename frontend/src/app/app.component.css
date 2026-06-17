@@ -211,3 +211,201 @@
   0% { width: 0%; }
   100% { width: 100%; }
 }
+
+/* iOS PWA Install Prompt Custom Styles */
+.ios-install-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(12px);
+  padding: 20px;
+  font-family: 'Montserrat', sans-serif;
+  animation: fadeInOverlay 0.3s ease-out forwards;
+}
+
+.ios-install-card {
+  max-width: 420px;
+  width: 100%;
+  background: #121214;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 35px 28px;
+  color: #ffffff;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+  animation: slideUpCard 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  box-sizing: border-box;
+}
+
+.ios-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 28px;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.ios-close-btn:hover {
+  color: #ffffff;
+}
+
+.ios-logo-container {
+  margin-bottom: 24px;
+}
+
+.ios-app-logo {
+  height: 52px;
+  width: auto;
+  margin-bottom: 12px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ios-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin: 0 0 8px 0;
+  color: #ffffff;
+}
+
+.ios-subtitle {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.ios-carousel {
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ios-slide {
+  animation: fadeSlide 0.3s ease-out forwards;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ios-icon-circle {
+  width: 72px;
+  height: 72px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  color: #1ba852;
+}
+
+.ios-share-svg {
+  width: 32px;
+  height: 32px;
+}
+
+.ios-step-emoji {
+  font-size: 2.2rem;
+}
+
+.ios-step-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #1ba852;
+  margin: 0 0 6px 0;
+  letter-spacing: 0.05em;
+}
+
+.ios-step-text {
+  font-size: 0.88rem;
+  color: #e5e7eb;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 320px;
+}
+
+.ios-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 20px;
+}
+
+.ios-nav-btn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.ios-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.ios-nav-btn.primary {
+  background: #ffffff;
+  color: #000000;
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+}
+
+.ios-nav-btn.primary:hover {
+  background: #e5e7eb;
+}
+
+.ios-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.ios-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.ios-dot.active {
+  background: #1ba852;
+  transform: scale(1.2);
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUpCard {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}

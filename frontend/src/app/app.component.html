@@ -52,4 +52,66 @@
   </button>
 </div>
 
+<!-- iOS Install Prompt Overlay -->
+<div *ngIf="isIos$ | async" class="ios-install-overlay">
+  <div class="ios-install-card">
+    <button class="ios-close-btn" (click)="dismissIosPrompt()">&times;</button>
+    
+    <div class="ios-logo-container">
+      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Plaxtilineas" class="ios-app-logo">
+      <h3 class="ios-title">Instala Plaxtilineas en tu iPhone</h3>
+      <p class="ios-subtitle">Crea un acceso directo en tu pantalla de inicio para una experiencia rápida y fluida.</p>
+    </div>
+
+    <!-- Carousel Container -->
+    <div class="ios-carousel">
+      <!-- Slide 1 -->
+      <div class="ios-slide" *ngIf="activeStep === 1">
+        <div class="ios-icon-circle">
+          <!-- Safari Share Icon SVG -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="ios-share-svg">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+            <polyline points="16 6 12 2 8 6"/>
+            <line x1="12" y1="2" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <p class="ios-step-title">Paso 1</p>
+        <p class="ios-step-text">Presiona el botón de <strong>Compartir</strong> en la barra inferior de tu navegador Safari.</p>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="ios-slide" *ngIf="activeStep === 2">
+        <div class="ios-icon-circle">
+          <span class="ios-step-emoji">➕</span>
+        </div>
+        <p class="ios-step-title">Paso 2</p>
+        <p class="ios-step-text">Desplázate hacia abajo en la lista de opciones y selecciona <strong>"Agregar al inicio"</strong>.</p>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="ios-slide" *ngIf="activeStep === 3">
+        <div class="ios-icon-circle">
+          <span class="ios-step-emoji">📱</span>
+        </div>
+        <p class="ios-step-title">Paso 3</p>
+        <p class="ios-step-text">Confirma presionando <strong>"Agregar"</strong> en la esquina superior derecha de tu pantalla.</p>
+      </div>
+    </div>
+
+    <!-- Carousel Navigation & Dots -->
+    <div class="ios-footer">
+      <button class="ios-nav-btn" [disabled]="activeStep === 1" (click)="prevStep()">Atrás</button>
+      
+      <div class="ios-dots">
+        <span class="ios-dot" [class.active]="activeStep === 1" (click)="activeStep = 1"></span>
+        <span class="ios-dot" [class.active]="activeStep === 2" (click)="activeStep = 2"></span>
+        <span class="ios-dot" [class.active]="activeStep === 3" (click)="activeStep = 3"></span>
+      </div>
+
+      <button class="ios-nav-btn primary" *ngIf="activeStep < 3" (click)="nextStep()">Siguiente</button>
+      <button class="ios-nav-btn primary" *ngIf="activeStep === 3" (click)="dismissIosPrompt()">Listo</button>
+    </div>
+  </div>
+</div>
+
 
