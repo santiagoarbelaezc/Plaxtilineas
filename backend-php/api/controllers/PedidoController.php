@@ -606,4 +606,113 @@ class PedidoController
             ResponseHandler::error('Error al actualizar el estado del pedido', 500);
         }
     }
+
+    /**
+     * Cancelar pedido por parte del cliente
+     */
+    public static function cancelarPedido(int $pedidoId, array $user): void
+    {
+        $db = Database::getConnection();
+        try {
+            $stmt = $db->prepare("SELECT id, estado, usuario_id FROM pedidos WHERE id = ?");
+            $stmt->execute([$pedidoId]);
+            $pedido = $stmt->fetch();
+
+            if (!$pedido) {
+                ResponseHandler::error('Pedido no encontrado.', 404);
+                return;
+            }
+
+            if ((int)$pedido['usuario_id'] !== (int)$user['id']) {
+                ResponseHandler::error('No autorizado.', 403);
+                return;
+            }
+
+            // No se pueden cancelar pedidos pagados/entregados
+            $estadosNoCancelables = ['pagado', 'confirmado', 'en_preparacion', 'en_camino', 'entregado'];
+            if (in_array($pedido['estado'], $estadosNoCancelables)) {
+                ResponseHandler::error('No puedes cancelar un pedido que ya ha sido pagado o procesado.', 400);
+                return;
+            }
+
+            if ($pedido['estado'] === 'cancelado') {
+                ResponseHandler::error('El pedido ya está cancelado.', 400);
+                return;
+            }
+
+            $db->beginTransaction();
+
+            // Actualizar estado a 'cancelado'
+            $stmtUpdate = $db->prepare("UPDATE pedidos SET estado = 'cancelado', fecha_actualizacion = NOW() WHERE id = ?");
+            $stmtUpdate->execute([$pedidoId]);
+
+            // Liberar reservas de stock
+            $stmtDeleteReservas = $db->prepare("DELETE FROM stock_reservas WHERE pedido_id = ?");
+            $stmtDeleteReservas->execute([$pedidoId]);
+
+            $db->commit();
+
+            ResponseHandler::success(['mensaje' => 'Pedido cancelado correctamente.']);
+        } catch (Throwable $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+            Logger::error('PedidoController::cancelarPedido', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error al cancelar el pedido.', 500);
+        }
+    }
+
+    /**
+     * Eliminar pedido por parte del cliente
+     */
+    public static function eliminarPedido(int $pedidoId, array $user): void
+    {
+        $db = Database::getConnection();
+        try {
+            $stmt = $db->prepare("SELECT id, estado, usuario_id FROM pedidos WHERE id = ?");
+            $stmt->execute([$pedidoId]);
+            $pedido = $stmt->fetch();
+
+            if (!$pedido) {
+                ResponseHandler::error('Pedido no encontrado.', 404);
+                return;
+            }
+
+            if ((int)$pedido['usuario_id'] !== (int)$user['id']) {
+                ResponseHandler::error('No autorizado.', 403);
+                return;
+            }
+
+            // No se pueden eliminar pedidos pagados/entregados
+            $estadosNoEliminables = ['pagado', 'confirmado', 'en_preparacion', 'en_camino', 'entregado'];
+            if (in_array($pedido['estado'], $estadosNoEliminables)) {
+                ResponseHandler::error('No puedes eliminar un pedido que ya ha sido pagado o procesado.', 400);
+                return;
+            }
+
+            $db->beginTransaction();
+
+            // Eliminar reservas de stock
+            $stmtDeleteReservas = $db->prepare("DELETE FROM stock_reservas WHERE pedido_id = ?");
+            $stmtDeleteReservas->execute([$pedidoId]);
+
+            // Eliminar detalles del pedido
+            $stmtDeleteDetalles = $db->prepare("DELETE FROM pedido_detalles WHERE pedido_id = ?");
+            $stmtDeleteDetalles->execute([$pedidoId]);
+
+            // Eliminar el pedido
+            $stmtDeletePedido = $db->prepare("DELETE FROM pedidos WHERE id = ?");
+            $stmtDeletePedido->execute([$pedidoId]);
+
+            $db->commit();
+
+            ResponseHandler::success(['mensaje' => 'Pedido eliminado correctamente.']);
+        } catch (Throwable $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+            Logger::error('PedidoController::eliminarPedido', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error al eliminar el pedido.', 500);
+        }
+    }
 }

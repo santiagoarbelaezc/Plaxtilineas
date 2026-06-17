@@ -520,6 +520,24 @@ try {
         }
     }
 
+    // Cancelar pedido propio
+    if ($p = matchRoute('/pedidos/cancelar/:id', $uri)) {
+        if ($method === 'PUT') {
+            $user = AuthMiddleware::verify();
+            PedidoController::cancelarPedido((int)$p['id'], $user);
+            exit;
+        }
+    }
+
+    // Eliminar pedido propio
+    if ($p = matchRoute('/pedidos/eliminar/:id', $uri)) {
+        if ($method === 'DELETE') {
+            $user = AuthMiddleware::verify();
+            PedidoController::eliminarPedido((int)$p['id'], $user);
+            exit;
+        }
+    }
+
     // ─── 404 fallback ────────────────────────────────────────────────────────────
     ResponseHandler::error(
         "Endpoint no encontrado: [{$method}] /api{$uri}",
