@@ -27,6 +27,9 @@ export interface Pedido {
   fecha_actualizacion: string;
   wompi_referencia?: string;
   wompi_pagado_at?: string | null;
+  guia_numero?: string | null;
+  transportadora?: string | null;
+  fecha_envio?: string | null;
   detalles: PedidoDetalle[];
   total_items: number;
   // Admin fields

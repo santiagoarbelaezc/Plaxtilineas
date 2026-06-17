@@ -56,8 +56,8 @@ export class PedidoService {
   /**
    * Admin: actualizar el estado de un pedido
    */
-  adminActualizarEstado(pedidoId: number, estado: string): Observable<any> {
-    return this.http.put(`${this.baseUrl}/admin/actualizar-estado/${pedidoId}`, { estado });
+  adminActualizarEstado(pedidoId: number, estado: string, extra: { guia_numero?: string; transportadora?: string; solicitud_cliente?: boolean } = {}): Observable<any> {
+    return this.http.put(`${this.baseUrl}/admin/actualizar-estado/${pedidoId}`, { estado, ...extra });
   }
 
   /**

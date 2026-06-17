@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -47,7 +47,10 @@ import {
   templateUrl: './dashboard-view.component.html',
   styleUrls: ['./dashboard-view.component.css']
 })
-export class DashboardViewComponent {
+export class DashboardViewComponent implements OnInit, OnDestroy {
+  private pollingInterval: any;
+  private maxOrderId = 0;
+  private isFirstLoad = true;
   // Definir las propiedades públicas para los iconos
   faBoxes = faBoxes;
   faFolderOpen = faFolderOpen;
@@ -128,6 +131,155 @@ export class DashboardViewComponent {
       faMoon,
       faSearch
     );
+  }
+
+  ngOnInit(): void {
+    this.iniciarChequeoPedidos();
+  }
+
+  ngOnDestroy(): void {
+    if (this.pollingInterval) {
+      clearInterval(this.pollingInterval);
+    }
+  }
+
+  private iniciarChequeoPedidos(): void {
+    // Primera carga para inicializar maxOrderId
+    this.chequearNuevosPedidos();
+    
+    // Polling cada 30 segundos
+    this.pollingInterval = setInterval(() => {
+      this.chequearNuevosPedidos();
+    }, 30000);
+  }
+
+  private playNotificationSound(): void {
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      
+      // Professional chime sound: two consecutive notes (e.g. E5 then A5)
+      const playNote = (frequency: number, startTime: number, duration: number) => {
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(frequency, startTime);
+        
+        gainNode.gain.setValueAtTime(0, startTime);
+        gainNode.gain.linearRampToValueAtTime(0.3, startTime + 0.05);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+        
+        osc.start(startTime);
+        osc.stop(startTime + duration);
+      };
+      
+      const now = audioCtx.currentTime;
+      playNote(659.25, now, 0.3); // E5
+      playNote(880.00, now + 0.15, 0.6); // A5
+    } catch (e) {
+      console.warn('Web Audio API notification chime failed:', e);
+    }
+  }
+
+  private chequearNuevosPedidos(): void {
+    this.pedidoService.adminObtenerTodos().subscribe({
+      next: (res: any) => {
+        const data = res.data ?? res;
+        const pedidos = data.pedidos || [];
+        
+        if (pedidos.length === 0) return;
+
+        let mayorId = this.maxOrderId;
+        let nuevosPagadosEncontrados = 0;
+        let ultimoCodigo = '';
+        const estadosAlerta = ['pagado', 'confirmado', 'en_preparacion'];
+
+        pedidos.forEach((pedido: any) => {
+          const pid = Number(pedido.id);
+          if (pid > this.maxOrderId) {
+            if (pid > mayorId) {
+              mayorId = pid;
+            }
+            // Si no es la primera carga del componente, y el pedido es pagado/confirmado, alertamos
+            if (!this.isFirstLoad) {
+              if (estadosAlerta.includes(pedido.estado)) {
+                nuevosPagadosEncontrados++;
+                ultimoCodigo = pedido.codigo_pedido;
+              }
+            }
+          }
+        });
+
+        // Alerta al ingresar por primera vez si hay pedidos pagados
+        if (this.isFirstLoad) {
+          const pedidosPendientesDeProcesar = pedidos.filter((p: any) => estadosAlerta.includes(p.estado)).length;
+          if (pedidosPendientesDeProcesar > 0) {
+            this.playNotificationSound();
+            Swal.fire({
+              title: 'Pedidos Pendientes',
+              html: `
+                <div style="font-family: 'Montserrat', sans-serif; text-align: center; padding: 5px 10px;">
+                  <p style="font-size: 1.15rem; color: #475569; margin-bottom: 25px; line-height: 1.6; font-weight: 500;">
+                    Tienes <span style="font-weight: 700; color: #16a34a;">${pedidosPendientesDeProcesar} pedido(s)</span> con pago confirmado pendientes de procesar.
+                  </p>
+                  <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px 22px; display: flex; align-items: center; gap: 16px; margin: 10px auto; box-shadow: 0 4px 12px rgba(0,0,0,0.01); text-align: left; width: 100%; box-sizing: border-box;">
+                    <div style="background: rgba(22, 163, 74, 0.1); color: #16a34a; border-radius: 50%; width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; flex-shrink: 0; box-shadow: inset 0 2px 4px rgba(22, 163, 74, 0.05);">
+                      📦
+                    </div>
+                    <div>
+                      <p style="font-size: 0.95rem; font-weight: 700; color: #0f172a; margin: 0;">Acción Requerida</p>
+                      <p style="font-size: 0.8rem; color: #64748b; margin: 4px 0 0 0; line-height: 1.45;">Por favor, ingresa a la sección de pedidos para coordinar el embalaje y despacho del envío.</p>
+                    </div>
+                  </div>
+                </div>
+              `,
+              icon: 'info',
+              iconColor: '#000000',
+              width: '520px',
+              showCancelButton: true,
+              confirmButtonText: 'Gestionar Pedidos',
+              cancelButtonText: 'Cerrar',
+              confirmButtonColor: '#000000',
+              cancelButtonColor: '#94a3b8'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                this.router.navigate(['/admin/pedidos']);
+              }
+            });
+          }
+        }
+
+        this.maxOrderId = mayorId;
+        this.isFirstLoad = false;
+
+        if (nuevosPagadosEncontrados > 0) {
+          this.playNotificationSound();
+          Swal.fire({
+            icon: 'info',
+            title: '¡Nuevo Pedido Recibido!',
+            text: nuevosPagadosEncontrados === 1 
+              ? `Se ha recibido un nuevo pago para el pedido ${ultimoCodigo}.`
+              : `Se han recibido ${nuevosPagadosEncontrados} nuevos pagos/pedidos.`,
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: true,
+            confirmButtonText: 'Ver Pedidos',
+            timer: 10000,
+            timerProgressBar: true
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.router.navigate(['/admin/pedidos']);
+            }
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Error al chequear nuevos pedidos:', err);
+      }
+    });
   }
 
   toggleTheme(): void {

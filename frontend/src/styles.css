@@ -98,7 +98,8 @@ app-navbar {
 
 .swal2-confirm {
   flex: 1 !important;
-  background-color: #111 !important;
+  background: #000000 !important;
+  background-color: #000000 !important;
   color: #ffffff !important;
   border-radius: 12px !important;
   font-weight: 700 !important;
@@ -111,7 +112,8 @@ app-navbar {
 }
 
 .swal2-confirm:hover {
-  background-color: #000 !important;
+  background: #27272a !important;
+  background-color: #27272a !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25) !important;
 }

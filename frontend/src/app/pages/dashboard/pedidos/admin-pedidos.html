@@ -143,8 +143,8 @@
                         style="padding: 6px 10px; font-size: 0.8rem; background-position: right 8px top 50%;"
                         [ngModel]="pedido.estado"
                         (ngModelChange)="actualizarEstado(pedido.id, $event)"
-                        [disabled]="updatingId() === pedido.id">
-                        <option *ngFor="let opt of estadosOptions" [value]="opt">{{ getEstadoLabel(opt) }}</option>
+                        [disabled]="updatingId() === pedido.id || pedido.estado === 'cancelado' || pedido.estado === 'entregado'">
+                        <option *ngFor="let opt of getEstadosOptionsForPedido(pedido)" [value]="opt">{{ getEstadoLabel(opt) }}</option>
                       </select>
                       <fa-icon [icon]="faSync" class="fa-spin" *ngIf="updatingId() === pedido.id" style="color: var(--dash-text-accent); font-size: 0.8rem;"></fa-icon>
                     </div>
@@ -183,6 +183,32 @@
                         <p *ngIf="pedido.notas" class="notes-text">
                           <strong>Notas del Cliente:</strong> {{ pedido.notas }}
                         </p>
+
+                        <!-- Datos de Envío -->
+                        <div *ngIf="pedido.transportadora || pedido.guia_numero" style="margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--dash-border);">
+                          <p style="font-weight: 600; color: var(--dash-text-main);">Logística y Tracking:</p>
+                          <p><strong>Transportadora:</strong> {{ pedido.transportadora }}</p>
+                          <p><strong>Número de Guía:</strong> {{ pedido.guia_numero }}</p>
+                          <p *ngIf="pedido.fecha_envio"><strong>Fecha de Envío:</strong> {{ formatDate(pedido.fecha_envio) }}</p>
+                          
+                          <button class="page-btn" style="margin-top: 8px; font-size: 0.75rem; padding: 4px 8px;" (click)="editarDatosEnvio(pedido)">
+                            <fa-icon [icon]="faEdit" style="margin-right: 4px;"></fa-icon> Editar Datos Envío
+                          </button>
+                        </div>
+                        
+                        <div *ngIf="!pedido.transportadora && !pedido.guia_numero && (pedido.estado === 'en_camino' || pedido.estado === 'entregado')" style="margin-top: 12px;">
+                          <button class="page-btn" style="font-size: 0.75rem; padding: 4px 8px;" (click)="editarDatosEnvio(pedido)">
+                            <fa-icon [icon]="faEdit" style="margin-right: 4px;"></fa-icon> Agregar Datos Envío
+                          </button>
+                        </div>
+
+                        <!-- Botón de cancelación especial por solicitud de cliente -->
+                        <div *ngIf="esPedidoPagado(pedido.estado) && pedido.estado !== 'entregado'" style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed var(--dash-border);">
+                          <button class="btn-refresh" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #ef4444; width: 100%; text-align: center; justify-content: center; gap: 6px; font-size: 0.8rem;" (click)="mostrarModalDevolucion(pedido)">
+                            <fa-icon [icon]="faBan"></fa-icon>
+                            cancelar pedido y devolver dinero
+                          </button>
+                        </div>
                       </div>
 
                       <!-- Columna 2: Productos -->
