@@ -326,27 +326,28 @@ export class PagoExitosoComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const ref = this.route.snapshot.queryParamMap.get('ref') ?? '';
-    this.referencia.set(ref);
+    const id = this.route.snapshot.queryParamMap.get('id') ?? '';
+    this.referencia.set(ref || id);
 
     const user = this.authService.currentUser.getValue();
     if (user?.correo) this.emailUsuario.set(user.correo);
 
-    if (!ref) {
+    if (!ref && !id) {
       this.estado.set('error');
       return;
     }
 
     // Iniciar polling (cada 3 seg, máximo 10 veces = 30 seg)
-    this.pollingInterval = setInterval(() => this.verificarEstado(ref), 3000);
+    this.pollingInterval = setInterval(() => this.verificarEstado(ref, id), 3000);
     // Primera llamada inmediata
-    this.verificarEstado(ref);
+    this.verificarEstado(ref, id);
   }
 
   ngOnDestroy(): void {
     this.limpiarPolling();
   }
 
-  private verificarEstado(ref: string): void {
+  private verificarEstado(ref: string, id: string): void {
     if (this.intentos() >= this.maxIntentos) {
       this.limpiarPolling();
       // Después de 30s sin confirmación, pasar a estado pendiente
@@ -358,7 +359,7 @@ export class PagoExitosoComponent implements OnInit, OnDestroy {
 
     this.intentos.update(v => v + 1);
 
-    this.pedidoSvc.verificarEstado(ref).subscribe({
+    this.pedidoSvc.verificarEstado(ref, id).subscribe({
       next: (res) => {
         if (res.estado === 'pagado') {
           this.limpiarPolling();

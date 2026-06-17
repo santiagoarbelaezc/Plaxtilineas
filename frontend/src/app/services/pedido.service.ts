@@ -26,12 +26,16 @@ export class PedidoService {
   }
 
   /**
-   * Verificar estado de pago por referencia Wompi (polling post-pago)
+   * Verificar estado de pago por referencia Wompi o ID de transacción (polling post-pago)
    */
-  verificarEstado(referencia: string): Observable<VerificarEstadoResponse> {
+  verificarEstado(referencia: string, id: string = ''): Observable<VerificarEstadoResponse> {
+    const params: any = {};
+    if (referencia) params.ref = referencia;
+    if (id) params.id = id;
+
     return this.http.get<VerificarEstadoResponse>(
       `${this.baseUrl}/estado`,
-      { params: { ref: referencia } }
+      { params }
     );
   }
 
