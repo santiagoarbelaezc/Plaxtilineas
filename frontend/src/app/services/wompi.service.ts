@@ -63,7 +63,9 @@ export class WompiService {
         signature:   { integrity: datos.firma },
         redirectUrl: datos.redirect_url,
       });
-      checkout.open();
+      checkout.open((result: any) => {
+        console.info('[Wompi] Resultado widget:', result);
+      });
     } catch (err) {
       console.error('[Wompi] Error al instanciar WidgetCheckout:', err);
     }

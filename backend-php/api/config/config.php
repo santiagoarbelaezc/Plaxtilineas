@@ -103,3 +103,13 @@ define('COMPANY_ADDRESS', env('COMPANY_ADDRESS', ''));
 define('FRONTEND_URL',    env('FRONTEND_URL',  'https://plaxtilineas.com'));
 define('UPLOAD_MAX_SIZE', 5242880); // 5 MB
 define('APP_ENV',         env('APP_ENV', 'production'));
+
+// ─── Wompi (Pasarela de Pago) ─────────────────────────────────────────────────
+define('WOMPI_PUBLIC_KEY',    env('WOMPI_PUBLIC_KEY',    ''));
+define('WOMPI_PRIVATE_KEY',   env('WOMPI_PRIVATE_KEY',   ''));
+define('WOMPI_INTEGRITY_KEY', env('WOMPI_INTEGRITY_KEY', ''));
+define('WOMPI_EVENTS_KEY',    env('WOMPI_EVENTS_KEY',    ''));
+
+// ─── Negocio / Precios ────────────────────────────────────────────────────────
+define('COSTO_ENVIO_COP', 10000);   // Tarifa plana de envío en COP
+define('IVA_PORCENTAJE',  0.0);    // IVA ya incluido en el precio del producto

@@ -450,5 +450,106 @@ class EmailService
         </html>
         HTML;
     }
-}
+    // ─── Email especial: Pago CONFIRMADO por Wompi ────────────────────────────────
 
+    /**
+     * Enviar email de pago confirmado (llamado SOLO por el webhook de Wompi)
+     */
+    public static function enviarPagoConfirmado(
+        string $to,
+        string $nombre,
+        string $codigoPedido,
+        array  $detalles,
+        float  $subtotal,
+        float  $iva,
+        float  $costoEnvio,
+        float  $total
+    ): array {
+        $subject = "[" . COMPANY_NAME . "] ¡Pago Confirmado! - {$codigoPedido}";
+        $html    = self::templatePagoConfirmado($nombre, $codigoPedido, $detalles, $subtotal, $iva, $costoEnvio, $total);
+        return self::send($to, $subject, $html);
+    }
+
+    private static function templatePagoConfirmado(
+        string $nombre,
+        string $codigoPedido,
+        array  $detalles,
+        float  $subtotal,
+        float  $iva,
+        float  $costoEnvio,
+        float  $total
+    ): string {
+        $productRows = '';
+        foreach ($detalles as $d) {
+            $sub      = number_format($d['precio_unitario'] * $d['cantidad'], 0, ',', '.');
+            $precUnit = number_format($d['precio_unitario'], 0, ',', '.');
+            $productRows .= "
+                <tr>
+                    <td style='padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.05);color:#e2e8f0;font-size:14px;'>{$d['nombre_producto']}</td>
+                    <td style='padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.05);color:#cbd5e1;text-align:center;font-size:14px;'>{$d['cantidad']}</td>
+                    <td style='padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.05);color:#cbd5e1;text-align:right;font-size:14px;'>$ {$precUnit}</td>
+                    <td style='padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.05);color:#ffffff;text-align:right;font-weight:600;font-size:14px;'>$ {$sub}</td>
+                </tr>";
+        }
+        $fSubtotal  = number_format($subtotal, 0, ',', '.');
+        $fIva       = number_format($iva,      0, ',', '.');
+        $fEnvio     = number_format($costoEnvio, 0, ',', '.');
+        $fTotal     = number_format($total,    0, ',', '.');
+        $fecha      = date('d/m/Y H:i');
+
+        return <<<HTML
+        <!DOCTYPE html>
+        <html lang="es">
+        <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+        <body style="font-family:'Montserrat','Helvetica Neue',Arial,sans-serif;background-color:#111827;margin:0;padding:0;color:#ffffff;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#111827;padding:40px 20px;">
+            <tr><td>
+              <table align="center" cellpadding="0" cellspacing="0" width="600" style="background-color:#1e293b;border-radius:12px;border:1px solid rgba(255,255,255,0.05);overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,0.3);">
+                <tr><td style="padding:30px 40px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.05);">
+                  <h1 style="color:#ffffff;margin:0;font-size:22px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;">PLAXTILINEAS</h1>
+                </td></tr>
+                <tr><td style="padding:40px 40px;color:#e2e8f0;">
+                  <div style="text-align:center;margin-bottom:30px;">
+                    <span style="font-size:56px;">✅</span>
+                    <h2 style="color:#10b981;margin:15px 0 5px 0;font-size:24px;">¡Pago Confirmado!</h2>
+                    <p style="color:#94a3b8;margin:0;font-size:14px;">Tu pago fue procesado exitosamente por Wompi.</p>
+                  </div>
+                  <table cellpadding="0" cellspacing="0" align="center" style="margin-bottom:25px;">
+                    <tr><td style="background-color:#111827;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:14px 30px;text-align:center;">
+                      <span style="color:#94a3b8;font-size:12px;text-transform:uppercase;letter-spacing:0.1em;">N° de Pedido</span><br>
+                      <span style="font-family:monospace;font-size:24px;font-weight:700;color:#ffffff;letter-spacing:0.1em;">{$codigoPedido}</span>
+                    </td></tr>
+                  </table>
+                  <p style="font-size:15px;color:#cbd5e1;">Hola <strong>{$nombre}</strong>,</p>
+                  <p style="font-size:14px;color:#94a3b8;line-height:1.6;">Tu pago fue confirmado el <strong style="color:#cbd5e1;">{$fecha}</strong>. Pronto prepararemos tu pedido.</p>
+                  <table width="100%" cellpadding="0" cellspacing="0" style="margin:20px 0;border:1px solid rgba(255,255,255,0.08);border-radius:8px;overflow:hidden;">
+                    <thead>
+                      <tr style="background-color:rgba(255,255,255,0.05);">
+                        <th style="padding:12px 16px;text-align:left;color:#94a3b8;font-size:12px;text-transform:uppercase;">Producto</th>
+                        <th style="padding:12px 16px;text-align:center;color:#94a3b8;font-size:12px;">Cant.</th>
+                        <th style="padding:12px 16px;text-align:right;color:#94a3b8;font-size:12px;">Precio</th>
+                        <th style="padding:12px 16px;text-align:right;color:#94a3b8;font-size:12px;">Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>{$productRows}</tbody>
+                    <tfoot>
+                      <tr><td colspan="3" style="padding:10px 16px;text-align:right;color:#94a3b8;font-size:13px;">Subtotal</td><td style="padding:10px 16px;text-align:right;color:#cbd5e1;">$ {$fSubtotal}</td></tr>
+                      <tr><td colspan="3" style="padding:10px 16px;text-align:right;color:#94a3b8;font-size:13px;">IVA (19%)</td><td style="padding:10px 16px;text-align:right;color:#cbd5e1;">$ {$fIva}</td></tr>
+                      <tr><td colspan="3" style="padding:10px 16px;text-align:right;color:#94a3b8;font-size:13px;">Envío</td><td style="padding:10px 16px;text-align:right;color:#cbd5e1;">$ {$fEnvio}</td></tr>
+                      <tr style="background-color:rgba(255,255,255,0.03);"><td colspan="3" style="padding:16px;text-align:right;color:#ffffff;font-weight:700;font-size:16px;">TOTAL</td><td style="padding:16px;text-align:right;color:#10b981;font-weight:700;font-size:18px;">$ {$fTotal}</td></tr>
+                    </tfoot>
+                  </table>
+                  <p style="font-size:13px;color:#64748b;text-align:center;margin-top:25px;">Te notificaremos cuando tu pedido cambie de estado.</p>
+                </td></tr>
+                <tr><td style="background-color:#0f172a;padding:25px 40px;text-align:center;font-size:12px;color:#64748b;border-top:1px solid rgba(255,255,255,0.05);">
+                  <p style="margin:0 0 6px 0;">&copy; 2026 Plaxtilineas SAS. Todos los derechos reservados.</p>
+                  <p style="margin:0;">Cra. 19 #19-35, Armenia, Quindío | Tel: +57 (606) 7390968</p>
+                </td></tr>
+              </table>
+            </td></tr>
+          </table>
+        </body>
+        </html>
+        HTML;
+    }
+}

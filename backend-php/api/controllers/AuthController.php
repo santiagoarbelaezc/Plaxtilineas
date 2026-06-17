@@ -54,6 +54,7 @@ class AuthController
                     'id'     => $usuario['id'],
                     'correo' => $usuario['correo'],
                     'nombre' => $usuario['nombre'] ?? '',
+                    'telefono' => $usuario['telefono'] ?? '',
                     'rol'    => $usuario['rol'],
                 ],
             ]);
@@ -81,7 +82,7 @@ class AuthController
     {
       try {
         $db   = Database::getConnection();
-        $stmt = $db->prepare('SELECT id, nombre, apellidos, correo, edad, direccion, ciudad, rol FROM usuarios WHERE id = ? LIMIT 1');
+        $stmt = $db->prepare('SELECT id, nombre, apellidos, correo, edad, direccion, ciudad, telefono, rol FROM usuarios WHERE id = ? LIMIT 1');
         $stmt->execute([$user['id']]);
         $usuario = $stmt->fetch();
 
@@ -126,15 +127,17 @@ class AuthController
             $edad = null;
             $direccion = null;
             $ciudad = null;
+            $telefono = null;
 
             if ($rol === 'cliente') {
                 $apellidos = ResponseHandler::sanitize($body['apellidos'] ?? '');
                 $edad = filter_var($body['edad'] ?? null, FILTER_VALIDATE_INT);
                 $direccion = ResponseHandler::sanitize($body['direccion'] ?? '');
                 $ciudad = ResponseHandler::sanitize($body['ciudad'] ?? '');
+                $telefono = ResponseHandler::sanitize($body['telefono'] ?? '');
                 
-                if (!$apellidos || !$edad || !$direccion || !$ciudad) {
-                    throw new InvalidArgumentException('Para el registro de clientes, todos los datos del perfil (apellidos, edad, dirección, ciudad) son obligatorios.');
+                if (!$apellidos || !$edad || !$direccion || !$ciudad || !$telefono) {
+                    throw new InvalidArgumentException('Para el registro de clientes, todos los datos del perfil (apellidos, edad, dirección, ciudad, teléfono) son obligatorios.');
                 }
             }
 
@@ -156,10 +159,10 @@ class AuthController
 
             // Insertar
             $stmtInsert = $db->prepare('
-                INSERT INTO usuarios (nombre, apellidos, edad, direccion, ciudad, correo, password, rol, email_verificado, token_verificacion, token_expira_en) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)
+                INSERT INTO usuarios (nombre, apellidos, edad, direccion, ciudad, telefono, correo, password, rol, email_verificado, token_verificacion, token_expira_en) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)
             ');
-            $stmtInsert->execute([$nombre, $apellidos, $edad, $direccion, $ciudad, $correo, $hash, $rol, $tokenVerificacion, $tokenExpiraEn]);
+            $stmtInsert->execute([$nombre, $apellidos, $edad, $direccion, $ciudad, $telefono, $correo, $hash, $rol, $tokenVerificacion, $tokenExpiraEn]);
             $userId = $db->lastInsertId();
 
             // Enviar email de verificación con el código
@@ -192,6 +195,7 @@ class AuthController
                     'id'     => $userId,
                     'correo' => $correo,
                     'nombre' => $nombre,
+                    'telefono' => $telefono,
                     'rol'    => $rol,
                 ],
                 'pendiente_verificacion' => true
@@ -278,6 +282,7 @@ class AuthController
                     'id' => $userId,
                     'correo' => $correo,
                     'nombre' => $nombre,
+                    'telefono' => $usuario['telefono'] ?? '',
                     'rol' => $rol
                 ]
             ]);
@@ -343,6 +348,7 @@ class AuthController
                     'id'     => $usuario['id'],
                     'correo' => $usuario['correo'],
                     'nombre' => $usuario['nombre'] ?? '',
+                    'telefono' => $usuario['telefono'] ?? '',
                     'rol'    => $usuario['rol'],
                 ],
             ]);
@@ -355,6 +361,62 @@ class AuthController
         } catch (Throwable $e) {
             Logger::error('AuthController::verificarEmail - inesperado', ['exception' => $e->getMessage()]);
             ResponseHandler::error('Error inesperado al verificar el correo', 500);
+        }
+    }
+
+    /**
+     * PUT /api/auth/actualizar (protegido)
+     * Body: { nombre, apellidos, edad, direccion, ciudad, telefono }
+     */
+    public static function actualizarPerfil(array $user): void
+    {
+        try {
+            $body      = ResponseHandler::getBody();
+            $nombre    = ResponseHandler::sanitize($body['nombre'] ?? '');
+            $apellidos = ResponseHandler::sanitize($body['apellidos'] ?? '');
+            $edad      = filter_var($body['edad'] ?? null, FILTER_VALIDATE_INT);
+            $direccion = ResponseHandler::sanitize($body['direccion'] ?? '');
+            $ciudad    = ResponseHandler::sanitize($body['ciudad'] ?? '');
+            $telefono  = ResponseHandler::sanitize($body['telefono'] ?? '');
+
+            if (!$nombre || !$apellidos || $edad === false || $edad === null || !$direccion || !$ciudad || !$telefono) {
+                throw new InvalidArgumentException('Todos los campos de perfil (nombre, apellidos, edad, dirección, ciudad, teléfono) son obligatorios.');
+            }
+
+            if ($edad < 0 || $edad > 120) {
+                throw new InvalidArgumentException('La edad debe estar entre 0 y 120.');
+            }
+
+            if (!preg_match('/^[0-9]{7,15}$/', preg_replace('/\s/', '', $telefono))) {
+                throw new InvalidArgumentException('El teléfono debe contener entre 7 y 15 dígitos numéricos.');
+            }
+
+            $db = Database::getConnection();
+            $stmt = $db->prepare('
+                UPDATE usuarios 
+                SET nombre = ?, apellidos = ?, edad = ?, direccion = ?, ciudad = ?, telefono = ?
+                WHERE id = ?
+            ');
+            $stmt->execute([$nombre, $apellidos, $edad, $direccion, $ciudad, $telefono, $user['id']]);
+
+            // Obtener el perfil actualizado
+            $stmtUser = $db->prepare('SELECT id, nombre, apellidos, correo, edad, direccion, ciudad, telefono, rol FROM usuarios WHERE id = ? LIMIT 1');
+            $stmtUser->execute([$user['id']]);
+            $usuarioActualizado = $stmtUser->fetch();
+
+            ResponseHandler::success([
+                'mensaje' => 'Perfil actualizado exitosamente',
+                'usuario' => $usuarioActualizado
+            ]);
+
+        } catch (PDOException $e) {
+            Logger::error('AuthController::actualizarPerfil – DB', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error al actualizar perfil en base de datos', 500);
+        } catch (InvalidArgumentException $e) {
+            ResponseHandler::error($e->getMessage(), 400);
+        } catch (Throwable $e) {
+            Logger::error('AuthController::actualizarPerfil – inesperado', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error inesperado al actualizar perfil', 500);
         }
     }
 }

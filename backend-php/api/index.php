@@ -36,6 +36,7 @@ require_once __DIR__ . '/controllers/EstadisticasController.php';
 require_once __DIR__ . '/controllers/DashboardAssistantController.php';
 require_once __DIR__ . '/controllers/AiController.php';
 require_once __DIR__ . '/controllers/PedidoController.php';
+require_once __DIR__ . '/controllers/WompiController.php';
 
 // ─── CORS headers (siempre primero) ──────────────────────────────────────────
 ResponseHandler::setCorsHeaders();
@@ -130,6 +131,11 @@ try {
     if ($uri === '/auth/perfil' && $method === 'GET') {
         $user = AuthMiddleware::verify();
         AuthController::perfil($user);
+    }
+
+    if ($uri === '/auth/actualizar' && $method === 'PUT') {
+        $user = AuthMiddleware::verify();
+        AuthController::actualizarPerfil($user);
     }
 
     // ═════════════════════════════════════════════════════════════════════════════
@@ -417,12 +423,54 @@ try {
     require_once __DIR__ . '/routes/chat.routes.php';
 
     // ═════════════════════════════════════════════════════════════════════════════
+    // CARRITO Y USUARIOS DETALLE (ADMIN/CLIENTE)
+    // ═════════════════════════════════════════════════════════════════════════════
+    require_once __DIR__ . '/controllers/CarritoController.php';
+    require_once __DIR__ . '/controllers/AdminUserController.php';
+
+    if ($uri === '/carrito/sync' && $method === 'POST') {
+        $user = AuthMiddleware::verify();
+        CarritoController::sync($user);
+        exit;
+    }
+
+    if ($uri === '/admin/usuarios-detalle' && $method === 'GET') {
+        $user = AuthMiddleware::verify();
+        AdminUserController::obtenerUsuariosDetalle($user);
+        exit;
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════════
+    // WOMPI  /api/wompi/*
+    // ═════════════════════════════════════════════════════════════════════════════
+
+    // Genera firma SHA-256 y devuelve datos para el widget (requiere JWT)
+    if ($uri === '/wompi/datos-pago' && $method === 'POST') {
+        $user = AuthMiddleware::verify();
+        WompiController::datosPago($user);
+        exit;
+    }
+
+    // Webhook de Wompi (NO requiere JWT, verifica firma propia de Wompi)
+    if ($uri === '/wompi/webhook' && $method === 'POST') {
+        WompiController::webhook();
+        exit;
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════════
     // PEDIDOS  /api/pedidos/*
     // ═════════════════════════════════════════════════════════════════════════════
 
-    if ($uri === '/pedidos' && $method === 'POST') {
+    // Crear DRAFT de pedido (Fase 1 del Two-Phase Commit)
+    if ($uri === '/pedidos/draft' && $method === 'POST') {
         $user = AuthMiddleware::verify();
-        PedidoController::crearPedido($user);
+        PedidoController::crearDraft($user);
+        exit;
+    }
+    // Verificar estado de pago por referencia Wompi
+    if ($uri === '/pedidos/estado' && $method === 'GET') {
+        $user = AuthMiddleware::verify();
+        PedidoController::verificarEstado($user);
         exit;
     }
     if ($uri === '/pedidos/mis-pedidos' && $method === 'GET') {
