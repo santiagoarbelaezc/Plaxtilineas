@@ -138,7 +138,7 @@
                 [class.completed]="isStepCompleted(pedido.estado, i)">
               </div>
               <div class="step-dot">
-                <span class="step-emoji">{{ step.icon }}</span>
+                <span class="step-emoji"><i [class]="step.icon"></i></span>
               </div>
               <span class="step-label">{{ step.label }}</span>
             </div>

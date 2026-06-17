@@ -158,11 +158,11 @@ export class MisPedidos implements OnInit {
   }
 
   readonly timelineSteps = [
-    { label: 'Recibido', icon: '📋' },
-    { label: 'Confirmado', icon: '✅' },
-    { label: 'Preparación', icon: '📦' },
-    { label: 'En Camino', icon: '🚚' },
-    { label: 'Entregado', icon: '🎉' },
+    { label: 'Recibido', icon: 'fa-solid fa-file-invoice' },
+    { label: 'Confirmado', icon: 'fa-solid fa-circle-check' },
+    { label: 'Preparación', icon: 'fa-solid fa-box' },
+    { label: 'En Camino', icon: 'fa-solid fa-truck-fast' },
+    { label: 'Entregado', icon: 'fa-solid fa-gift' },
   ];
 
   isCancelable(pedido: Pedido): boolean {
