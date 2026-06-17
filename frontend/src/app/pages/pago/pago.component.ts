@@ -336,17 +336,17 @@ import Swal from 'sweetalert2';
 
       .pago-wrapper {
         min-height: 100vh;
-        background: #050B14;
+        background: #f8fafc;
         font-family: 'Montserrat', sans-serif;
-        color: #e2e8f0;
+        color: #1e293b;
         position: relative;
       }
 
       /* ── HEADER ── */
       .pago-header {
-        background: rgba(10, 18, 32, 0.95);
+        background: #ffffff;
         backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(255,255,255,0.06);
+        border-bottom: 1px solid #e2e8f0;
         position: sticky;
         top: 0;
         z-index: 100;
@@ -370,7 +370,7 @@ import Swal from 'sweetalert2';
         font-weight: 600;
         transition: color 0.2s;
       }
-      .back-btn:hover { color: #e2e8f0; }
+      .back-btn:hover { color: #1e293b; }
       .header-brand {
         display: flex;
         align-items: center;
@@ -378,16 +378,16 @@ import Swal from 'sweetalert2';
         font-size: 14px;
         font-weight: 700;
       }
-      .brand-name { color: #fff; }
-      .brand-sep { color: #334155; }
+      .brand-name { color: #0f172a; }
+      .brand-sep { color: #cbd5e1; }
       .brand-secure { color: #64748b; font-weight: 500; }
       .ssl-badge {
         display: flex;
         align-items: center;
         gap: 4px;
-        background: rgba(0,217,165,0.1);
-        border: 1px solid rgba(0,217,165,0.25);
-        color: #00D9A5;
+        background: rgba(54, 140, 68, 0.08);
+        border: 1px solid rgba(54, 140, 68, 0.2);
+        color: #368c44;
         padding: 4px 10px;
         border-radius: 20px;
         font-size: 11px;
@@ -408,18 +408,18 @@ import Swal from 'sweetalert2';
       }
       .spinner-ring {
         width: 56px; height: 56px;
-        border: 3px solid rgba(0,217,165,0.15);
-        border-top-color: #00D9A5;
+        border: 3px solid rgba(54, 140, 68, 0.15);
+        border-top-color: #368c44;
         border-radius: 50%;
         animation: spin 0.8s linear infinite;
       }
       @keyframes spin { to { transform: rotate(360deg); } }
       .loading-text { color: #64748b; font-size: 15px; font-weight: 500; }
-      .error-icon { width: 72px; height: 72px; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+      .error-icon { width: 72px; height: 72px; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
       .error-title { font-size: 22px; font-weight: 800; color: #ef4444; }
-      .error-desc { color: #94a3b8; font-size: 14px; max-width: 400px; }
-      .btn-back-cart { padding: 12px 28px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: #e2e8f0; text-decoration: none; font-weight: 700; font-size: 14px; transition: all 0.2s; }
-      .btn-back-cart:hover { background: rgba(255,255,255,0.1); }
+      .error-desc { color: #64748b; font-size: 14px; max-width: 400px; }
+      .btn-back-cart { padding: 12px 28px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; color: #1e293b; text-decoration: none; font-weight: 700; font-size: 14px; transition: all 0.2s; }
+      .btn-back-cart:hover { background: #f8fafc; }
 
       /* ── GRID PRINCIPAL ── */
       .pago-grid {
@@ -438,16 +438,16 @@ import Swal from 'sweetalert2';
 
       /* ── COLUMNA RESUMEN ── */
       .resumen-card, .envio-card, .pago-card {
-        background: rgba(255,255,255,0.025);
-        border: 1px solid rgba(255,255,255,0.07);
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
         border-radius: 20px;
-        backdrop-filter: blur(20px);
         padding: 28px;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.02);
       }
       .resumen-title, .envio-title {
         font-size: 13px;
         font-weight: 700;
-        color: #64748b;
+        color: #475569;
         text-transform: uppercase;
         letter-spacing: 0.1em;
         display: flex;
@@ -461,20 +461,20 @@ import Swal from 'sweetalert2';
       .item-row { display: flex; align-items: center; gap: 14px; }
       .item-img {
         width: 52px; height: 52px;
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.08);
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
         border-radius: 12px;
         overflow: hidden;
         flex-shrink: 0;
         position: relative;
       }
       .item-img img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
-      .item-img-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #334155; }
+      .item-img-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #cbd5e1; }
       .item-qty {
         position: absolute;
         top: -5px; right: -5px;
-        background: #00D9A5;
-        color: #050B14;
+        background: #368c44;
+        color: #ffffff;
         font-size: 10px;
         font-weight: 800;
         width: 18px; height: 18px;
@@ -484,27 +484,27 @@ import Swal from 'sweetalert2';
         justify-content: center;
       }
       .item-info { flex: 1; }
-      .item-name { font-size: 13px; font-weight: 700; color: #e2e8f0; line-height: 1.3; }
+      .item-name { font-size: 13px; font-weight: 700; color: #1e293b; line-height: 1.3; }
       .item-variant { font-size: 11px; color: #64748b; margin-top: 2px; }
-      .item-price { font-size: 13px; font-weight: 700; color: #e2e8f0; white-space: nowrap; }
+      .item-price { font-size: 13px; font-weight: 700; color: #1e293b; white-space: nowrap; }
 
       /* Totales */
-      .totales-section { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+      .totales-section { border-top: 1px solid #e2e8f0; padding-top: 20px; display: flex; flex-direction: column; gap: 10px; }
       .total-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #64748b; }
-      .total-row span:last-child { font-weight: 600; color: #94a3b8; }
-      .total-final { padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); margin-top: 4px; }
-      .total-final span:first-child { font-size: 14px; font-weight: 700; color: #e2e8f0; }
-      .total-amount { font-size: 20px !important; font-weight: 800 !important; color: #00D9A5 !important; }
-      .text-muted { color: #334155 !important; }
+      .total-row span:last-child { font-weight: 600; color: #1e293b; }
+      .total-final { padding-top: 12px; border-top: 1px solid #e2e8f0; margin-top: 4px; }
+      .total-final span:first-child { font-size: 14px; font-weight: 700; color: #1e293b; }
+      .total-amount { font-size: 20px !important; font-weight: 800 !important; color: #368c44 !important; }
+      .text-muted { color: #cbd5e1 !important; }
 
       /* Referencia */
-      .ref-box { margin-top: 20px; background: rgba(0,217,165,0.05); border: 1px solid rgba(0,217,165,0.15); border-radius: 10px; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; }
+      .ref-box { margin-top: 20px; background: rgba(54, 140, 68, 0.05); border: 1px solid rgba(54, 140, 68, 0.15); border-radius: 10px; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; }
       .ref-label { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; }
-      .ref-code { font-family: monospace; font-size: 14px; font-weight: 700; color: #00D9A5; letter-spacing: 0.1em; }
+      .ref-code { font-family: monospace; font-size: 14px; font-weight: 700; color: #368c44; letter-spacing: 0.1em; }
 
       /* Envío */
       .envio-card { margin-top: 16px; }
-      .envio-dato { font-size: 13px; color: #94a3b8; line-height: 1.7; }
+      .envio-dato { font-size: 13px; color: #475569; line-height: 1.7; }
 
       /* ── COLUMNA PAGO ── */
       .pago-card { display: flex; flex-direction: column; gap: 20px; position: sticky; top: 80px; }
@@ -514,23 +514,23 @@ import Swal from 'sweetalert2';
         align-items: center;
         justify-content: center;
         gap: 6px;
-        background: rgba(0,217,165,0.08);
-        border: 1px solid rgba(0,217,165,0.2);
+        background: rgba(54, 140, 68, 0.08);
+        border: 1px solid rgba(54, 140, 68, 0.2);
         border-radius: 8px;
         padding: 8px 16px;
         font-size: 12px;
         font-weight: 700;
-        color: #00D9A5;
+        color: #368c44;
         letter-spacing: 0.05em;
       }
 
       .total-hero { text-align: center; }
       .total-hero-label { display: block; font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
-      .total-hero-amount { display: block; font-size: 38px; font-weight: 800; color: #fff; letter-spacing: -0.02em; line-height: 1; }
-      .total-hero-currency { display: block; font-size: 11px; color: #475569; margin-top: 4px; }
+      .total-hero-amount { display: block; font-size: 38px; font-weight: 800; color: #0f172a; letter-spacing: -0.02em; line-height: 1; }
+      .total-hero-currency { display: block; font-size: 11px; color: #64748b; margin-top: 4px; }
 
-      .divider { text-align: center; font-size: 11px; color: #334155; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; position: relative; }
-      .divider::before, .divider::after { content: ''; position: absolute; top: 50%; width: 30%; height: 1px; background: rgba(255,255,255,0.06); }
+      .divider { text-align: center; font-size: 11px; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; position: relative; }
+      .divider::before, .divider::after { content: ''; position: absolute; top: 50%; width: 25%; height: 1px; background: #e2e8f0; }
       .divider::before { left: 0; }
       .divider::after { right: 0; }
 
@@ -538,7 +538,7 @@ import Swal from 'sweetalert2';
       .btn-wompi {
         width: 100%;
         padding: 18px 20px;
-        background: linear-gradient(135deg, #368c44, #00D9A5);
+        background: linear-gradient(135deg, #1e293b, #0f172a);
         border: none;
         border-radius: 14px;
         cursor: pointer;
@@ -548,13 +548,14 @@ import Swal from 'sweetalert2';
         align-items: center;
         justify-content: center;
         gap: 12px;
-        color: #fff;
+        color: #ffffff;
         font-weight: 700;
-        box-shadow: 0 8px 32px rgba(0, 217, 165, 0.2);
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
       }
       .btn-wompi:hover:not(:disabled) {
         transform: translateY(-2px);
-        box-shadow: 0 12px 40px rgba(0, 217, 165, 0.3);
+        background: #020617;
+        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
       }
       .btn-wompi:active:not(:disabled) { transform: scale(0.99); }
       .btn-wompi:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -562,50 +563,50 @@ import Swal from 'sweetalert2';
       .wompi-btn-text { flex: 1; text-align: left; }
       .wompi-main { display: block; font-size: 16px; font-weight: 800; letter-spacing: -0.01em; }
       .wompi-sub { display: block; font-size: 11px; font-weight: 500; opacity: 0.8; margin-top: 1px; }
-      .btn-spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
+      .btn-spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #ffffff; border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
 
       .wompi-info-link {
         background: transparent;
         border: none;
-        color: #00D9A5;
+        color: #368c44;
         font-size: 12px;
         font-weight: 600;
         cursor: pointer;
         text-align: center;
         text-decoration: underline;
         font-family: inherit;
-        opacity: 0.7;
+        opacity: 0.9;
         transition: opacity 0.2s;
       }
       .wompi-info-link:hover { opacity: 1; }
 
       /* Separador alternativo */
       .divider-alt { display: flex; align-items: center; gap: 12px; }
-      .divider-line { flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
-      .divider-alt span { font-size: 11px; color: #334155; font-weight: 600; white-space: nowrap; }
+      .divider-line { flex: 1; height: 1px; background: #e2e8f0; }
+      .divider-alt span { font-size: 11px; color: #94a3b8; font-weight: 600; white-space: nowrap; }
 
       /* Métodos alternativos */
       .alt-methods { display: flex; flex-direction: column; gap: 10px; }
       .btn-alt {
         width: 100%;
         padding: 14px 16px;
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(255,255,255,0.08);
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
         border-radius: 12px;
         cursor: pointer;
         display: flex;
         align-items: center;
         gap: 12px;
-        color: #94a3b8;
+        color: #475569;
         text-align: left;
         font-family: inherit;
         transition: all 0.2s;
       }
-      .btn-alt:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15); color: #e2e8f0; }
+      .btn-alt:hover { background: #f8fafc; border-color: #cbd5e1; color: #1e293b; }
       .btn-alt svg { flex-shrink: 0; }
       .btn-alt span { display: flex; flex-direction: column; gap: 2px; }
-      .btn-alt strong { font-size: 13px; font-weight: 700; color: #cbd5e1; }
-      .btn-alt small { font-size: 11px; font-weight: 500; opacity: 0.6; }
+      .btn-alt strong { font-size: 13px; font-weight: 700; color: #1e293b; }
+      .btn-alt small { font-size: 11px; font-weight: 500; opacity: 0.7; }
 
       /* Sellos de seguridad */
       .security-badges {
@@ -613,27 +614,27 @@ import Swal from 'sweetalert2';
         justify-content: center;
         gap: 16px;
         padding: 12px 0;
-        border-top: 1px solid rgba(255,255,255,0.04);
-        border-bottom: 1px solid rgba(255,255,255,0.04);
+        border-top: 1px solid #e2e8f0;
+        border-bottom: 1px solid #e2e8f0;
       }
-      .badge-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #475569; font-weight: 700; }
+      .badge-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #64748b; font-weight: 700; }
 
       /* Logos de pago */
       .payment-logos { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
-      .logo-chip { padding: 4px 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; font-size: 10px; font-weight: 800; color: #64748b; letter-spacing: 0.05em; }
+      .logo-chip { padding: 4px 10px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 10px; font-weight: 800; color: #475569; letter-spacing: 0.05em; }
 
       /* Footer legal */
       .legal-footer { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
-      .legal-link { background: transparent; border: none; color: #475569; font-size: 11px; font-family: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; transition: color 0.2s; padding: 0; }
-      .legal-link:hover { color: #94a3b8; }
+      .legal-link { background: transparent; border: none; color: #64748b; font-size: 11px; font-family: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; transition: color 0.2s; padding: 0; }
+      .legal-link:hover { color: #1e293b; }
       a.legal-link { text-decoration: underline; }
-      .legal-sep { color: #1e293b; font-size: 10px; }
+      .legal-sep { color: #cbd5e1; font-size: 10px; }
 
       /* Bancolombia badge */
       .bancolombia-badge {
         text-align: center;
         font-size: 11px;
-        color: #334155;
+        color: #64748b;
         line-height: 1.5;
         padding: 12px;
         display: flex;
@@ -648,7 +649,7 @@ import Swal from 'sweetalert2';
       .modal-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.75);
+        background: rgba(15, 23, 42, 0.4);
         backdrop-filter: blur(8px);
         z-index: 9999;
         display: flex;
@@ -659,8 +660,8 @@ import Swal from 'sweetalert2';
       }
       @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
       .modal-card {
-        background: #0d1627;
-        border: 1px solid rgba(255,255,255,0.1);
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
         border-radius: 20px;
         padding: 36px 32px;
         width: 100%;
@@ -674,11 +675,11 @@ import Swal from 'sweetalert2';
       .modal-close {
         position: absolute;
         top: 16px; right: 16px;
-        background: rgba(255,255,255,0.06);
+        background: #f1f5f9;
         border: none;
         width: 32px; height: 32px;
         border-radius: 50%;
-        color: #94a3b8;
+        color: #64748b;
         font-size: 14px;
         cursor: pointer;
         display: flex;
@@ -686,26 +687,26 @@ import Swal from 'sweetalert2';
         justify-content: center;
         transition: all 0.2s;
       }
-      .modal-close:hover { background: rgba(255,255,255,0.12); color: #e2e8f0; }
+      .modal-close:hover { background: #e2e8f0; color: #1e293b; }
       .modal-icon-badge {
         width: 56px; height: 56px;
-        background: rgba(0,217,165,0.1);
-        border: 1px solid rgba(0,217,165,0.2);
+        background: rgba(54, 140, 68, 0.1);
+        border: 1px solid rgba(54, 140, 68, 0.2);
         border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
         margin-bottom: 20px;
       }
-      .modal-title { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 16px; }
-      .modal-body p { font-size: 14px; color: #94a3b8; line-height: 1.7; margin-bottom: 16px; }
+      .modal-title { font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 16px; }
+      .modal-body p { font-size: 14px; color: #475569; line-height: 1.7; margin-bottom: 16px; }
       .modal-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-      .modal-list li { font-size: 13px; color: #94a3b8; padding-left: 20px; position: relative; line-height: 1.5; }
-      .modal-list li::before { content: '›'; position: absolute; left: 0; color: #00D9A5; font-weight: 800; }
-      .modal-note { font-size: 12px; color: #475569; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 12px; }
-      .modal-link { color: #00D9A5; text-decoration: underline; }
+      .modal-list li { font-size: 13px; color: #475569; padding-left: 20px; position: relative; line-height: 1.5; }
+      .modal-list li::before { content: '›'; position: absolute; left: 0; color: #368c44; font-weight: 800; }
+      .modal-note { font-size: 12px; color: #64748b; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; }
+      .modal-link { color: #368c44; text-decoration: underline; }
       .cert-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
-      .cert-item { padding: 10px 12px; background: rgba(0,217,165,0.06); border: 1px solid rgba(0,217,165,0.15); border-radius: 8px; font-size: 12px; font-weight: 600; color: #00D9A5; }
+      .cert-item { padding: 10px 12px; background: rgba(54, 140, 68, 0.06); border: 1px solid rgba(54, 140, 68, 0.15); border-radius: 8px; font-size: 12px; font-weight: 600; color: #368c44; }
     </style>
   `
 })
@@ -739,16 +740,28 @@ export class PagoComponent implements OnInit {
 
     if (state?.datosPago) {
       this.datosPago.set(state.datosPago);
+      sessionStorage.setItem('last_datosPago', JSON.stringify(state.datosPago));
       if (state.datosEnvio) {
         this.datosEnvio.set(state.datosEnvio);
+        sessionStorage.setItem('last_datosEnvio', JSON.stringify(state.datosEnvio));
       }
     } else {
-      // Intentar leer de queryParams (fallback)
-      const pedidoId = this.route.snapshot.queryParamMap.get('pedido_id');
-      if (pedidoId) {
-        this.cargarDatosPago(parseInt(pedidoId));
+      // Intentar recuperar de sessionStorage
+      const savedDatosPago = sessionStorage.getItem('last_datosPago');
+      const savedDatosEnvio = sessionStorage.getItem('last_datosEnvio');
+      if (savedDatosPago) {
+        this.datosPago.set(JSON.parse(savedDatosPago));
+        if (savedDatosEnvio) {
+          this.datosEnvio.set(JSON.parse(savedDatosEnvio));
+        }
       } else {
-        this.error.set('No se encontraron los datos del pedido. Por favor vuelve al carrito.');
+        // Intentar leer de queryParams (fallback)
+        const pedidoId = this.route.snapshot.queryParamMap.get('pedido_id');
+        if (pedidoId) {
+          this.cargarDatosPago(parseInt(pedidoId));
+        } else {
+          this.error.set('No se encontraron los datos del pedido. Por favor vuelve al carrito.');
+        }
       }
     }
   }
@@ -811,24 +824,26 @@ export class PagoComponent implements OnInit {
     const label = metodo === 'contraentrega' ? 'Contraentrega (Pago al recibir)' : 'Transferencia Bancaria';
     Swal.fire({
       title: '¿Confirmar pedido?',
-      html: `<p style="color:#94a3b8; font-size:14px;">Tu pedido se registrará con método de pago: <strong style="color:#e2e8f0;">${label}</strong></p>`,
+      html: `<p style="color:#64748b; font-size:14px;">Tu pedido se registrará con método de pago: <strong style="color:#1e293b;">${label}</strong></p>`,
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Sí, confirmar',
       cancelButtonText: 'Cancelar',
-      background: '#0d1627',
-      color: '#e2e8f0',
+      background: '#ffffff',
+      color: '#1e293b',
       confirmButtonColor: '#368c44',
-      cancelButtonColor: '#1e293b',
+      cancelButtonColor: '#94a3b8',
     }).then(result => {
       if (result.isConfirmed) {
         this.cartSvc.clearCart();
+        sessionStorage.removeItem('last_datosPago');
+        sessionStorage.removeItem('last_datosEnvio');
         Swal.fire({
           icon: 'success',
           title: '¡Pedido Registrado!',
           text: 'Te contactaremos pronto para coordinar la entrega y el pago.',
-          background: '#0d1627',
-          color: '#e2e8f0',
+          background: '#ffffff',
+          color: '#1e293b',
           confirmButtonColor: '#368c44',
         }).then(() => this.router.navigate(['/pedidos']));
       }
