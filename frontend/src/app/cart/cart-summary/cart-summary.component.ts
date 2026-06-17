@@ -338,7 +338,7 @@ import Swal from 'sweetalert2';
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; color: #333;">
                   <span>Impuestos (IVA)</span>
-                  <span style="font-weight: 800; color: #111;">$0</span>
+                  <span style="font-weight: 700; color: #111; font-size: 0.8rem; padding: 2px 6px; background: #f1f5f9; border-radius: 4px;">Incluido</span>
                 </div>
               </div>
               
@@ -449,19 +449,39 @@ import Swal from 'sweetalert2';
             </div>
 
             <div style="margin-top: 0.5rem; padding-top: 1.25rem; border-top: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 1.25rem; font-family: inherit;">
-              <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 12px 18px; border: 1px solid #e2e8f0; border-radius: 8px;">
-                <span style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-family: inherit;">Total a pagar</span>
-                <span style="font-size: 1.35rem; font-weight: 800; color: #368c44; letter-spacing: -0.01em; font-family: inherit;">{{ formatearPrecio(totalPrice()) }}</span>
+              
+              <!-- Resumen Elegante -->
+              <div style="background: #f8fafc; padding: 18px 20px; border: 1px solid #e2e8f0; border-radius: 12px; display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #64748b; font-weight: 600;">
+                  <span>Subtotal ({{ totalCount() }} items)</span>
+                  <span style="color: #1e293b;">{{ formatearPrecio(totalPrice()) }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #64748b; font-weight: 600;">
+                  <span>Impuestos (IVA)</span>
+                  <span style="color: #1e293b; font-size: 11px; padding: 2px 6px; background: #e2e8f0; border-radius: 4px;">Incluido</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #64748b; font-weight: 600;">
+                  <span>Costo de envío</span>
+                  <span style="color: #1e293b; font-size: 12px;">Se calcula en el siguiente paso</span>
+                </div>
+                <div style="height: 1px; background: #e2e8f0; margin: 6px 0;"></div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 12px; font-weight: 800; color: #1e293b; text-transform: uppercase; letter-spacing: 0.05em;">Total a pagar</span>
+                  <span style="font-size: 1.5rem; font-weight: 800; color: #0f172a; letter-spacing: -0.01em;">{{ formatearPrecio(totalPrice()) }}</span>
+                </div>
               </div>
+
+              <!-- Botón Confirmar -->
               <button 
                 type="submit" 
                 [disabled]="checkoutForm.invalid || isSubmitting()"
-                style="width: 100%; padding: 12px; background: linear-gradient(135deg, #368c44, #25d366); color: #fff; border: none; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 0.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(54, 140, 68, 0.2); transition: all 0.2s;"
+                style="width: 100%; padding: 15px; background: #0f172a; color: #fff; border: none; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 0.5rem; border-radius: 12px; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25); transition: all 0.2s;"
                 [style.opacity]="(checkoutForm.invalid || isSubmitting()) ? '0.5' : '1'"
-                onmouseover="if(!this.disabled) { this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 16px rgba(54, 140, 68, 0.35)'; }"
-                onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 12px rgba(54, 140, 68, 0.2)';">
+                onmouseover="if(!this.disabled) { this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(15, 23, 42, 0.35)'; this.style.background='#1e293b'; }"
+                onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 14px rgba(15, 23, 42, 0.25)'; this.style.background='#0f172a';">
                 <span *ngIf="isSubmitting()" style="width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite;"></span>
-                Confirmar Compra
+                {{ checkoutData.metodo_pago === 'wompi' ? 'Pasar a métodos de pago Wompi' : 'Confirmar Compra' }}
+                <svg *ngIf="!isSubmitting()" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 4px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
               </button>
             </div>
           </form>

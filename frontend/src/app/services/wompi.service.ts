@@ -24,35 +24,26 @@ export class WompiService {
     );
   }
 
+  private scriptLoaded = false;
+
   abrirWidget(datos: WompiDatosPago): void {
-    // 1. Remover cualquier script de Wompi existente para evitar duplicidad o errores de inicialización
+    if (this.scriptLoaded && (window as any).WidgetCheckout) {
+      this.initAndOpen(datos);
+      return;
+    }
+
+    // Limpiar scripts anteriores si existen
     const scriptsExistentes = document.querySelectorAll('script[src*="checkout.wompi.co/widget.js"]');
     scriptsExistentes.forEach(s => s.remove());
 
-    // 2. Crear y configurar el nuevo script con los datos obligatorios requeridos por Wompi
     const script = document.createElement('script');
     script.src = 'https://checkout.wompi.co/widget.js';
-    script.setAttribute('data-public-key', datos.public_key);
-    script.setAttribute('data-currency', datos.moneda);
-    script.setAttribute('data-amount-in-cents', datos.monto_centavos.toString());
-    script.setAttribute('data-reference', datos.referencia);
+    // No agregar atributos data-* para evitar que se auto-renderice incorrectamente
+    // Wompi lanzará un warning en la consola, pero WidgetCheckout funcionará
     
     script.onload = () => {
-      try {
-        const checkout = new (window as any).WidgetCheckout({
-          currency:    datos.moneda,
-          amountInCents: datos.monto_centavos,
-          reference:   datos.referencia,
-          publicKey:   datos.public_key,
-          signature:   { integrity: datos.firma },
-          redirectUrl: datos.redirect_url,
-        });
-        checkout.open((result: any) => {
-          console.info('[Wompi] Resultado widget:', result);
-        });
-      } catch (err) {
-        console.error('[Wompi] Error al instanciar WidgetCheckout:', err);
-      }
+      this.scriptLoaded = true;
+      this.initAndOpen(datos);
     };
 
     script.onerror = (err) => {
@@ -60,6 +51,24 @@ export class WompiService {
     };
 
     document.body.appendChild(script);
+  }
+
+  private initAndOpen(datos: WompiDatosPago): void {
+    try {
+      const checkout = new (window as any).WidgetCheckout({
+        currency:    datos.moneda,
+        amountInCents: datos.monto_centavos,
+        reference:   datos.referencia,
+        publicKey:   datos.public_key,
+        signature:   { integrity: datos.firma },
+        redirectUrl: datos.redirect_url,
+      });
+      checkout.open((result: any) => {
+        console.info('[Wompi] Resultado widget:', result);
+      });
+    } catch (err) {
+      console.error('[Wompi] Error al instanciar WidgetCheckout:', err);
+    }
   }
 
   /** Helpers de precio (mirror del backend, para mostrar en UI) */

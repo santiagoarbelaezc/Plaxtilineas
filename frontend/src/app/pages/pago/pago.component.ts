@@ -19,7 +19,7 @@ import Swal from 'sweetalert2';
         <div class="modal-card" (click)="$event.stopPropagation()">
           <button class="modal-close" (click)="closeModal('wompi')">✕</button>
           <div class="modal-icon-badge">
-            <svg width="28" height="28" fill="none" stroke="#00D9A5" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+            <svg width="28" height="28" fill="none" stroke="#0f172a" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
           </div>
           <h2 class="modal-title">¿Qué es Wompi?</h2>
           <div class="modal-body">
@@ -107,13 +107,13 @@ import Swal from 'sweetalert2';
             Volver al carrito
           </a>
           <div class="header-brand">
-            <svg width="16" height="16" fill="none" stroke="#00D9A5" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <svg width="16" height="16" fill="none" stroke="#0f172a" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             <span class="brand-name">Plaxtilineas</span>
             <span class="brand-sep">·</span>
             <span class="brand-secure">Pago Seguro</span>
           </div>
           <div class="ssl-badge">
-            <svg width="12" height="12" fill="none" stroke="#00D9A5" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <svg width="12" height="12" fill="none" stroke="#0f172a" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             SSL
           </div>
         </div>
@@ -141,7 +141,7 @@ import Swal from 'sweetalert2';
           <div class="resumen-col">
             <div class="resumen-card">
               <h2 class="resumen-title">
-                <svg width="18" height="18" fill="none" stroke="#00D9A5" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                <svg width="18" height="18" fill="none" stroke="#0f172a" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                 Resumen del Pedido
               </h2>
 
@@ -215,7 +215,7 @@ import Swal from 'sweetalert2';
 
               <!-- Badge de seguridad superior -->
               <div class="secure-top-badge">
-                <svg width="14" height="14" fill="none" stroke="#00D9A5" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <svg width="14" height="14" fill="none" stroke="#0f172a" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 Conexión 100% Segura
               </div>
 
@@ -285,15 +285,15 @@ import Swal from 'sweetalert2';
               <!-- Sellos de seguridad -->
               <div class="security-badges">
                 <div class="badge-item">
-                  <svg width="16" height="16" fill="none" stroke="#00D9A5" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  <svg width="16" height="16" fill="none" stroke="#0f172a" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                   <span>SSL 256-bit</span>
                 </div>
                 <div class="badge-item">
-                  <svg width="16" height="16" fill="none" stroke="#00D9A5" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <svg width="16" height="16" fill="none" stroke="#0f172a" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                   <span>PCI DSS</span>
                 </div>
                 <div class="badge-item">
-                  <svg width="16" height="16" fill="none" stroke="#00D9A5" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <svg width="16" height="16" fill="none" stroke="#0f172a" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
                   <span>Wompi Certified</span>
                 </div>
               </div>
@@ -385,9 +385,9 @@ import Swal from 'sweetalert2';
         display: flex;
         align-items: center;
         gap: 4px;
-        background: rgba(54, 140, 68, 0.08);
-        border: 1px solid rgba(54, 140, 68, 0.2);
-        color: #368c44;
+        background: rgba(15, 23, 42, 0.08);
+        border: 1px solid rgba(15, 23, 42, 0.2);
+        color: #0f172a;
         padding: 4px 10px;
         border-radius: 20px;
         font-size: 11px;
@@ -408,8 +408,8 @@ import Swal from 'sweetalert2';
       }
       .spinner-ring {
         width: 56px; height: 56px;
-        border: 3px solid rgba(54, 140, 68, 0.15);
-        border-top-color: #368c44;
+        border: 3px solid rgba(15, 23, 42, 0.15);
+        border-top-color: #0f172a;
         border-radius: 50%;
         animation: spin 0.8s linear infinite;
       }
@@ -473,7 +473,7 @@ import Swal from 'sweetalert2';
       .item-qty {
         position: absolute;
         top: -5px; right: -5px;
-        background: #368c44;
+        background: #0f172a;
         color: #ffffff;
         font-size: 10px;
         font-weight: 800;
@@ -494,13 +494,13 @@ import Swal from 'sweetalert2';
       .total-row span:last-child { font-weight: 600; color: #1e293b; }
       .total-final { padding-top: 12px; border-top: 1px solid #e2e8f0; margin-top: 4px; }
       .total-final span:first-child { font-size: 14px; font-weight: 700; color: #1e293b; }
-      .total-amount { font-size: 20px !important; font-weight: 800 !important; color: #368c44 !important; }
+      .total-amount { font-size: 20px !important; font-weight: 800 !important; color: #0f172a !important; }
       .text-muted { color: #cbd5e1 !important; }
 
       /* Referencia */
-      .ref-box { margin-top: 20px; background: rgba(54, 140, 68, 0.05); border: 1px solid rgba(54, 140, 68, 0.15); border-radius: 10px; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; }
+      .ref-box { margin-top: 20px; background: rgba(15, 23, 42, 0.05); border: 1px solid rgba(15, 23, 42, 0.15); border-radius: 10px; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; }
       .ref-label { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; }
-      .ref-code { font-family: monospace; font-size: 14px; font-weight: 700; color: #368c44; letter-spacing: 0.1em; }
+      .ref-code { font-family: monospace; font-size: 14px; font-weight: 700; color: #0f172a; letter-spacing: 0.1em; }
 
       /* Envío */
       .envio-card { margin-top: 16px; }
@@ -514,13 +514,13 @@ import Swal from 'sweetalert2';
         align-items: center;
         justify-content: center;
         gap: 6px;
-        background: rgba(54, 140, 68, 0.08);
-        border: 1px solid rgba(54, 140, 68, 0.2);
+        background: rgba(15, 23, 42, 0.08);
+        border: 1px solid rgba(15, 23, 42, 0.2);
         border-radius: 8px;
         padding: 8px 16px;
         font-size: 12px;
         font-weight: 700;
-        color: #368c44;
+        color: #0f172a;
         letter-spacing: 0.05em;
       }
 
@@ -568,7 +568,7 @@ import Swal from 'sweetalert2';
       .wompi-info-link {
         background: transparent;
         border: none;
-        color: #368c44;
+        color: #0f172a;
         font-size: 12px;
         font-weight: 600;
         cursor: pointer;
@@ -690,8 +690,8 @@ import Swal from 'sweetalert2';
       .modal-close:hover { background: #e2e8f0; color: #1e293b; }
       .modal-icon-badge {
         width: 56px; height: 56px;
-        background: rgba(54, 140, 68, 0.1);
-        border: 1px solid rgba(54, 140, 68, 0.2);
+        background: rgba(15, 23, 42, 0.1);
+        border: 1px solid rgba(15, 23, 42, 0.2);
         border-radius: 16px;
         display: flex;
         align-items: center;
@@ -702,11 +702,11 @@ import Swal from 'sweetalert2';
       .modal-body p { font-size: 14px; color: #475569; line-height: 1.7; margin-bottom: 16px; }
       .modal-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
       .modal-list li { font-size: 13px; color: #475569; padding-left: 20px; position: relative; line-height: 1.5; }
-      .modal-list li::before { content: '›'; position: absolute; left: 0; color: #368c44; font-weight: 800; }
+      .modal-list li::before { content: '›'; position: absolute; left: 0; color: #0f172a; font-weight: 800; }
       .modal-note { font-size: 12px; color: #64748b; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; }
-      .modal-link { color: #368c44; text-decoration: underline; }
+      .modal-link { color: #0f172a; text-decoration: underline; }
       .cert-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
-      .cert-item { padding: 10px 12px; background: rgba(54, 140, 68, 0.06); border: 1px solid rgba(54, 140, 68, 0.15); border-radius: 8px; font-size: 12px; font-weight: 600; color: #368c44; }
+      .cert-item { padding: 10px 12px; background: rgba(15, 23, 42, 0.06); border: 1px solid rgba(15, 23, 42, 0.15); border-radius: 8px; font-size: 12px; font-weight: 600; color: #0f172a; }
     </style>
   `
 })
@@ -735,8 +735,7 @@ export class PagoComponent implements OnInit {
     this.cartSvc.items$.subscribe(items => this.itemsCarrito.set(items));
 
     // Leer datos de pago pasados por state del router
-    const nav = this.router.getCurrentNavigation();
-    const state = nav?.extras?.state as any;
+    const state = window.history.state;
 
     if (state?.datosPago) {
       this.datosPago.set(state.datosPago);
@@ -760,7 +759,7 @@ export class PagoComponent implements OnInit {
         if (pedidoId) {
           this.cargarDatosPago(parseInt(pedidoId));
         } else {
-          this.error.set('No se encontraron los datos del pedido. Por favor vuelve al carrito.');
+          this.router.navigate(['/carrito']);
         }
       }
     }
@@ -831,7 +830,7 @@ export class PagoComponent implements OnInit {
       cancelButtonText: 'Cancelar',
       background: '#ffffff',
       color: '#1e293b',
-      confirmButtonColor: '#368c44',
+      confirmButtonColor: '#0f172a',
       cancelButtonColor: '#94a3b8',
     }).then(result => {
       if (result.isConfirmed) {
@@ -844,7 +843,7 @@ export class PagoComponent implements OnInit {
           text: 'Te contactaremos pronto para coordinar la entrega y el pago.',
           background: '#ffffff',
           color: '#1e293b',
-          confirmButtonColor: '#368c44',
+          confirmButtonColor: '#0f172a',
         }).then(() => this.router.navigate(['/pedidos']));
       }
     });
