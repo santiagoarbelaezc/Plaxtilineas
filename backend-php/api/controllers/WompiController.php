@@ -28,7 +28,7 @@ class WompiController
     public static function datosPago(array $user): void
     {
         // Validar que las claves Wompi estén configuradas
-        if (empty(WOMPI_PUBLIC_KEY) || empty(WOMPI_INTEGRITY_KEY)) {
+        if (empty(WOMPI_PUBLIC_KEY) || empty(WOMPI_PRIVATE_KEY)) {
             Logger::error('WompiController::datosPago - Claves Wompi no configuradas');
             ResponseHandler::error('Pasarela de pago no configurada. Contacta al administrador.', 503);
             return;
@@ -74,7 +74,7 @@ class WompiController
             return;
         }
 
-        // Actualizar estado a 'pendiente_pago' (widget abierto)
+        // Actualizar estado a 'pendiente_pago'
         $db->prepare("UPDATE pedidos SET estado = 'pendiente_pago' WHERE id = ?")->execute([$pedidoId]);
 
         // ── Calcular monto en centavos (Wompi espera entero) ────────────
@@ -82,22 +82,84 @@ class WompiController
         $referencia    = $pedido['wompi_referencia'];
         $moneda        = 'COP';
 
-        // ── Generar firma de integridad SHA-256 ─────────────────────────
-        // Fórmula oficial Wompi: SHA256(referencia + monto_centavos + moneda + integrity_key)
-        $cadenaFirma = $referencia . $montoCentavos . $moneda . WOMPI_INTEGRITY_KEY;
-        $firma       = hash('sha256', $cadenaFirma);
-
         // ── URL de redirección post-pago ─────────────────────────────────
-        $redirectUrl = FRONTEND_URL . '/pago-exitoso?ref=' . urlencode($referencia);
+        $redirectUrl = FRONTEND_URL . '/pago-exitoso';
+
+        // ── Determinar URL base de la API de Wompi ──────────────────────
+        $isSandbox = str_starts_with(WOMPI_PRIVATE_KEY, 'prv_test_');
+        $apiBase   = $isSandbox
+            ? 'https://sandbox.wompi.co/v1'
+            : 'https://production.wompi.co/v1';
+
+        // ── Crear Link de Pago via API de Wompi ─────────────────────────
+        $linkData = json_encode([
+            'name'             => "Pedido {$referencia}",
+            'description'      => "Pago de pedido Plaxtilineas #{$pedidoId}",
+            'single_use'       => true,
+            'collect_shipping'  => false,
+            'currency'         => $moneda,
+            'amount_in_cents'  => $montoCentavos,
+            'redirect_url'     => $redirectUrl,
+            'sku'              => $referencia,
+        ]);
+
+        $ch = curl_init("{$apiBase}/payment_links");
+        curl_setopt_array($ch, [
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => $linkData,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT        => 15,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_HTTPHEADER     => [
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . WOMPI_PRIVATE_KEY,
+            ],
+        ]);
+
+        $response   = curl_exec($ch);
+        $httpCode   = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError  = curl_error($ch);
+
+        if ($curlError) {
+            Logger::error('WompiController::datosPago - Error cURL: ' . $curlError);
+            ResponseHandler::error('Error de conexión con la pasarela de pago.', 502);
+            return;
+        }
+
+        $responseData = json_decode($response, true);
+
+        if ($httpCode < 200 || $httpCode >= 300 || empty($responseData['data']['id'])) {
+            Logger::error('WompiController::datosPago - Error API Wompi', [
+                'http_code' => $httpCode,
+                'response'  => $response,
+            ]);
+            ResponseHandler::error(
+                'No se pudo crear el enlace de pago. Intenta de nuevo.',
+                502,
+                ['wompi_response' => $responseData]
+            );
+            return;
+        }
+
+        // ── Extraer la URL del link de pago ──────────────────────────────
+        $linkId       = $responseData['data']['id'];
+        $checkoutUrl  = "https://checkout.wompi.co/l/{$linkId}";
+
+        Logger::error('WompiController::datosPago - Link de pago creado', [
+            'pedido_id'    => $pedidoId,
+            'link_id'      => $linkId,
+            'checkout_url' => $checkoutUrl,
+        ]);
 
         ResponseHandler::success([
             'public_key'      => WOMPI_PUBLIC_KEY,
             'referencia'      => $referencia,
             'monto_centavos'  => $montoCentavos,
             'moneda'          => $moneda,
-            'firma'           => $firma,
-            'redirect_url'    => $redirectUrl,
+            'firma'           => '',
+            'redirect_url'    => $checkoutUrl,
             'pedido_id'       => $pedidoId,
+            'checkout_url'    => $checkoutUrl,
         ]);
     }
 

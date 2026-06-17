@@ -25,27 +25,20 @@ export class WompiService {
   }
 
   /**
-   * Abre el Web Checkout de Wompi mediante redirección directa.
-   * Esto evita errores 403 por restricciones de origen en el Widget (iframe).
-   * Wompi redirigirá al usuario a redirect_url al terminar.
+   * Redirige al usuario al Link de Pago de Wompi.
+   * El backend crea el link via la API de Wompi y devuelve la URL directa.
    */
   abrirWidget(datos: WompiDatosPago): void {
-    console.log('[Wompi] Redirigiendo a Web Checkout con datos:', datos);
+    // El backend ahora devuelve checkout_url con la URL del link de pago
+    const checkoutUrl = (datos as any).checkout_url || datos.redirect_url;
+    
+    console.log('[Wompi] Redirigiendo a Link de Pago:', checkoutUrl);
 
-    // Construir la URL de checkout de Wompi con los parámetros requeridos
-    const params = new URLSearchParams();
-    params.set('public-key', datos.public_key);
-    params.set('currency', datos.moneda);
-    params.set('amount-in-cents', String(datos.monto_centavos));
-    params.set('reference', datos.referencia);
-    params.set('redirect-url', datos.redirect_url);
+    if (!checkoutUrl || !checkoutUrl.startsWith('https://checkout.wompi.co')) {
+      console.error('[Wompi] URL de checkout inválida:', checkoutUrl);
+      return;
+    }
 
-    // La firma de integridad usa ":" en el nombre del parámetro
-    const checkoutUrl = `https://checkout.wompi.co/p/?${params.toString()}&signature%3Aintegrity=${datos.firma}`;
-
-    console.log('[Wompi] URL de checkout:', checkoutUrl);
-
-    // Redirigir al checkout de Wompi
     window.location.href = checkoutUrl;
   }
 
