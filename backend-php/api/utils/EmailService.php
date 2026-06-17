@@ -59,10 +59,13 @@ class EmailService
             $fromName = EMAIL_FROM_NAME;
 
             // Conectar
-            $socket = @fsockopen($host, $port, $errno, $errstr, 15);
+            $socket = @fsockopen($host, $port, $errno, $errstr, 5);
             if (!$socket) {
                 throw new RuntimeException("No se pudo conectar al servidor SMTP: $errstr ($errno)");
             }
+
+            // Evitar bloqueos indefinidos en lectura/escritura (5 segundos máx)
+            stream_set_timeout($socket, 5);
 
             self::expect($socket, 220);
             self::cmd($socket, "EHLO " . php_uname('n'));

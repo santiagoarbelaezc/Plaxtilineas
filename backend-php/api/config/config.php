@@ -100,7 +100,20 @@ define('COMPANY_PHONE_2', env('COMPANY_PHONE_2', ''));
 define('COMPANY_ADDRESS', env('COMPANY_ADDRESS', ''));
 
 // ─── App ──────────────────────────────────────────────────────────────────────
-define('FRONTEND_URL',    env('FRONTEND_URL',  'https://plaxtilineas.com'));
+$host = $_SERVER['HTTP_HOST'] ?? '';
+$isLocal = false;
+if ($host !== '') {
+    $hostLower = strtolower($host);
+    if (str_contains($hostLower, 'localhost') || str_contains($hostLower, '127.0.0.1') || str_contains($hostLower, '192.168.')) {
+        $isLocal = true;
+    }
+} else {
+    if (env('APP_ENV', 'production') === 'development') {
+        $isLocal = true;
+    }
+}
+$frontendUrl = $isLocal ? env('FRONTEND_URL', 'http://localhost:4200') : 'https://plaxtilineas.com';
+define('FRONTEND_URL',    $frontendUrl);
 define('UPLOAD_MAX_SIZE', 5242880); // 5 MB
 define('APP_ENV',         env('APP_ENV', 'production'));
 

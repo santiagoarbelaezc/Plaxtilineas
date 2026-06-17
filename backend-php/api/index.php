@@ -41,6 +41,14 @@ require_once __DIR__ . '/controllers/WompiController.php';
 // ─── CORS headers (siempre primero) ──────────────────────────────────────────
 ResponseHandler::setCorsHeaders();
 
+// ─── Limpieza automática de carritos expirados (24 horas) ────────────────────
+try {
+    require_once __DIR__ . '/controllers/CarritoController.php';
+    CarritoController::limpiarCarritosExpirados(Database::getConnection());
+} catch (Throwable $e) {
+    Logger::error('Index.php - Error al limpiar carritos expirados: ' . $e->getMessage());
+}
+
 // ─── Parsear método y URI ─────────────────────────────────────────────────────
 $method = strtoupper($_SERVER['REQUEST_METHOD']);
 

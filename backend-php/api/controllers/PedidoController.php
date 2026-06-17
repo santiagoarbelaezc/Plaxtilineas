@@ -402,12 +402,101 @@ class PedidoController
     public static function verificarEstado(array $user): void
     {
         $referencia = $_GET['ref'] ?? null;
-        if (!$referencia) {
-            ResponseHandler::error('Parámetro ?ref= requerido.', 400);
+        $wompiTxId = $_GET['id'] ?? null;
+
+        if (!$referencia && !$wompiTxId) {
+            ResponseHandler::error('Parámetro ?ref= o ?id= requerido.', 400);
             return;
         }
 
         $db = Database::getConnection();
+
+        // Si se nos da un ID de transacción Wompi, resolvemos la referencia llamando a Wompi
+        if ($wompiTxId) {
+            $isSandbox = str_starts_with(WOMPI_PRIVATE_KEY, 'prv_test_');
+            $apiBase   = $isSandbox
+                ? 'https://sandbox.wompi.co/v1'
+                : 'https://production.wompi.co/v1';
+
+            $ch = curl_init("{$apiBase}/transactions/{$wompiTxId}");
+            curl_setopt_array($ch, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT        => 10,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_HTTPHEADER     => [
+                    'Authorization: Bearer ' . WOMPI_PRIVATE_KEY,
+                ],
+            ]);
+
+            $response  = curl_exec($ch);
+            $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $curlError = curl_error($ch);
+            curl_close($ch);
+
+            if ($curlError) {
+                Logger::error('PedidoController::verificarEstado - Error cURL Wompi: ' . $curlError);
+            } else {
+                $txData = json_decode($response, true);
+                if ($httpCode >= 200 && $httpCode < 300 && !empty($txData['data']['reference'])) {
+                    $referencia = $txData['data']['reference'];
+                    $status = $txData['data']['status'] ?? '';
+
+                    // Si está aprobado en Wompi pero no en nuestra BD, forzamos la confirmación del pedido ahora mismo.
+                    if ($status === 'APPROVED') {
+                        $stmtFind = $db->prepare("SELECT id, estado FROM pedidos WHERE wompi_referencia = ?");
+                        $stmtFind->execute([$referencia]);
+                        $pedidoDb = $stmtFind->fetch();
+                        if ($pedidoDb && $pedidoDb['estado'] !== 'pagado') {
+                            $montoCentavos = (int)($txData['data']['amount_in_cents'] ?? 0);
+                            Logger::info('PedidoController::verificarEstado - Confirmación proactiva vía consulta API', [
+                                'pedido_id' => $pedidoDb['id'],
+                                'wompi_tx'  => $wompiTxId
+                            ]);
+                            self::confirmarPedido(
+                                (int)$pedidoDb['id'],
+                                $wompiTxId,
+                                'query-proactive-' . $wompiTxId,
+                                $montoCentavos
+                            );
+                        }
+                    } elseif (in_array($status, ['DECLINED', 'VOIDED', 'ERROR'])) {
+                        $stmtFind = $db->prepare("SELECT id, estado FROM pedidos WHERE wompi_referencia = ?");
+                        $stmtFind->execute([$referencia]);
+                        $pedidoDb = $stmtFind->fetch();
+                        if ($pedidoDb && $pedidoDb['estado'] !== 'cancelado') {
+                            Logger::info('PedidoController::verificarEstado - Cancelación proactiva vía consulta API', [
+                                'pedido_id' => $pedidoDb['id'],
+                                'wompi_tx'  => $wompiTxId,
+                                'status'    => $status
+                            ]);
+                            $db->prepare("
+                                UPDATE pedidos
+                                SET estado = 'cancelado',
+                                    wompi_transaction_id = ?,
+                                    wompi_evento_id      = ?,
+                                    fecha_actualizacion  = NOW()
+                                WHERE id = ?
+                            ")->execute([$wompiTxId, 'query-proactive-' . $wompiTxId, $pedidoDb['id']]);
+
+                            $db->prepare(
+                                "DELETE FROM stock_reservas WHERE pedido_id = ?"
+                            )->execute([$pedidoDb['id']]);
+                        }
+                    }
+                } else {
+                    Logger::error('PedidoController::verificarEstado - Error resolviendo transacción en Wompi', [
+                        'http_code' => $httpCode,
+                        'response'  => $response
+                    ]);
+                }
+            }
+        }
+
+        if (!$referencia) {
+            ResponseHandler::error('No se pudo resolver la referencia del pedido.', 404);
+            return;
+        }
+
         $stmt = $db->prepare("
             SELECT p.id, p.codigo_pedido, p.estado, p.total, p.iva,
                    p.costo_envio, p.subtotal, p.wompi_pagado_at,
@@ -425,7 +514,7 @@ class PedidoController
 
         // Seguridad: solo el dueño del pedido puede consultarlo
         if ((int)$pedido['usuario_id'] !== (int)$user['id']) {
-            ResponseHandler::error('No autorizado.', 403);
+            ResponseHandler::error('No autorizador.', 403);
             return;
         }
 
