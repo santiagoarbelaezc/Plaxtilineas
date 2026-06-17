@@ -437,16 +437,29 @@ class PedidoController
                 Logger::error('PedidoController::verificarEstado - Error cURL Wompi: ' . $curlError);
             } else {
                 $txData = json_decode($response, true);
-                if ($httpCode >= 200 && $httpCode < 300 && !empty($txData['data']['reference'])) {
-                    $referencia = $txData['data']['reference'];
+                if ($httpCode >= 200 && $httpCode < 300) {
+                    $paymentLinkId = $txData['data']['payment_link_id'] ?? null;
+                    $txRef = $txData['data']['reference'] ?? null;
                     $status = $txData['data']['status'] ?? '';
 
-                    // Si está aprobado en Wompi pero no en nuestra BD, forzamos la confirmación del pedido ahora mismo.
-                    if ($status === 'APPROVED') {
-                        $stmtFind = $db->prepare("SELECT id, estado FROM pedidos WHERE wompi_referencia = ?");
-                        $stmtFind->execute([$referencia]);
+                    // Buscar el pedido por wompi_link_id o por wompi_referencia
+                    $pedidoDb = null;
+                    if ($paymentLinkId) {
+                        $stmtFind = $db->prepare("SELECT id, estado, wompi_referencia FROM pedidos WHERE wompi_link_id = ?");
+                        $stmtFind->execute([$paymentLinkId]);
                         $pedidoDb = $stmtFind->fetch();
-                        if ($pedidoDb && $pedidoDb['estado'] !== 'pagado') {
+                    }
+                    if (!$pedidoDb && $txRef) {
+                        $stmtFind = $db->prepare("SELECT id, estado, wompi_referencia FROM pedidos WHERE wompi_referencia = ?");
+                        $stmtFind->execute([$txRef]);
+                        $pedidoDb = $stmtFind->fetch();
+                    }
+
+                    if ($pedidoDb) {
+                        $referencia = $pedidoDb['wompi_referencia'];
+
+                        // Si está aprobado en Wompi pero no en nuestra BD, forzamos la confirmación del pedido ahora mismo.
+                        if ($status === 'APPROVED' && $pedidoDb['estado'] !== 'pagado') {
                             $montoCentavos = (int)($txData['data']['amount_in_cents'] ?? 0);
                             Logger::info('PedidoController::verificarEstado - Confirmación proactiva vía consulta API', [
                                 'pedido_id' => $pedidoDb['id'],
@@ -458,12 +471,7 @@ class PedidoController
                                 'query-proactive-' . $wompiTxId,
                                 $montoCentavos
                             );
-                        }
-                    } elseif (in_array($status, ['DECLINED', 'VOIDED', 'ERROR'])) {
-                        $stmtFind = $db->prepare("SELECT id, estado FROM pedidos WHERE wompi_referencia = ?");
-                        $stmtFind->execute([$referencia]);
-                        $pedidoDb = $stmtFind->fetch();
-                        if ($pedidoDb && $pedidoDb['estado'] !== 'cancelado') {
+                        } elseif (in_array($status, ['DECLINED', 'VOIDED', 'ERROR']) && $pedidoDb['estado'] !== 'cancelado') {
                             Logger::info('PedidoController::verificarEstado - Cancelación proactiva vía consulta API', [
                                 'pedido_id' => $pedidoDb['id'],
                                 'wompi_tx'  => $wompiTxId,
@@ -482,6 +490,11 @@ class PedidoController
                                 "DELETE FROM stock_reservas WHERE pedido_id = ?"
                             )->execute([$pedidoDb['id']]);
                         }
+                    } else {
+                        Logger::error('PedidoController::verificarEstado - Pedido no encontrado para transacción Wompi', [
+                            'link_id' => $paymentLinkId,
+                            'ref'     => $txRef
+                        ]);
                     }
                 } else {
                     Logger::error('PedidoController::verificarEstado - Error resolviendo transacción en Wompi', [
@@ -514,7 +527,7 @@ class PedidoController
 
         // Seguridad: solo el dueño del pedido puede consultarlo
         if ((int)$pedido['usuario_id'] !== (int)$user['id']) {
-            ResponseHandler::error('No autorizador.', 403);
+            ResponseHandler::error('No autorizado.', 403);
             return;
         }
 
@@ -586,6 +599,7 @@ class PedidoController
                     p.direccion_envio, p.ciudad, p.departamento,
                     p.telefono_contacto, p.metodo_pago, p.notas,
                     p.fecha_actualizacion, p.wompi_referencia, p.wompi_pagado_at,
+                    p.guia_numero, p.transportadora, p.fecha_envio,
                     u.nombre as cliente_nombre, u.correo as cliente_correo
                 FROM pedidos p
                 LEFT JOIN usuarios u ON p.usuario_id = u.id
@@ -609,7 +623,7 @@ class PedidoController
             $stats = $db->query("
                 SELECT
                     COUNT(*) as total_pedidos,
-                    SUM(total) as ingresos_totales,
+                    SUM(CASE WHEN estado IN ('pagado','confirmado','en_preparacion','en_camino','entregado') THEN total ELSE 0 END) as ingresos_totales,
                     SUM(CASE WHEN estado IN ('pagado','pendiente','confirmado','en_preparacion','en_camino') THEN 1 ELSE 0 END) as pedidos_activos,
                     SUM(CASE WHEN estado = 'entregado' THEN 1 ELSE 0 END) as pedidos_entregados,
                     SUM(CASE WHEN estado = 'cancelado' THEN 1 ELSE 0 END) as pedidos_cancelados
@@ -662,10 +676,41 @@ class PedidoController
 
             $estadoAnterior = $pedido['estado'];
 
-            $stmtUpdate = $db->prepare(
-                "UPDATE pedidos SET estado = ?, fecha_actualizacion = NOW() WHERE id = ?"
-            );
-            $stmtUpdate->execute([$nuevoEstado, $pedidoId]);
+            // Restricción para pedidos pagados
+            $estadosPagados = ['pagado', 'confirmado', 'en_preparacion', 'en_camino', 'entregado'];
+            if (in_array($estadoAnterior, $estadosPagados)) {
+                if ($nuevoEstado === 'pendiente' || $nuevoEstado === 'pendiente_pago') {
+                    ResponseHandler::error('No puedes cambiar un pedido pagado a estado pendiente.', 400);
+                    return;
+                }
+                if ($nuevoEstado === 'cancelado') {
+                    $solicitudCliente = $input['solicitud_cliente'] ?? false;
+                    if (!$solicitudCliente) {
+                        ResponseHandler::error('Un pedido pagado no se puede cancelar directamente por el administrador, a menos que sea a solicitud expresa del cliente.', 400);
+                        return;
+                    }
+                }
+            }
+
+            // Datos de envío opcionales
+            $guia_numero = $input['guia_numero'] ?? $pedido['guia_numero'];
+            $transportadora = $input['transportadora'] ?? $pedido['transportadora'];
+            $fecha_envio = $pedido['fecha_envio'];
+
+            if ($nuevoEstado === 'en_camino' && !$fecha_envio) {
+                $fecha_envio = date('Y-m-d H:i:s');
+            }
+
+            $stmtUpdate = $db->prepare("
+                UPDATE pedidos 
+                SET estado = ?, 
+                    guia_numero = ?, 
+                    transportadora = ?, 
+                    fecha_envio = ?, 
+                    fecha_actualizacion = NOW() 
+                WHERE id = ?
+            ");
+            $stmtUpdate->execute([$nuevoEstado, $guia_numero, $transportadora, $fecha_envio, $pedidoId]);
 
             try {
                 if ($pedido['cliente_correo']) {

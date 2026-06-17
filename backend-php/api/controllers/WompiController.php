@@ -145,6 +145,9 @@ class WompiController
         $linkId       = $responseData['data']['id'];
         $checkoutUrl  = "https://checkout.wompi.co/l/{$linkId}";
 
+        // Guardar el link ID en la BD para relacionar transacciones futuras
+        $db->prepare("UPDATE pedidos SET wompi_link_id = ? WHERE id = ?")->execute([$linkId, $pedidoId]);
+
         Logger::error('WompiController::datosPago - Link de pago creado', [
             'pedido_id'    => $pedidoId,
             'link_id'      => $linkId,
@@ -214,18 +217,20 @@ class WompiController
         }
 
         // ── PASO 4: Extraer datos del evento ─────────────────────────────
-        $eventoId    = (string)($evento['id']                                     ?? '');
-        $tipoEvento  = (string)($evento['event']                                  ?? '');
-        $referencia  = (string)($evento['data']['transaction']['reference']        ?? '');
-        $status      = (string)($evento['data']['transaction']['status']           ?? '');
-        $transId     = (string)($evento['data']['transaction']['id']               ?? '');
-        $montoCents  = (int)($evento['data']['transaction']['amount_in_cents']    ?? 0);
+        $eventoId      = (string)($evento['id']                                     ?? '');
+        $tipoEvento    = (string)($evento['event']                                  ?? '');
+        $referencia    = (string)($evento['data']['transaction']['reference']        ?? '');
+        $status        = (string)($evento['data']['transaction']['status']           ?? '');
+        $transId       = (string)($evento['data']['transaction']['id']               ?? '');
+        $montoCents    = (int)($evento['data']['transaction']['amount_in_cents']    ?? 0);
+        $paymentLinkId = (string)($evento['data']['transaction']['payment_link_id'] ?? '');
 
         Logger::error('WompiController::webhook - Evento recibido', [
             'evento_id'  => $eventoId,
             'tipo'       => $tipoEvento,
             'referencia' => $referencia,
             'status'     => $status,
+            'link_id'    => $paymentLinkId,
         ]);
 
         // Solo procesamos eventos de transacciones
@@ -235,23 +240,30 @@ class WompiController
             exit;
         }
 
-        if (empty($referencia)) {
-            http_response_code(200);
-            echo json_encode(['mensaje' => 'Sin referencia en el evento']);
-            exit;
+        // ── PASO 5: Buscar el pedido por payment_link_id o referencia ─────
+        $db = Database::getConnection();
+        $pedido = null;
+
+        if (!empty($paymentLinkId)) {
+            $stmtPedido = $db->prepare(
+                "SELECT id, estado FROM pedidos WHERE wompi_link_id = ?"
+            );
+            $stmtPedido->execute([$paymentLinkId]);
+            $pedido = $stmtPedido->fetch();
         }
 
-        // ── PASO 5: Buscar el pedido por referencia ──────────────────────
-        $db = Database::getConnection();
-        $stmtPedido = $db->prepare(
-            "SELECT id, estado FROM pedidos WHERE wompi_referencia = ?"
-        );
-        $stmtPedido->execute([$referencia]);
-        $pedido = $stmtPedido->fetch();
+        if (!$pedido && !empty($referencia)) {
+            $stmtPedido = $db->prepare(
+                "SELECT id, estado FROM pedidos WHERE wompi_referencia = ?"
+            );
+            $stmtPedido->execute([$referencia]);
+            $pedido = $stmtPedido->fetch();
+        }
 
         if (!$pedido) {
-            Logger::error('WompiController::webhook - Pedido no encontrado para referencia', [
-                'referencia' => $referencia
+            Logger::error('WompiController::webhook - Pedido no encontrado para referencia/link', [
+                'referencia' => $referencia,
+                'link_id'    => $paymentLinkId
             ]);
             // Devolver 200 para que Wompi no reintente indefinidamente
             http_response_code(200);
