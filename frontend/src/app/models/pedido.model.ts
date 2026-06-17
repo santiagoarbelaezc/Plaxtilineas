@@ -112,6 +112,7 @@ export type EstadoPedido =
   | 'cancelado';
 
 export const ESTADOS_PEDIDO: { key: EstadoPedido; label: string; icon: string; color: string }[] = [
+  { key: 'pendiente_pago',  label: 'Pendiente de Pago', icon: '💳', color: '#f59e0b' },
   { key: 'pagado',          label: 'Pago Confirmado', icon: '💳', color: '#10b981' },
   { key: 'pendiente',       label: 'Pendiente',       icon: '🕐', color: '#f59e0b' },
   { key: 'confirmado',      label: 'Confirmado',      icon: '✅', color: '#3b82f6' },

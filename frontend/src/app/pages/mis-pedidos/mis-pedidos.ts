@@ -96,8 +96,22 @@ export class MisPedidos implements OnInit {
   }
 
   getEstadoIndex(estado: EstadoPedido): number {
-    const order: EstadoPedido[] = ['pendiente', 'confirmado', 'en_preparacion', 'en_camino', 'entregado'];
-    return order.indexOf(estado);
+    switch (estado) {
+      case 'pendiente_pago':
+      case 'pendiente':
+        return 0; // Recibido
+      case 'pagado':
+      case 'confirmado':
+        return 1; // Confirmado
+      case 'en_preparacion':
+        return 2; // Preparación
+      case 'en_camino':
+        return 3; // En Camino
+      case 'entregado':
+        return 4; // Entregado
+      default:
+        return -1;
+    }
   }
 
   isStepCompleted(estado: EstadoPedido, stepIndex: number): boolean {

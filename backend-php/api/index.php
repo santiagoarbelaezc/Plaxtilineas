@@ -457,6 +457,35 @@ try {
         exit;
     }
 
+    // Aprobación simulada de pago de Wompi (Solo habilitado en desarrollo)
+    if ($uri === '/wompi/mock-approve' && (defined('APP_ENV') && APP_ENV === 'development')) {
+        $referencia = $_GET['ref'] ?? $_POST['ref'] ?? null;
+        if (!$referencia) {
+            ResponseHandler::error('Parámetro ?ref= requerido.', 400);
+            exit;
+        }
+        $db = Database::getConnection();
+        $stmtPedido = $db->prepare("SELECT id, total FROM pedidos WHERE wompi_referencia = ?");
+        $stmtPedido->execute([$referencia]);
+        $pedido = $stmtPedido->fetch();
+        if (!$pedido) {
+            ResponseHandler::error('Pedido no encontrado.', 404);
+            exit;
+        }
+        $ok = PedidoController::confirmarPedido(
+            (int)$pedido['id'],
+            'mock_transaction_' . uniqid(),
+            'mock_event_' . uniqid(),
+            (int)round((float)$pedido['total'] * 100)
+        );
+        if ($ok) {
+            ResponseHandler::success(['mensaje' => 'Pedido marcado como pagado exitosamente (Mock)']);
+        } else {
+            ResponseHandler::error('Error al confirmar el pedido (Mock)', 500);
+        }
+        exit;
+    }
+
     // ═════════════════════════════════════════════════════════════════════════════
     // PEDIDOS  /api/pedidos/*
     // ═════════════════════════════════════════════════════════════════════════════
