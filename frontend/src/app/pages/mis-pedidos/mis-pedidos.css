@@ -16,7 +16,7 @@
   padding: 0 24px 32px;
 }
 .header-content {
-  max-width: 1200px;
+  max-width: 1550px;
   margin: 0 auto;
 }
 .page-title {
@@ -41,7 +41,7 @@
 
 /* ── STATS CARDS ──────────────────────────────────────────────────────── */
 .stats-section {
-  max-width: 1200px;
+  max-width: 1550px;
   margin: 0 auto 32px;
   padding: 0 24px;
   display: grid;
@@ -126,7 +126,7 @@
 
 /* ── FILTERS ──────────────────────────────────────────────────────────── */
 .filters-section {
-  max-width: 1200px;
+  max-width: 1550px;
   margin: 0 auto 32px;
   padding: 0 24px;
   display: flex;
@@ -162,7 +162,7 @@
 .error-state,
 .empty-state,
 .empty-filter {
-  max-width: 1200px;
+  max-width: 1550px;
   margin: 60px auto;
   padding: 0 24px;
   text-align: center;
@@ -241,7 +241,7 @@
 
 /* ── PEDIDOS LIST ─────────────────────────────────────────────────────── */
 .pedidos-list {
-  max-width: 1200px;
+  max-width: 1550px;
   margin: 0 auto;
   padding: 0 24px;
   display: flex;
@@ -1039,9 +1039,9 @@
   gap: 8px;
   padding: 14px 24px;
   border-radius: 8px;
-  border: 2px solid #7f8c8d;
+  border: 2px solid #b91c1c;
   background: #ffffff;
-  color: #7f8c8d;
+  color: #b91c1c;
   font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
@@ -1050,6 +1050,6 @@
   letter-spacing: 0.05em;
 }
 .action-btn-delete:hover {
-  background: #7f8c8d;
+  background: #b91c1c;
   color: #ffffff;
 }
