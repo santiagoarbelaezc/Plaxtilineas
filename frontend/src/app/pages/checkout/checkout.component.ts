@@ -168,14 +168,12 @@ import Swal from 'sweetalert2';
     </div>
 
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
       * { box-sizing: border-box; }
 
       .checkout-page {
         min-height: 100vh;
         background: #0f172a;
-        font-family: 'Inter', sans-serif;
+        font-family: var(--font-primary, 'Montserrat', sans-serif);
         padding: 0;
         color: #e2e8f0;
       }
