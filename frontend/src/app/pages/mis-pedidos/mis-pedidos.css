@@ -252,7 +252,7 @@
 /* ── PEDIDO CARD ──────────────────────────────────────────────────────── */
 .pedido-card {
   background: #ffffff;
-  border-radius: 12px;
+  border-radius: 12px !important;
   border: 1px solid #e5e5e5;
   transition: border-color 0.2s ease;
   overflow: hidden;
