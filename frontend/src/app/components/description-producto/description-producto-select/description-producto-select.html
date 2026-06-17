@@ -166,7 +166,7 @@
             <button 
               class="ikea-qty-btn" 
               (click)="cambiarCantidad(cantidadSeleccionada - 1)"
-              [disabled]="cantidadSeleccionada <= 1">−</button>
+              [disabled]="cantidadSeleccionada <= (producto.minimo_compra || 1)">−</button>
             <span class="ikea-qty-number" style="flex:1; text-align:center;">{{cantidadSeleccionada}}</span>
             <button 
               class="ikea-qty-btn" 

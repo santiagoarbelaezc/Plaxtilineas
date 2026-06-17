@@ -14,6 +14,7 @@ export interface Producto {
   sku?: string;
   stock?: number;
   stock_minimo?: number;
+  minimo_compra?: number;
   controlar_stock?: boolean | number;
   vistas?: number;
   nuevaImagen?: File;

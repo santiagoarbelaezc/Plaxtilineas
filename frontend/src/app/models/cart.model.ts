@@ -7,4 +7,18 @@ export interface CartItem {
   variante?: Variante;
   cantidad: number;
   precioUnitario: number; 
+  // Campos específicos requeridos
+  sku?: string;
+  imagen_url?: string | null;
+  categoria?: string;
+  unidad_medida?: 'kg' | 'rollo' | 'unidad' | 'caja' | string;
+}
+
+export interface CartOrder {
+  items: CartItem[];
+  subtotal: number;
+  IVA: number;
+  costoEnvio: number;
+  total: number;
+  referencia: string;
 }

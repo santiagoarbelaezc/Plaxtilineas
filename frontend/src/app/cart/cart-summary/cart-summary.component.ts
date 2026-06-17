@@ -5,8 +5,10 @@ import { FormsModule } from '@angular/forms';
 import { CartService } from '../../services/cart.service';
 import { PedidoService } from '../../services/pedido.service';
 import { AuthService } from '../../services/auth.service';
+import { WompiService } from '../../services/wompi.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-cart-summary',
@@ -380,80 +382,84 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
     </div>
 
     <!-- Checkout Modal -->
-    <div *ngIf="showCheckoutModal()" style="position: fixed; inset: 0; z-index: 100002; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(0,0,0,0.6);" (click)="closeCheckout()">
-      <div style="background: #fff; width: 100%; max-width: 600px; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);" (click)="$event.stopPropagation()">
+    <div *ngIf="showCheckoutModal()" style="position: fixed; inset: 0; z-index: 100002; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(15,23,42,0.6); backdrop-filter: blur(4px);" (click)="closeCheckout()">
+      <div style="background: #fff; width: 100%; max-width: 600px; display: flex; flex-direction: column; border-radius: 16px; overflow: hidden; box-shadow: var(--dash-shadow, 0 25px 50px -12px rgba(0, 0, 0, 0.15)); border: 1px solid #e2e8f0; font-family: var(--font-primary, 'Montserrat', sans-serif);" (click)="$event.stopPropagation()">
         
-        <div style="padding: 1.5rem 2rem; border-bottom: 2px solid #111; display: flex; justify-content: space-between; align-items: center; background: #fff;">
-          <h2 style="font-size: 1.1rem; font-weight: 800; color: #111; text-transform: uppercase; letter-spacing: 0.05em; margin: 0; display: flex; align-items: center; gap: 0.75rem;">
-            <svg style="color: #111;" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+        <div style="padding: 1.5rem 2rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #fff;">
+          <h2 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.02em; margin: 0; display: flex; align-items: center; gap: 0.75rem; font-family: inherit;">
+            <svg style="color: #368c44;" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
             Detalles de Envío
           </h2>
-          <button (click)="closeCheckout()" style="background: transparent; border: none; cursor: pointer; padding: 0; color: #999; display: flex;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <button (click)="closeCheckout()" style="background: transparent; border: none; cursor: pointer; padding: 0; color: #94a3b8; display: flex; transition: color 0.2s;" onmouseover="this.style.color='#0f172a'" onmouseout="this.style.color='#94a3b8'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
         </div>
 
         <div style="padding: 2rem; overflow-y: auto; max-height: 75vh; background: #fff;">
-          <form #checkoutForm="ngForm" (ngSubmit)="confirmarPedido()" style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <form #checkoutForm="ngForm" (ngSubmit)="confirmarPedido()" style="display: flex; flex-direction: column; gap: 1.25rem; font-family: inherit;">
             
-            <div style="background-color: rgba(54, 140, 68, 0.06); border: 1px solid rgba(54, 140, 68, 0.15); border-radius: 12px; padding: 14px 18px; display: flex; align-items: flex-start; gap: 12px; color: #2d6a4f;">
-              <svg style="flex-shrink: 0; margin-top: 2px;" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-              <div style="display: flex; flex-direction: column; gap: 2px; text-align: left;">
-                <span style="font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.02em;">¿Dirección correcta?</span>
-                <span style="font-size: 0.82rem; font-weight: 500; opacity: 0.9;">Hemos rellenado estos campos con los datos de tu registro. Por favor verifica que tu dirección, ciudad y teléfono sean correctos antes de finalizar tu compra.</span>
+            <div style="background-color: rgba(54, 140, 68, 0.05); border: 1px solid rgba(54, 140, 68, 0.12); border-radius: 8px; padding: 12px 16px; display: flex; align-items: flex-start; gap: 10px; color: #1e4a26;">
+              <svg style="flex-shrink: 0; margin-top: 2px;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              <div style="display: flex; flex-direction: column; gap: 2px; text-align: left; font-family: inherit;">
+                <span style="font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.02em;">¿Dirección correcta?</span>
+                <span style="font-size: 0.8rem; font-weight: 500; opacity: 0.85; line-height: 1.4;">Hemos pre-llenado el formulario con la dirección e información de contacto que tienes registrada en tu cuenta. Por favor verifícalos antes de realizar la compra.</span>
               </div>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-              <label style="font-size: 0.75rem; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 0.05em;">Dirección completa *</label>
-              <input type="text" [(ngModel)]="checkoutData.direccion_envio" name="direccion" required placeholder="Ej: Cra. 14 # 22-10 Apto 301" style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ccc; font-family: var(--font-primary); font-size: 0.95rem; color: #111; outline: none; box-sizing: border-box;">
+            <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+              <label style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-family: inherit;">Dirección completa *</label>
+              <input type="text" [(ngModel)]="checkoutData.direccion_envio" name="direccion" required placeholder="Ej: Calle 37 N #20-85" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; font-size: 0.85rem; color: #1e293b; outline: none; background: #f8fafc; box-sizing: border-box; transition: all 0.2s;" onfocus="this.style.borderColor='#368c44'; this.style.backgroundColor='#fff';" onblur="this.style.borderColor='#cbd5e1'; this.style.backgroundColor='#f8fafc';">
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-              <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <label style="font-size: 0.75rem; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 0.05em;">Ciudad *</label>
-                <input type="text" [(ngModel)]="checkoutData.ciudad" name="ciudad" required placeholder="Ej: Armenia" style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ccc; font-family: var(--font-primary); font-size: 0.95rem; color: #111; outline: none; box-sizing: border-box;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+                <label style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-family: inherit;">Ciudad *</label>
+                <input type="text" [(ngModel)]="checkoutData.ciudad" name="ciudad" required placeholder="Ej: Medellín" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; font-size: 0.85rem; color: #1e293b; outline: none; background: #f8fafc; box-sizing: border-box; transition: all 0.2s;" onfocus="this.style.borderColor='#368c44'; this.style.backgroundColor='#fff';" onblur="this.style.borderColor='#cbd5e1'; this.style.backgroundColor='#f8fafc';">
               </div>
-              <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <label style="font-size: 0.75rem; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 0.05em;">Departamento *</label>
-                <input type="text" [(ngModel)]="checkoutData.departamento" name="departamento" required placeholder="Ej: Quindío" style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ccc; font-family: var(--font-primary); font-size: 0.95rem; color: #111; outline: none; box-sizing: border-box;">
+              <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+                <label style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-family: inherit;">Departamento *</label>
+                <input type="text" [(ngModel)]="checkoutData.departamento" name="departamento" required placeholder="Ej: Antioquia" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; font-size: 0.85rem; color: #1e293b; outline: none; background: #f8fafc; box-sizing: border-box; transition: all 0.2s;" onfocus="this.style.borderColor='#368c44'; this.style.backgroundColor='#fff';" onblur="this.style.borderColor='#cbd5e1'; this.style.backgroundColor='#f8fafc';">
               </div>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-              <label style="font-size: 0.75rem; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 0.05em;">Teléfono de contacto *</label>
-              <input type="tel" [(ngModel)]="checkoutData.telefono_contacto" name="telefono" required placeholder="Ej: 300 123 4567" style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ccc; font-family: var(--font-primary); font-size: 0.95rem; color: #111; outline: none; box-sizing: border-box;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+                <label style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-family: inherit;">Teléfono de contacto *</label>
+                <input type="tel" [(ngModel)]="checkoutData.telefono_contacto" name="telefono" required placeholder="Ej: 3001234567" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; font-size: 0.85rem; color: #1e293b; outline: none; background: #f8fafc; box-sizing: border-box; transition: all 0.2s;" onfocus="this.style.borderColor='#368c44'; this.style.backgroundColor='#fff';" onblur="this.style.borderColor='#cbd5e1'; this.style.backgroundColor='#f8fafc';">
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+                <label style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-family: inherit;">Método de pago</label>
+                <select [(ngModel)]="checkoutData.metodo_pago" name="pago" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; font-size: 0.85rem; color: #1e293b; outline: none; background: #f8fafc; box-sizing: border-box; cursor: pointer; transition: all 0.2s;" onfocus="this.style.borderColor='#368c44';" onblur="this.style.borderColor='#cbd5e1';">
+                  <option value="wompi">Pago Seguro Online (Wompi)</option>
+                  <option value="contraentrega">Contraentrega (Pago al recibir)</option>
+                  <option value="transferencia">Transferencia Bancaria</option>
+                </select>
+              </div>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-              <label style="font-size: 0.75rem; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 0.05em;">Método de pago</label>
-              <select [(ngModel)]="checkoutData.metodo_pago" name="pago" style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ccc; font-family: var(--font-primary); font-size: 0.95rem; color: #111; outline: none; box-sizing: border-box; background: #fff;">
-                <option value="contraentrega">Contraentrega (Pago al recibir)</option>
-                <option value="transferencia">Transferencia Bancaria</option>
-              </select>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-              <label style="font-size: 0.75rem; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 0.05em;">Notas adicionales (Opcional)</label>
-              <textarea [(ngModel)]="checkoutData.notas" name="notas" rows="2" placeholder="Instrucciones para llegar..." style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ccc; font-family: var(--font-primary); font-size: 0.95rem; color: #111; outline: none; box-sizing: border-box; resize: vertical;"></textarea>
+            <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+              <label style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-family: inherit;">Notas adicionales (Opcional)</label>
+              <textarea [(ngModel)]="checkoutData.notas" name="notas" rows="2" placeholder="Ej: Edificio Inter Plaza, Torre B, Apto 502" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; font-size: 0.85rem; color: #1e293b; outline: none; background: #f8fafc; box-sizing: border-box; resize: vertical; transition: all 0.2s;" onfocus="this.style.borderColor='#368c44'; this.style.backgroundColor='#fff';" onblur="this.style.borderColor='#cbd5e1'; this.style.backgroundColor='#f8fafc';"></textarea>
             </div>
 
             <!-- Error Feedback -->
-            <div *ngIf="checkoutError()" style="padding: 1rem; border: 1px solid #d0021b; color: #d0021b; background: #fff0f0; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <div *ngIf="checkoutError()" style="padding: 10px 14px; border: 1px solid #f87171; color: #ef4444; background: #fef2f2; font-size: 0.8rem; font-weight: 700; border-radius: 8px; display: flex; align-items: center; gap: 0.5rem; font-family: inherit;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
               {{ checkoutError() }}
             </div>
 
-            <div style="margin-top: 0.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e5e5; display: flex; flex-direction: column; gap: 1.5rem;">
-              <div style="display: flex; justify-content: space-between; align-items: center; background: #f9f9f9; padding: 1rem; border: 1px solid #eee;">
-                <span style="font-size: 0.8rem; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 0.05em;">Total a pagar</span>
-                <span style="font-size: 1.4rem; font-weight: 800; color: #111; letter-spacing: -0.02em;">{{ formatearPrecio(totalPrice()) }}</span>
+            <div style="margin-top: 0.5rem; padding-top: 1.25rem; border-top: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 1.25rem; font-family: inherit;">
+              <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 12px 18px; border: 1px solid #e2e8f0; border-radius: 8px;">
+                <span style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-family: inherit;">Total a pagar</span>
+                <span style="font-size: 1.35rem; font-weight: 800; color: #368c44; letter-spacing: -0.01em; font-family: inherit;">{{ formatearPrecio(totalPrice()) }}</span>
               </div>
               <button 
                 type="submit" 
                 [disabled]="checkoutForm.invalid || isSubmitting()"
-                style="width: 100%; padding: 1.2rem; background: #111; color: #fff; border: none; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.9rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 0.75rem;"
-                [style.opacity]="(checkoutForm.invalid || isSubmitting()) ? '0.5' : '1'">
+                style="width: 100%; padding: 12px; background: linear-gradient(135deg, #368c44, #25d366); color: #fff; border: none; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 0.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(54, 140, 68, 0.2); transition: all 0.2s;"
+                [style.opacity]="(checkoutForm.invalid || isSubmitting()) ? '0.5' : '1'"
+                onmouseover="if(!this.disabled) { this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 16px rgba(54, 140, 68, 0.35)'; }"
+                onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 12px rgba(54, 140, 68, 0.2)';">
                 <span *ngIf="isSubmitting()" style="width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite;"></span>
                 Confirmar Compra
               </button>
@@ -516,6 +522,7 @@ export class CartSummaryComponent implements OnInit {
   private cartService = inject(CartService);
   private pedidoService = inject(PedidoService);
   private authService = inject(AuthService);
+  private wompiSvc = inject(WompiService);
   private router = inject(Router);
   
   items = toSignal(this.cartService.items$, { initialValue: [] });
@@ -545,7 +552,7 @@ export class CartSummaryComponent implements OnInit {
     ciudad: '',
     departamento: '',
     telefono_contacto: '',
-    metodo_pago: 'contraentrega',
+    metodo_pago: 'wompi',
     notas: ''
   };
 
@@ -680,39 +687,75 @@ export class CartSummaryComponent implements OnInit {
       next: (stockRes) => {
         if (!stockRes.valido) {
           this.isSubmitting.set(false);
-          const errores = stockRes.items_con_error.map(err => `${err.nombre || 'Producto'}: ${err.error}`).join(', ');
+          const errores = stockRes.items_con_error.map((err: any) => `${err.nombre || 'Producto'}: ${err.error}`).join(', ');
           this.checkoutError.set(`Error de stock: ${errores}`);
           return;
         }
 
-        // Si el stock es válido, creamos el pedido
-        const payload = {
-          items: itemsPayload,
-          ...this.checkoutData
+        // Crear draft o pedido en backend
+        const draftPayload = {
+          items:              itemsPayload,
+          direccion_envio:    this.checkoutData.direccion_envio,
+          ciudad:             this.checkoutData.ciudad,
+          departamento:       this.checkoutData.departamento || undefined,
+          telefono_contacto:  this.checkoutData.telefono_contacto,
+          notas:              this.checkoutData.notas || undefined,
+          metodo_pago:        this.checkoutData.metodo_pago,
         };
 
-        this.pedidoService.crearPedido(payload).subscribe({
-          next: (res: any) => {
-            const orderId = res.pedido_id || res.id;
-            const message = this.generarMensajeWhatsApp(orderId);
-            const whatsappUrl = `https://wa.me/573007365939?text=${encodeURIComponent(message)}`;
-            
-            // Abrir WhatsApp en nueva pestaña/ventana
-            window.open(whatsappUrl, '_blank');
-            
-            this.cartService.clearCart();
-            this.closeCheckout();
-            this.router.navigate(['/pedidos']);
+        this.pedidoService.crearDraft(draftPayload).subscribe({
+          next: (draft) => {
+            if (this.checkoutData.metodo_pago === 'wompi') {
+              // Obtener firma de Wompi del backend
+              this.wompiSvc.obtenerDatosPago(draft.pedido_id).subscribe({
+                next: (datos) => {
+                  this.isSubmitting.set(false);
+                  this.closeCheckout();
+                  try {
+                    this.wompiSvc.abrirWidget(datos);
+                  } catch (err) {
+                    console.error('[Wompi] Error al abrir widget:', err);
+                    Swal.fire({
+                      icon: 'warning',
+                      title: 'Widget no disponible',
+                      text: 'Hubo un problema al cargar la pasarela de pago. Intenta de nuevo.',
+                      background: '#1e293b',
+                      color: '#e2e8f0',
+                      confirmButtonColor: '#368c44',
+                    });
+                  }
+                },
+                error: (err) => {
+                  this.isSubmitting.set(false);
+                  this.checkoutError.set('Error al conectar con la pasarela de pago. Intenta de nuevo.');
+                }
+              });
+            } else {
+              // Contraentrega o Transferencia: Confirmación offline directa
+              this.isSubmitting.set(false);
+              this.cartService.clearCart();
+              this.closeCheckout();
+              
+              Swal.fire({
+                icon: 'success',
+                title: '¡Pedido Confirmado!',
+                text: `Tu pedido ${draft.codigo_pedido} ha sido registrado. Te contactaremos pronto para coordinar la entrega y el pago.`,
+                background: '#1e293b',
+                color: '#e2e8f0',
+                confirmButtonColor: '#368c44'
+              });
+            }
           },
           error: (err) => {
             this.isSubmitting.set(false);
-            this.checkoutError.set(err.error?.error || 'Ocurrió un error al procesar tu pedido. Inténtalo de nuevo.');
+            const msg = err?.error?.error || 'Error al crear el pedido. Intenta de nuevo.';
+            this.checkoutError.set(msg);
           }
         });
       },
       error: (err) => {
         this.isSubmitting.set(false);
-        this.checkoutError.set('Error al verificar el stock. Inténtalo de nuevo.');
+        this.checkoutError.set('Error al verificar stock. Intenta de nuevo.');
       }
     });
   }

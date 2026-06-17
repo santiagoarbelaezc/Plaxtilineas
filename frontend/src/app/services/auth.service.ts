@@ -110,4 +110,19 @@ export class AuthService {
     this.isLoggingOut.next(false);
     this.router.navigate(['/']);
   }
+
+  actualizarPerfil(userData: any): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+    return this.http.put<{ mensaje: string, usuario: any }>(`${environment.apiUrl}/auth/actualizar`, userData, { headers }).pipe(
+      tap(res => {
+        if (res.usuario) {
+          this.currentUser.next(res.usuario);
+        }
+      })
+    );
+  }
 }

@@ -10,6 +10,7 @@ export interface ProductoMenu {
   categoria: string;    // nombre de la categoría (viene del JOIN)
   unidad?: string; // ej: kg, litros, metros, piezas
   stock?: number;
+  minimo_compra?: number;
   controlar_stock?: boolean | number;
   nuevaImagen?: File;   // para carga de nueva imagen (opcional)
 }

@@ -60,10 +60,11 @@
           <div *ngFor="let producto of productos; let i = index" class="producto-card">
             <div class="producto-imagen-wrapper" (click)="verDetalles(producto.id, producto.nombre)">
               <!-- Tags (Promocionales) -->
-              <span *ngIf="i % 4 === 0" class="tag promo descuento-15">15% de descuento</span>
-              <span *ngIf="i % 4 === 1" class="tag promo ultimas-unidades">Últimas unidades</span>
-              <span *ngIf="i % 4 === 2" class="tag promo descuento-50">50% de descuento</span>
-              <span *ngIf="i % 4 === 3" class="tag promo promo-dia">Promo del día</span>
+              <span *ngIf="producto.controlar_stock && producto.stock === 0" class="tag promo agotado" style="background-color: #ef4444 !important; color: white !important; font-weight: bold; bottom: 8px; right: 8px;">Agotado</span>
+              <span *ngIf="!(producto.controlar_stock && producto.stock === 0) && i % 4 === 0" class="tag promo descuento-15">15% de descuento</span>
+              <span *ngIf="!(producto.controlar_stock && producto.stock === 0) && i % 4 === 1" class="tag promo ultimas-unidades">Últimas unidades</span>
+              <span *ngIf="!(producto.controlar_stock && producto.stock === 0) && i % 4 === 2" class="tag promo descuento-50">50% de descuento</span>
+              <span *ngIf="!(producto.controlar_stock && producto.stock === 0) && i % 4 === 3" class="tag promo promo-dia">Promo del día</span>
               
               <img [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/placeholder.jpg'" 
                    [alt]="producto.nombre" 

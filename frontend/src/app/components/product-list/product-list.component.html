@@ -76,9 +76,10 @@
               <div class="product-image-container">
                 <!-- Badges Decorativos (Simulados basados en ID) -->
                 <div class="product-badges">
-                  <span class="badge badge-discount" *ngIf="producto.id % 2 !== 0">-15% OFF</span>
-                  <span class="badge badge-stock" *ngIf="producto.id % 5 === 0">Pocas Unidades</span>
-                  <span class="badge badge-new" *ngIf="producto.id % 6 === 0">Nuevo</span>
+                  <span class="badge badge-stock" *ngIf="producto.controlar_stock && producto.stock === 0" style="background-color: #ef4444 !important; color: white !important; font-weight: bold;">Agotado</span>
+                  <span class="badge badge-discount" *ngIf="!(producto.controlar_stock && producto.stock === 0) && producto.id % 2 !== 0">-15% OFF</span>
+                  <span class="badge badge-stock" *ngIf="!(producto.controlar_stock && producto.stock === 0) && producto.id % 5 === 0">Pocas Unidades</span>
+                  <span class="badge badge-new" *ngIf="!(producto.controlar_stock && producto.stock === 0) && producto.id % 6 === 0">Nuevo</span>
                 </div>
                 
                 <img [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/placeholder.jpg'" [alt]="producto.nombre" class="product-image" loading="lazy">

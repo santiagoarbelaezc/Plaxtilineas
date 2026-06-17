@@ -29,8 +29,9 @@
                   (error)="producto.imagen_url = 'assets/images/default-product.png'"
                 >
                 <div class="card-overlay"></div>
-                <!-- Etiqueta de nuevo -->
-                <div class="product-badge">NUEVO</div>
+                <!-- Etiqueta de nuevo / agotado -->
+                <div class="product-badge" *ngIf="producto.controlar_stock && producto.stock === 0" style="background-color: #ef4444 !important;">AGOTADO</div>
+                <div class="product-badge" *ngIf="!(producto.controlar_stock && producto.stock === 0)">NUEVO</div>
               </div>
 
               <div class="card-content product-info">

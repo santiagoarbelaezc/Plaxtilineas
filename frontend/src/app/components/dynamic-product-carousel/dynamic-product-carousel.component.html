@@ -31,10 +31,11 @@
               <img [src]="prod.imagen_url ? optimizarImagen(prod.imagen_url) : 'assets/images/placeholder.jpg'" [alt]="prod.nombre" class="product-img" loading="lazy">
               <span class="badge" *ngIf="prod.subcategoria">{{ prod.subcategoria }}</span>
               <!-- Tags (Promocionales) -->
-              <span *ngIf="i % 4 === 0" class="tag promo descuento-15">15% descuento</span>
-              <span *ngIf="i % 4 === 1" class="tag promo ultimas-unidades">Últimas unidades</span>
-              <span *ngIf="i % 4 === 2" class="tag promo descuento-50">50% descuento</span>
-              <span *ngIf="i % 4 === 3" class="tag promo promo-dia">Promo del día</span>
+              <span *ngIf="prod.controlar_stock && prod.stock === 0" class="tag promo agotado" style="background-color: #ef4444 !important; color: white !important; font-weight: bold; bottom: 8px; right: 8px;">Agotado</span>
+              <span *ngIf="!(prod.controlar_stock && prod.stock === 0) && i % 4 === 0" class="tag promo descuento-15">15% descuento</span>
+              <span *ngIf="!(prod.controlar_stock && prod.stock === 0) && i % 4 === 1" class="tag promo ultimas-unidades">Últimas unidades</span>
+              <span *ngIf="!(prod.controlar_stock && prod.stock === 0) && i % 4 === 2" class="tag promo descuento-50">50% descuento</span>
+              <span *ngIf="!(prod.controlar_stock && prod.stock === 0) && i % 4 === 3" class="tag promo promo-dia">Promo del día</span>
             </div>
 
             <div class="card-info">

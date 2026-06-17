@@ -113,6 +113,15 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/mis-pedidos/mis-pedidos').then(m => m.MisPedidos)
   },
   {
+    path: 'perfil',
+    canActivate: [AuthGuard],
+    loadComponent: () => import('./pages/perfil/perfil.component').then(m => m.PerfilComponent)
+  },
+  {
+    path: 'pago-exitoso',
+    loadComponent: () => import('./pages/pago-exitoso/pago-exitoso.component').then(m => m.PagoExitosoComponent)
+  },
+  {
     path: 'verificar-email',
     loadComponent: () => import('./pages/verificar-email/verificar-email').then(m => m.VerificarEmail)
   },

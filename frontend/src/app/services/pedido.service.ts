@@ -3,10 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../enviroments/environment';
 import {
-  CrearPedidoRequest,
-  CrearPedidoResponse,
+  CrearDraftRequest,
+  CrearDraftResponse,
   MisPedidosResponse,
   AdminPedidosResponse,
+  VerificarEstadoResponse,
 } from '../models/pedido.model';
 
 @Injectable({
@@ -17,21 +18,32 @@ export class PedidoService {
   private baseUrl = `${environment.apiUrl}/pedidos`;
 
   /**
-   * Crear un nuevo pedido (cliente autenticado)
+   * Fase 1 del Two-Phase Commit: crea el pedido como DRAFT.
+   * NO toca stock ni envía email. Solo reserva la intención de compra.
    */
-  crearPedido(datos: CrearPedidoRequest): Observable<CrearPedidoResponse> {
-    return this.http.post<CrearPedidoResponse>(this.baseUrl, datos);
+  crearDraft(datos: CrearDraftRequest): Observable<CrearDraftResponse> {
+    return this.http.post<CrearDraftResponse>(`${this.baseUrl}/draft`, datos);
   }
 
   /**
-   * Obtener los pedidos del usuario autenticado
+   * Verificar estado de pago por referencia Wompi (polling post-pago)
+   */
+  verificarEstado(referencia: string): Observable<VerificarEstadoResponse> {
+    return this.http.get<VerificarEstadoResponse>(
+      `${this.baseUrl}/estado`,
+      { params: { ref: referencia } }
+    );
+  }
+
+  /**
+   * Obtener los pedidos del usuario autenticado (excluye drafts)
    */
   obtenerMisPedidos(): Observable<MisPedidosResponse> {
     return this.http.get<MisPedidosResponse>(`${this.baseUrl}/mis-pedidos`);
   }
 
   /**
-   * Admin: obtener todos los pedidos del sistema
+   * Admin: obtener todos los pedidos del sistema (excluye drafts)
    */
   adminObtenerTodos(): Observable<AdminPedidosResponse> {
     return this.http.get<AdminPedidosResponse>(`${this.baseUrl}/admin/todos`);

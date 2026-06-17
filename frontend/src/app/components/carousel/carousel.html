@@ -50,10 +50,11 @@
               <span class="badge badge-new" *ngIf="producto.id % 6 === 0">Nuevo</span>
             </div>
             <!-- Tags (Promocionales) -->
-            <span *ngIf="i % 4 === 0" class="tag promo descuento-15">15% descuento</span>
-            <span *ngIf="i % 4 === 1" class="tag promo ultimas-unidades">Últimas unidades</span>
-            <span *ngIf="i % 4 === 2" class="tag promo descuento-50">50% descuento</span>
-            <span *ngIf="i % 4 === 3" class="tag promo promo-dia">Promo del día</span>
+            <span *ngIf="producto.controlar_stock && producto.stock === 0" class="tag promo agotado" style="background-color: #ef4444 !important; color: white !important; font-weight: bold; bottom: 8px; right: 8px;">Agotado</span>
+            <span *ngIf="!(producto.controlar_stock && producto.stock === 0) && i % 4 === 0" class="tag promo descuento-15">15% descuento</span>
+            <span *ngIf="!(producto.controlar_stock && producto.stock === 0) && i % 4 === 1" class="tag promo ultimas-unidades">Últimas unidades</span>
+            <span *ngIf="!(producto.controlar_stock && producto.stock === 0) && i % 4 === 2" class="tag promo descuento-50">50% descuento</span>
+            <span *ngIf="!(producto.controlar_stock && producto.stock === 0) && i % 4 === 3" class="tag promo promo-dia">Promo del día</span>
             <img [src]="producto.imagen_url" [alt]="producto.nombre">
           </div>
           <div class="mini-info">

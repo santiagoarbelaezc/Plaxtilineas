@@ -181,6 +181,9 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     
     // Establecer descripción base
     this.descripcionBase = this.producto.descripcion || '';
+
+    // Establecer cantidad seleccionada al mínimo de compra
+    this.cantidadSeleccionada = this.producto.minimo_compra || 1;
     
     // Cargar variantes del producto
     this.cargarVariantesProducto(this.producto.id);
@@ -233,7 +236,13 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     let cantidadAValidar = cantidad;
     if (this.controlaStock() && cantidad > stockDisponible) {
       console.warn(`[Seguridad] Intento de seleccionar más del stock disponible (${stockDisponible}). Forzando al máximo permitido.`);
-      cantidadAValidar = stockDisponible > 0 ? stockDisponible : 1; // Si es 0 no dejamos pedir pero el botón de compra se deshabilita
+      cantidadAValidar = stockDisponible > 0 ? stockDisponible : 1;
+    }
+
+    // Validar cantidad mínima
+    const minCompra = this.producto?.minimo_compra || 1;
+    if (cantidadAValidar < minCompra) {
+      cantidadAValidar = minCompra;
     }
 
     this.cantidadSeleccionada = this.precioCantidadService.validarCantidad(cantidadAValidar);
@@ -557,6 +566,7 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
       categoria: productoEditable.categoria,
       unidad: productoEditable.unidad || 'unidades',
       stock: productoEditable.stock,
+      minimo_compra: productoEditable.minimo_compra,
       controlar_stock: productoEditable.controlar_stock
     };
   }

@@ -192,11 +192,9 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     let message = '';
     switch (action) {
       case 'editar-perfil':
-        message = 'La sección de "Editar datos personales" estará disponible próximamente.';
-        break;
       case 'actualizar-direccion':
-        message = 'La sección de "Actualizar dirección" estará disponible próximamente.';
-        break;
+        this.router.navigate(['/perfil']);
+        return;
       case 'pedidos':
         this.router.navigate(['/pedidos']);
         return;

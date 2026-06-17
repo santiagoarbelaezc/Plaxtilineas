@@ -52,7 +52,7 @@ export class CartService {
     };
 
     this.http.post(`${environment.apiUrl}/carrito/sync`, payload, { headers }).subscribe({
-      error: (err) => console.warn('Error al sincronizar carrito con backend:', err)
+      error: (err) => this.stockError$.next('Error al sincronizar el carrito con el servidor.')
     });
   }
 
@@ -96,14 +96,18 @@ export class CartService {
       cantidadResultante = items[existingIndex].cantidad + cantidad;
     }
 
+    // Validación de cantidad mínima por producto
+    const minCompra = producto.minimo_compra || 1;
+    if (cantidadResultante < minCompra) {
+      this.stockError$.next(`La cantidad mínima de compra para ${producto.nombre} es ${minCompra}.`);
+      return false;
+    }
+
     // Validación estricta de stock
-    // (Asumimos controlar_stock true/1 si la base de datos lo manda)
     const controlaStock = producto.controlar_stock === true || producto.controlar_stock === 1;
     if (controlaStock && producto.stock !== undefined) {
       if (cantidadResultante > producto.stock) {
-        console.warn(`[Seguridad] Intento de añadir más cantidad (${cantidadResultante}) del stock disponible (${producto.stock}).`);
         this.stockError$.next(`Stock insuficiente para ${producto.nombre}. Disponible: ${producto.stock}`);
-        // Bloqueamos la acción devolviendo falso
         return false;
       }
     }
@@ -119,7 +123,11 @@ export class CartService {
         producto,
         variante,
         cantidad,
-        precioUnitario
+        precioUnitario,
+        sku: producto.sku,
+        imagen_url: producto.imagen_url,
+        categoria: producto.categoria,
+        unidad_medida: producto.unidad
       };
       items.push(nuevoItem);
     }
@@ -142,11 +150,17 @@ export class CartService {
     const items = this.itemsSubject.getValue();
     const item = items.find(i => i.id === id);
     if (item) {
+      // Validación de cantidad mínima por producto
+      const minCompra = item.producto.minimo_compra || 1;
+      if (cantidad < minCompra) {
+        this.stockError$.next(`La cantidad mínima de compra para ${item.producto.nombre} es ${minCompra}.`);
+        return false;
+      }
+
       // Validación estricta de stock
       const controlaStock = item.producto.controlar_stock === true || item.producto.controlar_stock === 1;
       if (controlaStock && item.producto.stock !== undefined) {
         if (cantidad > item.producto.stock) {
-          console.warn(`[Seguridad] Intento de actualizar a una cantidad (${cantidad}) mayor al stock (${item.producto.stock}).`);
           this.stockError$.next(`Stock insuficiente para ${item.producto.nombre}. Disponible: ${item.producto.stock}`);
           return false;
         }
@@ -167,8 +181,33 @@ export class CartService {
     return this.itemsSubject.getValue().reduce((acc, item) => acc + item.cantidad, 0);
   }
 
+  // ─── Métodos de precio desglosado ───────────────────────────────────────────
+
+  /** Suma de precio × cantidad de todos los ítems (sin IVA ni envío) */
+  getSubtotal(): number {
+    return this.itemsSubject.getValue().reduce(
+      (acc, item) => acc + item.precioUnitario * item.cantidad, 0
+    );
+  }
+
+  /** IVA ya incluido en el precio */
+  getIVA(): number {
+    return 0;
+  }
+
+  /** Tarifa plana de envío */
+  getCostoEnvio(): number {
+    return 10_000;
+  }
+
+  /** Total final = subtotal + IVA + envío */
+  getTotalFinal(): number {
+    return this.getSubtotal() + this.getIVA() + this.getCostoEnvio();
+  }
+
+  /** @deprecated Usar getTotalFinal() */
   getTotalPrice(): number {
-    return this.itemsSubject.getValue().reduce((acc, item) => acc + (item.precioUnitario * item.cantidad), 0);
+    return this.getTotalFinal();
   }
   
   openDrawer() {
