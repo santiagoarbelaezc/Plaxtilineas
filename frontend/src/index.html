@@ -146,5 +146,179 @@
   </noscript>
   
   <app-root></app-root>
+
+  <!-- PWA Install Prompts (Elegantes) -->
+  <style>
+    .pwa-banner {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(150%);
+      width: calc(100% - 32px);
+      max-width: 400px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      color: white;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: 'Montserrat', sans-serif;
+    }
+    .pwa-banner.show {
+      transform: translateX(-50%) translateY(0);
+    }
+    .pwa-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: white;
+      padding: 4px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+    .pwa-content {
+      flex: 1;
+    }
+    .pwa-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 0 0 4px 0;
+      letter-spacing: -0.2px;
+    }
+    .pwa-desc {
+      font-size: 12px;
+      color: #94a3b8;
+      margin: 0;
+      line-height: 1.4;
+    }
+    .pwa-btn {
+      background: white;
+      color: #0f172a;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .pwa-close {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      width: 24px;
+      height: 24px;
+      background: #334155;
+      border: 2px solid #0f172a;
+      border-radius: 50%;
+      color: white;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      line-height: 1;
+    }
+    
+    /* iOS Icon Helper */
+    .ios-share-icon {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      vertical-align: middle;
+      margin: 0 2px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+  </style>
+
+  <!-- Banner Android -->
+  <div id="android-pwa-banner" class="pwa-banner">
+    <div class="pwa-close" onclick="closeAndroidPwa()">✕</div>
+    <img src="assets/icons/logo-app-movil.png" alt="App Logo" class="pwa-icon">
+    <div class="pwa-content">
+      <h4 class="pwa-title">Plaxtilineas App</h4>
+      <p class="pwa-desc">Instala nuestra app para una mejor experiencia de compra.</p>
+    </div>
+    <button class="pwa-btn" id="btn-install-pwa">Instalar</button>
+  </div>
+
+  <!-- Banner iOS -->
+  <div id="ios-pwa-banner" class="pwa-banner">
+    <div class="pwa-close" onclick="closeIosPwa()">✕</div>
+    <img src="assets/icons/logo-app-movil.png" alt="App Logo" class="pwa-icon">
+    <div class="pwa-content">
+      <h4 class="pwa-title">Añadir al inicio</h4>
+      <p class="pwa-desc">
+        Toca el ícono <svg class="ios-share-icon" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M12 3v13M8 7l4-4 4 4"/></svg> y selecciona <strong>"Agregar a Inicio"</strong>.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    let deferredPrompt;
+
+    // Detectar si ya está instalada o en modo standalone
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    
+    // Detectar iOS
+    const isIos = () => {
+      const userAgent = window.navigator.userAgent.toLowerCase();
+      return /iphone|ipad|ipod/.test(userAgent);
+    };
+
+    // Detectar si ya se mostró (session storage para no molestar tanto)
+    const hasSeenPrompt = sessionStorage.getItem('pwa_prompt_seen');
+
+    if (!isStandalone && !hasSeenPrompt) {
+      if (isIos()) {
+        // En iOS mostramos el aviso personalizado (retraso de 2s)
+        setTimeout(() => {
+          document.getElementById('ios-pwa-banner').classList.add('show');
+        }, 2000);
+      } else {
+        // En Android, esperamos el evento oficial del navegador
+        window.addEventListener('beforeinstallprompt', (e) => {
+          e.preventDefault();
+          deferredPrompt = e;
+          
+          setTimeout(() => {
+            document.getElementById('android-pwa-banner').classList.add('show');
+          }, 1000);
+        });
+      }
+    }
+
+    // Acción Instalar Android
+    document.getElementById('btn-install-pwa').addEventListener('click', async () => {
+      closeAndroidPwa();
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          console.log('App instalada con éxito');
+        }
+        deferredPrompt = null;
+      }
+    });
+
+    function closeAndroidPwa() {
+      document.getElementById('android-pwa-banner').classList.remove('show');
+      sessionStorage.setItem('pwa_prompt_seen', 'true');
+    }
+
+    function closeIosPwa() {
+      document.getElementById('ios-pwa-banner').classList.remove('show');
+      sessionStorage.setItem('pwa_prompt_seen', 'true');
+    }
+  </script>
 </body>
 </html>

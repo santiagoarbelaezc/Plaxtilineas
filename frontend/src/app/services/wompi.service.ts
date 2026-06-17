@@ -24,51 +24,29 @@ export class WompiService {
     );
   }
 
-  private scriptLoaded = false;
-
+  /**
+   * Abre el Web Checkout de Wompi mediante redirección directa.
+   * Esto evita errores 403 por restricciones de origen en el Widget (iframe).
+   * Wompi redirigirá al usuario a redirect_url al terminar.
+   */
   abrirWidget(datos: WompiDatosPago): void {
-    if (this.scriptLoaded && (window as any).WidgetCheckout) {
-      this.initAndOpen(datos);
-      return;
-    }
+    console.log('[Wompi] Redirigiendo a Web Checkout con datos:', datos);
 
-    // Limpiar scripts anteriores si existen
-    const scriptsExistentes = document.querySelectorAll('script[src*="checkout.wompi.co/widget.js"]');
-    scriptsExistentes.forEach(s => s.remove());
+    // Construir la URL de checkout de Wompi con los parámetros requeridos
+    const params = new URLSearchParams();
+    params.set('public-key', datos.public_key);
+    params.set('currency', datos.moneda);
+    params.set('amount-in-cents', String(datos.monto_centavos));
+    params.set('reference', datos.referencia);
+    params.set('redirect-url', datos.redirect_url);
 
-    const script = document.createElement('script');
-    script.src = 'https://checkout.wompi.co/widget.js';
-    // No agregar atributos data-* para evitar que se auto-renderice incorrectamente
-    // Wompi lanzará un warning en la consola, pero WidgetCheckout funcionará
-    
-    script.onload = () => {
-      this.scriptLoaded = true;
-      this.initAndOpen(datos);
-    };
+    // La firma de integridad usa ":" en el nombre del parámetro
+    const checkoutUrl = `https://checkout.wompi.co/p/?${params.toString()}&signature%3Aintegrity=${datos.firma}`;
 
-    script.onerror = (err) => {
-      console.error('[Wompi] Error al cargar el script de Wompi:', err);
-    };
+    console.log('[Wompi] URL de checkout:', checkoutUrl);
 
-    document.body.appendChild(script);
-  }
-
-  private initAndOpen(datos: WompiDatosPago): void {
-    try {
-      const checkout = new (window as any).WidgetCheckout({
-        currency:    datos.moneda,
-        amountInCents: datos.monto_centavos,
-        reference:   datos.referencia,
-        publicKey:   datos.public_key,
-        signature:   { integrity: datos.firma },
-        redirectUrl: datos.redirect_url,
-      });
-      checkout.open((result: any) => {
-        console.info('[Wompi] Resultado widget:', result);
-      });
-    } catch (err) {
-      console.error('[Wompi] Error al instanciar WidgetCheckout:', err);
-    }
+    // Redirigir al checkout de Wompi
+    window.location.href = checkoutUrl;
   }
 
   /** Helpers de precio (mirror del backend, para mostrar en UI) */
