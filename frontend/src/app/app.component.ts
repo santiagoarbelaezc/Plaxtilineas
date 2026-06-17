@@ -34,6 +34,8 @@ export class AppComponent implements OnInit {
   canInstall$: Observable<boolean>;
   isIos$: Observable<boolean>;
 
+  activeStep = 1;
+
   constructor(
     private scrollService: ScrollService,
     private router: Router,
@@ -69,5 +71,21 @@ export class AppComponent implements OnInit {
 
   installPwa(): void {
     this.pwaService.installPwa();
+  }
+
+  nextStep(): void {
+    if (this.activeStep < 3) {
+      this.activeStep++;
+    }
+  }
+
+  prevStep(): void {
+    if (this.activeStep > 1) {
+      this.activeStep--;
+    }
+  }
+
+  dismissIosPrompt(): void {
+    this.pwaService.dismissIosPrompt();
   }
 }

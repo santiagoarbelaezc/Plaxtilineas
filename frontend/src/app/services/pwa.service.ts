@@ -28,7 +28,8 @@ export class PwaService {
     // Check if it's already installed (standalone mode)
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || ('standalone' in window.navigator && (window.navigator as any).standalone === true);
     
-    if (isIos && !isStandalone) {
+    const dismissed = localStorage.getItem('ios_pwa_dismissed') === 'true';
+    if (isIos && !isStandalone && !dismissed) {
       this.isIosSubject.next(true);
     }
 
@@ -64,5 +65,10 @@ export class PwaService {
     this.canInstallSubject.next(false);
     
     return outcome === 'accepted';
+  }
+
+  public dismissIosPrompt() {
+    localStorage.setItem('ios_pwa_dismissed', 'true');
+    this.isIosSubject.next(false);
   }
 }
