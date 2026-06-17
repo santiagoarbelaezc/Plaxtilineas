@@ -423,17 +423,43 @@ import Swal from 'sweetalert2';
 
       /* ── GRID PRINCIPAL ── */
       .pago-grid {
-        max-width: 1100px;
+        max-width: 1300px;
         margin: 0 auto;
-        padding: 40px 24px 80px;
+        padding: 40px 32px 80px;
         display: grid;
-        grid-template-columns: 1fr 420px;
-        gap: 32px;
+        grid-template-columns: 1.2fr 480px;
+        gap: 40px;
         align-items: start;
       }
-      @media (max-width: 900px) {
-        .pago-grid { grid-template-columns: 1fr; }
+      
+      @media (max-width: 1024px) {
+        .pago-grid {
+          grid-template-columns: 1fr 400px;
+          gap: 24px;
+          padding: 32px 24px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .pago-wrapper { background: #ffffff; }
+        .pago-grid { 
+          grid-template-columns: 1fr; 
+          padding: 16px 0 100px; 
+          gap: 16px;
+        }
         .pago-col { order: -1; }
+        
+        .resumen-card, .envio-card, .pago-card {
+          border-radius: 0;
+          border-left: none;
+          border-right: none;
+          box-shadow: none;
+          padding: 24px 20px;
+          border-top: 1px solid #f1f5f9;
+          border-bottom: 8px solid #f8fafc;
+        }
+        
+        .pago-card { border-top: none; }
       }
 
       /* ── COLUMNA RESUMEN ── */
@@ -441,8 +467,8 @@ import Swal from 'sweetalert2';
         background: #ffffff;
         border: 1px solid #e2e8f0;
         border-radius: 20px;
-        padding: 28px;
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.02);
+        padding: 32px;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03), 0 2px 4px -1px rgba(0,0,0,0.02);
       }
       .resumen-title, .envio-title {
         font-size: 13px;
@@ -453,11 +479,11 @@ import Swal from 'sweetalert2';
         display: flex;
         align-items: center;
         gap: 8px;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
       }
 
       /* Items del carrito */
-      .items-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
+      .items-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
       .item-row { display: flex; align-items: center; gap: 14px; }
       .item-img {
         width: 52px; height: 52px;
