@@ -112,12 +112,12 @@ export type EstadoPedido =
   | 'cancelado';
 
 export const ESTADOS_PEDIDO: { key: EstadoPedido; label: string; icon: string; color: string }[] = [
-  { key: 'pendiente_pago',  label: 'Pendiente de Pago', icon: '💳', color: '#f59e0b' },
-  { key: 'pagado',          label: 'Pago Confirmado', icon: '💳', color: '#10b981' },
-  { key: 'pendiente',       label: 'Pendiente',       icon: '🕐', color: '#f59e0b' },
-  { key: 'confirmado',      label: 'Confirmado',      icon: '✅', color: '#3b82f6' },
-  { key: 'en_preparacion',  label: 'En Preparación',  icon: '📦', color: '#8b5cf6' },
-  { key: 'en_camino',       label: 'En Camino',       icon: '🚚', color: '#06b6d4' },
-  { key: 'entregado',       label: 'Entregado',       icon: '🎉', color: '#10b981' },
-  { key: 'cancelado',       label: 'Cancelado',       icon: '❌', color: '#ef4444' },
+  { key: 'pendiente_pago',  label: 'Pendiente de Pago', icon: 'fa-solid fa-credit-card', color: '#f59e0b' },
+  { key: 'pagado',          label: 'Pago Confirmado', icon: 'fa-solid fa-circle-check', color: '#10b981' },
+  { key: 'pendiente',       label: 'Pendiente',       icon: 'fa-solid fa-clock', color: '#f59e0b' },
+  { key: 'confirmado',      label: 'Confirmado',      icon: 'fa-solid fa-circle-check', color: '#3b82f6' },
+  { key: 'en_preparacion',  label: 'En Preparación',  icon: 'fa-solid fa-box', color: '#8b5cf6' },
+  { key: 'en_camino',       label: 'En Camino',       icon: 'fa-solid fa-truck-fast', color: '#06b6d4' },
+  { key: 'entregado',       label: 'Entregado',       icon: 'fa-solid fa-circle-check', color: '#10b981' },
+  { key: 'cancelado',       label: 'Cancelado',       icon: 'fa-solid fa-circle-xmark', color: '#ef4444' },
 ];

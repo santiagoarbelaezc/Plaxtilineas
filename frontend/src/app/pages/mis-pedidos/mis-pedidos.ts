@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import { Pedido, PedidoDetalle, ESTADOS_PEDIDO, EstadoPedido } from '../../models/pedido.model';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { Footer } from '../../components/footer/footer.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-mis-pedidos',
@@ -163,4 +164,70 @@ export class MisPedidos implements OnInit {
     { label: 'En Camino', icon: '🚚' },
     { label: 'Entregado', icon: '🎉' },
   ];
+
+  isCancelable(pedido: Pedido): boolean {
+    const noCancelables: EstadoPedido[] = ['pagado', 'confirmado', 'en_preparacion', 'en_camino', 'entregado', 'cancelado'];
+    return !noCancelables.includes(pedido.estado);
+  }
+
+  isDeletable(pedido: Pedido): boolean {
+    const noDeletables: EstadoPedido[] = ['pagado', 'confirmado', 'en_preparacion', 'en_camino', 'entregado'];
+    return !noDeletables.includes(pedido.estado);
+  }
+
+  cancelarPedido(pedido: Pedido, event: Event): void {
+    event.stopPropagation();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: `¿Deseas cancelar el pedido #${pedido.codigo_pedido}? Esta acción liberará el stock reservado.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'No, mantener',
+      background: '#ffffff',
+      color: '#111111',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.pedidoService.cancelarPedido(pedido.id).subscribe({
+          next: () => {
+            Swal.fire('Cancelado', 'Tu pedido ha sido cancelado con éxito.', 'success');
+            this.cargarPedidos();
+          },
+          error: (err) => {
+            Swal.fire('Error', err?.error?.error || 'No se pudo cancelar el pedido.', 'error');
+          }
+        });
+      }
+    });
+  }
+
+  eliminarPedido(pedido: Pedido, event: Event): void {
+    event.stopPropagation();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: `¿Deseas eliminar el pedido #${pedido.codigo_pedido}? Esta acción no se puede deshacer.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'No, mantener',
+      background: '#ffffff',
+      color: '#111111',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.pedidoService.eliminarPedido(pedido.id).subscribe({
+          next: () => {
+            Swal.fire('Eliminado', 'Tu pedido ha sido eliminado con éxito.', 'success');
+            this.cargarPedidos();
+          },
+          error: (err) => {
+            Swal.fire('Error', err?.error?.error || 'No se pudo eliminar el pedido.', 'error');
+          }
+        });
+      }
+    });
+  }
 }

@@ -55,4 +55,18 @@ export class PedidoService {
   adminActualizarEstado(pedidoId: number, estado: string): Observable<any> {
     return this.http.put(`${this.baseUrl}/admin/actualizar-estado/${pedidoId}`, { estado });
   }
+
+  /**
+   * Cancelar un pedido propio (solo si no está pagado)
+   */
+  cancelarPedido(pedidoId: number): Observable<any> {
+    return this.http.put(`${this.baseUrl}/cancelar/${pedidoId}`, {});
+  }
+
+  /**
+   * Eliminar un pedido propio (solo si no está pagado)
+   */
+  eliminarPedido(pedidoId: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/eliminar/${pedidoId}`);
+  }
 }

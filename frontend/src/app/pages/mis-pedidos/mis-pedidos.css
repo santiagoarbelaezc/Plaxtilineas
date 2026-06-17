@@ -64,14 +64,46 @@
 .stat-icon {
   width: 48px;
   height: 48px;
-  border-radius: 4px;
-  background: #f9f9f9;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #111111;
   flex-shrink: 0;
-  border: 1px solid #eeeeee;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+.stat-icon-total {
+  background: rgba(59, 130, 246, 0.08);
+  color: #3b82f6;
+  border-color: rgba(59, 130, 246, 0.15);
+}
+.stat-icon-money {
+  background: rgba(16, 185, 129, 0.08);
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.15);
+}
+.stat-icon-active {
+  background: rgba(245, 158, 11, 0.08);
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.15);
+}
+.stat-card:hover .stat-icon-total {
+  background: #3b82f6;
+  color: #ffffff;
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+.stat-card:hover .stat-icon-money {
+  background: #10b981;
+  color: #ffffff;
+  border-color: #10b981;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+.stat-card:hover .stat-icon-active {
+  background: #f59e0b;
+  color: #ffffff;
+  border-color: #f59e0b;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
 }
 .stat-info {
   display: flex;
@@ -959,4 +991,56 @@
   .pedido-total {
     font-size: 1.2rem;
   }
+}
+
+/* ── CLIENT ACTIONS ── */
+.actions-left {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.action-btn-cancel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border-radius: 2px;
+  border: 2px solid #ef4444;
+  background: #ffffff;
+  color: #ef4444;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.action-btn-cancel:hover {
+  background: #ef4444;
+  color: #ffffff;
+}
+.action-btn-cancel svg,
+.action-btn-delete svg {
+  flex-shrink: 0;
+}
+.action-btn-delete {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border-radius: 2px;
+  border: 2px solid #7f8c8d;
+  background: #ffffff;
+  color: #7f8c8d;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.action-btn-delete:hover {
+  background: #7f8c8d;
+  color: #ffffff;
 }
