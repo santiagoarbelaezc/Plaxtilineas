@@ -2,11 +2,17 @@
   <!-- Header del Dashboard -->
   <header class="admin-dashboard-header">
     <div class="admin-header-content">
+      <!-- Hamburger Menu for Mobile -->
+      <button class="mobile-hamburger-btn" (click)="toggleMobileSidebar()" [class.active]="isMobileSidebarOpen" aria-label="Abrir Menú">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
       <div class="admin-header-text">
         <h1 class="admin-title">{{ tituloSeccion }}</h1>
         <p class="admin-subtitle">{{ subtituloSeccion }}</p>
       </div>
-      <button *ngIf="!estaEnInicio" class="admin-logout-btn" style="margin-left: 20px; background: rgba(54, 140, 68, 0.1); border-color: rgba(54, 140, 68, 0.3); color: #4ade80;" routerLink="/admin">
+      <button *ngIf="!estaEnInicio" class="admin-logout-btn btn-volver-dash" style="margin-left: 20px; background: rgba(54, 140, 68, 0.1); border-color: rgba(54, 140, 68, 0.3); color: #4ade80;" routerLink="/admin">
         <fa-icon [icon]="faArrowLeft"></fa-icon>
         <span>Volver al Dashboard</span>
       </button>
@@ -30,82 +36,85 @@
   <!-- Contenido principal -->
   <div class="admin-content-wrapper">
     <!-- Menú lateral -->
-    <nav class="admin-sidebar">
+    <nav class="admin-sidebar" [class.mobile-open]="isMobileSidebarOpen">
       <ul class="admin-menu">
         <li class="menu-item" [class.active]="estaEnInicio">
-          <a routerLink="/admin" class="menu-link">
+          <a routerLink="/admin" class="menu-link" (click)="closeMobileSidebar()">
             <fa-icon [icon]="faHome" class="menu-icon"></fa-icon>
             <span>Inicio</span>
           </a>
         </li>
         <li class="menu-item">
-          <a routerLink="/admin/categorias" class="menu-link">
+          <a routerLink="/admin/categorias" class="menu-link" (click)="closeMobileSidebar()">
             <fa-icon [icon]="faFolderOpen" class="menu-icon"></fa-icon>
             <span>Categorías</span>
           </a>
         </li>
         <li class="menu-item">
-          <a routerLink="/admin/subcategorias" class="menu-link">
+          <a routerLink="/admin/subcategorias" class="menu-link" (click)="closeMobileSidebar()">
             <fa-icon [icon]="faFolder" class="menu-icon"></fa-icon>
             <span>Subcategorías</span>
           </a>
         </li>
         <li class="menu-item">
-          <a routerLink="/admin/productos" class="menu-link">
+          <a routerLink="/admin/productos" class="menu-link" (click)="closeMobileSidebar()">
             <fa-icon [icon]="faBoxes" class="menu-icon"></fa-icon>
             <span>Productos</span>
           </a>
         </li>
         <li class="menu-item">
-          <a routerLink="/admin/analiticas" class="menu-link">
+          <a routerLink="/admin/analiticas" class="menu-link" (click)="closeMobileSidebar()">
             <fa-icon [icon]="faChartLine" class="menu-icon"></fa-icon>
             <span>Analíticas</span>
           </a>
         </li>
         <li class="menu-item">
-          <a routerLink="/admin/estadisticas" class="menu-link">
+          <a routerLink="/admin/estadisticas" class="menu-link" (click)="closeMobileSidebar()">
             <fa-icon [icon]="faChartPie" class="menu-icon"></fa-icon>
             <span>Estadísticas</span>
           </a>
         </li>
         <li class="menu-item">
-          <a routerLink="/admin/pedidos" class="menu-link">
+          <a routerLink="/admin/pedidos" class="menu-link" (click)="closeMobileSidebar()">
             <fa-icon [icon]="faShoppingCart" class="menu-icon"></fa-icon>
             <span>Pedidos</span>
           </a>
         </li>
         <li class="menu-item">
-          <a routerLink="/admin/usuarios" class="menu-link">
+          <a routerLink="/admin/usuarios" class="menu-link" (click)="closeMobileSidebar()">
             <fa-icon [icon]="faUserShield" class="menu-icon"></fa-icon>
             <span>Usuarios</span>
           </a>
         </li>
         <li class="menu-item">
-          <a routerLink="/admin/inventario" class="menu-link">
+          <a routerLink="/admin/inventario" class="menu-link" (click)="closeMobileSidebar()">
             <fa-icon [icon]="faWarehouse" class="menu-icon"></fa-icon>
             <span>Inventario</span>
           </a>
         </li>
         <li class="menu-item">
-          <a routerLink="/admin/personalizar-web" class="menu-link">
+          <a routerLink="/admin/personalizar-web" class="menu-link" (click)="closeMobileSidebar()">
             <fa-icon [icon]="faPaintBrush" class="menu-icon"></fa-icon>
             <span>Personalizar Web</span>
           </a>
         </li>
         <li class="menu-item">
-          <a routerLink="/admin/pqr-admin" class="menu-link">
+          <a routerLink="/admin/pqr-admin" class="menu-link" (click)="closeMobileSidebar()">
             <fa-icon [icon]="faClipboardList" class="menu-icon"></fa-icon>
             <span>PQR</span>
           </a>
         </li>
         <li class="menu-item">
-          <a routerLink="/admin/reportes" class="menu-link">
+          <a routerLink="/admin/reportes" class="menu-link" (click)="closeMobileSidebar()">
             <fa-icon [icon]="faFileAlt" class="menu-icon"></fa-icon>
             <span>Reportes</span>
           </a>
         </li>
       </ul>
     </nav>
+
+    <!-- Overlay Backdrop for Mobile -->
+    <div class="sidebar-backdrop" *ngIf="isMobileSidebarOpen" (click)="closeMobileSidebar()"></div>
 
     <!-- Área de contenido -->
     <main class="admin-main-content">

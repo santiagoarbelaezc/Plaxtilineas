@@ -101,6 +101,16 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
   mensajeError = '';
   mensajeExito = '';
 
+  isMobileSidebarOpen = false;
+
+  toggleMobileSidebar(): void {
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
+  }
+
   constructor(
     private router: Router,
     library: FaIconLibrary,
