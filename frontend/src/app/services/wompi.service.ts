@@ -4,8 +4,9 @@ import { Observable } from 'rxjs';
 import { environment } from '../../enviroments/environment';
 import { WompiDatosPago } from '../models/pedido.model';
 
-// Constantes de precios (deben coincidir con el backend)
-const IVA_RATE = 0.19;
+// Constantes de precios — deben coincidir con config.php del backend
+// IVA_PORCENTAJE = 0.0 (IVA ya incluido en el precio del producto)
+const IVA_RATE = 0.0;
 const COSTO_ENVIO_COP = 10_000;
 
 @Injectable({ providedIn: 'root' })

@@ -118,9 +118,14 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/perfil/perfil.component').then(m => m.PerfilComponent)
   },
   {
+    path: 'pago',
+    loadComponent: () => import('./pages/pago/pago.component').then(m => m.PagoComponent)
+  },
+  {
     path: 'pago-exitoso',
     loadComponent: () => import('./pages/pago-exitoso/pago-exitoso.component').then(m => m.PagoExitosoComponent)
   },
+
   {
     path: 'verificar-email',
     loadComponent: () => import('./pages/verificar-email/verificar-email').then(m => m.VerificarEmail)

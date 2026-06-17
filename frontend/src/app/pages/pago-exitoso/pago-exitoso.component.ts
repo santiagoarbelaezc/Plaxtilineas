@@ -109,7 +109,7 @@ type PagoEstado = 'verificando' | 'pagado' | 'pendiente' | 'cancelado' | 'error'
             }}
           </p>
           <div class="action-btns">
-            <button class="btn-primary" routerLink="/checkout">Intentar de Nuevo</button>
+            <button class="btn-primary" routerLink="/carrito">Intentar de Nuevo</button>
             <button class="btn-secondary" routerLink="/contacto">Contactar Soporte</button>
           </div>
         </div>

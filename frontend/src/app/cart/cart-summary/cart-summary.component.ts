@@ -711,25 +711,25 @@ export class CartSummaryComponent implements OnInit {
                 next: (datos) => {
                   this.isSubmitting.set(false);
                   this.closeCheckout();
-                  try {
-                    this.wompiSvc.abrirWidget(datos);
-                  } catch (err) {
-                    console.error('[Wompi] Error al abrir widget:', err);
-                    Swal.fire({
-                      icon: 'warning',
-                      title: 'Widget no disponible',
-                      text: 'Hubo un problema al cargar la pasarela de pago. Intenta de nuevo.',
-                      background: '#1e293b',
-                      color: '#e2e8f0',
-                      confirmButtonColor: '#368c44',
-                    });
-                  }
+                  // Redirigir a la pantalla de pago premium
+                  this.router.navigate(['/pago'], {
+                    state: {
+                      datosPago: datos,
+                      datosEnvio: {
+                        direccion:    this.checkoutData.direccion_envio,
+                        ciudad:       this.checkoutData.ciudad,
+                        departamento: this.checkoutData.departamento,
+                        telefono:     this.checkoutData.telefono_contacto,
+                      }
+                    }
+                  });
                 },
-                error: (err) => {
+                error: (_err) => {
                   this.isSubmitting.set(false);
                   this.checkoutError.set('Error al conectar con la pasarela de pago. Intenta de nuevo.');
                 }
               });
+
             } else {
               // Contraentrega o Transferencia: Confirmación offline directa
               this.isSubmitting.set(false);
