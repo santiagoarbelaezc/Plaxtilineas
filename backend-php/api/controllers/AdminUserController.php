@@ -69,4 +69,70 @@ class AdminUserController
             ResponseHandler::error('Error al obtener el detalle de usuarios.', 500);
         }
     }
+
+    /**
+     * DELETE /api/admin/usuarios/:id
+     * Elimina a un usuario si no tiene pedidos activos pendientes
+     */
+    public static function eliminarUsuario(int $usuarioId): void
+    {
+        try {
+            $db = Database::getConnection();
+            $db->beginTransaction();
+
+            // Verificar si el usuario existe y no es admin
+            $stmtUser = $db->prepare("SELECT id, rol FROM usuarios WHERE id = ?");
+            $stmtUser->execute([$usuarioId]);
+            $userToDelete = $stmtUser->fetch();
+
+            if (!$userToDelete) {
+                $db->rollBack();
+                ResponseHandler::error('Usuario no encontrado.', 404);
+                return;
+            }
+
+            if ($userToDelete['rol'] === 'admin') {
+                $db->rollBack();
+                ResponseHandler::error('No se pueden eliminar administradores.', 403);
+                return;
+            }
+
+            // Verificar si tiene pedidos activos ('cancelado', 'entregado', 'draft' no bloquean)
+            $stmtPedidosActivos = $db->prepare("
+                SELECT COUNT(*) FROM pedidos 
+                WHERE usuario_id = ? 
+                AND estado NOT IN ('cancelado', 'entregado', 'draft')
+            ");
+            $stmtPedidosActivos->execute([$usuarioId]);
+            $pedidosActivos = (int)$stmtPedidosActivos->fetchColumn();
+
+            if ($pedidosActivos > 0) {
+                $db->rollBack();
+                ResponseHandler::error('El usuario tiene pedidos pendientes y no puede ser eliminado.', 400);
+                return;
+            }
+
+            // Eliminar carrito del usuario
+            $stmtCarrito = $db->prepare("DELETE FROM carritos WHERE usuario_id = ?");
+            $stmtCarrito->execute([$usuarioId]);
+
+            // Desvincular pedidos pasados o cancelados (para mantener historial de ventas)
+            $stmtUpdatePedidos = $db->prepare("UPDATE pedidos SET usuario_id = NULL WHERE usuario_id = ?");
+            $stmtUpdatePedidos->execute([$usuarioId]);
+
+            // Eliminar al usuario
+            $stmtDelete = $db->prepare("DELETE FROM usuarios WHERE id = ?");
+            $stmtDelete->execute([$usuarioId]);
+
+            $db->commit();
+            ResponseHandler::success(['mensaje' => 'Usuario eliminado correctamente.']);
+
+        } catch (Throwable $e) {
+            if (isset($db) && $db->inTransaction()) {
+                $db->rollBack();
+            }
+            Logger::error('AdminUserController::eliminarUsuario', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error al eliminar el usuario.', 500);
+        }
+    }
 }

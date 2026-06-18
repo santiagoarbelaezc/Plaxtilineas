@@ -419,4 +419,27 @@ class AuthController
             ResponseHandler::error('Error inesperado al actualizar perfil', 500);
         }
     }
+
+    /**
+     * DELETE /api/auth/cuenta (protegido)
+     */
+    public static function eliminarCuenta(array $user): void
+    {
+        try {
+            $db = Database::getConnection();
+            $stmt = $db->prepare('DELETE FROM usuarios WHERE id = ?');
+            $stmt->execute([$user['id']]);
+
+            ResponseHandler::success([
+                'mensaje' => 'Cuenta eliminada exitosamente'
+            ]);
+
+        } catch (PDOException $e) {
+            Logger::error('AuthController::eliminarCuenta – DB', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error al eliminar la cuenta en la base de datos', 500);
+        } catch (Throwable $e) {
+            Logger::error('AuthController::eliminarCuenta – inesperado', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error inesperado al eliminar la cuenta', 500);
+        }
+    }
 }

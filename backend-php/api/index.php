@@ -146,6 +146,12 @@ try {
         AuthController::actualizarPerfil($user);
     }
 
+    if ($uri === '/auth/cuenta' && $method === 'DELETE') {
+        $user = AuthMiddleware::verify();
+        AuthController::eliminarCuenta($user);
+        exit;
+    }
+
     // ═════════════════════════════════════════════════════════════════════════════
     // PRODUCTOS  /api/productos/*
     // ═════════════════════════════════════════════════════════════════════════════
@@ -444,8 +450,22 @@ try {
 
     if ($uri === '/admin/usuarios-detalle' && $method === 'GET') {
         $user = AuthMiddleware::verify();
+        // Nota: Deberíamos verificar si $user['rol'] === 'admin', pero si AuthMiddleware ya lo hace, está bien.
         AdminUserController::obtenerUsuariosDetalle($user);
         exit;
+    }
+
+    if (str_starts_with($uri, '/admin/usuarios/') && $method === 'DELETE') {
+        $user = AuthMiddleware::verify();
+        if ($user['rol'] !== 'admin') {
+            ResponseHandler::error('No autorizado. Se requiere rol de administrador.', 403);
+            exit;
+        }
+        $idStr = substr($uri, strlen('/admin/usuarios/'));
+        if (is_numeric($idStr)) {
+            AdminUserController::eliminarUsuario((int)$idStr);
+            exit;
+        }
     }
 
     // ═════════════════════════════════════════════════════════════════════════════

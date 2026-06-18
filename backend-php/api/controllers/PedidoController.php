@@ -132,8 +132,15 @@ class PedidoController
             // ── Generar código de pedido correlativo PX-{año}-{NNNN} ───
             $anio = date('Y');
             $stmtCount = $db->query("SELECT COUNT(*) FROM pedidos WHERE YEAR(fecha) = {$anio}");
-            $correlativo = str_pad((int)$stmtCount->fetchColumn() + 1, 4, '0', STR_PAD_LEFT);
-            $codigoPedido = "PX-{$anio}-{$correlativo}";
+            $count = (int)$stmtCount->fetchColumn();
+            
+            do {
+                $count++;
+                $correlativo = str_pad($count, 4, '0', STR_PAD_LEFT);
+                $codigoPedido = "PX-{$anio}-{$correlativo}";
+                $stmtCheck = $db->prepare("SELECT id FROM pedidos WHERE codigo_pedido = ?");
+                $stmtCheck->execute([$codigoPedido]);
+            } while ($stmtCheck->fetch());
 
             // ── Insertar pedido ─────────────────────────
             $metodoPago = $input['metodo_pago'] ?? 'wompi';
