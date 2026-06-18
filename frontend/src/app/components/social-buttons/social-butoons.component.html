@@ -93,11 +93,11 @@
     <div class="cart-summary-rows">
       <div class="cart-summary-row">
         <span>Subtotal ({{ totalCount() }} items)</span>
-        <span>{{ formatearPrecio(totalPrice()) }}</span>
+        <span>{{ formatearPrecio(subtotal()) }}</span>
       </div>
       <div class="cart-summary-row muted">
-        <span>Envío</span>
-        <span>A calcular</span>
+        <span>Costo de envío</span>
+        <span>{{ formatearPrecio(costoEnvio()) }}</span>
       </div>
     </div>
 

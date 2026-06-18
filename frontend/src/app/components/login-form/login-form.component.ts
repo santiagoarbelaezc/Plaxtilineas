@@ -214,6 +214,8 @@ export class LoginFormComponent implements OnInit {
   // Aviso de sesión expirada
   sessionExpired = false;
 
+  requireVerification = false;
+
   ngOnInit(): void {
     // Detectar si viene redirigido por sesión expirada o modo
     this.route.queryParams.subscribe(params => {
@@ -362,15 +364,20 @@ export class LoginFormComponent implements OnInit {
     this.authService.register(userData).subscribe({
       next: (res) => {
         this.isSubmitting = false;
-        this.successMsg = '¡Registro exitoso! Bienvenido a Plaxtilineas.';
-        this.showSuccessModal = true;
-        this.userToRedirect = res.usuario;
-        const delay = 2700;
-        setTimeout(() => {
-          if (this.showSuccessModal) {
-            this.closeSuccessModal();
-          }
-        }, delay);
+        
+        if (res.pendiente_verificacion) {
+          this.requireVerification = true;
+        } else {
+          this.successMsg = '¡Registro exitoso! Bienvenido a Plaxtilineas.';
+          this.showSuccessModal = true;
+          this.userToRedirect = res.usuario;
+          const delay = 2700;
+          setTimeout(() => {
+            if (this.showSuccessModal) {
+              this.closeSuccessModal();
+            }
+          }, delay);
+        }
       },
       error: (err) => {
         this.isSubmitting = false;
@@ -400,5 +407,36 @@ export class LoginFormComponent implements OnInit {
   hasNumber(): boolean {
     const val = this.pwdCtrl?.value || '';
     return /\d/.test(val);
+  }
+
+  verifyCode(code: string): void {
+    if (!code || code.trim().length < 5) {
+      this.errorMsg = 'Por favor, ingresa un código válido.';
+      this.showErrorModal = true;
+      return;
+    }
+    this.isSubmitting = true;
+    this.errorMsg = '';
+    
+    this.authService.verificarEmail(code.trim()).subscribe({
+      next: (res) => {
+        this.isSubmitting = false;
+        this.requireVerification = false;
+        
+        this.successMsg = '¡Verificación exitosa! Bienvenido a Plaxtilineas.';
+        this.showSuccessModal = true;
+        this.userToRedirect = res.usuario;
+        setTimeout(() => {
+          if (this.showSuccessModal) {
+            this.closeSuccessModal();
+          }
+        }, 2700);
+      },
+      error: (err) => {
+        this.isSubmitting = false;
+        this.errorMsg = err.error?.error || 'Código inválido o expirado. Por favor, intenta de nuevo.';
+        this.showErrorModal = true;
+      }
+    });
   }
 }

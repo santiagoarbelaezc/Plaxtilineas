@@ -54,4 +54,10 @@ export class AdminUsuariosService {
       headers: this.getAuthHeaders()
     });
   }
+
+  eliminarUsuario(id: number): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}/admin/usuarios/${id}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
 }

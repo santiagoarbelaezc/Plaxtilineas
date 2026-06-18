@@ -52,9 +52,9 @@ export class AuthService {
   }
 
   register(userData: any): Observable<any> {
-    return this.http.post<{ token?: string, usuario?: any }>(`${environment.apiUrl}/auth/register`, userData).pipe(
+    return this.http.post<{ token?: string, usuario?: any, pendiente_verificacion?: boolean }>(`${environment.apiUrl}/auth/register`, userData).pipe(
       tap(res => {
-        if (res.token) {
+        if (res.token && !res.pendiente_verificacion) {
           localStorage.setItem('token', res.token);
           this.isLoggedIn.next(true);
           this.currentUser.next(res.usuario);

@@ -163,9 +163,9 @@ export class RegistrationModalComponent implements OnInit, AfterViewInit {
           this.isSubmitting = false;
           this.requireVerification = res.pendiente_verificacion || false;
           this.registroExitoso = true;
-          this.leadsService.markAsRegistered();
           
           if (!this.requireVerification) {
+            this.leadsService.markAsRegistered();
             setTimeout(() => {
               this.closeModal();
             }, 2000);
@@ -197,6 +197,7 @@ export class RegistrationModalComponent implements OnInit, AfterViewInit {
       next: (res) => {
         this.isSubmitting = false;
         this.requireVerification = false; // Muestra el mensaje de bienvenida
+        this.leadsService.markAsRegistered();
         
         setTimeout(() => {
           this.closeModal();

@@ -15,7 +15,8 @@ import {
   faChevronUp, 
   faUser,
   faShoppingBag,
-  faEye
+  faEye,
+  faTrash
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -41,6 +42,12 @@ export class AdminUsuarios implements OnInit {
   faUser = faUser;
   faShoppingBag = faShoppingBag;
   faEye = faEye;
+  faTrash = faTrash;
+
+  // Estado del modal de eliminar
+  usuarioAEliminar = signal<UsuarioDetalle | null>(null);
+  textoConfirmacion = signal('');
+  isDeleting = signal(false);
 
   usuarios = signal<UsuarioDetalle[]>([]);
   loading = signal(true);
@@ -103,5 +110,38 @@ export class AdminUsuarios implements OnInit {
       case 'cancelado': return '#ef4444';
       default: return '#3b82f6';
     }
+  }
+
+  // --- Modal de Eliminar ---
+
+  abrirModalEliminar(u: UsuarioDetalle) {
+    this.usuarioAEliminar.set(u);
+    this.textoConfirmacion.set('');
+  }
+
+  cerrarModalEliminar() {
+    this.usuarioAEliminar.set(null);
+    this.textoConfirmacion.set('');
+  }
+
+  confirmarEliminacion() {
+    const user = this.usuarioAEliminar();
+    if (!user) return;
+    if (this.textoConfirmacion().trim().toLowerCase() !== 'eliminar') {
+      return;
+    }
+    
+    this.isDeleting.set(true);
+    this.adminUsuariosService.eliminarUsuario(user.id).subscribe({
+      next: () => {
+        this.isDeleting.set(false);
+        this.cerrarModalEliminar();
+        this.cargarUsuarios(); // Recargar la lista después de borrar
+      },
+      error: (err) => {
+        this.isDeleting.set(false);
+        alert(err.error?.error || 'Error al eliminar usuario');
+      }
+    });
   }
 }

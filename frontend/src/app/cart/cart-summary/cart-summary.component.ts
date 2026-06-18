@@ -329,11 +329,11 @@ import Swal from 'sweetalert2';
               <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; font-size: 0.9rem;">
                 <div style="display: flex; justify-content: space-between; align-items: center; color: #333;">
                   <span>Subtotal ({{ totalCount() }} items)</span>
-                  <span style="font-weight: 800; color: #111;">{{ formatearPrecio(totalPrice()) }}</span>
+                  <span style="font-weight: 800; color: #111;">{{ formatearPrecio(subtotal()) }}</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; color: #333;">
-                  <span>Envío estimado</span>
-                  <span style="color: #666;">A calcular</span>
+                  <span>Costo de envío</span>
+                  <span style="font-weight: 800; color: #111;">{{ formatearPrecio(costoEnvio()) }}</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; color: #333;">
                   <span>Impuestos (IVA)</span>
@@ -453,7 +453,7 @@ import Swal from 'sweetalert2';
               <div style="background: #f8fafc; padding: 18px 20px; border: 1px solid #e2e8f0; border-radius: 12px; display: flex; flex-direction: column; gap: 10px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #64748b; font-weight: 600;">
                   <span>Subtotal ({{ totalCount() }} items)</span>
-                  <span style="color: #1e293b;">{{ formatearPrecio(totalPrice()) }}</span>
+                  <span style="color: #1e293b;">{{ formatearPrecio(subtotal()) }}</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #64748b; font-weight: 600;">
                   <span>Impuestos (IVA)</span>
@@ -461,7 +461,7 @@ import Swal from 'sweetalert2';
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #64748b; font-weight: 600;">
                   <span>Costo de envío</span>
-                  <span style="color: #1e293b; font-size: 12px;">Se calcula en el siguiente paso</span>
+                  <span style="color: #1e293b; font-size: 13px; font-weight: 700;">{{ formatearPrecio(costoEnvio()) }}</span>
                 </div>
                 <div style="height: 1px; background: #e2e8f0; margin: 6px 0;"></div>
                 <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -557,8 +557,16 @@ export class CartSummaryComponent implements OnInit {
     return this.items().reduce((acc, item) => acc + item.cantidad, 0);
   });
 
+  subtotal = computed(() => {
+    return this.cartService.getSubtotal();
+  });
+
+  costoEnvio = computed(() => {
+    return this.cartService.getCostoEnvio();
+  });
+
   totalPrice = computed(() => {
-    return this.items().reduce((acc, item) => acc + (item.precioUnitario * item.cantidad), 0);
+    return this.cartService.getTotalFinal();
   });
 
   showCheckoutModal = signal(false);

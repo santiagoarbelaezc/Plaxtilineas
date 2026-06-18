@@ -100,7 +100,7 @@
     </form>
 
     <!-- FORMULARIO REGISTRO (REORGANIZADO SIN SCROLL INTERNO) -->
-    <div class="register-form-container" *ngIf="mode === 'register'">
+    <div class="register-form-container" *ngIf="mode === 'register' && !requireVerification">
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-grid-form">
         <div class="form-group">
           <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Nombres</label>
@@ -240,6 +240,32 @@
           </button>
         </div>
       </form>
+    </div>
+
+    <!-- PANTALLA DE VERIFICACIÓN DE CORREO -->
+    <div class="verification-container" *ngIf="mode === 'register' && requireVerification" style="padding: 2rem 1rem; text-align: center; animation: fadeIn 0.5s ease;">
+      <div class="flex justify-center mb-4 text-[#368C44]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <h3 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-white' : 'text-[#1e293b]'" class="text-2xl font-bold mb-3">¡Verifica tu cuenta!</h3>
+      <p [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#64748b]'" class="mb-8 max-w-md mx-auto text-sm leading-relaxed">
+        Hemos enviado un código de confirmación a tu dirección de correo electrónico. Por favor, ingrésalo a continuación para activar tu cuenta.
+      </p>
+      
+      <div class="flex flex-col items-center gap-5">
+        <input type="text" #codigoVerificacion placeholder="123456" maxlength="6" 
+               class="form-input text-center font-mono tracking-[0.5em] font-bold"
+               style="max-width: 220px; font-size: 1.5rem; padding: 1rem;"
+               [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+        
+        <button type="button" class="btn-primary w-full" style="max-width: 220px; padding: 1rem;"
+                (click)="verifyCode(codigoVerificacion.value)" 
+                [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Verificando...' : 'Verificar Código' }}
+        </button>
+      </div>
     </div>
   </div>
 </div>

@@ -125,10 +125,15 @@
                   </td>
                   <td class="price-range">{{ formatPrice(u.total_compras) }}</td>
                   <td>
-                    <button class="page-btn" (click)="toggleExpand(u.id)">
-                      <fa-icon [icon]="expandedUserId() === u.id ? faChevronUp : faChevronDown" style="margin-right: 6px;"></fa-icon>
-                      Detalles
-                    </button>
+                    <div style="display: flex; gap: 8px;">
+                      <button class="page-btn" (click)="toggleExpand(u.id)">
+                        <fa-icon [icon]="expandedUserId() === u.id ? faChevronUp : faChevronDown" style="margin-right: 6px;"></fa-icon>
+                        Detalles
+                      </button>
+                      <button class="page-btn danger-btn" (click)="abrirModalEliminar(u)" title="Eliminar usuario">
+                        <fa-icon [icon]="faTrash"></fa-icon>
+                      </button>
+                    </div>
                   </td>
                 </tr>
 
@@ -191,3 +196,37 @@
 
 </div>
 
+<!-- Modal de Eliminación -->
+<div class="modal-overlay" *ngIf="usuarioAEliminar()">
+  <div class="modal-content">
+    <div class="modal-warning-icon">
+      <fa-icon [icon]="faTrash"></fa-icon>
+    </div>
+    <h2>Eliminar Usuario</h2>
+    <p>
+      Estás a punto de eliminar a <strong>{{ usuarioAEliminar()?.nombre }} {{ usuarioAEliminar()?.apellidos }}</strong>. 
+      Esta acción es irreversible y borrará su carrito. 
+      (No se puede eliminar si tiene pedidos en curso).
+    </p>
+    <div class="confirm-input-group">
+      <label>Para confirmar, escribe la palabra <strong>eliminar</strong>:</label>
+      <input 
+        type="text" 
+        [ngModel]="textoConfirmacion()" 
+        (ngModelChange)="textoConfirmacion.set($event)"
+        placeholder="eliminar"
+        class="confirm-input"
+      />
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="cerrarModalEliminar()" [disabled]="isDeleting()">Cancelar</button>
+      <button 
+        class="btn-confirm-delete" 
+        (click)="confirmarEliminacion()" 
+        [disabled]="isDeleting() || textoConfirmacion().trim().toLowerCase() !== 'eliminar'">
+        <span *ngIf="!isDeleting()">Confirmar Eliminación</span>
+        <span *ngIf="isDeleting()">Eliminando...</span>
+      </button>
+    </div>
+  </div>
+</div>

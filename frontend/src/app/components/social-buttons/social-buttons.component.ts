@@ -35,9 +35,19 @@ export class SocialButtonsComponent implements OnInit, OnDestroy {
     return this.cartService.getTotalItems();
   });
 
+  subtotal = computed(() => {
+    this.items();
+    return this.cartService.getSubtotal();
+  });
+
+  costoEnvio = computed(() => {
+    this.items();
+    return this.cartService.getCostoEnvio();
+  });
+
   totalPrice = computed(() => {
     this.items();
-    return this.cartService.getTotalPrice();
+    return this.cartService.getTotalFinal();
   });
 
   constructor(
