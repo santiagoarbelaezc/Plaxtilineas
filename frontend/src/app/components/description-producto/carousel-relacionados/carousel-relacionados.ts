@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { ProductosService } from '../../../services/productos.service';
 import { ProductoEditable } from '../../../models/producto.model';
 import { CarouselSignalService } from '../../../services/carousel-signal.service';
+import { optimizeForThumbnail } from '../../../utils/cloudinary-optimizer';
 
 @Component({
   selector: 'app-carousel-relacionados',
@@ -527,7 +528,7 @@ export class CarouselRelacionados implements OnInit, AfterViewInit, OnDestroy, O
    */
   getProductoImagen(producto: ProductoEditable): string {
     if (producto?.imagen_url && producto.imagen_url.trim() !== '') {
-      return producto.imagen_url;
+      return optimizeForThumbnail(producto.imagen_url, 200);
     }
     return 'assets/images/default-product.png';
   }

@@ -222,65 +222,37 @@
           </div>
         </div>
 
-        <!-- Grid de productos -->
         <div class="products-grid">
-          <div 
-            *ngFor="let producto of productos; trackBy: trackByProducto"
-            class="product-card-wrapper"
-            (click)="verDetallesProducto(producto)"
-          >
-            <div class="product-card-container">
-              <!-- Imagen del producto -->
-              <div class="product-image-section">
-                <div class="product-image-wrapper">
-                  <div class="product-image-container">
-                    <img
-                      [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/placeholder.jpg'"
-                      [alt]="producto.nombre"
-                      class="product-image"
-                      loading="lazy"
-                      onerror="this.src='assets/images/placeholder.jpg'"
-                    />
-                    <div class="image-overlay"></div>
-                    <div *ngIf="producto.variantes && producto.variantes.length > 0" class="variantes-tag">
-                      📦 Variantes
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <div class="product-card" *ngFor="let prod of productos; trackBy: trackByProducto; let i = index" (click)="verDetallesProducto(prod)">
+            <div class="card-image-wrapper">
+              <img [src]="prod.imagen_url ? optimizarImagen(prod.imagen_url) : 'assets/images/placeholder.jpg'" [alt]="prod.nombre" class="product-img" loading="lazy" onerror="this.src='assets/images/placeholder.jpg'">
+              <span class="badge" *ngIf="prod.categoria">{{ prod.categoria }}</span>
+              <!-- Tags (Promocionales) -->
+              <span *ngIf="prod.controlar_stock && prod.stock === 0" class="tag promo agotado" style="background-color: #ef4444 !important; color: white !important; font-weight: bold; bottom: 8px; right: 8px;">Agotado</span>
+              <span *ngIf="!(prod.controlar_stock && prod.stock === 0) && i % 4 === 0" class="tag promo descuento-15">15% descuento</span>
+              <span *ngIf="!(prod.controlar_stock && prod.stock === 0) && i % 4 === 1" class="tag promo ultimas-unidades">Últimas unidades</span>
+              <span *ngIf="!(prod.controlar_stock && prod.stock === 0) && i % 4 === 2" class="tag promo descuento-50">50% descuento</span>
+              <span *ngIf="!(prod.controlar_stock && prod.stock === 0) && i % 4 === 3" class="tag promo promo-dia">Promo del día</span>
+            </div>
 
-              <!-- Información del producto -->
-              <div class="product-info-section">
-                <div class="product-text-container">
-                  <div class="product-title-wrapper">
-                    <h3 class="product-title">{{ producto.nombre }}</h3>
-                    <span class="product-subtitle">{{ producto.categoria }}</span>
-                  </div>
-                  <div class="product-description-container">
-                    <p class="product-description">
-                      {{ (producto.descripcion || 'Sin descripción disponible') | slice:0:120 }}{{ producto.descripcion && producto.descripcion.length > 120 ? '...' : '' }}
-                    </p>
-                  </div>
-                </div>
-
-                <div class="product-details-container">
-                  <div class="product-price-section">
-                    <div class="price-display">
-                      <div class="price-label-area">
-                        <span class="price-label">Precio</span>
-                      </div>
-                      <div class="price-value-area">
-                        <span class="price-value">{{ mostrarPrecio(producto) }}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div *ngIf="producto.variantes && producto.variantes.length > 0" class="variantes-info">
-                    <span class="variantes-text">Disponible en diferentes opciones</span>
-                  </div>
-                </div>
-              </div>
+            <div class="card-info">
+              <h3 class="product-name">{{ prod.nombre }}</h3>
+              <p class="product-description" *ngIf="prod.descripcion">{{ prod.descripcion }}</p>
               
+              <div class="price-row">
+                <span class="price">{{ mostrarPrecio(prod) }}</span>
+                <span class="unit" *ngIf="prod.unidad && !(prod.variantes && prod.variantes.length > 0)">/ {{ prod.unidad }}</span>
+              </div>
+            </div>
+            
+            <div class="card-footer">
+              <button class="view-details-btn">
+                <span>Ver Detalles</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
             </div>
           </div>
         </div>

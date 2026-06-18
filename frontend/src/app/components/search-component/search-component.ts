@@ -51,9 +51,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.setupRouterListener();
     this.setupSearchTriggers();
     this.setupRealTimeSearch();
+    this.setupRouterListener();
     this.setupSearchStateListener();
   }
 

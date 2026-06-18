@@ -40,8 +40,15 @@ export class ContactoAsistente implements OnInit, AfterViewChecked {
     this.cargarHistorial();
   }
 
+  private previousMessagesLength = 0;
+  private previousIsTyping = false;
+
   ngAfterViewChecked() {
-    this.scrollToBottom();
+    if (this.messages.length !== this.previousMessagesLength || this.isTyping !== this.previousIsTyping) {
+      this.scrollToBottom();
+      this.previousMessagesLength = this.messages.length;
+      this.previousIsTyping = this.isTyping;
+    }
   }
 
   generateUUID(): string {
