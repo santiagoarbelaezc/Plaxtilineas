@@ -125,4 +125,13 @@ export class AuthService {
       })
     );
   }
+
+  eliminarCuenta(): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+    return this.http.delete<{ mensaje: string }>(`${environment.apiUrl}/auth/cuenta`, { headers });
+  }
 }

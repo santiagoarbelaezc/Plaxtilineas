@@ -197,9 +197,12 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
         return;
       case 'pedidos':
         this.router.navigate(['/pedidos']);
-        return;
+        break;
       case 'configuracion':
-        message = 'La sección de "Configuración" estará disponible próximamente.';
+        this.router.navigate(['/configuracion']);
+        break;
+      default:
+        message = 'Sección no encontrada.';
         break;
     }
 

@@ -165,10 +165,11 @@ export class RegistrationModalComponent implements OnInit, AfterViewInit {
           this.registroExitoso = true;
           this.leadsService.markAsRegistered();
           
-          const timeoutDelay = this.requireVerification ? 6000 : 2000;
-          setTimeout(() => {
-            this.closeModal();
-          }, timeoutDelay);
+          if (!this.requireVerification) {
+            setTimeout(() => {
+              this.closeModal();
+            }, 2000);
+          }
         },
         error: (err) => {
           this.isSubmitting = false;
@@ -183,4 +184,28 @@ export class RegistrationModalComponent implements OnInit, AfterViewInit {
 
   // Getters para validaciones
   get pwdCtrl() { return this.registrationForm.get('password'); }
+
+  verifyCode(code: string): void {
+    if (!code || code.trim().length < 5) {
+      this.errorMessage = 'Por favor, ingresa un código válido.';
+      return;
+    }
+    this.isSubmitting = true;
+    this.errorMessage = '';
+    
+    this.authService.verificarEmail(code.trim()).subscribe({
+      next: (res) => {
+        this.isSubmitting = false;
+        this.requireVerification = false; // Muestra el mensaje de bienvenida
+        
+        setTimeout(() => {
+          this.closeModal();
+        }, 2000);
+      },
+      error: (err) => {
+        this.isSubmitting = false;
+        this.errorMessage = err.error?.error || 'Código inválido o expirado. Por favor, intenta de nuevo.';
+      }
+    });
+  }
 }

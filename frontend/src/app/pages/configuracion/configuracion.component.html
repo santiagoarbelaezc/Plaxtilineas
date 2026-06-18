@@ -1,0 +1,49 @@
+<div class="configuracion-container pt-20">
+  <div class="configuracion-header">
+    <div class="header-icon">
+      <fa-icon [icon]="['fas', 'key']"></fa-icon>
+    </div>
+    <h1>Configuración de la Cuenta</h1>
+    <p>Administra las preferencias y la seguridad de tu cuenta.</p>
+  </div>
+
+  <div class="configuracion-content">
+    <div class="danger-zone">
+      <div class="danger-zone-header">
+        <h2>Zona de Peligro</h2>
+        <p>Estas acciones son destructivas y no se pueden deshacer.</p>
+      </div>
+      
+      <div class="danger-item">
+        <div class="danger-info">
+          <h3>Eliminar cuenta</h3>
+          <p>Una vez que elimines tu cuenta, no hay vuelta atrás. Por favor, asegúrate de estar seguro.</p>
+        </div>
+        <button class="btn-delete" (click)="confirmarEliminacion()">Eliminar cuenta</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de confirmación -->
+  <div class="modal-overlay" *ngIf="mostrarModalConfirmacion">
+    <div class="modal-content">
+      <div class="modal-warning-icon">
+        <fa-icon [icon]="['fas', 'exclamation-triangle']"></fa-icon>
+      </div>
+      <h2>¿Estás seguro?</h2>
+      <p>Esta acción eliminará de forma permanente tu cuenta, tu perfil y todo tu historial de pedidos. No podrás recuperar esta información.</p>
+      
+      <div *ngIf="errorMessage" class="error-alert">
+        {{ errorMessage }}
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="cancelarEliminacion()" [disabled]="isDeleting">Cancelar</button>
+        <button class="btn-confirm-delete" (click)="eliminarCuenta()" [disabled]="isDeleting">
+          <span *ngIf="!isDeleting">Sí, eliminar mi cuenta</span>
+          <span *ngIf="isDeleting">Eliminando...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -12,8 +12,18 @@
       </div>
       
       <ng-container *ngIf="requireVerification; else successSession">
-        <h2>¡Registro Exitoso!</h2>
-        <p>Hemos enviado un enlace de confirmación a tu dirección de correo electrónico. Por favor, verifica tu bandeja de entrada para activar tu cuenta.</p>
+        <h2>¡Verifica tu cuenta!</h2>
+        <p>Hemos enviado un código de confirmación a tu dirección de correo electrónico. Por favor, ingrésalo a continuación para activar tu cuenta.</p>
+        <div class="verification-code-container" style="margin-top: 20px; text-align: center;">
+          <input type="text" #codigoVerificacion placeholder="123456" maxlength="6" style="padding: 12px; width: 150px; border: 2px solid #e2e8f0; border-radius: 8px; text-align: center; font-size: 1.5rem; letter-spacing: 4px; margin-bottom: 15px; outline: none; transition: border-color 0.3s;" (focus)="errorMessage = ''">
+          <button (click)="verifyCode(codigoVerificacion.value)" class="submit-btn" [disabled]="isSubmitting" style="width: 100%;">
+            <span *ngIf="!isSubmitting">Verificar Código</span>
+            <span *ngIf="isSubmitting" class="loader"></span>
+          </button>
+          <div *ngIf="errorMessage" class="error-alert" style="margin-top: 10px; font-size: 0.9rem;">
+            {{ errorMessage }}
+          </div>
+        </div>
       </ng-container>
       
       <ng-template #successSession>
@@ -126,7 +136,7 @@
           </small>
         </div>
 
-        <div *ngIf="errorMessage" class="error-alert">
+        <div *ngIf="errorMessage && !requireVerification" class="error-alert">
           {{ errorMessage }}
         </div>
 
