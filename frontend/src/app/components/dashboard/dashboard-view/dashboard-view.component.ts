@@ -10,6 +10,7 @@ import { AuthService } from '../../../services/auth.service';
 import { ProductosService } from '../../../services/productos.service';
 import { PedidoService } from '../../../services/pedido.service';
 import { AdminUsuariosService } from '../../../services/admin-usuarios.service';
+import { ConfiguracionService } from '../../../services/configuracion.service';
 import { DashboardAssistantComponent } from '../dashboard-assistant/dashboard-assistant.component';
 import {
   faBoxes,
@@ -103,6 +104,8 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
 
   isMobileSidebarOpen = false;
 
+  wompiEnabled = true;
+
   toggleMobileSidebar(): void {
     this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
   }
@@ -119,7 +122,8 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private productosService: ProductosService,
     private pedidoService: PedidoService,
-    private adminUsuariosService: AdminUsuariosService
+    private adminUsuariosService: AdminUsuariosService,
+    private configuracionService: ConfiguracionService
   ) {
     library.addIcons(
       faBoxes, 
@@ -145,6 +149,9 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.iniciarChequeoPedidos();
+    this.configuracionService.wompiEnabled$.subscribe(val => {
+      this.wompiEnabled = val;
+    });
   }
 
   ngOnDestroy(): void {
@@ -300,6 +307,44 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     this.authService.logout(false);
+  }
+
+  toggleWompi(event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    this.configuracionService.updateWompiStatus(isChecked).subscribe({
+      next: () => {
+        const estado = isChecked ? 'activada' : 'desactivada';
+        Swal.fire({
+          icon: 'success',
+          title: 'Configuraci&oacute;n guardada',
+          html: '<p style="color: #cbd5e1; font-size: 0.95rem;">La pasarela Wompi ha sido <strong>' + estado + '</strong> con &eacute;xito.</p>',
+          background: '#1e293b',
+          color: '#f8fafc',
+          iconColor: '#4ade80',
+          confirmButtonColor: '#368c44',
+          confirmButtonText: 'Entendido',
+          customClass: {
+            popup: 'rounded-xl shadow-2xl border border-slate-700'
+          }
+        });
+      },
+      error: () => {
+        (event.target as HTMLInputElement).checked = !isChecked;
+        Swal.fire({
+          icon: 'error',
+          title: 'Error de conexi&oacute;n',
+          html: '<p style="color: #cbd5e1; font-size: 0.95rem;">No se pudo actualizar la configuraci&oacute;n de la pasarela.</p>',
+          background: '#1e293b',
+          color: '#f8fafc',
+          iconColor: '#f87171',
+          confirmButtonColor: '#368c44',
+          confirmButtonText: 'Entendido',
+          customClass: {
+            popup: 'rounded-xl shadow-2xl border border-slate-700'
+          }
+        });
+      }
+    });
   }
 
   get estaEnInicio(): boolean {

@@ -37,6 +37,7 @@ require_once __DIR__ . '/controllers/DashboardAssistantController.php';
 require_once __DIR__ . '/controllers/AiController.php';
 require_once __DIR__ . '/controllers/PedidoController.php';
 require_once __DIR__ . '/controllers/WompiController.php';
+require_once __DIR__ . '/controllers/ConfiguracionController.php';
 
 // ─── CORS headers (siempre primero) ──────────────────────────────────────────
 ResponseHandler::setCorsHeaders();
@@ -81,6 +82,26 @@ try {
         if ($method === 'GET') {
             EstadisticasController::getCatalogStats();
             exit;
+        }
+    }
+
+    // ── Configuraciones ─────────────────────────────────────────────────────────────
+    if (str_starts_with($uri, '/configuraciones')) {
+        if ($method === 'GET' && $uri === '/configuraciones') {
+            ConfiguracionController::getAll();
+            exit;
+        }
+
+        if ($method === 'PUT') {
+            $user = AuthMiddleware::verify();
+            if ($user['rol'] !== 'admin') {
+                ResponseHandler::error('No autorizado. Se requiere rol de administrador.', 403);
+                exit;
+            }
+            if (preg_match('#^/configuraciones/([^/]+)$#', $uri, $matches)) {
+                ConfiguracionController::update($matches[1]);
+                exit;
+            }
         }
     }
 

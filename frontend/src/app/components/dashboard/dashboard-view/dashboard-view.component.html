@@ -601,6 +601,38 @@
           </div>
         </section>
 
+        <!-- 3. CONFIGURACIONES DEL SISTEMA -->
+        <section class="admin-card quick-access-section" style="margin-top: 2rem;">
+          <div class="card-header">
+            <h2 class="card-title">
+              <fa-icon [icon]="faBolt" class="card-icon" style="color: #368c44;"></fa-icon>
+              Ajustes del Sistema
+            </h2>
+            <p class="page-subtitle">Configura parámetros globales de la tienda</p>
+          </div>
+
+          <div class="card-body">
+            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+              <div>
+                <h3 style="margin: 0 0 4px 0; font-size: 1.1rem; color: #1e293b; font-weight: 700;">Pasarela de Pago Wompi</h3>
+                <p style="margin: 0; font-size: 0.9rem; color: #64748b;">
+                  Habilita o deshabilita temporalmente el botón de pago con Wompi. Si se desactiva, los usuarios verán una pantalla de "En desarrollo".
+                </p>
+              </div>
+              <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 26px;">
+                <input type="checkbox" [checked]="wompiEnabled" (change)="toggleWompi($event)" style="opacity: 0; width: 0; height: 0;">
+                <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;">
+                  <!-- Usamos CSS inline simple para el switch pseudo-element para evitar modificar archivos CSS extra si es posible, o dependemos del CSS de toggle que Angular maneja (voy a asegurar un CSS básico) -->
+                  <span class="knob" [style.transform]="wompiEnabled ? 'translateX(24px)' : 'translateX(0)'" style="position: absolute; content: ''; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+                </span>
+                <style>
+                  input:checked + .slider { background-color: #368c44; }
+                </style>
+              </label>
+            </div>
+          </div>
+        </section>
+
       </div>
 
       <!-- Router outlet para vistas hijas -->

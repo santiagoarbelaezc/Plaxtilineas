@@ -130,6 +130,10 @@ export const routes: Routes = [
     path: 'pago-exitoso',
     loadComponent: () => import('./pages/pago-exitoso/pago-exitoso.component').then(m => m.PagoExitosoComponent)
   },
+  {
+    path: 'pago-desarrollo',
+    loadComponent: () => import('./pages/pago-desarrollo/pago-desarrollo.component').then(m => m.PagoDesarrolloComponent)
+  },
 
   {
     path: 'verificar-email',

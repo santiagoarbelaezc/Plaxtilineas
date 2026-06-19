@@ -6,6 +6,7 @@ import { CartService } from '../../services/cart.service';
 import { PedidoService } from '../../services/pedido.service';
 import { AuthService } from '../../services/auth.service';
 import { WompiService } from '../../services/wompi.service';
+import { ConfiguracionService } from '../../services/configuracion.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import Swal from 'sweetalert2';
@@ -543,13 +544,18 @@ export class CartSummaryComponent implements OnInit {
   private authService = inject(AuthService);
   private wompiSvc = inject(WompiService);
   private router = inject(Router);
+  private configuracionService = inject(ConfiguracionService);
   
   items = toSignal(this.cartService.items$, { initialValue: [] });
   isLoggedIn = signal(false);
+  wompiEnabled = signal(true);
 
   ngOnInit() {
     this.authService.isLoggedIn.subscribe(val => {
       this.isLoggedIn.set(val);
+    });
+    this.configuracionService.wompiEnabled$.subscribe(val => {
+      this.wompiEnabled.set(val);
     });
   }
   
@@ -728,11 +734,21 @@ export class CartSummaryComponent implements OnInit {
           telefono_contacto:  this.checkoutData.telefono_contacto,
           notas:              this.checkoutData.notas || undefined,
           metodo_pago:        this.checkoutData.metodo_pago,
+          wompi_desarrollo:   !this.wompiEnabled()
         };
 
         this.pedidoService.crearDraft(draftPayload).subscribe({
           next: (draft) => {
             if (this.checkoutData.metodo_pago === 'wompi') {
+              if (!this.wompiEnabled()) {
+                // Wompi desactivado: mostrar pantalla de mantenimiento
+                this.isSubmitting.set(false);
+                this.cartService.clearCart();
+                this.closeCheckout();
+                this.router.navigate(['/pago-desarrollo'], { state: { pedido: draft } });
+                return;
+              }
+
               // Obtener firma de Wompi del backend
               this.wompiSvc.obtenerDatosPago(draft.pedido_id).subscribe({
                 next: (datos) => {

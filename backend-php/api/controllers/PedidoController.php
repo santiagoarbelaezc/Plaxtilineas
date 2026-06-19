@@ -144,7 +144,8 @@ class PedidoController
 
             // ── Insertar pedido ─────────────────────────
             $metodoPago = $input['metodo_pago'] ?? 'wompi';
-            $estadoInicial = ($metodoPago === 'wompi') ? 'draft' : 'pendiente_pago';
+            $esWompiDesarrollo = isset($input['wompi_desarrollo']) && $input['wompi_desarrollo'] === true;
+            $estadoInicial = ($metodoPago === 'wompi' && !$esWompiDesarrollo) ? 'draft' : 'pendiente_pago';
 
             $stmtPedido = $db->prepare("
                 INSERT INTO pedidos
