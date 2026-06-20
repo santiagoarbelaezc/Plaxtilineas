@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap, map } from 'rxjs';
 import { environment } from '../../enviroments/environment';
 
 @Injectable({
@@ -38,8 +38,19 @@ export class AuthService {
     }
   }
 
-  login(correo: string, password: string): Observable<any> {
-    return this.http.post<{ token: string, usuario: any }>(`${environment.apiUrl}/auth/login`, { correo, password }).pipe(
+  getCaptcha(): Observable<{ pregunta: string, hash: string, expira: number }> {
+    return this.http.get<{ pregunta: string, hash: string, expira: number }>(`${environment.apiUrl}/auth/captcha`);
+  }
+
+  login(correo: string, password: string, captchaData?: { respuesta: string, hash: string, expira: number }): Observable<any> {
+    const payload = { 
+      correo, 
+      password, 
+      captcha_respuesta: captchaData?.respuesta,
+      captcha_hash: captchaData?.hash,
+      captcha_expira: captchaData?.expira
+    };
+    return this.http.post<{ token: string, usuario: any }>(`${environment.apiUrl}/auth/login`, payload).pipe(
       tap(res => {
         if (res.token) {
           localStorage.setItem('token', res.token);
@@ -51,8 +62,14 @@ export class AuthService {
     );
   }
 
-  register(userData: any): Observable<any> {
-    return this.http.post<{ token?: string, usuario?: any, pendiente_verificacion?: boolean }>(`${environment.apiUrl}/auth/register`, userData).pipe(
+  register(userData: any, captchaData?: { respuesta: string, hash: string, expira: number }): Observable<any> {
+    const payload = { 
+      ...userData, 
+      captcha_respuesta: captchaData?.respuesta,
+      captcha_hash: captchaData?.hash,
+      captcha_expira: captchaData?.expira 
+    };
+    return this.http.post<{ token?: string, usuario?: any, pendiente_verificacion?: boolean }>(`${environment.apiUrl}/auth/register`, payload).pipe(
       tap(res => {
         if (res.token && !res.pendiente_verificacion) {
           localStorage.setItem('token', res.token);

@@ -134,6 +134,10 @@ export const routes: Routes = [
     path: 'pago-desarrollo',
     loadComponent: () => import('./pages/pago-desarrollo/pago-desarrollo.component').then(m => m.PagoDesarrolloComponent)
   },
+  {
+    path: 'pago-asistido',
+    loadComponent: () => import('./pages/pago-asistido/pago-asistido.component').then(m => m.PagoAsistidoComponent)
+  },
 
   {
     path: 'verificar-email',

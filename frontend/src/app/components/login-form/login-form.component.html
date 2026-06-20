@@ -94,7 +94,14 @@
         </div>
       </div>
 
-      <button type="submit" [disabled]="isSubmitting" class="btn-primary">
+      <!-- CAPTCHA Matemático -->
+      <div class="form-group" *ngIf="captchaPregunta">
+        <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Por seguridad, resuelve: <strong>{{ captchaPregunta }}</strong></label>
+        <input formControlName="captcha_respuesta" type="number" placeholder="Respuesta" class="form-input"
+               [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+      </div>
+
+      <button type="submit" [disabled]="isSubmitting || loginForm.invalid" class="btn-primary">
         {{ isSubmitting ? 'Ingresando...' : 'Ingresar' }}
       </button>
     </form>
@@ -209,6 +216,13 @@
           </small>
         </div>
 
+        <!-- CAPTCHA Matemático -->
+        <div class="form-group" style="grid-column: 1 / -1;" *ngIf="captchaPregunta">
+          <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Por seguridad, resuelve: <strong>{{ captchaPregunta }}</strong></label>
+          <input formControlName="captcha_respuesta" type="number" placeholder="Respuesta" class="form-input"
+                 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+        </div>
+
         <!-- Indicaciones de Contraseña (Ancho Completo abajo de los campos) -->
         <div class="password-requirements-wrapper">
           <div class="password-requirements">
@@ -235,7 +249,7 @@
         </div>
 
         <div class="register-submit-wrapper">
-          <button type="submit" [disabled]="isSubmitting" class="btn-primary">
+          <button type="submit" [disabled]="isSubmitting || registerForm.invalid" class="btn-primary">
             {{ isSubmitting ? 'Procesando...' : 'Crear Cuenta' }}
           </button>
         </div>

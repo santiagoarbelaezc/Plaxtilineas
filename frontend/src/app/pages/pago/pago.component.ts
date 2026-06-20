@@ -266,11 +266,11 @@ import Swal from 'sweetalert2';
 
               <!-- Métodos alternativos -->
               <div class="alt-methods">
-                <button class="btn-alt" (click)="confirmarMetodoAlt('contraentrega')" id="btn-contraentrega">
-                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                <button class="btn-alt" (click)="confirmarMetodoAlt('asesor')" id="btn-asesor">
+                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
                   <span>
-                    <strong>Contraentrega</strong>
-                    <small>Pagas al recibir tu pedido</small>
+                    <strong>Hablar con un asesor</strong>
+                    <small>Coordina tu pago por WhatsApp</small>
                   </span>
                 </button>
                 <button class="btn-alt" (click)="confirmarMetodoAlt('transferencia')" id="btn-transferencia">
@@ -845,8 +845,8 @@ export class PagoComponent implements OnInit {
     setTimeout(() => this.procesandoWompi.set(false), 3000);
   }
 
-  confirmarMetodoAlt(metodo: 'contraentrega' | 'transferencia'): void {
-    const label = metodo === 'contraentrega' ? 'Contraentrega (Pago al recibir)' : 'Transferencia Bancaria';
+  confirmarMetodoAlt(metodo: 'asesor' | 'transferencia'): void {
+    const label = metodo === 'asesor' ? 'Hablar con un asesor' : 'Transferencia Bancaria';
     Swal.fire({
       title: '¿Confirmar pedido?',
       html: `<p style="color:#64748b; font-size:14px;">Tu pedido se registrará con método de pago: <strong style="color:#1e293b;">${label}</strong></p>`,
@@ -863,14 +863,12 @@ export class PagoComponent implements OnInit {
         this.cartSvc.clearCart();
         sessionStorage.removeItem('last_datosPago');
         sessionStorage.removeItem('last_datosEnvio');
-        Swal.fire({
-          icon: 'success',
-          title: '¡Pedido Registrado!',
-          text: 'Te contactaremos pronto para coordinar la entrega y el pago.',
-          background: '#ffffff',
-          color: '#1e293b',
-          confirmButtonColor: '#0f172a',
-        }).then(() => this.router.navigate(['/pedidos']));
+        
+        // Extraemos los datos necesarios para pago asistido
+        const datos = this.datosPago();
+        const pedidoData = { codigo_pedido: datos?.referencia || '' };
+        
+        this.router.navigate(['/pago-asistido'], { state: { pedido: pedidoData, metodo: metodo } });
       }
     });
   }

@@ -45,6 +45,19 @@ class PedidoController
 
         $db = Database::getConnection();
 
+        // ── Validación de pedidos pendientes simultáneos ─────────────────
+        $userEmail = $user['correo'] ?? '';
+        if ($userEmail !== 'arbelaezz.c11@gmail.com') {
+            $stmtPending = $db->prepare("SELECT COUNT(*) FROM pedidos WHERE usuario_id = ? AND estado IN ('draft', 'pendiente_pago', 'pendiente')");
+            $stmtPending->execute([$user['id']]);
+            $pendingCount = (int)$stmtPending->fetchColumn();
+
+            if ($pendingCount >= 2) {
+                ResponseHandler::error('Tienes 2 o más pedidos pendientes. Por favor completa el pago o cancela uno antes de intentar crear otro pedido nuevo.', 403);
+                return;
+            }
+        }
+
         try {
             $db->beginTransaction();
 

@@ -8,6 +8,7 @@ import { AuthService } from '../../services/auth.service';
 import { ThemeService, Theme } from '../../services/theme.service';
 
 declare var google: any;
+declare var grecaptcha: any;
 
 export function emailDomainValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -102,6 +103,7 @@ export class LoginFormComponent implements OnInit {
   loginForm: FormGroup = this.fb.group({
     correo: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
+    captcha_respuesta: ['', [Validators.required]]
   });
 
   private passwordMatchValidator = (g: FormGroup) => {
@@ -158,7 +160,8 @@ export class LoginFormComponent implements OnInit {
     ]],
     direccion: ['', [Validators.required, Validators.minLength(5)]],
     departamento: ['', [Validators.required]],
-    ciudad: ['', [Validators.required]]
+    ciudad: ['', [Validators.required]],
+    captcha_respuesta: ['', [Validators.required]]
   }, { validators: this.passwordMatchValidator });
 
   departamentos: { [key: string]: string[] } = {
@@ -216,7 +219,28 @@ export class LoginFormComponent implements OnInit {
 
   requireVerification = false;
 
+  captchaPregunta: string = 'Cargando captcha...';
+  captchaHash: string = '';
+  captchaExpira: number = 0;
+
+  fetchCaptcha(): void {
+    this.authService.getCaptcha().subscribe({
+      next: (res) => {
+        this.captchaPregunta = res.pregunta;
+        this.captchaHash = res.hash;
+        this.captchaExpira = res.expira;
+        this.loginForm.get('captcha_respuesta')?.setValue('');
+        this.registerForm.get('captcha_respuesta')?.setValue('');
+      },
+      error: (err) => {
+        console.error('Error al cargar captcha', err);
+      }
+    });
+  }
+
   ngOnInit(): void {
+    this.fetchCaptcha();
+
     // Detectar si viene redirigido por sesión expirada o modo
     this.route.queryParams.subscribe(params => {
       this.sessionExpired = params['expired'] === 'true';
@@ -240,6 +264,7 @@ export class LoginFormComponent implements OnInit {
     this.mode = this.mode === 'login' ? 'register' : 'login';
     this.errorMsg = '';
     this.showPassword = false;
+    this.fetchCaptcha();
     // Ya no es necesario volver a renderizar el botón de Google
     // porque su contenedor está fuera del *ngIf y siempre está en el DOM.
   }
@@ -310,7 +335,7 @@ export class LoginFormComponent implements OnInit {
     this.redirectUser(this.userToRedirect);
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.mode === 'login') {
       if (this.loginForm.invalid) {
         this.loginForm.markAllAsTouched();
@@ -321,9 +346,15 @@ export class LoginFormComponent implements OnInit {
 
       this.isSubmitting = true;
       this.sessionExpired = false;
-      const { correo, password } = this.loginForm.value;
+      const { correo, password, captcha_respuesta } = this.loginForm.value;
 
-      this.authService.login(correo, password).subscribe({
+      const captchaData = {
+        respuesta: captcha_respuesta,
+        hash: this.captchaHash,
+        expira: this.captchaExpira
+      };
+
+      this.authService.login(correo, password, captchaData).subscribe({
         next: (res) => {
           this.isSubmitting = false;
           this.successMsg = '¡Ingreso exitoso! Bienvenido a Plaxtilineas.';
@@ -337,9 +368,10 @@ export class LoginFormComponent implements OnInit {
           }, delay);
         },
         error: () => {
-          this.errorMsg = 'Correo o contraseña incorrectos. Por favor, verifica tus datos e inténtalo de nuevo.';
+          this.errorMsg = 'Correo, contraseña o captcha incorrectos. Por favor, verifica e inténtalo de nuevo.';
           this.showErrorModal = true;
           this.isSubmitting = false;
+          this.fetchCaptcha();
         }
       });
     } else {
@@ -354,14 +386,20 @@ export class LoginFormComponent implements OnInit {
     }
   }
 
-  onConfirmRegister(): void {
+  async onConfirmRegister(): Promise<void> {
     this.showConfirmModal = false;
     this.isSubmitting = true;
-    const { departamento, ciudad, confirmPassword, ...rest } = this.registerForm.value;
+    const { departamento, ciudad, confirmPassword, captcha_respuesta, ...rest } = this.registerForm.value;
     const fullCiudad = `${ciudad}, ${departamento}`;
     const userData = { ...rest, ciudad: fullCiudad, rol: 'cliente' };
 
-    this.authService.register(userData).subscribe({
+    const captchaData = {
+      respuesta: captcha_respuesta,
+      hash: this.captchaHash,
+      expira: this.captchaExpira
+    };
+
+    this.authService.register(userData, captchaData).subscribe({
       next: (res) => {
         this.isSubmitting = false;
         
@@ -381,8 +419,9 @@ export class LoginFormComponent implements OnInit {
       },
       error: (err) => {
         this.isSubmitting = false;
-        this.errorMsg = err.error?.error || 'Error al registrar. Intenta con otro correo.';
+        this.errorMsg = err.error?.error || 'Error al registrar. Intenta con otro correo o verifica el captcha.';
         this.showErrorModal = true;
+        this.fetchCaptcha();
       }
     });
   }

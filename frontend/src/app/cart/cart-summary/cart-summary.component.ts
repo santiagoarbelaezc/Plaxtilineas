@@ -431,8 +431,8 @@ import Swal from 'sweetalert2';
                 <label style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-family: inherit;">Método de pago</label>
                 <select [(ngModel)]="checkoutData.metodo_pago" name="pago" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; font-size: 0.85rem; color: #1e293b; outline: none; background: #f8fafc; box-sizing: border-box; cursor: pointer; transition: all 0.2s;" onfocus="this.style.borderColor='#368c44';" onblur="this.style.borderColor='#cbd5e1';">
                   <option value="wompi">Pago Seguro Online (Wompi)</option>
-                  <option value="contraentrega">Contraentrega (Pago al recibir)</option>
                   <option value="transferencia">Transferencia Bancaria</option>
+                  <option value="asesor">Hablar con un asesor</option>
                 </select>
               </div>
             </div>
@@ -536,6 +536,64 @@ import Swal from 'sweetalert2';
         </div>
       </div>
     </div>
+
+    <!-- Captcha Modal FASE 1 -->
+    <div *ngIf="showCaptchaModal()" style="position: fixed; inset: 0; z-index: 100004; display: flex; align-items: center; justify-content: center; padding: 1.5rem; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);" (click)="closeCaptchaModal()">
+      <div style="background: #ffffff; width: 100%; max-width: 440px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); border: 1px solid rgba(0, 0, 0, 0.05); padding: 36px 32px; overflow: hidden; animation: modalEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1);" (click)="$event.stopPropagation()">
+        
+        <div style="display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 24px;">
+          <div style="width: 56px; height: 56px; border-radius: 50%; background-color: rgba(54, 140, 68, 0.1); color: #368c44; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          
+          <h2 style="font-size: 1.35rem; font-weight: 800; color: #1e293b; margin: 0 0 10px 0; letter-spacing: -0.02em; text-transform: uppercase;">
+            Verificación de Seguridad
+          </h2>
+          
+          <p style="font-size: 0.9rem; font-weight: 500; color: #64748b; line-height: 1.5; margin: 0;">
+            Para continuar con el proceso de pago, por favor responde la siguiente pregunta:
+          </p>
+        </div>
+
+        <form (ngSubmit)="confirmarCaptcha()" style="display: flex; flex-direction: column; gap: 16px; width: 100%;">
+          
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 13px; font-weight: 800; color: #1e293b; text-transform: uppercase; letter-spacing: 0.05em; text-align: center;">
+              {{ captchaPregunta }}
+            </label>
+            <input 
+              type="number" 
+              [(ngModel)]="checkoutData.captcha_respuesta" 
+              name="captcha" 
+              required 
+              placeholder="Ingresa la respuesta..." 
+              style="width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; font-family: inherit; font-size: 1rem; color: #1e293b; text-align: center; outline: none; background: #f8fafc; box-sizing: border-box; transition: all 0.2s; font-weight: 700;" 
+              onfocus="this.style.borderColor='#368c44'; this.style.backgroundColor='#fff';" 
+              onblur="this.style.borderColor='#e2e8f0'; this.style.backgroundColor='#f8fafc';">
+          </div>
+
+          <div *ngIf="checkoutError() && checkoutError()?.toLowerCase()?.includes('captcha')" style="padding: 10px 14px; border: 1px solid #f87171; color: #ef4444; background: #fef2f2; font-size: 0.8rem; font-weight: 700; border-radius: 8px; display: flex; align-items: center; gap: 0.5rem; justify-content: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            {{ checkoutError() }}
+          </div>
+
+          <button 
+            type="submit" 
+            [disabled]="!checkoutData.captcha_respuesta"
+            style="width: 100%; padding: 14px; background-color: #368c44; color: #ffffff; border-radius: 12px; font-weight: 800; font-size: 0.95rem; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(54, 140, 68, 0.2); display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s ease; margin-top: 8px;"
+            [style.opacity]="!checkoutData.captcha_respuesta ? '0.5' : '1'">
+            Verificar y Continuar
+          </button>
+          
+          <button type="button" (click)="closeCaptchaModal()" style="width: 100%; padding: 10px; background: transparent; color: #64748b; border: none; font-weight: 700; font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s ease;">
+            Cancelar
+          </button>
+        </form>
+      </div>
+    </div>
   `
 })
 export class CartSummaryComponent implements OnInit {
@@ -577,8 +635,13 @@ export class CartSummaryComponent implements OnInit {
 
   showCheckoutModal = signal(false);
   showAuthModal = signal(false);
+  showCaptchaModal = signal(false);
   isSubmitting = signal(false);
   checkoutError = signal<string | null>(null);
+
+  captchaPregunta: string = 'Cargando captcha...';
+  captchaHash: string = '';
+  captchaExpira: number = 0;
 
   checkoutData = {
     direccion_envio: '',
@@ -586,7 +649,8 @@ export class CartSummaryComponent implements OnInit {
     departamento: '',
     telefono_contacto: '',
     metodo_pago: 'wompi',
-    notas: ''
+    notas: '',
+    captcha_respuesta: ''
   };
 
   increaseQuantity(id: string, current: number) {
@@ -641,7 +705,33 @@ export class CartSummaryComponent implements OnInit {
       }
     }
 
+    this.fetchCaptcha();
+    this.showCaptchaModal.set(true);
+  }
+
+  confirmarCaptcha(): void {
+    if (!this.checkoutData.captcha_respuesta) return;
+    this.showCaptchaModal.set(false);
+    this.checkoutError.set(null); // Limpiar errores anteriores
     this.showCheckoutModal.set(true);
+  }
+
+  closeCaptchaModal(): void {
+    this.showCaptchaModal.set(false);
+  }
+
+  fetchCaptcha(): void {
+    this.authService.getCaptcha().subscribe({
+      next: (res) => {
+        this.captchaPregunta = res.pregunta;
+        this.captchaHash = res.hash;
+        this.captchaExpira = res.expira;
+        this.checkoutData.captcha_respuesta = '';
+      },
+      error: (err) => {
+        console.error('Error al cargar captcha', err);
+      }
+    });
   }
 
   closeAuthModal(): void {
@@ -734,7 +824,10 @@ export class CartSummaryComponent implements OnInit {
           telefono_contacto:  this.checkoutData.telefono_contacto,
           notas:              this.checkoutData.notas || undefined,
           metodo_pago:        this.checkoutData.metodo_pago,
-          wompi_desarrollo:   !this.wompiEnabled()
+          wompi_desarrollo:   !this.wompiEnabled(),
+          captcha_respuesta:  this.checkoutData.captcha_respuesta,
+          captcha_hash:       this.captchaHash,
+          captcha_expira:     this.captchaExpira
         };
 
         this.pedidoService.crearDraft(draftPayload).subscribe({
@@ -779,20 +872,26 @@ export class CartSummaryComponent implements OnInit {
               this.cartService.clearCart();
               this.closeCheckout();
               
-              Swal.fire({
-                icon: 'success',
-                title: '¡Pedido Confirmado!',
-                text: `Tu pedido ${draft.codigo_pedido} ha sido registrado. Te contactaremos pronto para coordinar la entrega y el pago.`,
-                background: '#1e293b',
-                color: '#e2e8f0',
-                confirmButtonColor: '#368c44'
+              // Redirigir a la pantalla de pago asistido
+              this.router.navigate(['/pago-asistido'], { 
+                state: { 
+                  pedido: { codigo_pedido: draft.codigo_pedido }, 
+                  metodo: this.checkoutData.metodo_pago 
+                } 
               });
             }
           },
           error: (err) => {
             this.isSubmitting.set(false);
-            const msg = err?.error?.error || 'Error al crear el pedido. Intenta de nuevo.';
-            this.checkoutError.set(msg);
+            const errorMessage = err.error?.error || 'Ocurrió un error al procesar tu solicitud.';
+            this.checkoutError.set(errorMessage);
+            
+            // Si el error es por captcha, devolvemos al modal de captcha
+            if (errorMessage.toLowerCase().includes('captcha')) {
+               this.showCheckoutModal.set(false);
+               this.fetchCaptcha();
+               this.showCaptchaModal.set(true);
+            }
           }
         });
       },

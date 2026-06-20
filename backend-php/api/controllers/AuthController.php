@@ -9,9 +9,37 @@ require_once __DIR__ . '/../utils/Logger.php';
  */
 class AuthController
 {
+    private static function verifyRecaptcha(string $token): bool
+    {
+        if (empty($token)) return false;
+        
+        $secret = '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'; // Clave secreta de prueba
+        $url = 'https://www.google.com/recaptcha/api/siteverify';
+        
+        $data = [
+            'secret' => $secret,
+            'response' => $token
+        ];
+        
+        $options = [
+            'http' => [
+                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method'  => 'POST',
+                'content' => http_build_query($data)
+            ]
+        ];
+        
+        $context  = stream_context_create($options);
+        $result = @file_get_contents($url, false, $context);
+        if ($result === FALSE) return false;
+        
+        $response = json_decode($result, true);
+        return isset($response['success']) && $response['success'] === true;
+    }
+
     /**
      * POST /api/auth/login
-     * Body: { correo, password }
+     * Body: { correo, password, recaptcha_token }
      */
     public static function login(): void
     {
@@ -19,9 +47,14 @@ class AuthController
             $body     = ResponseHandler::getBody();
             $correo   = ResponseHandler::sanitize($body['correo'] ?? '');
             $password = $body['password'] ?? '';
+            $recaptchaToken = $body['recaptcha_token'] ?? '';
 
             if (!$correo || !$password) {
                 throw new InvalidArgumentException('Correo y contraseña son obligatorios');
+            }
+
+            if (!self::verifyRecaptcha($recaptchaToken)) {
+                throw new InvalidArgumentException('Validación reCAPTCHA fallida. Por favor, recarga la página e intenta de nuevo.');
             }
 
             $db   = Database::getConnection();
@@ -107,7 +140,7 @@ class AuthController
 
     /**
      * POST /api/auth/register
-     * Body: { nombre, apellidos, edad, direccion, ciudad, correo, password, rol (opcional, default 'cliente') }
+     * Body: { nombre, apellidos, edad, direccion, ciudad, correo, password, rol (opcional, default 'cliente'), recaptcha_token }
      */
     public static function register(): void
     {
@@ -118,9 +151,14 @@ class AuthController
             $nombre = ResponseHandler::sanitize($body['nombre'] ?? '');
             $correo = ResponseHandler::sanitize($body['correo'] ?? '');
             $password = $body['password'] ?? '';
+            $recaptchaToken = $body['recaptcha_token'] ?? '';
             
             if (!$nombre || !$correo || !$password) {
                 throw new InvalidArgumentException('Nombre, correo y contraseña son obligatorios.');
+            }
+
+            if (!self::verifyRecaptcha($recaptchaToken)) {
+                throw new InvalidArgumentException('Validación reCAPTCHA fallida. Por favor, recarga la página e intenta de nuevo.');
             }
 
             $apellidos = null;
