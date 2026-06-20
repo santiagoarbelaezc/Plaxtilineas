@@ -43,6 +43,16 @@ class PedidoController
             return;
         }
 
+        $captchaRespuesta = $input['captcha_respuesta'] ?? '';
+        $captchaHash      = $input['captcha_hash'] ?? '';
+        $captchaExpira    = (int)($input['captcha_expira'] ?? 0);
+
+        require_once __DIR__ . '/AuthController.php';
+        if (!AuthController::verifyMathCaptcha($captchaRespuesta, $captchaHash, $captchaExpira)) {
+            ResponseHandler::error('Captcha incorrecto o expirado. Intenta nuevamente.', 400);
+            return;
+        }
+
         $db = Database::getConnection();
 
         // ── Validación de pedidos pendientes simultáneos ─────────────────

@@ -9,37 +9,33 @@ require_once __DIR__ . '/../utils/Logger.php';
  */
 class AuthController
 {
-    private static function verifyRecaptcha(string $token): bool
+    public static function getCaptcha(): void
     {
-        if (empty($token)) return false;
+        $num1 = rand(1, 10);
+        $num2 = rand(1, 10);
+        $resultado = $num1 + $num2;
+        $expira = time() + 300; // 5 minutos de validez
         
-        $secret = '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'; // Clave secreta de prueba
-        $url = 'https://www.google.com/recaptcha/api/siteverify';
+        $hash = hash_hmac('sha256', $resultado . '|' . $expira, TOKEN_SECRET);
         
-        $data = [
-            'secret' => $secret,
-            'response' => $token
-        ];
+        ResponseHandler::success([
+            'pregunta' => "¿Cuánto es $num1 + $num2?",
+            'hash' => $hash,
+            'expira' => $expira
+        ]);
+    }
+
+    public static function verifyMathCaptcha(string $respuesta, string $hash, int $expira): bool
+    {
+        if (time() > $expira) return false;
         
-        $options = [
-            'http' => [
-                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-                'method'  => 'POST',
-                'content' => http_build_query($data)
-            ]
-        ];
-        
-        $context  = stream_context_create($options);
-        $result = @file_get_contents($url, false, $context);
-        if ($result === FALSE) return false;
-        
-        $response = json_decode($result, true);
-        return isset($response['success']) && $response['success'] === true;
+        $expectedHash = hash_hmac('sha256', $respuesta . '|' . $expira, TOKEN_SECRET);
+        return hash_equals($expectedHash, $hash);
     }
 
     /**
      * POST /api/auth/login
-     * Body: { correo, password, recaptcha_token }
+     * Body: { correo, password, captcha_respuesta, captcha_hash, captcha_expira }
      */
     public static function login(): void
     {
@@ -47,14 +43,17 @@ class AuthController
             $body     = ResponseHandler::getBody();
             $correo   = ResponseHandler::sanitize($body['correo'] ?? '');
             $password = $body['password'] ?? '';
-            $recaptchaToken = $body['recaptcha_token'] ?? '';
+            
+            $captchaRespuesta = $body['captcha_respuesta'] ?? '';
+            $captchaHash      = $body['captcha_hash'] ?? '';
+            $captchaExpira    = (int)($body['captcha_expira'] ?? 0);
 
             if (!$correo || !$password) {
                 throw new InvalidArgumentException('Correo y contraseña son obligatorios');
             }
 
-            if (!self::verifyRecaptcha($recaptchaToken)) {
-                throw new InvalidArgumentException('Validación reCAPTCHA fallida. Por favor, recarga la página e intenta de nuevo.');
+            if (!self::verifyMathCaptcha($captchaRespuesta, $captchaHash, $captchaExpira)) {
+                throw new InvalidArgumentException('Captcha incorrecto o expirado. Intenta nuevamente.');
             }
 
             $db   = Database::getConnection();
@@ -140,7 +139,7 @@ class AuthController
 
     /**
      * POST /api/auth/register
-     * Body: { nombre, apellidos, edad, direccion, ciudad, correo, password, rol (opcional, default 'cliente'), recaptcha_token }
+     * Body: { nombre, apellidos, edad, direccion, ciudad, correo, password, rol (opcional, default 'cliente'), captcha_respuesta, captcha_hash, captcha_expira }
      */
     public static function register(): void
     {
@@ -151,14 +150,17 @@ class AuthController
             $nombre = ResponseHandler::sanitize($body['nombre'] ?? '');
             $correo = ResponseHandler::sanitize($body['correo'] ?? '');
             $password = $body['password'] ?? '';
-            $recaptchaToken = $body['recaptcha_token'] ?? '';
+            
+            $captchaRespuesta = $body['captcha_respuesta'] ?? '';
+            $captchaHash      = $body['captcha_hash'] ?? '';
+            $captchaExpira    = (int)($body['captcha_expira'] ?? 0);
             
             if (!$nombre || !$correo || !$password) {
                 throw new InvalidArgumentException('Nombre, correo y contraseña son obligatorios.');
             }
 
-            if (!self::verifyRecaptcha($recaptchaToken)) {
-                throw new InvalidArgumentException('Validación reCAPTCHA fallida. Por favor, recarga la página e intenta de nuevo.');
+            if (!self::verifyMathCaptcha($captchaRespuesta, $captchaHash, $captchaExpira)) {
+                throw new InvalidArgumentException('Captcha incorrecto o expirado. Intenta nuevamente.');
             }
 
             $apellidos = null;

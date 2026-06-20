@@ -141,6 +141,10 @@ try {
     // AUTH  /api/auth/*
     // ═════════════════════════════════════════════════════════════════════════════
 
+    if ($uri === '/auth/captcha' && $method === 'GET') {
+        AuthController::getCaptcha();
+    }
+
     if ($uri === '/auth/login' && $method === 'POST') {
         AuthController::login();
     }
