@@ -2,76 +2,81 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Plaxtilineas - Plásticos, Peletería y Empaques en Armenia, Quindío</title>
+  <title>Plaxtilineas | Plásticos, Espumas y Empaques en Armenia, Quindío</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
   
+  <!-- Preconnect y Dns-prefetch (Mejora Core Web Vitals) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link rel="dns-prefetch" href="https://res.cloudinary.com">
+  
   <!-- Meta Tags Básicos para SEO -->
-  <meta name="description" content="Plaxtilineas - Distribuidor líder de plásticos, espumas, peletería, empaques y materiales para construcción en Armenia y Quindío. Productos industriales y comerciales de calidad.">
-  <meta name="keywords" content="plaxtilineas, peletería armenia, plásticos armenia, espumas armenia, empaques armenia, mallas armenia, plásticos quindío, material construcción armenia, peletería quindío, distribuidor plásticos armenia, tapicería, cartón corrugado">
-  <meta name="author" content="Plaxtilineas Armstrong">
+  <meta name="description" content="Plaxtilineas: Tu principal proveedor de plásticos en Armenia y venta de plásticos en el Quindío. Comercializamos plásticos industriales, espumas, peletería y empaques en Armenia, Quindío. Distribuidora líder local.">
+  <meta name="keywords" content="plásticos armenia, plasticos armenia, plásticos quindío, plasticos quindio, distribuidora de plásticos armenia, venta de plásticos quindío, fabrica de plasticos armenia, plásticos industriales armenia, plaxtilineas, espumas armenia, empaques quindío">
+  <meta name="author" content="Plaxtilineas">
   <meta name="theme-color" content="#368C44">
   <meta name="language" content="es">
-  <meta name="revisit-after" content="7 days">
+  <meta name="revisit-after" content="3 days">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   
-  <!-- Geolocalización -->
+  <!-- Local SEO (Mejora de Geolocalización) -->
   <meta name="geo.placename" content="Armenia, Quindío, Colombia">
-  <meta name="geo.region" content="CO-QD">
+  <meta name="geo.region" content="CO-QUA">
   <meta name="geo.position" content="4.5404;-75.6898">
+  <meta name="ICBM" content="4.5404, -75.6898">
   
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="business.business">
+  <!-- Open Graph (Facebook / LinkedIn) -->
+  <meta property="og:type" content="website">
   <meta property="og:locale" content="es_CO">
-  <meta property="og:title" content="Plaxtilineas - Plásticos y Peletería en Armenia">
-  <meta property="og:description" content="Tu proveedor confiable de plásticos, espumas, peletería, empaques y materiales para construcción en Armenia, Quindío.">
+  <meta property="og:title" content="Plaxtilineas - Materiales y Plásticos en Armenia">
+  <meta property="og:description" content="Tu proveedor confiable de plásticos, espumas, peletería y empaques en Quindío. Productos industriales de alta calidad.">
   <meta property="og:image" content="https://plaxtilineas.com/assets/og-image.jpg">
   <meta property="og:image:secure_url" content="https://plaxtilineas.com/assets/og-image.jpg">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:url" content="https://plaxtilineas.com">
+  <meta property="og:image:alt" content="Plaxtilineas - Distribuidor en Armenia">
+  <meta property="og:url" content="https://plaxtilineas.com/">
   <meta property="og:site_name" content="Plaxtilineas">
   
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Plaxtilineas - Plásticos y Peletería en Armenia">
+  <meta name="twitter:title" content="Plaxtilineas | Plásticos y Espumas en Armenia">
   <meta name="twitter:description" content="Distribuidor oficial de plásticos, espumas, peletería y empaques en Armenia, Quindío.">
   <meta name="twitter:image" content="https://plaxtilineas.com/assets/twitter-image.jpg">
+  <meta name="twitter:image:alt" content="Logo de Plaxtilineas">
   <meta name="twitter:site" content="@plaxtilineas">
   
-  <!-- Google Search Console y Verificación -->
-  <meta name="google-site-verification" content="">
-  <link rel="canonical" href="https://plaxtilineas.com">
+  <link rel="canonical" href="https://plaxtilineas.com/">
   
-  <!-- FUENTE MONTSERRAT -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Carga asíncrona de fuentes -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap"></noscript>
   
-  <!-- FAVICON con cache busting -->
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!-- Favicon y Manifest -->
   <link rel="icon" type="image/x-icon" href="assets/favicon.ico?v=1.0">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  
-  <!-- Manifest para PWA -->
   <link rel="manifest" href="manifest.webmanifest">
   
-  <!-- JSON-LD Structured Data (Schema.org) -->
+  <!-- 1. JSON-LD: Negocio Local (Google Search & Maps Sync) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    "@id": "https://plaxtilineas.com",
-    "name": "Plaxtilineas Armstrong",
+    "@id": "https://plaxtilineas.com/#localbusiness",
+    "name": "Plaxtilineas",
     "image": "https://plaxtilineas.com/assets/og-image.jpg",
-    "description": "Distribuidor de plásticos, espumas, peletería, empaques y materiales para construcción",
+    "description": "El principal proveedor y distribuidor de plásticos en Armenia y el departamento del Quindío. Especialistas en venta de plásticos industriales, plásticos para comercio, espumas y empaques en Armenia Quindío y todo el Eje Cafetero.",
     "url": "https://plaxtilineas.com",
-    "telephone": "+57-6-XXXXXXXXX",
-    "email": "info@plaxtilineas.com",
-    "priceRange": "COP",
+    "telephone": "+57-606-7390968",
+    "priceRange": "$$",
     "areaServed": {
-      "@type": "AdministrativeArea",
-      "name": "Armenia, Quindío, Colombia"
+      "@type": "State",
+      "name": "Quindío"
     },
     "geo": {
       "@type": "GeoCoordinates",
@@ -80,7 +85,7 @@
     },
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Armenia",
+      "streetAddress": "Cra. 19 # 19 - 35",
       "addressLocality": "Armenia",
       "addressRegion": "Quindío",
       "postalCode": "630001",
@@ -88,13 +93,12 @@
     },
     "sameAs": [
       "https://www.facebook.com/plaxtilineas",
-      "https://www.instagram.com/plaxtilineas",
-      "https://www.whatsapp.com/message/plaxtilineas"
+      "https://www.instagram.com/plaxtilineas"
     ]
   }
   </script>
   
-  <!-- JSON-LD Breadcrumb -->
+  <!-- 2. JSON-LD: Mapeo de Rutas (Sitelinks Google) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -104,7 +108,7 @@
         "@type": "ListItem",
         "position": 1,
         "name": "Inicio",
-        "item": "https://plaxtilineas.com"
+        "item": "https://plaxtilineas.com/"
       },
       {
         "@type": "ListItem",
@@ -115,9 +119,27 @@
     ]
   }
   </script>
-
-  <!-- Tipos MIME para formatos modernos -->
-  <link rel="preload" href="assets/favicon.ico" as="image">
+  
+  <!-- 3. JSON-LD: Identidad Corporativa (Knowledge Graph) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://plaxtilineas.com/#organization",
+    "name": "Plaxtilineas",
+    "url": "https://plaxtilineas.com",
+    "logo": "https://plaxtilineas.com/assets/logo.png",
+    "description": "Mayoristas y distribuidores orientados a la venta de plásticos en Armenia, plásticos industriales Quindío, empaques, peletería y espumas.",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer service",
+      "telephone": "+57-606-7390968",
+      "areaServed": "CO",
+      "availableLanguage": "es"
+    }
+  }
+  </script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <noscript>
@@ -130,42 +152,4 @@
   
   <app-root></app-root>
 </body>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
-    </script>
-  </body>
 </html>

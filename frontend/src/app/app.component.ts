@@ -12,6 +12,7 @@ import { LoadingScreenComponent } from './components/loading-screen/loading-scre
 import { AuthService } from './services/auth.service';
 import { ThemeService } from './services/theme.service';
 import { ToastNotificationComponent } from './components/toast-notification/toast-notification.component';
+import { CookieConsentComponent } from './components/cookies/cookies';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +23,8 @@ import { ToastNotificationComponent } from './components/toast-notification/toas
     CartDrawerComponent,
     MobileCartComponent,
     LoadingScreenComponent,
-    ToastNotificationComponent
+    ToastNotificationComponent,
+    CookieConsentComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
@@ -51,12 +53,12 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     console.log('🚀 AppComponent inicializado');
     this.seoService.setDefaultSeo();
-    
-    // Simular carga inicial
+
+    // Ocultar pantalla de carga inicial
     setTimeout(() => {
       this.isLoading = false;
       console.log('✨ Carga completada');
-    }, 1500);
+    }, 300);
     
     this.setupRouteChangeScroll();
   }

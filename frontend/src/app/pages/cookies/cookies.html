@@ -6,6 +6,16 @@
     <h1 class="title">Política de <span>Cookies</span></h1>
     <p class="description">Descubre cómo utilizamos las cookies para mejorar tu experiencia de navegación en PLAXTILINEAS.</p>
     
+    <!-- Botón de apertura directa del centro de privacidad -->
+    <div style="display: flex; justify-content: center; gap: 12px; margin: 24px 0;">
+      <button (click)="openSettings()" style="background: #368c44; color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 700; cursor: pointer; font-family: inherit; box-shadow: 0 4px 14px rgba(54,140,68,0.25);">
+        ⚙️ Configurar Preferencias de Cookies
+      </button>
+      <button (click)="resetConsent()" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 12px 20px; border-radius: 12px; font-weight: 600; cursor: pointer; font-family: inherit;">
+        🔄 Mostrar aviso flotante
+      </button>
+    </div>
+
     <div class="layout-grid">
       <div class="valor-card">
         <div class="valor-icono-container">1</div>

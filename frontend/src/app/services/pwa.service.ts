@@ -20,8 +20,22 @@ export class PwaService {
     }
   }
 
+  private isMobileDevice(): boolean {
+    if (typeof window === 'undefined') return false;
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/i;
+    const isMobileUA = mobileRegex.test(userAgent);
+    const isSmallScreen = window.innerWidth <= 768;
+    return isMobileUA || isSmallScreen;
+  }
+
   private initPwaLogic() {
-    // Detect iOS and Safari (since Chrome on iOS is basically Safari but users still need to add via share button)
+    // Si no es un dispositivo móvil, no activamos los avisos de instalación en pantalla
+    if (!this.isMobileDevice()) {
+      return;
+    }
+
+    // Detect iOS and Safari
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isIos = /iphone|ipad|ipod/.test(userAgent);
     
@@ -33,17 +47,20 @@ export class PwaService {
       this.isIosSubject.next(true);
     }
 
-    // Android / Chrome: Capture the install prompt event
+    // Android / Mobile Chrome: Capture the install prompt event
     window.addEventListener('beforeinstallprompt', (event) => {
-      // Prevent Chrome from automatically showing the prompt
+      // Prevent browser default prompt
       event.preventDefault();
-      // Save the event so it can be triggered later.
+      // Save event
       this.promptEvent = event;
-      // Notify the app that installation is possible
-      this.canInstallSubject.next(true);
+      
+      // Solo notificar si sigue siendo un dispositivo móvil
+      if (this.isMobileDevice()) {
+        this.canInstallSubject.next(true);
+      }
     });
     
-    window.addEventListener('appinstalled', (event) => {
+    window.addEventListener('appinstalled', () => {
       console.log('Aplicación instalada exitosamente');
       this.canInstallSubject.next(false);
       this.isIosSubject.next(false);
@@ -57,10 +74,9 @@ export class PwaService {
     }
     // Show the native prompt
     this.promptEvent.prompt();
-    // Wait for the user to respond to the prompt
+    // Wait for the user to respond
     const { outcome } = await this.promptEvent.userChoice;
     console.log(`El usuario ha decidido: ${outcome}`);
-    // We can't use the prompt again, clear it up
     this.promptEvent = null;
     this.canInstallSubject.next(false);
     

@@ -5,6 +5,7 @@
 <app-cart-drawer></app-cart-drawer>
 <app-mobile-cart></app-mobile-cart>
 <app-toast-notification></app-toast-notification>
+<app-cookie-consent></app-cookie-consent>
 
 <!-- Pantalla de Cierre de Sesión Completa -->
 <div class="logout-fullscreen-overlay" *ngIf="authService.isLoggingOut | async"
@@ -41,8 +42,8 @@
 </div>
 
 
-<!-- Install Prompt for Android/PC -->
-<div *ngIf="canInstall$ | async" class="pwa-install-prompt fixed bottom-0 left-0 right-0 z-[100] bg-blue-600 text-white p-4 shadow-lg flex justify-between items-center transform transition-transform duration-300 sm:bottom-4 sm:left-auto sm:right-4 sm:rounded-xl sm:w-80">
+<!-- Install Prompt for Android/Mobile -->
+<div *ngIf="canInstall$ | async" class="pwa-install-prompt md:hidden fixed bottom-0 left-0 right-0 z-[100] bg-blue-600 text-white p-4 shadow-lg flex justify-between items-center transform transition-transform duration-300 sm:bottom-4 sm:left-auto sm:right-4 sm:rounded-xl sm:w-80">
   <div>
     <h3 class="font-bold text-sm">Instala nuestra App</h3>
     <p class="text-xs opacity-90">Acceso rápido a nuestros productos.</p>
@@ -53,7 +54,7 @@
 </div>
 
 <!-- iOS Install Prompt Overlay -->
-<div *ngIf="isIos$ | async" class="ios-install-overlay">
+<div *ngIf="isIos$ | async" class="ios-install-overlay md:hidden">
   <div class="ios-install-card">
     <button class="ios-close-btn" (click)="dismissIosPrompt()">&times;</button>
     
