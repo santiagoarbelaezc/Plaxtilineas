@@ -94,11 +94,23 @@
         </div>
       </div>
 
-      <!-- CAPTCHA Matemático -->
-      <div class="form-group" *ngIf="captchaPregunta">
-        <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Por seguridad, resuelve: <strong>{{ captchaPregunta }}</strong></label>
-        <input formControlName="captcha_respuesta" type="number" placeholder="Respuesta" class="form-input"
-               [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+      <!-- CAPTCHA Vectorial SVG -->
+      <div class="form-group">
+        <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Código de Seguridad</label>
+        <div class="flex items-center gap-3 mb-2">
+          <!-- Contenedor del Captcha SVG -->
+          <div class="rounded-xl overflow-hidden border shadow-sm flex items-center justify-center bg-[#0a0a0a]"
+               [ngClass]="(themeService.theme$ | async) === 'dark' ? 'border-white/20' : 'border-gray-300'"
+               [innerHTML]="captchaSvg" style="width: 150px; height: 50px;"></div>
+          <!-- Botón para recargar -->
+          <button type="button" (click)="fetchCaptcha()" title="Recargar código"
+                  class="h-[50px] w-[50px] rounded-xl border flex items-center justify-center text-lg active:scale-95 transition-all cursor-pointer"
+                  [ngClass]="(themeService.theme$ | async) === 'dark' ? 'bg-[#1e293b] text-white border-white/10 hover:bg-[#334155]' : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'">
+            🔄
+          </button>
+        </div>
+        <input formControlName="captcha_code" type="text" placeholder="Ingresa el código" class="form-input tracking-wider font-semibold uppercase"
+               [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'" maxlength="6">
       </div>
 
       <button type="submit" [disabled]="isSubmitting || loginForm.invalid" class="btn-primary">
@@ -216,11 +228,23 @@
           </small>
         </div>
 
-        <!-- CAPTCHA Matemático -->
-        <div class="form-group" style="grid-column: 1 / -1;" *ngIf="captchaPregunta">
-          <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Por seguridad, resuelve: <strong>{{ captchaPregunta }}</strong></label>
-          <input formControlName="captcha_respuesta" type="number" placeholder="Respuesta" class="form-input"
-                 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+        <!-- CAPTCHA Vectorial SVG -->
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#334155]'">Código de Seguridad</label>
+          <div class="flex items-center gap-3 mb-2">
+            <!-- Contenedor del Captcha SVG -->
+            <div class="rounded-xl overflow-hidden border shadow-sm flex items-center justify-center bg-[#0a0a0a]"
+                 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'border-white/20' : 'border-gray-300'"
+                 [innerHTML]="captchaSvg" style="width: 150px; height: 50px;"></div>
+            <!-- Botón para recargar -->
+            <button type="button" (click)="fetchCaptcha()" title="Recargar código"
+                    class="h-[50px] w-[50px] rounded-xl border flex items-center justify-center text-lg active:scale-95 transition-all cursor-pointer"
+                    [ngClass]="(themeService.theme$ | async) === 'dark' ? 'bg-[#1e293b] text-white border-white/10 hover:bg-[#334155]' : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'">
+              🔄
+            </button>
+          </div>
+          <input formControlName="captcha_code" type="text" placeholder="Ingresa el código" class="form-input tracking-wider font-semibold uppercase"
+                 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'" maxlength="6">
         </div>
 
         <!-- Indicaciones de Contraseña (Ancho Completo abajo de los campos) -->

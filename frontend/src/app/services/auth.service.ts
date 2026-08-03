@@ -38,17 +38,16 @@ export class AuthService {
     }
   }
 
-  getCaptcha(): Observable<{ pregunta: string, hash: string, expira: number }> {
-    return this.http.get<{ pregunta: string, hash: string, expira: number }>(`${environment.apiUrl}/auth/captcha`);
+  getCaptcha(): Observable<{ id: string; svg: string }> {
+    return this.http.get<{ id: string; svg: string }>(`${environment.apiUrl}/auth/captcha`);
   }
 
-  login(correo: string, password: string, captchaData?: { respuesta: string, hash: string, expira: number }): Observable<any> {
+  login(correo: string, password: string, captchaData?: { captchaId: string; captchaCode: string }): Observable<any> {
     const payload = { 
       correo, 
       password, 
-      captcha_respuesta: captchaData?.respuesta,
-      captcha_hash: captchaData?.hash,
-      captcha_expira: captchaData?.expira
+      captchaId: captchaData?.captchaId,
+      captchaCode: captchaData?.captchaCode
     };
     return this.http.post<{ token: string, usuario: any }>(`${environment.apiUrl}/auth/login`, payload).pipe(
       tap(res => {
@@ -62,12 +61,11 @@ export class AuthService {
     );
   }
 
-  register(userData: any, captchaData?: { respuesta: string, hash: string, expira: number }): Observable<any> {
+  register(userData: any, captchaData?: { captchaId: string; captchaCode: string }): Observable<any> {
     const payload = { 
       ...userData, 
-      captcha_respuesta: captchaData?.respuesta,
-      captcha_hash: captchaData?.hash,
-      captcha_expira: captchaData?.expira 
+      captchaId: captchaData?.captchaId,
+      captchaCode: captchaData?.captchaCode 
     };
     return this.http.post<{ token?: string, usuario?: any, pendiente_verificacion?: boolean }>(`${environment.apiUrl}/auth/register`, payload).pipe(
       tap(res => {

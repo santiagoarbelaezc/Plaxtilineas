@@ -2,6 +2,7 @@ import { Component, inject, computed, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CartService } from '../../services/cart.service';
 import { PedidoService } from '../../services/pedido.service';
 import { AuthService } from '../../services/auth.service';
@@ -560,17 +561,26 @@ import Swal from 'sweetalert2';
 
         <form (ngSubmit)="confirmarCaptcha()" style="display: flex; flex-direction: column; gap: 16px; width: 100%;">
           
-          <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
             <label style="font-size: 13px; font-weight: 800; color: #1e293b; text-transform: uppercase; letter-spacing: 0.05em; text-align: center;">
-              {{ captchaPregunta }}
+              Código de Seguridad
             </label>
+
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+              <div style="border-radius: 12px; overflow: hidden; border: 1px solid #cbd5e1; background: #0a0a0a; display: flex; align-items: center; justify-content: center; width: 150px; height: 50px;" [innerHTML]="captchaSvg"></div>
+              <button type="button" (click)="fetchCaptcha()" title="Recargar código" style="height: 50px; width: 50px; border-radius: 12px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #334155; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                🔄
+              </button>
+            </div>
+
             <input 
-              type="number" 
-              [(ngModel)]="checkoutData.captcha_respuesta" 
+              type="text" 
+              [(ngModel)]="checkoutData.captcha_code" 
               name="captcha" 
               required 
-              placeholder="Ingresa la respuesta..." 
-              style="width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; font-family: inherit; font-size: 1rem; color: #1e293b; text-align: center; outline: none; background: #f8fafc; box-sizing: border-box; transition: all 0.2s; font-weight: 700;" 
+              maxlength="6"
+              placeholder="Ingresa el código..." 
+              style="width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; font-family: inherit; font-size: 1rem; color: #1e293b; text-align: center; outline: none; background: #f8fafc; box-sizing: border-box; transition: all 0.2s; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;" 
               onfocus="this.style.borderColor='#368c44'; this.style.backgroundColor='#fff';" 
               onblur="this.style.borderColor='#e2e8f0'; this.style.backgroundColor='#f8fafc';">
           </div>
@@ -582,9 +592,9 @@ import Swal from 'sweetalert2';
 
           <button 
             type="submit" 
-            [disabled]="!checkoutData.captcha_respuesta"
+            [disabled]="!checkoutData.captcha_code"
             style="width: 100%; padding: 14px; background-color: #368c44; color: #ffffff; border-radius: 12px; font-weight: 800; font-size: 0.95rem; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(54, 140, 68, 0.2); display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s ease; margin-top: 8px;"
-            [style.opacity]="!checkoutData.captcha_respuesta ? '0.5' : '1'">
+            [style.opacity]="!checkoutData.captcha_code ? '0.5' : '1'">
             Verificar y Continuar
           </button>
           
@@ -639,9 +649,10 @@ export class CartSummaryComponent implements OnInit {
   isSubmitting = signal(false);
   checkoutError = signal<string | null>(null);
 
-  captchaPregunta: string = 'Cargando captcha...';
-  captchaHash: string = '';
-  captchaExpira: number = 0;
+  private sanitizer = inject(DomSanitizer);
+
+  captchaId: string = '';
+  captchaSvg: SafeHtml = '';
 
   checkoutData = {
     direccion_envio: '',
@@ -650,7 +661,7 @@ export class CartSummaryComponent implements OnInit {
     telefono_contacto: '',
     metodo_pago: 'wompi',
     notas: '',
-    captcha_respuesta: ''
+    captcha_code: ''
   };
 
   increaseQuantity(id: string, current: number) {
@@ -710,7 +721,7 @@ export class CartSummaryComponent implements OnInit {
   }
 
   confirmarCaptcha(): void {
-    if (!this.checkoutData.captcha_respuesta) return;
+    if (!this.checkoutData.captcha_code) return;
     this.showCaptchaModal.set(false);
     this.checkoutError.set(null); // Limpiar errores anteriores
     this.showCheckoutModal.set(true);
@@ -723,10 +734,9 @@ export class CartSummaryComponent implements OnInit {
   fetchCaptcha(): void {
     this.authService.getCaptcha().subscribe({
       next: (res) => {
-        this.captchaPregunta = res.pregunta;
-        this.captchaHash = res.hash;
-        this.captchaExpira = res.expira;
-        this.checkoutData.captcha_respuesta = '';
+        this.captchaId = res.id;
+        this.captchaSvg = this.sanitizer.bypassSecurityTrustHtml(res.svg);
+        this.checkoutData.captcha_code = '';
       },
       error: (err) => {
         console.error('Error al cargar captcha', err);
@@ -825,9 +835,8 @@ export class CartSummaryComponent implements OnInit {
           notas:              this.checkoutData.notas || undefined,
           metodo_pago:        this.checkoutData.metodo_pago,
           wompi_desarrollo:   !this.wompiEnabled(),
-          captcha_respuesta:  this.checkoutData.captcha_respuesta,
-          captcha_hash:       this.captchaHash,
-          captcha_expira:     this.captchaExpira
+          captchaId:          this.captchaId,
+          captchaCode:        this.checkoutData.captcha_code
         };
 
         this.pedidoService.crearDraft(draftPayload).subscribe({

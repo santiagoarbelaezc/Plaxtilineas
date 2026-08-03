@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { environment } from '../../../enviroments/environment';
 import { AuthService } from '../../services/auth.service';
 import { ThemeService, Theme } from '../../services/theme.service';
@@ -98,12 +99,13 @@ export class LoginFormComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private sanitizer = inject(DomSanitizer);
   public themeService = inject(ThemeService);
 
   loginForm: FormGroup = this.fb.group({
     correo: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    captcha_respuesta: ['', [Validators.required]]
+    captcha_code: ['', [Validators.required]]
   });
 
   private passwordMatchValidator = (g: FormGroup) => {
@@ -161,7 +163,7 @@ export class LoginFormComponent implements OnInit {
     direccion: ['', [Validators.required, Validators.minLength(5)]],
     departamento: ['', [Validators.required]],
     ciudad: ['', [Validators.required]],
-    captcha_respuesta: ['', [Validators.required]]
+    captcha_code: ['', [Validators.required]]
   }, { validators: this.passwordMatchValidator });
 
   departamentos: { [key: string]: string[] } = {
@@ -219,18 +221,16 @@ export class LoginFormComponent implements OnInit {
 
   requireVerification = false;
 
-  captchaPregunta: string = 'Cargando captcha...';
-  captchaHash: string = '';
-  captchaExpira: number = 0;
+  captchaId: string = '';
+  captchaSvg: SafeHtml = '';
 
   fetchCaptcha(): void {
     this.authService.getCaptcha().subscribe({
       next: (res) => {
-        this.captchaPregunta = res.pregunta;
-        this.captchaHash = res.hash;
-        this.captchaExpira = res.expira;
-        this.loginForm.get('captcha_respuesta')?.setValue('');
-        this.registerForm.get('captcha_respuesta')?.setValue('');
+        this.captchaId = res.id;
+        this.captchaSvg = this.sanitizer.bypassSecurityTrustHtml(res.svg);
+        this.loginForm.get('captcha_code')?.setValue('');
+        this.registerForm.get('captcha_code')?.setValue('');
       },
       error: (err) => {
         console.error('Error al cargar captcha', err);
@@ -346,12 +346,11 @@ export class LoginFormComponent implements OnInit {
 
       this.isSubmitting = true;
       this.sessionExpired = false;
-      const { correo, password, captcha_respuesta } = this.loginForm.value;
+      const { correo, password, captcha_code } = this.loginForm.value;
 
       const captchaData = {
-        respuesta: captcha_respuesta,
-        hash: this.captchaHash,
-        expira: this.captchaExpira
+        captchaId: this.captchaId,
+        captchaCode: captcha_code
       };
 
       this.authService.login(correo, password, captchaData).subscribe({
@@ -367,8 +366,8 @@ export class LoginFormComponent implements OnInit {
             }
           }, delay);
         },
-        error: () => {
-          this.errorMsg = 'Correo, contraseña o captcha incorrectos. Por favor, verifica e inténtalo de nuevo.';
+        error: (err) => {
+          this.errorMsg = err.error?.error || 'Correo, contraseña o código de seguridad incorrectos. Por favor, verifica e inténtalo de nuevo.';
           this.showErrorModal = true;
           this.isSubmitting = false;
           this.fetchCaptcha();
@@ -389,14 +388,13 @@ export class LoginFormComponent implements OnInit {
   async onConfirmRegister(): Promise<void> {
     this.showConfirmModal = false;
     this.isSubmitting = true;
-    const { departamento, ciudad, confirmPassword, captcha_respuesta, ...rest } = this.registerForm.value;
+    const { departamento, ciudad, confirmPassword, captcha_code, ...rest } = this.registerForm.value;
     const fullCiudad = `${ciudad}, ${departamento}`;
     const userData = { ...rest, ciudad: fullCiudad, rol: 'cliente' };
 
     const captchaData = {
-      respuesta: captcha_respuesta,
-      hash: this.captchaHash,
-      expira: this.captchaExpira
+      captchaId: this.captchaId,
+      captchaCode: captcha_code
     };
 
     this.authService.register(userData, captchaData).subscribe({
@@ -419,7 +417,7 @@ export class LoginFormComponent implements OnInit {
       },
       error: (err) => {
         this.isSubmitting = false;
-        this.errorMsg = err.error?.error || 'Error al registrar. Intenta con otro correo o verifica el captcha.';
+        this.errorMsg = err.error?.error || 'Error al registrar. Intenta con otro correo o verifica el código de seguridad.';
         this.showErrorModal = true;
         this.fetchCaptcha();
       }
