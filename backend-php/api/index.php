@@ -157,6 +157,14 @@ try {
         AuthController::googleLogin();
     }
 
+    if ($uri === '/auth/recuperar-password' && $method === 'POST') {
+        AuthController::recuperarPassword();
+    }
+
+    if ($uri === '/auth/cambiar-password-temporal' && $method === 'POST') {
+        AuthController::cambiarPasswordTemporal();
+    }
+
     if ($uri === '/auth/verificar-email' && $method === 'GET') {
         AuthController::verificarEmail();
     }

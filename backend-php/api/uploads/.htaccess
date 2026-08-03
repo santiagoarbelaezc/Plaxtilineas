@@ -1,0 +1,14 @@
+# ─────────────────────────────────────────────────────────────
+# PROTECCIÓN ANTI-WEBSHELL Y DESACTIVACIÓN DE PHP EN UPLOADS
+# ─────────────────────────────────────────────────────────────
+<FilesMatch "\.ph(p\d?|tml|ar)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+AllowOverride None

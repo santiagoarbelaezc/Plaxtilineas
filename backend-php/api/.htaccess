@@ -1,28 +1,52 @@
-Options -Indexes
-
-# ─── Bloquear acceso directo al .env ─────────────────────────────────────────
-<FilesMatch "^\.env(\..*)?$">
-  Order Allow,Deny
-  Deny from all
+# ─────────────────────────────────────────────────────────────
+# 1. BLOQUEO DE ARCHIVOS SENSIBLES (.env, .git, .log, .sql)
+# ─────────────────────────────────────────────────────────────
+<FilesMatch "^(\.env.*|\.git.*|\.htaccess|\.htpasswd|composer\.(json|lock)|README\.md|.*\.log|.*\.sql|.*\.sql\.gz|.*\.dump)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
 </FilesMatch>
 
-# CORS is handled entirely by PHP (ResponseHandler.php) to avoid conflicts
+# ─────────────────────────────────────────────────────────────
+# 2. REGLAS DE REWRITE Y BLOQUEO DE CARPETAS INTERNAS
+# ─────────────────────────────────────────────────────────────
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /api/
+    # Bloquear acceso directo a carpetas internas de PHP y base de datos
+    RewriteRule ^(config|controllers|database|middleware|models|routes|utils|logs)(/|$) - [F,L]
+    # Bloquear ejecución de PHP/scripts en uploads
+    RewriteRule ^uploads/.*\.(php\d?|phtml|phar|pl|py|cgi|sh|bash)$ - [F,L]
+    # Redirección a index.php (Front Controller)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
 
-# ─── Redirigir todas las peticiones al router index.php ──────────────────────
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php [QSA,L]
+# ─────────────────────────────────────────────────────────────
+# 3. SEGURIDAD DE DIRECTORIOS Y CABECERAS HTTP
+# ─────────────────────────────────────────────────────────────
+Options -Indexes -MultiViews
 
-# ─── Bloquear acceso directo a archivos PHP (excepto index.php) ──────────────
-<FilesMatch "\.php$">
-  <If "%{REQUEST_URI} !~ m|/api/index\.php$|">
-    Order Deny,Allow
-    Deny from all
-  </If>
-</FilesMatch>
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "DENY"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always unset X-Powered-By
+    Header always unset Server
+</IfModule>
 
-# ─── Headers de seguridad ─────────────────────────────────────────────────────
-Header always set X-Content-Type-Options "nosniff"
-Header always set X-Frame-Options "DENY"
-Header always set X-XSS-Protection "1; mode=block"
-
+<LimitExcept GET POST PUT DELETE OPTIONS>
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</LimitExcept>

@@ -9,33 +9,166 @@ require_once __DIR__ . '/../utils/Logger.php';
  */
 class AuthController
 {
-    public static function getCaptcha(): void
+    /**
+     * Garantiza que la tabla de captchas exista en la base de datos
+     */
+    private static function ensureCaptchasTable(): void
     {
-        $num1 = rand(1, 10);
-        $num2 = rand(1, 10);
-        $resultado = $num1 + $num2;
-        $expira = time() + 300; // 5 minutos de validez
-        
-        $hash = hash_hmac('sha256', $resultado . '|' . $expira, TOKEN_SECRET);
-        
-        ResponseHandler::success([
-            'pregunta' => "¿Cuánto es $num1 + $num2?",
-            'hash' => $hash,
-            'expira' => $expira
-        ]);
+        try {
+            $db = Database::getConnection();
+            $db->exec("
+                CREATE TABLE IF NOT EXISTS `captchas` (
+                  `id` VARCHAR(64) PRIMARY KEY,
+                  `codigo` VARCHAR(255) NOT NULL,
+                  `expires_at` DATETIME NOT NULL
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            ");
+        } catch (Throwable $e) {
+            Logger::error('AuthController::ensureCaptchasTable', ['exception' => $e->getMessage()]);
+        }
     }
 
-    public static function verifyMathCaptcha(string $respuesta, string $hash, int $expira): bool
+    /**
+     * Genera la imagen SVG vectorial con patrón de malla y texto distorsionado de alta seguridad
+     */
+    private static function generateCaptcha(): array
     {
-        if (time() > $expira) return false;
+        $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        $text = '';
+        $len = strlen($characters);
+        for ($i = 0; $i < 5; $i++) {
+            $text .= $characters[random_int(0, $len - 1)];
+        }
+        $width = 150;
+        $height = 48;
         
-        $expectedHash = hash_hmac('sha256', $respuesta . '|' . $expira, TOKEN_SECRET);
-        return hash_equals($expectedHash, $hash);
+        $svg  = '<svg xmlns="http://www.w3.org/2000/svg" width="' . $width . '" height="' . $height . '" viewBox="0 0 ' . $width . ' ' . $height . '" style="border-radius: 50px; font-family: \'Montserrat\', sans-serif;">';
+        $svg .= '<defs>';
+        $svg .= '<linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">';
+        $svg .= '<stop offset="0%" stop-color="#0b1329"/>';
+        $svg .= '<stop offset="100%" stop-color="#040914"/>';
+        $svg .= '</linearGradient>';
+        $svg .= '<pattern id="meshGrid" width="10" height="10" patternUnits="userSpaceOnUse">';
+        $svg .= '<path d="M 10 0 L 0 0 0 10" fill="none" stroke="#1e293b" stroke-width="0.75" opacity="0.6"/>';
+        $svg .= '</pattern>';
+        $svg .= '</defs>';
+        
+        // Fondo degradado nocturno
+        $svg .= '<rect width="100%" height="100%" fill="url(#bgGrad)" rx="12" />';
+        // Malla temática de fondo
+        $svg .= '<rect width="100%" height="100%" fill="url(#meshGrid)" rx="12" />';
+        
+        // Líneas de ruido vectorial de acento
+        $colors = ['#368c44', '#38bdf8', '#4ade80', '#fbbf24'];
+        for ($i = 0; $i < 5; $i++) {
+            $x1 = random_int(0, $width);
+            $y1 = random_int(0, $height);
+            $x2 = random_int(0, $width);
+            $y2 = random_int(0, $height);
+            $stroke = $colors[$i % count($colors)];
+            $svg .= '<line x1="' . $x1 . '" y1="' . $y1 . '" x2="' . $x2 . '" y2="' . $y2 . '" stroke="' . $stroke . '" stroke-width="1.2" opacity="0.35"/>';
+        }
+        
+        // Caracteres distorsionados y estilizados
+        $textColors = ['#ffffff', '#4ade80', '#38bdf8', '#f8fafc', '#6EE7B7'];
+        $fonts = ['Montserrat', 'Impact', 'Trebuchet MS', 'Arial Black', 'Verdana'];
+        for ($i = 0; $i < strlen($text); $i++) {
+            $char = $text[$i];
+            $fontSize = 25 + random_int(0, 5);
+            $angle = -14 + random_int(0, 28);
+            $x = 18 + $i * 27 + random_int(0, 3);
+            $y = 34 + random_int(0, 4);
+            $font = $fonts[random_int(0, count($fonts) - 1)];
+            $color = $textColors[$i % count($textColors)];
+            
+            $svg .= '<text x="' . $x . '" y="' . $y . '" font-family="' . $font . '" font-size="' . $fontSize . '" font-weight="900" fill="' . $color . '" transform="rotate(' . $angle . ', ' . $x . ', ' . $y . ')" opacity="0.95" letter-spacing="1">' . htmlspecialchars($char, ENT_QUOTES, 'UTF-8') . '</text>';
+        }
+        
+        // Puntos de dispersión
+        for ($i = 0; $i < 30; $i++) {
+            $cx = random_int(0, $width);
+            $cy = random_int(0, $height);
+            $dotColor = $colors[random_int(0, count($colors) - 1)];
+            $svg .= '<circle cx="' . $cx . '" cy="' . $cy . '" r="1" fill="' . $dotColor . '" opacity="0.5"/>';
+        }
+        
+        $svg .= '</svg>';
+        return ['text' => $text, 'svg' => $svg];
+    }
+
+    /**
+     * GET /api/auth/captcha
+     * Retorna { id: string, svg: string }
+     */
+    public static function getCaptcha(): void
+    {
+        try {
+            self::ensureCaptchasTable();
+            $db = Database::getConnection();
+
+            // Limpia captchas vencidos
+            $db->exec('DELETE FROM captchas WHERE expires_at < NOW()');
+
+            $captchaData = self::generateCaptcha();
+            $text = $captchaData['text'];
+            $svg = $captchaData['svg'];
+            $captchaId = bin2hex(random_bytes(16));
+            $expiresAt = date('Y-m-d H:i:s', time() + 300); // 5 minutos de validez
+            $hashedCode = password_hash(strtolower(trim($text)), PASSWORD_BCRYPT);
+
+            $stmt = $db->prepare('INSERT INTO captchas (id, codigo, expires_at) VALUES (?, ?, ?)');
+            $stmt->execute([$captchaId, $hashedCode, $expiresAt]);
+
+            ResponseHandler::success([
+                'id' => $captchaId,
+                'svg' => $svg
+            ]);
+        } catch (Throwable $e) {
+            Logger::error('AuthController::getCaptcha – error', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error al generar el captcha', 500);
+        }
+    }
+
+    /**
+     * Valida y consume de uso único el captcha especificado
+     */
+    public static function verifyCaptcha(?string $captchaId, ?string $captchaCode): bool
+    {
+        if (empty($captchaId) || empty($captchaCode)) {
+            return false;
+        }
+
+        try {
+            self::ensureCaptchasTable();
+            $db = Database::getConnection();
+
+            // 1. Limpia vencidos
+            $db->exec('DELETE FROM captchas WHERE expires_at < NOW()');
+
+            // 2. Busca registro del captcha
+            $stmt = $db->prepare('SELECT * FROM captchas WHERE id = ?');
+            $stmt->execute([$captchaId]);
+            $captchaRecord = $stmt->fetch();
+
+            if (!$captchaRecord) {
+                return false;
+            }
+
+            // 3. Elimina inmediatamente para uso único (one-time use)
+            $stmtDel = $db->prepare('DELETE FROM captchas WHERE id = ?');
+            $stmtDel->execute([$captchaId]);
+
+            // 4. Verifica coincidencia del texto (insensible a mayúsculas)
+            return password_verify(strtolower(trim($captchaCode)), $captchaRecord['codigo']);
+        } catch (Throwable $e) {
+            Logger::error('AuthController::verifyCaptcha – error', ['exception' => $e->getMessage()]);
+            return false;
+        }
     }
 
     /**
      * POST /api/auth/login
-     * Body: { correo, password, captcha_respuesta, captcha_hash, captcha_expira }
+     * Body: { correo, password, captchaId, captchaCode }
      */
     public static function login(): void
     {
@@ -44,16 +177,15 @@ class AuthController
             $correo   = ResponseHandler::sanitize($body['correo'] ?? '');
             $password = $body['password'] ?? '';
             
-            $captchaRespuesta = $body['captcha_respuesta'] ?? '';
-            $captchaHash      = $body['captcha_hash'] ?? '';
-            $captchaExpira    = (int)($body['captcha_expira'] ?? 0);
+            $captchaId   = $body['captchaId'] ?? $body['captcha_id'] ?? null;
+            $captchaCode = $body['captchaCode'] ?? $body['captcha_code'] ?? $body['captcha_respuesta'] ?? null;
 
             if (!$correo || !$password) {
                 throw new InvalidArgumentException('Correo y contraseña son obligatorios');
             }
 
-            if (!self::verifyMathCaptcha($captchaRespuesta, $captchaHash, $captchaExpira)) {
-                throw new InvalidArgumentException('Captcha incorrecto o expirado. Intenta nuevamente.');
+            if (!self::verifyCaptcha($captchaId, $captchaCode)) {
+                throw new InvalidArgumentException('El código captcha ha expirado o es incorrecto. Intenta nuevamente.');
             }
 
             $db   = Database::getConnection();
@@ -82,12 +214,14 @@ class AuthController
             ResponseHandler::success([
                 'mensaje' => 'Login exitoso',
                 'token'   => $token,
+                'requiere_cambio_password' => (bool)($usuario['requiere_cambio_password'] ?? 0),
                 'usuario' => [
                     'id'     => $usuario['id'],
                     'correo' => $usuario['correo'],
                     'nombre' => $usuario['nombre'] ?? '',
                     'telefono' => $usuario['telefono'] ?? '',
                     'rol'    => $usuario['rol'],
+                    'requiere_cambio_password' => (bool)($usuario['requiere_cambio_password'] ?? 0),
                 ],
             ]);
 
@@ -103,6 +237,107 @@ class AuthController
             ResponseHandler::error('Error inesperado en AuthController::login', 500, [
                 'detalle' => APP_ENV === 'development' ? $e->getMessage() : null,
             ]);
+        }
+    }
+
+    /**
+     * Garantiza la presencia de la columna requiere_cambio_password en usuarios
+     */
+    private static function ensureRequiereCambioPasswordColumn(): void
+    {
+        try {
+            $db = Database::getConnection();
+            $db->exec("ALTER TABLE `usuarios` ADD COLUMN `requiere_cambio_password` TINYINT(1) NOT NULL DEFAULT 0;");
+        } catch (Throwable $e) {
+            // Ignorar si la columna ya existe
+        }
+    }
+
+    /**
+     * POST /api/auth/recuperar-password
+     * Genera y envía una clave temporal al correo del usuario
+     */
+    public static function recuperarPassword(): void
+    {
+        try {
+            self::ensureRequiereCambioPasswordColumn();
+            $body = ResponseHandler::getBody();
+            $correo = ResponseHandler::sanitize($body['correo'] ?? '');
+            $captchaId   = $body['captcha_id'] ?? $body['captchaId'] ?? null;
+            $captchaCode = $body['captcha_code'] ?? $body['captchaCode'] ?? null;
+
+            if (empty($correo)) {
+                throw new InvalidArgumentException('El correo electrónico es obligatorio.');
+            }
+
+            if (!self::verifyCaptcha($captchaId, $captchaCode)) {
+                throw new InvalidArgumentException('El código de seguridad es incorrecto o ha expirado.');
+            }
+
+            $db = Database::getConnection();
+            $stmt = $db->prepare('SELECT id, nombre, apellidos, correo FROM usuarios WHERE correo = ? LIMIT 1');
+            $stmt->execute([$correo]);
+            $usuario = $stmt->fetch();
+
+            if (!$usuario) {
+                ResponseHandler::error('No existe ninguna cuenta registrada con este correo electrónico.', 404);
+            }
+
+            // Generar clave temporal única de 8 caracteres
+            $chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            $tempPassword = 'Plx-';
+            for ($i = 0; $i < 5; $i++) {
+                $tempPassword .= $chars[random_int(0, strlen($chars) - 1)];
+            }
+
+            $hashedTemp = password_hash($tempPassword, PASSWORD_BCRYPT);
+            $stmtUpd = $db->prepare('UPDATE usuarios SET password = ?, requiere_cambio_password = 1 WHERE id = ?');
+            $stmtUpd->execute([$hashedTemp, $usuario['id']]);
+
+            // Enviar correo con la clave temporal
+            require_once __DIR__ . '/../utils/EmailService.php';
+            $nombreCompleto = trim(($usuario['nombre'] ?? '') . ' ' . ($usuario['apellidos'] ?? ''));
+            EmailService::enviarPasswordTemporal($usuario['correo'], $nombreCompleto, $tempPassword);
+
+            ResponseHandler::success([
+                'mensaje' => 'Hemos enviado una contraseña temporal a tu correo electrónico. Úsala para ingresar.'
+            ]);
+        } catch (InvalidArgumentException $e) {
+            ResponseHandler::error($e->getMessage(), 400);
+        } catch (Throwable $e) {
+            Logger::error('AuthController::recuperarPassword – error', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error al procesar la solicitud de recuperación', 500);
+        }
+    }
+
+    /**
+     * POST /api/auth/cambiar-password-temporal
+     * Cambia la contraseña temporal por una nueva contraseña definitiva
+     */
+    public static function cambiarPasswordTemporal(): void
+    {
+        try {
+            $user = AuthMiddleware::authenticate();
+            $body = ResponseHandler::getBody();
+            $nuevaPassword = $body['nueva_password'] ?? $body['password'] ?? '';
+
+            if (strlen($nuevaPassword) < 8) {
+                throw new InvalidArgumentException('La nueva contraseña debe tener al menos 8 caracteres.');
+            }
+
+            $db = Database::getConnection();
+            $hashedNew = password_hash($nuevaPassword, PASSWORD_BCRYPT);
+            $stmt = $db->prepare('UPDATE usuarios SET password = ?, requiere_cambio_password = 0 WHERE id = ?');
+            $stmt->execute([$hashedNew, $user['id']]);
+
+            ResponseHandler::success([
+                'mensaje' => 'Tu contraseña ha sido actualizada exitosamente.'
+            ]);
+        } catch (InvalidArgumentException $e) {
+            ResponseHandler::error($e->getMessage(), 400);
+        } catch (Throwable $e) {
+            Logger::error('AuthController::cambiarPasswordTemporal – error', ['exception' => $e->getMessage()]);
+            ResponseHandler::error('Error al actualizar la contraseña', 500);
         }
     }
 
@@ -139,7 +374,7 @@ class AuthController
 
     /**
      * POST /api/auth/register
-     * Body: { nombre, apellidos, edad, direccion, ciudad, correo, password, rol (opcional, default 'cliente'), captcha_respuesta, captcha_hash, captcha_expira }
+     * Body: { nombre, apellidos, edad, direccion, ciudad, correo, password, rol, captchaId, captchaCode }
      */
     public static function register(): void
     {
@@ -151,16 +386,15 @@ class AuthController
             $correo = ResponseHandler::sanitize($body['correo'] ?? '');
             $password = $body['password'] ?? '';
             
-            $captchaRespuesta = $body['captcha_respuesta'] ?? '';
-            $captchaHash      = $body['captcha_hash'] ?? '';
-            $captchaExpira    = (int)($body['captcha_expira'] ?? 0);
+            $captchaId   = $body['captchaId'] ?? $body['captcha_id'] ?? null;
+            $captchaCode = $body['captchaCode'] ?? $body['captcha_code'] ?? $body['captcha_respuesta'] ?? null;
             
             if (!$nombre || !$correo || !$password) {
                 throw new InvalidArgumentException('Nombre, correo y contraseña son obligatorios.');
             }
 
-            if (!self::verifyMathCaptcha($captchaRespuesta, $captchaHash, $captchaExpira)) {
-                throw new InvalidArgumentException('Captcha incorrecto o expirado. Intenta nuevamente.');
+            if (!self::verifyCaptcha($captchaId, $captchaCode)) {
+                throw new InvalidArgumentException('El código captcha ha expirado o es incorrecto. Intenta nuevamente.');
             }
 
             $apellidos = null;

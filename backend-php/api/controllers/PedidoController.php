@@ -43,13 +43,12 @@ class PedidoController
             return;
         }
 
-        $captchaRespuesta = $input['captcha_respuesta'] ?? '';
-        $captchaHash      = $input['captcha_hash'] ?? '';
-        $captchaExpira    = (int)($input['captcha_expira'] ?? 0);
+        $captchaId   = $input['captchaId'] ?? $input['captcha_id'] ?? null;
+        $captchaCode = $input['captchaCode'] ?? $input['captcha_code'] ?? $input['captcha_respuesta'] ?? null;
 
         require_once __DIR__ . '/AuthController.php';
-        if (!AuthController::verifyMathCaptcha($captchaRespuesta, $captchaHash, $captchaExpira)) {
-            ResponseHandler::error('Captcha incorrecto o expirado. Intenta nuevamente.', 400);
+        if (!AuthController::verifyCaptcha($captchaId, $captchaCode)) {
+            ResponseHandler::error('El código captcha ha expirado o es incorrecto. Intenta nuevamente.', 400);
             return;
         }
 

@@ -46,6 +46,52 @@ class EmailService
         return self::send($to, $subject, $html);
     }
 
+    /**
+     * Enviar email con contraseña temporal al usuario
+     */
+    public static function enviarPasswordTemporal(string $to, string $nombre, string $tempPassword): array
+    {
+        $subject = "[" . COMPANY_NAME . "] Contraseña Temporal de Acceso";
+        $html = self::templatePasswordTemporal($nombre, $tempPassword);
+        return self::send($to, $subject, $html);
+    }
+
+    private static function templatePasswordTemporal(string $nombre, string $tempPassword): string
+    {
+        $nombreEsc = htmlspecialchars($nombre ?: 'Cliente');
+        $passEsc = htmlspecialchars($tempPassword);
+        $company = COMPANY_NAME;
+
+        return "
+        <!DOCTYPE html>
+        <html lang='es'>
+        <head>
+          <meta charset='UTF-8'>
+          <title>Contraseña Temporal</title>
+        </head>
+        <body style='font-family: Arial, sans-serif; background-color: #f4f6f9; margin:0; padding: 20px;'>
+          <div style='max-width: 560px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;'>
+            <div style='background-color: #0b1329; padding: 24px; text-align: center;'>
+              <h1 style='color: #ffffff; margin: 0; font-size: 20px; font-weight: 800;'>PLAXTILINEAS</h1>
+            </div>
+            <div style='padding: 30px; color: #334155;'>
+              <h2 style='color: #0f172a; margin-top:0;'>Hola, {$nombreEsc}</h2>
+              <p style='font-size: 15px; line-height: 1.6;'>Recibimos una solicitud para restablecer tu contraseña en <strong>{$company}</strong>.</p>
+              <p style='font-size: 15px; line-height: 1.6;'>Hemos generado la siguiente contraseña temporal para que puedas acceder a tu cuenta:</p>
+              
+              <div style='text-align: center; margin: 25px 0;'>
+                <span style='display: inline-block; background-color: #f1f5f9; border: 2px dashed #368c44; padding: 12px 24px; border-radius: 8px; font-size: 22px; font-weight: bold; letter-spacing: 3px; color: #368c44; font-family: monospace;'>{$passEsc}</span>
+              </div>
+              
+              <p style='font-size: 14px; color: #64748b; line-height: 1.5;'>Por razones de seguridad, una vez que ingreses con esta clave temporal, el sistema te solicitará establecer una nueva contraseña de tu elección.</p>
+              <p style='font-size: 13px; color: #94a3b8; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px;'>Si no solicitaste este cambio, por favor contáctanos de inmediato.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+        ";
+    }
+
     // ─── Envío real vía SMTP ─────────────────────────────────────────────────
 
     private static function send(string $to, string $subject, string $htmlBody): array
