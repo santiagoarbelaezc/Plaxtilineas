@@ -385,12 +385,10 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   mostrarPrecio(producto: ProductoEditable): string {
     const formatearPrecio = (precio: number): string => {
-      // Convertir a entero (sin decimales) y formatear con separador de miles
+      if (precio === null || precio === undefined) return '$ 0';
       const precioEntero = Math.round(precio);
-      return `$ ${precioEntero.toLocaleString('es-CO', { 
-        minimumFractionDigits: 0, 
-        maximumFractionDigits: 0 
-      })}`;
+      const precioFormateado = precioEntero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      return `$ ${precioFormateado}`;
     };
 
     // Primero verificar si tiene variantes del backend

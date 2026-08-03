@@ -283,10 +283,10 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   
   formatearPrecio(precio: number): string {
-    return '$ ' + Math.round(precio).toLocaleString('es-ES', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    });
+    if (precio === null || precio === undefined) return '$ 0';
+    const precioEntero = Math.round(precio);
+    const precioFormateado = precioEntero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return `$ ${precioFormateado}`;
   }
   
   truncarDescripcion(descripcion: string): string {

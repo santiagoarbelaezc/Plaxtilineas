@@ -38,8 +38,10 @@ export class GridProductoComponent {
   }
 
   formatearPrecio(precio?: number): string {
-    if (!precio) return '';
-    return `$${precio.toLocaleString('es-CO')}`;
+    if (precio === null || precio === undefined || isNaN(precio)) return '';
+    const precioEntero = Math.round(precio);
+    const precioFormateado = precioEntero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return `$${precioFormateado}`;
   }
 
   setHoveredIndex(index: number | null): void {

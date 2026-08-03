@@ -244,12 +244,27 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   departamentosList: string[] = Object.keys(this.departamentos);
   ciudadesDisponibles: string[] = [];
 
-  mode: 'login' | 'register' = 'login';
+  mode: 'login' | 'register' | 'forgot' = 'login';
+
+  forgotForm: FormGroup = this.fb.group({
+    correo: ['', [Validators.required, emailDomainValidator()]],
+    captcha_code: ['', [Validators.required]]
+  });
+
+  changePasswordForm: FormGroup = this.fb.group({
+    password: ['', [
+      Validators.required, 
+      Validators.minLength(8), 
+      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/)
+    ]],
+    confirmPassword: ['', [Validators.required]]
+  }, { validators: this.passwordMatchValidator });
 
   isSubmitting = false;
   showErrorModal = false;
   showConfirmModal = false;
   showSuccessModal = false;
+  showPasswordChangeModal = false;
   showPassword = false;
   errorMsg = '';
   successMsg = '';
@@ -270,6 +285,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
         this.captchaSvg = this.sanitizer.bypassSecurityTrustHtml(res.svg);
         this.loginForm.get('captcha_code')?.setValue('');
         this.registerForm.get('captcha_code')?.setValue('');
+        this.forgotForm.get('captcha_code')?.setValue('');
       },
       error: (err) => {
         console.error('Error al cargar captcha', err);
@@ -456,15 +472,21 @@ export class LoginFormComponent implements OnInit, OnDestroy {
       this.authService.login(correo, password, captchaData).subscribe({
         next: (res) => {
           this.isSubmitting = false;
-          this.successMsg = '¡Ingreso exitoso! Bienvenido a Plaxtilineas.';
-          this.showSuccessModal = true;
           this.userToRedirect = res.usuario;
-          const delay = 2700;
-          setTimeout(() => {
-            if (this.showSuccessModal) {
-              this.closeSuccessModal();
-            }
-          }, delay);
+
+          if (res.requiere_cambio_password || res.usuario?.requiere_cambio_password) {
+            // Usuario debe cambiar su contraseña temporal obligatoriamente
+            this.showPasswordChangeModal = true;
+          } else {
+            this.successMsg = '¡Ingreso exitoso! Bienvenido a Plaxtilineas.';
+            this.showSuccessModal = true;
+            const delay = 2700;
+            setTimeout(() => {
+              if (this.showSuccessModal) {
+                this.closeSuccessModal();
+              }
+            }, delay);
+          }
         },
         error: (err) => {
           this.errorMsg = err.error?.error || 'Correo, contraseña o código de seguridad incorrectos. Por favor, verifica e inténtalo de nuevo.';
@@ -473,6 +495,8 @@ export class LoginFormComponent implements OnInit, OnDestroy {
           this.fetchCaptcha();
         }
       });
+    } else if (this.mode === 'forgot') {
+      this.onSubmitForgot();
     } else {
       if (this.registerForm.invalid) {
         this.registerForm.markAllAsTouched();
@@ -483,6 +507,74 @@ export class LoginFormComponent implements OnInit, OnDestroy {
 
       this.showConfirmModal = true;
     }
+  }
+
+  onSubmitForgot(): void {
+    if (this.forgotForm.invalid) {
+      this.forgotForm.markAllAsTouched();
+      this.errorMsg = 'Por favor, ingresa tu correo y el código de seguridad correctamente.';
+      this.showErrorModal = true;
+      return;
+    }
+
+    this.isSubmitting = true;
+    const { correo, captcha_code } = this.forgotForm.value;
+
+    this.authService.recuperarPassword(correo, this.captchaId, captcha_code).subscribe({
+      next: (res) => {
+        this.isSubmitting = false;
+        this.errorMsg = '';
+        this.mode = 'login';
+        this.loginForm.get('correo')?.setValue(correo);
+        this.loginForm.get('password')?.setValue('');
+        this.fetchCaptcha();
+
+        this.successMsg = res.mensaje || 'Hemos enviado una contraseña temporal a tu correo electrónico. Úsala para ingresar.';
+        this.showSuccessModal = true;
+        this.userToRedirect = null; // Queda en pantalla de login para digitar la clave temporal
+        setTimeout(() => {
+          this.showSuccessModal = false;
+        }, 4000);
+      },
+      error: (err) => {
+        this.isSubmitting = false;
+        this.errorMsg = err.error?.error || 'Error al solicitar la contraseña temporal. Revisa tus datos.';
+        this.showErrorModal = true;
+        this.fetchCaptcha();
+      }
+    });
+  }
+
+  onSubmitChangePassword(): void {
+    if (this.changePasswordForm.invalid) {
+      this.changePasswordForm.markAllAsTouched();
+      this.errorMsg = 'Por favor, verifica que la nueva contraseña cumpla con los requisitos y coincida en ambos campos.';
+      this.showErrorModal = true;
+      return;
+    }
+
+    this.isSubmitting = true;
+    const nuevaPassword = this.changePasswordForm.get('password')?.value;
+
+    this.authService.cambiarPasswordTemporal(nuevaPassword).subscribe({
+      next: (res) => {
+        this.isSubmitting = false;
+        this.showPasswordChangeModal = false;
+        this.successMsg = '¡Tu contraseña ha sido actualizada con éxito!';
+        this.showSuccessModal = true;
+        const delay = 2500;
+        setTimeout(() => {
+          if (this.showSuccessModal) {
+            this.closeSuccessModal();
+          }
+        }, delay);
+      },
+      error: (err) => {
+        this.isSubmitting = false;
+        this.errorMsg = err.error?.error || 'Error al actualizar tu contraseña.';
+        this.showErrorModal = true;
+      }
+    });
   }
 
   async onConfirmRegister(): Promise<void> {
@@ -524,7 +616,11 @@ export class LoginFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  get pwdCtrl() { return this.registerForm.get('password'); }
+  get pwdCtrl() { 
+    return this.showPasswordChangeModal 
+      ? this.changePasswordForm.get('password') 
+      : this.registerForm.get('password'); 
+  }
 
   hasMinLength(): boolean {
     const val = this.pwdCtrl?.value || '';

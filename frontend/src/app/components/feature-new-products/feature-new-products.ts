@@ -167,7 +167,7 @@ export class FeatureNewProducts implements OnInit {
   formatearPrecio(precio: number): string {
     if (precio === null || precio === undefined) return '$ 0';
     const precioEntero = Math.round(precio);
-    const precioFormateado = precioEntero.toLocaleString('es-ES');
+    const precioFormateado = precioEntero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     return `$ ${precioFormateado}`;
   }
 

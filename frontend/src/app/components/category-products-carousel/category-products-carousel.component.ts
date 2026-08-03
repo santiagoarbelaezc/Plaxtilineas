@@ -193,7 +193,8 @@ export class CategoryProductsCarouselComponent implements OnInit {
   formatearPrecio(precio: number): string {
     if (precio === null || precio === undefined) return '$ 0';
     const precioEntero = Math.round(precio);
-    return `$ ${precioEntero.toLocaleString('es-ES')}`;
+    const precioFormateado = precioEntero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return `$ ${precioFormateado}`;
   }
 
   optimizarImagen(url: string): string {

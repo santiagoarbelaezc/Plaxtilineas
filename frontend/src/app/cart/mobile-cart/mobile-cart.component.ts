@@ -234,7 +234,10 @@ export class MobileCartComponent implements OnInit, OnDestroy {
   }
 
   formatearPrecio(precio: number): string {
-    return `$ ${Math.round(precio).toLocaleString('es-ES')}`;
+    if (precio === null || precio === undefined) return '$ 0';
+    const precioEntero = Math.round(precio);
+    const precioFormateado = precioEntero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return `$ ${precioFormateado}`;
   }
 
   ngOnDestroy() {

@@ -42,6 +42,23 @@ export class AuthService {
     return this.http.get<{ id: string; svg: string }>(`${environment.apiUrl}/auth/captcha`);
   }
 
+  recuperarPassword(correo: string, captchaId: string, captchaCode: string): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/auth/recuperar-password`, {
+      correo,
+      captchaId,
+      captchaCode
+    });
+  }
+
+  cambiarPasswordTemporal(nuevaPassword: string): Observable<any> {
+    const token = localStorage.getItem('token');
+    return this.http.post(`${environment.apiUrl}/auth/cambiar-password-temporal`, {
+      nueva_password: nuevaPassword
+    }, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+  }
+
   login(correo: string, password: string, captchaData?: { captchaId: string; captchaCode: string }): Observable<any> {
     const payload = { 
       correo, 
