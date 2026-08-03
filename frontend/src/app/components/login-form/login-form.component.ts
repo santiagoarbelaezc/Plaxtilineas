@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -7,9 +7,17 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { environment } from '../../../enviroments/environment';
 import { AuthService } from '../../services/auth.service';
 import { ThemeService, Theme } from '../../services/theme.service';
+import { ProductosService } from '../../services/productos.service';
 
 declare var google: any;
 declare var grecaptcha: any;
+
+export interface SlideItem {
+  badge: string;
+  title: string;
+  subtitle: string;
+  image: string;
+}
 
 export function emailDomainValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -94,13 +102,44 @@ export function emailDomainValidator(): ValidatorFn {
   templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.css']
 })
-export class LoginFormComponent implements OnInit {
+export class LoginFormComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private productosService = inject(ProductosService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private sanitizer = inject(DomSanitizer);
   public themeService = inject(ThemeService);
+
+  // Estado del carrusel de imágenes reales
+  slides = signal<SlideItem[]>([
+    {
+      badge: 'MALLAS Y LONAS INDUSTRIALES',
+      title: 'Comunidad Plaxtilineas',
+      subtitle: '"Ingresa con nosotros para obtener cotizaciones personalizadas y descuentos exclusivos en mallas y lonas."',
+      image: 'assets/images/plasticos_malla.jpg'
+    },
+    {
+      badge: 'PROTECCIÓN Y CERRAMIENTOS',
+      title: 'Mallas Plásticas & Cafeteras',
+      subtitle: '"Soluciones de alta durabilidad para cerramientos agrícolas, secado de café y protección de cultivos."',
+      image: 'assets/images/plasticos_industriales_1.png'
+    },
+    {
+      badge: 'INVENTARIO DE ALTA RESISTENCIA',
+      title: 'Mallas Hexagonales y Gallinero',
+      subtitle: '"Materiales resistentes a la intemperie con envíos rápidos a todo el Quindío y Colombia."',
+      image: 'assets/images/plasticos_industriales_2.png'
+    },
+    {
+      badge: 'LONAS Y CUBRIMIENTOS',
+      title: 'Lonas Impermeables & Mallas',
+      subtitle: '"La mejor calidad en plásticos industriales directamente a tu negocio u obra."',
+      image: 'assets/images/banner-materiales.png'
+    }
+  ]);
+  currentSlide = signal(0);
+  private autoSlideTimer: any = null;
 
   loginForm: FormGroup = this.fb.group({
     correo: ['', [Validators.required, Validators.email]],
@@ -240,6 +279,8 @@ export class LoginFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchCaptcha();
+    this.startAutoSlide();
+    this.cargarProductosReales();
 
     // Detectar si viene redirigido por sesión expirada o modo
     this.route.queryParams.subscribe(params => {
@@ -254,6 +295,65 @@ export class LoginFormComponent implements OnInit {
       this.ciudadesDisponibles = dept ? (this.departamentos[dept] || []) : [];
       this.registerForm.get('ciudad')?.setValue('');
     });
+  }
+
+  ngOnDestroy(): void {
+    this.stopAutoSlide();
+  }
+
+  cargarProductosReales(): void {
+    this.productosService.obtenerProductos().subscribe({
+      next: (productos) => {
+        if (productos && productos.length > 0) {
+          const mallasLonas = productos.filter(p => 
+            p.imagen_url && 
+            (p.nombre.toLowerCase().includes('malla') || 
+             p.nombre.toLowerCase().includes('lona') || 
+             p.nombre.toLowerCase().includes('polisombra') ||
+             p.nombre.toLowerCase().includes('plastico'))
+          );
+
+          if (mallasLonas.length > 0) {
+            const realSlides: SlideItem[] = mallasLonas.slice(0, 5).map(p => ({
+              badge: 'PRODUCTO PLAXTILINEAS',
+              title: p.nombre,
+              subtitle: p.descripcion ? `"${p.descripcion}"` : '"Encuentra mallas y lonas de alta resistencia con la mejor calidad."',
+              image: p.imagen_url
+            }));
+            this.slides.set(realSlides);
+          }
+        }
+      },
+      error: (err) => {
+        console.warn('Usando imágenes locales de mallas y lonas para el carrusel de login', err);
+      }
+    });
+  }
+
+  nextSlide(): void {
+    this.currentSlide.update(curr => (curr + 1) % this.slides().length);
+  }
+
+  prevSlide(): void {
+    this.currentSlide.update(curr => (curr - 1 + this.slides().length) % this.slides().length);
+  }
+
+  goToSlide(index: number): void {
+    this.currentSlide.set(index);
+  }
+
+  startAutoSlide(): void {
+    this.stopAutoSlide();
+    this.autoSlideTimer = setInterval(() => {
+      this.nextSlide();
+    }, 5000);
+  }
+
+  stopAutoSlide(): void {
+    if (this.autoSlideTimer) {
+      clearInterval(this.autoSlideTimer);
+      this.autoSlideTimer = null;
+    }
   }
 
   ngAfterViewInit(): void {
