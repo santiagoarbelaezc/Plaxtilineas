@@ -3,6 +3,7 @@
 
 .login-wrapper {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
@@ -10,6 +11,7 @@
   font-family: var(--font-primary), 'Montserrat', sans-serif;
   position: relative;
   box-sizing: border-box;
+  width: 100%;
 }
 
 .login-wrapper.bg-light,
@@ -384,6 +386,179 @@
   box-shadow: 0 0 0 3px rgba(54, 140, 68, 0.25);
 }
 
+/* Custom Searchable Dropdown Styling */
+.custom-dropdown-container {
+  position: relative;
+}
+
+.custom-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.custom-dropdown-trigger.disabled-trigger {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.placeholder-text {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.custom-select-arrow {
+  color: #368c44;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.custom-select-arrow.rotated {
+  transform: rotate(180deg);
+}
+
+.custom-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  border-radius: 18px;
+  z-index: 1000;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 240px;
+  animation: fadeInDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.menu-light {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.menu-dark {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.dropdown-search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  background: inherit;
+}
+
+.menu-dark .dropdown-search-box {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.dropdown-search-icon {
+  color: #368c44;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dropdown-search-input {
+  flex: 1;
+  border: none;
+  padding: 2px 0;
+  font-size: 0.85rem;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+}
+
+.search-light {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.search-dark {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.dropdown-options-list {
+  overflow-y: auto;
+  flex: 1;
+  max-height: 180px;
+  padding: 4px;
+}
+
+.dropdown-option-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-size: 0.88rem;
+  font-weight: 500;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.opt-light {
+  color: #334155;
+}
+
+.opt-light:hover {
+  background: rgba(54, 140, 68, 0.08);
+  color: #368c44;
+}
+
+.opt-light.selected {
+  background: rgba(54, 140, 68, 0.12);
+  color: #368c44;
+  font-weight: 700;
+}
+
+.opt-dark {
+  color: #cbd5e1;
+}
+
+.opt-dark:hover {
+  background: rgba(54, 140, 68, 0.2);
+  color: #4ade80;
+}
+
+.opt-dark.selected {
+  background: rgba(54, 140, 68, 0.3);
+  color: #4ade80;
+  font-weight: 700;
+}
+
+.no-options-msg {
+  padding: 12px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
 /* CAPTCHA Vectorial Estilizado en Fila Única */
 .captcha-field-group {
   margin-top: 0.25rem;
@@ -647,8 +822,16 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
- * ADAPTABILIDAD RESPONSIVA
+ * ADAPTABILIDAD RESPONSIVA Y ESTILO APP NATIVA PWA MÓVIL
  * ───────────────────────────────────────────────────────────── */
+.mobile-only-bar {
+  display: none;
+}
+
+.desktop-only-btn {
+  display: block;
+}
+
 @media (max-width: 900px) {
   .login-split-card {
     flex-direction: column;
@@ -656,21 +839,21 @@
   }
 
   .login-visual-panel {
-    min-height: 240px;
-    padding: 24px;
+    min-height: 200px;
+    padding: 20px;
   }
 
   .visual-title {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
 
   .visual-subtitle {
-    font-size: 0.82rem;
-    margin-bottom: 14px;
+    font-size: 0.8rem;
+    margin-bottom: 12px;
   }
 
   .login-form-panel {
-    padding: 32px 24px;
+    padding: 28px 20px;
   }
 
   .register-grid-form {
@@ -684,6 +867,171 @@
 
   .req-list {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .desktop-only-btn {
+    display: none !important;
+  }
+
+  .mobile-only-bar {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding: max(12px, env(safe-area-inset-top)) 16px 12px 16px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-sizing: border-box;
+  }
+
+  .card-dark .mobile-only-bar {
+    background: #0f172a;
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .mobile-appbar-back-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0f172a;
+    transition: background 0.2s ease;
+  }
+
+  .card-dark .mobile-appbar-back-btn {
+    background: #1e293b;
+    color: #f8fafc;
+  }
+
+  .mobile-appbar-back-btn:active {
+    background: #e2e8f0;
+    transform: scale(0.95);
+  }
+
+  .mobile-appbar-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .card-dark .mobile-appbar-title {
+    color: #ffffff;
+  }
+
+  .login-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    padding: 0 !important;
+    min-height: 100dvh;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    background: #ffffff !important;
+    overflow-x: hidden;
+  }
+
+  .card-dark.login-wrapper {
+    background: #0f172a !important;
+  }
+
+  .login-split-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+    margin: 0 !important;
+    flex: 1 !important;
+  }
+
+  /* Ocultar carrusel pesado en móvil para mostrar el formulario ARRIBA DEL PLIEGUE inmediatamente */
+  .login-visual-panel {
+    display: none !important;
+  }
+
+  .login-form-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 24px 20px max(110px, env(safe-area-inset-bottom)) 20px !important;
+    background: #ffffff !important;
+    box-sizing: border-box !important;
+    flex: 1 !important;
+  }
+
+  .card-dark .login-form-panel {
+    background: #1e293b !important;
+  }
+
+  .segmented-tab-container {
+    margin-bottom: 20px !important;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: 28px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .card-dark .segmented-tab-container {
+    background: #0f172a;
+  }
+
+  .segmented-tab-btn {
+    padding: 10px 14px !important;
+    font-size: 0.82rem !important;
+    border-radius: 24px !important;
+  }
+
+  .form-main-heading {
+    font-size: 1.35rem !important;
+  }
+
+  .form-subheading {
+    font-size: 0.82rem !important;
+  }
+
+  .pill-input {
+    font-size: 16px !important; /* Previene el zoom automático de iOS Safari */
+    padding: 14px 18px !important;
+  }
+
+  .pill-btn {
+    background-color: #368C44 !important;
+    color: #ffffff !important;
+    padding: 15px !important;
+    font-size: 0.95rem !important;
+    box-shadow: 0 4px 14px rgba(54, 140, 68, 0.3) !important;
+  }
+
+  .pill-btn:active {
+    transform: scale(0.98) !important;
+  }
+
+  .captcha-single-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .captcha-svg-frame {
+    width: 130px;
+    height: 44px;
+  }
+
+  .captcha-refresh-btn {
+    width: 44px;
+    height: 44px;
   }
 }
 

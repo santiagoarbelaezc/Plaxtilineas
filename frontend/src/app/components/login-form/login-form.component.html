@@ -2,8 +2,19 @@
 <div class="login-wrapper transition-colors duration-300 relative"
      [ngClass]="(themeService.theme$ | async) === 'dark' ? 'bg-dark' : 'bg-light'">
   
-  <!-- Botón Regresar (Flotante Arriba a la izquierda) -->
-  <div class="btn-regresar-top-left">
+  <!-- Barra Superior Nativa Móvil (Estilo App PWA) -->
+  <div class="mobile-login-appbar mobile-only-bar">
+    <a routerLink="/productos" class="mobile-appbar-back-btn" aria-label="Volver a productos">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+    </a>
+    <span class="mobile-appbar-title">Plaxtilineas</span>
+    <div style="width: 40px;"></div>
+  </div>
+
+  <!-- Botón Regresar Desktop (Flotante Arriba a la izquierda) -->
+  <div class="btn-regresar-top-left desktop-only-btn">
     <a routerLink="/productos" class="btn-regresar-pill" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'bg-[#1e293b] text-[#cbd5e1] border-white/10 hover:bg-[#0f172a] hover:text-white' : ''">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -258,20 +269,109 @@
             </small>
           </div>
 
-          <div class="form-group">
+          <!-- DEPARTAMENTO -->
+          <div class="form-group custom-dropdown-container">
             <label class="form-field-label">Departamento</label>
-            <select formControlName="departamento" class="form-input pill-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
-              <option value="" disabled selected>Selecciona departamento</option>
-              <option *ngFor="let dept of departamentosList" [value]="dept">{{ dept }}</option>
-            </select>
+            <div class="custom-dropdown-trigger pill-input" 
+                 (click)="toggleDeptDropdown($event)"
+                 [class.active]="isDeptDropdownOpen"
+                 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+              <span [class.placeholder-text]="!registerForm.get('departamento')?.value">
+                {{ registerForm.get('departamento')?.value || 'Selecciona departamento' }}
+              </span>
+              <span class="custom-select-arrow" [class.rotated]="isDeptDropdownOpen">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+            </div>
+
+            <div class="custom-dropdown-menu" 
+                 *ngIf="isDeptDropdownOpen" 
+                 (click)="$event.stopPropagation()"
+                 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'menu-dark' : 'menu-light'">
+              <div class="dropdown-search-box">
+                <span class="dropdown-search-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                </span>
+                <input type="text" 
+                       [(ngModel)]="deptSearchFilter" 
+                       [ngModelOptions]="{standalone: true}" 
+                       placeholder="Buscar departamento..." 
+                       class="dropdown-search-input"
+                       [ngClass]="(themeService.theme$ | async) === 'dark' ? 'search-dark' : 'search-light'">
+              </div>
+              <div class="dropdown-options-list">
+                <button type="button" 
+                        *ngFor="let dept of getFilteredDepartamentos()" 
+                        (click)="selectDepartamento(dept)" 
+                        class="dropdown-option-btn"
+                        [class.selected]="registerForm.get('departamento')?.value === dept"
+                        [ngClass]="(themeService.theme$ | async) === 'dark' ? 'opt-dark' : 'opt-light'">
+                  <span>{{ dept }}</span>
+                  <svg *ngIf="registerForm.get('departamento')?.value === dept" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </button>
+                <div *ngIf="getFilteredDepartamentos().length === 0" class="no-options-msg">
+                  No se encontraron coincidencias
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="form-group">
+          <!-- CIUDAD -->
+          <div class="form-group custom-dropdown-container">
             <label class="form-field-label">Ciudad</label>
-            <select formControlName="ciudad" class="form-input pill-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
-              <option value="" disabled selected>Selecciona ciudad</option>
-              <option *ngFor="let city of ciudadesDisponibles" [value]="city">{{ city }}</option>
-            </select>
+            <div class="custom-dropdown-trigger pill-input" 
+                 (click)="toggleCityDropdown($event)"
+                 [class.active]="isCityDropdownOpen"
+                 [class.disabled-trigger]="!registerForm.get('departamento')?.value"
+                 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+              <span [class.placeholder-text]="!registerForm.get('ciudad')?.value">
+                {{ registerForm.get('ciudad')?.value || (registerForm.get('departamento')?.value ? 'Selecciona ciudad' : 'Primero elige departamento') }}
+              </span>
+              <span class="custom-select-arrow" [class.rotated]="isCityDropdownOpen">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+            </div>
+
+            <div class="custom-dropdown-menu" 
+                 *ngIf="isCityDropdownOpen && registerForm.get('departamento')?.value" 
+                 (click)="$event.stopPropagation()"
+                 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'menu-dark' : 'menu-light'">
+              <div class="dropdown-search-box">
+                <span class="dropdown-search-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                </span>
+                <input type="text" 
+                       [(ngModel)]="citySearchFilter" 
+                       [ngModelOptions]="{standalone: true}" 
+                       placeholder="Buscar ciudad..." 
+                       class="dropdown-search-input"
+                       [ngClass]="(themeService.theme$ | async) === 'dark' ? 'search-dark' : 'search-light'">
+              </div>
+              <div class="dropdown-options-list">
+                <button type="button" 
+                        *ngFor="let city of getFilteredCiudades()" 
+                        (click)="selectCiudad(city)" 
+                        class="dropdown-option-btn"
+                        [class.selected]="registerForm.get('ciudad')?.value === city"
+                        [ngClass]="(themeService.theme$ | async) === 'dark' ? 'opt-dark' : 'opt-light'">
+                  <span>{{ city }}</span>
+                  <svg *ngIf="registerForm.get('ciudad')?.value === city" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </button>
+                <div *ngIf="getFilteredCiudades().length === 0" class="no-options-msg">
+                  No se encontraron coincidencias
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="form-group">

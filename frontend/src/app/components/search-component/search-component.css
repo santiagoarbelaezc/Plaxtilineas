@@ -20,7 +20,7 @@
   margin: 0 auto;
 }
 
-/* Encabezado de búsqueda (Desktop) */
+/* Encabezado de búsqueda (Desktop vs Mobile) */
 .desktop-only-header {
   display: block;
 }
@@ -177,7 +177,7 @@
 }
 
 .search-button {
-  background: linear-gradient(135deg, #2d6a4f, #1ba852);
+  background: #368C44;
   color: white;
   border: none;
   padding: 14px 28px;
@@ -190,8 +190,9 @@
 }
 
 .search-button:hover:not(:disabled) {
+  background: #2e7a3a;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(45, 106, 79, 0.3);
+  box-shadow: 0 6px 20px rgba(54, 140, 68, 0.3);
 }
 
 .search-button:disabled {
@@ -199,7 +200,7 @@
   cursor: not-allowed;
 }
 
-/* Sugerencias Dropdown */
+/* ── Sugerencias Dropdown ── */
 .suggestions-dropdown {
   position: absolute;
   top: calc(100% + 8px);
@@ -279,13 +280,13 @@
   color: #cbd5e1;
 }
 
-/* ── Sección de Chips (Búsquedas Frecuentes y Recientes) ── */
+/* ── Sección de Chips (Búsquedas Frecuentes en Singular y Recientes) ── */
 .chips-section {
   display: flex;
   flex-direction: column;
   gap: 16px;
   max-width: 900px;
-  margin: 0 auto 40px;
+  margin: 0 auto 36px;
 }
 
 .chips-block {
@@ -342,32 +343,32 @@
 
 .chip-pill.frequent-chip {
   background: #ffffff;
-  border: 1px solid rgba(229, 231, 235, 0.9);
+  border: 1.5px solid rgba(226, 232, 240, 0.9);
   color: #334155;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
 .chip-pill.frequent-chip:hover {
-  background: rgba(45, 106, 79, 0.08);
-  border-color: #2d6a4f;
-  color: #2d6a4f;
+  background: rgba(54, 140, 68, 0.08);
+  border-color: #368C44;
+  color: #368C44;
   transform: translateY(-2px);
 }
 
 .chip-pill.frequent-chip.active-chip {
-  background: #2d6a4f;
-  border-color: #2d6a4f;
+  background: #368C44;
+  border-color: #368C44;
   color: #ffffff;
 }
 
 .chip-pill.recent-chip {
-  background: rgba(45, 106, 79, 0.08);
-  border: 1px solid rgba(45, 106, 79, 0.25);
-  color: #2d6a4f;
+  background: rgba(54, 140, 68, 0.08);
+  border: 1px solid rgba(54, 140, 68, 0.25);
+  color: #2e7a3a;
 }
 
 .chip-pill.recent-chip:hover {
-  background: rgba(45, 106, 79, 0.16);
+  background: rgba(54, 140, 68, 0.16);
   transform: translateY(-1px);
 }
 
@@ -439,7 +440,7 @@
 }
 
 .retry-button {
-  background: linear-gradient(135deg, #2d6a4f, #1ba852);
+  background: #368C44;
   color: white;
   border: none;
   padding: 12px 28px;
@@ -641,7 +642,9 @@
   border-color: #2d6a4f;
 }
 
-/* ========== RESPONSIVE MÓVIL (PWA & Ajustes de Alineación) ========== */
+/* ============================================
+   RESPONSIVE MÓVIL ESTILO APP NATIVA PWA
+   ============================================ */
 @media (max-width: 1200px) {
   .products-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -649,89 +652,102 @@
 }
 
 @media (max-width: 768px) {
-  /* Alternar encabezados */
   .desktop-only-header {
     display: none !important;
   }
 
-  .mobile-only-header {
+  /* Header Móvil Integrado Estilo App */
+  .mobile-only-header.mobile-app-search-bar {
     display: flex !important;
     align-items: center;
-    gap: 14px;
-    margin-bottom: 18px;
+    gap: 10px;
+    margin-bottom: 14px;
+    width: 100%;
   }
 
   .back-nav-button {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     color: #0f172a;
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     flex-shrink: 0;
   }
 
-  .search-main-title {
-    font-size: 1.4rem;
-    font-weight: 800;
+  .mobile-search-input-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 6px 14px;
+    border: 1.5px solid #368c44;
+    box-shadow: 0 4px 14px rgba(54, 140, 68, 0.12);
+  }
+
+  .mobile-search-input-wrapper.searching {
+    border-color: #25d366;
+    box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.2);
+  }
+
+  .mobile-search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 8px 6px;
+    font-size: 0.92rem;
     color: #0f172a;
-    margin: 0;
+    outline: none;
+    font-family: inherit;
+    min-width: 0;
+  }
+
+  .mobile-search-input::placeholder {
+    color: #94a3b8;
+  }
+
+  .mobile-clear-button {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 4px;
   }
 
   .search-section {
-    padding: 16px 14px 40px;
-    margin-top: 75px;
-  }
-
-  .search-input-container {
-    margin-bottom: 20px;
-  }
-
-  .search-input-wrapper {
-    flex-direction: row !important;
-    align-items: center !important;
-    padding: 4px 6px 4px 12px;
-    border-radius: 24px;
-  }
-
-  .search-input {
-    font-size: 0.92rem;
-    padding: 10px 4px;
-  }
-
-  .input-actions {
-    gap: 6px;
-    padding-right: 2px;
-  }
-
-  .search-button {
-    padding: 9px 16px;
-    font-size: 0.85rem;
-    border-radius: 18px;
+    padding: 12px 14px 110px !important; /* Espacio para que el bottom nav no tape nada */
+    margin-top: 60px;
   }
 
   .chips-section {
-    margin-bottom: 24px;
-    gap: 14px;
+    margin-bottom: 20px;
+    gap: 12px;
+  }
+
+  .chips-title {
+    font-size: 0.74rem;
   }
 
   .chip-pill {
     padding: 7px 14px;
     font-size: 0.8rem;
+    border-radius: 18px;
   }
 
   .products-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
+    gap: 12px;
   }
 
   .card-info {
-    padding: 12px;
+    padding: 10px;
   }
 
   .product-name {
@@ -743,18 +759,23 @@
   }
 
   .card-footer {
-    padding: 0 12px 12px;
+    padding: 0 10px 10px;
   }
 
   .view-details-btn {
-    padding: 8px;
-    font-size: 0.78rem;
+    padding: 7px;
+    font-size: 0.76rem;
+    border-radius: 10px;
   }
 }
 
 @media (max-width: 480px) {
+  .search-section {
+    padding: 10px 12px 110px !important;
+  }
+
   .products-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 10px;
   }
 }

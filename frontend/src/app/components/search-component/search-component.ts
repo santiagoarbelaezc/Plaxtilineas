@@ -30,8 +30,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   showSuggestions: boolean = false;
   isSearchInProgress: boolean = false;
 
-  // Búsquedas frecuentes y recientes
-  busquedasFrecuentes: string[] = ['Espumas', 'Plásticos', 'Empaques', 'Mallas', 'Colchones', 'Telas'];
+  // Búsquedas frecuentes y recientes (términos en singular)
+  busquedasFrecuentes: string[] = ['Espuma', 'Plástico', 'Empaque', 'Malla', 'Colchón', 'Tela', 'Lona', 'Cinta'];
   busquedasRecientes: string[] = [];
 
   // Información de resultados

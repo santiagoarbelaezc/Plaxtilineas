@@ -19,28 +19,49 @@
       </div>
     </div>
 
-    <!-- Encabezado Versión Móvil (con botón regresar) -->
-    <div class="search-top-header mobile-only-header">
+    <!-- Barra de Búsqueda Estilo App Nativa (Solo Móvil) -->
+    <div class="mobile-app-search-bar mobile-only-header">
       <button class="back-nav-button" (click)="volverAtras()" aria-label="Volver atrás" type="button" title="Regresar">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
       </button>
 
-      <div class="search-header-titles">
-        <h1 class="search-main-title">
-          <span *ngIf="!terminoBusqueda">Buscar Productos</span>
-          <span *ngIf="terminoBusqueda">Resultados</span>
-        </h1>
+      <div class="mobile-search-input-wrapper" [class.searching]="isSearchInProgress">
+        <span class="search-input-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </span>
+        <input
+          type="text"
+          [(ngModel)]="terminoBusqueda"
+          (ngModelChange)="onInputChange()"
+          (keydown.enter)="onKeyPress($event)"
+          (blur)="onFocusOut()"
+          (focus)="showSuggestions = terminoBusqueda.trim().length >= 2"
+          placeholder="Buscar producto, categoría..."
+          class="mobile-search-input"
+          aria-label="Buscar productos"
+          autocomplete="off">
+        <button
+          *ngIf="terminoBusqueda"
+          (click)="limpiarBusqueda()"
+          class="mobile-clear-button"
+          aria-label="Limpiar búsqueda"
+          type="button">
+          ✕
+        </button>
       </div>
     </div>
 
-    <!-- Campo de Búsqueda -->
-    <div class="search-input-container">
+    <!-- Campo de Búsqueda Versión Desktop -->
+    <div class="search-input-container desktop-only-header">
       <div class="search-input-wrapper" [class.searching]="isSearchInProgress">
-
         <span class="search-input-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -65,7 +86,6 @@
 
         <div class="input-actions">
           <div *ngIf="isLoading" class="search-spinner"></div>
-
           <button
             *ngIf="terminoBusqueda && !isLoading"
             (click)="limpiarBusqueda()"
@@ -74,7 +94,6 @@
             type="button">
             ✕
           </button>
-
           <button
             (click)="buscar()"
             [disabled]="isLoading"
@@ -85,37 +104,37 @@
           </button>
         </div>
       </div>
+    </div>
 
-      <!-- Sugerencias en tiempo real -->
-      <div
-        *ngIf="showSuggestions && productosSugeridos.length > 0"
-        class="suggestions-dropdown">
-        <div class="suggestions-header">
-          <span class="suggestions-title">Sugerencias:</span>
-          <span class="suggestions-count">{{ productosSugeridos.length }} encontradas</span>
-        </div>
-        <div class="suggestions-list">
-          <button
-            *ngFor="let producto of productosSugeridos"
-            (click)="seleccionarSugerencia(producto)"
-            (mousedown)="$event.preventDefault()"
-            class="suggestion-item"
-            type="button">
-            <div class="suggestion-image">
-              <img
-                [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/placeholder.jpg'"
-                [alt]="producto.nombre"
-                loading="lazy"
-                onerror="this.src='assets/images/placeholder.jpg'">
-            </div>
-            <div class="suggestion-info">
-              <div class="suggestion-name">{{ producto.nombre }}</div>
-              <div class="suggestion-price">{{ mostrarPrecio(producto) }}</div>
-              <div class="suggestion-category">{{ producto.categoria }}</div>
-            </div>
-            <div class="suggestion-arrow">→</div>
-          </button>
-        </div>
+    <!-- Sugerencias en tiempo real -->
+    <div
+      *ngIf="showSuggestions && productosSugeridos.length > 0"
+      class="suggestions-dropdown">
+      <div class="suggestions-header">
+        <span class="suggestions-title">Sugerencias:</span>
+        <span class="suggestions-count">{{ productosSugeridos.length }} encontradas</span>
+      </div>
+      <div class="suggestions-list">
+        <button
+          *ngFor="let producto of productosSugeridos"
+          (click)="seleccionarSugerencia(producto)"
+          (mousedown)="$event.preventDefault()"
+          class="suggestion-item"
+          type="button">
+          <div class="suggestion-image">
+            <img
+              [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/placeholder.jpg'"
+              [alt]="producto.nombre"
+              loading="lazy"
+              onerror="this.src='assets/images/placeholder.jpg'">
+          </div>
+          <div class="suggestion-info">
+            <div class="suggestion-name">{{ producto.nombre }}</div>
+            <div class="suggestion-price">{{ mostrarPrecio(producto) }}</div>
+            <div class="suggestion-category">{{ producto.categoria }}</div>
+          </div>
+          <div class="suggestion-arrow">→</div>
+        </button>
       </div>
     </div>
 
@@ -139,7 +158,7 @@
         </div>
       </div>
 
-      <!-- Frecuentes -->
+      <!-- Frecuentes (Términos en Singular) -->
       <div class="chips-block">
         <div class="chips-block-header">
           <span class="chips-title">BÚSQUEDAS FRECUENTES</span>
@@ -164,7 +183,7 @@
         <div class="loading-dot" style="animation-delay: 0.2s"></div>
         <div class="loading-dot" style="animation-delay: 0.4s"></div>
       </div>
-      <p class="loading-text">Cargando productos...</p>
+      <p class="loading-text">Cargando catálogo de productos...</p>
     </div>
 
     <!-- Sin resultados -->
@@ -192,7 +211,7 @@
         </div>
       </div>
 
-      <!-- Tarjetas -->
+      <!-- Tarjetas de Productos -->
       <div class="products-grid">
         <div
           class="product-card"

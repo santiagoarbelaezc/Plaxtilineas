@@ -1,6 +1,6 @@
-import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors, ValidatorFn, FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -96,6 +96,7 @@ export function emailDomainValidator(): ValidatorFn {
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     HttpClientModule,
     RouterModule
   ],
@@ -243,6 +244,64 @@ export class LoginFormComponent implements OnInit, OnDestroy {
 
   departamentosList: string[] = Object.keys(this.departamentos);
   ciudadesDisponibles: string[] = [];
+
+  // Estado para desplegables personalizados
+  isDeptDropdownOpen = false;
+  isCityDropdownOpen = false;
+  deptSearchFilter = '';
+  citySearchFilter = '';
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.custom-dropdown-container')) {
+      this.isDeptDropdownOpen = false;
+      this.isCityDropdownOpen = false;
+    }
+  }
+
+  toggleDeptDropdown(event: Event): void {
+    event.stopPropagation();
+    this.isDeptDropdownOpen = !this.isDeptDropdownOpen;
+    this.isCityDropdownOpen = false;
+    this.deptSearchFilter = '';
+  }
+
+  toggleCityDropdown(event: Event): void {
+    event.stopPropagation();
+    if (!this.registerForm.get('departamento')?.value) return;
+    this.isCityDropdownOpen = !this.isCityDropdownOpen;
+    this.isDeptDropdownOpen = false;
+    this.citySearchFilter = '';
+  }
+
+  selectDepartamento(dept: string): void {
+    this.registerForm.get('departamento')?.setValue(dept);
+    this.isDeptDropdownOpen = false;
+    this.deptSearchFilter = '';
+  }
+
+  selectCiudad(city: string): void {
+    this.registerForm.get('ciudad')?.setValue(city);
+    this.isCityDropdownOpen = false;
+    this.citySearchFilter = '';
+  }
+
+  getFilteredDepartamentos(): string[] {
+    if (!this.deptSearchFilter.trim()) return this.departamentosList;
+    const filterNorm = this.normalizarTexto(this.deptSearchFilter);
+    return this.departamentosList.filter(d => this.normalizarTexto(d).includes(filterNorm));
+  }
+
+  getFilteredCiudades(): string[] {
+    if (!this.citySearchFilter.trim()) return this.ciudadesDisponibles;
+    const filterNorm = this.normalizarTexto(this.citySearchFilter);
+    return this.ciudadesDisponibles.filter(c => this.normalizarTexto(c).includes(filterNorm));
+  }
+
+  private normalizarTexto(str: string): string {
+    return (str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
 
   mode: 'login' | 'register' | 'forgot' = 'login';
 

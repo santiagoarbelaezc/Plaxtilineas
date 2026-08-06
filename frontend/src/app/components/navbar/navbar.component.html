@@ -157,10 +157,10 @@
     </div>
   </nav>
 
-  <!-- Mobile Search Overlay -->
+  <!-- Mobile Search Overlay (Estilo App Nativa PWA) -->
   <div class="mobile-search-overlay" [class.active]="searchActive">
     <div class="search-overlay-header">
-      <button class="close-search" (click)="toggleSearch()">
+      <button class="close-search" (click)="toggleSearch()" aria-label="Cerrar búsqueda">
         <fa-icon [icon]="['fas', 'arrow-left']"></fa-icon>
       </button>
       <div class="mobile-search-input-wrapper">
@@ -171,23 +171,28 @@
           [(ngModel)]="searchQuery" 
           (keydown.enter)="onSearch()"
           (focus)="onSearchFocus()"
-          placeholder="Buscar productos...">
-        <button class="clear-search-btn" *ngIf="searchQuery" (click)="clearSearch()">
+          placeholder="Buscar producto, categoría, material..."
+          autocomplete="off">
+        <button class="clear-search-btn" *ngIf="searchQuery" (click)="clearSearch()" type="button" aria-label="Limpiar">
           <fa-icon [icon]="['fas', 'times']"></fa-icon>
         </button>
       </div>
+      <button class="mobile-search-submit-btn" (click)="onSearch()" type="button">Buscar</button>
     </div>
     <div class="search-overlay-body">
-      <p class="search-hint" *ngIf="!searchQuery">Explora nuestro catálogo de productos</p>
       
-      <!-- Sugerencias Móvil -->
+      <!-- Sugerencias Móvil (Términos en Singular) -->
       <div class="mobile-suggestions">
-        <h4 class="suggestion-title">Búsquedas Frecuentes</h4>
+        <h4 class="suggestion-title">BÚSQUEDAS FRECUENTES</h4>
         <div class="mobile-suggestion-tags">
-          <button class="suggestion-tag" (click)="navigateToSearch('Espumas')">Espumas</button>
-          <button class="suggestion-tag" (click)="navigateToSearch('Plásticos')">Plásticos</button>
-          <button class="suggestion-tag" (click)="navigateToSearch('Empaques')">Empaques</button>
-          <button class="suggestion-tag" (click)="navigateToSearch('Mallas')">Mallas</button>
+          <button class="suggestion-tag" (click)="navigateToSearch('Espuma')">Espuma</button>
+          <button class="suggestion-tag" (click)="navigateToSearch('Plástico')">Plástico</button>
+          <button class="suggestion-tag" (click)="navigateToSearch('Empaque')">Empaque</button>
+          <button class="suggestion-tag" (click)="navigateToSearch('Malla')">Malla</button>
+          <button class="suggestion-tag" (click)="navigateToSearch('Colchón')">Colchón</button>
+          <button class="suggestion-tag" (click)="navigateToSearch('Tela')">Tela</button>
+          <button class="suggestion-tag" (click)="navigateToSearch('Lona')">Lona</button>
+          <button class="suggestion-tag" (click)="navigateToSearch('Cinta')">Cinta</button>
         </div>
       </div>
     </div>
