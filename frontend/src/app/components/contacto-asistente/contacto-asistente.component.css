@@ -649,23 +649,22 @@
     height: 42px;
   }
 
-  .text-info h3 {
-    font-size: 1rem;
+  .chat-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 20 !important;
+    flex-shrink: 0 !important;
+    padding: max(14px, env(safe-area-inset-top)) 18px 14px 18px !important;
+    background: #0a0a0a !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
   }
 
-  .online-label {
-    font-size: 0.72rem;
-  }
-
-  /* Cuerpo de mensajes desplazable estilo App */
   .chat-messages {
-    flex: 1;
-    background: #080c14;
-    padding: 16px;
-    gap: 12px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-y: contain !important;
   }
 
   .welcome-hero {
@@ -673,16 +672,16 @@
   }
 
   .large-mateo {
-    width: 140px;
+    width: 130px;
     margin-bottom: 8px;
   }
 
   .welcome-text h2 {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
 
   .welcome-text p {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
   }
 
   .message-wrapper {
@@ -695,13 +694,16 @@
     border-radius: 18px;
   }
 
-  /* Barra de Entrada de Mensaje Pegada Abajo (Estilo PWA / WhatsApp) */
+  /* Barra de Entrada de Mensaje Pegada Abajo sobre el teclado (Estilo PWA / WhatsApp) */
   .chat-footer {
-    background: rgba(15, 23, 42, 0.98);
-    backdrop-filter: blur(16px);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 20 !important;
+    background: rgba(15, 23, 42, 0.98) !important;
+    backdrop-filter: blur(16px) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
     padding: 10px 14px max(12px, env(safe-area-inset-bottom)) 14px !important;
-    flex-shrink: 0;
+    flex-shrink: 0 !important;
     margin-top: auto;
   }
 
@@ -718,7 +720,7 @@
     border: 1px solid rgba(74, 222, 128, 0.2);
     border-radius: 24px;
     padding: 11px 16px;
-    font-size: 0.9rem;
+    font-size: 16px !important; /* Previene el auto-zoom en iOS Safari */
   }
 
   .input-form input:focus {

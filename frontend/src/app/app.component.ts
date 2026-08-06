@@ -14,6 +14,8 @@ import { ThemeService } from './services/theme.service';
 import { ToastNotificationComponent } from './components/toast-notification/toast-notification.component';
 import { CookieConsentComponent } from './components/cookies/cookies';
 
+import { KeyboardService } from './services/keyboard.service';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -43,6 +45,7 @@ export class AppComponent implements OnInit {
     private router: Router,
     private seoService: SeoService,
     private pwaService: PwaService,
+    private keyboardService: KeyboardService,
     public authService: AuthService,
     public themeService: ThemeService
   ) {

@@ -255,7 +255,7 @@
 </div>
 
 <!-- Mobile Bottom Navigation (PWA style) -->
-<nav class="mobile-bottom-nav" [class.dark-mode]="isChatOpen" #bottomNav
+<nav class="mobile-bottom-nav" [class.dark-mode]="isChatOpen" [class.nav-hidden]="searchActive || isChatOpen" #bottomNav
      (touchstart)="onTouchStart($event)"
      (touchmove)="onTouchMove($event)"
      (touchend)="onTouchEnd($event)"

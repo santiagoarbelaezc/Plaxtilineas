@@ -795,6 +795,14 @@ body.no-scroll {
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
+  body.keyboard-open .mobile-bottom-nav,
+  .mobile-bottom-nav.nav-hidden {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+  }
+
   .active-indicator-pill {
     position: absolute;
     width: 50px;
