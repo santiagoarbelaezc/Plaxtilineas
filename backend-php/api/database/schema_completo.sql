@@ -153,8 +153,37 @@ CREATE TABLE IF NOT EXISTS `estadisticas_visitas` (
   INDEX `idx_pagina` (`pagina`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- 11. TABLA DE LOGS DE MODERACIÓN Y SEGURIDAD DEL CHAT
+CREATE TABLE IF NOT EXISTS `chat_moderation_log` (
+  `id`           INT AUTO_INCREMENT PRIMARY KEY,
+  `session_id`   VARCHAR(100)  NOT NULL,
+  `ip`           VARCHAR(45)   NOT NULL,
+  `mensaje`      TEXT          NOT NULL,
+  `razon`        VARCHAR(100)  NOT NULL,   -- 'profanity' | 'jailbreak' | 'spam' | 'injection'
+  `nivel`        TINYINT       NOT NULL DEFAULT 1, -- 1=advertencia, 2=bloqueo, 3=ban
+  `created_at`   TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
+  INDEX `idx_session` (`session_id`),
+  INDEX `idx_ip`      (`ip`),
+  INDEX `idx_razon`   (`razon`),
+  INDEX `idx_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 12. TABLA DE SESIONES E IPS BANEADAS DEL CHAT
+CREATE TABLE IF NOT EXISTS `chat_session_bans` (
+  `id`           INT AUTO_INCREMENT PRIMARY KEY,
+  `session_id`   VARCHAR(100)  NOT NULL,
+  `ip`           VARCHAR(45)   NOT NULL,
+  `razon`        VARCHAR(200)  NOT NULL,
+  `banned_until` TIMESTAMP     NOT NULL,
+  `created_at`   TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY `uq_session` (`session_id`),
+  INDEX `idx_ip`        (`ip`),
+  INDEX `idx_banned_until` (`banned_until`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- ============================================================
 -- FIN DE ESQUEMA UNIFICADO DE PRODUCCIÓN
 -- ============================================================
+
