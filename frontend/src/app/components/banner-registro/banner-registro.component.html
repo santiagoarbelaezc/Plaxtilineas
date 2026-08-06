@@ -33,7 +33,10 @@
 
     <div class="banner-image-content" (click)="goToRegister()">
       <div class="image-card-wrapper">
-        <img src="assets/images/promo-registro.png" alt="Promoción Registro VIP" class="promo-img">
+        <picture>
+          <source media="(max-width: 768px)" srcset="assets/images/promo-registromovil.png">
+          <img src="assets/images/promo-registro.png" alt="Promoción Registro VIP" class="promo-img">
+        </picture>
         <div class="image-reflection-overlay"></div>
       </div>
     </div>
