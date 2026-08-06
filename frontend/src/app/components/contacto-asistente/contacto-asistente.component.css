@@ -597,38 +597,50 @@
 }
 
 /* ── Responsive Móvil PWA Native App ─────────────────────── */
+.chat-mobile-backdrop {
+  display: none;
+}
+
 @media (max-width: 768px) {
+  .chat-mobile-backdrop {
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: #0a0a0a !important;
+    z-index: -1 !important;
+    pointer-events: none !important;
+  }
+
   .chat-overlay {
-    padding: 0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100vw;
-    height: 100dvh;
-    height: 100vh;
-    background: #000000 !important;
-    z-index: 1000000;
-    pointer-events: auto;
-    display: flex;
-    flex-direction: column;
+    padding: 0 !important;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    background: #0a0a0a !important;
+    z-index: 1000000 !important;
+    pointer-events: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
   }
 
   .chat-window {
-    width: 100vw;
-    height: 100dvh;
-    height: 100vh;
-    max-height: 100dvh;
-    max-width: 100vw;
-    border-radius: 0;
-    border: none;
-    box-shadow: none;
-    background: #090d16;
-    animation: none;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    width: 100vw !important;
+    height: 100dvh !important;
+    max-width: 100vw !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #0a0a0a !important;
+    animation: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    margin: 0 !important;
   }
 
   /* Header App Nativa */
