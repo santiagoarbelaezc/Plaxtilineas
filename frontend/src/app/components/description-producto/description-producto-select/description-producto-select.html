@@ -44,7 +44,8 @@
         <div class="imagen-principal-wrapper">
           <div class="producto-imagen-container"
                (mousemove)="onImageMouseMove($event)"
-               (mouseleave)="onImageMouseLeave()">
+               (mouseleave)="onImageMouseLeave()"
+               (click)="abrirModalImagen()">
             <div class="producto-imagen-wrapper">
               <img 
                 [src]="producto.imagen_url" 
@@ -295,5 +296,16 @@
         Cerrar
       </button>
     </div>
+  </div>
+</div>
+
+<!-- Modal de Imagen Fullscreen Móvil & Desktop -->
+<div *ngIf="mostrarModalImagen" class="fullscreen-image-modal" (click)="cerrarModalImagen()">
+  <button class="fullscreen-image-close" (click)="cerrarModalImagen()" title="Cerrar imagen (Esc)" type="button">
+    ✕
+  </button>
+  <div class="fullscreen-image-container" (click)="$event.stopPropagation()">
+    <img [src]="imagenModalUrl || producto?.imagen_url" [alt]="nombreCompleto" class="fullscreen-image-img" />
+    <span class="fullscreen-image-caption">{{ nombreCompleto }}</span>
   </div>
 </div>

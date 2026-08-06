@@ -1,6 +1,6 @@
-<div class="chat-overlay" (click)="onClose()">
+<div class="chat-overlay" (click)="onClose()" [style.height]="viewportHeight" [style.top]="viewportTop">
   <div class="chat-mobile-backdrop"></div>
-  <div class="chat-window" (click)="$event.stopPropagation()">
+  <div class="chat-window" (click)="$event.stopPropagation()" [style.height]="viewportHeight">
 
     <!-- Header Premium -->
     <header class="chat-header">

@@ -597,6 +597,15 @@
 }
 
 /* ── Responsive Móvil PWA Native App ─────────────────────── */
+html.chat-modal-open,
+body.chat-modal-open {
+  overflow: hidden !important;
+  height: 100vh !important;
+  position: fixed !important;
+  width: 100vw !important;
+  touch-action: none !important;
+}
+
 .chat-mobile-backdrop {
   display: none;
 }

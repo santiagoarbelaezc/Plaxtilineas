@@ -65,10 +65,31 @@ export class ContactoAsistente implements OnInit, AfterViewChecked, OnDestroy {
     private moderationService: ChatModerationService
   ) {}
 
+  viewportHeight: string = '100dvh';
+  viewportTop: string = '0px';
+
+  private handleViewportChange = () => {
+    if (typeof window !== 'undefined' && window.visualViewport) {
+      this.viewportHeight = window.visualViewport.height + 'px';
+      this.viewportTop = window.visualViewport.offsetTop + 'px';
+    }
+  };
+
   ngOnInit() {
     this.sessionId = localStorage.getItem('mateo_session_id') || this.generateUUID();
     localStorage.setItem('mateo_session_id', this.sessionId);
     this.cargarHistorial();
+
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.add('chat-modal-open');
+      document.body.classList.add('chat-modal-open');
+    }
+
+    if (typeof window !== 'undefined' && window.visualViewport) {
+      this.handleViewportChange();
+      window.visualViewport.addEventListener('resize', this.handleViewportChange);
+      window.visualViewport.addEventListener('scroll', this.handleViewportChange);
+    }
   }
 
   ngAfterViewChecked() {
@@ -81,6 +102,14 @@ export class ContactoAsistente implements OnInit, AfterViewChecked, OnDestroy {
 
   ngOnDestroy() {
     if (this.blockInterval) clearInterval(this.blockInterval);
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.remove('chat-modal-open');
+      document.body.classList.remove('chat-modal-open');
+    }
+    if (typeof window !== 'undefined' && window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', this.handleViewportChange);
+      window.visualViewport.removeEventListener('scroll', this.handleViewportChange);
+    }
   }
 
   generateUUID(): string {
@@ -321,6 +350,10 @@ export class ContactoAsistente implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   navegarA(url: string, external?: boolean) {
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.remove('chat-modal-open');
+      document.body.classList.remove('chat-modal-open');
+    }
     if (external) {
       window.open(url, '_blank');
     } else {
@@ -330,6 +363,10 @@ export class ContactoAsistente implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   onClose() {
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.remove('chat-modal-open');
+      document.body.classList.remove('chat-modal-open');
+    }
     this.closeChat.emit();
   }
 
