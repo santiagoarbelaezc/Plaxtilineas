@@ -1,6 +1,7 @@
 <div class="chat-overlay" (click)="onClose()">
   <div class="chat-window" (click)="$event.stopPropagation()">
-    <!-- Header -->
+
+    <!-- Header Premium -->
     <header class="chat-header">
       <div class="assistant-info">
         <div class="avatar-container">
@@ -9,20 +10,36 @@
         </div>
         <div class="text-info">
           <h3>Mateo</h3>
-          <span>Asistente IA • Online</span>
+          <span class="online-label">
+            <span class="status-pulse-dot"></span>
+            En línea · Asistente IA
+          </span>
         </div>
       </div>
-      <div class="header-actions" style="display: flex; gap: 8px;">
-        <button class="reload-btn" (click)="reiniciarChat()" title="Reiniciar conversación" aria-label="Reiniciar conversación">↻</button>
-        <button class="close-btn" (click)="onClose()" aria-label="Cerrar chat">×</button>
+      <div class="header-actions">
+        <button class="reload-btn" (click)="reiniciarChat()" title="Reiniciar conversación" aria-label="Reiniciar conversación">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <path d="M3.51 15a9 9 0 1 0 .49-4.5"></path>
+          </svg>
+        </button>
+        <button class="close-btn" (click)="onClose()" aria-label="Cerrar chat">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
       </div>
     </header>
 
     <!-- Messages Area -->
     <div class="chat-messages" #scrollMe>
-      
-      <!-- Welcome Hero Section -->
+
+      <!-- Welcome Hero -->
       <div class="welcome-hero">
+        <div class="welcome-glow"></div>
         <img src="assets/images/mateo5.png" alt="Mateo Asistente" class="large-mateo">
         <div class="welcome-text">
           <h2>Hola, Soy <span>Mateo</span></h2>
@@ -34,11 +51,29 @@
         </div>
       </div>
 
+      <!-- Quick Replies -->
+      <div class="quick-replies-section" *ngIf="showQuickReplies && messages.length === 0">
+        <p class="quick-replies-label">💡 Preguntas frecuentes:</p>
+        <div class="quick-replies-grid">
+          <button
+            *ngFor="let reply of quickReplies"
+            class="quick-reply-btn"
+            (click)="sendQuickReply(reply)"
+            [disabled]="moderation.isBlocked"
+            type="button">
+            {{ reply }}
+          </button>
+        </div>
+      </div>
+
       <!-- Messages Loop -->
-      <div *ngFor="let msg of messages" [class]="'message-wrapper ' + msg.sender">
-        <div class="message-bubble">
+      <div *ngFor="let msg of messages"
+           [class]="'message-wrapper ' + msg.sender + (msg.type ? ' type-' + msg.type : '')">
+        <div class="message-bubble"
+             [class.bubble-warning]="msg.type === 'warning'"
+             [class.bubble-error]="msg.type === 'error'">
           <div class="bubble-text">{{ msg.text }}</div>
-          
+
           <!-- Productos Recomendados -->
           <div class="recommended-products" *ngIf="msg.productos && msg.productos.length > 0">
             <div class="product-mini-card" *ngFor="let prod of msg.productos" (click)="navegarA('/producto/' + prod.id)">
@@ -51,17 +86,26 @@
             </div>
           </div>
 
-          <!-- Botones de Acción / Enlaces -->
+          <!-- Botones de Acción -->
           <div class="action-buttons-list" *ngIf="msg.links && msg.links.length > 0">
-            <button 
-              *ngFor="let link of msg.links" 
-              class="quick-action-btn" 
+            <button
+              *ngFor="let link of msg.links"
+              class="quick-action-btn"
               (click)="navegarA(link.url, link.external)">
               {{ link.label }}
             </button>
           </div>
 
-          <span class="message-time">{{ msg.timestamp | date:'HH:mm' }}</span>
+          <!-- Meta de mensaje -->
+          <div class="message-meta">
+            <span class="message-time">{{ msg.timestamp | date:'HH:mm' }}</span>
+            <span class="message-ticks" *ngIf="msg.sender === 'user'">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </span>
+          </div>
         </div>
       </div>
 
@@ -75,21 +119,41 @@
       </div>
     </div>
 
+    <!-- Banner de Bloqueo -->
+    <div class="chat-blocked-banner" *ngIf="moderation.isBlocked">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+      </svg>
+      <span>Chat bloqueado — se reactiva en <strong>{{ moderation.blockCountdown }}s</strong></span>
+    </div>
+
     <!-- Input Area -->
-    <footer class="chat-footer">
+    <footer class="chat-footer" [class.blocked]="moderation.isBlocked">
       <form (ngSubmit)="sendMessage()" class="input-form">
-        <input 
-          type="text" 
-          [(ngModel)]="newMessage" 
-          name="message" 
-          placeholder="Escribe tu mensaje aquí..."
-          autocomplete="off">
-        <button type="submit" [disabled]="!newMessage.trim()" class="send-btn">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
-          </svg>
-        </button>
+        <div class="input-wrapper">
+          <input
+            type="text"
+            [(ngModel)]="newMessage"
+            name="message"
+            [placeholder]="moderation.isBlocked ? '🔒 Chat bloqueado temporalmente...' : 'Escribe tu mensaje aquí...'"
+            autocomplete="off"
+            [disabled]="moderation.isBlocked"
+            [maxlength]="maxChars">
+          <button type="submit" [disabled]="!newMessage.trim() || moderation.isBlocked" class="send-btn" aria-label="Enviar">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+            </svg>
+          </button>
+        </div>
+        <!-- Contador de caracteres -->
+        <div class="footer-meta" *ngIf="newMessage.length > 0">
+          <span class="char-counter" [ngClass]="charCountClass">{{ charCount }}/{{ maxChars }}</span>
+        </div>
       </form>
+      <p class="footer-hint" *ngIf="!moderation.isBlocked">Pregúntame por productos, precios, pedidos y más.</p>
     </footer>
+
   </div>
 </div>

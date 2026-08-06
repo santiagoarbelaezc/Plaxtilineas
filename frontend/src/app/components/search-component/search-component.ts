@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Subject, debounceTime, distinctUntilChanged, takeUntil, filter, switchMap, catchError, of } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, takeUntil, switchMap, catchError, of } from 'rxjs';
 import { ProductosService } from '../../services/productos.service';
 import { ProductoEditable } from '../../models/producto.model';
 import { SearchStateService } from '../../services/search-state.service';
@@ -10,6 +10,7 @@ import { optimizeForThumbnail } from '../../utils/cloudinary-optimizer';
 
 @Component({
   selector: 'app-search-component',
+  standalone: true,
   templateUrl: './search-component.html',
   styleUrls: ['./search-component.css'],
   imports: [CommonModule, FormsModule]
@@ -20,13 +21,19 @@ export class SearchComponent implements OnInit, OnDestroy {
   // Variables del estado
   terminoBusqueda: string = '';
   productos: ProductoEditable[] = [];
+  todosLosProductos: ProductoEditable[] = [];
   productosSugeridos: ProductoEditable[] = [];
   isLoading: boolean = false;
+  isLoadingInicial: boolean = true;
   hasSearched: boolean = false;
   searchError: string = '';
   showSuggestions: boolean = false;
   isSearchInProgress: boolean = false;
-  
+
+  // Búsquedas frecuentes y recientes
+  busquedasFrecuentes: string[] = ['Espumas', 'Plásticos', 'Empaques', 'Mallas', 'Colchones', 'Telas'];
+  busquedasRecientes: string[] = [];
+
   // Información de resultados
   resultadosInfo = {
     total: 0,
@@ -39,7 +46,6 @@ export class SearchComponent implements OnInit, OnDestroy {
   private searchTriggerSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
 
-  private isInitialLoad: boolean = true;
   private lastSearchTerm: string = '';
 
   constructor(
@@ -51,10 +57,12 @@ export class SearchComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.cargarBusquedasRecientes();
     this.setupSearchTriggers();
     this.setupRealTimeSearch();
     this.setupRouterListener();
     this.setupSearchStateListener();
+    this.cargarTodosLosProductos();
   }
 
   ngOnDestroy(): void {
@@ -63,23 +71,126 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Configura el listener de cambios en la ruta
+   * Carga inicial de todos los productos para mostrar por defecto antes de buscar
+   */
+  cargarTodosLosProductos(): void {
+    this.isLoadingInicial = true;
+    this.productosService.obtenerProductos().pipe(
+      takeUntil(this.destroy$),
+      catchError(err => {
+        console.error('Error al cargar catálogo inicial:', err);
+        this.isLoadingInicial = false;
+        return of([]);
+      })
+    ).subscribe((prods) => {
+      this.todosLosProductos = prods || [];
+      this.isLoadingInicial = false;
+
+      // Si no hay término de búsqueda activo, mostrar todos los productos por defecto
+      if (!this.terminoBusqueda.trim() && !this.hasSearched) {
+        this.productos = [...this.todosLosProductos];
+        this.resultadosInfo = {
+          total: this.todosLosProductos.length,
+          termino: '',
+          mensaje: ''
+        };
+      }
+      this.cdr.markForCheck();
+    });
+  }
+
+  /**
+   * Cargar búsquedas recientes desde localStorage
+   */
+  cargarBusquedasRecientes(): void {
+    try {
+      const saved = localStorage.getItem('recent_searches');
+      if (saved) {
+        this.busquedasRecientes = JSON.parse(saved);
+      }
+    } catch (e) {
+      this.busquedasRecientes = [];
+    }
+  }
+
+  /**
+   * Guardar un nuevo término en búsquedas recientes
+   */
+  guardarBusquedaReciente(term: string): void {
+    const cleanTerm = term.trim();
+    if (!cleanTerm || cleanTerm.length < 2) return;
+
+    // Filtrar si ya existe (case insensitive) y colocar al inicio
+    this.busquedasRecientes = [
+      cleanTerm,
+      ...this.busquedasRecientes.filter(t => t.toLowerCase() !== cleanTerm.toLowerCase())
+    ].slice(0, 8); // Máximo 8 recientes
+
+    try {
+      localStorage.setItem('recent_searches', JSON.stringify(this.busquedasRecientes));
+    } catch (e) { }
+  }
+
+  /**
+   * Eliminar un elemento individual de búsquedas recientes
+   */
+  eliminarBusquedaReciente(term: string, event: Event): void {
+    event.stopPropagation();
+    event.preventDefault();
+    this.busquedasRecientes = this.busquedasRecientes.filter(t => t !== term);
+    try {
+      localStorage.setItem('recent_searches', JSON.stringify(this.busquedasRecientes));
+    } catch (e) { }
+  }
+
+  /**
+   * Limpiar todo el historial de búsquedas recientes
+   */
+  limpiarHistorialReciente(): void {
+    this.busquedasRecientes = [];
+    try {
+      localStorage.removeItem('recent_searches');
+    } catch (e) { }
+  }
+
+  /**
+   * Ejecutar búsqueda directa al dar clic en un tag/pill reciente o frecuente
+   */
+  ejecutarBusquedaDirecta(term: string): void {
+    this.terminoBusqueda = term;
+    this.guardarBusquedaReciente(term);
+    this.showSuggestions = false;
+    this.buscar();
+  }
+
+  /**
+   * Navegar atrás o a la página principal
+   */
+  volverAtras(): void {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      this.router.navigate(['/']);
+    }
+  }
+
+  /**
+   * Listener de cambios en la ruta (Query Params)
    */
   private setupRouterListener(): void {
-    // Escuchar los queryParams de la ruta de forma directa y reactiva
     this.route.queryParams.pipe(
       takeUntil(this.destroy$)
     ).subscribe(params => {
       const searchTerm = params['q'];
-      
       if (searchTerm !== undefined) {
         const term = searchTerm ? searchTerm.trim() : '';
         if (term !== this.lastSearchTerm) {
           this.terminoBusqueda = term;
           this.lastSearchTerm = term;
           this.searchStateService.setSearchTerm(term);
-          
+
           if (term) {
+            this.guardarBusquedaReciente(term);
             this.performSearch(term);
           } else {
             this.resetSearchState();
@@ -90,25 +201,22 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Configura el listener del servicio de estado de búsqueda
+   * Listener de cambios en SearchStateService
    */
   private setupSearchStateListener(): void {
-    // Escuchar cambios en el término de búsqueda desde el navbar
     this.searchStateService.searchTerm$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(term => {
       if (term && term.trim() && term !== this.terminoBusqueda) {
         this.terminoBusqueda = term;
         this.lastSearchTerm = term;
-        
-        // Si ya estamos en la página de búsqueda, ejecutar la búsqueda
         if (this.router.url.includes('/busqueda')) {
+          this.guardarBusquedaReciente(term);
           this.performSearch(term);
         }
       }
     });
 
-    // Escuchar estado de búsqueda
     this.searchStateService.isSearching$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(isSearching => {
@@ -120,7 +228,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Configura los triggers de búsqueda
+   * Configurar triggers de búsqueda
    */
   private setupSearchTriggers(): void {
     this.searchTriggerSubject.pipe(
@@ -129,9 +237,9 @@ export class SearchComponent implements OnInit, OnDestroy {
         if (!termino || !termino.trim()) {
           return of(null);
         }
-        
+
         this.prepareForSearch(termino);
-        
+
         return this.productosService.buscarProductosPorNombre(termino).pipe(
           catchError(error => {
             console.error('Error en búsqueda:', error);
@@ -151,14 +259,13 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   private setupRealTimeSearch(): void {
     this.searchSubject.pipe(
-      debounceTime(400),
+      debounceTime(300),
       distinctUntilChanged(),
       takeUntil(this.destroy$)
     ).subscribe(termino => {
       if (termino.trim().length >= 2) {
-        // Ejecutar búsqueda en tiempo real para mostrar sugerencias en el menú desplegable
         this.performRealTimeSearch(termino);
-      } else if (termino.trim().length === 0 && this.hasSearched) {
+      } else if (termino.trim().length === 0) {
         this.limpiarBusqueda();
       } else {
         this.clearSuggestions();
@@ -166,40 +273,37 @@ export class SearchComponent implements OnInit, OnDestroy {
     });
   }
 
-
-
   /**
-   * Inicia búsqueda desde formulario
+   * Inicia búsqueda desde formulario o botón
    */
   buscar(): void {
     const trimmedTerm = this.terminoBusqueda.trim();
     if (trimmedTerm) {
-      // Actualizar el servicio
+      this.guardarBusquedaReciente(trimmedTerm);
       this.searchStateService.setSearchTerm(trimmedTerm);
-      
-      // Usar navigate con relativeTo para mantener la ruta actual
+
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: { q: trimmedTerm },
         queryParamsHandling: 'merge',
         replaceUrl: true
       }).then(() => {
-        // Forzar la ejecución de la búsqueda
         this.lastSearchTerm = trimmedTerm;
         this.performSearch(trimmedTerm);
       });
+    } else {
+      this.limpiarBusqueda();
     }
   }
 
   private performSearch(termino: string): void {
     if (termino.trim()) {
       this.searchTriggerSubject.next(termino.trim());
+    } else {
+      this.resetSearchState();
     }
   }
 
-  /**
-   * Prepara el estado para una nueva búsqueda
-   */
   private prepareForSearch(termino: string): void {
     this.isLoading = true;
     this.isSearchInProgress = true;
@@ -207,129 +311,129 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.searchError = '';
     this.showSuggestions = false;
     this.resultadosInfo.termino = termino;
-    
-    // Notificar al servicio
+
     this.searchStateService.setIsSearching(true);
     this.searchStateService.setSearchError('');
-    
-    // Limpiar resultados anteriores
+
     this.productos = [];
     this.productosSugeridos = [];
     this.resultadosInfo.total = 0;
-    
+
     this.cdr.markForCheck();
   }
 
-  /**
-   * Maneja la respuesta de búsqueda
-   */
   private handleSearchResponse(response: any): void {
-    this.productos = response.resultados || [];
+    let resultados = response.resultados || [];
+
+    // Fallback: si el backend no encuentra o da pocos resultados, filtrar localmente sobre todosLosProductos
+    if (resultados.length === 0 && this.todosLosProductos.length > 0 && this.resultadosInfo.termino) {
+      const termNorm = this.normalizarTexto(this.resultadosInfo.termino);
+      resultados = this.todosLosProductos.filter(p =>
+        this.normalizarTexto(p.nombre || '').includes(termNorm) ||
+        this.normalizarTexto(p.descripcion || '').includes(termNorm) ||
+        this.normalizarTexto(p.categoria || '').includes(termNorm) ||
+        this.normalizarTexto(p.subcategoria || '').includes(termNorm)
+      );
+    }
+
+    this.productos = resultados;
     this.productosSugeridos = response.sugerencias || [];
-    this.resultadosInfo.total = response.total || 0;
+    this.resultadosInfo.total = resultados.length;
     this.resultadosInfo.mensaje = response.mensaje || '';
-    
+
     this.isLoading = false;
     this.isSearchInProgress = false;
-    
-    // Notificar al servicio
+
     this.searchStateService.setIsSearching(false);
     this.searchStateService.setSearchResults(response);
-    
-    // Enfocar input si hay resultados
-    setTimeout(() => {
-      if (this.searchInput && this.productos.length > 0) {
-        this.searchInput.nativeElement.focus();
-      }
-    }, 100);
-    
+
     this.cdr.markForCheck();
   }
 
-  /**
-   * Maneja errores de búsqueda
-   */
   private handleSearchError(error: any, termino: string): void {
     console.error('Error en búsqueda:', error);
-    this.searchError = 'Ocurrió un error al realizar la búsqueda';
-    this.productos = [];
-    this.productosSugeridos = [];
-    this.resultadosInfo.total = 0;
+
+    // Intentar filtrado local en caso de error de red
+    if (this.todosLosProductos.length > 0 && termino) {
+      const termNorm = this.normalizarTexto(termino);
+      this.productos = this.todosLosProductos.filter(p =>
+        this.normalizarTexto(p.nombre || '').includes(termNorm) ||
+        this.normalizarTexto(p.descripcion || '').includes(termNorm) ||
+        this.normalizarTexto(p.categoria || '').includes(termNorm)
+      );
+      this.resultadosInfo.total = this.productos.length;
+      this.resultadosInfo.termino = termino;
+      this.searchError = '';
+    } else {
+      this.searchError = 'Ocurrió un error al realizar la búsqueda';
+      this.productos = [];
+      this.resultadosInfo.total = 0;
+    }
+
     this.isLoading = false;
     this.isSearchInProgress = false;
-    
-    // Notificar al servicio
     this.searchStateService.setIsSearching(false);
-    this.searchStateService.setSearchError(this.searchError);
-    
+
     this.cdr.markForCheck();
   }
 
-  /**
-   * Realiza búsqueda en tiempo real para sugerencias
-   */
   private performRealTimeSearch(termino: string): void {
+    const termNorm = this.normalizarTexto(termino);
+    // Filtrado local inmediato para respuestas instantáneas
+    if (this.todosLosProductos.length > 0) {
+      this.productosSugeridos = this.todosLosProductos.filter(p =>
+        this.normalizarTexto(p.nombre || '').includes(termNorm) ||
+        this.normalizarTexto(p.categoria || '').includes(termNorm)
+      ).slice(0, 5);
+      this.showSuggestions = this.productosSugeridos.length > 0;
+      this.cdr.markForCheck();
+    }
+
     this.productosService.buscarProductosPorNombre(termino).pipe(
       takeUntil(this.destroy$)
     ).subscribe({
       next: (response) => {
-        if (response && response.resultados) {
+        if (response && response.resultados && response.resultados.length > 0) {
           this.productosSugeridos = response.resultados.slice(0, 5);
           this.showSuggestions = true;
           this.cdr.markForCheck();
         }
       },
-      error: (error) => {
-        console.error('Error en búsqueda en tiempo real:', error);
-        this.clearSuggestions();
-      }
+      error: () => {}
     });
   }
 
-  /**
-   * Limpia sugerencias
-   */
   private clearSuggestions(): void {
     this.productosSugeridos = [];
     this.showSuggestions = false;
     this.cdr.markForCheck();
   }
 
-  /**
-   * Resetea el estado de búsqueda
-   */
   private resetSearchState(): void {
     this.terminoBusqueda = '';
-    this.productos = [];
+    this.productos = [...this.todosLosProductos];
     this.productosSugeridos = [];
     this.hasSearched = false;
     this.searchError = '';
     this.showSuggestions = false;
     this.isLoading = false;
     this.isSearchInProgress = false;
-    this.resultadosInfo = { total: 0, termino: '', mensaje: '' };
+    this.resultadosInfo = { total: this.todosLosProductos.length, termino: '', mensaje: '' };
     this.lastSearchTerm = '';
-    
-    // Notificar al servicio
+
     this.searchStateService.clearSearch();
-    
     this.cdr.markForCheck();
   }
 
-  /**
-   * Métodos públicos
-   */
-  
   seleccionarSugerencia(producto: ProductoEditable): void {
     this.terminoBusqueda = producto.nombre;
     this.showSuggestions = false;
+    this.guardarBusquedaReciente(producto.nombre);
     this.buscar();
   }
 
   limpiarBusqueda(): void {
     this.resetSearchState();
-    
-    // Limpiar query params y navegar
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {},
@@ -342,6 +446,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     const trimmedTerm = this.terminoBusqueda.trim();
     if (trimmedTerm.length >= 2) {
       this.searchSubject.next(trimmedTerm);
+    } else if (trimmedTerm.length === 0) {
+      this.resetSearchState();
     } else {
       this.clearSuggestions();
     }
@@ -349,10 +455,8 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   onFocusOut(): void {
     setTimeout(() => {
-      if (!this.hasSearched) {
-        this.showSuggestions = false;
-        this.cdr.markForCheck();
-      }
+      this.showSuggestions = false;
+      this.cdr.markForCheck();
     }, 200);
   }
 
@@ -364,9 +468,6 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Enfoca el input de búsqueda
-   */
   focusSearchInput(): void {
     if (this.searchInput) {
       this.searchInput.nativeElement.focus();
@@ -377,7 +478,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     const currentSearch = this.terminoBusqueda;
     const slug = producto.nombre ? producto.nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '') : '';
     const urlParam = slug ? `${producto.id}-${slug}` : producto.id;
-    
+
     this.router.navigate(['/producto', urlParam], {
       state: { fromSearch: true, searchTerm: currentSearch }
     });
@@ -387,45 +488,42 @@ export class SearchComponent implements OnInit, OnDestroy {
     const formatearPrecio = (precio: number): string => {
       if (precio === null || precio === undefined) return '$ 0';
       const precioEntero = Math.round(precio);
-      const precioFormateado = precioEntero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-      return `$ ${precioFormateado}`;
+      return `$ ${precioEntero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
     };
 
-    // Primero verificar si tiene variantes del backend
     if (producto.variantes && producto.variantes.length > 0) {
       const precios = producto.variantes.map(v => v.precio);
       const minPrecio = Math.min(...precios);
       return `Desde ${formatearPrecio(minPrecio)}`;
     }
-    
-    // Si no tiene variantes, mostrar precio normal
+
     return formatearPrecio(producto.precio || 0);
   }
 
-  /**
-   * Track by function para ngFor
-   */
   trackByProducto(index: number, producto: ProductoEditable): any {
     return producto.id || index;
   }
 
-  /**
-   * Método para reiniciar búsqueda
-   */
   reiniciarBusqueda(): void {
     if (this.resultadosInfo.termino) {
       this.performSearch(this.resultadosInfo.termino);
+    } else {
+      this.cargarTodosLosProductos();
     }
   }
 
-  /**
-   * Verifica si el producto tiene variantes
-   */
   tieneVariantes(producto: ProductoEditable): boolean {
     return !!(producto.variantes && producto.variantes.length > 0);
   }
 
   optimizarImagen(url: string): string {
-    return optimizeForThumbnail(url, 200); // 200px es suficiente para listados de búsqueda rápida y sugerencias
+    return optimizeForThumbnail(url, 240);
+  }
+
+  private normalizarTexto(str: string): string {
+    return (str || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
   }
 }

@@ -1,9 +1,10 @@
-import { Component, Output, EventEmitter, OnInit, ElementRef, ViewChild, AfterViewChecked } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, OnDestroy, ElementRef, ViewChild, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../../enviroments/environment';
+import { ChatModerationService } from '../../services/chat-moderation.service';
 
 interface Message {
   text: string;
@@ -11,6 +12,13 @@ interface Message {
   timestamp: Date;
   productos?: any[];
   links?: { label: string; url: string; external?: boolean }[];
+  type?: 'normal' | 'warning' | 'error';
+}
+
+interface ModerationState {
+  infractions: number;
+  isBlocked: boolean;
+  blockCountdown: number;
 }
 
 @Component({
@@ -20,28 +28,48 @@ interface Message {
   templateUrl: './contacto-asistente.component.html',
   styleUrl: './contacto-asistente.component.css'
 })
-export class ContactoAsistente implements OnInit, AfterViewChecked {
+export class ContactoAsistente implements OnInit, AfterViewChecked, OnDestroy {
   @Output() closeChat = new EventEmitter<void>();
   @ViewChild('scrollMe') private myScrollContainer!: ElementRef;
 
   newMessage: string = '';
   messages: Message[] = [];
   sessionId: string = '';
-
   isTyping = false;
+  maxChars = 500;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  // Estado de moderación
+  moderation: ModerationState = {
+    infractions: 0,
+    isBlocked: false,
+    blockCountdown: 0
+  };
+  private blockInterval: any = null;
+
+  // Quick replies para el chat público
+  quickReplies: string[] = [
+    '🛒 Ver productos',
+    '📦 Hacer pedido',
+    '📍 ¿Dónde están?',
+    '💬 Hablar con asesor',
+    '🔖 Promociones',
+  ];
+  showQuickReplies = true;
+
+  private previousMessagesLength = 0;
+  private previousIsTyping = false;
+
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private moderationService: ChatModerationService
+  ) {}
 
   ngOnInit() {
     this.sessionId = localStorage.getItem('mateo_session_id') || this.generateUUID();
     localStorage.setItem('mateo_session_id', this.sessionId);
-    
-    // Cargar historial del chat si existe
     this.cargarHistorial();
   }
-
-  private previousMessagesLength = 0;
-  private previousIsTyping = false;
 
   ngAfterViewChecked() {
     if (this.messages.length !== this.previousMessagesLength || this.isTyping !== this.previousIsTyping) {
@@ -51,6 +79,10 @@ export class ContactoAsistente implements OnInit, AfterViewChecked {
     }
   }
 
+  ngOnDestroy() {
+    if (this.blockInterval) clearInterval(this.blockInterval);
+  }
+
   generateUUID(): string {
     return 'session_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
   }
@@ -58,7 +90,7 @@ export class ContactoAsistente implements OnInit, AfterViewChecked {
   scrollToBottom(): void {
     try {
       this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
-    } catch(err) { }
+    } catch (err) { }
   }
 
   cargarHistorial() {
@@ -73,28 +105,119 @@ export class ContactoAsistente implements OnInit, AfterViewChecked {
               sender: sender,
               timestamp: new Date(m.created_at || m.timestamp || new Date()),
               productos: m.productos || [],
-              links: m.links || []
+              links: m.links || [],
+              type: 'normal'
             };
           });
+          if (this.messages.length > 0) {
+            this.showQuickReplies = false;
+          }
         }
       },
       error: (err) => console.error('Error al cargar historial', err)
     });
   }
 
+  get charCount(): number {
+    return this.newMessage.length;
+  }
+
+  get charCountClass(): string {
+    if (this.charCount > 450) return 'char-danger';
+    if (this.charCount > 350) return 'char-warn';
+    return '';
+  }
+
+  /**
+   * Maneja un mensaje inapropiado usando el servicio de moderación.
+   */
+  private handleInappropriateMessage(warningMsgOverride?: string): void {
+    this.moderation.infractions++;
+    this.isTyping = true;
+
+    setTimeout(() => {
+      this.isTyping = false;
+      const warningInfo = this.moderationService.getWarningForInfraction(this.moderation.infractions);
+      const textToDisplay = warningMsgOverride || warningInfo.text;
+
+      this.messages.push({
+        text: textToDisplay,
+        sender: 'assistant',
+        timestamp: new Date(),
+        type: warningInfo.type
+      });
+
+      if (warningInfo.blockSeconds > 0) {
+        this.activateChatBlock(warningInfo.blockSeconds);
+      }
+    }, 800);
+  }
+
+  /**
+   * Activa el bloqueo temporal del chat.
+   */
+  private activateChatBlock(seconds: number): void {
+    this.moderation.isBlocked = true;
+    this.moderation.blockCountdown = seconds;
+
+    if (this.blockInterval) clearInterval(this.blockInterval);
+
+    this.blockInterval = setInterval(() => {
+      this.moderation.blockCountdown--;
+      if (this.moderation.blockCountdown <= 0) {
+        this.moderation.isBlocked = false;
+        this.moderation.infractions = 0;
+        clearInterval(this.blockInterval);
+        this.blockInterval = null;
+
+        this.messages.push({
+          text: '✅ Chat desbloqueado. Recuerda mantener un lenguaje respetuoso. ¿En qué te puedo ayudar?',
+          sender: 'assistant',
+          timestamp: new Date(),
+          type: 'normal'
+        });
+      }
+    }, 1000);
+  }
+
+  sendQuickReply(reply: string): void {
+    this.newMessage = reply;
+    this.showQuickReplies = false;
+    this.sendMessage();
+  }
+
   sendMessage() {
     const textToSend = this.newMessage.trim();
     if (!textToSend) return;
+    if (this.moderation.isBlocked) return;
+    if (textToSend.length > this.maxChars) return;
+
+    // Evaluacion del lado del cliente
+    const evalResult = this.moderationService.evaluateContent(textToSend);
+    if (!evalResult.allowed) {
+      this.messages.push({
+        text: textToSend,
+        sender: 'user',
+        timestamp: new Date(),
+        type: 'normal'
+      });
+      this.newMessage = '';
+      this.showQuickReplies = false;
+      this.handleInappropriateMessage(evalResult.warningMessage);
+      return;
+    }
 
     // Agregar mensaje del usuario
     this.messages.push({
       text: textToSend,
       sender: 'user',
-      timestamp: new Date()
+      timestamp: new Date(),
+      type: 'normal'
     });
 
     this.newMessage = '';
     this.isTyping = true;
+    this.showQuickReplies = false;
     this.scrollToBottom();
 
     // Enviar al backend
@@ -104,51 +227,94 @@ export class ContactoAsistente implements OnInit, AfterViewChecked {
     }).subscribe({
       next: (res) => {
         this.isTyping = false;
+
+        // Si el backend moderó el contenido
+        if (res.moderated) {
+          this.moderation.infractions = res.infraction_level || (this.moderation.infractions + 1);
+          const warningInfo = this.moderationService.getWarningForInfraction(this.moderation.infractions);
+          this.messages.push({
+            text: res.respuesta,
+            sender: 'assistant',
+            timestamp: new Date(),
+            type: warningInfo.type
+          });
+          if (warningInfo.blockSeconds > 0) {
+            this.activateChatBlock(warningInfo.blockSeconds);
+          }
+          return;
+        }
+
         if (res) {
           const respuestaText = res.respuesta;
           const productos = res.productos || [];
           const redirect = res.redirect;
-          
+
           const links: { label: string; url: string; external?: boolean }[] = [];
-          
-          // Agregar respuesta antes para asegurar que las tarjetas de productos se muestren
+
           this.messages.push({
             text: respuestaText,
             sender: 'assistant',
             timestamp: new Date(),
             productos: productos,
-            links: links
+            links: links,
+            type: 'normal'
           });
 
-          // Si hay una redirección especificada por el backend (vía regex o palabra clave)
           if (redirect) {
             const isExternal = redirect.startsWith('http://') || redirect.startsWith('https://');
+            const isMaps = redirect.includes('maps');
+
+            let label = 'Ver Sección';
+            if (isMaps) {
+              label = '📍 Abrir en Google Maps';
+            } else if (isExternal) {
+              label = 'Ir al enlace';
+            }
+
             links.push({
-              label: isExternal ? 'Ir al enlace' : 'Ver Sección',
+              label: label,
               url: redirect,
               external: isExternal
             });
 
-            // Redirigir automáticamente después de 1.8 segundos para dejar que el usuario lea
-            setTimeout(() => {
-              this.closeChat.emit();
-              if (isExternal) {
-                window.open(redirect, '_blank');
-              } else {
-                this.router.navigateByUrl(redirect);
-              }
-            }, 1800);
+            // Si es un enlace de mapas, no cerramos automáticamente el chat para que el usuario pueda leer la dirección
+            if (!isMaps) {
+              setTimeout(() => {
+                this.closeChat.emit();
+                if (isExternal) {
+                  window.open(redirect, '_blank');
+                } else {
+                  this.router.navigateByUrl(redirect);
+                }
+              }, 1800);
+            }
           }
         }
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         this.isTyping = false;
+
+        // HTTP 429 - Ban / Rate limit desde el servidor
+        if (err.status === 429) {
+          const retryAfter = err.error?.retry_after_seconds || 60;
+          const errorMsg = err.error?.error || 'Has superado el límite de mensajes permitidos. Intenta más tarde.';
+          this.messages.push({
+            text: `🔒 ${errorMsg}`,
+            sender: 'assistant',
+            timestamp: new Date(),
+            type: 'error'
+          });
+          this.activateChatBlock(retryAfter);
+          return;
+        }
+
         console.error('Error en el chat', err);
         this.messages.push({
           text: 'Lo siento, he tenido problemas para responder. ¿Te gustaría que te comunique con un asesor?',
           sender: 'assistant',
           timestamp: new Date(),
-          links: [{ label: 'Hablar con Asesor en WhatsApp', url: 'https://wa.me/573007365939', external: true }]
+          links: [{ label: 'Hablar con Asesor en WhatsApp', url: 'https://wa.me/573006680125', external: true }],
+          type: 'error'
         });
       }
     });
@@ -175,14 +341,19 @@ export class ContactoAsistente implements OnInit, AfterViewChecked {
         this.sessionId = this.generateUUID();
         localStorage.setItem('mateo_session_id', this.sessionId);
         this.messages = [];
+        this.showQuickReplies = true;
+        this.moderation = { infractions: 0, isBlocked: false, blockCountdown: 0 };
+        if (this.blockInterval) { clearInterval(this.blockInterval); this.blockInterval = null; }
       },
       error: (err) => {
         this.isTyping = false;
         console.error('Error al reiniciar chat:', err);
-        // Reiniciar de todos modos en el cliente
         this.sessionId = this.generateUUID();
         localStorage.setItem('mateo_session_id', this.sessionId);
         this.messages = [];
+        this.showQuickReplies = true;
+        this.moderation = { infractions: 0, isBlocked: false, blockCountdown: 0 };
+        if (this.blockInterval) { clearInterval(this.blockInterval); this.blockInterval = null; }
       }
     });
   }
