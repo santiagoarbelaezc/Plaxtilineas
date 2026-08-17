@@ -1,61 +1,124 @@
 <section class="about-section" aria-label="Quiénes Somos">
   <div class="container">
     
-    <!-- Section Header -->
+    <!-- Header de Sección Estilo Banner Promo -->
     <div class="about-header">
-      <h2 class="about-title">Nuestra <span>Identidad</span></h2>
-      <p class="about-subtitle">Más de dos décadas impulsando el crecimiento industrial del Eje Cafetero</p>
+      <div class="about-chip">
+        <svg class="chip-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2l2.4 7.2L21.6 12l-7.2 2.4L12 21.6l-2.4-7.2L2.4 12l7.2-2.4z"/>
+        </svg>
+        <span>Nuestra Trayectoria</span>
+      </div>
+
+      <h2 class="about-title">
+        Nuestra <span class="highlight-title">Identidad</span>
+      </h2>
+      <p class="about-subtitle">
+        Más de dos décadas impulsando el crecimiento industrial y comercial del Eje Cafetero.
+      </p>
     </div>
 
     <div class="about-grid">
-      <!-- Main Story Card -->
+      <!-- Tarjeta Historia Principal (Estilo Banner Promo) -->
       <div class="story-card">
+        <div class="story-card-header">
+          <div class="story-brand-badge">
+            <span class="chip-dot"></span>
+            <span>Tradición que Proyecta Futuro</span>
+          </div>
+          <span class="story-tag">EJE CAFETERO</span>
+        </div>
+
         <div class="story-content">
-          <p class="story-text">
-            <strong>Plaxtilineas</strong> se consolida como el aliado estratégico en <strong>peletería, plásticos, espumas y empaques</strong> 
-            para Armenia, el Quindío y toda la región. 
+          <p class="story-lead">
+            <strong>Plaxtilineas</strong> se consolida como el aliado estratégico en <strong>peletería, plásticos, espumas y empaques</strong> para Armenia, el Quindío y toda la región.
           </p>
-          <p class="story-text">
-            Ofrecemos soluciones integrales en <strong>cartón corrugado, mallas y empaques industriales</strong> 
-            diseñadas para proteger lo que más importa: tu trabajo. Servimos con orgullo a <strong>Pereira, Manizales</strong> 
-            y cada rincón del Quindío con eficiencia y calidad garantizada.
+          <p class="story-sub">
+            Ofrecemos soluciones integrales en <strong>cartón corrugado, mallas y empaques industriales</strong> diseñadas para proteger lo que más importa: tu trabajo. Servimos con orgullo a <strong>Pereira, Manizales</strong> y cada rincón del Quindío con eficiencia y calidad garantizada.
           </p>
+        </div>
+
+        <!-- Mini Stats Integrados -->
+        <div class="story-stats-grid">
+          <div class="stat-item">
+            <span class="stat-number">+20</span>
+            <span class="stat-label">Años de Historia</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Calidad Garantizada</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">+5.000</span>
+            <span class="stat-label">Clientes Confían</span>
+          </div>
         </div>
       </div>
 
-      <!-- Quick Links / Features -->
+      <!-- Ejes Principales / Tarjetas de Características -->
       <div class="features-area">
-        <h3 class="features-title">Nuestros Ejes <span>Principales</span></h3>
+        <h3 class="features-title">Nuestros Ejes <span class="highlight-title">Principales</span></h3>
         <div class="features-grid">
+
           <a routerLink="/productos" (click)="limpiarFiltros()" class="feature-item">
             <div class="feature-icon-box">
-              <fa-icon [icon]="['fas', 'layer-group']"></fa-icon>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+              </svg>
             </div>
-            <h4>Peletería</h4>
+            <div class="feature-info">
+              <h4>Peletería</h4>
+              <span>Insumos y materiales seleccionados</span>
+            </div>
           </a>
 
           <a routerLink="/busqueda" [queryParams]="{q: 'plastico'}" (click)="limpiarFiltros()" class="feature-item">
             <div class="feature-icon-box">
-              <fa-icon [icon]="['fas', 'box']"></fa-icon>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                <line x1="12" y1="22.08" x2="12" y2="12"/>
+              </svg>
             </div>
-            <h4>Plásticos</h4>
+            <div class="feature-info">
+              <h4>Plásticos</h4>
+              <span>Soluciones para hogar e industria</span>
+            </div>
           </a>
 
           <a routerLink="/productos" (click)="limpiarFiltros()" class="feature-item">
             <div class="feature-icon-box">
-              <fa-icon [icon]="['fas', 'box-open']"></fa-icon>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/>
+                <line x1="7" y1="7" x2="7.01" y2="7"/>
+              </svg>
             </div>
-            <h4>Empaques</h4>
+            <div class="feature-info">
+              <h4>Empaques</h4>
+              <span>Protección y soluciones a medida</span>
+            </div>
           </a>
 
           <a routerLink="/busqueda" [queryParams]="{q: 'carton'}" (click)="limpiarFiltros()" class="feature-item">
             <div class="feature-icon-box">
-              <fa-icon [icon]="['fas', 'truck']"></fa-icon>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="3" width="15" height="13"/>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                <circle cx="5.5" cy="18.5" r="2.5"/>
+                <circle cx="18.5" cy="18.5" r="2.5"/>
+              </svg>
             </div>
-            <h4>Logística</h4>
+            <div class="feature-info">
+              <h4>Logística</h4>
+              <span>Despachos ágiles en todo el Quindío</span>
+            </div>
           </a>
+
         </div>
       </div>
+
     </div>
   </div>
 </section>

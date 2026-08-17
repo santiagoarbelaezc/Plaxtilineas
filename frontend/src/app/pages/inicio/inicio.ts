@@ -17,7 +17,6 @@ import { PlaxtiTrioPresentationComponent } from '../../components/trio-presentat
 import { ContentCard } from '../../models/content-card.model';
 import { BannerImage, PlaxtiBannerComponent } from '../../components/banner/banner';
 import { FeatureNewProducts } from '../../components/feature-new-products/feature-new-products';
-import { CardContainerComponent } from '../../components/card-container/card-container';
 import { FullBanner } from '../../components/full-banner/full-banner';
 import { LongMap } from '../../components/long-map/long-map.component';
 import { UtilGridProducto } from '../../components/grid-producto/util-grid-producto/util-grid-producto';
@@ -50,7 +49,6 @@ import { DynamicProductCarouselComponent } from '../../components/dynamic-produc
     CategoriasDestacadasComponent,
     PlaxtiBannerComponent,
     FeatureNewProducts,
-    CardContainerComponent,
     FullBanner,
     UtilGridProductoOther,
     NosotrosInicioComponent,

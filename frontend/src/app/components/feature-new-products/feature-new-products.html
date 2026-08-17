@@ -1,78 +1,84 @@
-<section class="feature-new-products-section categories-section">
+<section class="feature-new-products-section category-carousel-section">
   <div class="container">
-    <!-- Section Header -->
+    <!-- Header de Sección Estilo Explora Categorías -->
     <div class="section-header">
-      <h2 class="section-title">Nuevos <span>Productos</span></h2>
-      <p class="section-subtitle">Descubre nuestras últimas incorporaciones</p>
+      <h2 class="section-title">
+        Explora más <span>Productos</span>
+      </h2>
+      <p class="section-subtitle">Descubre nuestras últimas incorporaciones y soluciones destacadas</p>
     </div>
 
-    <!-- Carousel Container -->
-    <div class="carousel-wrapper" *ngIf="!loading && productos.length > 0">
-      <!-- Prev Button -->
-      <button class="nav-btn prev" (click)="scrollCarrusel('prev')" aria-label="Anterior">
+    <!-- Carrusel de Productos -->
+    <div class="carrusel-wrapper" *ngIf="!loading && productos.length > 0">
+      <!-- Botón Anterior -->
+      <button class="carrusel-btn prev-btn" (click)="scrollCarrusel('prev')" aria-label="Anterior">
         <fa-icon [icon]="['fas', 'chevron-left']"></fa-icon>
       </button>
-      
-      <div class="carousel-viewport">
-        <div class="categories-grid products-carousel-grid" #productosGrid (scroll)="onScroll($event)">
-          <!-- Product Card -->
-          <div class="category-item" *ngFor="let producto of productos">
-            
-            <div class="category-card product-card-styled" (click)="verDetalles(producto.id, producto.nombre)">
-              
-              <div class="card-visual">
-                <img 
-                  [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/placeholder.jpg'" 
-                  [alt]="producto.nombre"
-                  class="category-icon product-image"
-                  loading="lazy"
-                  (error)="producto.imagen_url = 'assets/images/default-product.png'"
-                >
-                <div class="card-overlay"></div>
-                <!-- Etiqueta de nuevo / agotado -->
-                <div class="product-badge" *ngIf="producto.controlar_stock && producto.stock === 0" style="background-color: #ef4444 !important;">AGOTADO</div>
-                <div class="product-badge" *ngIf="!(producto.controlar_stock && producto.stock === 0)">NUEVO</div>
-              </div>
 
-              <div class="card-content product-info">
-                <span class="product-subcategory">{{producto.categoria}}</span>
-                <h3 class="product-title">{{producto.nombre}}</h3>
-                <div class="product-price">
-                  <span class="price-amount">{{ formatearPrecio(producto.precio) }}</span>
-                </div>
-                
+      <div class="carousel-viewport">
+        <div class="productos-grid" #productosGrid (scroll)="onScroll($event)">
+          <!-- Tarjeta de Producto (Estilo Category Products) -->
+          <div *ngFor="let producto of productos; let i = index" class="producto-card">
+            
+            <div class="producto-imagen-wrapper" (click)="verDetalles(producto.id, producto.nombre)">
+              <!-- Tags Promocionales / Stock -->
+              <span *ngIf="producto.controlar_stock && producto.stock === 0" class="tag promo agotado" style="background-color: #ef4444 !important; color: white !important; font-weight: bold; bottom: 8px; right: 8px;">Agotado</span>
+              <span *ngIf="!(producto.controlar_stock && producto.stock === 0) && i % 3 === 0" class="tag promo promo-dia">Nuevo Producto</span>
+              <span *ngIf="!(producto.controlar_stock && producto.stock === 0) && i % 3 === 1" class="tag promo descuento-15">Novedad VIP</span>
+              <span *ngIf="!(producto.controlar_stock && producto.stock === 0) && i % 3 === 2" class="tag promo ultimas-unidades">Edición Especial</span>
+              
+              <img [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/placeholder.jpg'" 
+                   [alt]="producto.nombre" 
+                   class="producto-imagen"
+                   loading="lazy"
+                   (error)="producto.imagen_url = 'assets/images/default-product.png'">
+                   
+              <div class="producto-overlay">
+                <span class="ver-detalles-btn">Ver Detalles</span>
               </div>
             </div>
+
+            <div class="producto-info">
+              <span class="product-subcategory" *ngIf="producto.categoria">{{ producto.categoria }}</span>
+              <h3 class="producto-titulo" (click)="verDetalles(producto.id, producto.nombre)">
+                {{ producto.nombre }}
+              </h3>
+              
+              <div class="producto-precio-row">
+                <span class="producto-precio">{{ formatearPrecio(producto.precio) }}</span>
+                <span *ngIf="producto.unidad" class="unidad-medida">/ {{ producto.unidad }}</span>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
-      
-      <!-- Next Button -->
-      <button class="nav-btn next" (click)="scrollCarrusel('next')" aria-label="Siguiente">
+
+      <!-- Botón Siguiente -->
+      <button class="carrusel-btn next-btn" (click)="scrollCarrusel('next')" aria-label="Siguiente">
         <fa-icon [icon]="['fas', 'chevron-right']"></fa-icon>
       </button>
     </div>
-    
-    <!-- Indicators -->
-    <div class="carousel-indicators" *ngIf="!loading && pagesArray.length > 1">
-      <button class="indicator-dot" 
-              *ngFor="let page of pagesArray"
+
+    <!-- Indicadores -->
+    <div class="carrusel-indicators" *ngIf="!loading && pagesArray.length > 1">
+      <button *ngFor="let page of pagesArray" 
+              class="indicator-dot" 
               [class.active]="currentPage === page"
               (click)="goToPage(page)"
-              aria-label="Ir a página"></button>
+              aria-label="Ir a página">
+      </button>
     </div>
 
-    <!-- Loading template -->
-    <div class="loading-container" *ngIf="loading">
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="loading">
       <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Plaxtilineas Logo" class="loading-logo">
-      <p>Cargando nuevos productos...</p>
+      <p>Cargando productos...</p>
     </div>
-    
+
     <!-- Empty State -->
     <div class="empty-state" *ngIf="!loading && productos.length === 0">
-      <div class="empty-icon">
-        <fa-icon [icon]="['fas', 'box-open']"></fa-icon>
-      </div>
+      <fa-icon [icon]="['fas', 'box-open']" class="empty-icon"></fa-icon>
       <h3>Próximamente nuevos productos</h3>
       <p>Estamos trabajando para traer nuevas opciones al catálogo.</p>
     </div>

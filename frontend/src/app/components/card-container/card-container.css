@@ -6,9 +6,9 @@
 
 .container-wrapper {
   width: 100%;
-  max-width: 1550px; /* Aumentado para mayor espacio horizontal */
+  max-width: 1550px;
   margin: 0 auto;
-  padding: 10px 2rem; /* Reducido de 40px para acercarlo a otros componentes */
+  padding: 10px 24px;
   font-family: 'Montserrat', sans-serif;
 }
 

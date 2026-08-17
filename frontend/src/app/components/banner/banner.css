@@ -12,10 +12,10 @@
 }
 
 .container {
-  max-width: 1750px; /* Incrementado para aprovechar más el ancho */
-  width: 96%;
+  max-width: 1550px;
+  width: 100%;
   margin: 0 auto;
-  padding: 0 1rem; /* Padding ligeramente menor para ganar espacio */
+  padding: 0 24px;
 }
 
 .full-width-container {

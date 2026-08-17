@@ -6,9 +6,9 @@
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1550px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 24px;
 }
 
 /* Header */
@@ -44,7 +44,7 @@
   align-items: center;
   justify-content: center;
   gap: 2rem;
-  max-width: 900px;
+  max-width: 1550px;
   margin: 0 auto;
 }
 

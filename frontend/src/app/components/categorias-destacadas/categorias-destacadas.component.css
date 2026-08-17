@@ -7,9 +7,9 @@
 }
 
 .container {
-  max-width: 1550px; /* Aumentado de 1400px para aprovechar el ancho */
+  max-width: 1550px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 24px;
 }
 
 /* Carousel Wrapper */

@@ -31,7 +31,7 @@
 
 /* --- Section Layout --- */
 .home-section {
-  padding: 40px 0; /* Reducido de 80px para que los componentes estén más juntos */
+  padding: 20px 0;
   position: relative;
   width: 100%;
 }
@@ -176,7 +176,7 @@
 .elegant-news-container {
   max-width: 1550px;
   margin: 40px auto;
-  padding: 10px 2rem;
+  padding: 10px 24px;
 }
 
 .elegant-news-card {
@@ -191,7 +191,8 @@
   position: relative;
   text-decoration: none;
   color: inherit;
-  max-width: 900px;
+  max-width: 1550px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -341,9 +342,9 @@
 }
 
 .text-block-container {
-  max-width: 900px;
+  max-width: 1550px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 24px;
 }
 
 .text-block-title {
@@ -382,7 +383,7 @@
   color: #475569;
   font-weight: 400;
   margin: 24px auto 0 auto;
-  max-width: 900px;
+  max-width: 1550px;
 }
 
 .text-block-section {
@@ -407,7 +408,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 30px;
-  max-width: 1000px;
+  max-width: 1550px;
   margin: 0 auto;
   width: 100%;
 }

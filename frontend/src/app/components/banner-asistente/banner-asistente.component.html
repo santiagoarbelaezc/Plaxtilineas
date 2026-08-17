@@ -1,36 +1,115 @@
 <section class="assistant-banner">
   <div class="banner-container">
 
-    <!-- Left: Content -->
+    <!-- LADO IZQUIERDO: CONTENIDO -->
     <div class="content-side">
-      <div class="badge-new">Asistente IA</div>
-      <h2 class="title">Cotiza tus <span>productos</span></h2>
+      <div class="badge-tag">
+        <svg class="badge-sparkle-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2l2.4 7.2L21.6 12l-7.2 2.4L12 21.6l-2.4-7.2L2.4 12l7.2-2.4z"/>
+        </svg>
+        <span>Asistente IA Mateo</span>
+      </div>
+
+      <h2 class="title">
+        Cotiza tus <span class="highlight-green">productos</span> al instante
+      </h2>
+
       <p class="description">
-        ¿Cómo puedo ayudarte? <br>
-        Habla con nuestro asistente inteligente y encuentra<br>
-        exactamente lo que necesitas al mejor precio.
+        ¿Necesitas ayuda para elegir espumas, plásticos o mallas? Habla con nuestro asistente inteligente y encuentra exactamente lo que buscas al mejor precio.
       </p>
 
       <div class="chat-pills">
-        <span class="pill"><fa-icon [icon]="faComments" class="pill-icon"></fa-icon> Cotizar productos</span>
-        <span class="pill"><fa-icon [icon]="faBoxOpen" class="pill-icon"></fa-icon> Ver disponibilidad</span>
-        <span class="pill"><fa-icon [icon]="faTruck" class="pill-icon"></fa-icon> Consultar envíos</span>
+        <div class="pill" (click)="abrirChat()">
+          <svg class="pill-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          <span>Cotizar productos</span>
+        </div>
+        <div class="pill" (click)="abrirChat()">
+          <svg class="pill-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+            <line x1="12" y1="22.08" x2="12" y2="12"/>
+          </svg>
+          <span>Ver disponibilidad</span>
+        </div>
+        <div class="pill" (click)="abrirChat()">
+          <svg class="pill-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="1" y="3" width="15" height="13"/>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/>
+            <circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+          <span>Consultar envíos</span>
+        </div>
       </div>
 
       <button class="cta-chat" (click)="abrirChat()">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-          <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+        <svg class="cta-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
         </svg>
-        <span>Hablar con el Asistente</span>
+        <span>Hablar con Mateo</span>
+        <svg class="cta-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
       </button>
     </div>
 
-    <!-- Right: Visual — logo IA centrado -->
-    <div class="visual-side">
-      <div class="ia-logo-wrapper">
-        <img src="assets/images/logo-ia.png" alt="Asistente IA" class="ia-logo-image">
+    <!-- LADO DERECHO: TARJETA CHAT IA EN CÓDIGO ELEGANTE -->
+    <div class="visual-side" (click)="abrirChat()">
+      <div class="ia-chat-card">
+        <!-- Header de la tarjeta del asistente -->
+        <div class="chat-card-header">
+          <div class="mateo-avatar-group">
+            <div class="mateo-avatar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/>
+                <rect x="4" y="8" width="16" height="12" rx="2"/>
+                <circle cx="9" cy="13" r="1.5" fill="currentColor"/>
+                <circle cx="15" cy="13" r="1.5" fill="currentColor"/>
+              </svg>
+              <span class="status-online"></span>
+            </div>
+            <div class="mateo-info">
+              <span class="mateo-name">Mateo IA</span>
+              <span class="mateo-status">En línea • Respuesta instantánea</span>
+            </div>
+          </div>
+          <span class="card-badge-tag">24/7 ACTIVE</span>
+        </div>
+
+        <!-- Muestras de mensajes interactivos en código -->
+        <div class="chat-card-messages">
+          <div class="message-bubble user-bubble">
+            <p>Hola Mateo, ¿cuáles son las ofertas en espumas y mallas hoy?</p>
+          </div>
+
+          <div class="message-bubble mateo-bubble">
+            <div class="bubble-header">
+              <span class="bubble-sender">Mateo Assistant</span>
+            </div>
+            <p>¡Hola! Tenemos precios especiales de catálogo en espumas y envíos gratis en el Quindío.</p>
+            <div class="bubble-action-chip">
+              <span>⚡ Ver Recomendaciones de Catálogo</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simulated Input bar -->
+        <div class="chat-card-input-bar">
+          <span class="input-placeholder">Escribe tu pregunta a Mateo aquí...</span>
+          <div class="send-btn-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </div>
+        </div>
+
       </div>
     </div>
 
   </div>
 </section>
+
