@@ -44,7 +44,7 @@ class AiController
         ];
 
         $data = [
-            'model' => 'llama-3.3-70b-versatile',
+            'model' => 'openai/gpt-oss-120b',
             'messages' => $messages,
             'temperature' => 0.3, // Temperatura baja para más determinismo (especialmente en subcategoría)
             'max_tokens' => 500,

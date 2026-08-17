@@ -389,12 +389,12 @@ class ChatController
         $systemPrompt = str_replace('{{PRODUCTOS_JSON}}', json_encode($productos, JSON_UNESCAPED_UNICODE), $this->getSystemPrompt());
 
         $payload = [
-            'model' => 'llama-3.3-70b-versatile',
+            'model' => 'openai/gpt-oss-120b',
             'messages' => array_merge(
                 [['role' => 'system', 'content' => $systemPrompt]],
                 $mensajes
             ),
-            'max_tokens' => 500,
+            'max_tokens' => 1000,
             'temperature' => 0.7,
         ];
 

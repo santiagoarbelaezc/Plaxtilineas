@@ -40,7 +40,13 @@
             ],
             "allowedCommonJsDependencies": [
               "sweetalert2",
-              "aos"
+              "aos",
+              "html2canvas",
+              "jspdf",
+              "canvg",
+              "core-js",
+              "raf",
+              "rgbcolor"
             ]
           },
           "configurations": {
