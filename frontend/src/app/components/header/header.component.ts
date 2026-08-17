@@ -4,12 +4,11 @@ import { CommonModule } from '@angular/common';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faShoppingCart, faUsers, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { ChatService } from '../../services/chat.service';
-import { FeatureNewProducts } from '../feature-new-products/feature-new-products';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterModule, CommonModule, FontAwesomeModule, FeatureNewProducts],
+  imports: [RouterModule, CommonModule, FontAwesomeModule],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })

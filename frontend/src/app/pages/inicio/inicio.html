@@ -1,11 +1,6 @@
 <app-navbar></app-navbar>
 
 <main class="home-main">
-  <!-- Banner Promoción Registro VIP (Primero en Móvil) -->
-  <div class="block md:hidden" *ngIf="!(authService.isLoggedIn | async)">
-    <app-banner-registro></app-banner-registro>
-  </div>
-
   <!-- Hero Section -->
   <app-header></app-header>
 
@@ -19,7 +14,7 @@
     <app-category-products-carousel></app-category-products-carousel>
   </section>
 
-  <!-- Nuevos Productos ("Encuentra Nuestras Mallas") -->
+  <!-- Nuevos Productos ("Explora más Productos") -->
   <section class="home-section" style="padding-top: 0;">
     <app-feature-new-products></app-feature-new-products>
   </section>
@@ -29,15 +24,13 @@
     <app-banner-asistente></app-banner-asistente>
   </div>
 
-
-
   <!-- Nosotros Inicio (Completo: Texto + Categorías) -->
   <section class="home-section intro-nosotros">
     <app-nosotros-inicio></app-nosotros-inicio>
   </section>
 
-  <!-- Banner Promoción Registro VIP (Solo Escritorio) -->
-  <div class="hidden md:block" *ngIf="!(authService.isLoggedIn | async)">
+  <!-- Banner Promoción Registro VIP -->
+  <div *ngIf="!(authService.isLoggedIn | async)">
     <app-banner-registro></app-banner-registro>
   </div>
 

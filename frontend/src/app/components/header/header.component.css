@@ -466,37 +466,47 @@
   .hero-logo { max-width: 180px; }
 }
 
-/* ── Mobile: hide video & desktop hero ───────────────────── */
+/* ── Mobile Responsive Hero ───────────────────── */
 @media (max-width: 768px) {
   .hero-section {
-    background: #ffffff !important;
-    height: auto !important;
-    min-height: auto !important;
-    padding: 0 !important;
-    display: block !important;
+    height: 85vh;
+    min-height: 550px;
   }
-  .video-container {
-    display: none !important;
-  }
-  .hero-carousel.desktop-only {
-    display: none !important;
-  }
-  .mobile-hero-container {
-    display: block !important;
-  }
-}
 
-/* ── Responsive elements toggling ───────────────────────── */
-.desktop-only {
-  display: flex;
-}
+  .hero-container {
+    padding-left: 6% !important;
+    padding-right: 6% !important;
+  }
 
-.mobile-hero-container {
-  display: none;
-}
+  .hero-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 20px;
+  }
 
-@media (min-width: 769px) {
-  .mobile-hero-container {
-    display: none !important;
+  .hero-logo {
+    max-width: 170px;
+    margin: 0 auto;
+  }
+
+  .hero-title {
+    font-size: 1.75rem;
+    line-height: 1.25;
+  }
+
+  .hero-description {
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .btn-premium {
+    width: 100%;
+    justify-content: center;
   }
 }
