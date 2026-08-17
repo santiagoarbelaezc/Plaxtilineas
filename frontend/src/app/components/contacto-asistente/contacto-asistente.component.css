@@ -764,3 +764,184 @@ body.chat-modal-open {
     font-size: 0.78rem;
   }
 }
+
+/* ── BARRA INFERIOR DE CRÉDITO Y TÉRMINOS IA ───────────────────────── */
+.ai-disclaimer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.7rem;
+  color: #64748b;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.ai-terms-btn {
+  background: none;
+  border: none;
+  color: #60a5fa;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+  font-family: inherit;
+}
+
+.ai-terms-btn:hover {
+  color: #93c5fd;
+}
+
+/* ── MODAL LEGAL DE TÉRMINOS Y POLÍTICAS IA ───────────────────────── */
+.ai-legal-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 1000005;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeInModal 0.25s ease-out;
+}
+
+@keyframes fadeInModal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.ai-legal-modal {
+  background: #0f172a;
+  color: #f8fafc;
+  width: 520px;
+  max-width: 95vw;
+  max-height: 85vh;
+  border-radius: 20px;
+  border: 1px solid rgba(54, 140, 68, 0.3);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: popUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes popUpModal {
+  from { transform: scale(0.92) translateY(20px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.ai-legal-header {
+  padding: 16px 20px;
+  background: linear-gradient(135deg, rgba(54, 140, 68, 0.2) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.legal-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #4ade80;
+}
+
+.legal-title-group h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.close-legal-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: #94a3b8;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.close-legal-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.ai-legal-body {
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: #cbd5e1;
+}
+
+.ai-legal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ai-legal-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+.legal-section h4 {
+  margin: 0 0 6px 0;
+  font-size: 0.92rem;
+  font-weight: 750;
+  color: #4ade80;
+}
+
+.legal-section p {
+  margin: 0;
+}
+
+.legal-section ul {
+  margin: 6px 0 0 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.legal-section li {
+  color: #cbd5e1;
+}
+
+.ai-legal-footer {
+  padding: 14px 20px;
+  background: #090d16;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: right;
+}
+
+.accept-legal-btn {
+  padding: 9px 24px;
+  background: #368c44;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.accept-legal-btn:hover {
+  background: #2d7739;
+  box-shadow: 0 4px 12px rgba(54, 140, 68, 0.3);
+}

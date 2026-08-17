@@ -46,13 +46,22 @@ export class ContactoAsistente implements OnInit, AfterViewChecked, OnDestroy {
   };
   private blockInterval: any = null;
 
+  // Estado del modal de términos y políticas de IA
+  mostrarTerminosIa = false;
+
+  abrirTerminosIa(): void {
+    this.mostrarTerminosIa = true;
+  }
+
+  cerrarTerminosIa(): void {
+    this.mostrarTerminosIa = false;
+  }
+
   // Quick replies para el chat público
   quickReplies: string[] = [
     '🛒 Ver productos',
-    '📦 Hacer pedido',
     '📍 ¿Dónde están?',
     '💬 Hablar con asesor',
-    '🔖 Promociones',
   ];
   showQuickReplies = true;
 
