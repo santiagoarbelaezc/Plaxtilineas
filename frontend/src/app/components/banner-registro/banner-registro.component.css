@@ -372,29 +372,30 @@
 
 @media (max-width: 991px) {
   .banner-registro-section {
-    padding: 30px 0;
+    padding: 24px 0;
   }
 
   .banner-registro-container {
     grid-template-columns: 1fr;
-    gap: 35px;
+    gap: 0;
   }
-  
+
+  /* En móvil solamente se muestra la sección de texto y beneficios */
+  .banner-card-wrapper {
+    display: none !important;
+  }
+
   .banner-text-content {
-    align-items: center;
-    text-align: center;
+    align-items: flex-start;
+    text-align: left;
   }
-  
+
   .banner-description {
     max-width: 100%;
   }
-  
+
   .banner-benefits {
     align-items: flex-start;
-  }
-
-  .card-features-grid {
-    grid-template-columns: 1fr;
   }
 }
 

@@ -466,47 +466,9 @@
   .hero-logo { max-width: 180px; }
 }
 
-/* ── Mobile Responsive Hero ───────────────────── */
+/* ── Mobile: Disable header completely ───────────────────── */
 @media (max-width: 768px) {
   .hero-section {
-    height: 85vh;
-    min-height: 550px;
-  }
-
-  .hero-container {
-    padding-left: 6% !important;
-    padding-right: 6% !important;
-  }
-
-  .hero-grid {
-    grid-template-columns: 1fr;
-    text-align: center;
-    gap: 20px;
-  }
-
-  .hero-logo {
-    max-width: 170px;
-    margin: 0 auto;
-  }
-
-  .hero-title {
-    font-size: 1.75rem;
-    line-height: 1.25;
-  }
-
-  .hero-description {
-    font-size: 0.9rem;
-    line-height: 1.45;
-  }
-
-  .hero-actions {
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-  }
-
-  .btn-premium {
-    width: 100%;
-    justify-content: center;
+    display: none !important;
   }
 }
