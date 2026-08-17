@@ -96,6 +96,11 @@ export class MenuCategoriasComponent implements OnInit {
   }
 
   private checkForSavedSubcategory(): void {
+    // Solo verificar y navegar automáticamente si la ruta actual está en /productos
+    if (!this.router.url.includes('/productos')) {
+      return;
+    }
+
     const savedSubcategoryId = this.menuStateService.getLastSelectedSubcategory();
     
     if (savedSubcategoryId) {
@@ -129,6 +134,11 @@ export class MenuCategoriasComponent implements OnInit {
   }
 
   private cargarProductosDeSubcategoria(subcatId: number): void {
+    // Verificación adicional de seguridad para evitar redirecciones fuera de la página de productos
+    if (!this.router.url.includes('/productos')) {
+      return;
+    }
+
     console.log(`🔄 Cargando productos de subcategoría guardada: ${subcatId}`);
     
     this.router.navigate(['/productos'], {
