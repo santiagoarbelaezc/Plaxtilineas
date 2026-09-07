@@ -353,6 +353,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    document.body.style.overflow = 'hidden';
     this.fetchCaptcha();
     this.startAutoSlide();
     this.cargarProductosReales();
@@ -373,6 +374,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    document.body.style.overflow = '';
     this.stopAutoSlide();
   }
 
