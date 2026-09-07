@@ -21,6 +21,7 @@ import { CartIconComponent } from '../../cart/cart-icon/cart-icon.component';
 import { ChatService } from '../../services/chat.service';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
+import { PromoBannerService } from '../../services/promo-banner.service';
 
 @Component({
   selector: 'app-navbar',
@@ -50,6 +51,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   isSearchRoute: boolean = false;
   
   isChatOpen: boolean = false;
+  isPromoBannerVisible: boolean = false;
 
   @ViewChild('bottomNav') bottomNav!: ElementRef;
   isDragging = false;
@@ -59,6 +61,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   private scrollSubject = new Subject<void>();
+  private promoBannerService = inject(PromoBannerService);
 
   constructor(
     library: FaIconLibrary,
@@ -83,6 +86,10 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.setupScrollListener();
     this.checkInitialScroll();
     
+    this.promoBannerService.isBannerVisible$.pipe(takeUntil(this.destroy$)).subscribe(visible => {
+      this.isPromoBannerVisible = visible;
+    });
+
     this.leadsService.registered$.pipe(takeUntil(this.destroy$)).subscribe(isReg => {
       this.isUserRegistered = isReg;
     });

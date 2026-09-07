@@ -84,9 +84,13 @@
           </button>
 
           <!-- Register Button -->
-          <button *ngIf="!(authService.isLoggedIn | async)" class="action-btn-premium register-btn" (click)="openRegistrationModal()" aria-label="Promociones Exclusivas" title="Recibir Promociones">
-            <fa-icon [icon]="['fas', 'envelope']" class="register-icon"></fa-icon>
-            <span class="register-text">¡Ofertas VIP!</span>
+          <button *ngIf="!(authService.isLoggedIn | async)"
+                  class="action-btn-premium register-btn"
+                  [class.btn-hidden-by-promo]="isPromoBannerVisible"
+                  (click)="openRegistrationModal()"
+                  aria-label="Registrarse gratis"
+                  title="Registrarse gratis">
+            <span class="register-text">Registrarse gratis</span>
           </button>
 
           <!-- WhatsApp Icon -->

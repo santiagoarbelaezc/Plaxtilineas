@@ -249,36 +249,56 @@
   height: 20px;
 }
 
-/* Premium Action Button (Registration) */
+/* Action Button (Registration) */
 .action-btn-premium {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  height: 40px;
-  padding: 0 16px;
+  justify-content: center;
+  height: 38px;
+  padding: 0 18px;
   border-radius: 50px;
-  background: linear-gradient(135deg, #1f2937, #374151);
-  color: #fbbf24; /* Dorado/Amarillo Premium */
-  border: none;
+  background: #0f172a;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   cursor: pointer;
   text-decoration: none;
-  font-weight: 700;
-  font-size: 13px;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  font-weight: 650;
+  font-size: 12.5px;
+  letter-spacing: 0.01em;
+  max-width: 220px;
+  opacity: 1;
+  overflow: hidden;
+  transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              max-width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              padding 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.25s ease,
+              box-shadow 0.25s ease;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.14);
+  white-space: nowrap;
 }
 
 .action-btn-premium:hover {
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
-  color: #1f2937;
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3);
+  background: #1e293b;
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.24);
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
-.register-icon {
-  font-size: 14px;
+.action-btn-premium.btn-hidden-by-promo {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  max-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-width: 0 !important;
+  transform: translateY(-4px) scale(0.95);
+}
+
+.register-text {
+  font-weight: 650;
+  color: #f8fafc;
 }
 
 /* Search Suggestions */

@@ -52,7 +52,6 @@ import { DynamicProductCarouselComponent } from '../../components/dynamic-produc
     FullBanner,
     UtilGridProductoOther,
     NosotrosInicioComponent,
-    BannerAsistenteComponent,
     CategoryProductsCarouselComponent,
     GrupoEmpresasComponent,
     BannerRegistroComponent,

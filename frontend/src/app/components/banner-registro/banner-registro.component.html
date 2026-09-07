@@ -1,122 +1,44 @@
 <section class="banner-registro-section">
   <div class="banner-registro-container">
     
-    <!-- LADO IZQUIERDO: TEXTO Y BENEFICIOS -->
-    <div class="banner-text-content">
-      <div class="banner-tag">
-        <svg class="banner-tag-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2l2.4 7.2L21.6 12l-7.2 2.4L12 21.6l-2.4-7.2L2.4 12l7.2-2.4z"/>
-        </svg>
-        <span>Oferta Exclusiva</span>
-      </div>
-      
-      <h2 class="banner-title">
-        Ofertas <span class="highlight-vip">VIP</span>
-      </h2>
+    <!-- Lado Izquierdo: Información sintética y limpia -->
+    <div class="banner-info-group">
 
-      <p class="banner-description">
-        Regístrate gratis hoy mismo para acceder a precios especiales en espumas y plásticos, recibir ofertas VIP directamente en tu correo y gestionar tus pedidos de manera ágil.
-      </p>
-      
-      <ul class="banner-benefits">
-        <li class="benefit-item">
-          <div class="benefit-icon-wrapper">
-            <svg class="check-icon" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-            </svg>
-          </div>
-          <span>Descuentos exclusivos de hasta el 20%</span>
-        </li>
-        <li class="benefit-item">
-          <div class="benefit-icon-wrapper">
-            <svg class="check-icon" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-            </svg>
-          </div>
-          <span>Acceso inmediato a novedades y lanzamientos</span>
-        </li>
-        <li class="benefit-item">
-          <div class="benefit-icon-wrapper">
-            <svg class="check-icon" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-            </svg>
-          </div>
-          <span>Soporte prioritario con nuestro Asistente Mateo</span>
-        </li>
-      </ul>
-      
-      <button class="banner-btn" (click)="goToRegister()">
-        <span>Crear mi Cuenta</span>
-        <svg class="btn-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <div class="banner-text-wrap">
+        <h2 class="banner-title">
+          Únete gratis y obtén hasta <span class="highlight-accent">20% OFF</span>
+        </h2>
+        <p class="banner-subtitle">
+          Precios especiales de distribuidor en espumas, plásticos y empaques.
+        </p>
+      </div>
+
+      <div class="banner-perks-inline">
+        <span class="perk-chip">
+          <svg class="perk-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          Registro en 1 min
+        </span>
+        <span class="perk-chip">
+          <svg class="perk-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          100% Gratis
+        </span>
+      </div>
+    </div>
+
+    <!-- Lado Derecho: Llamado a la acción -->
+    <div class="banner-cta-group">
+      <button class="banner-btn" (click)="goToRegister()" aria-label="Registrarme gratis">
+        <span>Registrarme gratis</span>
+        <svg class="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <line x1="5" y1="12" x2="19" y2="12"></line>
           <polyline points="12 5 19 12 12 19"></polyline>
         </svg>
       </button>
     </div>
 
-    <!-- LADO DERECHO: TARJETA ELEGANTE Y SUTIL (EN CÓDIGO HTML/CSS) -->
-    <div class="banner-card-wrapper" (click)="goToRegister()">
-      <div class="vip-card-subtle">
-        
-        <!-- Header sutil de la tarjeta -->
-        <div class="card-subtle-header">
-          <div class="brand-chip">
-            <span class="chip-dot"></span>
-            <span class="chip-text">Membresía Gratuita</span>
-          </div>
-          <span class="vip-badge-label">PLAXTILINEAS VIP</span>
-        </div>
-
-        <!-- Banner / Hero central dentro de la tarjeta -->
-        <div class="card-hero-box">
-          <div class="discount-pill">HASTA 20% OFF</div>
-          <h3 class="card-hero-title">Acceso a Precios Especiales</h3>
-          <p class="card-hero-desc">Espumas, plásticos y catálogo completo con beneficios directos.</p>
-        </div>
-
-        <!-- Módulos de beneficios sutiles -->
-        <div class="card-features-grid">
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/>
-                <line x1="7" y1="7" x2="7.01" y2="7"/>
-              </svg>
-            </div>
-            <div class="feature-text">
-              <strong>Descuentos Directos</strong>
-              <span>Precios especiales para miembros</span>
-            </div>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-              </svg>
-            </div>
-            <div class="feature-text">
-              <strong>Atención Agilizada</strong>
-              <span>Gestión rápida con Mateo</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Footer sutil con botón elegante -->
-        <div class="card-subtle-footer">
-          <span class="footer-hint">Registro listo en 1 minuto</span>
-          <div class="subtle-cta-button">
-            <span>Comenzar Ahora</span>
-            <svg class="cta-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
   </div>
 </section>
-
