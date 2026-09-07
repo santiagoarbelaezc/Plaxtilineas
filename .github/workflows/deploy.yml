@@ -55,7 +55,7 @@ jobs:
       - name: Instalar dependencias del Frontend
         run: |
           cd frontend
-          npm ci
+          npm ci --legacy-peer-deps
 
       - name: Compilar Angular (Producción)
         run: |
