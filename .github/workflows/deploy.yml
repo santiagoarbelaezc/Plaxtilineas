@@ -1,0 +1,206 @@
+name: Deploy Continuo a Hostinger
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────────
+  # 0. DETECTOR DE CAMBIOS (Identifica qué carpetas se modificaron)
+  # ──────────────────────────────────────────────────────────────────────────
+  changes:
+    name: Detectar Cambios
+    runs-on: ubuntu-latest
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      backend: ${{ steps.filter.outputs.backend }}
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Filtrar rutas modificadas
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+              - '.github/workflows/deploy.yml'
+            backend:
+              - 'backend-php/**'
+              - '.github/workflows/deploy.yml'
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 1. DESPLIEGUE DEL FRONTEND (ANGULAR) -> public_html/
+  # ──────────────────────────────────────────────────────────────────────────
+  deploy-frontend:
+    name: Build & Deploy Frontend (public_html/)
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Instalar dependencias del Frontend
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Compilar Angular (Producción)
+        run: |
+          cd frontend
+          npm run build -- --configuration production
+
+      - name: Desplegar Frontend a public_html/ vía SSH / rsync
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT || '65002' }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+        run: |
+          sudo apt-get update && sudo apt-get install -y sshpass rsync
+
+          # Ubicar la carpeta compilada de Angular
+          if [ -d "frontend/dist/frontend/browser" ]; then
+            LOCAL_DIST="frontend/dist/frontend/browser/"
+          elif [ -d "frontend/dist/frontend" ]; then
+            LOCAL_DIST="frontend/dist/frontend/"
+          else
+            LOCAL_DIST="frontend/dist/"
+          fi
+
+          echo "Carpeta local a desplegar: $LOCAL_DIST"
+          ls -la "$LOCAL_DIST"
+
+          # Configurar autenticación SSH (Llave o Contraseña)
+          if [ -n "$SSH_KEY" ]; then
+            mkdir -p ~/.ssh
+            echo "$SSH_KEY" > ~/.ssh/id_hostinger
+            chmod 600 ~/.ssh/id_hostinger
+            SSH_CMD="ssh -p $SSH_PORT -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=no"
+            SSH_EXEC="ssh -p $SSH_PORT -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST"
+            RSYNC_PREFIX=""
+          else
+            SSH_CMD="ssh -p $SSH_PORT -o StrictHostKeyChecking=no"
+            SSH_EXEC="sshpass -p $SSH_PASSWORD ssh -p $SSH_PORT -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST"
+            RSYNC_PREFIX="sshpass -p $SSH_PASSWORD"
+          fi
+
+          # Detectar si Hostinger usa domains/plaxtilineas.com/public_html o public_html directamente
+          if $SSH_EXEC "[ -d domains/plaxtilineas.com/public_html ]"; then
+            TARGET_DIR="domains/plaxtilineas.com/public_html/"
+          else
+            TARGET_DIR="public_html/"
+          fi
+
+          echo "Destino del Frontend en Hostinger: $TARGET_DIR"
+
+          # Sincronizar contenido del frontend a la raíz de public_html/
+          # IMPORTANTE:
+          # - El slash al final ($LOCAL_DIST) asegura que se suba el CONTENIDO (index.html, assets, .htaccess) directo en public_html/
+          # - --filter='protect /api' y --filter='protect /api/**' GARANTIZAN que nunca se borre la carpeta api/ del backend
+          $RSYNC_PREFIX rsync -avz --delete \
+            --filter='protect /api' \
+            --filter='protect /api/**' \
+            --exclude="api" \
+            --exclude="api/**" \
+            -e "$SSH_CMD" \
+            "$LOCAL_DIST" \
+            "$SSH_USER@$SSH_HOST:$TARGET_DIR"
+
+          echo "Frontend desplegado con éxito en $TARGET_DIR"
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 2. DESPLIEGUE DEL BACKEND (PHP API) -> public_html/api/
+  # ──────────────────────────────────────────────────────────────────────────
+  deploy-backend:
+    name: Prepare & Deploy Backend (public_html/api/)
+    needs: changes
+    if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar PHP 8.2 y Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+
+      - name: Instalar dependencias de Composer (Producción)
+        run: |
+          cd backend-php/api
+          if [ -f "composer.json" ]; then
+            composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+          fi
+
+      - name: Desplegar Backend a public_html/api/ vía SSH / rsync
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT || '65002' }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+        run: |
+          sudo apt-get update && sudo apt-get install -y sshpass rsync
+
+          if [ -n "$SSH_KEY" ]; then
+            mkdir -p ~/.ssh
+            echo "$SSH_KEY" > ~/.ssh/id_hostinger
+            chmod 600 ~/.ssh/id_hostinger
+            SSH_CMD="ssh -p $SSH_PORT -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=no"
+            SSH_EXEC="ssh -p $SSH_PORT -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST"
+            RSYNC_PREFIX=""
+          else
+            SSH_CMD="ssh -p $SSH_PORT -o StrictHostKeyChecking=no"
+            SSH_EXEC="sshpass -p $SSH_PASSWORD ssh -p $SSH_PORT -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST"
+            RSYNC_PREFIX="sshpass -p $SSH_PASSWORD"
+          fi
+
+          # Detectar ruta raíz remota
+          if $SSH_EXEC "[ -d domains/plaxtilineas.com/public_html ]"; then
+            TARGET_API="domains/plaxtilineas.com/public_html/api/"
+          else
+            TARGET_API="public_html/api/"
+          fi
+
+          echo "Destino del Backend API en Hostinger: $TARGET_API"
+
+          # Asegurar que la carpeta api/ exista en Hostinger
+          $SSH_EXEC "mkdir -p $TARGET_API"
+
+          # Sincronizar el contenido de backend-php/api/ hacia public_html/api/
+          # IMPORTANTE:
+          # - El slash al final de 'backend-php/api/' asegura que se copien config, controllers, index.php, etc. DIRECTAMENTE dentro de api/
+          # - Se excluye .env para proteger las credenciales de BD de producción
+          # - Se excluyen uploads/ para no borrar imágenes subidas por los usuarios
+          # - Se excluyen logs/ y archivos zip
+          $RSYNC_PREFIX rsync -avz \
+            --exclude=".env" \
+            --exclude=".env.*" \
+            --exclude="uploads/**" \
+            --exclude="logs/**" \
+            --exclude="*.log" \
+            --exclude="api.zip" \
+            --exclude=".git*" \
+            -e "$SSH_CMD" \
+            backend-php/api/ \
+            "$SSH_USER@$SSH_HOST:$TARGET_API"
+
+          # Ajustar permisos adecuados en Hostinger
+          $SSH_EXEC "chmod -R 755 $TARGET_API 2>/dev/null || true"
+
+          echo "Backend API desplegado con éxito en $TARGET_API"
