@@ -1,3 +1,4 @@
+// Asistente Mateo — Plaxtilineas Dashboard (Rediseño y Despliegue Continuo Activo)
 import { Component, ElementRef, ViewChild, AfterViewChecked, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
