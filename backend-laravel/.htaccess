@@ -1,0 +1,27 @@
+# ─────────────────────────────────────────────────────────────
+# 1. BLOQUEO DE ARCHIVOS SENSIBLES (.env, .git, composer, etc.)
+# ─────────────────────────────────────────────────────────────
+<FilesMatch "^(\.env.*|\.git.*|\.htaccess|\.htpasswd|composer\.(json|lock)|package\.(json|lock)|phpunit\.xml|artisan|README\.md|.*\.log|.*\.sql)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# ─────────────────────────────────────────────────────────────
+# 2. BLOQUEO DE CARPETAS DEL NÚCLEO Y ENTRADA AL FRONT CONTROLLER
+# ─────────────────────────────────────────────────────────────
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Bloquear acceso HTTP directo a carpetas internas
+    RewriteRule ^(app|bootstrap|config|database|resources|routes|storage|tests|vendor)(/|$) - [F,L]
+
+    # Si la petición no es un archivo o carpeta existente, enviar a index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
