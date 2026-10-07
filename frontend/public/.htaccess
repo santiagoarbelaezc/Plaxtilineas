@@ -44,8 +44,9 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
 RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
 
-# No redirigir requests a /api (backend PHP)
-RewriteRule ^api/ - [L]
+# No redirigir requests a los backends (PHP API y Laravel)
+RewriteRule ^api(/|$) - [L]
+RewriteRule ^backend-laravel(/|$) - [L]
 
 # Servir archivos y directorios que existen físicamente
 RewriteCond %{REQUEST_FILENAME} -f [OR]
