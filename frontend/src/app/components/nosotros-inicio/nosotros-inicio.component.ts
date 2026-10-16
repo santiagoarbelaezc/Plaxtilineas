@@ -1,19 +1,6 @@
 import { Component, inject, OnInit, OnDestroy, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { 
-  faBox, 
-  faBoxOpen, 
-  faTruck, 
-  faLayerGroup, 
-  faChevronLeft, 
-  faChevronRight,
-  faAward,
-  faShieldHalved,
-  faArrowRight,
-  faBuildingColumns
-} from '@fortawesome/free-solid-svg-icons';
 import { MenuStateService } from '../../services/menu-state.service';
 
 export interface SlideIdentidad {
@@ -21,18 +8,11 @@ export interface SlideIdentidad {
   tabLabel: string;
   badge: string;
   region: string;
-  titulo: string;
   subtitulo: string;
+  titulo: string;
   lead: string;
-  stats?: { valor: string; etiqueta: string }[];
-  puntosClave: { 
-    icono: string; 
-    titulo: string; 
-    detalle: string; 
-    link: string; 
-    queryParams?: any; 
-  }[];
-  seoTags: string[];
+  detalles: string[];
+  stats: { valor: string; etiqueta: string }[];
   ctaText: string;
   ctaLink: string;
   ctaQueryParams?: any;
@@ -41,7 +21,7 @@ export interface SlideIdentidad {
 @Component({
   selector: 'app-nosotros-inicio',
   standalone: true,
-  imports: [CommonModule, RouterModule, FontAwesomeModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './nosotros-inicio.component.html',
   styleUrls: ['./nosotros-inicio.component.css']
 })
@@ -52,252 +32,80 @@ export class NosotrosInicioComponent implements OnInit, OnDestroy {
 
   currentSlide = 0;
   private autoplayInterval: any;
-  readonly AUTOPLAY_TIME = 7000;
+  readonly AUTOPLAY_TIME = 8000; // 8 segundos para lectura cómoda
 
   slides: SlideIdentidad[] = [
     {
-      id: 'trayectoria',
-      tabLabel: 'Nuestra Historia',
-      badge: '+20 Años en el Eje Cafetero',
-      region: 'ARMENIA • PEREIRA • MANIZALES',
-      titulo: 'Dos décadas impulsando la industria y el comercio regional',
-      subtitulo: 'Plaxtilineas: Solidez, Confianza y Calidad Garantizada',
-      lead: 'Desde nuestra sede principal en Armenia (Quindío), nos consolidamos como el principal aliado estratégico de empresas, talleres y hogares en el Eje Cafetero y toda Colombia, suministrando materiales de alta durabilidad con atención inmediata y personalizada.',
+      id: 'empaques',
+      tabLabel: 'Empaques & Embalaje',
+      badge: 'Línea de Embalaje & Logística',
+      region: 'ARMENIA • PEREIRA • MANIZALES • DESPACHOS NACIONALES',
+      subtitulo: 'Protección Integral para Envíos y Almacenamiento',
+      titulo: 'Soluciones integrales en empaques, cartón y embalaje industrial',
+      lead: 'En Plaxtilineas somos el aliado estratégico para empresas, comercios y hogares del Eje Cafetero. Suministramos materiales de embalaje de alta resistencia para asegurar la máxima protección de sus mercancías, envíos postales y mudanzas, con venta por mayor y al detal.',
+      detalles: [
+        'Cajas de cartón corrugado en calibres estándar y personalizadas para envíos seguros',
+        'Rollos de plástico burbuja de alta absorción de impacto para artículos frágiles',
+        'Vinipel / Stretch film transparente y negro para paletizado manual e industrial',
+        'Cintas de empaque de alta adherencia, esquineros protectores y zunchos plásticos',
+        'Bolsas de alta y baja densidad para mensajería, paquetería y comercio electrónico'
+      ],
       stats: [
-        { valor: '+20', etiqueta: 'Años de Experiencia' },
-        { valor: '100%', etiqueta: 'Calidad Certificada' },
-        { valor: '+5.000', etiqueta: 'Clientes Activos' }
+        { valor: '+20', etiqueta: 'Años de Experiencia Regional' },
+        { valor: '100%', etiqueta: 'Calidad & Calibres Garantizados' },
+        { valor: '+5.000', etiqueta: 'Clientes en el Eje Cafetero' }
       ],
-      puntosClave: [
-        {
-          icono: 'peleteria',
-          titulo: 'Peletería & Calzado',
-          detalle: 'Cueros sintéticos y pegantes Afix',
-          link: '/productos'
-        },
-        {
-          icono: 'plastico',
-          titulo: 'Plásticos & Agro',
-          detalle: 'Mallas polisombra y filmes HDPE',
-          link: '/busqueda',
-          queryParams: { q: 'plastico' }
-        },
-        {
-          icono: 'empaque',
-          titulo: 'Empaques Seguros',
-          detalle: 'Cajas de cartón y vinipel stretch',
-          link: '/productos'
-        },
-        {
-          icono: 'logistica',
-          titulo: 'Logística Ágil',
-          detalle: 'Despachos locales y nacionales',
-          link: '/busqueda',
-          queryParams: { q: 'carton' }
-        }
-      ],
-      seoTags: ['Plaxtilineas Eje Cafetero', 'Empresas en Armenia Quindío', 'Venta por Mayor y Menor', 'Materiales Industriales'],
-      ctaText: 'Ver Catálogo Completo',
-      ctaLink: '/productos'
-    },
-    {
-      id: 'peleteria',
-      tabLabel: 'Peletería & Tapicería',
-      badge: 'Línea Especializada',
-      region: 'CALZADO, MUEBLES & MARROQUINERÍA',
-      titulo: 'Insumos premium para tapicería, calzado y manufactura',
-      subtitulo: 'Materiales Seleccionados para Acabados Profesionales',
-      lead: 'Disponemos de un amplio portafolio de cueros sintéticos, vinilos automotrices, espumas de alta densidad, pegantes de contacto Afix PL285, cremalleras y herrajes, orientados a tapiceros expertos y fabricantes de calzado y marroquinería.',
-      stats: [
-        { valor: '+150', etiqueta: 'Tipos de Telas & Vinilos' },
-        { valor: 'D20-D40', etiqueta: 'Densidades de Espuma' },
-        { valor: 'Afix', etiqueta: 'Distribuidor Oficial' }
-      ],
-      puntosClave: [
-        {
-          icono: 'peleteria',
-          titulo: 'Cueros Sintéticos',
-          detalle: 'Vinilos de alta resistencia al roce',
-          link: '/productos'
-        },
-        {
-          icono: 'empaque',
-          titulo: 'Pegantes Afix',
-          detalle: 'Adhesivos de contacto PL285 y alta fuerza',
-          link: '/busqueda',
-          queryParams: { q: 'pegante' }
-        },
-        {
-          icono: 'plastico',
-          titulo: 'Espumas Industriales',
-          detalle: 'Cojinería, colchonetas y tapizado',
-          link: '/busqueda',
-          queryParams: { q: 'espuma' }
-        },
-        {
-          icono: 'logistica',
-          titulo: 'Herrajes & Insumos',
-          detalle: 'Hilos, cremalleras y accesorios',
-          link: '/productos'
-        }
-      ],
-      seoTags: ['Peletería en Armenia', 'Cueros Sintéticos Eje Cafetero', 'Pegante Afix', 'Espumas para Muebles'],
-      ctaText: 'Explorar Insumos de Peletería',
+      ctaText: 'Ver Productos de Empaque & Embalaje',
       ctaLink: '/productos'
     },
     {
       id: 'plasticos',
-      tabLabel: 'Plásticos & Agro',
-      badge: 'Soluciones Perimetrales & Coberturas',
-      region: 'AGRO, CONSTRUCCIÓN & HOGAR',
-      titulo: 'Plásticos de alta resistencia, mallas y protección perimetral',
-      subtitulo: 'Películas con Protección UV y Polietileno Virgen',
-      lead: 'Protege cultivos, obras civiles e instalaciones con nuestra línea de mallas polisombra al 35%, 50%, 65% y 80%, plásticos para invernadero calibre 6 y 8, geomembranas impermeabilizantes y tuberías flexibles.',
+      tabLabel: 'Plásticos & Agroindustria',
+      badge: 'Línea Agro & Construcción',
+      region: 'EJE CAFETERO • COBERTURA REGIONAL & RURAL',
+      subtitulo: 'Protección UV y Alta Durabilidad al Clima',
+      titulo: 'Plásticos industriales, mallas polisombra y cubiertas técnicas',
+      lead: 'Distribuimos plásticos técnicos y mallas agrícolas de máxima resistencia formuladas para el clima y la topografía del Quindío y el Eje Cafetero. Ofrecemos asesoría técnica para optimizar cultivos, cerramientos de obras de construcción y aislamiento de humedad.',
+      detalles: [
+        'Mallas polisombra con porcentaje de filtración de 35% al 80% para cultivos, viveros y parqueaderos',
+        'Plásticos tubulares e invernaderos tratados con filtro UV para protección térmica y durabilidad prolongada',
+        'Geomembranas y polietileno negro para cimentación, reservorios de agua y control de humedad',
+        'Lonas impermeables de polipropileno y carpas reforzadas para intemperie',
+        'Disponibilidad inmediata por rollos completos o por metraje según su necesidad'
+      ],
       stats: [
-        { valor: 'UV+', etiqueta: 'Filtro Solar Prolongado' },
-        { valor: '35%-80%', etiqueta: 'Porcentajes de Sombra' },
-        { valor: 'HDPE', etiqueta: 'Polietileno Virgen' }
+        { valor: 'UV+', etiqueta: 'Protección Solar Certificada' },
+        { valor: '35% a 80%', etiqueta: 'Niveles de Sombrío' },
+        { valor: 'Mayor & Detal', etiqueta: 'Venta por Rollo o Metro' }
       ],
-      puntosClave: [
-        {
-          icono: 'plastico',
-          titulo: 'Mallas Polisombra',
-          detalle: 'Negra, verde y cerramiento perimetral',
-          link: '/busqueda',
-          queryParams: { q: 'polisombra' }
-        },
-        {
-          icono: 'empaque',
-          titulo: 'Plásticos para Agro',
-          detalle: 'Invernadero térmico y acolchados',
-          link: '/busqueda',
-          queryParams: { q: 'plastico' }
-        },
-        {
-          icono: 'peleteria',
-          titulo: 'Geomembranas',
-          detalle: 'Impermeabilización de tanques y reservorios',
-          link: '/productos'
-        },
-        {
-          icono: 'logistica',
-          titulo: 'Mangueras & Ductos',
-          detalle: 'Riego agrícola y conducción de fluidos',
-          link: '/busqueda',
-          queryParams: { q: 'manguera' }
-        }
-      ],
-      seoTags: ['Mallas Polisombra Armenia', 'Plásticos Invernadero Quindío', 'Geomembranas Eje Cafetero', 'Coberturas HDPE'],
-      ctaText: 'Ver Catálogo de Plásticos',
+      ctaText: 'Ver Plásticos & Coberturas',
       ctaLink: '/busqueda',
       ctaQueryParams: { q: 'plastico' }
     },
     {
-      id: 'empaques',
-      tabLabel: 'Empaques & Embalaje',
-      badge: 'Embalaje Seguro y Confiable',
-      region: 'E-COMMERCE & INDUSTRIA',
-      titulo: 'Cajas de cartón corrugado, burbuja y vinipel stretch',
-      subtitulo: 'Garantiza la Seguridad de tus Envíos y Productos',
-      lead: 'Especialistas en materiales de empaque para logística comercial, mudanzas y despachos e-commerce. Cajas en cartón sencillo y doble pared, plástico burbuja sellado, zunchos plásticos y cintas de embalaje de alto agarre.',
+      id: 'peleteria',
+      tabLabel: 'Peletería & Tapicería',
+      badge: 'Línea de Tapicería & Manufactura',
+      region: 'CALZADO • MUEBLES • MARROQUINERÍA • AUTOMOTRIZ',
+      subtitulo: 'Materiales Seleccionados para Acabados Profesionales',
+      titulo: 'Cueros sintéticos, espumas de alta densidad y pegantes industriales',
+      lead: 'Ponemos a disposición de tapiceros, artesanos, confeccionistas y fábricas del Eje Cafetero un catálogo seleccionado de insumos de primera calidad para calzado, marroquinería y tapicería automotriz y de hogar.',
+      detalles: [
+        'Cueros sintéticos y vinilos automotrices resistentes al roce, agrietamiento y desgaste',
+        'Espumas de poliuretano en bloques, láminas y cortes a medida (densidades D20, D23, D26 y D30)',
+        'Pegantes de contacto industriales Afix PL285 con alto poder de adhesión inicial y final',
+        'Cremalleras por metro, cursores, hilos de alta tenacidad y resortes para muebles',
+        'Asesoría técnica para fabricantes de salas, comedores, colchonetas y calzado'
+      ],
       stats: [
-        { valor: '+40', etiqueta: 'Medidas de Cajas' },
-        { valor: '100%', etiqueta: 'Reciclable y Biodegradable' },
-        { valor: 'Stretch', etiqueta: 'Manual y para Máquina' }
+        { valor: 'D20 - D40', etiqueta: 'Densidades de Espuma' },
+        { valor: 'Afix', etiqueta: 'Distribuidor Autorizado' },
+        { valor: '+150', etiqueta: 'Diseños & Texturas' }
       ],
-      puntosClave: [
-        {
-          icono: 'empaque',
-          titulo: 'Cajas de Cartón',
-          detalle: 'Calibres resistentes para envíos y archivo',
-          link: '/busqueda',
-          queryParams: { q: 'carton' }
-        },
-        {
-          icono: 'plastico',
-          titulo: 'Plástico Burbuja',
-          detalle: 'Amortiguación de impactos frágiles',
-          link: '/busqueda',
-          queryParams: { q: 'burbuja' }
-        },
-        {
-          icono: 'peleteria',
-          titulo: 'Vinipel Stretch',
-          detalle: 'Película estirable transparente y negra',
-          link: '/busqueda',
-          queryParams: { q: 'vinipel' }
-        },
-        {
-          icono: 'logistica',
-          titulo: 'Cintas & Zunchos',
-          detalle: 'Adhesivos transparentes, café y zuncho pet',
-          link: '/busqueda',
-          queryParams: { q: 'cinta' }
-        }
-      ],
-      seoTags: ['Cajas de Cartón Armenia', 'Plástico Burbuja Eje Cafetero', 'Vinipel Stretch Film', 'Empaques Colombia'],
-      ctaText: 'Ver Soluciones de Empaque',
+      ctaText: 'Ver Insumos de Peletería & Tapicería',
       ctaLink: '/productos'
-    },
-    {
-      id: 'logistica',
-      tabLabel: 'Logística & Cobertura',
-      badge: 'Entregas Rápidas y Asesoría Técnica',
-      region: 'DESPACHOS A TODA COLOMBIA',
-      titulo: 'Entregas ágiles locales y cobertura logística nacional',
-      subtitulo: 'Eficiencia en Tiempos y Costos para tu Negocio',
-      lead: 'Contamos con flota propia de reparto en Armenia y el departamento del Quindío, junto con convenios con las principales transportadoras terrestres del país para garantizar que tus pedidos lleguen a tiempo y en óptimas condiciones.',
-      stats: [
-        { valor: '24-48h', etiqueta: 'Tiempos de Entrega Local' },
-        { valor: 'Nacional', etiqueta: 'Cobertura en Colombia' },
-        { valor: 'Directa', etiqueta: 'Asesoría vía WhatsApp' }
-      ],
-      puntosClave: [
-        {
-          icono: 'logistica',
-          titulo: 'Despachos Locales',
-          detalle: 'Armenia, Calarcá, Montenegro y Quindío',
-          link: '/contacto'
-        },
-        {
-          icono: 'empaque',
-          titulo: 'Envíos Nacionales',
-          detalle: 'Alianzas con Servientrega, Envia e Interrapidísimo',
-          link: '/nosotros'
-        },
-        {
-          icono: 'plastico',
-          titulo: 'Facturación Legal',
-          detalle: 'Facturación Electrónica DIAN garantizada',
-          link: '/terminos'
-        },
-        {
-          icono: 'peleteria',
-          titulo: 'Cotización Inmediata',
-          detalle: 'Asesores comerciales y asistente Mateo IA',
-          link: '/contacto'
-        }
-      ],
-      seoTags: ['Distribución en Armenia', 'Despachos Eje Cafetero', 'Proveedor Confiable Colombia', 'Atención Empresas'],
-      ctaText: 'Contactar un Asesor',
-      ctaLink: '/contacto'
     }
   ];
-
-  constructor(library: FaIconLibrary) {
-    library.addIcons(
-      faBox, 
-      faBoxOpen, 
-      faTruck, 
-      faLayerGroup, 
-      faChevronLeft, 
-      faChevronRight,
-      faAward,
-      faShieldHalved,
-      faArrowRight,
-      faBuildingColumns
-    );
-  }
 
   ngOnInit(): void {
     this.startAutoplay();
