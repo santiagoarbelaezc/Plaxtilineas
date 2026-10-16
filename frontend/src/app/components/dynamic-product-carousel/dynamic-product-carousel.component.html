@@ -1,87 +1,110 @@
-<section class="products-carousel-section" *ngIf="!loading && productos.length > 0">
+<section class="feature-new-products-section dynamic-carousel-section" *ngIf="!loading && productos.length > 0">
   <div class="container">
+    
+    <!-- Header de Sección con Design Tokens -->
     <div class="section-header">
       <h2 class="section-title">
-        {{ contenido.titulo || ('Productos en ' + categoriaNombre) }}
+        <ng-container *ngIf="contenido.titulo; else defaultTitle">
+          {{ contenido.titulo }}
+        </ng-container>
+        <ng-template #defaultTitle>
+          PRODUCTOS EN <span class="highlight-green">{{ categoriaNombre || 'DESTACADOS' }}</span>
+        </ng-template>
       </h2>
-      <p class="section-subtitle" *ngIf="contenido.subtitulo || categoriaNombre">
-        {{ contenido.subtitulo || 'Explora nuestras mejores soluciones' }}
+      <p class="section-subtitle">
+        {{ contenido.subtitulo || 'Descubre nuestras mejores soluciones y materiales seleccionados para tus proyectos.' }}
       </p>
-      <div class="title-underline"></div>
     </div>
 
-    <!-- Carrusel -->
-    <div class="carousel-wrapper">
+    <!-- Carrusel de Productos -->
+    <div class="carrusel-wrapper">
+      
       <!-- Botón Anterior -->
       <button 
-        class="nav-btn prev-btn" 
+        class="carrusel-btn prev-btn" 
         (click)="scrollCarrusel('prev')" 
         [disabled]="currentPage === 0"
-        aria-label="Productos anteriores">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        aria-label="Anterior">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
       </button>
 
-      <!-- Viewport / Track -->
       <div class="carousel-viewport">
-        <div class="products-grid" #productosGrid>
-          <div class="product-card" *ngFor="let prod of productos; let i = index" (click)="verDetalles(prod.id, prod.nombre)">
-            <div class="card-image-wrapper">
-              <img [src]="prod.imagen_url ? optimizarImagen(prod.imagen_url) : 'assets/images/placeholder.jpg'" [alt]="prod.nombre" class="product-img" loading="lazy">
-              <span class="badge" *ngIf="prod.subcategoria">{{ prod.subcategoria }}</span>
-              <!-- Tags (Promocionales) -->
-              <span *ngIf="prod.controlar_stock && prod.stock === 0" class="tag promo agotado" style="background-color: #ef4444 !important; color: white !important; font-weight: bold; bottom: 8px; right: 8px;">Agotado</span>
-              <span *ngIf="!(prod.controlar_stock && prod.stock === 0) && i % 4 === 0" class="tag promo descuento-15">15% descuento</span>
-              <span *ngIf="!(prod.controlar_stock && prod.stock === 0) && i % 4 === 1" class="tag promo ultimas-unidades">Últimas unidades</span>
-              <span *ngIf="!(prod.controlar_stock && prod.stock === 0) && i % 4 === 2" class="tag promo descuento-50">50% descuento</span>
-              <span *ngIf="!(prod.controlar_stock && prod.stock === 0) && i % 4 === 3" class="tag promo promo-dia">Promo del día</span>
+        <div class="productos-grid" #productosGrid (scroll)="onScroll($event)">
+          
+          <!-- Tarjeta de Producto (Diseño Explora más Productos) -->
+          <div *ngFor="let prod of productos; let i = index" class="producto-card">
+            
+            <div class="producto-imagen-wrapper" (click)="verDetalles(prod.id, prod.nombre)">
+              <img 
+                [src]="prod.imagen_url ? optimizarImagen(prod.imagen_url) : 'assets/images/placeholder.jpg'" 
+                [alt]="prod.nombre" 
+                class="producto-imagen"
+                loading="lazy"
+                (error)="prod.imagen_url = 'assets/images/default-product.png'">
+
+              <!-- Badge Promocional / Stock -->
+              <span *ngIf="prod.controlar_stock && prod.stock === 0" class="promo-badge agotado">Agotado</span>
+              <span *ngIf="!(prod.controlar_stock && prod.stock === 0) && i % 4 === 0" class="promo-badge destacado">Destacado</span>
             </div>
 
-            <div class="card-info">
-              <h3 class="product-name">{{ prod.nombre }}</h3>
-              <p class="product-description" *ngIf="prod.descripcion">{{ prod.descripcion }}</p>
+            <div class="producto-info">
+              <span class="product-subcategory" *ngIf="prod.subcategoria || categoriaNombre">
+                {{ prod.subcategoria || categoriaNombre }}
+              </span>
+
+              <h3 class="producto-titulo" (click)="verDetalles(prod.id, prod.nombre)">
+                {{ formatearNombre(prod.nombre) }}
+              </h3>
               
-              <div class="price-row">
-                <span class="price">{{ formatearPrecio(prod.precio) }}</span>
-                <span class="unit" *ngIf="prod.unidad">/ {{ prod.unidad }}</span>
+              <div class="producto-precio-row">
+                <span class="precio-tachado" *ngIf="prod.precio">{{ obtenerPrecioReferencia(prod.precio) }}</span>
+                <span class="producto-precio">
+                  {{ formatearPrecio(prod.precio) }}
+                  <span class="precio-unidad">und</span>
+                </span>
               </div>
             </div>
-            
-            <div class="card-footer">
-              <button class="view-details-btn">
-                <span>Ver Detalles</span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </button>
-            </div>
+
           </div>
         </div>
       </div>
 
       <!-- Botón Siguiente -->
       <button 
-        class="nav-btn next-btn" 
+        class="carrusel-btn next-btn" 
         (click)="scrollCarrusel('next')" 
-        [disabled]="currentPage === pagesArray.length - 1"
-        aria-label="Productos siguientes">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        [disabled]="currentPage >= pagesArray.length - 1"
+        aria-label="Siguiente">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+
+    </div>
+
+    <!-- Indicadores -->
+    <div class="carrusel-indicators" *ngIf="pagesArray.length > 1">
+      <button 
+        *ngFor="let page of pagesArray" 
+        class="indicator-dot" 
+        [class.active]="currentPage === page"
+        (click)="goToPage(page)"
+        [attr.aria-label]="'Ir a página ' + (page + 1)">
+      </button>
+    </div>
+
+    <!-- Botón para ver todos los productos de esta categoría -->
+    <div class="view-all-container">
+      <button class="view-all-btn" (click)="verTodos()">
+        <span>Ver Todos en {{ categoriaNombre || 'Catálogo' }}</span>
+        <svg class="arrow-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
         </svg>
       </button>
     </div>
 
-    <!-- Indicadores -->
-    <div class="carousel-indicators" *ngIf="pagesArray.length > 1">
-      <button 
-        *ngFor="let page of pagesArray" 
-        class="indicator-dot" 
-        [class.active]="page === currentPage"
-        (click)="goToPage(page)"
-        [attr.aria-label]="'Ir a la página ' + (page + 1)">
-      </button>
-    </div>
   </div>
 </section>

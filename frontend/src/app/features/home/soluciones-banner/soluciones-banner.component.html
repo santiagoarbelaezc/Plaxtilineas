@@ -1,0 +1,79 @@
+<section class="soluciones-section" id="soluciones" aria-label="Nuestras Soluciones">
+  <div class="container">
+    
+    <!-- Section Header alineado con el diseño unificado de la tienda -->
+    <div class="section-header">
+      <div class="kicker-badge-row">
+        <span class="soluciones-kicker">
+          <span class="kicker-pulse-dot"></span>
+          CATÁLOGO INTEGRAL
+        </span>
+      </div>
+      <h2 class="section-title">
+        NUESTRAS <span class="highlight-green">SOLUCIONES</span>
+      </h2>
+      <p class="section-subtitle">
+        Descubre todo lo que Plaxtilineas tiene para ofrecerte
+      </p>
+    </div>
+
+    <!-- Contenedor del Acordeón Elegante -->
+    <div class="soluciones-carousel-wrapper">
+      <div 
+        class="soluciones-grid" 
+        [class.has-active]="activeIndex !== null"
+      >
+        <div 
+          *ngFor="let item of soluciones; let i = index" 
+          class="solucion-card"
+          [class.is-active]="activeIndex === i"
+          (mouseenter)="onCardHover(i)"
+          (mouseleave)="onCardLeave()"
+          (click)="onCardClick(item)"
+          role="button"
+          tabindex="0"
+          [attr.aria-label]="item.title"
+        >
+          <!-- Imagen de Fondo (Con zoom ultra sutil) -->
+          <div class="card-image-box">
+            <img 
+              [src]="item.url" 
+              [alt]="item.alt" 
+              class="card-img" 
+              loading="lazy"
+            />
+            
+            <!-- Degradado de contraste permanente para legibilidad óptima -->
+            <div class="card-overlay"></div>
+            <div class="card-accent-gradient"></div>
+          </div>
+
+          <!-- Metadata Superior: Categoría -->
+          <div class="card-top-bar">
+            <span class="category-pill">{{ item.category }}</span>
+          </div>
+
+          <!-- Contenido Inferior: Título Siempre Legible + Descripción suave -->
+          <div class="card-content">
+            <h3 class="card-title">{{ item.title }}</h3>
+            <p class="card-desc">{{ item.description }}</p>
+            
+            <div class="card-action">
+              <span class="action-btn">
+                <span>{{ item.actionText }}</span>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="action-arrow">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <!-- Borde de realce activo -->
+          <div class="card-border-glow"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>

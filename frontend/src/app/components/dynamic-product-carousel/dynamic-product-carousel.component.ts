@@ -117,6 +117,24 @@ export class DynamicProductCarouselComponent implements OnInit {
     });
   }
 
+  onScroll(event: Event): void {
+    const element = event.target as HTMLElement;
+    const scrollLeft = element.scrollLeft;
+    const scrollWidth = element.scrollWidth - element.clientWidth;
+    
+    if (scrollWidth <= 0 || this.pagesArray.length <= 1) return;
+    
+    const scrollPercentage = scrollLeft / scrollWidth;
+    const calculatedPage = Math.min(
+      Math.floor(scrollPercentage * this.pagesArray.length),
+      this.pagesArray.length - 1
+    );
+    
+    if (calculatedPage !== this.currentPage) {
+      this.currentPage = calculatedPage;
+    }
+  }
+
   scrollCarrusel(direction: 'prev' | 'next'): void {
     if (!this.productosGrid) return;
     const grid = this.productosGrid.nativeElement;
@@ -158,6 +176,26 @@ export class DynamicProductCarouselComponent implements OnInit {
     const precioEntero = Math.round(precio);
     const precioFormateado = precioEntero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     return `$ ${precioFormateado}`;
+  }
+
+  obtenerPrecioReferencia(precioReal: number): string {
+    if (!precioReal) return '';
+    const precioRef = Math.round(precioReal * 1.25);
+    return this.formatearPrecio(precioRef);
+  }
+
+  formatearNombre(nombre: string): string {
+    if (!nombre) return '';
+    return nombre.length > 55 ? nombre.substring(0, 52) + '...' : nombre;
+  }
+
+  verTodos(): void {
+    this.menuStateService.clearLastSelectedSubcategory();
+    if (this.contenido?.categoriaId) {
+      this.router.navigate(['/productos'], { queryParams: { categoria: this.contenido.categoriaId } });
+    } else {
+      this.router.navigate(['/productos']);
+    }
   }
 
   optimizarImagen(url: string): string {

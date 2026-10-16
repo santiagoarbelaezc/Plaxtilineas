@@ -37,38 +37,39 @@ export class PlaxtiBannerComponent {
   
   hoveredIndex: number | null = null;
 
-  // Calcula el tamaño y transformación de cada imagen
+  // Calcula el tamaño y transformación de cada imagen con proporciones fluidas
   getImageStyle(index: number): any {
+    const total = this.images?.length || 4;
     if (this.hoveredIndex === null) {
-      // Estado normal: todas iguales
+      // Estado normal: distribución equitativa
       return {
-        flex: '1 1 auto',
-        width: `${100 / this.images.length}%`,
+        flex: '1 1 0%',
+        width: `${100 / total}%`,
         transform: 'scale(1)',
         transition: this.hoverTransition,
-        zIndex: '1',
+        zIndex: 1,
         position: 'relative'
       };
     }
     
     if (index === this.hoveredIndex) {
-      // Imagen hover: se agranda
+      // Imagen expandida en hover
       return {
-        flex: '1 1 auto',
-        width: `${(100 / this.images.length) * this.hoverScale}%`,
+        flex: '2.5 1 0%',
+        width: '46%',
         transform: 'scale(1)',
         transition: this.hoverTransition,
-        zIndex: '10',
+        zIndex: 10,
         position: 'relative'
       };
     } else {
-      // Otras imágenes: se reducen
+      // Otras imágenes comprimidas armónicamente
       return {
-        flex: '1 1 auto',
-        width: `${(100 / this.images.length) * this.minScale}%`,
-        transform: 'scale(0.95)',
+        flex: '0.8 1 0%',
+        width: `${(100 - 46) / (total - 1)}%`,
+        transform: 'scale(0.98)',
         transition: this.hoverTransition,
-        zIndex: '1',
+        zIndex: 1,
         position: 'relative'
       };
     }

@@ -1,40 +1,44 @@
-<section class="mesh-banner-section">
-  <div class="mesh-banner-container">
-    <div class="mesh-banner-content">
-
-      <!-- Headline en Mayúsculas con Estilo Hero -->
-      <h2 class="mesh-headline">
-        MALLAS &amp; COBERTURAS <br>
-        <span class="highlight-green">DE ALTA RESISTENCIA</span>
-      </h2>
-
-      <!-- Subtítulo -->
-      <p class="mesh-lead">
-        Polietileno de alta densidad (HDPE), mallas polisombra, cerramientos y protección perimetral adaptadas a tus proyectos más exigentes.
+<section class="aliados-marquee-section" aria-label="Nuestros Aliados y Distribuidores">
+  <div class="aliados-marquee-wrapper">
+    
+    <!-- Encabezado con título y texto normal descriptivo -->
+    <div class="aliados-marquee-header">
+      <h2 class="aliados-title">NUESTROS <span class="highlight-green">ALIADOS</span></h2>
+      <p class="aliados-subtitle">
+        Distribución oficial y respaldo de las marcas líderes en plásticos, espumas industriales, telas técnicas y adhesivos de alta resistencia para todo el Eje Cafetero.
       </p>
-
-      <!-- Action Buttons Row (Mismo Estilo Hero) -->
-      <div class="mesh-actions-row">
-        <!-- Explorar Mallas -->
-        <a 
-          routerLink="/productos" 
-          class="mesh-btn-primary"
-          aria-label="Ver Mallas y Coberturas">
-          <span class="material-symbols-rounded btn-icon-svg">shopping_bag</span>
-          <span>Ver Mallas y Coberturas</span>
-          <svg class="btn-arrow" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
-        </a>
-
-        <!-- Botón Mateo IA -->
-        <button (click)="abrirAsistente()" class="mesh-btn-assistant" type="button" aria-label="Cotizar con Mateo IA">
-          <span class="material-symbols-rounded btn-assistant-icon">chat</span>
-          <span>Cotizar con Mateo IA</span>
-        </button>
-      </div>
-
     </div>
+
+    <!-- Carrusel Horizontal Continuo sin contenedor (Logos PNG en blanco) -->
+    <div class="marquee-track-container">
+      <div class="marquee-track">
+        <!-- Bloque 1 de Logos -->
+        <div class="marquee-group">
+          <div *ngFor="let aliado of aliados" class="aliado-item" [title]="aliado.nombre">
+            <img 
+              [src]="aliado.logo" 
+              [alt]="aliado.nombre" 
+              class="aliado-logo" 
+              [style.transform]="'scale(' + (aliado.scale || 1) + ')'"
+              loading="lazy" 
+            />
+          </div>
+        </div>
+
+        <!-- Bloque 2 duplicado para transición infinita perfecta sin cortes -->
+        <div class="marquee-group" aria-hidden="true">
+          <div *ngFor="let aliado of aliados" class="aliado-item" [title]="aliado.nombre">
+            <img 
+              [src]="aliado.logo" 
+              [alt]="aliado.nombre" 
+              class="aliado-logo" 
+              [style.transform]="'scale(' + (aliado.scale || 1) + ')'"
+              loading="lazy" 
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>

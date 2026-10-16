@@ -133,13 +133,7 @@
         </div>
       </section>
 
-      <!-- 4. TIPO TESTIMONIOS -->
-      <app-dynamic-testimonios *ngIf="comp.tipo === 'testimonios'" [contenido]="comp.contenido">
-      </app-dynamic-testimonios>
 
-      <!-- 5. TIPO FAQ -->
-      <app-dynamic-faq *ngIf="comp.tipo === 'faq'" [contenido]="comp.contenido">
-      </app-dynamic-faq>
 
       <!-- 6. TIPO GALERIA -->
       <app-dynamic-galeria *ngIf="comp.tipo === 'galeria'" [contenido]="comp.contenido">
@@ -153,13 +147,11 @@
   </ng-container>
   <!-- ════════════════════════════════════════════════════════════════════════ -->
 
-  <!-- Carrusel de Banners -->
-  <section class="home-section" id="soluciones">
-    <app-plaxti-banner [images]="bannerImages" [height]="'500px'" [hoverScale]="1.1" [minScale]="0.95"
-      [fullWidth]="false" [showHeader]="true" [headerTitle]="'Nuestras <span>Soluciones</span>'"
-      [headerSubtitle]="'Descubre todo lo que Plaxtilineas tiene para ofrecerte'">
-    </app-plaxti-banner>
-  </section>
+  <!-- Ubicación y Mapa Sede Física (Diseño Dividido 2 Columnas) -->
+  <app-long-map></app-long-map>
+
+  <!-- Sección Independiente: Nuestras Soluciones -->
+  <app-soluciones-banner></app-soluciones-banner>
 
 
   <!-- ════════════ ZONA DE COMPONENTES DINÁMICOS INFERIORES ════════════ -->
@@ -271,13 +263,7 @@
         </div>
       </section>
 
-      <!-- 4. TIPO TESTIMONIOS -->
-      <app-dynamic-testimonios *ngIf="comp.tipo === 'testimonios'" [contenido]="comp.contenido">
-      </app-dynamic-testimonios>
 
-      <!-- 5. TIPO FAQ -->
-      <app-dynamic-faq *ngIf="comp.tipo === 'faq'" [contenido]="comp.contenido">
-      </app-dynamic-faq>
 
       <!-- 6. TIPO GALERIA -->
       <app-dynamic-galeria *ngIf="comp.tipo === 'galeria'" [contenido]="comp.contenido">
@@ -295,14 +281,11 @@
     <app-util-grid-producto-other></app-util-grid-producto-other>
   </section>
 
-  <!-- Grupo Empresas -->
-  <app-grupo-empresas id="grupo"></app-grupo-empresas>
 
-  <!-- Ubicación y Partners -->
+
+  <!-- Enlaces y Footer -->
   <div class="footer-stack">
-    <app-long-map></app-long-map>
     <app-social-buttons></app-social-buttons>
-    <app-partners></app-partners>
     <app-footer></app-footer>
   </div>
 </main>

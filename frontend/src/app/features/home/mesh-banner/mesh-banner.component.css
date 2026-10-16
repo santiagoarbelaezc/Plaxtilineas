@@ -1,35 +1,29 @@
 /* ═══════════════════════════════════════════════════════════════════
-   BANNER INTERMEDIO DE MALLAS — ESTILO HERO ULTRA HD
-   Imagen: assets/images/hero/home-chatgpt.png
-   Tokens: #0a0a0a, #f4f5f7, #ffffff, #e4e4e7, #16a34a, #22c55e
+   BANNER INTERMEDIO DE ALIADOS — CARRUSEL LOGOS BLANCOS SIN CONTENEDOR
+   Tokens: #0a0a0a, #111827, #16a34a, #22c55e, Inter Tight
    ═══════════════════════════════════════════════════════════════════ */
 
 :host {
   display: block;
   width: 100%;
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-.mesh-banner-section {
+.aliados-marquee-section {
   position: relative;
   width: 100%;
-  min-height: 380px;
+  min-height: 230px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   background-color: #0a0a0a;
-  padding: 56px 24px;
+  padding: 38px 0 42px 0;
+  box-sizing: border-box;
 }
 
-@media (max-width: 768px) {
-  .mesh-banner-section {
-    min-height: 320px;
-    padding: 42px 16px;
-  }
-}
-
-/* ── Imagen de Fondo Fija (Efecto Ventana / Fijo a la Vista como el Hero) ── */
-.mesh-banner-section::before {
+/* ── Imagen de Fondo Fija (Efecto Ventana Parallax) ── */
+.aliados-marquee-section::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -40,188 +34,183 @@
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
-  filter: brightness(0.76) contrast(1.08) saturate(1.02);
+  filter: brightness(0.55) contrast(1.1) saturate(0.9);
   z-index: 1;
   pointer-events: none;
 }
 
-/* ── Overlay Oscuro Translúcido ── */
-.mesh-banner-section::after {
+/* ── Overlay Oscuro con sutil resplandor esmeralda ── */
+.aliados-marquee-section::after {
   content: '';
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(180deg, rgba(10, 10, 10, 0.74) 0%, rgba(10, 10, 10, 0.60) 50%, rgba(10, 10, 10, 0.84) 100%);
+  background: linear-gradient(
+    180deg, 
+    rgba(10, 10, 10, 0.90) 0%, 
+    rgba(10, 15, 12, 0.82) 50%, 
+    rgba(10, 10, 10, 0.94) 100%
+  );
   z-index: 2;
   pointer-events: none;
 }
 
 @media (max-width: 768px) {
-  .mesh-banner-section::before {
+  .aliados-marquee-section::before {
     background-attachment: scroll;
   }
 }
 
-/* ── Contenedor de Contenido ── */
-.mesh-banner-container {
+/* ── Contenedor General ── */
+.aliados-marquee-wrapper {
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  box-sizing: border-box;
 }
 
-.mesh-banner-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+/* ── Header Discreto y Sofisticado ── */
+.aliados-marquee-header {
   text-align: center;
-  max-width: 880px;
+  margin-bottom: 28px;
+  max-width: 820px;
+  padding: 0 20px;
 }
 
-/* ── Headline en Mayúsculas con Estilo Hero ── */
-.mesh-headline {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 2.2rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  line-height: 1.2;
+.aliados-title {
   color: #ffffff;
-  margin: 0 0 14px 0;
-  text-shadow: none !important;
-  filter: none !important;
-}
-
-@media (max-width: 1024px) {
-  .mesh-headline {
-    font-size: 1.85rem;
-  }
-}
-
-@media (max-width: 640px) {
-  .mesh-headline {
-    font-size: 1.45rem;
-    line-height: 1.22;
-    letter-spacing: 0.02em;
-  }
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  margin: 0 0 10px 0;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.85);
+  line-height: 1.2;
 }
 
 .highlight-green {
   color: #22c55e;
-  font-weight: 800;
-  text-shadow: none !important;
-  display: inline-block;
 }
 
-/* Subtítulo */
-.mesh-lead {
-  font-size: 1.05rem;
-  font-weight: 500;
-  color: #e4e4e7;
-  line-height: 1.6;
-  max-width: 680px;
-  margin: 0 0 28px 0;
-  text-shadow: none !important;
+.aliados-subtitle {
+  color: rgba(226, 232, 240, 0.88);
+  font-size: 1rem;
+  line-height: 1.55;
+  margin: 0 auto;
+  max-width: 720px;
+  font-weight: 400;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
 }
 
-@media (max-width: 640px) {
-  .mesh-lead {
-    font-size: 0.92rem;
-    margin-bottom: 22px;
+/* ── Pista del Marquee Infinito Horizontal ── */
+.marquee-track-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  /* Máscaras de desvanecimiento suave a los extremos izquierdo y derecho */
+  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  padding: 12px 0;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  user-select: none;
+}
+
+/* Pausa suave al pasar el cursor */
+.marquee-track-container:hover .marquee-group {
+  animation-play-state: paused;
+}
+
+.marquee-group {
+  display: flex;
+  align-items: center;
+  gap: 84px;
+  padding-right: 84px;
+  animation: marqueeLoop 34s linear infinite;
+  will-change: transform;
+}
+
+@keyframes marqueeLoop {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
   }
 }
 
-/* ── Fila de Acciones / Botones (Mismo Estilo Hero) ── */
-.mesh-actions-row {
+/* ── Elementos Individuales Sin Contenedor (PNG Puro) ── */
+.aliado-item {
+  width: 165px;
+  height: 64px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-/* Botón Primario Verde */
-.mesh-btn-primary {
-  background: #16a34a;
-  color: #ffffff;
-  padding: 13px 26px;
-  border-radius: 14px;
-  font-weight: 800;
-  font-size: 0.86rem;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 22px rgba(22, 163, 74, 0.45);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: transparent;
+  border: none;
+  box-shadow: none;
   cursor: pointer;
-  font-family: inherit;
+  box-sizing: border-box;
 }
 
-.mesh-btn-primary:hover {
-  background: #15803d;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(22, 163, 74, 0.6);
-  color: #ffffff;
+/* ── Logos 100% Blancos Nítidos con Transición de Brillo ── */
+.aliado-logo {
+  max-width: 100%;
+  max-height: 48px;
+  object-fit: contain;
+  /* Convierte cualquier logo a blanco puro respetando la transparencia del PNG */
+  filter: brightness(0) invert(1);
+  opacity: 0.82;
+  transition: opacity 0.3s cubic-bezier(0.25, 1, 0.35, 1), 
+              filter 0.3s cubic-bezier(0.25, 1, 0.35, 1);
+  pointer-events: none;
+  will-change: opacity, filter, transform;
 }
 
-.btn-icon-svg {
-  font-size: 20px;
+.aliado-item:hover .aliado-logo {
+  opacity: 1;
+  /* Resplandor blanco sutil con halo esmeralda corporativo */
+  filter: brightness(0) invert(1) 
+          drop-shadow(0 0 8px rgba(255, 255, 255, 0.65)) 
+          drop-shadow(0 0 16px rgba(34, 197, 94, 0.5));
 }
 
-.btn-arrow {
-  transition: transform 0.25s ease;
-}
+/* ── Responsividad ── */
+@media (max-width: 768px) {
+  .aliados-marquee-section {
+    min-height: 195px;
+    padding: 28px 0 32px 0;
+  }
 
-.mesh-btn-primary:hover .btn-arrow {
-  transform: translateX(4px);
-}
+  .aliados-title {
+    font-size: 1.45rem;
+  }
 
-/* Botón Asistente Mateo IA (Estilo Glass Hero) */
-.mesh-btn-assistant {
-  background: rgba(18, 18, 20, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1.5px solid rgba(255, 255, 255, 0.22);
-  color: #ffffff;
-  padding: 13px 26px;
-  border-radius: 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: inherit;
-  font-weight: 800;
-  font-size: 0.86rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
-}
+  .aliados-subtitle {
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
 
-.mesh-btn-assistant:hover {
-  background: rgba(28, 28, 32, 0.95);
-  border-color: #22c55e;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.5);
-  color: #22c55e;
-}
+  .marquee-group {
+    gap: 52px;
+    padding-right: 52px;
+    animation-duration: 25s;
+  }
 
-.btn-assistant-icon {
-  font-size: 20px;
-  color: #22c55e;
-  transition: transform 0.2s ease;
-}
+  .aliado-item {
+    width: 130px;
+    height: 54px;
+  }
 
-.mesh-btn-assistant:hover .btn-assistant-icon {
-  transform: scale(1.1);
+  .aliado-logo {
+    max-height: 38px;
+  }
 }

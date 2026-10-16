@@ -138,14 +138,12 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.7) 0%,
-    rgba(0, 0, 0, 0.4) 30%,
-    rgba(0, 0, 0, 0.2) 50%,
-    rgba(0, 0, 0, 0.4) 70%,
-    rgba(0, 0, 0, 0.85) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.7) 0%,
+      rgba(0, 0, 0, 0.4) 30%,
+      rgba(0, 0, 0, 0.2) 50%,
+      rgba(0, 0, 0, 0.4) 70%,
+      rgba(0, 0, 0, 0.85) 100%);
   opacity: 0.6;
   transition: opacity 0.4s ease;
   z-index: 1;
@@ -153,12 +151,10 @@
 }
 
 .plaxti-banner-grid.has-gap .plaxti-image-overlay {
-  background: linear-gradient(
-    to top,
-    rgba(17, 24, 39, 0.9) 0%,
-    rgba(17, 24, 39, 0.3) 40%,
-    transparent 100%
-  );
+  background: linear-gradient(to top,
+      rgba(17, 24, 39, 0.9) 0%,
+      rgba(17, 24, 39, 0.3) 40%,
+      transparent 100%);
 }
 
 .plaxti-image-wrapper:hover .plaxti-image-overlay {
@@ -172,12 +168,10 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    45deg,
-    rgba(54, 140, 68, 0.1) 0%,
-    rgba(37, 211, 102, 0.05) 50%,
-    transparent 100%
-  );
+  background: linear-gradient(45deg,
+      rgba(54, 140, 68, 0.1) 0%,
+      rgba(37, 211, 102, 0.05) 50%,
+      transparent 100%);
   opacity: 0.4;
   transition: opacity 0.4s ease;
   z-index: 1;
@@ -286,8 +280,8 @@
   height: 100%;
   border: 3px solid transparent;
   background: linear-gradient(90deg, var(--primary-green), var(--whatsapp-green)) border-box;
-  -webkit-mask: 
-    linear-gradient(#fff 0 0) padding-box, 
+  -webkit-mask:
+    linear-gradient(#fff 0 0) padding-box,
     linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -313,13 +307,11 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.03) 0%,
-    rgba(255, 255, 255, 0) 20%,
-    rgba(255, 255, 255, 0.01) 80%,
-    rgba(255, 255, 255, 0.02) 100%
-  );
+  background: linear-gradient(45deg,
+      rgba(255, 255, 255, 0.03) 0%,
+      rgba(255, 255, 255, 0) 20%,
+      rgba(255, 255, 255, 0.01) 80%,
+      rgba(255, 255, 255, 0.02) 100%);
   opacity: 0;
   transition: opacity 0.4s ease;
   z-index: 2;
@@ -358,22 +350,22 @@
     font-weight: var(--font-weight-semibold);
     margin-bottom: 12px;
   }
-  
+
   .plaxti-image-description {
     font-size: 1rem;
     line-height: 1.5;
     margin-bottom: 20px;
     font-weight: var(--font-weight-regular);
   }
-  
+
   .plaxti-image-content {
     padding: 30px;
   }
-  
+
   .content-wrapper {
     max-width: 400px;
   }
-  
+
   .plaxti-action-btn {
     padding: 0.65rem 1.3rem;
     font-size: 0.92rem;
@@ -387,45 +379,45 @@
     flex-direction: column;
     height: auto;
   }
-  
+
   .plaxti-image-wrapper {
     width: 100% !important;
     height: 350px;
     flex: 1 0 auto;
   }
-  
+
   .plaxti-image-title {
     font-size: 1.6rem;
     font-weight: var(--font-weight-semibold);
     margin-bottom: 10px;
   }
-  
+
   .plaxti-image-description {
     font-size: 0.98rem;
     line-height: 1.5;
     margin-bottom: 18px;
     font-weight: var(--font-weight-regular);
   }
-  
+
   .content-wrapper {
     max-width: 100%;
     padding: 0 20px;
   }
-  
+
   .plaxti-image-content {
     padding: 25px 30px;
     transform: translateY(15px);
   }
-  
+
   .plaxti-image-wrapper:hover .plaxti-image-content {
     transform: translateY(0);
   }
-  
+
   /* Ajuste para hover en móviles */
   .plaxti-image-wrapper:hover .plaxti-banner-image {
     transform: scale(1.03);
   }
-  
+
   .plaxti-action-btn {
     padding: 0.6rem 1.2rem;
     font-size: 0.9rem;
@@ -438,30 +430,28 @@
   .plaxti-banner-container {
     height: auto !important;
   }
-  
+
   .plaxti-image-wrapper {
     height: 320px;
     min-height: 320px;
   }
-  
+
   .plaxti-image-content {
     padding: 20px 25px;
     transform: translateY(10px);
-    background: linear-gradient(
-      to top,
-      rgba(0, 0, 0, 0.8) 0%,
-      rgba(0, 0, 0, 0.4) 60%,
-      transparent 100%
-    );
+    background: linear-gradient(to top,
+        rgba(0, 0, 0, 0.8) 0%,
+        rgba(0, 0, 0, 0.4) 60%,
+        transparent 100%);
   }
-  
+
   .plaxti-image-title {
     font-size: 1.5rem;
     font-weight: var(--font-weight-semibold);
     margin-bottom: 8px;
     letter-spacing: -0.3px;
   }
-  
+
   .plaxti-image-description {
     font-size: 0.95rem;
     line-height: 1.4;
@@ -469,28 +459,28 @@
     color: rgba(255, 255, 255, 0.95);
     font-weight: var(--font-weight-regular);
   }
-  
+
   .content-wrapper {
     padding: 0;
   }
-  
+
   .plaxti-action-btn {
     padding: 0.55rem 1.1rem;
     font-size: 0.88rem;
     backdrop-filter: blur(5px);
     font-weight: var(--font-weight-medium);
   }
-  
+
   /* Optimización de efectos para móviles */
   .plaxti-image-wrapper:hover::before,
   .plaxti-image-wrapper:hover::after {
     opacity: 0.5;
   }
-  
+
   .plaxti-image-wrapper:hover .plaxti-image-overlay {
     opacity: 0.85;
   }
-  
+
   .plaxti-image-wrapper:hover .content-wrapper::before {
     width: 30px;
     top: -15px;
@@ -503,17 +493,17 @@
     height: 280px;
     min-height: 280px;
   }
-  
+
   .plaxti-image-content {
     padding: 18px 20px;
   }
-  
+
   .plaxti-image-title {
     font-size: 1.4rem;
     font-weight: var(--font-weight-semibold);
     margin-bottom: 6px;
   }
-  
+
   .plaxti-image-description {
     font-size: 0.9rem;
     line-height: 1.4;
@@ -524,24 +514,24 @@
     overflow: hidden;
     font-weight: var(--font-weight-regular);
   }
-  
+
   .plaxti-action-btn {
     padding: 0.5rem 1rem;
     font-size: 0.85rem;
     gap: 0.4rem;
     font-weight: var(--font-weight-medium);
   }
-  
+
   .plaxti-action-btn svg {
     width: 14px;
     height: 14px;
   }
-  
+
   /* Reduce animaciones para mejor rendimiento en móviles */
   .plaxti-banner-image {
     transition: transform 0.5s ease;
   }
-  
+
   .plaxti-image-content {
     transition: all 0.4s ease;
   }
@@ -553,17 +543,17 @@
     height: 250px;
     min-height: 250px;
   }
-  
+
   .plaxti-image-content {
     padding: 15px;
   }
-  
+
   .plaxti-image-title {
     font-size: 1.3rem;
     font-weight: var(--font-weight-semibold);
     margin-bottom: 5px;
   }
-  
+
   .plaxti-image-description {
     font-size: 0.85rem;
     line-height: 1.3;
@@ -571,19 +561,19 @@
     -webkit-line-clamp: 2;
     font-weight: var(--font-weight-regular);
   }
-  
+
   .plaxti-action-btn {
     padding: 0.45rem 0.9rem;
     font-size: 0.8rem;
     font-weight: var(--font-weight-medium);
   }
-  
+
   /* Desactiva algunos efectos para mejor rendimiento */
   .plaxti-image-wrapper::before,
   .plaxti-image-wrapper::after {
     display: none;
   }
-  
+
   .plaxti-gradient-overlay {
     opacity: 0.3;
   }
@@ -594,28 +584,28 @@
   .plaxti-banner-container {
     height: 300px !important;
   }
-  
+
   .plaxti-image-wrapper {
     height: 300px;
   }
-  
+
   .plaxti-image-content {
     padding: 15px 20px;
   }
-  
+
   .plaxti-image-title {
     font-size: 1.2rem;
     font-weight: var(--font-weight-semibold);
     margin-bottom: 5px;
   }
-  
+
   .plaxti-image-description {
     font-size: 0.8rem;
     margin-bottom: 8px;
     -webkit-line-clamp: 1;
     font-weight: var(--font-weight-regular);
   }
-  
+
   .plaxti-action-btn {
     padding: 0.4rem 0.8rem;
     font-size: 0.75rem;
@@ -629,16 +619,16 @@
     font-size: 2.2rem;
     font-weight: var(--font-weight-semibold);
   }
-  
+
   .plaxti-image-description {
     font-size: 1.15rem;
     font-weight: var(--font-weight-regular);
   }
-  
+
   .content-wrapper {
     max-width: 550px;
   }
-  
+
   .plaxti-image-content {
     padding: 50px;
   }
@@ -646,17 +636,18 @@
 
 /* Optimización de rendimiento para móviles */
 @media (max-width: 768px) {
+
   .plaxti-banner-grid,
   .plaxti-image-wrapper,
   .plaxti-banner-image,
   .plaxti-image-overlay {
     will-change: auto;
   }
-  
+
   .plaxti-banner-grid {
     perspective: none;
   }
-  
+
   .plaxti-image-wrapper {
     transform-style: flat;
   }
@@ -667,33 +658,31 @@
   .plaxti-image-wrapper {
     cursor: default;
   }
-  
+
   .plaxti-image-content {
     opacity: 1;
     transform: translateY(0);
-    background: linear-gradient(
-      to top,
-      rgba(0, 0, 0, 0.7) 0%,
-      rgba(0, 0, 0, 0.3) 50%,
-      transparent 100%
-    );
+    background: linear-gradient(to top,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(0, 0, 0, 0.3) 50%,
+        transparent 100%);
   }
-  
+
   .plaxti-image-overlay {
     opacity: 0.7;
   }
-  
+
   .plaxti-action-btn {
     backdrop-filter: none;
     background: rgba(255, 255, 255, 0.2);
     font-family: var(--font-primary);
   }
-  
+
   /* Ajusta efectos de hover para touch */
   .plaxti-image-wrapper:active .plaxti-banner-image {
     transform: scale(1.02);
   }
-  
+
   .plaxti-image-wrapper:active .plaxti-image-overlay {
     opacity: 0.85;
   }
@@ -725,6 +714,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

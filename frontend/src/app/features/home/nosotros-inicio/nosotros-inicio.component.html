@@ -22,14 +22,24 @@
       <!-- Columna Derecha: Contenido Editorial con Efecto Typewriter -->
       <div class="identity-content-wrapper">
         
-        <!-- Kicker Solicitado: ¿Qué hacemos? -->
-        <span class="identity-kicker">¿QUÉ HACEMOS?</span>
+        <!-- Kicker Solicitado: ¿Qué hacemos? con pulso -->
+        <div class="kicker-badge-row">
+          <span class="identity-kicker">
+            <span class="kicker-pulse-dot"></span>
+            ¿QUÉ HACEMOS?
+          </span>
+        </div>
 
-        <!-- Gran Titular con Efecto de Texto que se Va Revelando -->
-        <h2 class="identity-title">
-          Materiales y plásticos <br>
-          <span class="typewriter-text">{{ displayedText }}</span><span class="typewriter-cursor">|</span>
-        </h2>
+        <!-- Gran Titular con Fondo Técnico de Puntos y Efecto Typewriter -->
+        <div class="headline-container">
+          <div class="dot-grid-pattern" aria-hidden="true"></div>
+          <h2 class="identity-title">
+            <span class="title-lead-line">Materiales y plásticos</span>
+            <span class="title-dynamic-line">
+              <span class="typewriter-text">{{ displayedText }}</span><span class="typewriter-cursor">|</span>
+            </span>
+          </h2>
+        </div>
 
         <!-- Párrafo Descriptivo Enfocado en Espumas, Plásticos, Mallas para Fincas y Construcciones -->
         <p class="identity-lead">

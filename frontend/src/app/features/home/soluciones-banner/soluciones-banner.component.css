@@ -1,0 +1,409 @@
+/* ═══════════════════════════════════════════════════════════════════
+   SOLUCIONES BANNER COMPONENT — PLAXTILINEAS
+   Design Tokens: Inter Tight, #111827, #16a34a, #6b7280, #ffffff
+   ═══════════════════════════════════════════════════════════════════ */
+
+:host {
+  display: block;
+  width: 100%;
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.soluciones-section {
+  width: 100%;
+  position: relative;
+  background-color: transparent;
+  padding: 28px 0 40px 0;
+  box-sizing: border-box;
+}
+
+.container {
+  max-width: 1550px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+/* ── Section Header Estándar de la Tienda ── */
+.section-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.kicker-badge-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.65rem;
+}
+
+.soluciones-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  background: rgba(22, 163, 74, 0.08);
+  border: 1px solid rgba(22, 163, 74, 0.22);
+  color: #15803d;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.kicker-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #16a34a;
+  box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.6);
+  animation: kickerPulse 2s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+
+@keyframes kickerPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(22, 163, 74, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0);
+  }
+}
+
+.section-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #111827;
+  text-transform: uppercase;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.2;
+}
+
+.highlight-green {
+  color: #16a34a;
+}
+
+.section-subtitle {
+  color: #6b7280;
+  font-size: 1.05rem;
+  max-width: 620px;
+  margin: 0 auto;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* ── Acordeón de Soluciones ── */
+.soluciones-carousel-wrapper {
+  width: 100%;
+  position: relative;
+}
+
+.soluciones-grid {
+  display: flex;
+  gap: 16px;
+  height: 480px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Tarjetas Individuales ── */
+.solucion-card {
+  position: relative;
+  flex: 1 1 0%;
+  height: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #0f172a;
+  outline: none;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  /* Transición suave y calmada sin saltos bruscos */
+  transition: flex 0.55s cubic-bezier(0.25, 1, 0.35, 1), 
+              box-shadow 0.4s ease, 
+              border-color 0.4s ease, 
+              opacity 0.4s ease;
+  will-change: flex;
+}
+
+/* Expansión sutil, balanceada y sin sobrecargar la pantalla */
+.soluciones-grid.has-active .solucion-card.is-active {
+  flex: 1.45 1 0%;
+  border-color: rgba(22, 163, 74, 0.45);
+  box-shadow: 0 16px 32px -8px rgba(22, 163, 74, 0.2);
+  z-index: 5;
+}
+
+.soluciones-grid.has-active .solucion-card:not(.is-active) {
+  flex: 0.85 1 0%;
+  opacity: 0.9;
+}
+
+/* ── Contenedor de Imagen y Zoom Ultra Sutil ── */
+.card-image-box {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  /* Oscurecimiento sutil y mejora de contraste cinematográfico */
+  filter: brightness(0.78) contrast(1.06);
+  transition: transform 0.7s cubic-bezier(0.25, 1, 0.35, 1), filter 0.5s ease;
+  will-change: transform, filter;
+}
+
+.solucion-card.is-active .card-img {
+  transform: scale(1.02);
+  filter: brightness(0.85) contrast(1.08);
+}
+
+/* ── Overlays de Contraste Elegante y Mayor Profundidad ── */
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 16, 26, 0.45) 0%,
+    rgba(10, 16, 26, 0.3) 30%,
+    rgba(10, 16, 26, 0.65) 65%,
+    rgba(5, 10, 18, 0.96) 100%
+  );
+  opacity: 0.92;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.card-accent-gradient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at bottom left,
+    rgba(22, 163, 74, 0.25) 0%,
+    transparent 65%
+  );
+  opacity: 0.35;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.solucion-card.is-active .card-overlay {
+  opacity: 0.94;
+}
+
+.solucion-card.is-active .card-accent-gradient {
+  opacity: 0.65;
+}
+
+/* ── Barra Superior (Categoría y Contador) ── */
+.card-top-bar {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.category-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 9999px;
+  color: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition: all 0.3s ease;
+}
+
+.solucion-card.is-active .category-pill {
+  background: rgba(22, 163, 74, 0.88);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+
+/* ── Contenido Inferior de la Tarjeta ── */
+.card-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px 20px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  pointer-events: none;
+}
+
+.card-title {
+  color: #ffffff;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  line-height: 1.25;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  letter-spacing: -0.01em;
+  transition: color 0.3s ease, font-size 0.3s ease;
+}
+
+.solucion-card.is-active .card-title {
+  font-size: 1.55rem;
+}
+
+.card-desc {
+  color: rgba(241, 245, 249, 0.92);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  margin: 0 0 14px 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  font-weight: 400;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease 0.1s, max-height 0.4s ease, transform 0.4s ease 0.1s;
+}
+
+.solucion-card.is-active .card-desc {
+  opacity: 1;
+  max-height: 100px;
+  transform: translateY(0);
+}
+
+/* ── Botón de Acción ── */
+.card-action {
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.35s ease 0.15s, transform 0.35s ease 0.15s;
+}
+
+.solucion-card.is-active .card-action {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  background: #16a34a;
+  color: #ffffff;
+  border-radius: 9999px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.solucion-card:hover .action-btn {
+  background: #15803d;
+}
+
+.action-arrow {
+  transition: transform 0.25s ease;
+}
+
+.solucion-card:hover .action-arrow {
+  transform: translateX(3px);
+}
+
+/* ── Borde Resplandeciente ── */
+.card-border-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid transparent;
+  transition: border-color 0.4s ease;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.solucion-card.is-active .card-border-glow {
+  border-color: rgba(22, 163, 74, 0.6);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVIDAD
+   ═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .soluciones-grid {
+    height: 420px;
+  }
+  
+  .card-title {
+    font-size: 1.2rem;
+  }
+  
+  .solucion-card.is-active .card-title {
+    font-size: 1.35rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .soluciones-section {
+    padding: 20px 0 32px 0;
+  }
+
+  .section-title {
+    font-size: 1.65rem;
+  }
+
+  .section-subtitle {
+    font-size: 0.95rem;
+  }
+
+  /* En móviles se transforma en tarjetas apiladas fluidas */
+  .soluciones-grid {
+    flex-direction: column;
+    height: auto;
+    gap: 16px;
+  }
+
+  .solucion-card {
+    height: 260px;
+    width: 100% !important;
+    flex: none !important;
+    opacity: 1 !important;
+  }
+
+  .card-desc {
+    opacity: 1 !important;
+    max-height: 70px !important;
+    transform: none !important;
+    font-size: 0.86rem;
+    margin-bottom: 10px;
+  }
+
+  .card-action {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

@@ -20,21 +20,21 @@ export interface BannerImage {
   styleUrls: ['./banner.css']
 })
 export class PlaxtiBannerComponent {
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
   @Input() images: BannerImage[] = [];
   @Input() height: string = '600px'; // Altura ajustada para PlaxtiLineas
   @Input() hoverScale: number = 1.2; // Escala al hacer hover
   @Input() hoverTransition: string = '0.5s cubic-bezier(0.23, 1, 0.32, 1)';
   @Input() minScale: number = 0.9; // Escala mínima de las imágenes no hover
   @Input() showGradient: boolean = true; // Mostrar gradiente verde característico
-  
+
   // Nuevas propiedades de diseño
   @Input() showHeader: boolean = false;
   @Input() headerTitle: string = 'Nuestras <span>Soluciones</span>';
   @Input() headerSubtitle: string = '';
   @Input() fullWidth: boolean = true; // Si es true, ocupa todo el ancho y no tiene gap
   @Input() useFaIcon: boolean = false; // Usar FontAwesome para el ícono
-  
+
   hoveredIndex: number | null = null;
 
   // Calcula el tamaño y transformación de cada imagen
@@ -50,7 +50,7 @@ export class PlaxtiBannerComponent {
         position: 'relative'
       };
     }
-    
+
     if (index === this.hoveredIndex) {
       // Imagen hover: se agranda
       return {

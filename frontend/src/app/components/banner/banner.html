@@ -2,6 +2,10 @@
   <div class="container" *ngIf="showHeader">
     <!-- Section Header -->
     <div class="section-header">
+      <div class="section-kicker">
+        <span class="kicker-pulse"></span>
+        <span>Catálogo Integral</span>
+      </div>
       <h2 class="section-title" [innerHTML]="headerTitle"></h2>
       <p class="section-subtitle" *ngIf="headerSubtitle">{{ headerSubtitle }}</p>
     </div>
@@ -13,12 +17,13 @@
       class="plaxti-banner-container"
       [style.height]="height"
     >
-      <!-- Grid de imágenes sin separación -->
-      <div class="plaxti-banner-grid" [ngClass]="{'has-gap': !fullWidth}">
-        <!-- Imágenes -->
+      <!-- Grid de imágenes -->
+      <div class="plaxti-banner-grid" [ngClass]="{'has-gap': !fullWidth, 'has-hover': hoveredIndex !== null}">
+        <!-- Tarjetas dinámicas -->
         <div 
           *ngFor="let image of images; let i = index"
           class="plaxti-image-wrapper"
+          [class.is-hovered]="hoveredIndex === i"
           [style]="getImageStyle(i)"
           (mouseenter)="onMouseEnter(i)"
           (mouseleave)="onMouseLeave()"
@@ -32,7 +37,18 @@
               class="plaxti-banner-image"
               loading="eager"
             />
+            
+            <!-- Metadata superior (Categoría y número de tarjeta) -->
+            <div class="plaxti-top-meta">
+              <span class="plaxti-card-badge" *ngIf="image.category">
+                {{ image.category }}
+              </span>
+              <span class="plaxti-card-index">0{{ i + 1 }}</span>
+            </div>
+
+            <!-- Overlays degradados para máxima legibilidad -->
             <div class="plaxti-image-overlay"></div>
+            <div class="plaxti-gradient-overlay" *ngIf="showGradient"></div>
             
             <!-- Contenido superpuesto -->
             <div *ngIf="image.title || image.description" class="plaxti-image-content">
@@ -43,12 +59,11 @@
                 <!-- Descripción -->
                 <p *ngIf="image.description" class="plaxti-image-description">{{ image.description }}</p>
                 
-                <!-- Botón de acción si hay enlace -->
+                <!-- Botón de acción -->
                 <div *ngIf="image.link" class="plaxti-image-actions">
-                  <button class="plaxti-action-btn">
-                    <span>Ver más</span>
-                    <fa-icon [icon]="['fas', 'chevron-right']" *ngIf="useFaIcon"></fa-icon>
-                    <svg *ngIf="!useFaIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <button class="plaxti-action-btn" type="button">
+                    <span>{{ image.link === '/contacto' ? 'Hablar con Asesor' : 'Ver Productos' }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                       <line x1="5" y1="12" x2="19" y2="12"></line>
                       <polyline points="12 5 19 12 12 19"></polyline>
                     </svg>
@@ -56,9 +71,9 @@
                 </div>
               </div>
             </div>
-            
-            <!-- Efecto de gradiente superior -->
-            <div class="plaxti-gradient-overlay" *ngIf="showGradient"></div>
+
+            <!-- Borde resplandor activo -->
+            <div class="plaxti-card-glow"></div>
           </div>
         </div>
       </div>
