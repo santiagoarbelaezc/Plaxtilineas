@@ -47,7 +47,10 @@
               
               <div class="producto-precio-row">
                 <span class="precio-tachado" *ngIf="producto.precio">{{ obtenerPrecioReferencia(producto.precio) }}</span>
-                <span class="producto-precio">{{ formatearPrecio(producto.precio) }}</span>
+                <span class="producto-precio">
+                  {{ formatearPrecio(producto.precio) }}
+                  <span class="precio-unidad">und</span>
+                </span>
               </div>
             </div>
 

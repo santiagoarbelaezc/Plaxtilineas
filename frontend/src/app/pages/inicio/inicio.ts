@@ -25,9 +25,7 @@ import { NosotrosInicioComponent } from '../../features/home/nosotros-inicio/nos
 import { BannerAsistenteComponent } from '../../features/home/banner-asistente/banner-asistente.component';
 import { ComponentesService, ComponenteDinamico } from '../../services/componentes.service';
 import { GrupoEmpresasComponent } from '../../features/home/grupo-empresas/grupo-empresas.component';
-import { BannerRegistroComponent } from '../../features/home/banner-registro/banner-registro.component';
 import { MeshBannerComponent } from '../../features/home/mesh-banner/mesh-banner.component';
-import { ElegantDividerComponent } from '../../components/elegant-divider/elegant-divider.component';
 
 // Nuevos componentes dinámicos
 import { DynamicTestimoniosComponent } from '../../features/dynamic/dynamic-testimonios/dynamic-testimonios.component';
@@ -49,14 +47,12 @@ import { DynamicProductCarouselComponent } from '../../features/dynamic/dynamic-
     LongMap,
     CategoriasDestacadasComponent,
     MeshBannerComponent,
-    ElegantDividerComponent,
     PlaxtiBannerComponent,
     FeatureNewProducts,
     FullBanner,
     UtilGridProductoOther,
     NosotrosInicioComponent,
     GrupoEmpresasComponent,
-    BannerRegistroComponent,
     DynamicTestimoniosComponent,
     DynamicFaqComponent,
     DynamicGaleriaComponent,
