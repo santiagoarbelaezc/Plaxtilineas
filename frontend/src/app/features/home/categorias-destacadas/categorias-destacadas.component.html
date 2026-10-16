@@ -1,0 +1,96 @@
+<section id="categoriasDestacadas" class="categories-section">
+  <div class="container">
+    
+    <!-- Section Header con Design Tokens -->
+    <div class="section-header">
+      <h2 class="section-title">
+        NUESTRAS <span class="highlight-green">CATEGORÍAS</span>
+      </h2>
+      <p class="section-subtitle">
+        Soluciones integrales en peletería, espumas, plásticos y empaques con stock inmediato para tu negocio.
+      </p>
+    </div>
+
+    <!-- Carousel Container -->
+    <div class="carousel-wrapper" *ngIf="categorias.length > 0">
+      
+      <!-- Prev Button -->
+      <button 
+        class="nav-btn prev" 
+        (click)="scrollCarrusel('prev')" 
+        [disabled]="currentPage === 0"
+        aria-label="Anterior">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      
+      <div class="carousel-viewport">
+        <div class="categories-grid" #categoriasGrid (scroll)="onScroll($event)">
+          
+          <!-- Category Card -->
+          <div class="category-item" *ngFor="let cat of categorias; let i = index">
+            
+            <a [routerLink]="['/productos']"
+               [queryParams]="{ subcategoria_id: obtenerPrimeraSubcategoria(cat.id) }"
+               class="category-card"
+               (click)="onCategoriaClick(cat)">
+              
+              <div class="card-visual">
+                <img [src]="cat.icono_url" 
+                     [alt]="cat.nombre"
+                     class="category-icon"
+                     loading="lazy"
+                     (error)="handleImageError($event, cat)">
+              </div>
+
+              <div class="card-content">
+                <h3 class="category-name">{{ formatearNombre(cat.nombre) }}</h3>
+                <span class="explore-pill">
+                  <span>Ver más</span>
+                  <svg class="explore-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </span>
+              </div>
+
+            </a>
+          </div>
+
+        </div>
+      </div>
+      
+      <!-- Next Button -->
+      <button 
+        class="nav-btn next" 
+        (click)="scrollCarrusel('next')" 
+        [disabled]="currentPage >= pagesArray.length - 1"
+        aria-label="Siguiente">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+
+    </div>
+    
+    <!-- Indicators -->
+    <div class="carousel-indicators" *ngIf="pagesArray.length > 1">
+      <button class="indicator-dot" 
+              *ngFor="let page of pagesArray"
+              [class.active]="currentPage === page"
+              (click)="goToPage(page)"
+              [attr.aria-label]="'Ir a página ' + (page + 1)"></button>
+    </div>
+    
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="categorias.length === 0">
+      <div class="empty-icon">
+        <fa-icon [icon]="['fas', 'folder-open']"></fa-icon>
+      </div>
+      <h3>Próximamente nuevas categorías</h3>
+      <p>Estamos trabajando para ampliar nuestro catálogo y ofrecerte más opciones.</p>
+    </div>
+
+  </div>
+</section>

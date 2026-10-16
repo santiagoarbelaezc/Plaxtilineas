@@ -1,0 +1,41 @@
+<section class="producto-background-section">
+  <div class="producto-background-container">
+    <!-- Título de la sección -->
+    <div class="section-header" *ngIf="titulo">
+      <h2 class="section-title">{{ titulo }}</h2>
+    </div>
+
+    <!-- Grid de imágenes -->
+    <div class="background-grid">
+      <div 
+        class="background-image-wrapper" 
+        *ngFor="let image of imagenes; let i = index"
+        [style]="getImageStyle(i)"
+        (mouseenter)="onMouseEnter(i)"
+        (mouseleave)="onMouseLeave()"
+        [ngClass]="{ 'clickable': image.link }"
+        (click)="onClick(image)"
+      >
+        <!-- Contenedor de imagen -->
+        <div class="background-image-container">
+          <img 
+            [src]="image.url" 
+            [alt]="image.alt"
+            class="background-image"
+            loading="lazy"
+          />
+          <div class="background-image-overlay"></div>
+          <div class="background-gradient-overlay" *ngIf="showGradient"></div>
+        </div>
+
+        <!-- Contenido superpuesto -->
+        <div class="background-image-content" *ngIf="hoveredIndex === i">
+          <div class="content-wrapper">
+            <h3 class="background-image-title" *ngIf="image.title">{{ image.title }}</h3>
+            <p class="background-image-description" *ngIf="image.description">{{ image.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

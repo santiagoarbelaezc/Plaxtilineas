@@ -1,0 +1,72 @@
+<div class="menu-dropdown-wrapper" 
+     (mouseenter)="onMouseEnter()" 
+     (mouseleave)="onMouseLeave()">
+  
+  <!-- Trigger (el enlace Catálogo con icono) -->
+  <a [routerLink]="['/productos']"
+     class="dropdown-trigger nav-link" 
+     (click)="onTriggerClick($event)"
+     aria-label="Catálogo de productos">
+    <!-- Icono de catálogo -->
+    <fa-icon [icon]="['fas', 'layer-group']" class="nav-icon"></fa-icon>
+    <div class="nav-text-container">
+      <span class="nav-text">Catálogo</span>
+    </div>
+    <span class="dropdown-arrow">▼</span>
+  </a>
+
+  <!-- Menú desplegable -->
+  <div class="dropdown-menu" [class.visible]="menuVisible">
+    <div class="dropdown-content">
+      <!-- Ver Todos los Productos (Arriba) -->
+      <div class="ver-todos-container">
+        <a href="#" (click)="onVerTodosClick($event)" class="btn-ver-todos">
+          <span>Ver todos los productos</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Columnas de categorías -->
+      <div class="categorias-grid">
+        <div class="categoria-column" 
+             *ngFor="let categoria of categorias"
+             (mouseenter)="onCategoriaHover(categoria.id)"
+             (mouseleave)="onCategoriaLeave()"
+             [class.active]="hoveredCategoriaId === categoria.id">
+          
+          <!-- Encabezado de categoría con icono -->
+          <div class="categoria-header">
+            <span class="categoria-icon" *ngIf="categoria.imagen_url">
+              <img [src]="categoria.imagen_url" [alt]="categoria.nombre" loading="lazy">
+            </span>
+            <span class="categoria-name">{{ categoria.nombre }}</span>
+          </div>
+
+          <!-- Subcategorías -->
+          <div class="subcategorias" *ngIf="categoria.subcategorias && categoria.subcategorias.length > 0">
+            <a *ngFor="let subcategoria of categoria.subcategorias"
+               [routerLink]="['/productos']"
+               [queryParams]="{ categoria_id: categoria.id, subcategoria_id: subcategoria.id }"
+               (click)="onSubcategoriaSelect(subcategoria.id); closeMenu()"
+               class="subcategoria-link">
+              <span class="subcategoria-dot"></span>
+              {{ subcategoria.nombre }}
+            </a>
+          </div>
+
+          <!-- Mensaje si no hay subcategorías -->
+          <div class="no-subcategorias" *ngIf="!categoria.subcategorias || categoria.subcategorias.length === 0">
+            <span class="no-subcategorias-text">Sin subcategorías</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay para cerrar menú -->
+  <div class="dropdown-overlay" 
+       [class.active]="menuVisible" 
+       (click)="onMouseLeave()"></div>
+</div>

@@ -1,0 +1,42 @@
+<section class="product-header">
+  <!-- BACKGROUND DINÁMICO -->
+  <div class="background-image" 
+       [style.background-image]="'url(' + images[selectedIndex].src + ')'">
+  </div>
+  
+  <!-- Overlay -->
+  <div class="overlay"></div>
+
+  <!-- CONTENIDO IZQUIERDO CON LOGO Y TEXTO -->
+  <div class="header-left-content">
+    <div class="logo-container">
+      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766438846/plaxtilineas_mujcoh.png" 
+           alt="Plaxti Logo" 
+           class="main-logo">
+    </div>
+
+    
+    <!-- INDICADOR INFERIOR -->
+    <div class="scroll-indicator">
+      <div class="scroll-arrow"></div>
+      <span class="scroll-text">Scroll</span>
+    </div>
+  </div>
+
+  <!-- CARRUSEL DE MINIATURAS -->
+  <div class="images-carousel">
+    <div class="images-track">
+      <div *ngFor="let image of images; let i = index" 
+           class="image-wrapper"
+           [class.selected]="selectedIndex === i"
+           [class.auto-active]="autoIndex === i"
+           (click)="onImageSelect(i)">
+        <img [src]="image.src" 
+             [alt]="image.alt" 
+             class="product-image"
+             loading="lazy">
+        <div class="image-glow"></div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,166 @@
+<section id="productos-seccion">
+  <!-- Componente ProductoBackground - Mostrar solo si está configurado para esta categoría -->
+  <app-producto-background 
+    *ngIf="mostrarProductoBackground"
+    [titulo]="tituloProductoBackground"
+    [imagenes]="imagenesProductoBackground">
+  </app-producto-background>
+
+  <!-- Encabezado elegante -->
+  <div class="section-header">
+    <h2 *ngIf="productos.length && !cargando">
+      <span class="title-text">Productos disponibles</span>
+      <span class="product-count">({{rangoProductos}} de {{productos.length}})</span>
+    </h2>
+  </div>
+
+  <!-- Estados de carga (Skeleton Premium) -->
+  <div *ngIf="cargando" class="products-grid-container">
+    <div class="products-grid">
+      <div class="product-card-wrapper skeleton-wrapper" *ngFor="let i of [1, 2, 3, 4, 5, 6]">
+        <div class="product-card-container skeleton-card">
+          <!-- Imagen -->
+          <div class="product-image-section skeleton-box"></div>
+          
+          <!-- Información -->
+          <div class="product-info-section">
+            <div class="product-text-container">
+              <div class="skeleton-text skeleton-title"></div>
+              <div class="skeleton-text skeleton-subtitle"></div>
+              <div class="skeleton-text skeleton-desc"></div>
+              <div class="skeleton-text skeleton-desc-short"></div>
+            </div>
+            
+            <!-- Detalles / Precio -->
+            <div class="product-details-container mt-auto">
+              <div class="price-display skeleton-price-box">
+                <div class="skeleton-text skeleton-label"></div>
+                <div class="skeleton-text skeleton-price"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado sin productos -->
+  <div *ngIf="!productos.length && !cargando" class="empty-state">
+    <div class="empty-icon">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <path d="M16 10a4 4 0 0 1-8 0"></path>
+      </svg>
+    </div>
+    <p class="empty-text">No hay productos para esta categoría</p>
+    <p class="empty-subtext">Intenta con otra subcategoría</p>
+  </div>
+
+  <!-- Grid de productos -->
+  <div class="products-grid-container" 
+       [class.productos-cambiando]="cargando"
+       *ngIf="productos.length && !cargando">
+    
+    <div class="products-grid">
+      <div class="product-card-wrapper"
+           *ngFor="let producto of productosPaginaActual; let i = index"
+           [@fadeInUp]>
+        
+        <!-- Tarjeta de producto con click en toda la card -->
+        <div class="product-card-container" (click)="verDetalles(producto)" tabindex="0" role="button">
+          
+          <!-- Contenedor superior: Imagen -->
+          <div class="product-image-section">
+            <div class="product-image-wrapper">
+              <div class="product-image-container">
+                <!-- Badges Decorativos (Simulados basados en ID) -->
+                <div class="product-badges">
+                  <span class="badge badge-stock" *ngIf="producto.controlar_stock && producto.stock === 0" style="background-color: #ef4444 !important; color: white !important; font-weight: bold;">Agotado</span>
+                  <span class="badge badge-discount" *ngIf="!(producto.controlar_stock && producto.stock === 0) && producto.id % 2 !== 0">-15% OFF</span>
+                  <span class="badge badge-stock" *ngIf="!(producto.controlar_stock && producto.stock === 0) && producto.id % 5 === 0">Pocas Unidades</span>
+                  <span class="badge badge-new" *ngIf="!(producto.controlar_stock && producto.stock === 0) && producto.id % 6 === 0">Nuevo</span>
+                </div>
+                
+                <img [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/placeholder.jpg'" [alt]="producto.nombre" class="product-image" loading="lazy">
+                <div class="image-overlay"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Contenedor medio: Información -->
+          <div class="product-info-section">
+            
+            <!-- Contenedor de texto -->
+            <div class="product-text-container">
+              <div class="product-title-wrapper">
+                <h3 class="product-title">{{producto.nombre}}</h3>
+                <div class="product-subtitle">{{producto.subcategoria}}</div>
+              </div>
+              
+              <div class="product-description-container">
+                <p class="product-description">
+                  {{producto.descripcion || 'Descripción no disponible'}}
+                </p>
+              </div>
+            </div>
+            
+            <!-- Contenedor de detalles - Solo precio -->
+            <div class="product-details-container">
+              
+              <!-- Precio y Botón de Carrito -->
+              <!-- Precio Elegante y Minimalista -->
+              <div class="product-price-section">
+                <span class="price-value">{{formatearPrecio(producto.precio)}}</span>
+              </div>
+
+              <!-- Botón Agregar al Carrito removido a petición -->
+            </div>
+            
+          </div>
+          
+          <!-- Contenedor inferior: Acción principal -->
+          
+          
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- Controles de paginación -->
+    <div class="pagination-controls" *ngIf="totalPages > 1 && !cargando">
+      <button 
+        class="pagination-btn pagination-prev" 
+        [disabled]="currentPage === 1"
+        (click)="paginaAnterior()"
+        aria-label="Página anterior">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+        Anterior
+      </button>
+      
+      <div class="pagination-numbers">
+        <button 
+          *ngFor="let page of paginasVisibles"
+          class="pagination-btn pagination-number" 
+          [class.active]="page === currentPage"
+          (click)="cambiarPagina(page)"
+          [attr.aria-label]="'Ir a página ' + page">
+          {{page}}
+        </button>
+      </div>
+      
+      <button 
+        class="pagination-btn pagination-next" 
+        [disabled]="currentPage === totalPages"
+        (click)="paginaSiguiente()"
+        aria-label="Página siguiente">
+        Siguiente
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M9 18l6-6-6-6"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>

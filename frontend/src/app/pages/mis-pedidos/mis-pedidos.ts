@@ -5,8 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { PedidoService } from '../../services/pedido.service';
 import { AuthService } from '../../services/auth.service';
 import { Pedido, PedidoDetalle, ESTADOS_PEDIDO, EstadoPedido } from '../../models/pedido.model';
-import { NavbarComponent } from '../../components/navbar/navbar.component';
-import { Footer } from '../../components/footer/footer.component';
+import { NavbarComponent } from '../../shared/layout/navbar/navbar.component';
+import { Footer } from '../../shared/layout/footer/footer.component';
 import Swal from 'sweetalert2';
 
 @Component({

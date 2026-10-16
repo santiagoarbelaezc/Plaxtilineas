@@ -1,0 +1,22 @@
+<div class="product-card" 
+     [routerLink]="linkUrl" 
+     [queryParams]="queryParams"
+     (click)="onNavigate()"
+     [style.cursor]="tieneNavegacion() ? 'pointer' : 'default'">
+  
+  <div class="image-area">
+    <img [src]="imagenProducto" [alt]="nombreProducto" class="product-img">
+    <div class="card-glow"></div>
+  </div>
+
+  <div class="details-area">
+    <span class="category-label">Producto Destacado</span>
+    <h4 class="product-name">{{ nombreProducto }}</h4>
+    <div class="price-tag">{{ precio }}</div>
+    
+    <button class="view-btn">
+      Ver Detalles
+      <fa-icon [icon]="['fas', 'arrow-right']"></fa-icon>
+    </button>
+  </div>
+</div>

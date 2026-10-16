@@ -1,0 +1,40 @@
+<section class="mesh-banner-section">
+  <div class="mesh-banner-container">
+    <div class="mesh-banner-content">
+
+      <!-- Headline en Mayúsculas con Estilo Hero -->
+      <h2 class="mesh-headline">
+        MALLAS &amp; COBERTURAS <br>
+        <span class="highlight-green">DE ALTA RESISTENCIA</span>
+      </h2>
+
+      <!-- Subtítulo -->
+      <p class="mesh-lead">
+        Polietileno de alta densidad (HDPE), mallas polisombra, cerramientos y protección perimetral adaptadas a tus proyectos más exigentes.
+      </p>
+
+      <!-- Action Buttons Row (Mismo Estilo Hero) -->
+      <div class="mesh-actions-row">
+        <!-- Explorar Mallas -->
+        <a 
+          routerLink="/productos" 
+          class="mesh-btn-primary"
+          aria-label="Ver Mallas y Coberturas">
+          <span class="material-symbols-rounded btn-icon-svg">shopping_bag</span>
+          <span>Ver Mallas y Coberturas</span>
+          <svg class="btn-arrow" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+
+        <!-- Botón Mateo IA -->
+        <button (click)="abrirAsistente()" class="mesh-btn-assistant" type="button" aria-label="Cotizar con Mateo IA">
+          <span class="material-symbols-rounded btn-assistant-icon">chat</span>
+          <span>Cotizar con Mateo IA</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>

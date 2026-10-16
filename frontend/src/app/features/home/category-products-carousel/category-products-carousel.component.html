@@ -1,0 +1,113 @@
+<div class="category-carousel-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">
+        Explora por <span>Categorías</span>
+      </h2>
+      
+      <!-- Barra de Filtros -->
+      <div class="category-filters-container">
+        <div class="category-filters">
+
+          <button class="filter-btn" 
+                  [class.active]="categoriaSeleccionadaId === null"
+                  (click)="seleccionarCategoria(null)">
+            Todos los productos
+          </button>
+          
+          <button *ngFor="let cat of categorias" 
+                  class="filter-btn"
+                  [class.active]="categoriaSeleccionadaId === cat.id"
+                  (click)="seleccionarCategoria(cat.id)">
+            {{ cat.nombre }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="productos-container">
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-state">
+        <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Plaxtilineas Logo" class="loading-logo">
+        <p>Cargando productos...</p>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="error" class="error-state">
+        <p>{{ error }}</p>
+        <button class="btn-retry" (click)="cargarProductos()">Intentar nuevamente</button>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading && !error && productos.length === 0" class="empty-state">
+        <fa-icon [icon]="['fas', 'box-open']" class="empty-icon"></fa-icon>
+        <p>Pronto tendremos más productos en esta categoría.</p>
+        <button class="btn-primary" (click)="seleccionarCategoria(null)">Ver Destacados</button>
+      </div>
+
+      <!-- Carousel -->
+      <div class="carrusel-wrapper" *ngIf="!loading && !error && productos.length > 0">
+        <!-- Botón Anterior -->
+        <button class="carrusel-btn prev-btn" 
+                (click)="scrollCarrusel('prev')" 
+                [disabled]="currentPage === 0"
+                aria-label="Anterior">
+          <fa-icon [icon]="['fas', 'chevron-left']"></fa-icon>
+        </button>
+
+        <!-- Grid de Productos -->
+        <div class="productos-grid" #productosGrid>
+          <div *ngFor="let producto of productos; let i = index" class="producto-card">
+            <div class="producto-imagen-wrapper" (click)="verDetalles(producto.id, producto.nombre)">
+              <!-- Tags (Promocionales) -->
+              <span *ngIf="producto.controlar_stock && producto.stock === 0" class="tag promo agotado" style="background-color: #ef4444 !important; color: white !important; font-weight: bold; bottom: 8px; right: 8px;">Agotado</span>
+              <span *ngIf="!(producto.controlar_stock && producto.stock === 0) && i % 4 === 0" class="tag promo descuento-15">15% de descuento</span>
+              <span *ngIf="!(producto.controlar_stock && producto.stock === 0) && i % 4 === 1" class="tag promo ultimas-unidades">Últimas unidades</span>
+              <span *ngIf="!(producto.controlar_stock && producto.stock === 0) && i % 4 === 2" class="tag promo descuento-50">50% de descuento</span>
+              <span *ngIf="!(producto.controlar_stock && producto.stock === 0) && i % 4 === 3" class="tag promo promo-dia">Promo del día</span>
+              
+              <img [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/placeholder.jpg'" 
+                   [alt]="producto.nombre" 
+                   class="producto-imagen"
+                   loading="lazy">
+                   
+              <div class="producto-overlay">
+                <span class="ver-detalles-btn">Ver Detalles</span>
+              </div>
+            </div>
+
+            <div class="producto-info">
+              <h3 class="producto-titulo" (click)="verDetalles(producto.id, producto.nombre)">
+                {{ producto.nombre }}
+              </h3>
+              
+              <div class="producto-precio-row">
+                <span class="producto-precio">{{ formatearPrecio(producto.precio) }}</span>
+                <span *ngIf="producto.unidad" class="unidad-medida">/ {{ producto.unidad }}</span>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón Siguiente -->
+        <button class="carrusel-btn next-btn" 
+                (click)="scrollCarrusel('next')" 
+                [disabled]="currentPage >= pagesArray.length - 1"
+                aria-label="Siguiente">
+          <fa-icon [icon]="['fas', 'chevron-right']"></fa-icon>
+        </button>
+      </div>
+
+      <!-- Indicadores del Carrusel -->
+      <div class="carrusel-indicators" *ngIf="!loading && !error && pagesArray.length > 1">
+        <button *ngFor="let page of pagesArray; let i = index" 
+                class="indicator-dot" 
+                [class.active]="currentPage === i"
+                (click)="goToPage(i)"
+                [attr.aria-label]="'Ir a página ' + (i + 1)">
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

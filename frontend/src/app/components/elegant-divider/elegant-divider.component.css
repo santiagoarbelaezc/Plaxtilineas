@@ -1,0 +1,74 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.elegant-divider-wrapper {
+  width: 100%;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Fondos contextuales */
+.elegant-divider-wrapper.bg-white {
+  background-color: #ffffff;
+}
+
+.elegant-divider-wrapper.bg-light {
+  background-color: #f4f5f7;
+}
+
+.elegant-divider-wrapper.bg-transparent {
+  background-color: transparent;
+}
+
+/* Espaciados verticales opcionales */
+.elegant-divider-wrapper.spacing-sm {
+  padding: 8px 0;
+}
+
+.elegant-divider-wrapper.spacing-md {
+  padding: 16px 0;
+}
+
+.elegant-divider-wrapper.spacing-lg {
+  padding: 24px 0;
+}
+
+.divider-container {
+  width: 100%;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+/* Línea delgada y elegante */
+.divider-line {
+  position: relative;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg, 
+    rgba(228, 228, 231, 0) 0%, 
+    rgba(212, 212, 216, 0.7) 15%, 
+    rgba(161, 161, 170, 0.85) 50%, 
+    rgba(212, 212, 216, 0.7) 85%, 
+    rgba(228, 228, 231, 0) 100%
+  );
+  border: none;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Acento sutil opcional en el centro */
+.divider-accent-pip {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #16a34a;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #ffffff, 0 0 6px rgba(22, 163, 74, 0.3);
+}

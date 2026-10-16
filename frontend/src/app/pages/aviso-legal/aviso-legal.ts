@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { NavbarComponent } from '../../components/navbar/navbar.component';
-import { Footer } from '../../components/footer/footer.component';
+import { NavbarComponent } from '../../shared/layout/navbar/navbar.component';
+import { Footer } from '../../shared/layout/footer/footer.component';
 
 @Component({
   selector: 'app-aviso-legal',

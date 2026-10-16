@@ -3,36 +3,37 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
-// Importa todos los componentes que quieres mostrar en la vista de inicio
-import { NavbarComponent } from '../../components/navbar/navbar.component';
-import { HeaderComponent } from '../../components/header/header.component';
-import { Partners } from '../../components/partners/partners.component';
-import { Footer } from '../../components/footer/footer.component';
-import { SocialButtonsComponent } from '../../components/social-buttons/social-buttons.component';
+// Componente de Inicio principal
+import { NavbarComponent } from '../../shared/layout/navbar/navbar.component';
+import { HeaderComponent } from '../../features/home/hero/header.component';
+import { Partners } from '../../shared/layout/partners/partners.component';
+import { Footer } from '../../shared/layout/footer/footer.component';
+import { SocialButtonsComponent } from '../../shared/layout/social-buttons/social-buttons.component';
 
-import { CategoriasDestacadasComponent } from '../../components/categorias-destacadas/categorias-destacadas.component';
-import { FeatureBanner } from '../../components/feature-banner/feature-banner';
-import { PlaxtiTrioPresentationComponent } from '../../components/trio-presentation/trio-presentation';
+import { CategoriasDestacadasComponent } from '../../features/home/categorias-destacadas/categorias-destacadas.component';
+import { FeatureBanner } from '../../features/home/feature-banner/feature-banner';
+import { PlaxtiTrioPresentationComponent } from '../../features/home/trio-presentation/trio-presentation';
 
 import { ContentCard } from '../../models/content-card.model';
-import { BannerImage, PlaxtiBannerComponent } from '../../components/banner/banner';
-import { FeatureNewProducts } from '../../components/feature-new-products/feature-new-products';
-import { FullBanner } from '../../components/full-banner/full-banner';
-import { LongMap } from '../../components/long-map/long-map.component';
-import { UtilGridProducto } from '../../components/grid-producto/util-grid-producto/util-grid-producto';
-import { UtilGridProductoOther } from "../../components/grid-producto/util-grid-producto-other/util-grid-producto-other";
-import { NosotrosInicioComponent } from '../../components/nosotros-inicio/nosotros-inicio.component';
-import { BannerAsistenteComponent } from '../../components/banner-asistente/banner-asistente.component';
+import { BannerImage, PlaxtiBannerComponent } from '../../features/home/banner/banner';
+import { FeatureNewProducts } from '../../features/home/feature-new-products/feature-new-products';
+import { FullBanner } from '../../features/dynamic/full-banner/full-banner';
+import { LongMap } from '../../features/dynamic/long-map/long-map.component';
+import { UtilGridProducto } from '../../features/products/grid-producto/util-grid-producto/util-grid-producto';
+import { UtilGridProductoOther } from "../../features/products/grid-producto/util-grid-producto-other/util-grid-producto-other";
+import { NosotrosInicioComponent } from '../../features/home/nosotros-inicio/nosotros-inicio.component';
+import { BannerAsistenteComponent } from '../../features/home/banner-asistente/banner-asistente.component';
 import { ComponentesService, ComponenteDinamico } from '../../services/componentes.service';
-import { CategoryProductsCarouselComponent } from '../../components/category-products-carousel/category-products-carousel.component';
-import { GrupoEmpresasComponent } from '../../components/grupo-empresas/grupo-empresas.component';
-import { BannerRegistroComponent } from '../../components/banner-registro/banner-registro.component';
+import { GrupoEmpresasComponent } from '../../features/home/grupo-empresas/grupo-empresas.component';
+import { BannerRegistroComponent } from '../../features/home/banner-registro/banner-registro.component';
+import { MeshBannerComponent } from '../../features/home/mesh-banner/mesh-banner.component';
+import { ElegantDividerComponent } from '../../components/elegant-divider/elegant-divider.component';
 
 // Nuevos componentes dinámicos
-import { DynamicTestimoniosComponent } from '../../components/dynamic-testimonios/dynamic-testimonios.component';
-import { DynamicFaqComponent } from '../../components/dynamic-faq/dynamic-faq.component';
-import { DynamicGaleriaComponent } from '../../components/dynamic-galeria/dynamic-galeria.component';
-import { DynamicProductCarouselComponent } from '../../components/dynamic-product-carousel/dynamic-product-carousel.component';
+import { DynamicTestimoniosComponent } from '../../features/dynamic/dynamic-testimonios/dynamic-testimonios.component';
+import { DynamicFaqComponent } from '../../features/dynamic/dynamic-faq/dynamic-faq.component';
+import { DynamicGaleriaComponent } from '../../features/dynamic/dynamic-galeria/dynamic-galeria.component';
+import { DynamicProductCarouselComponent } from '../../features/dynamic/dynamic-product-carousel/dynamic-product-carousel.component';
 
 @Component({
   selector: 'app-inicio',
@@ -47,12 +48,13 @@ import { DynamicProductCarouselComponent } from '../../components/dynamic-produc
     SocialButtonsComponent,
     LongMap,
     CategoriasDestacadasComponent,
+    MeshBannerComponent,
+    ElegantDividerComponent,
     PlaxtiBannerComponent,
     FeatureNewProducts,
     FullBanner,
     UtilGridProductoOther,
     NosotrosInicioComponent,
-    CategoryProductsCarouselComponent,
     GrupoEmpresasComponent,
     BannerRegistroComponent,
     DynamicTestimoniosComponent,

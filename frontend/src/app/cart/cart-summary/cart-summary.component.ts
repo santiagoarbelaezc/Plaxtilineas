@@ -9,7 +9,7 @@ import { AuthService } from '../../services/auth.service';
 import { WompiService } from '../../services/wompi.service';
 import { ConfiguracionService } from '../../services/configuracion.service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { NavbarComponent } from '../../shared/layout/navbar/navbar.component';
 import Swal from 'sweetalert2';
 
 @Component({

@@ -8,11 +8,11 @@ import { CommonModule } from '@angular/common';
 import { CartDrawerComponent } from './cart/cart-drawer/cart-drawer.component';
 import { MobileCartComponent } from './cart/mobile-cart/mobile-cart.component';
 import { PwaService } from './services/pwa.service';
-import { LoadingScreenComponent } from './components/loading-screen/loading-screen';
+import { LoadingScreenComponent } from './shared/ui/loading-screen/loading-screen';
 import { AuthService } from './services/auth.service';
 import { ThemeService } from './services/theme.service';
-import { ToastNotificationComponent } from './components/toast-notification/toast-notification.component';
-import { CookieConsentComponent } from './components/cookies/cookies';
+import { ToastNotificationComponent } from './shared/ui/toast-notification/toast-notification.component';
+import { CookieConsentComponent } from './shared/ui/cookies/cookies';
 
 import { KeyboardService } from './services/keyboard.service';
 

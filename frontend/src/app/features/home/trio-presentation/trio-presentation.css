@@ -1,0 +1,483 @@
+/* ===========================
+   TRIO PRESENTATION - ESTILO MEJORADO
+   =========================== */
+
+.seccion-trio-presentation {
+  padding: 40px 20px;
+  background: var(--white);
+  font-family: var(--font-primary);
+  position: relative;
+  width: 100%;
+}
+
+/* Contenedor principal */
+.trio-container {
+  max-width: 1450px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Header */
+.trio-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 0 20px;
+}
+
+.trio-title {
+  font-size: 2rem;
+  font-weight: var(--font-weight-medium);
+  color: #2d3748;
+  position: relative;
+  display: inline-block;
+  margin: 0 0 12px 0;
+  font-family: var(--font-primary);
+  letter-spacing: 0.01em;
+}
+
+.trio-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-green), var(--whatsapp-green));
+  border-radius: 2px;
+}
+
+.trio-subtitle {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.5;
+  max-width: 700px;
+  margin: 12px auto 0;
+  font-weight: var(--font-weight-regular);
+  font-family: var(--font-primary);
+  letter-spacing: 0.01em;
+}
+
+/* Grid de cards */
+.cards-grid-trio {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: stretch;
+  gap: 24px;
+  padding: 0 10px;
+}
+
+/* Card individual */
+.trio-card {
+  position: relative;
+  background: var(--white);
+  overflow: hidden;
+  cursor: default;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  height: 400px;
+  position: relative;
+}
+
+/* Efecto hover */
+.trio-card.hover-effect:hover {
+  border-color: var(--primary-green);
+  box-shadow: 0 8px 24px rgba(54, 140, 68, 0.12);
+  transform: translateY(-4px);
+}
+
+.trio-card.has-link {
+  cursor: pointer;
+}
+
+/* Contenido de la card */
+.trio-card-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Contenedor de imagen */
+.trio-image-container {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--gray-50);
+}
+
+.trio-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.trio-card:hover .trio-image {
+  transform: scale(1.05);
+}
+
+/* Overlay degradado */
+.trio-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.4) 30%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.4) 70%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.trio-card:hover .trio-image-overlay {
+  opacity: 0.8;
+}
+
+/* Texto superpuesto */
+.trio-text-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: 24px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Posiciones del texto */
+.text-top {
+  top: 0;
+  bottom: auto;
+}
+
+.text-center {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.text-bottom {
+  top: auto;
+  bottom: 0;
+}
+
+/* Contenido del texto */
+.trio-text-content {
+  text-align: center;
+  max-width: 90%;
+  margin: 0 auto;
+  pointer-events: auto;
+}
+
+.trio-card-title {
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-medium);
+  color: white;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-family: var(--font-primary);
+  letter-spacing: 0.01em;
+}
+
+.trio-card-description {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: var(--font-weight-regular);
+  font-family: var(--font-primary);
+  letter-spacing: 0.01em;
+}
+
+/* Botón de acción */
+.trio-card-actions {
+  display: inline-block;
+  pointer-events: auto;
+}
+
+.trio-action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: var(--font-primary);
+  letter-spacing: 0.01em;
+}
+
+.trio-action-button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.trio-action-button svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease;
+}
+
+.trio-action-button:hover svg {
+  transform: translateX(3px);
+}
+
+/* Layout específico para el orden imagen/texto */
+.trio-card[data-layout="image-text"] .trio-card-content {
+  flex-direction: column;
+}
+
+.trio-card[data-layout="text-image"] .trio-card-content {
+  flex-direction: column-reverse;
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+
+/* Tablet - 768px */
+@media (max-width: 768px) {
+  .seccion-trio-presentation {
+    padding: 32px 16px;
+  }
+
+  .trio-header {
+    margin-bottom: 24px;
+    padding: 0 16px;
+  }
+
+  .trio-title {
+    font-size: 1.75rem;
+  }
+
+  .trio-subtitle {
+    font-size: 0.95rem;
+    max-width: 600px;
+  }
+
+  .cards-grid-trio {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 0 8px;
+  }
+
+  .trio-card {
+    height: 350px;
+  }
+
+  .trio-text-overlay {
+    padding: 20px;
+  }
+
+  .trio-card-title {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+  }
+
+  .trio-card-description {
+    font-size: 0.9rem;
+    margin-bottom: 14px;
+  }
+
+  .trio-action-button {
+    padding: 0.7rem 1.3rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Móvil grande - 576px */
+@media (max-width: 576px) {
+  .seccion-trio-presentation {
+    padding: 24px 12px;
+  }
+
+  .trio-header {
+    margin-bottom: 20px;
+    padding: 0 12px;
+  }
+
+  .trio-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+
+  .trio-title::after {
+    width: 40px;
+    height: 2px;
+    bottom: -8px;
+  }
+
+  .trio-subtitle {
+    font-size: 0.9rem;
+    max-width: 500px;
+  }
+
+  .cards-grid-trio {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 0 4px;
+  }
+
+  .trio-card {
+    height: 300px;
+    max-width: 100%;
+  }
+
+  .trio-text-overlay {
+    padding: 16px;
+  }
+
+  .trio-text-content {
+    max-width: 95%;
+  }
+
+  .trio-card-title {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .trio-card-description {
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+
+  .trio-action-button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Móvil pequeño - 375px */
+@media (max-width: 375px) {
+  .seccion-trio-presentation {
+    padding: 20px 8px;
+  }
+
+  .trio-header {
+    margin-bottom: 16px;
+    padding: 0 8px;
+  }
+
+  .trio-title {
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+  }
+
+  .trio-title::after {
+    width: 30px;
+    height: 2px;
+    bottom: -6px;
+  }
+
+  .trio-subtitle {
+    font-size: 0.85rem;
+    max-width: 100%;
+  }
+
+  .cards-grid-trio {
+    gap: 12px;
+    padding: 0 2px;
+  }
+
+  .trio-card {
+    height: 280px;
+  }
+
+  .trio-text-overlay {
+    padding: 12px;
+  }
+
+  .trio-text-content {
+    max-width: 100%;
+  }
+
+  .trio-card-title {
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+  }
+
+  .trio-card-description {
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+  }
+
+  .trio-action-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Móvil muy pequeño - 320px */
+@media (max-width: 320px) {
+  .seccion-trio-presentation {
+    padding: 16px 6px;
+  }
+
+  .trio-header {
+    margin-bottom: 12px;
+    padding: 0 6px;
+  }
+
+  .trio-title {
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+  }
+
+  .trio-title::after {
+    width: 25px;
+    height: 1px;
+    bottom: -4px;
+  }
+
+  .trio-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .cards-grid-trio {
+    gap: 10px;
+    padding: 0 1px;
+  }
+
+  .trio-card {
+    height: 260px;
+  }
+
+  .trio-text-overlay {
+    padding: 10px;
+  }
+
+  .trio-card-title {
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+
+  .trio-card-description {
+    font-size: 0.75rem;
+    margin-bottom: 8px;
+  }
+
+  .trio-action-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.7rem;
+  }
+}

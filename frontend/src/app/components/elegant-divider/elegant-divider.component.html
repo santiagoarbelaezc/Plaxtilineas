@@ -1,0 +1,12 @@
+<div 
+  class="elegant-divider-wrapper" 
+  [ngClass]="'bg-' + background"
+  [class.spacing-sm]="spacing === 'sm'"
+  [class.spacing-md]="spacing === 'md'"
+  [class.spacing-lg]="spacing === 'lg'">
+  <div class="divider-container" [style.maxWidth]="maxWidth">
+    <div class="divider-line" [class.has-accent]="withAccent">
+      <span class="divider-accent-pip" *ngIf="withAccent"></span>
+    </div>
+  </div>
+</div>

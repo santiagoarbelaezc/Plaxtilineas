@@ -1,0 +1,206 @@
+/* banner-registro.component.css - Minimalist & Compact Redesign */
+
+.banner-registro-section {
+  width: 100%;
+  background: linear-gradient(90deg, #ffffff 0%, #f8fafc 100%);
+  font-family: 'Montserrat', sans-serif;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 12px 0;
+  position: relative;
+  z-index: 10;
+  transition: all 0.25s ease;
+}
+
+.banner-registro-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* ==========================================================================
+   GRUPO DE INFORMACIÓN (IZQUIERDA / CENTRO)
+   ========================================================================== */
+.banner-info-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+
+/* Textos principales */
+.banner-text-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.banner-title {
+  font-size: 0.98rem;
+  font-weight: 750;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.highlight-accent {
+  background: linear-gradient(135deg, #e00751 0%, #ff4b81 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 850;
+}
+
+.banner-subtitle {
+  font-size: 0.83rem;
+  color: #64748b;
+  margin: 0;
+  font-weight: 450;
+  line-height: 1.4;
+}
+
+/* Micro perks / chips inline */
+.banner-perks-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.perk-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 650;
+  color: #047857;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 2px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.perk-icon {
+  stroke: #059669;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   GRUPO DE LLAMADO A LA ACCIÓN (DERECHA)
+   ========================================================================== */
+.banner-cta-group {
+  flex-shrink: 0;
+}
+
+.banner-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: #0f172a;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.12);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.banner-btn:hover {
+  background: #020617;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(15, 23, 42, 0.22);
+}
+
+.btn-arrow {
+  transition: transform 0.2s ease;
+}
+
+.banner-btn:hover .btn-arrow {
+  transform: translateX(3px);
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+@media (max-width: 1200px) {
+  .banner-perks-inline {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .banner-registro-section {
+    padding: 10px 0;
+  }
+
+  .banner-text-wrap {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .banner-title {
+    font-size: 0.92rem;
+  }
+
+  .banner-subtitle {
+    font-size: 0.78rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .banner-registro-section {
+    padding: 12px 0;
+  }
+
+  .banner-registro-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 0 16px;
+  }
+
+  .banner-info-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .banner-text-wrap {
+    flex-direction: column;
+    gap: 3px;
+    width: 100%;
+  }
+
+  .banner-title {
+    font-size: 0.95rem;
+    white-space: normal;
+    line-height: 1.3;
+  }
+
+  .banner-subtitle {
+    font-size: 0.8rem;
+    line-height: 1.35;
+  }
+
+  .banner-cta-group {
+    width: 100%;
+  }
+
+  .banner-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 9px 16px;
+  }
+}

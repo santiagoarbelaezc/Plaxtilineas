@@ -1,0 +1,46 @@
+<div class="container-wrapper">
+  <!-- Layout principal en Grilla 2x2 -->
+  <div class="layout-container">
+    
+    <!-- Promo (Fila 1, Col 1) -->
+    <div class="promo-section">
+      <app-card-promos
+        [titulo]="promoTitulo"
+        [descripcion]="promoDescripcion"
+        [imagen]="promoImagen"
+        [logoUrl]="promoLogoUrl"
+        [linkUrl]="linkUrl"
+        [queryParams]="promoQueryParams">
+      </app-card-promos>
+    </div>
+
+    <!-- Banner (Fila 1, Col 2) -->
+    <div class="banner-section">
+      <app-card-banner
+        [imagenUrl]="bannerImagenUrl"
+        [titulo]="bannerTitulo"
+        [descripcion]="bannerDescripcion"
+        [altText]="bannerAltText || bannerTitulo">
+      </app-card-banner>
+    </div>
+    
+    <!-- Card (Fila 2, Col 1) -->
+    <div class="card-section">
+      <app-card 
+        [precio]="precio" 
+        [nombreProducto]="nombreProducto"
+        [imagenProducto]="imagenProducto"
+        [linkUrl]="cardLinkUrl"
+        [queryParams]="cardQueryParams">
+      </app-card>
+    </div>
+
+    <!-- Carousel (Fila 2, Col 2) -->
+    <div class="carousel-section">
+      <app-carousel 
+        [categoriaNombre]="categoriaNombre">
+      </app-carousel>
+    </div>
+    
+  </div>
+</div>

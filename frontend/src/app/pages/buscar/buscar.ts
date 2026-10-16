@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { SearchComponent } from "../../components/search-component/search-component";
-import { NavbarComponent } from '../../components/navbar/navbar.component';
-import { Footer } from '../../components/footer/footer.component';
-import { SocialButtonsComponent } from '../../components/social-buttons/social-buttons.component';
+import { SearchComponent } from "../../features/search/search-component/search-component";
+import { NavbarComponent } from '../../shared/layout/navbar/navbar.component';
+import { Footer } from '../../shared/layout/footer/footer.component';
+import { SocialButtonsComponent } from '../../shared/layout/social-buttons/social-buttons.component';
 
 @Component({
+  standalone: true,
   selector: 'app-buscar',
   imports: [SearchComponent, NavbarComponent, Footer, SocialButtonsComponent],
   templateUrl: './buscar.html',

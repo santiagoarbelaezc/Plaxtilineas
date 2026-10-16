@@ -1,6 +1,6 @@
 // src/app/services/producto-background.service.ts
 import { Injectable } from '@angular/core';
-import { ProductoBackgroundImage } from '../components/producto-background/producto-background';
+import { ProductoBackgroundImage } from '../features/products/producto-background/producto-background';
 
 /**
  * Configuración de ProductoBackground para una categoría

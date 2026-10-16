@@ -1,14 +1,14 @@
 import { Component, ElementRef, HostListener, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from '../../components/navbar/navbar.component';
-import { Footer } from '../../components/footer/footer.component';
-import { SocialButtonsComponent } from "../../components/social-buttons/social-buttons.component";
-import { MenuCategoriasComponent } from "../../components/menu-categorias/menu-categorias.component";
-import {ProductListComponent} from "../../components/product-list/product-list.component"
-import { HeaderComponent } from "../../components/header/header.component";
-import {ModalProductoComponent} from "../../components/modal-producto/modal-producto.component";
-import { FeatureNewProducts } from '../../components/feature-new-products/feature-new-products';
-import { FeatureRandomProducts } from '../../components/feature-random-products/feature-random-products';
+import { NavbarComponent } from '../../shared/layout/navbar/navbar.component';
+import { Footer } from '../../shared/layout/footer/footer.component';
+import { SocialButtonsComponent } from "../../shared/layout/social-buttons/social-buttons.component";
+import { MenuCategoriasComponent } from "../../shared/ui/menu-categorias/menu-categorias.component";
+import {ProductListComponent} from "../../features/products/product-list/product-list.component"
+import { HeaderComponent } from "../../features/home/hero/header.component";
+import {ModalProductoComponent} from "../../features/products/modal-producto/modal-producto.component";
+import { FeatureNewProducts } from '../../features/home/feature-new-products/feature-new-products';
+import { FeatureRandomProducts } from '../../features/home/feature-random-products/feature-random-products';
 
 @Component({
   selector: 'app-productos',

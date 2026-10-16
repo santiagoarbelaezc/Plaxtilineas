@@ -1,11 +1,6 @@
 <app-navbar></app-navbar>
 
 <main class="home-main">
-  <!-- Banner Promoción Registro VIP (Arriba del Header - Desaparece al estar logueado) -->
-  <div *ngIf="!(authService.isLoggedIn | async)">
-    <app-banner-registro></app-banner-registro>
-  </div>
-
   <!-- Hero Section -->
   <app-header></app-header>
 
@@ -14,15 +9,16 @@
     <app-categorias-destacadas></app-categorias-destacadas>
   </section>
 
-  <!-- Nuevo Carrusel de Productos Filtrable por Categorías ("Explora Categorías") -->
-  <section class="home-section" style="padding-top: 0; padding-bottom: 0;">
-    <app-category-products-carousel></app-category-products-carousel>
-  </section>
+  <!-- Línea de Separación Elegante entre componentes con fondo blanco -->
+  <app-elegant-divider background="white"></app-elegant-divider>
 
   <!-- Nuevos Productos ("Explora más Productos") -->
-  <section class="home-section" style="padding-top: 0;">
+  <section class="home-section" style="padding-top: 0; padding-bottom: 0;">
     <app-feature-new-products></app-feature-new-products>
   </section>
+
+  <!-- Banner Intermedio: Mallas y Coberturas (Estilo Hero) -->
+  <app-mesh-banner></app-mesh-banner>
 
 
 
@@ -305,7 +301,7 @@
   </section>
 
   <!-- Grupo Empresas -->
-  <app-grupo-empresas></app-grupo-empresas>
+  <app-grupo-empresas id="grupo"></app-grupo-empresas>
 
   <!-- Ubicación y Partners -->
   <div class="footer-stack">

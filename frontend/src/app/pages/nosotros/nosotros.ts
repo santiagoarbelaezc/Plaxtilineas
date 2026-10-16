@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from '../../components/navbar/navbar.component';
-import { Footer } from '../../components/footer/footer.component';
-import { SocialButtonsComponent } from "../../components/social-buttons/social-buttons.component";
-import { Values } from "../../components/values/values.component";
-import { LongMap } from "../../components/long-map/long-map.component";
+import { NavbarComponent } from '../../shared/layout/navbar/navbar.component';
+import { Footer } from '../../shared/layout/footer/footer.component';
+import { SocialButtonsComponent } from '../../shared/layout/social-buttons/social-buttons.component';
+import { Values } from "../../features/home/values/values.component";
+import { LongMap } from "../../features/dynamic/long-map/long-map.component";
 
 
 @Component({

@@ -1,0 +1,272 @@
+<!-- TARJETA FLOTANTE DE COOKIES (Esquina inferior izquierda) -->
+<div *ngIf="isVisible" class="cookie-banner-container" role="dialog" aria-live="polite" aria-label="Aviso de privacidad y cookies">
+  <div class="cookie-banner-card">
+    
+    <!-- Encabezado con Icono SVG y Título -->
+    <div class="cookie-header">
+      <div class="cookie-icon-wrapper">
+        <svg class="cookie-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Silueta elegante de la galleta con mordisco sutil -->
+          <path d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 10.4 21.6 8.9 20.9 7.6C19.7 8.5 18.2 9 16.5 9C13.5 9 11 6.5 11 3.5C11 3 11.1 2.5 11.2 2.1C11.5 2 11.7 2 12 2Z" 
+                stroke="#368c44" 
+                stroke-width="1.8" 
+                stroke-linecap="round" 
+                stroke-linejoin="round"
+                fill="rgba(54, 140, 68, 0.06)"/>
+
+          <!-- Chispas minimalistas con acentos de marca -->
+          <circle cx="8" cy="9.5" r="1.3" fill="#368c44"/>
+          <circle cx="7" cy="15.5" r="1.1" fill="#368c44"/>
+          <circle cx="12" cy="13.5" r="1.5" fill="#25d366"/>
+          <circle cx="16" cy="17" r="1.2" fill="#368c44"/>
+          <circle cx="11.5" cy="18.5" r="1" fill="#368c44"/>
+
+          <!-- Indicador de Privacidad en esquina -->
+          <circle cx="18" cy="5" r="3" fill="#25d366" opacity="0.2"/>
+          <circle cx="18" cy="5" r="1.8" fill="#25d366"/>
+        </svg>
+      </div>
+      <div class="cookie-title-group">
+        <h3 class="cookie-title">
+          Uso de Cookies y Privacidad <span class="cookie-status-dot">●</span>
+        </h3>
+        <span class="cookie-badge">Ley 1581 / RGPD</span>
+      </div>
+    </div>
+
+    <!-- Descripción del tratamiento -->
+    <p class="cookie-description">
+      En <strong>Plaxtilineas</strong> utilizamos cookies propias y de terceros para garantizar el correcto funcionamiento del sitio, personalizar su experiencia y analizar el tráfico de conformidad con la <strong>Ley 1581 de 2012 de Protección de Datos (Habeas Data)</strong> y el <strong>RGPD</strong>.
+    </p>
+
+    <!-- Acciones -->
+    <div class="cookie-actions">
+      <button type="button" class="btn-cookie-primary" (click)="acceptAll()">
+        Aceptar todas
+      </button>
+      <button type="button" class="btn-cookie-secondary" (click)="acceptEssential()">
+        Solo esenciales
+      </button>
+      <button type="button" class="btn-cookie-link" (click)="openModal()">
+        Configurar
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL DE CONFIGURACIÓN Y TEXTO LEGAL COMPLETO -->
+<div *ngIf="showModal" class="cookie-modal-overlay" (click)="closeModal()">
+  <div class="cookie-modal-container" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+    
+    <!-- Modal Header -->
+    <div class="cookie-modal-header">
+      <div class="cookie-modal-title-box">
+        <div class="cookie-modal-icon-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <div>
+          <h2 class="cookie-modal-title">Centro de Privacidad y Cookies</h2>
+          <p class="cookie-modal-subtitle">Gestione sus preferencias de privacidad e infórmese sobre la Protección de Datos Personales.</p>
+        </div>
+      </div>
+      <button type="button" class="cookie-modal-close" (click)="closeModal()" aria-label="Cerrar modal">
+        &times;
+      </button>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="cookie-modal-tabs">
+      <button type="button" 
+              class="cookie-tab-btn" 
+              [class.active]="activeTab === 'preferences'"
+              (click)="setActiveTab('preferences')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        Configurar Preferencias
+      </button>
+
+      <button type="button" 
+              class="cookie-tab-btn" 
+              [class.active]="activeTab === 'legal'"
+              (click)="setActiveTab('legal')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        Documento Legal Completo
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="cookie-modal-body">
+      
+      <!-- TAB 1: PREFERENCIAS -->
+      <div *ngIf="activeTab === 'preferences'" class="tab-content preferences-tab">
+        <p class="tab-intro">
+          Puede activar o desactivar libremente cada categoría de cookies según sus preferencias. Las cookies esenciales son indispensables para garantizar el funcionamiento y la seguridad del portal.
+        </p>
+
+        <div class="cookie-category-list">
+          
+          <!-- Category 1: Necesarias -->
+          <div class="cookie-category-card">
+            <div class="category-info">
+              <div class="category-title-row">
+                <h4 class="category-name">Cookies Necesarias y Técnicas</h4>
+                <span class="category-status-tag required">Siempre Activas</span>
+              </div>
+              <p class="category-desc">
+                Imprescindibles para permitir la navegación básica, la seguridad del sitio web, la autenticación de usuarios y el correcto mantenimiento de la sesión e inicio de compra.
+              </p>
+            </div>
+            <div class="category-toggle">
+              <label class="switch disabled">
+                <input type="checkbox" checked disabled>
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Category 2: Analíticas -->
+          <div class="cookie-category-card">
+            <div class="category-info">
+              <div class="category-title-row">
+                <h4 class="category-name">Cookies de Análisis y Rendimiento</h4>
+                <span class="category-status-tag optional">Opcional</span>
+              </div>
+              <p class="category-desc">
+                Nos ayudan a comprender cómo interactúan los usuarios con nuestra plataforma de forma anónima, permitiéndonos medir visitas, fuentes de tráfico y mejorar constantemente nuestros servicios.
+              </p>
+            </div>
+            <div class="category-toggle">
+              <label class="switch">
+                <input type="checkbox" [(ngModel)]="analyticsEnabled">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Category 3: Preferencias -->
+          <div class="cookie-category-card">
+            <div class="category-info">
+              <div class="category-title-row">
+                <h4 class="category-name">Cookies de Preferencias y Funcionalidad</h4>
+                <span class="category-status-tag optional">Opcional</span>
+              </div>
+              <p class="category-desc">
+                Permiten que la aplicación recuerde información personalizada como sus selecciones de idioma, región o configuración del tema visual para ofrecerle una navegación optimizada.
+              </p>
+            </div>
+            <div class="category-toggle">
+              <label class="switch">
+                <input type="checkbox" [(ngModel)]="preferencesEnabled">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Category 4: Marketing -->
+          <div class="cookie-category-card">
+            <div class="category-info">
+              <div class="category-title-row">
+                <h4 class="category-name">Cookies de Marketing y Publicidad</h4>
+                <span class="category-status-tag optional">Opcional</span>
+              </div>
+              <p class="category-desc">
+                Se emplean para mostrarle anuncios relevantes según sus hábitos de navegación y medir la eficiencia de nuestras campañas publicitarias de manera transparente.
+              </p>
+            </div>
+            <div class="category-toggle">
+              <label class="switch">
+                <input type="checkbox" [(ngModel)]="marketingEnabled">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TAB 2: DOCUMENTO LEGAL COMPLETO -->
+      <div *ngIf="activeTab === 'legal'" class="tab-content legal-tab">
+        <div class="legal-document">
+          <div class="legal-badge-header">
+            <span>POLÍTICA DE TRATAMIENTO DE DATOS PERSONALES Y HABEAS DATA</span>
+          </div>
+
+          <h3>1. Marco Normativo y Cumplimiento Legal</h3>
+          <p>
+            En cumplimiento de la <strong>Ley Estatutaria 1581 de 2012</strong> de la República de Colombia, el Decreto Reglamentario 1377 de 2013 y el Reglamento General de Protección de Datos de la Unión Europea (<strong>RGPD 2016/679</strong>), <strong>Plaxtilineas S.A.S.</strong> adopta la presente política para regular la recolección, almacenamiento, uso, circulación y supresión de datos personales.
+          </p>
+
+          <h3>2. Identificación del Responsable del Tratamiento</h3>
+          <ul class="legal-list">
+            <li><strong>Razón Social:</strong> Plaxtilineas S.A.S.</li>
+            <li><strong>Domicilio:</strong> Colombia</li>
+            <li><strong>Correo Electrónico de Contacto:</strong> <a href="mailto:privacidad@plaxtilineas.com">privacidad@plaxtilineas.com</a> / <a href="mailto:contacto@plaxtilineas.com">contacto@plaxtilineas.com</a></li>
+            <li><strong>Sitio Web Oficial:</strong> https://plaxtilineas.com</li>
+          </ul>
+
+          <h3>3. Finalidades del Tratamiento de Datos Personales</h3>
+          <p>Los datos recolectados a través de formularios, compras y cookies serán utilizados de manera confidencial para:</p>
+          <ul class="legal-list">
+            <li>Procesar pedidos, compras, facturación y entregas de productos comercializados por Plaxtilineas.</li>
+            <li>Gestionar peticiones, quejas, reclamos y sugerencias (PQR).</li>
+            <li>Enviar notificaciones sobre el estado de las transacciones y actualizaciones operativas.</li>
+            <li>Mejorar el diseño, la usabilidad y la seguridad técnica de la plataforma digital.</li>
+          </ul>
+
+          <h3>4. Derechos de los Titulares (Derechos ARCO)</h3>
+          <p>Como titular de los datos personales, usted tiene derecho a ejercitar en cualquier momento:</p>
+          <ul class="legal-list">
+            <li><strong>Acceso:</strong> Conocer los datos personales que se encuentran en nuestras bases de datos.</li>
+            <li><strong>Rectificación:</strong> Actualizar y corregir información inexacta, parcial o desactualizada.</li>
+            <li><strong>Cancelación / Supresión:</strong> Solicitar la eliminación de sus datos cuando considere que no están siendo tratados conforme a la ley.</li>
+            <li><strong>Oposición / Revocatoria:</strong> Revocar la autorización otorgada para el tratamiento de sus datos de carácter personal.</li>
+          </ul>
+
+          <h3>5. Canales para el Ejercicio de Derechos ARCO</h3>
+          <p>
+            Para tramitar cualquier solicitud de acceso, rectificación, cancelación u oposición, puede enviar un mensaje al correo <a href="mailto:privacidad@plaxtilineas.com">privacidad@plaxtilineas.com</a> o comunicarse a través de nuestro portal oficial de PQR. Las solicitudes serán atendidas en los términos legales establecidos por la Ley 1581 de 2012 (10 a 15 días hábiles).
+          </p>
+
+          <h3>6. Exención de Responsabilidad sobre Enlaces y Servicios de Terceros</h3>
+          <p>
+            El sitio web de Plaxtilineas puede contener enlaces a plataformas de terceros (como pasarelas de pago externas o redes sociales). Plaxtilineas no asume responsabilidad directa ni sobre las políticas de privacidad ni sobre la seguridad del tratamiento de datos efectuado por dichos terceros ajenos a la organización.
+          </p>
+
+          <h3>7. Autoridad de Control Competente</h3>
+          <p>
+            La autoridad de vigilancia y control en materia de protección de datos personales en Colombia es la <strong>Superintendencia de Industria y Comercio (SIC)</strong> - Delegatura para la Protección de Datos Personales (<a href="https://www.sic.gov.co" target="_blank" rel="noopener noreferrer">www.sic.gov.co</a>).
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Modal Footer Actions -->
+    <div class="cookie-modal-footer">
+      <button type="button" class="btn-cookie-modal-secondary" (click)="acceptEssential()">
+        Solo esenciales
+      </button>
+      <div class="footer-primary-actions">
+        <button type="button" class="btn-cookie-modal-outline" (click)="saveCustomPreferences()">
+          Guardar preferencias
+        </button>
+        <button type="button" class="btn-cookie-modal-primary" (click)="acceptAll()">
+          Aceptar todas
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

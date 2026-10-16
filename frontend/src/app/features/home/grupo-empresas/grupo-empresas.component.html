@@ -1,0 +1,29 @@
+<section class="grupo-section" id="grupo">
+  <!-- Encabezado de la Sección -->
+  <div class="section-header">
+    <h2 class="section-title">Conoce el Grupo <span>Espumas y Plásticos</span></h2>
+    <p class="section-subtitle">
+      Sinergia e innovación a través de nuestras empresas aliadas para ofrecerte las mejores soluciones en empaques, confort y descanso.
+    </p>
+  </div>
+
+  <!-- Banners de Empresas -->
+  <div class="banners-container">
+    <a 
+      *ngFor="let empresa of empresas" 
+      [href]="empresa.url" 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      class="empresa-banner"
+      [style.--theme-color]="empresa.colorTheme"
+    >
+      <img [src]="empresa.imagenBanner" [alt]="empresa.nombre" class="banner-image">
+      <div class="banner-overlay">
+        <span class="visit-text">
+          Visitar sitio oficial
+          <fa-icon [icon]="['fas', 'external-link-alt']"></fa-icon>
+        </span>
+      </div>
+    </a>
+  </div>
+</section>

@@ -1,0 +1,295 @@
+/* ═══════════════════════════════════════════════════════════════════
+   HERO ULTRA HD FULLWIDTH & MINIMALISTA — PLAXTILINEAS
+   Design Tokens: #0a0a0a, #f4f5f7, #ffffff, #e4e4e7, #16a34a, #22c55e
+   ═══════════════════════════════════════════════════════════════════ */
+
+:host {
+  display: block;
+  width: 100%;
+  font-family: 'Inter Tight', sans-serif;
+}
+
+.hero-fullscreen-section {
+  position: relative;
+  width: 100%;
+  min-height: 84vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #0a0a0a;
+  padding: 60px 24px;
+}
+
+@media (min-width: 1440px) {
+  .hero-fullscreen-section {
+    min-height: 88vh;
+    padding: 70px 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-fullscreen-section {
+    min-height: 75vh;
+    padding: 40px 16px;
+  }
+}
+
+/* ── Fullscreen Ultra HD Image Background Fijo (Efecto Ventana / Fijo a la Vista) ── */
+.hero-fullscreen-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/assets/images/hero/hero-chatgpt.png');
+  background-attachment: fixed;
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: brightness(0.76) contrast(1.08) saturate(1.02);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ── Overlay Más Oscuro (Garantiza contraste óptimo y nitidez sin sombras en el texto) ── */
+.hero-fullscreen-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(10, 10, 10, 0.74) 0%, rgba(10, 10, 10, 0.62) 50%, rgba(10, 10, 10, 0.84) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .hero-fullscreen-section::before {
+    background-attachment: scroll;
+  }
+}
+
+/* ── Hero Container ── */
+.hero-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Minimalist Content ── */
+/* ── Minimalist Content ── */
+.hero-main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 940px;
+  animation: heroFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  position: relative;
+  background: transparent;
+  padding: 0;
+}
+
+@keyframes heroFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Hero Visual & Logo Invert (Sin contenedor negro, más grande y nítido) ── */
+.hero-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+
+.hero-logo {
+  height: 165px;
+  max-width: 650px;
+  width: auto;
+  object-fit: contain;
+  filter: none;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.hero-logo:hover {
+  transform: scale(1.02);
+}
+
+@media (max-width: 1024px) {
+  .hero-logo {
+    height: 125px;
+    max-width: 480px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-visual {
+    margin-bottom: 16px;
+  }
+
+  .hero-logo {
+    height: 88px;
+    max-width: 320px;
+  }
+}
+
+/* Headline en Mayúsculas con Estilo Geométrico y Tamaño Refinado (Completamente plano sin sombras) */
+.hero-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.22;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+@media (max-width: 1024px) {
+  .hero-headline {
+    font-size: 2.1rem;
+    letter-spacing: 0.03em;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-headline {
+    font-size: 1.65rem;
+    line-height: 1.22;
+    letter-spacing: 0.02em;
+  }
+}
+
+.highlight-green {
+  color: #22c55e;
+  font-weight: 800;
+  text-shadow: none !important;
+  filter: none !important;
+  display: inline-block;
+}
+
+/* Minimalist Lead (Completamente plano sin sombras) */
+.hero-lead {
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: #e4e4e7;
+  line-height: 1.6;
+  max-width: 700px;
+  margin: 0 0 34px 0;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+@media (max-width: 640px) {
+  .hero-lead {
+    font-size: 0.98rem;
+    margin-bottom: 26px;
+  }
+}
+
+/* Actions Row */
+.hero-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* Primary Catalog Button (Green) */
+.hero-btn-primary {
+  background: #16a34a;
+  color: #ffffff;
+  padding: 14px 28px;
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: 0.88rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 22px rgba(22, 163, 74, 0.45);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.hero-btn-primary:hover {
+  background: #15803d;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(22, 163, 74, 0.6);
+  color: #ffffff;
+}
+
+.btn-icon-svg {
+  font-size: 20px;
+}
+
+.btn-arrow {
+  transition: transform 0.25s ease;
+}
+
+.hero-btn-primary:hover .btn-arrow {
+  transform: translateX(4px);
+}
+
+/* Assistant Button (Sin avatar, limpio y estilizado) */
+.hero-btn-assistant {
+  background: rgba(18, 18, 20, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  padding: 14px 28px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 0.88rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+
+.hero-btn-assistant:hover {
+  background: rgba(28, 28, 32, 0.95);
+  border-color: #22c55e;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.5);
+  color: #22c55e;
+}
+
+.btn-assistant-icon {
+  font-size: 20px;
+  color: #22c55e;
+  transition: transform 0.2s ease;
+}
+
+.hero-btn-assistant:hover .btn-assistant-icon {
+  transform: scale(1.1);
+}

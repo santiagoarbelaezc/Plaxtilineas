@@ -1,0 +1,610 @@
+<!-- src/app/components/login-form/login-form.component.html -->
+<div class="login-wrapper transition-colors duration-300 relative"
+     [ngClass]="(themeService.theme$ | async) === 'dark' ? 'bg-dark' : 'bg-light'">
+
+  <!-- Tarjeta Split-Screen Principal de Autenticación -->
+  <div class="login-split-card"
+       [ngClass]="(themeService.theme$ | async) === 'dark' ? 'card-dark' : 'card-light'"
+       [class.register-mode]="mode === 'register'">
+    
+    <!-- COLUMNA IZQUIERDA: BANNER VISUAL CON IMAGEN -->
+    <div class="login-left-panel">
+      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1788754466/login-banner_di33p4.jpg" 
+           alt="Plaxtilineas" 
+           class="banner-image">
+      <div class="banner-overlay"></div>
+      
+      <div class="banner-content">
+        <div class="banner-brand-pill">
+          <span class="brand-pill-dot"></span>
+          <span>Plaxtilineas</span>
+        </div>
+
+        <!-- Botón Regresar en la parte inferior de la imagen -->
+        <a routerLink="/productos" class="banner-back-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>Volver al Inicio</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA: PANEL DEL FORMULARIO -->
+    <div class="login-form-panel">
+      
+      <!-- Pestañas Segmentadas Estilo Píldora (Ingresar / Registrarse) -->
+      <div class="segmented-tab-container">
+        <button type="button" 
+                (click)="mode = 'login'" 
+                class="segmented-tab-btn"
+                [class.active]="mode === 'login'">
+          Ingresar
+        </button>
+        <button type="button" 
+                (click)="toggleMode()" 
+                class="segmented-tab-btn"
+                [class.active]="mode === 'register'">
+          Registrarse
+        </button>
+      </div>
+
+      <!-- Cabecera del Formulario Minimalista -->
+      <div class="form-header-section">
+        <h2 class="form-main-heading">
+          {{ mode === 'login' ? 'Iniciar Sesión' : (mode === 'forgot' ? 'Recuperar Acceso' : 'Crear Cuenta') }}
+        </h2>
+      </div>
+
+      <!-- Banner sesión expirada -->
+      <div *ngIf="sessionExpired && mode === 'login'" class="session-expired-banner">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span>Tu sesión expiró. Inicia sesión nuevamente.</span>
+      </div>
+
+      <!-- FORMULARIO LOGIN -->
+      <form *ngIf="mode === 'login'" [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form-container">
+        <div class="form-group">
+          <label class="form-field-label">Correo electrónico</label>
+          <input formControlName="correo" type="email" placeholder="ejemplo@correo.com" class="form-input pill-input"
+                 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+        </div>
+
+        <div class="form-group">
+          <div class="flex justify-between items-center mb-1">
+            <label class="form-field-label">Contraseña</label>
+            <button type="button" (click)="mode = 'forgot'" class="forgot-password-link">¿Olvidaste tu contraseña?</button>
+          </div>
+          <div class="relative">
+            <input formControlName="password" [type]="showPassword ? 'text' : 'password'" placeholder="••••••••" class="form-input pill-input pr-12"
+                   [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+            <button type="button" class="pwd-toggle" (click)="togglePasswordVisibility()">
+              <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+              <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- CAPTCHA Vectorial SVG en Fila Única al Mismo Nivel -->
+        <div class="form-group captcha-field-group">
+          <label class="form-field-label">Código de Seguridad</label>
+          <div class="captcha-single-row">
+            <div class="captcha-svg-frame" [innerHTML]="captchaSvg"></div>
+            <button type="button" (click)="fetchCaptcha()" title="Recargar código de seguridad" class="captcha-refresh-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" class="refresh-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </button>
+            <input formControlName="captcha_code" type="text" placeholder="Ingresa el código" class="form-input pill-input captcha-code-input"
+                   [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'" maxlength="6">
+          </div>
+        </div>
+
+        <button type="submit" [disabled]="isSubmitting || loginForm.invalid" class="btn-primary pill-btn mt-2">
+          {{ isSubmitting ? 'Ingresando...' : 'Iniciar Sesión' }}
+        </button>
+
+        <div class="form-switch-footer">
+          <span>¿No tienes cuenta?</span>
+          <button type="button" (click)="toggleMode()" class="switch-link">Regístrate</button>
+        </div>
+      </form>
+
+      <!-- FORMULARIO OLVIDÓ CONTRASEÑA -->
+      <form *ngIf="mode === 'forgot'" [formGroup]="forgotForm" (ngSubmit)="onSubmitForgot()" class="form-container">
+        <div class="form-group">
+          <label class="form-field-label">Correo electrónico</label>
+          <input formControlName="correo" type="email" placeholder="ejemplo@correo.com" class="form-input pill-input"
+                 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+          <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="forgotForm.get('correo')?.touched && forgotForm.get('correo')?.invalid">
+            <span *ngIf="forgotForm.get('correo')?.errors?.['required']">El correo es obligatorio.</span>
+            <span *ngIf="forgotForm.get('correo')?.errors?.['domainTypo']">
+              ¿Quisiste decir <strong>{{ forgotForm.get('correo')?.errors?.['domainTypo']?.correct }}</strong>?
+            </span>
+          </small>
+        </div>
+
+        <!-- CAPTCHA Vectorial SVG -->
+        <div class="form-group captcha-field-group">
+          <label class="form-field-label">Código de Seguridad</label>
+          <div class="captcha-single-row">
+            <div class="captcha-svg-frame" [innerHTML]="captchaSvg"></div>
+            <button type="button" (click)="fetchCaptcha()" title="Recargar código de seguridad" class="captcha-refresh-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" class="refresh-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </button>
+            <input formControlName="captcha_code" type="text" placeholder="Ingresa el código" class="form-input pill-input captcha-code-input"
+                   [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'" maxlength="6">
+          </div>
+        </div>
+
+        <button type="submit" [disabled]="isSubmitting || forgotForm.invalid" class="btn-primary pill-btn mt-2">
+          {{ isSubmitting ? 'Enviando...' : 'Recuperar Contraseña' }}
+        </button>
+
+        <div class="form-switch-footer">
+          <span>¿Recordaste tu contraseña?</span>
+          <button type="button" (click)="mode = 'login'" class="switch-link">Inicia sesión</button>
+        </div>
+      </form>
+
+      <!-- FORMULARIO REGISTRO -->
+      <div class="register-form-container" *ngIf="mode === 'register' && !requireVerification">
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-grid-form">
+          <div class="form-group">
+            <label class="form-field-label">Nombres</label>
+            <input formControlName="nombre" type="text" class="form-input pill-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+            <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="registerForm.get('nombre')?.touched && registerForm.get('nombre')?.invalid">
+              <span *ngIf="registerForm.get('nombre')?.errors?.['required']">El nombre es obligatorio.</span>
+              <span *ngIf="registerForm.get('nombre')?.errors?.['minlength']">Mínimo 2 caracteres.</span>
+              <span *ngIf="registerForm.get('nombre')?.errors?.['pattern']">El nombre solo puede contener letras.</span>
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-field-label">Apellidos</label>
+            <input formControlName="apellidos" type="text" class="form-input pill-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+            <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="registerForm.get('apellidos')?.touched && registerForm.get('apellidos')?.invalid">
+              <span *ngIf="registerForm.get('apellidos')?.errors?.['required']">Los apellidos son obligatorios.</span>
+              <span *ngIf="registerForm.get('apellidos')?.errors?.['minlength']">Mínimo 2 caracteres.</span>
+              <span *ngIf="registerForm.get('apellidos')?.errors?.['pattern']">Los apellidos solo pueden contener letras.</span>
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-field-label">Correo electrónico</label>
+            <input formControlName="correo" type="email" class="form-input pill-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+            <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="registerForm.get('correo')?.touched && registerForm.get('correo')?.invalid">
+              <span *ngIf="registerForm.get('correo')?.errors?.['required']">El correo es obligatorio.</span>
+              <span *ngIf="registerForm.get('correo')?.errors?.['noAtSymbol']">El correo electrónico debe contener un '@'.</span>
+              <span *ngIf="registerForm.get('correo')?.errors?.['invalidDomainFormat']">El formato del dominio no es válido.</span>
+              <span *ngIf="registerForm.get('correo')?.errors?.['domainTypo']">
+                ¿Quisiste decir <strong>{{ registerForm.get('correo')?.errors?.['domainTypo']?.correct }}</strong>?
+              </span>
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-field-label">Teléfono</label>
+            <input formControlName="telefono" type="tel" class="form-input pill-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+            <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="registerForm.get('telefono')?.touched && registerForm.get('telefono')?.invalid">
+              <span *ngIf="registerForm.get('telefono')?.errors?.['required']">El teléfono es obligatorio.</span>
+              <span *ngIf="registerForm.get('telefono')?.errors?.['pattern']">Debe contener entre 7 y 10 dígitos.</span>
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-field-label">Edad</label>
+            <input formControlName="edad" type="number" class="form-input pill-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+            <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="registerForm.get('edad')?.touched && registerForm.get('edad')?.invalid">
+              <span *ngIf="registerForm.get('edad')?.errors?.['required']">La edad es obligatoria.</span>
+              <span *ngIf="registerForm.get('edad')?.errors?.['min']">La edad no puede ser negativa.</span>
+              <span *ngIf="registerForm.get('edad')?.errors?.['max']">Edad no válida.</span>
+            </small>
+          </div>
+
+          <!-- DEPARTAMENTO -->
+          <div class="form-group custom-dropdown-container">
+            <label class="form-field-label">Departamento</label>
+            <div class="custom-dropdown-trigger pill-input" 
+                 (click)="toggleDeptDropdown($event)"
+                 [class.active]="isDeptDropdownOpen"
+                 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+              <span [class.placeholder-text]="!registerForm.get('departamento')?.value">
+                {{ registerForm.get('departamento')?.value || 'Selecciona departamento' }}
+              </span>
+              <span class="custom-select-arrow" [class.rotated]="isDeptDropdownOpen">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+            </div>
+
+            <div class="custom-dropdown-menu" 
+                 *ngIf="isDeptDropdownOpen" 
+                 (click)="$event.stopPropagation()"
+                 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'menu-dark' : 'menu-light'">
+              <div class="dropdown-search-box">
+                <span class="dropdown-search-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                </span>
+                <input type="text" 
+                       [(ngModel)]="deptSearchFilter" 
+                       [ngModelOptions]="{standalone: true}" 
+                       placeholder="Buscar departamento..." 
+                       class="dropdown-search-input"
+                       [ngClass]="(themeService.theme$ | async) === 'dark' ? 'search-dark' : 'search-light'">
+              </div>
+              <div class="dropdown-options-list">
+                <button type="button" 
+                        *ngFor="let dept of getFilteredDepartamentos()" 
+                        (click)="selectDepartamento(dept)" 
+                        class="dropdown-option-btn"
+                        [class.selected]="registerForm.get('departamento')?.value === dept"
+                        [ngClass]="(themeService.theme$ | async) === 'dark' ? 'opt-dark' : 'opt-light'">
+                  <span>{{ dept }}</span>
+                  <svg *ngIf="registerForm.get('departamento')?.value === dept" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </button>
+                <div *ngIf="getFilteredDepartamentos().length === 0" class="no-options-msg">
+                  No se encontraron coincidencias
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CIUDAD -->
+          <div class="form-group custom-dropdown-container">
+            <label class="form-field-label">Ciudad</label>
+            <div class="custom-dropdown-trigger pill-input" 
+                 (click)="toggleCityDropdown($event)"
+                 [class.active]="isCityDropdownOpen"
+                 [class.disabled-trigger]="!registerForm.get('departamento')?.value"
+                 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+              <span [class.placeholder-text]="!registerForm.get('ciudad')?.value">
+                {{ registerForm.get('ciudad')?.value || (registerForm.get('departamento')?.value ? 'Selecciona ciudad' : 'Primero elige departamento') }}
+              </span>
+              <span class="custom-select-arrow" [class.rotated]="isCityDropdownOpen">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+            </div>
+
+            <div class="custom-dropdown-menu" 
+                 *ngIf="isCityDropdownOpen && registerForm.get('departamento')?.value" 
+                 (click)="$event.stopPropagation()"
+                 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'menu-dark' : 'menu-light'">
+              <div class="dropdown-search-box">
+                <span class="dropdown-search-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                </span>
+                <input type="text" 
+                       [(ngModel)]="citySearchFilter" 
+                       [ngModelOptions]="{standalone: true}" 
+                       placeholder="Buscar ciudad..." 
+                       class="dropdown-search-input"
+                       [ngClass]="(themeService.theme$ | async) === 'dark' ? 'search-dark' : 'search-light'">
+              </div>
+              <div class="dropdown-options-list">
+                <button type="button" 
+                        *ngFor="let city of getFilteredCiudades()" 
+                        (click)="selectCiudad(city)" 
+                        class="dropdown-option-btn"
+                        [class.selected]="registerForm.get('ciudad')?.value === city"
+                        [ngClass]="(themeService.theme$ | async) === 'dark' ? 'opt-dark' : 'opt-light'">
+                  <span>{{ city }}</span>
+                  <svg *ngIf="registerForm.get('ciudad')?.value === city" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </button>
+                <div *ngIf="getFilteredCiudades().length === 0" class="no-options-msg">
+                  No se encontraron coincidencias
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-field-label">Dirección</label>
+            <input formControlName="direccion" type="text" class="form-input pill-input" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+          </div>
+
+          <div class="form-group">
+            <label class="form-field-label">Contraseña Segura</label>
+            <div class="relative">
+              <input formControlName="password" [type]="showPassword ? 'text' : 'password'" placeholder="••••••••" class="form-input pill-input pr-12"
+                     [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+              <button type="button" class="pwd-toggle" (click)="togglePasswordVisibility()">
+                <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-field-label">Confirmar Contraseña</label>
+            <div class="relative">
+              <input formControlName="confirmPassword" [type]="showPassword ? 'text' : 'password'" placeholder="••••••••" class="form-input pill-input pr-12"
+                     [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+            </div>
+            <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.hasError('mismatch')">
+              Las contraseñas no coinciden.
+            </small>
+          </div>
+
+          <!-- CAPTCHA Vectorial SVG en Fila Única al Mismo Nivel -->
+          <div class="form-group captcha-field-group" style="grid-column: 1 / -1;">
+            <label class="form-field-label">Código de Seguridad</label>
+            <div class="captcha-single-row">
+              <div class="captcha-svg-frame" [innerHTML]="captchaSvg"></div>
+              <button type="button" (click)="fetchCaptcha()" title="Recargar código de seguridad" class="captcha-refresh-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" class="refresh-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </button>
+              <input formControlName="captcha_code" type="text" placeholder="Ingresa el código" class="form-input pill-input captcha-code-input"
+                     [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'" maxlength="6">
+            </div>
+          </div>
+
+          <!-- Requisitos de Contraseña -->
+          <div class="password-requirements-wrapper">
+            <div class="password-requirements">
+              <p class="req-title text-xs font-semibold mb-2" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#475569]'">La contraseña debe tener:</p>
+              <ul class="req-list">
+                <li class="req-item" [class.met]="hasMinLength()" [class.unmet]="!hasMinLength() && pwdCtrl?.touched">
+                  <span class="indicator-icon">{{ hasMinLength() ? '✓' : '•' }}</span>
+                  <span>Mínimo 8 caracteres</span>
+                </li>
+                <li class="req-item" [class.met]="hasUppercase()" [class.unmet]="!hasUppercase() && pwdCtrl?.touched">
+                  <span class="indicator-icon">{{ hasUppercase() ? '✓' : '•' }}</span>
+                  <span>Al menos 1 mayúscula</span>
+                </li>
+                <li class="req-item" [class.met]="hasLowercase()" [class.unmet]="!hasLowercase() && pwdCtrl?.touched">
+                  <span class="indicator-icon">{{ hasLowercase() ? '✓' : '•' }}</span>
+                  <span>Al menos 1 minúscula</span>
+                </li>
+                <li class="req-item" [class.met]="hasNumber()" [class.unmet]="!hasNumber() && pwdCtrl?.touched">
+                  <span class="indicator-icon">{{ hasNumber() ? '✓' : '•' }}</span>
+                  <span>Al menos 1 número</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="register-submit-wrapper">
+            <button type="submit" [disabled]="isSubmitting || registerForm.invalid" class="btn-primary pill-btn">
+              {{ isSubmitting ? 'Procesando...' : 'Registrarme' }}
+            </button>
+          </div>
+        </form>
+
+        <div class="form-switch-footer mt-4">
+          <span>¿Ya tienes cuenta?</span>
+          <button type="button" (click)="mode = 'login'" class="switch-link">Inicia sesión</button>
+        </div>
+      </div>
+
+      <!-- PANTALLA DE VERIFICACIÓN DE CORREO -->
+      <div class="verification-container" *ngIf="mode === 'register' && requireVerification" style="padding: 2rem 1rem; text-align: center; animation: fadeIn 0.5s ease;">
+        <div class="flex justify-center mb-4 text-[#368C44]">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <h3 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-white' : 'text-[#1e293b]'" class="text-2xl font-bold mb-3">¡Verifica tu cuenta!</h3>
+        <p [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#64748b]'" class="mb-8 max-w-md mx-auto text-sm leading-relaxed">
+          Hemos enviado un código de confirmación a tu dirección de correo electrónico. Por favor, ingrésalo a continuación para activar tu cuenta.
+        </p>
+        
+        <div class="flex flex-col items-center gap-5">
+          <input type="text" #codigoVerificacion placeholder="123456" maxlength="6" 
+                 class="form-input text-center font-mono tracking-[0.5em] font-bold pill-input"
+                 style="max-width: 220px; font-size: 1.5rem; padding: 1rem;"
+                 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+          
+          <button type="button" class="btn-primary pill-btn w-full" style="max-width: 220px; padding: 1rem;"
+                  (click)="verifyCode(codigoVerificacion.value)" 
+                  [disabled]="isSubmitting">
+            {{ isSubmitting ? 'Verificando...' : 'Verificar Código' }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal Obligatorio de Cambio de Contraseña Temporal -->
+<div class="confirm-modal-overlay" *ngIf="showPasswordChangeModal">
+  <div class="confirm-modal-card" 
+       [ngClass]="(themeService.theme$ | async) === 'dark' ? 'modal-dark' : 'modal-light'"
+       style="max-width: 500px;">
+    
+    <div class="confirm-modal-header text-center mb-6">
+      <div class="w-14 h-14 rounded-full bg-[#368c44]/15 text-[#368c44] flex items-center justify-center mx-auto mb-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+      </div>
+      <h3 class="text-2xl font-bold mb-2">Establece tu Nueva Contraseña</h3>
+      <p class="text-sm leading-relaxed" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#94a3b8]' : 'text-gray-500'">
+        Ingresaste con una contraseña temporal. Por tu seguridad, debes crear una nueva contraseña definitiva.
+      </p>
+    </div>
+
+    <form [formGroup]="changePasswordForm" (ngSubmit)="onSubmitChangePassword()" class="form-container">
+      <div class="form-group">
+        <label class="form-field-label">Nueva Contraseña</label>
+        <div class="relative">
+          <input formControlName="password" [type]="showPassword ? 'text' : 'password'" placeholder="••••••••" class="form-input pill-input pr-12"
+                 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+          <button type="button" class="pwd-toggle" (click)="togglePasswordVisibility()">
+            <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+            <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-field-label">Confirmar Nueva Contraseña</label>
+        <div class="relative">
+          <input formControlName="confirmPassword" [type]="showPassword ? 'text' : 'password'" placeholder="••••••••" class="form-input pill-input pr-12"
+                 [ngClass]="(themeService.theme$ | async) === 'dark' ? 'input-dark' : 'input-light'">
+        </div>
+        <small class="text-red-500 text-xs mt-1 block font-medium" *ngIf="changePasswordForm.get('confirmPassword')?.touched && changePasswordForm.get('confirmPassword')?.hasError('mismatch')">
+          Las contraseñas no coinciden.
+        </small>
+      </div>
+
+      <!-- Indicaciones de Contraseña -->
+      <div class="password-requirements-wrapper">
+        <div class="password-requirements">
+          <p class="req-title text-xs font-semibold mb-2" [ngClass]="(themeService.theme$ | async) === 'dark' ? 'text-[#cbd5e1]' : 'text-[#475569]'">La contraseña debe contener:</p>
+          <ul class="req-list">
+            <li class="req-item" [class.met]="hasMinLength()" [class.unmet]="!hasMinLength() && pwdCtrl?.touched">
+              <span class="indicator-icon">{{ hasMinLength() ? '✓' : '•' }}</span>
+              <span>Mínimo 8 caracteres</span>
+            </li>
+            <li class="req-item" [class.met]="hasUppercase()" [class.unmet]="!hasUppercase() && pwdCtrl?.touched">
+              <span class="indicator-icon">{{ hasUppercase() ? '✓' : '•' }}</span>
+              <span>Al menos 1 mayúscula</span>
+            </li>
+            <li class="req-item" [class.met]="hasLowercase()" [class.unmet]="!hasLowercase() && pwdCtrl?.touched">
+              <span class="indicator-icon">{{ hasLowercase() ? '✓' : '•' }}</span>
+              <span>Al menos 1 minúscula</span>
+            </li>
+            <li class="req-item" [class.met]="hasNumber()" [class.unmet]="!hasNumber() && pwdCtrl?.touched">
+              <span class="indicator-icon">{{ hasNumber() ? '✓' : '•' }}</span>
+              <span>Al menos 1 número</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="isSubmitting || changePasswordForm.invalid" class="btn-primary pill-btn mt-4">
+        {{ isSubmitting ? 'Guardando...' : 'Establecer Nueva Contraseña' }}
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Modal de Confirmación de Datos -->
+<div class="confirm-modal-overlay" *ngIf="showConfirmModal" (click)="showConfirmModal = false">
+  <div class="confirm-modal-card" 
+       [ngClass]="(themeService.theme$ | async) === 'dark' ? 'modal-dark' : 'modal-light'"
+       (click)="$event.stopPropagation()">
+    
+    <div class="confirm-modal-header">
+      <div class="confirm-modal-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+      </div>
+      <h3 class="confirm-modal-title">¿Los datos son correctos?</h3>
+      <p class="confirm-modal-subtitle">Por favor, verifica la información de tu registro antes de continuar.</p>
+    </div>
+
+    <!-- Lista de Datos Registrados -->
+    <div class="confirm-data-list">
+      <div class="confirm-data-item">
+        <span class="confirm-data-label">Nombre:</span>
+        <span class="confirm-data-value">{{ registerForm.value.nombre }} {{ registerForm.value.apellidos }}</span>
+      </div>
+      <div class="confirm-data-item">
+        <span class="confirm-data-label">Correo:</span>
+        <span class="confirm-data-value">{{ registerForm.value.correo }}</span>
+      </div>
+      <div class="confirm-data-item">
+        <span class="confirm-data-label">Teléfono:</span>
+        <span class="confirm-data-value">{{ registerForm.value.telefono }}</span>
+      </div>
+      <div class="confirm-data-item">
+        <span class="confirm-data-label">Edad:</span>
+        <span class="confirm-data-value">{{ registerForm.value.edad }} años</span>
+      </div>
+      <div class="confirm-data-item">
+        <span class="confirm-data-label">Ciudad:</span>
+        <span class="confirm-data-value">{{ registerForm.value.ciudad }}, {{ registerForm.value.departamento }}</span>
+      </div>
+      <div class="confirm-data-item no-border">
+        <span class="confirm-data-label">Dirección:</span>
+        <span class="confirm-data-value">{{ registerForm.value.direccion }}</span>
+      </div>
+    </div>
+
+    <div class="confirm-modal-actions">
+      <button type="button" class="btn-confirm-secondary" (click)="showConfirmModal = false">
+        No, corregir
+      </button>
+      <button type="button" class="btn-confirm-primary" (click)="onConfirmRegister()">
+        Sí, registrarme
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Error -->
+<div class="error-modal-overlay" *ngIf="showErrorModal" (click)="closeErrorModal()">
+  <div class="error-modal-card" 
+       [ngClass]="(themeService.theme$ | async) === 'dark' ? 'modal-dark' : 'modal-light'"
+       (click)="$event.stopPropagation()">
+    
+    <div class="error-modal-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+    </div>
+    
+    <h3 class="error-modal-title">Atención</h3>
+    <p class="error-modal-body">{{ errorMsg }}</p>
+    
+    <button type="button" class="btn-error-confirm" (click)="closeErrorModal()">
+      Entendido
+    </button>
+  </div>
+</div>
+
+<!-- Pantalla de Éxito Inmersiva -->
+<div class="success-fullscreen-overlay" *ngIf="showSuccessModal"
+     [ngClass]="(themeService.theme$ | async) === 'dark' ? 'success-dark' : 'success-light'">
+  <div class="success-fullscreen-content">
+    
+    <!-- Logo con halo de brillo -->
+    <div class="success-logo-container">
+      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Plaxtilineas" class="success-logo">
+      <div class="success-logo-glow"></div>
+    </div>
+
+    <!-- Checkmark SVG Animado -->
+    <div class="success-checkmark-wrapper">
+      <svg class="success-checkmark-svg" viewBox="0 0 52 52">
+        <circle class="success-checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+        <path class="success-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+      </svg>
+    </div>
+
+    <!-- Título y Mensajes de Bienvenida -->
+    <div class="success-text-container">
+      <h2 class="success-title">¡Ingreso Exitoso!</h2>
+      <p class="success-subtitle">Bienvenido a Plaxtilineas, {{ userToRedirect?.nombre || (userToRedirect?.rol === 'admin' ? 'Administrador' : 'cliente') }}</p>
+    </div>
+
+    <!-- Barra de progreso de redirección -->
+    <div class="success-progress-bar-container">
+      <div class="success-progress-bar"></div>
+    </div>
+
+    <p class="success-status-text">{{ userToRedirect?.rol === 'admin' ? 'Cargando panel de administración...' : 'Cargando catálogo premium...' }}</p>
+  </div>
+</div>

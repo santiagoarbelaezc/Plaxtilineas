@@ -1,4 +1,4 @@
-// src/app/components/product-list/product-list.component.ts
+// src/app/features/products/product-list/product-list.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';

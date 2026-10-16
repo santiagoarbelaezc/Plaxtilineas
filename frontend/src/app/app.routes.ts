@@ -38,7 +38,7 @@ export const routes: Routes = [
   },
   {
     path: 'producto/:id',
-    loadComponent: () => import('./components/description-producto/description-producto').then(m => m.DescriptionProducto)
+    loadComponent: () => import('./features/products/description-producto/description-producto').then(m => m.DescriptionProducto)
   },
   {
     path: 'contacto',
