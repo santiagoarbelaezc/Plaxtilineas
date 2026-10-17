@@ -37,6 +37,10 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   
   public authService = inject(AuthService);
   public cartService = inject(CartService);
+
+  get isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
   
   userDropdownOpen = false;
   showToast = false;

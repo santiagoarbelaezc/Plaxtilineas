@@ -379,6 +379,8 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
 
   get tituloSeccion(): string {
     const url = this.router.url;
+    if (url.includes('/inventario')) return 'Inventario del Catálogo';
+    if (url.includes('/categorias')) return 'Categorías del Catálogo';
     if (url.includes('/pedidos')) return 'Gestión de Pedidos';
     if (url.includes('/personalizar-web')) return 'Personalizar';
     if (url.includes('/usuarios')) return 'Usuarios Registrados';
@@ -388,11 +390,13 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
 
   get subtituloSeccion(): string {
     const url = this.router.url;
+    if (url.includes('/inventario')) return 'Explora productos sincronizados, variantes y precios del catálogo oficial';
+    if (url.includes('/categorias')) return 'Explora familias de producto, subcategorías oficiales y marcas del catálogo';
     if (url.includes('/pedidos')) return 'Visualiza, gestiona y actualiza el estado de los pedidos';
     if (url.includes('/personalizar-web')) return 'Configura y edita elementos visuales y textos de la tienda';
     if (url.includes('/usuarios')) return 'Visualiza clientes registrados, carritos y actividad';
     if (url.includes('/pqr-admin')) return 'Atiende peticiones, quejas, reclamos y solicitudes de clientes';
-    return 'Administra pedidos, personalización, usuarios y PQRS de Plaxtilineas';
+    return 'Administra pedidos, inventario, categorías, usuarios y PQRS de Plaxtilineas';
   }
 
   /**

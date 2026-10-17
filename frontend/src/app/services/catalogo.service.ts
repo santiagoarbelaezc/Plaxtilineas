@@ -48,7 +48,9 @@ export interface CatalogoCategoria {
   nombre: string;
   marca: string;
   icono_url: string;
-  subcategorias: { id: number; nombre: string; categoria_id: number }[];
+  created_at?: string;
+  updated_at?: string;
+  subcategorias: { id: number; nombre: string; categoria_id: number; created_at?: string; updated_at?: string }[];
 }
 
 /**
@@ -97,10 +99,14 @@ export class CatalogoService {
                 nombre: String(c.name ?? '').trim(),
                 marca: c.brand,
                 icono_url: '',
+                created_at: c.created_at,
+                updated_at: c.updated_at,
                 subcategorias: (c.subcategories ?? []).map((s: any) => ({
                   id: Number(s.id),
                   nombre: String(s.name ?? '').trim(),
-                  categoria_id: Number(s.category_id ?? c.id)
+                  categoria_id: Number(s.category_id ?? c.id),
+                  created_at: s.created_at,
+                  updated_at: s.updated_at
                 }))
               }))
           ),
@@ -113,6 +119,35 @@ export class CatalogoService {
         );
     }
     return this.categorias$;
+  }
+
+  /** Retorna todas las categorías del catálogo sin filtrar por marca (para el dashboard). */
+  getTodasLasCategorias(): Observable<CatalogoCategoria[]> {
+    return this.http
+      .get<CatalogoRespuesta<any[]>>(`${this.baseUrl}/categorias`)
+      .pipe(
+        map(res =>
+          (res?.data ?? []).map(c => ({
+            id: Number(c.id),
+            nombre: String(c.name ?? '').trim(),
+            marca: c.brand ?? 'Plaxtilineas',
+            icono_url: '',
+            created_at: c.created_at,
+            updated_at: c.updated_at,
+            subcategorias: (c.subcategories ?? []).map((s: any) => ({
+              id: Number(s.id),
+              nombre: String(s.name ?? '').trim(),
+              categoria_id: Number(s.category_id ?? c.id),
+              created_at: s.created_at,
+              updated_at: s.updated_at
+            }))
+          }))
+        ),
+        catchError(err => {
+          console.error('Error al cargar todas las categorías del catálogo externo:', err);
+          return of([] as CatalogoCategoria[]);
+        })
+      );
   }
 
   /** Fuerza una nueva lectura del catálogo en la próxima consulta. */

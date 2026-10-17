@@ -90,13 +90,18 @@ export class ProductosService {
       .pipe(map(lista => lista.find(p => p.id === Number(id)) ?? null));
   }
 
-  /** Últimos productos agregados al catálogo (más recientes primero). */
-  obtenerUltimosProductos(): Observable<ProductoEditable[]> {
+  /** Últimos productos agregados al catálogo (más recientes primero, hasta 20 por defecto). */
+  obtenerUltimosProductos(limite: number = 20): Observable<ProductoEditable[]> {
     return this.catalogo.getProductos().pipe(
       map(lista =>
         [...lista]
-          .sort((a, b) => (b.creado_en ?? '').localeCompare(a.creado_en ?? ''))
-          .slice(0, 2)
+          .sort((a, b) => {
+            const fechaB = b.creado_en ? new Date(b.creado_en).getTime() : 0;
+            const fechaA = a.creado_en ? new Date(a.creado_en).getTime() : 0;
+            if (fechaB !== fechaA) return fechaB - fechaA;
+            return (b.id ?? 0) - (a.id ?? 0);
+          })
+          .slice(0, limite)
       )
     );
   }

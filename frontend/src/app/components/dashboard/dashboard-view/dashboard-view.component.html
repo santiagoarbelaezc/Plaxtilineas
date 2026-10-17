@@ -48,6 +48,14 @@
           </a>
         </li>
 
+        <!-- 2. Categorías -->
+        <li class="nav-item">
+          <a routerLink="/admin/categorias" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Categorías del Catálogo">
+            <span class="material-symbols-rounded nav-icon">category</span>
+            <span class="nav-label" *ngIf="!isSidebarCollapsed">Categorías</span>
+          </a>
+        </li>
+
         <!-- 2. Pedidos -->
         <li class="nav-item">
           <a routerLink="/admin/pedidos" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Pedidos">
