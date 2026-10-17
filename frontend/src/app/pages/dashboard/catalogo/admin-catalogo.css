@@ -159,7 +159,7 @@
 }
 
 /* ==========================================================================
-   2. FILA DE STAT CARDS (4 COLUMNAS - TOKEN EXACTO)
+   2. FILA DE STAT CARDS (ESTILO BENTO OSCURO #0a0a0a)
    ========================================================================== */
 
 .stat-cards-row {
@@ -169,286 +169,130 @@
 }
 
 .stat-card {
-  background: #ffffff;
-  border: 1.5px solid #e4e4e7;
-  border-left: 4px solid #09090b;
-  border-radius: 16px;
-  padding: 20px 22px;
-  transition: all 0.2s ease;
+  background: #0a0a0a;
+  border: 1.5px solid #27272a;
+  border-radius: 18px;
+  padding: 22px 24px;
+  position: relative;
+  overflow: hidden;
+  color: #ffffff;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Efecto de profundidad con halo translúcido */
+.stat-card::before {
+  content: '';
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  background: rgba(255, 255, 255, 0.035);
+  border-radius: 50%;
+  right: -40px;
+  top: -40px;
+  pointer-events: none;
 }
 
 .stat-card:hover {
-  box-shadow: 0 8px 24px rgba(9, 9, 11, 0.06);
-  transform: translateY(-2px);
+  border-color: #3f3f46;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+  transform: translateY(-3px);
 }
 
 .stat-card.stat-accent-red {
-  border-left-color: #dc2626;
+  background: radial-gradient(circle at top right, rgba(220, 38, 38, 0.14), transparent 70%), #0a0a0a;
+  border-color: rgba(220, 38, 38, 0.35);
+}
+
+.stat-card.stat-accent-red:hover {
+  border-color: #ef4444;
+  box-shadow: 0 14px 34px rgba(220, 38, 38, 0.2);
 }
 
 .stat-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
+  z-index: 2;
 }
 
 .stat-card-label {
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #71717a;
+  color: #a1a1aa;
 }
 
 .stat-card-icon-box {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: #f4f5f7;
-  color: #09090b;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: #18181b;
+  border: 1px solid #2e2e33;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.stat-card-icon-box .material-symbols-rounded {
+  font-size: 1.25rem;
+}
+
 .stat-card-icon-box.stat-icon-red {
-  background: #fef2f2;
-  color: #dc2626;
+  background: rgba(220, 38, 38, 0.15);
+  border-color: rgba(220, 38, 38, 0.4);
+  color: #ef4444;
 }
 
 .stat-number {
-  font-size: 2.2rem;
+  font-size: 2.3rem;
   font-weight: 900;
-  color: #09090b;
+  color: #ffffff;
   letter-spacing: -0.04em;
   line-height: 1;
-  margin: 12px 0 8px 0;
+  margin: 14px 0 10px 0;
+  position: relative;
+  z-index: 2;
 }
 
 .stat-red-number {
-  color: #dc2626;
+  color: #ef4444;
+  text-shadow: 0 0 16px rgba(239, 68, 68, 0.35);
 }
 
 .stat-price-number {
   font-size: 1.85rem;
+  color: #ffffff;
 }
 
 .stat-card-footer {
   display: flex;
   align-items: center;
+  border-top: 1px solid #1a1a1e;
+  padding-top: 12px;
+  margin-top: 4px;
+  position: relative;
+  z-index: 2;
 }
 
 .stat-footer-text {
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   font-weight: 500;
   color: #71717a;
 }
 
 /* ==========================================================================
-   3. BENTO GRID (HERO OSCURO + QUICK ACCESS 360px)
+   3. ESTILOS DE VISTA Y CONTROLES
    ========================================================================== */
 
-.bento-grid {
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 20px;
-  align-items: stretch;
-}
-
-.bento-welcome {
-  background: #0a0a0a;
-  border-radius: 18px;
-  padding: 36px 40px;
-  position: relative;
-  overflow: hidden;
-  color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.bento-welcome::before {
-  content: '';
-  position: absolute;
-  width: 280px;
-  height: 280px;
-  background: rgba(255, 255, 255, 0.035);
-  border-radius: 50%;
-  right: -60px;
-  top: -60px;
-  pointer-events: none;
-}
-
-.bento-welcome::after {
-  content: '';
-  position: absolute;
-  width: 190px;
-  height: 190px;
-  background: rgba(220, 38, 38, 0.04);
-  border-radius: 50%;
-  right: 120px;
-  bottom: -70px;
-  pointer-events: none;
-}
-
-.bento-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #18181b;
-  border: 1px solid #27272a;
-  padding: 5px 12px;
-  border-radius: 9999px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #e4e4e7;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  width: fit-content;
-  margin-bottom: 14px;
-}
-
-.status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #dc2626;
-  box-shadow: 0 0 8px rgba(220, 38, 38, 0.6);
-  animation: pulse-dot 2s infinite;
-}
-
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
-}
-
-.bento-title {
-  font-size: 2.2rem;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1.15;
-  margin: 0 0 12px 0;
-  color: #ffffff;
-}
-
-.bento-title-accent {
-  color: #ffffff;
-  text-decoration: underline;
-  text-decoration-color: #dc2626;
-  text-decoration-thickness: 3px;
-  text-underline-offset: 6px;
-}
-
-.bento-desc {
-  font-size: 0.92rem;
-  line-height: 1.55;
-  color: #a1a1aa;
-  max-width: 620px;
-  margin: 0 0 22px 0;
-}
-
-.bento-info-pills {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.bento-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #141416;
-  border: 1px solid #27272a;
-  padding: 6px 14px;
-  border-radius: 10px;
-  font-size: 0.75rem;
-  color: #e4e4e7;
-}
-
-.bento-pill code {
-  color: #f87171;
-  font-family: monospace;
-}
-
-.pill-icon {
-  font-size: 1rem;
-  color: #71717a;
-}
-
-/* Panel Lateral Bento (360px) */
-.bento-sidebar-panel {
-  display: flex;
-  flex-direction: column;
-}
-
-.panel-white-card {
-  background: #ffffff;
-  border: 1.5px solid #e4e4e7;
-  border-radius: 18px;
-  padding: 24px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-sizing: border-box;
-}
-
-.panel-card-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.panel-header-icon-box {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: #09090b;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.panel-header-title {
-  font-size: 1rem;
-  font-weight: 800;
-  margin: 0;
-  color: #09090b;
-}
-
-.panel-header-sub {
-  font-size: 0.75rem;
-  color: #71717a;
-  margin: 2px 0 0 0;
-}
-
-.quick-filters-body {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.view-switch-row {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.view-switch-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #71717a;
-}
-
 .view-switch-buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  display: flex;
+  gap: 4px;
   background: #f4f5f7;
   padding: 4px;
   border-radius: 12px;
@@ -470,71 +314,49 @@
   transition: all 0.2s ease;
 }
 
+.btn-view-toggle:hover {
+  color: #09090b;
+}
+
 .btn-view-toggle.active {
   background: #ffffff;
   color: #09090b;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-.results-counter-box {
-  background: #fcfcfd;
-  border: 1px solid #e4e4e7;
-  padding: 14px 16px;
-  border-radius: 12px;
-}
-
-.counter-label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #71717a;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 4px;
-}
-
-.counter-value {
-  font-size: 0.95rem;
-  color: #09090b;
-}
-
-.counter-value strong {
-  font-weight: 800;
-  font-size: 1.15rem;
-}
-
-.counter-progress-bar {
-  margin-top: 10px;
-  height: 6px;
+.results-badge-pill {
   background: #f4f5f7;
-  border-radius: 9999px;
-  overflow: hidden;
-}
-
-.counter-progress-fill {
-  height: 100%;
-  background: #09090b;
-  border-radius: 9999px;
-  transition: width 0.3s ease;
-}
-
-.btn-clear-filters-sidebar {
-  background: #fef2f2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
-  padding: 10px 14px;
+  border: 1px solid #e4e4e7;
+  padding: 8px 14px;
   border-radius: 10px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #71717a;
+  white-space: nowrap;
+}
+
+.results-badge-pill strong {
+  color: #09090b;
+  font-weight: 800;
+}
+
+.btn-clear-active {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  transition: all 0.2s ease;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.btn-clear-filters-sidebar:hover {
+.btn-clear-active:hover {
   background: #fee2e2;
+  color: #b91c1c;
 }
 
 /* ==========================================================================
@@ -1588,14 +1410,6 @@
   .stat-cards-row {
     grid-template-columns: repeat(2, 1fr);
   }
-
-  .bento-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .bento-sidebar-panel {
-    order: 2;
-  }
 }
 
 @media (max-width: 768px) {
@@ -1605,14 +1419,6 @@
 
   .catalogo-page-title {
     font-size: 1.6rem;
-  }
-
-  .bento-title {
-    font-size: 1.7rem;
-  }
-
-  .bento-welcome {
-    padding: 28px 24px;
   }
 
   .modal-layout-grid {
