@@ -353,8 +353,26 @@ export class InventarioComponent implements OnInit {
     return variante.id;
   }
 
-  volverAlDashboard(): void {
-    this.router.navigate(['/dashboard']);
+  get productosStockBajo(): number {
+    return this.productos.filter(p => (p.stock || 0) <= 5).length;
+  }
+
+  get totalCategorias(): number {
+    return this.categoriasUnicas.length;
+  }
+
+  get totalVistas(): number {
+    return this.productos.reduce((acc, p) => acc + (p.vistas || 0), 0);
+  }
+
+  filtrarPorStockBajo(): void {
+    this.ordenSeleccionado = 'stock_asc';
+    this.filtrarProductos();
+  }
+
+  filtrarPorMasVistos(): void {
+    this.ordenSeleccionado = 'vistas_desc';
+    this.filtrarProductos();
   }
 
   parseToInt(value: string): number {

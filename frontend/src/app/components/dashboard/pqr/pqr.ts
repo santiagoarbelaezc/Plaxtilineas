@@ -27,6 +27,8 @@ import {
   faReply,
   faTrashAlt,
   faInbox,
+  faChevronDown,
+  faChevronUp,
   faChevronLeft,
   faChevronRight,
   faArrowLeft,
@@ -186,6 +188,8 @@ export class PqrAdminComponent implements OnInit, OnDestroy {
       faReply,
       faTrashAlt,
       faInbox,
+      faChevronDown,
+      faChevronUp,
       faChevronLeft,
       faChevronRight,
       faArrowLeft,
@@ -824,6 +828,34 @@ export class PqrAdminComponent implements OnInit, OnDestroy {
     }
     
     return paginas;
+  }
+
+  get totalPQRS(): number {
+    return this.estadisticas?.estadisticas?.total ?? (this.paginacion.total || this.pqrs.length);
+  }
+
+  get pendientesCount(): number {
+    return this.estadisticas?.estadisticas?.pendientes ?? this.pqrs.filter(p => p.estado === 'PENDIENTE').length;
+  }
+
+  get enProcesoCount(): number {
+    return this.estadisticas?.estadisticas?.en_proceso ?? this.pqrs.filter(p => p.estado === 'EN_PROCESO').length;
+  }
+
+  get resueltasCount(): number {
+    return this.estadisticas?.estadisticas?.resueltas ?? this.pqrs.filter(p => p.estado === 'RESUELTO').length;
+  }
+
+  filtrarPorEstado(estado: string) {
+    this.filtros.estado = estado;
+    this.paginacion.paginaActual = 1;
+    this.cargarPQRS();
+  }
+
+  filtrarPorTipo(tipo: string) {
+    this.filtros.tipo = tipo;
+    this.paginacion.paginaActual = 1;
+    this.cargarPQRS();
   }
   
   // ==================== DEPURACIÓN ====================

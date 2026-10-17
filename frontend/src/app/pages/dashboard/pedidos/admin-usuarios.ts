@@ -13,10 +13,17 @@ import {
   faMapMarkerAlt, 
   faChevronDown, 
   faChevronUp, 
+  faChevronLeft,
+  faChevronRight,
   faUser,
   faShoppingBag,
   faEye,
-  faTrash
+  faTrash,
+  faClock,
+  faCheckCircle,
+  faBoxOpen,
+  faExclamationTriangle,
+  faArrowRight
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -39,10 +46,17 @@ export class AdminUsuarios implements OnInit {
   faMapMarkerAlt = faMapMarkerAlt;
   faChevronDown = faChevronDown;
   faChevronUp = faChevronUp;
+  faChevronLeft = faChevronLeft;
+  faChevronRight = faChevronRight;
   faUser = faUser;
   faShoppingBag = faShoppingBag;
   faEye = faEye;
   faTrash = faTrash;
+  faClock = faClock;
+  faCheckCircle = faCheckCircle;
+  faBoxOpen = faBoxOpen;
+  faExclamationTriangle = faExclamationTriangle;
+  faArrowRight = faArrowRight;
 
   // Estado del modal de eliminar
   usuarioAEliminar = signal<UsuarioDetalle | null>(null);
@@ -52,23 +66,46 @@ export class AdminUsuarios implements OnInit {
   usuarios = signal<UsuarioDetalle[]>([]);
   loading = signal(true);
   searchTerm = signal('');
+  filtroTipo = signal<'todos' | 'con_pedidos' | 'con_carrito' | 'sin_actividad'>('todos');
+  paginaActual = signal<number>(1);
+  itemsPorPagina = signal<number>(6);
   expandedUserId = signal<number | null>(null);
 
   // Métricas computadas
   totalUsuarios = computed(() => this.usuarios().length);
-  carritosActivos = computed(() => this.usuarios().filter(u => u.carrito.length > 0).length);
+  carritosActivos = computed(() => this.usuarios().filter(u => u.carrito && u.carrito.length > 0).length);
   totalVentas = computed(() => this.usuarios().reduce((acc, u) => acc + (u.total_compras || 0), 0));
   totalPedidos = computed(() => this.usuarios().reduce((acc, u) => acc + (u.cantidad_pedidos || 0), 0));
 
   get filteredUsuarios(): UsuarioDetalle[] {
+    let result = this.usuarios();
     const search = this.searchTerm().toLowerCase().trim();
-    if (!search) return this.usuarios();
-    return this.usuarios().filter(u =>
-      u.nombre.toLowerCase().includes(search) ||
-      u.apellidos.toLowerCase().includes(search) ||
-      u.correo.toLowerCase().includes(search) ||
-      (u.ciudad && u.ciudad.toLowerCase().includes(search))
-    );
+    if (search) {
+      result = result.filter(u =>
+        (u.nombre && u.nombre.toLowerCase().includes(search)) ||
+        (u.apellidos && u.apellidos.toLowerCase().includes(search)) ||
+        (u.correo && u.correo.toLowerCase().includes(search)) ||
+        (u.ciudad && u.ciudad.toLowerCase().includes(search))
+      );
+    }
+    const tipo = this.filtroTipo();
+    if (tipo === 'con_pedidos') {
+      result = result.filter(u => (u.cantidad_pedidos || 0) > 0);
+    } else if (tipo === 'con_carrito') {
+      result = result.filter(u => u.carrito && u.carrito.length > 0);
+    } else if (tipo === 'sin_actividad') {
+      result = result.filter(u => (!u.cantidad_pedidos || u.cantidad_pedidos === 0) && (!u.carrito || u.carrito.length === 0));
+    }
+    return result;
+  }
+
+  get totalPaginas(): number {
+    return Math.ceil(this.filteredUsuarios.length / this.itemsPorPagina()) || 1;
+  }
+
+  get paginatedUsuarios(): UsuarioDetalle[] {
+    const startIndex = (this.paginaActual() - 1) * this.itemsPorPagina();
+    return this.filteredUsuarios.slice(startIndex, startIndex + this.itemsPorPagina());
   }
 
   ngOnInit(): void {
@@ -89,6 +126,43 @@ export class AdminUsuarios implements OnInit {
     });
   }
 
+  cambiarPagina(pagina: number): void {
+    if (pagina >= 1 && pagina <= this.totalPaginas) {
+      this.paginaActual.set(pagina);
+    }
+  }
+
+  getRangoPaginas(): number[] {
+    const total = this.totalPaginas;
+    const current = this.paginaActual();
+    const delta = 2;
+    const range: number[] = [];
+    for (let i = Math.max(1, current - delta); i <= Math.min(total, current + delta); i++) {
+      range.push(i);
+    }
+    return range;
+  }
+
+  getInicioItem(): number {
+    if (this.filteredUsuarios.length === 0) return 0;
+    return (this.paginaActual() - 1) * this.itemsPorPagina() + 1;
+  }
+
+  getFinItem(): number {
+    return Math.min(this.paginaActual() * this.itemsPorPagina(), this.filteredUsuarios.length);
+  }
+
+  filtrarPorTipo(tipo: 'todos' | 'con_pedidos' | 'con_carrito' | 'sin_actividad'): void {
+    this.filtroTipo.set(tipo);
+    this.paginaActual.set(1);
+  }
+
+  limpiarFiltros(): void {
+    this.filtroTipo.set('todos');
+    this.searchTerm.set('');
+    this.paginaActual.set(1);
+  }
+
   toggleExpand(id: number): void {
     this.expandedUserId.set(this.expandedUserId() === id ? null : id);
   }
@@ -106,9 +180,14 @@ export class AdminUsuarios implements OnInit {
   getEstadoColor(estado: string): string {
     switch (estado) {
       case 'entregado': return '#10b981';
-      case 'pendiente': return '#f59e0b';
+      case 'confirmado':
+      case 'pagado': return '#3b82f6';
+      case 'en_preparacion': return '#8b5cf6';
+      case 'en_camino': return '#06b6d4';
+      case 'pendiente': 
+      case 'pendiente_pago': return '#f59e0b';
       case 'cancelado': return '#ef4444';
-      default: return '#3b82f6';
+      default: return '#71717a';
     }
   }
 
@@ -136,7 +215,7 @@ export class AdminUsuarios implements OnInit {
       next: () => {
         this.isDeleting.set(false);
         this.cerrarModalEliminar();
-        this.cargarUsuarios(); // Recargar la lista después de borrar
+        this.cargarUsuarios();
       },
       error: (err) => {
         this.isDeleting.set(false);

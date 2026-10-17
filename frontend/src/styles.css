@@ -15,30 +15,45 @@ app-navbar {
    SWEETALERT2 CUSTOM PREMIUM STYLING (Matching success login modal)
    ========================================================================== */
 .swal2-popup {
-  background: var(--dash-bg-card, #ffffff) !important;
-  border: 1px solid var(--dash-border, rgba(0, 0, 0, 0.05)) !important;
+  background: #ffffff !important;
+  border: 1.5px solid #e4e4e7 !important;
   border-radius: 20px !important;
-  box-shadow: var(--dash-shadow, 0 25px 50px -12px rgba(0, 0, 0, 0.15)) !important;
-  color: var(--dash-text-main, #1e293b) !important;
-  font-family: var(--font-primary, 'Montserrat', sans-serif) !important;
-  padding: 36px 32px !important;
-  max-width: 400px !important;
+  box-shadow: 0 25px 60px rgba(9, 9, 11, 0.22) !important;
+  color: #09090b !important;
+  font-family: 'Inter Tight', -apple-system, sans-serif !important;
+  padding: 32px !important;
+  max-width: 95vw !important;
+  box-sizing: border-box !important;
+}
+
+.swal2-popup.swal-wide-modal {
+  max-width: 680px !important;
+  width: 680px !important;
+  padding: 36px 40px !important;
+}
+
+@media (max-width: 680px) {
+  .swal2-popup.swal-wide-modal {
+    width: 94vw !important;
+    max-width: 94vw !important;
+    padding: 24px 18px !important;
+  }
 }
 
 .swal2-title {
-  color: var(--dash-text-main, #111827) !important;
-  font-weight: 700 !important;
-  font-size: 1.25rem !important;
+  color: #09090b !important;
+  font-weight: 800 !important;
+  font-size: 1.35rem !important;
   margin: 10px 0 10px 0 !important;
   letter-spacing: -0.02em !important;
 }
 
 .swal2-html-container {
-  color: var(--dash-text-muted, #64748b) !important;
+  color: #71717a !important;
   font-weight: 500 !important;
-  font-size: 0.9rem !important;
+  font-size: 0.92rem !important;
   line-height: 1.5 !important;
-  margin: 0 0 24px 0 !important;
+  margin: 0 0 20px 0 !important;
 }
 
 /* Icons styling */
@@ -47,9 +62,14 @@ app-navbar {
   width: 56px !important;
   height: 56px !important;
   border-radius: 50% !important;
-  display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+}
+
+.swal2-icon[style*="display: none"],
+.swal2-icon:empty,
+.swal2-popup.swal-wide-modal .swal2-icon {
+  display: none !important;
 }
 
 .swal2-icon.swal2-success {
@@ -97,43 +117,52 @@ app-navbar {
 }
 
 .swal2-confirm {
-  flex: 1 !important;
+  flex: 1.2 !important;
   background: #000000 !important;
   background-color: #000000 !important;
   color: #ffffff !important;
   border-radius: 12px !important;
   font-weight: 700 !important;
-  font-size: 0.95rem !important;
-  padding: 14px 20px !important;
+  font-size: 0.82rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  padding: 14px 22px !important;
   border: none !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18) !important;
   transition: all 0.2s ease !important;
   margin: 0 !important;
+  cursor: pointer !important;
 }
 
 .swal2-confirm:hover {
   background: #27272a !important;
   background-color: #27272a !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28) !important;
 }
 
 .swal2-cancel {
-  flex: 1 !important;
-  background-color: transparent !important;
-  border: 1px solid var(--dash-border-strong, rgba(0, 0, 0, 0.15)) !important;
-  color: var(--dash-text-main, #1e293b) !important;
+  flex: 0.8 !important;
+  background: #f4f5f7 !important;
+  background-color: #f4f5f7 !important;
+  border: 1.5px solid #e4e4e7 !important;
+  color: #09090b !important;
   border-radius: 12px !important;
   font-weight: 700 !important;
-  font-size: 0.95rem !important;
+  font-size: 0.82rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
   padding: 14px 20px !important;
   transition: all 0.2s ease !important;
   margin: 0 !important;
+  cursor: pointer !important;
 }
 
 .swal2-cancel:hover {
-  background-color: var(--dash-bg-hover, rgba(0, 0, 0, 0.04)) !important;
-  color: var(--dash-text-main, #1e293b) !important;
+  background: #e4e4e7 !important;
+  background-color: #e4e4e7 !important;
+  color: #000000 !important;
+  border-color: #d4d4d8 !important;
 }
 
 /* Inputs within modals */
@@ -235,4 +264,113 @@ app-navbar {
   background: #ffffff;
   border-color: #16a34a;
   box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.1);
+}
+
+/* ==========================================================================
+   MODALES SWEETALERT2 — SISTEMA DE DISEÑO DEL DASHBOARD (DARK MINIMAL)
+   ========================================================================== */
+.swal2-popup {
+  background: #ffffff !important;
+  border: 1.5px solid #e4e4e7 !important;
+  border-radius: 18px !important;
+  box-shadow: 0 25px 60px rgba(9, 9, 11, 0.2) !important;
+  color: #09090b !important;
+  font-family: 'Inter Tight', -apple-system, sans-serif !important;
+  padding: 28px 24px !important;
+}
+
+.swal2-title {
+  color: #09090b !important;
+  font-weight: 800 !important;
+  font-size: 1.35rem !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1.2 !important;
+  margin-bottom: 8px !important;
+}
+
+.swal2-html-container {
+  color: #71717a !important;
+  font-weight: 500 !important;
+  font-size: 0.92rem !important;
+  line-height: 1.5 !important;
+  font-family: 'Inter Tight', -apple-system, sans-serif !important;
+}
+
+.swal2-confirm {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  font-size: 0.82rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  padding: 12px 24px !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15) !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+}
+
+.swal2-confirm:hover {
+  background: #18181b !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25) !important;
+}
+
+.swal2-cancel {
+  background: #f4f5f7 !important;
+  color: #09090b !important;
+  border: 1.5px solid #e4e4e7 !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  font-size: 0.82rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  padding: 12px 24px !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+}
+
+.swal2-cancel:hover {
+  background: #e4e4e7 !important;
+}
+
+.swal2-icon.swal2-info {
+  border-color: #09090b !important;
+  color: #09090b !important;
+}
+
+.swal2-icon.swal2-success {
+  border-color: #16a34a !important;
+}
+
+.swal2-icon.swal2-success [class^="swal2-success-line"] {
+  background-color: #16a34a !important;
+}
+
+.swal2-icon.swal2-success .swal2-success-ring {
+  border-color: rgba(22, 163, 74, 0.3) !important;
+}
+
+.swal2-icon.swal2-error {
+  border-color: #dc2626 !important;
+}
+
+.swal2-icon.swal2-error [class^="swal2-x-mark-line"] {
+  background-color: #dc2626 !important;
+}
+
+.swal2-icon.swal2-warning {
+  border-color: #f59e0b !important;
+  color: #f59e0b !important;
+}
+
+.swal2-close {
+  color: #71717a !important;
+  font-size: 1.4rem !important;
+  transition: color 0.2s ease !important;
+}
+
+.swal2-close:hover {
+  color: #09090b !important;
 }

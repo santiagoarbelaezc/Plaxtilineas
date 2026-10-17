@@ -1,187 +1,402 @@
-<div class="admin-dashboard-container">
-  <!-- Header del Dashboard -->
-  <header class="admin-dashboard-header">
-    <div class="admin-header-content">
-      <!-- Hamburger Menu for Mobile -->
-      <button class="mobile-hamburger-btn" (click)="toggleMobileSidebar()" [class.active]="isMobileSidebarOpen" aria-label="Abrir Menú">
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-      </button>
-      <div class="admin-header-text">
-        <h1 class="admin-title">{{ tituloSeccion }}</h1>
-        <p class="admin-subtitle">{{ subtituloSeccion }}</p>
-      </div>
-      <button *ngIf="!estaEnInicio" class="admin-logout-btn btn-volver-dash" style="margin-left: 20px; background: rgba(54, 140, 68, 0.1); border-color: rgba(54, 140, 68, 0.3); color: #4ade80;" routerLink="/admin">
-        <fa-icon [icon]="faArrowLeft"></fa-icon>
-        <span>Volver al Dashboard</span>
-      </button>
-    </div>
-    
-    <!-- Header Actions -->
-    <div class="admin-header-actions">
-      <!-- Theme Toggle -->
-      <button class="theme-toggle-btn" (click)="toggleTheme()" 
-              [title]="(themeService.theme$ | async) === 'light' ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'">
-        <fa-icon [icon]="(themeService.theme$ | async) === 'light' ? faMoon : faSun"></fa-icon>
-      </button>
+<div class="dash-shell" [class.sidebar-collapsed]="isSidebarCollapsed">
+  
+  <!-- SIDEBAR LATERAL (#0a0a0a) -->
+  <aside class="dash-sidebar" [class.mobile-open]="isMobileSidebarOpen">
+    <!-- Botón Flotante para Colapsar el Sidebar -->
+    <button 
+      type="button"
+      class="sidebar-toggle" 
+      (click)="toggleSidebarCollapse()" 
+      [attr.aria-label]="isSidebarCollapsed ? 'Expandir menú' : 'Colapsar menú'"
+      [title]="isSidebarCollapsed ? 'Expandir menú lateral' : 'Colapsar menú lateral'">
+      <span class="material-symbols-rounded toggle-icon">
+        {{ isSidebarCollapsed ? 'chevron_right' : 'chevron_left' }}
+      </span>
+    </button>
 
-      <button class="admin-logout-btn" (click)="logout()" title="Cerrar sesión">
-        <fa-icon [icon]="faSignOutAlt" class="logout-icon"></fa-icon>
-        <span>Cerrar Sesión</span>
-      </button>
+    <!-- Marca / Logo de la Tienda -->
+    <div class="sidebar-brand">
+      <a routerLink="/admin" class="brand-link" (click)="closeMobileSidebar()">
+        <div class="brand-icon-box">
+          <span class="material-symbols-rounded">shield_moon</span>
+        </div>
+        <div class="brand-text-col" *ngIf="!isSidebarCollapsed">
+          <span class="brand-name">Plaxtilineas</span>
+          <span class="brand-role">PANEL ADMIN</span>
+        </div>
+      </a>
     </div>
-  </header>
 
-  <!-- Contenido principal -->
-  <div class="admin-content-wrapper">
-    <!-- Menú lateral -->
-    <nav class="admin-sidebar" [class.mobile-open]="isMobileSidebarOpen">
-      <ul class="admin-menu">
-        <li class="menu-item" [class.active]="estaEnInicio">
-          <a routerLink="/admin" class="menu-link" (click)="closeMobileSidebar()">
-            <fa-icon [icon]="faHome" class="menu-icon"></fa-icon>
-            <span>Inicio</span>
+    <!-- Menú de Navegación Principal -->
+    <nav class="sidebar-nav">
+      <div class="nav-section-label" *ngIf="!isSidebarCollapsed">Gestión Tienda</div>
+      <ul class="nav-list">
+        <!-- 0. Inicio -->
+        <li class="nav-item">
+          <a routerLink="/admin" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Inicio">
+            <span class="material-symbols-rounded nav-icon">home</span>
+            <span class="nav-label" *ngIf="!isSidebarCollapsed">Inicio</span>
           </a>
         </li>
-        <li class="menu-item">
-          <a routerLink="/admin/categorias" class="menu-link" (click)="closeMobileSidebar()">
-            <fa-icon [icon]="faFolderOpen" class="menu-icon"></fa-icon>
-            <span>Categorías</span>
+
+        <!-- 1. Inventario -->
+        <li class="nav-item">
+          <a routerLink="/admin/inventario" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Inventario">
+            <span class="material-symbols-rounded nav-icon">inventory_2</span>
+            <span class="nav-label" *ngIf="!isSidebarCollapsed">Inventario</span>
+            <span class="nav-badge" *ngIf="!isSidebarCollapsed && totalProductosCount > 0">{{ totalProductosCount }}</span>
           </a>
         </li>
-        <li class="menu-item">
-          <a routerLink="/admin/subcategorias" class="menu-link" (click)="closeMobileSidebar()">
-            <fa-icon [icon]="faFolder" class="menu-icon"></fa-icon>
-            <span>Subcategorías</span>
+
+        <!-- 2. Pedidos -->
+        <li class="nav-item">
+          <a routerLink="/admin/pedidos" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Pedidos">
+            <span class="material-symbols-rounded nav-icon">shopping_bag</span>
+            <span class="nav-label" *ngIf="!isSidebarCollapsed">Pedidos</span>
+            <span class="nav-badge badge-accent-red" *ngIf="!isSidebarCollapsed && pedidosPendientesCount > 0">{{ pedidosPendientesCount }}</span>
           </a>
         </li>
-        <li class="menu-item">
-          <a routerLink="/admin/productos" class="menu-link" (click)="closeMobileSidebar()">
-            <fa-icon [icon]="faBoxes" class="menu-icon"></fa-icon>
-            <span>Productos</span>
+
+        <!-- 3. Personalizar -->
+        <li class="nav-item">
+          <a routerLink="/admin/personalizar-web" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Personalizar">
+            <span class="material-symbols-rounded nav-icon">palette</span>
+            <span class="nav-label" *ngIf="!isSidebarCollapsed">Personalizar</span>
           </a>
         </li>
-        <li class="menu-item">
-          <a routerLink="/admin/analiticas" class="menu-link" (click)="closeMobileSidebar()">
-            <fa-icon [icon]="faChartLine" class="menu-icon"></fa-icon>
-            <span>Analíticas</span>
+
+        <!-- 4. Usuarios -->
+        <li class="nav-item">
+          <a routerLink="/admin/usuarios" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Usuarios">
+            <span class="material-symbols-rounded nav-icon">group</span>
+            <span class="nav-label" *ngIf="!isSidebarCollapsed">Usuarios</span>
           </a>
         </li>
-        <li class="menu-item">
-          <a routerLink="/admin/estadisticas" class="menu-link" (click)="closeMobileSidebar()">
-            <fa-icon [icon]="faChartPie" class="menu-icon"></fa-icon>
-            <span>Estadísticas</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a routerLink="/admin/pedidos" class="menu-link" (click)="closeMobileSidebar()">
-            <fa-icon [icon]="faShoppingCart" class="menu-icon"></fa-icon>
-            <span>Pedidos</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a routerLink="/admin/usuarios" class="menu-link" (click)="closeMobileSidebar()">
-            <fa-icon [icon]="faUserShield" class="menu-icon"></fa-icon>
-            <span>Usuarios</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a routerLink="/admin/inventario" class="menu-link" (click)="closeMobileSidebar()">
-            <fa-icon [icon]="faWarehouse" class="menu-icon"></fa-icon>
-            <span>Inventario</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a routerLink="/admin/personalizar-web" class="menu-link" (click)="closeMobileSidebar()">
-            <fa-icon [icon]="faPaintBrush" class="menu-icon"></fa-icon>
-            <span>Personalizar Web</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a routerLink="/admin/pqr-admin" class="menu-link" (click)="closeMobileSidebar()">
-            <fa-icon [icon]="faClipboardList" class="menu-icon"></fa-icon>
-            <span>PQR</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a routerLink="/admin/reportes" class="menu-link" (click)="closeMobileSidebar()">
-            <fa-icon [icon]="faFileAlt" class="menu-icon"></fa-icon>
-            <span>Reportes</span>
+
+        <!-- 5. PQRS -->
+        <li class="nav-item">
+          <a routerLink="/admin/pqr-admin" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="PQRS">
+            <span class="material-symbols-rounded nav-icon">contact_support</span>
+            <span class="nav-label" *ngIf="!isSidebarCollapsed">PQRS</span>
           </a>
         </li>
       </ul>
     </nav>
 
-    <!-- Overlay Backdrop for Mobile -->
-    <div class="sidebar-backdrop" *ngIf="isMobileSidebarOpen" (click)="closeMobileSidebar()"></div>
+    <!-- Footer del Sidebar: Salir -->
+    <div class="sidebar-footer">
+      <button type="button" class="nav-link btn-sidebar-logout" (click)="logout()" title="Cerrar sesión">
+        <span class="material-symbols-rounded nav-icon">logout</span>
+        <span class="nav-label" *ngIf="!isSidebarCollapsed">Cerrar Sesión</span>
+      </button>
+    </div>
+  </aside>
 
-    <!-- Área de contenido -->
-    <main class="admin-main-content">
-      <div *ngIf="estaEnInicio" class="admin-welcome-section">
+  <!-- Overlay para Dispositivos Móviles -->
+  <div class="sidebar-backdrop" *ngIf="isMobileSidebarOpen" (click)="closeMobileSidebar()"></div>
+
+  <!-- CONTENIDO PRINCIPAL (HEADER STICKY 74px + CANVAS #f4f5f7) -->
+  <div class="dash-content-area">
+    
+    <!-- HEADER STICKY (74px, Blanco Puro, Borde 1.5px) -->
+    <header class="dash-header">
+      <div class="header-left">
+        <!-- Botón Hamburguesa Móvil -->
+        <button type="button" class="mobile-hamburger-btn" (click)="toggleMobileSidebar()" [class.active]="isMobileSidebarOpen" aria-label="Abrir Menú">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+
+        <!-- Títulos de la Sección -->
+        <div class="header-title-box">
+          <div class="title-with-status">
+            <h1 class="header-title">{{ tituloSeccion }}</h1>
+            <div class="status-pill">
+              <span class="status-dot"></span>
+              <span class="status-pill-text">Sistema Activo</span>
+            </div>
+          </div>
+          <p class="header-subtitle">{{ subtituloSeccion }}</p>
+        </div>
+
+        <!-- Botón Volver al Dashboard cuando está en vista hija -->
+        <button *ngIf="!estaEnInicio" class="btn-return-dashboard" routerLink="/admin">
+          <span class="material-symbols-rounded">arrow_back</span>
+          <span>Volver al Dashboard</span>
+        </button>
+      </div>
+
+      <div class="header-right">
+        <!-- Enlace a Tienda Pública -->
+        <a routerLink="/" target="_blank" class="header-action-pill" title="Abrir tienda en nueva pestaña">
+          <span class="material-symbols-rounded">storefront</span>
+          <span class="pill-label">Ver Tienda</span>
+        </a>
+
+        <!-- Botón Asistente Mateo IA -->
+        <button type="button" class="header-action-pill header-mateo-btn" (click)="abrirMateoIA()" title="Abrir chat con Mateo IA">
+          <span class="material-symbols-rounded">smart_toy</span>
+          <span class="pill-label">Mateo IA</span>
+        </button>
+
+        <!-- Perfil Administrador -->
+        <div class="header-user-profile">
+          <div class="user-avatar-circle">
+            <span class="material-symbols-rounded">shield_person</span>
+          </div>
+          <div class="user-meta-text">
+            <span class="user-name">Administrador</span>
+            <span class="user-sub">Plaxtilineas Pro</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CANVAS DEL DASHBOARD (#f4f5f7) -->
+    <main class="dash-canvas">
+      
+      <!-- CONTENIDO DE INICIO -->
+      <div *ngIf="estaEnInicio" class="dash-home-wrapper">
         
-        <!-- BANNER DE MATEO (NUEVO) -->
-        <section class="mateo-hero-banner">
-          <!-- Fondo con partículas decorativas -->
-          <div class="mateo-banner-bg">
-            <div class="glow-orb glow-1"></div>
-            <div class="glow-orb glow-2"></div>
-          </div>
-
-          <!-- Contenido izquierdo -->
-          <div class="mateo-banner-content">
-            <div class="mateo-badge">
-              <span class="mateo-badge-dot"></span>
-              Asistente IA · Online
+        <!-- 1. FILA DE STAT CARDS (4 Columnas) -->
+        <section class="stat-cards-row">
+          
+          <!-- Card 1: Inventario -->
+          <div class="stat-card" routerLink="/admin/inventario">
+            <div class="stat-card-top">
+              <span class="stat-card-label">Inventario Total</span>
+              <div class="stat-card-icon-box">
+                <span class="material-symbols-rounded">inventory_2</span>
+              </div>
             </div>
-            <h2 class="mateo-banner-title">
-              Pregúntale a <span class="mateo-name">Mateo</span> para ayudarte<br>en lo que necesites
-            </h2>
-            <p class="mateo-banner-desc">
-              Estoy aquí para asistirte con inventarios, ventas, PQR y más.<br>
-              Usa el chat en la esquina inferior derecha para comenzar.
-            </p>
-            <div class="mateo-banner-tags">
-              <span class="mateo-tag"><fa-icon [icon]="faWarehouse"></fa-icon> Inventario</span>
-              <span class="mateo-tag"><fa-icon [icon]="faShoppingCart"></fa-icon> Ventas</span>
-              <span class="mateo-tag"><fa-icon [icon]="faClipboardList"></fa-icon> PQR</span>
-              <span class="mateo-tag"><fa-icon [icon]="faChartBar"></fa-icon> Analíticas</span>
+            <div class="stat-number">{{ totalProductosCount || 0 }}</div>
+            <div class="stat-card-footer">
+              <span class="stat-footer-text">Referencias en catálogo local</span>
+              <span class="stat-footer-arrow">→</span>
             </div>
           </div>
 
-          <div class="mateo-banner-image-wrapper">
-            <img src="assets/images/logo-ia.png" alt="Logo IA Asistente" class="mateo-banner-image filter-logo-ia">
+          <!-- Card 2: Pedidos Activos (Acento Rojo Carmesí #dc2626) -->
+          <div class="stat-card stat-accent-red" routerLink="/admin/pedidos">
+            <div class="stat-card-top">
+              <span class="stat-card-label">Pedidos Activos</span>
+              <div class="stat-card-icon-box stat-icon-red">
+                <span class="material-symbols-rounded">shopping_bag</span>
+              </div>
+            </div>
+            <div class="stat-number">{{ pedidosPendientesCount }}</div>
+            <div class="stat-card-footer">
+              <span class="stat-footer-text">{{ totalPedidosCount }} pedidos históricos</span>
+              <span class="stat-footer-arrow">→</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Personalizar -->
+          <div class="stat-card" routerLink="/admin/personalizar-web">
+            <div class="stat-card-top">
+              <span class="stat-card-label">Personalización</span>
+              <div class="stat-card-icon-box">
+                <span class="material-symbols-rounded">palette</span>
+              </div>
+            </div>
+            <div class="stat-number">100%</div>
+            <div class="stat-card-footer">
+              <span class="stat-footer-text">Tienda y componentes dinámicos</span>
+              <span class="stat-footer-arrow">→</span>
+            </div>
+          </div>
+
+          <!-- Card 4: Usuarios / PQRS -->
+          <div class="stat-card" routerLink="/admin/usuarios">
+            <div class="stat-card-top">
+              <span class="stat-card-label">Clientes / PQRS</span>
+              <div class="stat-card-icon-box">
+                <span class="material-symbols-rounded">group</span>
+              </div>
+            </div>
+            <div class="stat-number">{{ totalUsuariosCount }}</div>
+            <div class="stat-card-footer">
+              <span class="stat-footer-text">{{ totalPqrsCount }} tickets de PQRS</span>
+              <span class="stat-footer-arrow">→</span>
+            </div>
           </div>
         </section>
 
-        <!-- BUSCADOR INTELIGENTE IA -->
-        <section class="admin-card ai-search-section">
-          <div class="ai-search-header">
-            <h2 class="card-title">
-              <fa-icon [icon]="faSearch" class="section-icon"></fa-icon>
-              Centro de Comando IA
-            </h2>
-            <p class="card-subtitle">Pregúntale a nuestro motor inteligente para analizar o navegar el dashboard</p>
+        <!-- 2. BENTO GRID (Hero Oscuro #0a0a0a + Quick Access 360px) -->
+        <section class="bento-grid">
+          
+          <!-- Hero Oscuro Bento Welcome (Columna 1: 1fr) -->
+          <div class="bento-welcome">
+            <div class="bento-welcome-content">
+              <div class="bento-badge">
+                <span class="status-dot"></span>
+                <span>Asistente IA · Mateo Online</span>
+              </div>
+              <h2 class="bento-title">
+                Gestiona tu tienda con <span class="bento-title-accent">Mateo IA</span>
+              </h2>
+              <p class="bento-desc">
+                Monitorea stock crítico, audita pedidos pagados y consulta métricas operativas al instante. Escribe tu duda o usa el chat en vivo.
+              </p>
+
+              <!-- Tags Rápidos -->
+              <div class="bento-tags-row">
+                <a routerLink="/admin/inventario" class="bento-tag">
+                  <span class="material-symbols-rounded">inventory_2</span>
+                  <span>Inventario</span>
+                </a>
+                <a routerLink="/admin/pedidos" class="bento-tag">
+                  <span class="material-symbols-rounded">shopping_bag</span>
+                  <span>Pedidos</span>
+                </a>
+                <a routerLink="/admin/personalizar-web" class="bento-tag">
+                  <span class="material-symbols-rounded">palette</span>
+                  <span>Personalizar</span>
+                </a>
+                <a routerLink="/admin/usuarios" class="bento-tag">
+                  <span class="material-symbols-rounded">group</span>
+                  <span>Usuarios</span>
+                </a>
+                <a routerLink="/admin/pqr-admin" class="bento-tag">
+                  <span class="material-symbols-rounded">contact_support</span>
+                  <span>PQRS</span>
+                </a>
+              </div>
+
+              <!-- Botón Acción Mateo -->
+              <div class="bento-cta-row">
+                <button type="button" class="btn-primary-white" (click)="abrirMateoIA()">
+                  <span class="material-symbols-rounded">chat</span>
+                  <span>Abrir Asistente Mateo</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="bento-orb-container">
+              <img src="assets/images/logo-ia.png" alt="Mateo IA" class="bento-orb-img" onerror="this.style.display='none'">
+            </div>
           </div>
 
-          <div class="ai-search-body">
-            <form (submit)="$event.preventDefault(); procesarBusquedaIA(searchQueryInput.value)" class="ai-search-form">
-              <div class="ai-search-input-wrapper">
-                <fa-icon [icon]="faSearch" class="search-input-icon"></fa-icon>
+          <!-- Panel Lateral: Acceso Rápido & Ajustes (Columna 2: 360px) -->
+          <div class="bento-sidebar-panel">
+            
+            <!-- Tarjeta de Acceso Rápido -->
+            <div class="panel-white-card">
+              <div class="panel-card-header">
+                <div class="panel-header-icon-box">
+                  <span class="material-symbols-rounded">bolt</span>
+                </div>
+                <div>
+                  <h3 class="panel-header-title">Acceso Rápido</h3>
+                  <p class="panel-header-sub">Módulos principales del panel</p>
+                </div>
+              </div>
+
+              <div class="quick-nav-list">
+                <a routerLink="/admin/inventario" class="quick-nav-item">
+                  <div class="quick-item-icon">
+                    <span class="material-symbols-rounded">inventory_2</span>
+                  </div>
+                  <div class="quick-item-info">
+                    <span class="quick-item-name">Inventario</span>
+                    <span class="quick-item-sub">Stock, referencias y precios</span>
+                  </div>
+                  <span class="quick-item-arrow">→</span>
+                </a>
+
+                <a routerLink="/admin/pedidos" class="quick-nav-item">
+                  <div class="quick-item-icon">
+                    <span class="material-symbols-rounded">shopping_bag</span>
+                  </div>
+                  <div class="quick-item-info">
+                    <span class="quick-item-name">Pedidos</span>
+                    <span class="quick-item-sub">Despachos y facturación</span>
+                  </div>
+                  <span class="quick-item-arrow">→</span>
+                </a>
+
+                <a routerLink="/admin/personalizar-web" class="quick-nav-item">
+                  <div class="quick-item-icon">
+                    <span class="material-symbols-rounded">palette</span>
+                  </div>
+                  <div class="quick-item-info">
+                    <span class="quick-item-name">Personalizar</span>
+                    <span class="quick-item-sub">Landing page y componentes</span>
+                  </div>
+                  <span class="quick-item-arrow">→</span>
+                </a>
+
+                <a routerLink="/admin/usuarios" class="quick-nav-item">
+                  <div class="quick-item-icon">
+                    <span class="material-symbols-rounded">group</span>
+                  </div>
+                  <div class="quick-item-info">
+                    <span class="quick-item-name">Usuarios</span>
+                    <span class="quick-item-sub">Cuentas y carritos activos</span>
+                  </div>
+                  <span class="quick-item-arrow">→</span>
+                </a>
+
+                <a routerLink="/admin/pqr-admin" class="quick-nav-item">
+                  <div class="quick-item-icon">
+                    <span class="material-symbols-rounded">contact_support</span>
+                  </div>
+                  <div class="quick-item-info">
+                    <span class="quick-item-name">PQRS</span>
+                    <span class="quick-item-sub">Atención al cliente</span>
+                  </div>
+                  <span class="quick-item-arrow">→</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Ajuste Rápido Wompi Switch -->
+            <div class="panel-white-card wompi-setting-card">
+              <div class="wompi-info">
+                <h4 class="wompi-heading">Pasarela de Pago Wompi</h4>
+                <p class="wompi-sub">
+                  {{ wompiEnabled ? 'Pagos con tarjeta y PSE activos' : 'Modo en desarrollo visible' }}
+                </p>
+              </div>
+              <label class="switch-minimal" title="Activar/Desactivar pasarela Wompi">
+                <input type="checkbox" [checked]="wompiEnabled" (change)="toggleWompi($event)">
+                <span class="slider-minimal"></span>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. CENTRO DE COMANDO IA (Buscador Minimalista y Analíticas) -->
+        <section class="panel-white-card ai-command-center">
+          <div class="panel-card-header">
+            <div class="panel-header-icon-box">
+              <span class="material-symbols-rounded">search_insights</span>
+            </div>
+            <div>
+              <h2 class="panel-header-title">Centro de Comando IA</h2>
+              <p class="panel-header-sub">Pregúntale al motor analítico para navegar el catálogo y métricas en tiempo real</p>
+            </div>
+          </div>
+
+          <div class="ai-command-body">
+            <form (submit)="$event.preventDefault(); procesarBusquedaIA(searchQueryInput.value)" class="ai-minimal-form">
+              <div class="input-minimal-wrapper">
+                <span class="material-symbols-rounded input-icon">search</span>
                 <input 
                   #searchQueryInput
                   type="text" 
                   [value]="searchQuery" 
                   placeholder="Ej: productos con menos stock, usuarios registrados, mas vendidos..." 
-                  class="ai-search-input"
+                  class="input-minimal"
                   (keyup.enter)="procesarBusquedaIA(searchQueryInput.value)"
                 />
                 <button 
                   type="button" 
                   *ngIf="searchQueryInput.value" 
                   (click)="searchQueryInput.value = ''; limpiarBusqueda()" 
-                  class="clear-search-btn"
-                  title="Limpiar búsqueda"
+                  class="clear-input-btn"
+                  title="Limpiar consulta"
                 >
                   ✕
                 </button>
@@ -189,37 +404,39 @@
               <button 
                 type="button" 
                 (click)="procesarBusquedaIA(searchQueryInput.value)" 
-                class="ai-search-btn"
+                class="btn-primary-black"
                 [disabled]="isSearching || !searchQueryInput.value.trim()"
               >
                 <span *ngIf="!isSearching">Consultar IA</span>
-                <span *ngIf="isSearching" class="loading-spinner-search">
-                  Cargando...
-                </span>
+                <span *ngIf="isSearching" class="loading-spinner">Analizando...</span>
               </button>
             </form>
 
-            <!-- Sugerencias rápidas (chips) -->
-            <div class="search-suggestions">
-              <span class="suggestion-label">Sugerencias rápidas:</span>
-              <button type="button" class="suggestion-chip" (click)="searchQueryInput.value = 'productos con menos stock'; procesarBusquedaIA('productos con menos stock')">
-                <fa-icon [icon]="faBoxes" class="chip-icon"></fa-icon> Productos con menos stock
+            <!-- Sugerencias Rápidas (Chips Minimalistas) -->
+            <div class="suggestion-chips-row">
+              <span class="chips-label">Consultas sugeridas:</span>
+              <button type="button" class="chip-item" (click)="searchQueryInput.value = 'productos con menos stock'; procesarBusquedaIA('productos con menos stock')">
+                <span class="material-symbols-rounded">inventory</span>
+                <span>Stock bajo</span>
               </button>
-              <button type="button" class="suggestion-chip" (click)="searchQueryInput.value = 'productos mas vendidos'; procesarBusquedaIA('productos mas vendidos')">
-                <fa-icon [icon]="faChartLine" class="chip-icon"></fa-icon> Productos más vendidos
+              <button type="button" class="chip-item" (click)="searchQueryInput.value = 'productos mas vendidos'; procesarBusquedaIA('productos mas vendidos')">
+                <span class="material-symbols-rounded">trending_up</span>
+                <span>Más vendidos</span>
               </button>
-              <button type="button" class="suggestion-chip" (click)="searchQueryInput.value = 'usuarios registrados'; procesarBusquedaIA('usuarios registrados')">
-                <fa-icon [icon]="faUserShield" class="chip-icon"></fa-icon> Usuarios registrados
+              <button type="button" class="chip-item" (click)="searchQueryInput.value = 'usuarios registrados'; procesarBusquedaIA('usuarios registrados')">
+                <span class="material-symbols-rounded">group</span>
+                <span>Usuarios registrados</span>
               </button>
-              <button type="button" class="suggestion-chip" (click)="searchQueryInput.value = 'pedidos recientes'; procesarBusquedaIA('pedidos recientes')">
-                <fa-icon [icon]="faShoppingCart" class="chip-icon"></fa-icon> Pedidos recientes
+              <button type="button" class="chip-item" (click)="searchQueryInput.value = 'pedidos recientes'; procesarBusquedaIA('pedidos recientes')">
+                <span class="material-symbols-rounded">shopping_bag</span>
+                <span>Pedidos recientes</span>
               </button>
             </div>
 
-            <!-- Cargando -->
+            <!-- Loader de Búsqueda -->
             <div *ngIf="isSearching" class="ai-search-loading">
               <div class="ai-loader-bar"></div>
-              <p>Procesando consulta e interpretando intenciones con Mateo IA...</p>
+              <p>Mateo IA está analizando los registros de la base de datos...</p>
             </div>
 
             <!-- Panel de Resultados de Búsqueda -->
@@ -288,34 +505,43 @@
                   <table class="data-table">
                     <thead>
                       <tr>
+                        <th>Posición</th>
                         <th>Producto</th>
+                        <th>Subcategoría</th>
+                        <th>Precio</th>
                         <th>Unidades Vendidas</th>
-                        <th>Total Ingresos (Aprox)</th>
+                        <th>Total Recaudado</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let item of searchResults">
+                      <tr *ngFor="let item of searchResults; let i = index">
+                        <td class="rank-cell">
+                          <span class="rank-badge" [class.top-three]="i < 3">#{{ i + 1 }}</span>
+                        </td>
                         <td class="product-cell">
                           <img [src]="item.imagen_url || 'assets/images/placeholder.png'" class="prod-thumb" alt="" />
                           <span class="prod-name">{{ item.nombre }}</span>
                         </td>
-                        <td class="bold-text">{{ item.cantidad }} u.</td>
-                        <td class="price-text">{{ item.totalVendido | currency:'USD':'symbol':'1.0-0' }}</td>
+                        <td>{{ item.subcategoria }}</td>
+                        <td>{{ item.precio | currency:'USD':'symbol':'1.0-0' }}</td>
+                        <td>
+                          <span class="total-sold-pill">{{ item.total_vendido }} unids</span>
+                        </td>
+                        <td class="revenue-cell">
+                          {{ item.total_recaudado | currency:'USD':'symbol':'1.0-0' }}
+                        </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
                 <div class="action-footer">
-                  <a routerLink="/admin/analiticas" class="footer-action-link">Ver analíticas de ventas detalladas →</a>
+                  <a routerLink="/admin/pedidos" class="footer-action-link">Ver histórico de pedidos completo →</a>
                 </div>
               </div>
 
-              <!-- Caso 3: Fallback (Búsqueda por Nombre) -->
-              <div *ngIf="searchType === 'nombre'" class="results-content">
-                <div *ngIf="searchResults.length === 0" class="no-results-state">
-                  <p>No se encontraron productos que coincidan con la búsqueda.</p>
-                </div>
-                <div *ngIf="searchResults.length > 0" class="results-table-wrapper">
+              <!-- Caso 3: Búsqueda por Nombre -->
+              <div *ngIf="searchType === 'nombre'" class="results-content scrollable-results">
+                <div class="results-table-wrapper">
                   <table class="data-table">
                     <thead>
                       <tr>
@@ -331,317 +557,78 @@
                           <img [src]="prod.imagen_url || 'assets/images/placeholder.png'" class="prod-thumb" alt="" />
                           <span class="prod-name">{{ prod.nombre }}</span>
                         </td>
-                        <td>{{ prod.subcategoria || 'General' }}</td>
+                        <td>{{ prod.subcategoria }}</td>
                         <td>{{ prod.precio | currency:'USD':'symbol':'1.0-0' }}</td>
-                        <td>{{ prod.stock || 0 }}</td>
+                        <td>
+                          <span class="stock-badge" [class.danger]="prod.stock <= 5">{{ prod.stock }} unidades</span>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
               </div>
-
             </div>
           </div>
         </section>
 
-        <!-- 1. IMPORTACIÓN -->
-        <section class="admin-card import-section">
-          <div class="import-header">
-            <h2 class="card-title">
-              <fa-icon [icon]="faDownload" class="section-icon"></fa-icon>
-              Importar Productos desde Hostinger
-            </h2>
-            <p class="card-subtitle">Sincroniza productos desde la base de datos de Hostinger</p>
+        <!-- 4. SINCRONIZACIÓN CON HOSTINGER (Catálogo en la Nube) -->
+        <section class="panel-white-card hostinger-sync-card">
+          <div class="panel-card-header">
+            <div class="panel-header-icon-box">
+              <span class="material-symbols-rounded">cloud_sync</span>
+            </div>
+            <div>
+              <h2 class="panel-header-title">Sincronización con Hostinger</h2>
+              <p class="panel-header-sub">Compara y actualiza los productos almacenados en tu hosting remoto</p>
+            </div>
           </div>
 
-          <div *ngIf="mensajeError" class="alert alert-error">{{ mensajeError }}</div>
-          <div *ngIf="mensajeExito" class="alert alert-success">{{ mensajeExito }}</div>
-
-          <div class="import-controls">
-            <button class="import-btn import-btn-preview" (click)="obtenerPreview()"
-              [disabled]="cargandoPreview || cargandoEstadisticas || cargandoImportacion">
-              <fa-icon [icon]="faEye"></fa-icon>
-              <span *ngIf="!cargandoPreview">Analizar Catálogo</span>
-              <span *ngIf="cargandoPreview">Analizando...</span>
-            </button>
-            <button class="import-btn import-btn-stats" (click)="obtenerEstadisticas()"
-              [disabled]="cargandoEstadisticas || cargandoPreview || cargandoImportacion">
-              <fa-icon [icon]="faChartBar"></fa-icon>
-              <span *ngIf="!cargandoEstadisticas">Ver Estadísticas</span>
-              <span *ngIf="cargandoEstadisticas">Cargando...</span>
-            </button>
-            <button class="import-btn import-btn-execute" (click)="ejecutarImportacion()"
-              [disabled]="cargandoImportacion || cargandoPreview || cargandoEstadisticas || todoActualizado">
-              <fa-icon [icon]="faDownload"></fa-icon>
-              <span *ngIf="!cargandoImportacion && !todoActualizado">Ejecutar Importación</span>
-              <span *ngIf="!cargandoImportacion && todoActualizado">✅ Todo Sincronizado</span>
-              <span *ngIf="cargandoImportacion">Importando...</span>
-            </button>
-            <button class="import-btn import-btn-clear" (click)="limpiarDatos()"
-              [disabled]="!datosPreview && !datosEstadisticas && !respuestaImportacion">
-              Limpiar
+          <div class="sync-actions-row">
+            <button type="button" class="btn-primary-black" (click)="obtenerPreview()" [disabled]="cargandoPreview">
+              <span class="material-symbols-rounded">preview</span>
+              <span>{{ cargandoPreview ? 'Analizando catálogo...' : 'Analizar Catálogo en Hostinger' }}</span>
             </button>
           </div>
 
-          <!-- Panel de Análisis (aparece después de "Analizar Catálogo") -->
-          <div *ngIf="analisisPreview" class="import-data-section analysis-section">
-            <h3 class="data-section-title">
-              <fa-icon [icon]="faChartBar" class="section-icon-blue"></fa-icon>
-              Análisis de Sincronización
-            </h3>
-            <div class="stats-grid">
-              <div class="stat-card">
-                <div class="stat-value">{{ analisisPreview.total_hostinger }}</div>
-                <div class="stat-label">En Hostinger</div>
+          <!-- Panel de Análisis -->
+          <div *ngIf="analisisPreview" class="sync-analysis-panel">
+            <div class="stat-mini-grid">
+              <div class="stat-mini-card">
+                <span class="stat-mini-val">{{ analisisPreview.total_hostinger }}</span>
+                <span class="stat-mini-lbl">En Hostinger</span>
               </div>
-              <div class="stat-card">
-                <div class="stat-value">{{ analisisPreview.total_local }}</div>
-                <div class="stat-label">En Catálogo Local</div>
+              <div class="stat-mini-card">
+                <span class="stat-mini-val">{{ analisisPreview.total_local }}</span>
+                <span class="stat-mini-lbl">En Catálogo Local</span>
               </div>
-              <div class="stat-card">
-                <div class="stat-value">{{ analisisPreview.ya_importados }}</div>
-                <div class="stat-label">Ya Sincronizados</div>
+              <div class="stat-mini-card">
+                <span class="stat-mini-val">{{ analisisPreview.ya_importados }}</span>
+                <span class="stat-mini-lbl">Sincronizados</span>
               </div>
-              <div class="stat-card" [style.border-color]="analisisPreview.nuevos_por_importar > 0 ? 'rgba(245,158,11,0.5)' : 'rgba(34,197,94,0.5)'">
-                <div class="stat-value" [style.color]="analisisPreview.nuevos_por_importar > 0 ? '#fbbf24' : '#4ade80'">
-                  {{ analisisPreview.nuevos_por_importar }}
-                </div>
-                <div class="stat-label">Pendientes de Importar</div>
+              <div class="stat-mini-card" [class.stat-warning]="analisisPreview.nuevos_por_importar > 0">
+                <span class="stat-mini-val">{{ analisisPreview.nuevos_por_importar }}</span>
+                <span class="stat-mini-lbl">Pendientes</span>
               </div>
             </div>
 
-            <!-- Estado global -->
-            <div *ngIf="analisisPreview.todo_actualizado" class="sync-status sync-ok">
-              <fa-icon [icon]="faCheckCircle" class="sync-icon-fa ok"></fa-icon>
+            <div *ngIf="analisisPreview.todo_actualizado" class="sync-ok-alert">
+              <span class="material-symbols-rounded">check_circle</span>
               <div>
-                <strong>¡Todo está al día!</strong>
-                <p>No hay productos nuevos por importar. Tu catálogo local está completamente sincronizado con Hostinger.</p>
+                <strong>¡Catálogo sincronizado al 100%!</strong>
+                <p>No hay referencias pendientes por importar desde Hostinger.</p>
               </div>
-            </div>
-            <div *ngIf="!analisisPreview.todo_actualizado" class="sync-status sync-pending">
-              <fa-icon [icon]="faExclamationTriangle" class="sync-icon-fa pending"></fa-icon>
-              <div>
-                <strong>Hay {{ analisisPreview.nuevos_por_importar }} producto(s) nuevo(s)</strong> listos para integrarse a tu catálogo.
-                
-                <div *ngIf="analisisPreview.nuevos_nombres?.length > 0" class="nombres-preview">
-                  <strong>Algunos productos a importar:</strong>
-                  <ul>
-                    <li *ngFor="let nombre of analisisPreview.nuevos_nombres">{{ nombre }}</li>
-                  </ul>
-                </div>
-                
-                <div *ngIf="analisisPreview.nuevas_categorias?.length > 0" class="nombres-preview nuevas-categorias">
-                  <strong><fa-icon [icon]="faFolderOpen"></fa-icon> Categorías Nuevas:</strong>
-                  <div class="tags-container">
-                    <span class="badge new-cat" *ngFor="let cat of analisisPreview.nuevas_categorias">{{ cat }}</span>
-                  </div>
-                </div>
-
-                <div *ngIf="analisisPreview.nuevas_subcategorias?.length > 0" class="nombres-preview nuevas-subcategorias">
-                  <strong><fa-icon [icon]="faFolder"></fa-icon> Subcategorías Nuevas:</strong>
-                  <div class="tags-container">
-                    <span class="badge new-subcat" *ngFor="let sub of analisisPreview.nuevas_subcategorias">{{ sub }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div *ngIf="datosPreview" class="import-data-section preview-section">
-            <h3 class="data-section-title">
-              <fa-icon [icon]="faEye"></fa-icon>
-              Vista Previa ({{ datosPreview.total_en_preview }} productos)
-            </h3>
-            <div class="products-preview-grid">
-              <div *ngFor="let producto of datosPreview.productos" class="product-preview-card">
-                <div *ngIf="producto.primera_imagen" class="product-preview-image">
-                  <img [src]="producto.primera_imagen" [alt]="producto.name" />
-                </div>
-                <div class="product-preview-info">
-                  <h4 class="product-name">{{ producto.name }}</h4>
-                  <p class="product-cat">{{ producto.category || 'Sin categoría' }}</p>
-                  <p class="product-variants">
-                    <fa-icon [icon]="faCubes"></fa-icon>
-                    {{ producto.variantes_count }} variantes
-                  </p>
-                  <p *ngIf="producto.primer_precio" class="product-price">
-                    <fa-icon [icon]="faDollarSign"></fa-icon>
-                    ${{ producto.primer_precio }}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div *ngIf="datosEstadisticas" class="import-data-section stats-section">
-            <h3 class="data-section-title">
-              <fa-icon [icon]="faChartBar"></fa-icon>
-              Estadísticas
-            </h3>
-            <div class="stats-grid">
-              <div class="stat-card">
-                <div class="stat-value">{{ datosEstadisticas.total_productos }}</div>
-                <div class="stat-label">Total de Productos</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value">{{ datosEstadisticas.productos_con_imagen }}</div>
-                <div class="stat-label">Con Imagen</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value">{{ datosEstadisticas.productos_con_variantes }}</div>
-                <div class="stat-label">Con Variantes</div>
-              </div>
-            </div>
-            <div *ngIf="datosEstadisticas.productos_por_categoria && datosEstadisticas.productos_por_categoria.length"
-              class="categories-list">
-              <h4>Productos por Categoría:</h4>
-              <ul>
-                <li *ngFor="let cat of datosEstadisticas.productos_por_categoria">
-                  <strong>{{ cat.category || '(sin categoría)' }}:</strong> {{ cat.total }} productos
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div *ngIf="respuestaImportacion" class="import-data-section result-section"
-            [class.success]="respuestaImportacion.errores === 0">
-            <h3 class="data-section-title">
-              <fa-icon [icon]="faDownload"></fa-icon>
-              Resultado de Importación
-            </h3>
-            
-            <!-- Si todo está actualizado, mostrar mensaje limpio -->
-            <div *ngIf="respuestaImportacion.todo_actualizado" class="sync-status sync-ok">
-              <span class="sync-icon">✅</span>
-              <div>
-                <strong>{{ respuestaImportacion.mensaje }}</strong>
-                <p>{{ respuestaImportacion.actualizados }} productos ya estaban sincronizados.</p>
-              </div>
-            </div>
-
-            <!-- Si hubo importación real -->
-            <div *ngIf="!respuestaImportacion.todo_actualizado" class="result-summary">
-              <div class="result-item success">
-                <span class="result-label">Importados Exitosamente:</span>
-                <span class="result-value">{{ respuestaImportacion.importados_exitosamente }}/{{ respuestaImportacion.total_procesados }}</span>
-              </div>
-              <div *ngIf="respuestaImportacion.actualizados > 0" class="result-item warning">
-                <span class="result-label">Actualizados:</span>
-                <span class="result-value">{{ respuestaImportacion.actualizados }}</span>
-              </div>
-              <div *ngIf="respuestaImportacion.errores > 0" class="result-item error">
-                <span class="result-label">Errores:</span>
-                <span class="result-value">{{ respuestaImportacion.errores }}</span>
-              </div>
-            </div>
-            <div *ngIf="respuestaImportacion.detalles_errores && respuestaImportacion.detalles_errores.length"
-              class="details-section">
-              <h4>Errores ({{ respuestaImportacion.detalles_errores.length }})</h4>
-              <ul class="details-list">
-                <li *ngFor="let err of respuestaImportacion.detalles_errores">
-                  <strong>{{ err.nombre }}:</strong> {{ err.error }}
-                </li>
-              </ul>
             </div>
           </div>
         </section>
-
-        <!-- 2. ACCESO RÁPIDO — tarjetas horizontales en grid de 3 columnas -->
-        <section class="admin-card quick-access-section">
-          <div class="card-header">
-            <h2 class="card-title">
-              <fa-icon [icon]="faBolt" class="card-icon"></fa-icon>
-              Acceso Rápido
-            </h2>
-            <p class="page-subtitle">Navega a las secciones principales del panel</p>
-          </div>
-
-          <div class="card-body">
-            <div class="quick-access-list">
-              <a routerLink="/admin/categorias" class="access-item">
-                <div class="access-icon-container">
-                  <fa-icon [icon]="faFolderOpen"></fa-icon>
-                </div>
-                <h3 class="access-title">Categorías</h3>
-                <span class="access-link-text">Gestionar →</span>
-              </a>
-
-              <a routerLink="/admin/subcategorias" class="access-item">
-                <div class="access-icon-container">
-                  <fa-icon [icon]="faFolder"></fa-icon>
-                </div>
-                <h3 class="access-title">Subcategorías</h3>
-                <span class="access-link-text">Gestionar →</span>
-              </a>
-
-              <a routerLink="/admin/productos" class="access-item">
-                <div class="access-icon-container">
-                  <fa-icon [icon]="faBoxes"></fa-icon>
-                </div>
-                <h3 class="access-title">Productos</h3>
-                <span class="access-link-text">Gestionar →</span>
-              </a>
-
-              <a routerLink="/admin/inventario" class="access-item">
-                <div class="access-icon-container">
-                  <fa-icon [icon]="faWarehouse"></fa-icon>
-                </div>
-                <h3 class="access-title">Inventario</h3>
-                <span class="access-link-text">Gestionar →</span>
-              </a>
-
-              <a routerLink="/admin/pqr-admin" class="access-item">
-                <div class="access-icon-container">
-                  <fa-icon [icon]="faClipboardList"></fa-icon>
-                </div>
-                <h3 class="access-title">PQR</h3>
-                <span class="access-link-text">Gestionar →</span>
-              </a>
-            </div>
-          </div>
-        </section>
-
-        <!-- 3. CONFIGURACIONES DEL SISTEMA -->
-        <section class="admin-card quick-access-section" style="margin-top: 2rem;">
-          <div class="card-header">
-            <h2 class="card-title">
-              <fa-icon [icon]="faBolt" class="card-icon" style="color: #368c44;"></fa-icon>
-              Ajustes del Sistema
-            </h2>
-            <p class="page-subtitle">Configura parámetros globales de la tienda</p>
-          </div>
-
-          <div class="card-body">
-            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-              <div>
-                <h3 style="margin: 0 0 4px 0; font-size: 1.1rem; color: #1e293b; font-weight: 700;">Pasarela de Pago Wompi</h3>
-                <p style="margin: 0; font-size: 0.9rem; color: #64748b;">
-                  Habilita o deshabilita temporalmente el botón de pago con Wompi. Si se desactiva, los usuarios verán una pantalla de "En desarrollo".
-                </p>
-              </div>
-              <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 26px;">
-                <input type="checkbox" [checked]="wompiEnabled" (change)="toggleWompi($event)" style="opacity: 0; width: 0; height: 0;">
-                <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;">
-                  <!-- Usamos CSS inline simple para el switch pseudo-element para evitar modificar archivos CSS extra si es posible, o dependemos del CSS de toggle que Angular maneja (voy a asegurar un CSS básico) -->
-                  <span class="knob" [style.transform]="wompiEnabled ? 'translateX(24px)' : 'translateX(0)'" style="position: absolute; content: ''; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;"></span>
-                </span>
-                <style>
-                  input:checked + .slider { background-color: #368c44; }
-                </style>
-              </label>
-            </div>
-          </div>
-        </section>
-
       </div>
 
-      <!-- Router outlet para vistas hijas -->
-      <div class="router-outlet-container">
+      <!-- VISTAS HIJAS DEL DASHBOARD (Inventario, Pedidos, Personalizar, Usuarios, PQRS) -->
+      <div *ngIf="!estaEnInicio" class="dash-child-view-container">
         <router-outlet></router-outlet>
       </div>
     </main>
   </div>
-  
-  <!-- Asistente de IA del Dashboard -->
+
+  <!-- Asistente de IA Flotante Mateo -->
   <app-dashboard-assistant></app-dashboard-assistant>
 </div>

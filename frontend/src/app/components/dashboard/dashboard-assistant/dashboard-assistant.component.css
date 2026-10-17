@@ -8,40 +8,40 @@
   --asst-panel-border: rgba(0, 0, 0, 0.08);
   --asst-panel-shadow: 0 20px 60px -10px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.04);
   
-  --asst-header-gradient: linear-gradient(135deg, #15803d 0%, #166534 55%, #14532d 100%);
+  --asst-header-gradient: #0a0a0a;
   --asst-header-text: #ffffff;
-  --asst-header-subtext: #86efac;
-  --asst-header-border: rgba(255, 255, 255, 0.12);
+  --asst-header-subtext: #a1a1aa;
+  --asst-header-border: #1a1a1a;
 
-  --asst-body-bg: #f8fafc;
+  --asst-body-bg: #f4f5f7;
 
   --asst-welcome-bg: #ffffff;
-  --asst-welcome-border: rgba(34, 197, 94, 0.22);
+  --asst-welcome-border: #e4e4e7;
   --asst-welcome-text: #334155;
-  --asst-welcome-strong: #15803d;
-  --asst-welcome-shadow: 0 4px 20px -2px rgba(22, 163, 74, 0.06);
+  --asst-welcome-strong: #09090b;
+  --asst-welcome-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
 
   --asst-chip-bg: #ffffff;
-  --asst-chip-border: rgba(22, 163, 74, 0.25);
-  --asst-chip-text: #166534;
-  --asst-chip-hover-bg: #f0fdf4;
-  --asst-chip-hover-border: #22c55e;
+  --asst-chip-border: #e4e4e7;
+  --asst-chip-text: #09090b;
+  --asst-chip-hover-bg: #f4f5f7;
+  --asst-chip-hover-border: #09090b;
   --asst-chip-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 
   --asst-msg-ai-bg: #ffffff;
-  --asst-msg-ai-border: #e2e8f0;
-  --asst-msg-ai-text: #1e293b;
-  --asst-msg-ai-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  --asst-msg-ai-border: #e4e4e7;
+  --asst-msg-ai-text: #09090b;
+  --asst-msg-ai-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
 
-  --asst-msg-user-gradient: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  --asst-msg-user-gradient: #000000;
   --asst-msg-user-text: #ffffff;
-  --asst-msg-user-shadow: 0 4px 14px rgba(22, 163, 74, 0.3);
+  --asst-msg-user-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
 
   --asst-footer-bg: #ffffff;
-  --asst-footer-border: #e2e8f0;
-  --asst-input-bg: #f8fafc;
-  --asst-input-border: #cbd5e1;
-  --asst-input-text: #0f172a;
+  --asst-footer-border: #e4e4e7;
+  --asst-input-bg: #f9f9f9;
+  --asst-input-border: #eeeeee;
+  --asst-input-text: #09090b;
   --asst-input-placeholder: #94a3b8;
   --asst-meta-muted: #64748b;
 }

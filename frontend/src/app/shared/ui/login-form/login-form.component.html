@@ -50,17 +50,23 @@
         </div>
       </div>
 
-      <!-- Botón de Retorno a la Tienda y Políticas -->
+      <!-- Botones Inferiores Armonizados -->
       <div class="bento-bottom-row">
-        <a routerLink="/productos" class="bento-back-link">
-          <span class="material-symbols-rounded">arrow_back</span>
-          <span>Volver al Catálogo</span>
-        </a>
-        <button type="button" class="bento-policy-link" (click)="openPolicyModal($event)">
-          <span class="material-symbols-rounded">verified_user</span>
-          <span>Tratamiento de Datos</span>
-        </button>
-        <span class="bento-region-tag">Armenia &bull; Eje Cafetero</span>
+        <div class="bento-footer-actions">
+          <a routerLink="/productos" class="bento-action-pill" title="Volver al catálogo de productos">
+            <span class="material-symbols-rounded pill-icon">arrow_back</span>
+            <span>Volver al Catálogo</span>
+          </a>
+          <button type="button" class="bento-action-pill" (click)="openPolicyModal($event)" title="Ver política de tratamiento de datos">
+            <span class="material-symbols-rounded pill-icon icon-shield">shield</span>
+            <span>Tratamiento de Datos</span>
+          </button>
+        </div>
+        
+        <div class="bento-footer-location">
+          <span class="location-pulse-dot"></span>
+          <span>Armenia &bull; Eje Cafetero</span>
+        </div>
       </div>
     </div>
 

@@ -1,246 +1,586 @@
 <div class="admin-content-wrapper-inner">
 
-  <!-- Cabecera -->
-  <div class="admin-view-header">
-    <div class="header-left">
-      <h1 class="admin-view-title">Gestión de Pedidos</h1>
-      <p class="admin-view-subtitle">Administra, filtra y actualiza los pedidos de los clientes</p>
+  <!-- =========================================================================
+       1. VISTA DE DETALLE COMPLETO DEL PEDIDO (cuando se selecciona un pedido)
+       ========================================================================= -->
+  <div *ngIf="selectedPedido() as p" class="order-detail-view">
+    
+    <!-- Botón de regreso -->
+    <div class="detail-nav-back">
+      <button class="btn-back-link" (click)="volverALista()">
+        <fa-icon [icon]="faArrowLeft"></fa-icon> Volver a pedidos
+      </button>
     </div>
-    <button class="btn-refresh" (click)="cargarPedidos()" [disabled]="loading()">
-      <fa-icon [icon]="faSync" [class.fa-spin]="loading()"></fa-icon>
-      Actualizar
-    </button>
-  </div>
 
-  <!-- KPIs de Pedidos -->
-  <div class="kpi-grid" *ngIf="stats() && !loading()">
-    <div class="kpi-card">
-      <div class="kpi-icon icon-blue"><fa-icon [icon]="faClipboardList"></fa-icon></div>
-      <div class="kpi-info">
-        <span class="kpi-label">Total Pedidos</span>
-        <span class="kpi-value">{{ stats().total_pedidos || 0 }}</span>
+    <!-- Cabecera de la Orden -->
+    <div class="detail-header-bar">
+      <div class="detail-title-col">
+        <div class="detail-code-row">
+          <h1 class="detail-code">{{ p.codigo_pedido }}</h1>
+          <span class="detail-status-pill">
+            <fa-icon [icon]="getEstadoFAIcon(p.estado)"></fa-icon>
+            {{ getEstadoInfo(p.estado).label }}
+          </span>
+        </div>
+        <span class="detail-date-created">Creado el {{ formatDate(p.fecha) }}</span>
+      </div>
+
+      <div class="detail-actions-col">
+        <button class="btn-detail-action" (click)="imprimirDetalle()">
+          <fa-icon [icon]="faPrint"></fa-icon> Imprimir Resumen
+        </button>
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <select
+            class="detail-status-select"
+            [ngModel]="p.estado"
+            (ngModelChange)="actualizarEstado(p.id, $event)"
+            [disabled]="updatingId() === p.id || p.estado === 'cancelado' || p.estado === 'entregado'">
+            <option *ngFor="let opt of getEstadosOptionsForPedido(p)" [value]="opt">
+              {{ getEstadoLabel(opt) }}
+            </option>
+          </select>
+          <fa-icon [icon]="faSync" class="fa-spin" *ngIf="updatingId() === p.id" style="color: #09090b; font-size: 0.9rem;"></fa-icon>
+        </div>
       </div>
     </div>
 
-    <div class="kpi-card">
-      <div class="kpi-icon icon-green"><fa-icon [icon]="faDollarSign"></fa-icon></div>
-      <div class="kpi-info">
-        <span class="kpi-label">Ingresos</span>
-        <span class="kpi-value" style="font-size: 1.4rem;">{{ formatPrice(stats().ingresos_totales || 0) }}</span>
+    <!-- Flujo Operativo del Pedido (Stepper Timeline Horizontal) -->
+    <div class="stepper-card">
+      <div class="stepper-header-title">Flujo Operativo del Pedido</div>
+      <div class="stepper-track">
+        <!-- Paso 0: Pedido Creado / Nuevo -->
+        <div class="step-item" [ngClass]="getStepState(0, p.estado)">
+          <div class="step-node">
+            <span class="material-symbols-rounded">description</span>
+          </div>
+          <div class="step-label">Nuevo</div>
+          <div class="step-subtext">Registrado</div>
+        </div>
+
+        <!-- Paso 1: Pago Pendiente -->
+        <div class="step-item" [ngClass]="getStepState(1, p.estado)">
+          <div class="step-node">
+            <span class="material-symbols-rounded">credit_card</span>
+          </div>
+          <div class="step-label">Pago Pendiente</div>
+          <div class="step-subtext">Validación</div>
+        </div>
+
+        <!-- Paso 2: Pago Confirmado -->
+        <div class="step-item" [ngClass]="getStepState(2, p.estado)">
+          <div class="step-node">
+            <span class="material-symbols-rounded">verified</span>
+          </div>
+          <div class="step-label">Pago Confirmado</div>
+          <div class="step-subtext">Aprobado</div>
+        </div>
+
+        <!-- Paso 3: Preparación -->
+        <div class="step-item" [ngClass]="getStepState(3, p.estado)">
+          <div class="step-node">
+            <span class="material-symbols-rounded">inventory_2</span>
+          </div>
+          <div class="step-label">Preparación</div>
+          <div class="step-subtext">Almacén</div>
+        </div>
+
+        <!-- Paso 4: En Camino -->
+        <div class="step-item" [ngClass]="getStepState(4, p.estado)">
+          <div class="step-node">
+            <span class="material-symbols-rounded">local_shipping</span>
+          </div>
+          <div class="step-label">En Camino</div>
+          <div class="step-subtext">{{ p.transportadora || 'Despachado' }}</div>
+        </div>
+
+        <!-- Paso 5: Entregado -->
+        <div class="step-item" [ngClass]="getStepState(5, p.estado)">
+          <div class="step-node">
+            <span class="material-symbols-rounded">task_alt</span>
+          </div>
+          <div class="step-label">Entregado</div>
+          <div class="step-subtext">Recibido</div>
+        </div>
       </div>
     </div>
 
-    <div class="kpi-card">
-      <div class="kpi-icon icon-yellow"><fa-icon [icon]="faClock"></fa-icon></div>
-      <div class="kpi-info">
-        <span class="kpi-label">Activos</span>
-        <span class="kpi-value">{{ stats().pedidos_activos || 0 }}</span>
-      </div>
-    </div>
+    <!-- Bento Grid (Datos del Cliente + Historial & Logística) -->
+    <div class="detail-bento-grid">
+      
+      <!-- Bento 1: Datos del Cliente -->
+      <div class="detail-bento-card">
+        <div class="detail-bento-title">
+          <span class="material-symbols-rounded" style="font-size: 1.15rem; color: #09090b;">person</span>
+          Datos del Cliente
+        </div>
 
-    <div class="kpi-card">
-      <div class="kpi-icon icon-blue" style="background: rgba(74,222,128,0.12); border-color: rgba(74,222,128,0.2); color: #4ade80;"><fa-icon [icon]="faCheckCircle"></fa-icon></div>
-      <div class="kpi-info">
-        <span class="kpi-label">Entregados</span>
-        <span class="kpi-value">{{ stats().pedidos_entregados || 0 }}</span>
-      </div>
-    </div>
-
-    <div class="kpi-card" [class.alert-red]="stats().pedidos_cancelados > 0">
-      <div class="kpi-icon icon-red"><fa-icon [icon]="faBan"></fa-icon></div>
-      <div class="kpi-info">
-        <span class="kpi-label">Cancelados</span>
-        <span class="kpi-value">{{ stats().pedidos_cancelados || 0 }}</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Contenido Principal -->
-  <div class="main-content-stacked">
-    <div class="full-width-panel">
-      <div class="panel-card">
-
-        <!-- Barra de herramientas con buscador y filtros -->
-        <div class="panel-header" style="flex-wrap: wrap; gap: 15px;">
-          <h3><fa-icon [icon]="faClipboardList" style="margin-right: 8px; color: var(--dash-text-accent);"></fa-icon>Historial de Pedidos</h3>
-          <div class="filters-container">
-            <div class="search-box">
-              <input
-                type="text"
-                [ngModel]="searchTerm()"
-                (ngModelChange)="searchTerm.set($event)"
-                placeholder="Buscar por código, cliente o correo..."
-              />
-              <fa-icon [icon]="faSearch" style="position: absolute; left: 12px; color: var(--dash-text-muted);"></fa-icon>
-            </div>
+        <div class="client-info-grid">
+          <div class="client-field">
+            <span class="field-label">Nombre Completo</span>
+            <span class="field-value">{{ p.cliente_nombre || 'Invitado / Anónimo' }}</span>
+          </div>
+          <div class="client-field">
+            <span class="field-label">Teléfono de Contacto</span>
+            <span class="field-value">{{ p.telefono_contacto || 'No registrado' }}</span>
+          </div>
+          <div class="client-field">
+            <span class="field-label">Correo Electrónico</span>
+            <span class="field-value">{{ p.cliente_correo || 'No registrado' }}</span>
           </div>
         </div>
 
-        <!-- Filtros por píldora -->
-        <div class="filter-pills-bar" style="padding: 12px 20px; border-bottom: 1px solid var(--dash-border); background: var(--dash-bg-glass); display: flex; gap: 8px; flex-wrap: wrap;">
-          <button class="pill-btn" [class.active]="filtroEstado() === 'todos'" (click)="filtroEstado.set('todos')">
-            <fa-icon [icon]="faClipboardList" style="margin-right: 6px;"></fa-icon> Todos
+        <div class="client-address-box">
+          <div class="address-label">Dirección de Entrega</div>
+          <p class="address-value">{{ p.direccion_envio || 'Retiro en punto o no especificada' }}</p>
+          <p class="address-city" *ngIf="p.ciudad">
+            {{ p.ciudad }}{{ p.departamento ? ', ' + p.departamento : '' }}
+          </p>
+          <div *ngIf="p.metodo_pago" style="margin-top: 10px; font-size: 0.8rem; color: #71717a;">
+            <strong>Método de Pago:</strong> {{ p.metodo_pago }}
+          </div>
+        </div>
+
+        <div *ngIf="p.notas" class="notes-text" style="margin-top: 16px;">
+          <strong>Notas del Cliente:</strong> {{ p.notas }}
+        </div>
+      </div>
+
+      <!-- Bento 2: Logística & Seguimiento -->
+      <div class="detail-bento-card">
+        <div class="detail-bento-title">
+          <span class="material-symbols-rounded" style="font-size: 1.15rem; color: #09090b;">local_shipping</span>
+          Historial del Pedido & Logística
+        </div>
+
+        <div class="activity-timeline">
+          <div class="activity-item">
+            <div class="activity-dot success"></div>
+            <div class="activity-header">
+              <span>Transportadora</span>
+              <span class="activity-time">{{ p.transportadora ? 'Asignada' : 'Pendiente' }}</span>
+            </div>
+            <p class="activity-desc">{{ p.transportadora || 'No se ha seleccionado transportadora' }}</p>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-dot" [class.success]="!!p.guia_numero" [class.warning]="!p.guia_numero"></div>
+            <div class="activity-header">
+              <span>Número de Guía</span>
+              <span class="activity-time">{{ p.guia_numero || 'Sin generar' }}</span>
+            </div>
+            <p class="activity-desc">{{ p.guia_numero ? 'Guía de despacho registrada en el sistema' : 'Requiere generación de guía física o digital' }}</p>
+          </div>
+
+          <div class="activity-item" *ngIf="p.fecha_envio">
+            <div class="activity-dot info"></div>
+            <div class="activity-header">
+              <span>Fecha de Envío</span>
+              <span class="activity-time">{{ formatDate(p.fecha_envio) }}</span>
+            </div>
+            <p class="activity-desc">Despachado a centro logístico</p>
+          </div>
+        </div>
+
+        <!-- Botones de Acción de Envío -->
+        <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 10px;">
+          <button class="btn-detail-action" style="width: 100%; justify-content: center; background: #f4f5f7;" (click)="editarDatosEnvio(p)">
+            <fa-icon [icon]="faEdit"></fa-icon>
+            {{ p.transportadora || p.guia_numero ? 'Editar Datos de Envío y Guía' : 'Asignar Transportadora y Guía' }}
           </button>
-          <button *ngFor="let e of estadosList" class="pill-btn" [class.active]="filtroEstado() === e.key" (click)="filtroEstado.set(e.key)">
-            <fa-icon [icon]="getEstadoFAIcon(e.key)" style="margin-right: 6px;"></fa-icon> {{ e.label }}
+
+          <button
+            *ngIf="esPedidoPagado(p.estado) && p.estado !== 'entregado'"
+            class="page-btn"
+            style="background: #fef2f2; border-color: #fecaca; color: #dc2626; width: 100%; justify-content: center; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px;"
+            (click)="mostrarModalDevolucion(p)">
+            <fa-icon [icon]="faBan" style="margin-right: 6px;"></fa-icon> Cancelar Pedido y Devolver Dinero
           </button>
         </div>
+      </div>
 
-        <!-- Carga -->
-        <div class="loading-state" *ngIf="loading()">
-          <div class="spinner-grande"></div>
-          <p>Cargando pedidos registrados...</p>
+    </div>
+
+    <!-- Productos del Pedido -->
+    <div class="order-products-card">
+      <div class="order-products-header">
+        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 900; color: #09090b; display: flex; align-items: center; gap: 10px;">
+          <fa-icon [icon]="faShoppingBag"></fa-icon>
+          Productos del Pedido
+        </h3>
+        <span class="stat-pill">{{ p.detalles.length }} productos</span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th style="text-align: center; width: 100px;">Cantidad</th>
+              <th style="text-align: right; width: 160px;">Precio Unitario</th>
+              <th style="text-align: right; width: 160px;">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of p.detalles">
+              <td>
+                <div class="prod-cell">
+                  <img *ngIf="item.imagen_url" [src]="item.imagen_url" class="prod-thumb" alt="Producto" />
+                  <div class="prod-thumb" *ngIf="!item.imagen_url" style="display: flex; align-items: center; justify-content: center; background: #f4f5f7; color: #71717a;">
+                    <fa-icon [icon]="faBoxOpen"></fa-icon>
+                  </div>
+                  <div>
+                    <span class="prod-name" style="font-weight: 800;">{{ item.nombre_producto }}</span>
+                    <span style="font-size: 0.78rem; color: #71717a; display: block;" *ngIf="item.producto_id">ID Ref: #{{ item.producto_id }}</span>
+                  </div>
+                </div>
+              </td>
+              <td style="text-align: center; font-weight: 800; font-size: 0.95rem;">
+                x{{ item.cantidad }}
+              </td>
+              <td style="text-align: right; color: #71717a; font-size: 0.9rem;">
+                {{ formatPrice(item.precio_unitario) }}
+              </td>
+              <td style="text-align: right; font-weight: 900; color: #09090b; font-size: 0.95rem;">
+                {{ formatPrice(item.subtotal || item.precio_unitario * item.cantidad) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Resumen Financiero -->
+      <div class="order-financial-summary">
+        <div class="financial-box">
+          <div class="fin-row">
+            <span>Subtotal de Productos</span>
+            <span style="font-weight: 700; color: #09090b;">{{ formatPrice(p.total) }}</span>
+          </div>
+          <div class="fin-row">
+            <span>Costo de Envío</span>
+            <span style="font-weight: 700; color: #10b981;">Gratis / Incluido</span>
+          </div>
+          <div class="fin-row total">
+            <span>Total Facturado</span>
+            <span>{{ formatPrice(p.total) }}</span>
+          </div>
         </div>
-
-        <!-- Vacío -->
-        <div class="empty-state" *ngIf="!loading() && filteredPedidos.length === 0">
-          <p>No se encontraron pedidos con los criterios seleccionados.</p>
-        </div>
-
-        <!-- Tabla de Pedidos -->
-        <div class="table-responsive" *ngIf="!loading() && filteredPedidos.length > 0">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Código</th>
-                <th>Cliente</th>
-                <th>Fecha</th>
-                <th>Total</th>
-                <th class="center">Items</th>
-                <th>Estado</th>
-                <th>Acción Rápida</th>
-                <th style="width: 120px;">Detalles</th>
-              </tr>
-            </thead>
-            <tbody>
-              <ng-container *ngFor="let pedido of filteredPedidos">
-                <tr [class.expanded-row]="expandedPedidoId() === pedido.id">
-                  <td class="code-cell">{{ pedido.codigo_pedido }}</td>
-                  <td>
-                    <div class="prod-cell">
-                      <div class="prod-thumb" style="display: flex; align-items: center; justify-content: center; background: var(--dash-bg-input); color: var(--dash-text-muted);">
-                        <fa-icon [icon]="faUser" style="font-size: 1.1rem;"></fa-icon>
-                      </div>
-                      <div>
-                        <span class="prod-name">{{ pedido.cliente_nombre || 'Invitado/Anónimo' }}</span>
-                        <span style="display: block; font-size: 0.8rem; color: var(--dash-text-muted);">{{ pedido.cliente_correo || '' }}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td style="font-size: 0.85rem; color: var(--dash-text-muted);">{{ formatDate(pedido.fecha) }}</td>
-                  <td class="price-range">{{ formatPrice(pedido.total) }}</td>
-                  <td class="center font-bold">{{ pedido.total_items }}</td>
-                  <td>
-                    <span class="table-estado-badge" [style.--estado-color]="getEstadoInfo(pedido.estado).color">
-                      <fa-icon [icon]="getEstadoFAIcon(pedido.estado)" style="margin-right: 4px; font-size: 0.75rem;"></fa-icon>
-                      {{ getEstadoInfo(pedido.estado).label }}
-                    </span>
-                  </td>
-                  <td>
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                      <select
-                        class="filter-select"
-                        style="padding: 6px 10px; font-size: 0.8rem; background-position: right 8px top 50%;"
-                        [ngModel]="pedido.estado"
-                        (ngModelChange)="actualizarEstado(pedido.id, $event)"
-                        [disabled]="updatingId() === pedido.id || pedido.estado === 'cancelado' || pedido.estado === 'entregado'">
-                        <option *ngFor="let opt of getEstadosOptionsForPedido(pedido)" [value]="opt">{{ getEstadoLabel(opt) }}</option>
-                      </select>
-                      <fa-icon [icon]="faSync" class="fa-spin" *ngIf="updatingId() === pedido.id" style="color: var(--dash-text-accent); font-size: 0.8rem;"></fa-icon>
-                    </div>
-                  </td>
-                  <td>
-                    <button class="page-btn" (click)="toggleExpand(pedido.id)">
-                      <fa-icon [icon]="expandedPedidoId() === pedido.id ? faChevronUp : faChevronDown" style="margin-right: 6px;"></fa-icon>
-                      Ver
-                    </button>
-                  </td>
-                </tr>
-
-                <!-- Fila de Detalles Expandidos -->
-                <tr *ngIf="expandedPedidoId() === pedido.id" class="detail-row">
-                  <td colspan="8">
-                    <div class="detail-content">
-                      
-                      <!-- Columna 1: Envío -->
-                      <div class="detail-section">
-                        <h4>
-                          <fa-icon [icon]="faTruck" style="margin-right: 6px;"></fa-icon>
-                          Información de Envío
-                        </h4>
-                        <p style="font-weight: 600; color: var(--dash-text-main);">Dirección:</p>
-                        <p>{{ pedido.direccion_envio }}</p>
-                        <p *ngIf="pedido.ciudad" style="margin-top: 4px;">
-                          <fa-icon [icon]="faMapMarkerAlt" style="margin-right: 4px; color: var(--dash-text-muted);"></fa-icon>
-                          {{ pedido.ciudad }}, {{ pedido.departamento }}
-                        </p>
-                        <p *ngIf="pedido.telefono_contacto" style="margin-top: 8px;">
-                          <strong>Teléfono:</strong> {{ pedido.telefono_contacto }}
-                        </p>
-                        <p *ngIf="pedido.metodo_pago" style="margin-top: 4px;">
-                          <strong>Método Pago:</strong> {{ pedido.metodo_pago }}
-                        </p>
-                        <p *ngIf="pedido.notas" class="notes-text">
-                          <strong>Notas del Cliente:</strong> {{ pedido.notas }}
-                        </p>
-
-                        <!-- Datos de Envío -->
-                        <div *ngIf="pedido.transportadora || pedido.guia_numero" style="margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--dash-border);">
-                          <p style="font-weight: 600; color: var(--dash-text-main);">Logística y Tracking:</p>
-                          <p><strong>Transportadora:</strong> {{ pedido.transportadora }}</p>
-                          <p><strong>Número de Guía:</strong> {{ pedido.guia_numero }}</p>
-                          <p *ngIf="pedido.fecha_envio"><strong>Fecha de Envío:</strong> {{ formatDate(pedido.fecha_envio) }}</p>
-                          
-                          <button class="page-btn" style="margin-top: 8px; font-size: 0.75rem; padding: 4px 8px;" (click)="editarDatosEnvio(pedido)">
-                            <fa-icon [icon]="faEdit" style="margin-right: 4px;"></fa-icon> Editar Datos Envío
-                          </button>
-                        </div>
-                        
-                        <div *ngIf="!pedido.transportadora && !pedido.guia_numero && (pedido.estado === 'en_camino' || pedido.estado === 'entregado')" style="margin-top: 12px;">
-                          <button class="page-btn" style="font-size: 0.75rem; padding: 4px 8px;" (click)="editarDatosEnvio(pedido)">
-                            <fa-icon [icon]="faEdit" style="margin-right: 4px;"></fa-icon> Agregar Datos Envío
-                          </button>
-                        </div>
-
-                        <!-- Botón de cancelación especial por solicitud de cliente -->
-                        <div *ngIf="esPedidoPagado(pedido.estado) && pedido.estado !== 'entregado'" style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed var(--dash-border);">
-                          <button class="btn-refresh" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #ef4444; width: 100%; text-align: center; justify-content: center; gap: 6px; font-size: 0.8rem;" (click)="mostrarModalDevolucion(pedido)">
-                            <fa-icon [icon]="faBan"></fa-icon>
-                            cancelar pedido y devolver dinero
-                          </button>
-                        </div>
-                      </div>
-
-                      <!-- Columna 2: Productos -->
-                      <div class="detail-section">
-                        <h4>
-                          <fa-icon [icon]="faShoppingBag" style="margin-right: 6px;"></fa-icon>
-                          Productos en el Pedido
-                        </h4>
-                        <div class="detail-products">
-                          <div *ngFor="let d of pedido.detalles" class="detail-product-row">
-                            <img *ngIf="d.imagen_url" [src]="d.imagen_url" class="detail-prod-img" />
-                            <div class="detail-prod-placeholder" *ngIf="!d.imagen_url">
-                              <fa-icon [icon]="faBoxOpen"></fa-icon>
-                            </div>
-                            <span class="detail-prod-name">{{ d.nombre_producto }}</span>
-                            <span class="detail-prod-qty">x{{ d.cantidad }}</span>
-                            <span class="detail-prod-price">{{ formatPrice(d.precio_unitario) }}</span>
-                            <span class="detail-prod-subtotal">{{ formatPrice(d.subtotal || d.precio_unitario * d.cantidad) }}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-                  </td>
-                </tr>
-              </ng-container>
-            </tbody>
-          </table>
-        </div>
-
       </div>
     </div>
+
   </div>
+
+
+  <!-- =========================================================================
+       2. VISTA DE LISTADO GENERAL (cuando NO hay pedido seleccionado)
+       ========================================================================= -->
+  <ng-container *ngIf="!selectedPedido()">
+
+    <!-- 1. Fila de Stat Cards (4 columnas) -->
+    <div class="stats-row" *ngIf="!loading()">
+      <!-- Total Pedidos -->
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-card-label">Total Pedidos</span>
+          <div class="stat-icon-box">
+            <fa-icon [icon]="faClipboardList"></fa-icon>
+          </div>
+        </div>
+        <div class="stat-number">{{ stats()?.total_pedidos || pedidos().length }}</div>
+        <div class="stat-meta">
+          <span class="stat-pill">{{ filteredPedidos.length }} filtrados</span>
+          <span class="stat-subtext">Historial general</span>
+        </div>
+      </div>
+
+      <!-- Ingresos Totales -->
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-card-label">Ingresos Facturados</span>
+          <div class="stat-icon-box">
+            <fa-icon [icon]="faDollarSign"></fa-icon>
+          </div>
+        </div>
+        <div class="stat-number" style="font-size: 1.85rem;">{{ formatPrice(stats()?.ingresos_totales || 0) }}</div>
+        <div class="stat-meta">
+          <span class="stat-subtext">Facturación confirmada</span>
+        </div>
+      </div>
+
+      <!-- Pedidos Activos (Acento Rojo de Alerta si > 0) -->
+      <div class="stat-card stat-alert" [class.has-critical]="pedidosActivosCount > 0">
+        <div class="stat-header">
+          <span class="stat-card-label">Pedidos Activos</span>
+          <div class="stat-icon-box alert-icon">
+            <fa-icon [icon]="faClock"></fa-icon>
+          </div>
+        </div>
+        <div class="stat-number stat-alert-number">{{ stats()?.pedidos_activos || pedidosActivosCount }}</div>
+        <div class="stat-meta">
+          <span class="stat-pill-alert" *ngIf="pedidosActivosCount > 0">Requiere alistamiento</span>
+          <span class="stat-pill-ok" *ngIf="pedidosActivosCount === 0">Al día sin demoras</span>
+        </div>
+      </div>
+
+      <!-- Entregados -->
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-card-label">Entregas Completadas</span>
+          <div class="stat-icon-box">
+            <fa-icon [icon]="faCheckCircle"></fa-icon>
+          </div>
+        </div>
+        <div class="stat-number">{{ stats()?.pedidos_entregados || 0 }}</div>
+        <div class="stat-meta">
+          <span class="stat-pill-ok">Completados</span>
+          <span class="stat-subtext" *ngIf="stats()?.pedidos_cancelados > 0">({{ stats().pedidos_cancelados }} cancelados)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Bento Grid (Hero Oscuro + Quick Access 360px) -->
+    <div class="bento-grid">
+      <!-- Tarjeta Hero Estilo Bento (Fondo Negro con Efecto de Profundidad) -->
+      <div class="bento-welcome">
+        <div class="bento-status">
+          <span class="status-dot"></span>
+          <span class="bento-status-text">Logística & Despachos en Vivo</span>
+        </div>
+        <h1 class="bento-title">Gestión de Pedidos</h1>
+        <p class="bento-subtitle">
+          Administración de compras, validación de pagos, asignación de guías y trazabilidad de envíos en Plaxtilineas.
+        </p>
+        <div class="bento-actions">
+          <button class="btn-primary-white" (click)="cargarPedidos()" [disabled]="loading()">
+            <fa-icon [icon]="faSync" [class.fa-spin]="loading()"></fa-icon> Sincronizar Pedidos
+          </button>
+          <button class="btn-ghost-white" (click)="filtrarPorEstado('en_preparacion')">
+            Ver Órdenes Por Despachar
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Access (360px) -->
+      <div class="bento-quick-card">
+        <div class="quick-header">
+          <h3>Atajos de Logística</h3>
+          <span class="quick-pill">Filtro rápido</span>
+        </div>
+        <div class="quick-actions-list">
+          <button class="quick-action-item" (click)="filtrarPorEstado('pendiente')">
+            <div class="quick-item-icon warning"><fa-icon [icon]="faClock"></fa-icon></div>
+            <div class="quick-item-info">
+              <span class="quick-item-title">Pedidos Pendientes</span>
+              <span class="quick-item-desc">Pagos esperando confirmación</span>
+            </div>
+          </button>
+
+          <button class="quick-action-item" (click)="filtrarPorEstado('en_preparacion')">
+            <div class="quick-item-icon info"><fa-icon [icon]="faBoxOpen"></fa-icon></div>
+            <div class="quick-item-info">
+              <span class="quick-item-title">Por Preparar y Enviar</span>
+              <span class="quick-item-desc">Alistar en bodega y generar guía</span>
+            </div>
+          </button>
+
+          <button class="quick-action-item" (click)="limpiarFiltros()">
+            <div class="quick-item-icon neutral"><fa-icon [icon]="faClipboardList"></fa-icon></div>
+            <div class="quick-item-info">
+              <span class="quick-item-title">Restablecer Filtros</span>
+              <span class="quick-item-desc">Ver todas las órdenes registradas</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Contenido Principal / Panel de Tabla -->
+    <div class="panel-card">
+
+      <!-- Barra de herramientas con buscador y combo box de estado al mismo nivel -->
+      <div class="panel-header" style="flex-wrap: wrap; gap: 16px;">
+        <h3>
+          <fa-icon [icon]="faClipboardList" style="margin-right: 10px;"></fa-icon>
+          Historial de Pedidos
+        </h3>
+
+        <div class="panel-header-actions">
+          <!-- Combo Box para filtrar por Fecha -->
+          <div class="filter-select-wrapper" style="min-width: 175px;">
+            <select
+              class="input-minimal-select"
+              [ngModel]="filtroFecha()"
+              (ngModelChange)="filtroFecha.set($event); paginaActual.set(1)"
+              title="Filtrar por fecha">
+              <option value="todos">Todas las Fechas</option>
+              <option value="hoy">Hoy</option>
+              <option value="7dias">Últimos 7 días</option>
+              <option value="30dias">Últimos 30 días</option>
+              <option value="mes">Este mes</option>
+              <option value="custom">Fecha específica...</option>
+            </select>
+            <fa-icon [icon]="faChevronDown" class="select-arrow-icon"></fa-icon>
+          </div>
+
+          <!-- Selector de fecha específica si se selecciona 'custom' -->
+          <div class="filter-date-custom-wrapper" *ngIf="filtroFecha() === 'custom'">
+            <input
+              type="date"
+              class="input-minimal-date"
+              [ngModel]="fechaPersonalizada()"
+              (ngModelChange)="fechaPersonalizada.set($event); paginaActual.set(1)"
+              title="Seleccionar fecha específica"
+            />
+          </div>
+
+          <!-- Combo Box para filtrar por Estado -->
+          <div class="filter-select-wrapper">
+            <select
+              class="input-minimal-select"
+              [ngModel]="filtroEstado()"
+              (ngModelChange)="filtroEstado.set($event); paginaActual.set(1)"
+              title="Filtrar por estado">
+              <option value="todos">Todos los Estados</option>
+              <option *ngFor="let e of estadosList" [value]="e.key">
+                {{ e.label }}
+              </option>
+            </select>
+            <fa-icon [icon]="faChevronDown" class="select-arrow-icon"></fa-icon>
+          </div>
+
+          <!-- Buscador -->
+          <div class="search-box">
+            <fa-icon [icon]="faSearch" style="position: absolute; left: 14px; color: #71717a; pointer-events: none;"></fa-icon>
+            <input
+              type="text"
+              [ngModel]="searchTerm()"
+              (ngModelChange)="searchTerm.set($event); paginaActual.set(1)"
+              class="input-minimal"
+              placeholder="Buscar por código, cliente o correo..."
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Carga -->
+      <div class="loading-state" *ngIf="loading()">
+        <div class="spinner-grande"></div>
+        <p>Cargando información de pedidos...</p>
+      </div>
+
+      <!-- Vacío -->
+      <div class="empty-state" *ngIf="!loading() && filteredPedidos.length === 0">
+        <p>No se encontraron pedidos con los criterios seleccionados.</p>
+      </div>
+
+      <!-- Tabla de Pedidos: Solo columnas solicitadas: Cliente, Fecha, Total, Estado (+ Acción) -->
+      <div class="table-responsive" *ngIf="!loading() && filteredPedidos.length > 0">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Fecha</th>
+              <th>Total</th>
+              <th>Estado</th>
+              <th style="width: 140px; text-align: right;">Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let pedido of paginatedPedidos" style="transition: background 0.15s ease;">
+              
+              <!-- 1. Cliente -->
+              <td>
+                <div class="prod-cell">
+                  <div class="prod-thumb" style="display: flex; align-items: center; justify-content: center; background: #f4f5f7; color: #71717a; border-radius: 12px; width: 42px; height: 42px; flex-shrink: 0; border: 1.5px solid #e4e4e7;">
+                    <fa-icon [icon]="faUser" style="font-size: 0.95rem;"></fa-icon>
+                  </div>
+                  <div>
+                    <span class="prod-name" style="font-weight: 800; font-size: 0.92rem; color: #09090b;">{{ pedido.cliente_nombre || 'Invitado / Anónimo' }}</span>
+                    <span style="display: block; font-size: 0.76rem; color: #71717a; font-weight: 600; margin-top: 1px;">
+                      {{ pedido.codigo_pedido }} &bull; {{ pedido.cliente_correo || 'Sin correo' }}
+                    </span>
+                  </div>
+                </div>
+              </td>
+
+              <!-- 2. Fecha -->
+              <td style="font-size: 0.85rem; color: #52525b; font-weight: 600;">
+                {{ formatDate(pedido.fecha) }}
+              </td>
+
+              <!-- 3. Total -->
+              <td class="price-range" style="font-weight: 900; font-size: 0.98rem; color: #09090b;">
+                {{ formatPrice(pedido.total) }}
+              </td>
+
+              <!-- 4. Estado -->
+              <td>
+                <span class="table-estado-badge" [style.--estado-color]="getEstadoInfo(pedido.estado).color">
+                  <fa-icon [icon]="getEstadoFAIcon(pedido.estado)" style="margin-right: 4px; font-size: 0.75rem;"></fa-icon>
+                  {{ getEstadoInfo(pedido.estado).label }}
+                </span>
+              </td>
+
+              <!-- Botón Acción Ver Detalle -->
+              <td style="text-align: right;">
+                <button
+                  class="btn-detail-action"
+                  style="padding: 7px 14px; font-size: 0.8rem; background: #09090b; color: #ffffff; border-color: #09090b;"
+                  (click)="verDetalle(pedido)">
+                  Ver Detalle &rarr;
+                </button>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer de Tabla con Paginación -->
+      <div class="table-footer-bar" *ngIf="!loading() && filteredPedidos.length > 0">
+        <div class="pagination-summary">
+          Mostrando <strong>{{ getInicioItem() }} - {{ getFinItem() }}</strong> de <strong>{{ filteredPedidos.length }}</strong> pedidos
+        </div>
+
+        <!-- Controles de Paginación -->
+        <div class="pagination" *ngIf="totalPaginas > 1">
+          <button 
+            class="pagination-btn" 
+            (click)="cambiarPagina(paginaActual() - 1)"
+            [disabled]="paginaActual() === 1"
+            title="Página anterior"
+          >
+            <fa-icon [icon]="faChevronLeft"></fa-icon>
+          </button>
+          
+          <div class="pagination-numbers">
+            <button
+              *ngFor="let pagina of getRangoPaginas()"
+              class="pagination-number"
+              [class.active]="pagina === paginaActual()"
+              (click)="cambiarPagina(pagina)"
+            >
+              {{ pagina }}
+            </button>
+          </div>
+          
+          <button 
+            class="pagination-btn" 
+            (click)="cambiarPagina(paginaActual() + 1)"
+            [disabled]="paginaActual() === totalPaginas"
+            title="Página siguiente"
+          >
+            <fa-icon [icon]="faChevronRight"></fa-icon>
+          </button>
+        </div>
+
+        <div style="font-size: 0.82rem; color: #71717a; font-weight: 600; display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+          <span>Página <strong style="color: #09090b;">{{ paginaActual() }}</strong> de <strong style="color: #09090b;">{{ totalPaginas }}</strong></span>
+        </div>
+      </div>
+
+    </div>
+
+  </ng-container>
 
 </div>

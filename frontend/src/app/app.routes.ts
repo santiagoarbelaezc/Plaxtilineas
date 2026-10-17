@@ -58,49 +58,32 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/dashboard/dashboard/dashboard').then(m => m.Dashboard),
     children: [
       {
-        path: 'categorias',
-        loadComponent: () => import('./pages/dashboard/categorias/categorias').then(m => m.Categorias)
-      },
-      {
-        path: 'subcategorias',
-        loadComponent: () => import('./pages/dashboard/sub-categorias/sub-categorias').then(m => m.SubCategorias)
-      },
-      {
-        path: 'productos',
-        loadComponent: () => import('./pages/dashboard/productos/productos').then(m => m.Productos)
-      },
-      {
         path: 'inventario',
         loadComponent: () => import('./pages/dashboard/inventario/inventario').then(m => m.Inventario)
-      },
-      {
-        path: 'pqr-admin',
-        loadComponent: () => import('./pages/dashboard/pqr/pqr').then(m => m.Pqr)
-      },
-      {
-        path: 'analiticas',
-        loadComponent: () => import('./pages/dashboard/analiticas/analiticas').then(m => m.Analiticas)
-      },
-      {
-        path: 'personalizar-web',
-        loadComponent: () => import('./pages/dashboard/personalizar-web/personalizar-web').then(m => m.PersonalizarWeb)
-      },
-      {
-        path: 'estadisticas',
-        loadComponent: () => import('./pages/dashboard/estadisticas/estadisticas').then(m => m.Estadisticas)
-      },
-      {
-        path: 'reportes',
-        loadComponent: () => import('./pages/dashboard/reportes/reportes').then(m => m.Reportes)
       },
       {
         path: 'pedidos',
         loadComponent: () => import('./pages/dashboard/pedidos/admin-pedidos').then(m => m.AdminPedidos)
       },
       {
+        path: 'personalizar-web',
+        loadComponent: () => import('./pages/dashboard/personalizar-web/personalizar-web').then(m => m.PersonalizarWeb)
+      },
+      {
         path: 'usuarios',
         loadComponent: () => import('./pages/dashboard/pedidos/admin-usuarios').then(m => m.AdminUsuarios)
-      }
+      },
+      {
+        path: 'pqr-admin',
+        loadComponent: () => import('./pages/dashboard/pqr/pqr').then(m => m.Pqr)
+      },
+      // Redirecciones amigables para rutas retiradas
+      { path: 'categorias', redirectTo: 'inventario' },
+      { path: 'subcategorias', redirectTo: 'inventario' },
+      { path: 'productos', redirectTo: 'inventario' },
+      { path: 'analiticas', redirectTo: '' },
+      { path: 'estadisticas', redirectTo: '' },
+      { path: 'reportes', redirectTo: '' }
     ]
   },
   {

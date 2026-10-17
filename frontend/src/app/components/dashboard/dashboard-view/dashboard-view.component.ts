@@ -11,6 +11,7 @@ import { ProductosService } from '../../../services/productos.service';
 import { PedidoService } from '../../../services/pedido.service';
 import { AdminUsuariosService } from '../../../services/admin-usuarios.service';
 import { ConfiguracionService } from '../../../services/configuracion.service';
+import { PqrService } from '../../../services/pqr.service';
 import { DashboardAssistantComponent } from '../dashboard-assistant/dashboard-assistant.component';
 import {
   faBoxes,
@@ -103,8 +104,17 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
   mensajeExito = '';
 
   isMobileSidebarOpen = false;
+  isSidebarCollapsed = false;
 
   wompiEnabled = true;
+
+  // Métricas del Dashboard (Stat Cards)
+  totalProductosCount = 0;
+  totalPedidosCount = 0;
+  pedidosPendientesCount = 0;
+  totalUsuariosCount = 0;
+  totalPqrsCount = 0;
+  cargandoMetricas = false;
 
   toggleMobileSidebar(): void {
     this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
@@ -112,6 +122,22 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
 
   closeMobileSidebar(): void {
     this.isMobileSidebarOpen = false;
+  }
+
+  toggleSidebarCollapse(): void {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+    try {
+      localStorage.setItem('admin_sidebar_collapsed', this.isSidebarCollapsed ? 'true' : 'false');
+    } catch (e) {
+      // Ignorar restricciones de almacenamiento local
+    }
+  }
+
+  abrirMateoIA(): void {
+    const assistantBtn = document.querySelector('.dashboard-assistant-button, .assistant-fab, .floating-ai-button, .ai-assistant-btn, app-dashboard-assistant button') as HTMLElement;
+    if (assistantBtn) {
+      assistantBtn.click();
+    }
   }
 
   constructor(
@@ -123,7 +149,8 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
     private productosService: ProductosService,
     private pedidoService: PedidoService,
     private adminUsuariosService: AdminUsuariosService,
-    private configuracionService: ConfiguracionService
+    private configuracionService: ConfiguracionService,
+    private pqrService: PqrService
   ) {
     library.addIcons(
       faBoxes, 
@@ -143,15 +170,53 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
       faShoppingCart,
       faSun,
       faMoon,
-      faSearch
+      faSearch,
+      faPaintBrush
     );
   }
 
   ngOnInit(): void {
+    try {
+      this.isSidebarCollapsed = localStorage.getItem('admin_sidebar_collapsed') === 'true';
+    } catch (e) {
+      this.isSidebarCollapsed = false;
+    }
     this.iniciarChequeoPedidos();
+    this.cargarMetricasDashboard();
     this.configuracionService.wompiEnabled$.subscribe(val => {
       this.wompiEnabled = val;
     });
+  }
+
+  cargarMetricasDashboard(): void {
+    this.cargandoMetricas = true;
+
+    // 1. Total Productos en Inventario
+    this.productosService.obtenerProductos().subscribe({
+      next: (prods) => {
+        this.totalProductosCount = Array.isArray(prods) ? prods.length : 0;
+      },
+      error: () => {}
+    });
+
+    // 2. Total Usuarios Registrados
+    this.adminUsuariosService.obtenerUsuariosDetalle().subscribe({
+      next: (res: any) => {
+        this.totalUsuariosCount = Array.isArray(res) ? res.length : (res?.data?.length || 0);
+      },
+      error: () => {}
+    });
+
+    // 3. Total PQRS
+    const token = localStorage.getItem('token') || '';
+    if (token) {
+      this.pqrService.getPQRS(token).subscribe({
+        next: (res) => {
+          this.totalPqrsCount = res?.total || (Array.isArray(res?.data) ? res.data.length : 0);
+        },
+        error: () => {}
+      });
+    }
   }
 
   ngOnDestroy(): void {
@@ -206,13 +271,15 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         const data = res.data ?? res;
         const pedidos = data.pedidos || [];
+        this.totalPedidosCount = pedidos.length;
+        const estadosAlerta = ['pagado', 'confirmado', 'en_preparacion'];
+        this.pedidosPendientesCount = pedidos.filter((p: any) => estadosAlerta.includes(p.estado) || p.estado === 'pendiente').length;
         
         if (pedidos.length === 0) return;
 
         let mayorId = this.maxOrderId;
         let nuevosPagadosEncontrados = 0;
         let ultimoCodigo = '';
-        const estadosAlerta = ['pagado', 'confirmado', 'en_preparacion'];
 
         pedidos.forEach((pedido: any) => {
           const pid = Number(pedido.id);
@@ -236,31 +303,88 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
           if (pedidosPendientesDeProcesar > 0) {
             this.playNotificationSound();
             Swal.fire({
-              title: 'Pedidos Pendientes',
+              width: '680px',
+              padding: '36px 40px',
+              customClass: {
+                popup: 'swal-wide-modal',
+                confirmButton: 'swal2-confirm',
+                cancelButton: 'swal2-cancel'
+              },
+              buttonsStyling: false,
               html: `
-                <div style="font-family: 'Montserrat', sans-serif; text-align: center; padding: 5px 10px;">
-                  <p style="font-size: 1.15rem; color: #475569; margin-bottom: 25px; line-height: 1.6; font-weight: 500;">
-                    Tienes <span style="font-weight: 700; color: #16a34a;">${pedidosPendientesDeProcesar} pedido(s)</span> con pago confirmado pendientes de procesar.
+                <div style="font-family: 'Inter Tight', -apple-system, sans-serif; text-align: center;">
+                  <!-- Icono Hero Superior (Reemplaza el círculo vacío) -->
+                  <div style="width: 58px; height: 58px; border-radius: 18px; background: #09090b; border: 1.5px solid #27272a; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);">
+                    <span class="material-symbols-rounded" style="font-size: 28px; color: #ffffff;">pending_actions</span>
+                  </div>
+
+                  <!-- Badge superior con punto pulsante -->
+                  <div style="display: flex; justify-content: center; margin-bottom: 14px;">
+                    <span style="display: inline-flex; align-items: center; gap: 8px; background: #fef2f2; border: 1.5px solid #fecaca; color: #dc2626; padding: 6px 14px; border-radius: 9999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;">
+                      <span style="width: 8px; height: 8px; border-radius: 50%; background: #dc2626; box-shadow: 0 0 10px rgba(220, 38, 38, 0.7); display: inline-block;"></span>
+                      Acción Requerida en Tienda
+                    </span>
+                  </div>
+
+                  <!-- Título & Subtítulo -->
+                  <h2 style="font-size: 1.75rem; font-weight: 800; color: #09090b; letter-spacing: -0.03em; margin: 0 0 10px 0; line-height: 1.2;">
+                    Pedidos Pendientes de Despacho
+                  </h2>
+                  <p style="font-size: 0.95rem; color: #71717a; margin: 0 0 24px 0; line-height: 1.5;">
+                    Tienes <span style="font-weight: 800; color: #09090b; background: #f4f5f7; border: 1px solid #e4e4e7; padding: 3px 10px; border-radius: 8px;">${pedidosPendientesDeProcesar} pedido(s) con pago confirmado</span> esperando preparación y entrega.
                   </p>
-                  <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px 22px; display: flex; align-items: center; gap: 16px; margin: 10px auto; box-shadow: 0 4px 12px rgba(0,0,0,0.01); text-align: left; width: 100%; box-sizing: border-box;">
-                    <div style="background: rgba(22, 163, 74, 0.1); color: #16a34a; border-radius: 50%; width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; flex-shrink: 0; box-shadow: inset 0 2px 4px rgba(22, 163, 74, 0.05);">
-                      📦
+
+                  <!-- Bento Grid de 2 Columnas -->
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-bottom: 20px; text-align: left;">
+                    <!-- Card 1: Alistamiento de Paquete -->
+                    <div style="background: #ffffff; border: 1.5px solid #e4e4e7; border-radius: 16px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
+                      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <div style="width: 44px; height: 44px; border-radius: 12px; background: #f0fdf4; border: 1.5px solid #bbf7d0; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                          <span class="material-symbols-rounded" style="font-size: 24px; color: #16a34a;">inventory_2</span>
+                        </div>
+                        <div>
+                          <span style="display: block; font-size: 0.68rem; font-weight: 800; color: #16a34a; text-transform: uppercase; letter-spacing: 0.08em;">Paso 1 • Bodega</span>
+                          <span style="display: block; font-size: 0.95rem; font-weight: 800; color: #09090b;">Alistar & Embalaje</span>
+                        </div>
+                      </div>
+                      <p style="font-size: 0.82rem; color: #71717a; margin: 0; line-height: 1.5;">
+                        Verifica cantidades, referencias y variantes en inventario para apartar y empacar de inmediato.
+                      </p>
                     </div>
-                    <div>
-                      <p style="font-size: 0.95rem; font-weight: 700; color: #0f172a; margin: 0;">Acción Requerida</p>
-                      <p style="font-size: 0.8rem; color: #64748b; margin: 4px 0 0 0; line-height: 1.45;">Por favor, ingresa a la sección de pedidos para coordinar el embalaje y despacho del envío.</p>
+
+                    <!-- Card 2: Envío y Guía -->
+                    <div style="background: #ffffff; border: 1.5px solid #e4e4e7; border-radius: 16px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
+                      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <div style="width: 44px; height: 44px; border-radius: 12px; background: #eff6ff; border: 1.5px solid #bfdbfe; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                          <span class="material-symbols-rounded" style="font-size: 24px; color: #2563eb;">local_shipping</span>
+                        </div>
+                        <div>
+                          <span style="display: block; font-size: 0.68rem; font-weight: 800; color: #2563eb; text-transform: uppercase; letter-spacing: 0.08em;">Paso 2 • Logística</span>
+                          <span style="display: block; font-size: 0.95rem; font-weight: 800; color: #09090b;">Generar Guía</span>
+                        </div>
+                      </div>
+                      <p style="font-size: 0.82rem; color: #71717a; margin: 0; line-height: 1.5;">
+                        Coordina el despacho con la transportadora y actualiza el estado a "Enviado" con el código de rastreo.
+                      </p>
                     </div>
+                  </div>
+
+                  <!-- Banner Informativo Inferior -->
+                  <div style="background: #f4f5f7; border: 1.5px dashed #e4e4e7; border-radius: 14px; padding: 12px 18px; display: flex; align-items: center; gap: 12px; text-align: left;">
+                    <div style="width: 32px; height: 32px; border-radius: 8px; background: #fffbeb; border: 1px solid #fde68a; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                      <span class="material-symbols-rounded" style="font-size: 18px; color: #d97706;">bolt</span>
+                    </div>
+                    <span style="font-size: 0.82rem; color: #09090b; font-weight: 600; line-height: 1.4;">
+                      Despachar con prontitud optimiza el flujo de pedidos y garantiza una alta satisfacción del cliente.
+                    </span>
                   </div>
                 </div>
               `,
-              icon: 'info',
-              iconColor: '#000000',
-              width: '520px',
               showCancelButton: true,
-              confirmButtonText: 'Gestionar Pedidos',
+              confirmButtonText: '<span style="display: inline-flex; align-items: center; gap: 6px;">Gestionar Pedidos <span class="material-symbols-rounded" style="font-size: 18px;">arrow_forward</span></span>',
               cancelButtonText: 'Cerrar',
               confirmButtonColor: '#000000',
-              cancelButtonColor: '#94a3b8'
+              cancelButtonColor: '#f4f5f7'
             }).then((result) => {
               if (result.isConfirmed) {
                 this.router.navigate(['/admin/pedidos']);
@@ -353,26 +477,22 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
 
   get tituloSeccion(): string {
     const url = this.router.url;
-    if (url.includes('/categorias')) return 'Gestión de Categorías';
-    if (url.includes('/subcategorias')) return 'Gestión de Subcategorías';
-    if (url.includes('/productos')) return 'Gestión de Productos';
     if (url.includes('/inventario')) return 'Gestión de Inventario';
-    if (url.includes('/pqr-admin')) return 'Peticiones, Quejas y Reclamos';
-    if (url.includes('/usuarios')) return 'Usuarios Registrados';
     if (url.includes('/pedidos')) return 'Gestión de Pedidos';
+    if (url.includes('/personalizar-web')) return 'Personalizar';
+    if (url.includes('/usuarios')) return 'Usuarios Registrados';
+    if (url.includes('/pqr-admin')) return 'PQRS - Peticiones, Quejas y Reclamos';
     return 'Panel de Administración';
   }
 
   get subtituloSeccion(): string {
     const url = this.router.url;
-    if (url.includes('/categorias')) return 'Administra las categorías principales del catálogo';
-    if (url.includes('/subcategorias')) return 'Administra las subcategorías y su relación';
-    if (url.includes('/productos')) return 'Añade, edita o elimina productos del catálogo';
-    if (url.includes('/inventario')) return 'Controla el stock y precios de tus productos';
-    if (url.includes('/pqr-admin')) return 'Gestiona los mensajes de contacto de clientes';
-    if (url.includes('/usuarios')) return 'Visualiza clientes, sus carritos de compras activos y pedidos';
-    if (url.includes('/pedidos')) return 'Visualiza e interactúa con el estado de pedidos';
-    return 'Gestiona productos, categorías, subcategorías y más';
+    if (url.includes('/inventario')) return 'Controla el stock, referencias y precios de tus productos';
+    if (url.includes('/pedidos')) return 'Visualiza, gestiona y actualiza el estado de los pedidos';
+    if (url.includes('/personalizar-web')) return 'Configura y edita elementos visuales y textos de la tienda';
+    if (url.includes('/usuarios')) return 'Visualiza clientes registrados, carritos y actividad';
+    if (url.includes('/pqr-admin')) return 'Atiende peticiones, quejas, reclamos y solicitudes de clientes';
+    return 'Administra inventario, pedidos, personalización, usuarios y PQRS de Plaxtilineas';
   }
 
   /**

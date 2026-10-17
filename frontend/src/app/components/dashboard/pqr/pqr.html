@@ -1,687 +1,532 @@
-<div class="admin-content-wrapper pqr-admin-container">
-  <main class="admin-main-content">
-  <!-- Controles Principales -->
-  <div class="pqr-main-controls">
-    <div class="header-controls">
-      <button 
-        class="btn btn-secondary"
-        (click)="showFiltros = !showFiltros"
-        [class.active]="showFiltros">
-        <fa-icon icon="filter"></fa-icon>
-        {{ showFiltros ? 'Ocultar Filtros' : 'Mostrar Filtros' }}
-      </button>
-      
-      <button 
-        class="btn btn-info"
-        (click)="cargarEstadisticas(); modoVista = 'estadisticas'"
-        [class.active]="modoVista === 'estadisticas'">
-        <fa-icon icon="chart-bar"></fa-icon>
-        Estadísticas
-      </button>
-      
-      <button 
-        class="btn btn-primary"
-        (click)="cargarPQRS()">
-        <fa-icon icon="sync-alt"></fa-icon>
-        Actualizar
-      </button>
-    </div>
-  </div>
+<div class="admin-content-wrapper-inner pqr-admin-container">
 
-  <!-- Mensajes -->
-  <div *ngIf="mensaje" class="alert alert-{{mensajeTipo}} fade-in">
-    <div class="alert-content">
-      <span class="alert-icon">
-        <i class="fas" 
-           [class.fa-check-circle]="mensajeTipo === 'success'"
-           [class.fa-exclamation-circle]="mensajeTipo === 'error'"
-           [class.fa-info-circle]="mensajeTipo === 'info'"></i>
-      </span>
-      {{ mensaje }}
-      <button class="alert-close" (click)="mensaje = ''">
-        <fa-icon icon="times"></fa-icon>
-      </button>
-    </div>
-  </div>
-
-  <!-- Filtros avanzados -->
-  <div *ngIf="showFiltros" class="filtros-avanzados card fade-in">
-    <div class="filtros-header">
-      <h3><fa-icon icon="sliders"></fa-icon> Filtros Avanzados</h3> <!-- Corregido: fa-sliders-h -> fa-sliders -->
-    </div>
+  <!-- =========================================================================
+       1. VISTA DE DETALLE DE PQR (cuando se selecciona una solicitud)
+       ========================================================================= -->
+  <div *ngIf="modoVista === 'detalle' && pqrSeleccionada" class="pqr-detail-view">
     
-    <div class="filtros-body">
-      <div class="filtros-grid">
-        <!-- Filtro por estado -->
-        <div class="form-group">
-          <label for="filtroEstado">
-            <fa-icon icon="flag"></fa-icon> Estado
-          </label>
-          <select 
-            id="filtroEstado" 
-            class="form-control"
-            [(ngModel)]="filtros.estado">
-            <option *ngFor="let estado of estados" [value]="estado.valor">
-              {{ estado.texto }}
-            </option>
-          </select>
-        </div>
-
-        <!-- Filtro por tipo -->
-        <div class="form-group">
-          <label for="filtroTipo">
-            <fa-icon icon="tag"></fa-icon> Tipo
-          </label>
-          <select 
-            id="filtroTipo" 
-            class="form-control"
-            [(ngModel)]="filtros.tipo">
-            <option *ngFor="let tipo of tipos" [value]="tipo.valor">
-              {{ tipo.texto }}
-            </option>
-          </select>
-        </div>
-
-        <!-- Filtro por fecha inicio -->
-        <div class="form-group">
-          <label for="filtroFechaInicio">
-            <fa-icon icon="calendar-alt"></fa-icon> Fecha Inicio
-          </label>
-          <input 
-            type="date" 
-            id="filtroFechaInicio"
-            class="form-control"
-            [(ngModel)]="filtros.fechaInicio">
-        </div>
-
-        <!-- Filtro por fecha fin -->
-        <div class="form-group">
-          <label for="filtroFechaFin">
-            <fa-icon icon="calendar-alt"></fa-icon> Fecha Fin
-          </label>
-          <input 
-            type="date" 
-            id="filtroFechaFin"
-            class="form-control"
-            [(ngModel)]="filtros.fechaFin">
-        </div>
-
-        <!-- Ordenar por -->
-        <div class="form-group">
-          <label for="ordenarPor">
-            <fa-icon icon="sort-amount-down"></fa-icon> Ordenar por
-          </label>
-          <select 
-            id="ordenarPor" 
-            class="form-control"
-            [(ngModel)]="filtros.ordenarPor">
-            <option *ngFor="let opcion of ordenarOpciones" [value]="opcion.valor">
-              {{ opcion.texto }}
-            </option>
-          </select>
-        </div>
-
-        <!-- Orden -->
-        <div class="form-group">
-          <label for="orden">
-            <fa-icon icon="sort"></fa-icon> Orden
-          </label>
-          <select 
-            id="orden" 
-            class="form-control"
-            [(ngModel)]="filtros.orden">
-            <option value="desc">Descendente</option>
-            <option value="asc">Ascendente</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="filtros-actions">
-        <button class="btn btn-primary" (click)="aplicarFiltros()">
-          <fa-icon icon="check"></fa-icon> Aplicar Filtros
-        </button>
-        <button class="btn btn-outline" (click)="limpiarFiltros()">
-          <fa-icon icon="broom"></fa-icon> Limpiar Filtros
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Barra de búsqueda -->
-  <div class="search-bar card">
-    <div class="search-container">
-      <div class="search-icon">
-        <fa-icon icon="search"></fa-icon>
-      </div>
-      <input 
-        type="text" 
-        class="search-input"
-        placeholder="Buscar PQRS..."
-        [(ngModel)]="filtros.terminoBusqueda"
-        (input)="onBuscarChange()">
-      
-      <select 
-        class="search-field-select"
-        [(ngModel)]="filtros.campoBusqueda">
-        <option *ngFor="let campo of camposBusqueda" [value]="campo.valor">
-          {{ campo.texto }}
-        </option>
-      </select>
-      
-      <button class="search-btn" (click)="realizarBusqueda()" *ngIf="filtros.terminoBusqueda">
-        <fa-icon icon="search"></fa-icon> Buscar
+    <!-- Botón de regreso -->
+    <div class="detail-nav-back">
+      <button class="btn-back-link" (click)="volverALista()">
+        <fa-icon icon="arrow-left"></fa-icon> Volver a solicitudes PQRS
       </button>
     </div>
-  </div>
 
-  <!-- Loading -->
-  <div *ngIf="cargando && !pqrSeleccionada" class="loading-container">
-    <div class="loading-spinner"></div>
-    <p>Cargando PQRS...</p>
-  </div>
-
-  <!-- Vista de lista -->
-  <div *ngIf="modoVista === 'lista' && !cargando" class="lista-container">
-    <!-- Contador de resultados -->
-    <div class="resultados-info">
-      <p>
-        Mostrando {{ pqrs.length }} de {{ paginacion.total }} PQRS
-        <span *ngIf="filtros.estado"> • Estado: {{ traducirEstado(filtros.estado) }}</span>
-        <span *ngIf="filtros.tipo"> • Tipo: {{ traducirTipo(filtros.tipo) }}</span>
-      </p>
-    </div>
-
-    <!-- Tabla de PQRS -->
-    <div class="table-responsive">
-      <table class="pqrs-table">
-        <thead>
-          <tr>
-            <th>Ticket</th>
-            <th>Tipo</th>
-            <th>Solicitante</th>
-            <th>Estado</th>
-            <th>Fecha</th>
-            <th>Producto</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let pqr of pqrs" [class]="'pqr-row ' + obtenerClasePrioridad(pqr)">
-            <td class="ticket-cell">
-              <span class="ticket-badge">{{ pqr.numero_ticket }}</span>
-            </td>
-            <td class="tipo-cell">
-              <span [class]="'tipo-badge ' + obtenerClaseTipo(pqr.tipo)">
-                <i class="fas" 
-                   [class.fa-comment]="pqr.tipo === 'PETICION'"
-                   [class.fa-exclamation-circle]="pqr.tipo === 'QUEJA'"
-                   [class.fa-exclamation-triangle]="pqr.tipo === 'RECLAMO'"
-                   [class.fa-lightbulb]="pqr.tipo === 'SUGERENCIA'"></i>
-                {{ traducirTipo(pqr.tipo) }}
-              </span>
-            </td>
-            <td class="solicitante-cell">
-              <div class="solicitante-info">
-                <strong>{{ pqr.nombre_completo }}</strong>
-                <small>{{ pqr.email }}</small>
-                <small>{{ pqr.telefono }}</small>
-              </div>
-            </td>
-            <td class="estado-cell">
-              <span [class]="'estado-badge ' + obtenerClaseEstado(pqr.estado)">
-                <i class="fas" 
-                   [class.fa-clock]="pqr.estado === 'PENDIENTE'"
-                   [class.fa-cogs]="pqr.estado === 'EN_PROCESO'"
-                   [class.fa-check-circle]="pqr.estado === 'RESUELTO'"
-                   [class.fa-times-circle]="pqr.estado === 'CERRADO'"></i>
-                {{ traducirEstado(pqr.estado) }}
-              </span>
-            </td>
-            <td class="fecha-cell">
-              {{ formatearFecha(pqr.fecha_creacion || '') }}
-              <small *ngIf="pqr.fecha_actualizacion">
-                <br>Actualizado: {{ formatearFecha(pqr.fecha_actualizacion) }}
-              </small>
-            </td>
-            <td class="producto-cell">
-              {{ pqr.producto_relacionado || 'No especificado' }}
-            </td>
-            <td class="acciones-cell">
-              <div class="acciones-buttons">
-                <button 
-                  class="btn-icon btn-view"
-                  (click)="verDetallePQR(pqr)"
-                  title="Ver detalles">
-                  <fa-icon icon="eye"></fa-icon>
-                </button>
-                
-                <button 
-                  class="btn-icon btn-edit"
-                  (click)="verDetallePQR(pqr)"
-                  title="Responder">
-                  <fa-icon icon="reply"></fa-icon>
-                </button>
-                
-                <button 
-                  class="btn-icon btn-danger"
-                  (click)="eliminarPQR(pqr)"
-                  title="Eliminar">
-                  <fa-icon icon="trash-alt"></fa-icon>
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      
-      <!-- Mensaje sin resultados -->
-      <div *ngIf="pqrs.length === 0" class="no-results">
-        <fa-icon icon="inbox"></fa-icon>
-        <h3>No hay PQRS para mostrar</h3>
-        <p *ngIf="filtros.estado || filtros.tipo || filtros.terminoBusqueda">
-          Intenta con otros filtros de búsqueda
-        </p>
-      </div>
-    </div>
-
-    <!-- Paginación -->
-    <div *ngIf="paginacion.totalPaginas > 1" class="paginacion">
-      <div class="paginacion-info">
-        Página {{ paginacion.paginaActual }} de {{ paginacion.totalPaginas }}
-        <select 
-          class="form-control items-per-page"
-          [(ngModel)]="paginacion.porPagina"
-          (change)="cambiarItemsPorPagina()">
-          <option value="5">5 por página</option>
-          <option value="10">10 por página</option>
-          <option value="20">20 por página</option>
-          <option value="50">50 por página</option>
-        </select>
-      </div>
-      
-      <div class="paginacion-controls">
-        <button 
-          class="paginacion-btn"
-          [disabled]="paginacion.paginaActual === 1"
-          (click)="cambiarPagina(paginacion.paginaActual - 1)">
-          <fa-icon icon="chevron-left"></fa-icon> Anterior
-        </button>
-        
-        <div class="paginacion-numbers">
-          <button 
-            *ngFor="let pagina of arrayNumerosPaginas"
-            class="paginacion-number"
-            [class.active]="pagina === paginacion.paginaActual"
-            (click)="cambiarPagina(pagina)">
-            {{ pagina }}
-          </button>
-        </div>
-        
-        <button 
-          class="paginacion-btn"
-          [disabled]="paginacion.paginaActual === paginacion.totalPaginas"
-          (click)="cambiarPagina(paginacion.paginaActual + 1)">
-          Siguiente <fa-icon icon="chevron-right"></fa-icon>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Vista de detalle -->
-  <div *ngIf="modoVista === 'detalle' && pqrSeleccionada" class="detalle-container fade-in">
-    <!-- Header del detalle -->
-    <div class="detalle-header">
-      <button class="btn btn-outline" (click)="volverALista()">
-        <fa-icon icon="arrow-left"></fa-icon> Volver a la lista
-      </button>
-      
-      <div class="detalle-ticket">
-        <h2>PQR #{{ pqrSeleccionada.numero_ticket }}</h2>
+    <!-- Cabecera de la Solicitud -->
+    <div class="detail-header-card">
+      <div class="detail-ticket-title-row">
+        <h1 class="detail-ticket-title">PQR #{{ pqrSeleccionada.numero_ticket }}</h1>
         <span [class]="'tipo-badge ' + obtenerClaseTipo(pqrSeleccionada.tipo)">
-          <i class="fas" 
-             [class.fa-comment]="pqrSeleccionada.tipo === 'PETICION'"
-             [class.fa-exclamation-circle]="pqrSeleccionada.tipo === 'QUEJA'"
-             [class.fa-exclamation-triangle]="pqrSeleccionada.tipo === 'RECLAMO'"
-             [class.fa-lightbulb]="pqrSeleccionada.tipo === 'SUGERENCIA'"></i>
           {{ traducirTipo(pqrSeleccionada.tipo) }}
         </span>
         <span [class]="'estado-badge ' + obtenerClaseEstado(pqrSeleccionada.estado)">
-          <i class="fas" 
-             [class.fa-clock]="pqrSeleccionada.estado === 'PENDIENTE'"
-             [class.fa-cogs]="pqrSeleccionada.estado === 'EN_PROCESO'"
-             [class.fa-check-circle]="pqrSeleccionada.estado === 'RESUELTO'"
-             [class.fa-times-circle]="pqrSeleccionada.estado === 'CERRADO'"></i>
           {{ traducirEstado(pqrSeleccionada.estado) }}
         </span>
       </div>
+
+      <div style="font-size: 0.85rem; color: #71717a; font-weight: 600;">
+        Registrada el: <strong style="color: #09090b;">{{ formatearFecha(pqrSeleccionada.fecha_creacion || '') }}</strong>
+      </div>
     </div>
 
-    <!-- Información principal -->
-    <div class="detalle-content">
-      <div class="detalle-grid">
-        <!-- Columna izquierda: Información del solicitante -->
-        <div class="detalle-col">
-          <div class="card info-card">
-            <div class="card-header">
-              <h3><fa-icon icon="user-circle"></fa-icon> Información del Solicitante</h3>
-            </div>
-            <div class="card-body">
-              <div class="info-item">
-                <label><fa-icon icon="user"></fa-icon> Nombre:</label>
-                <span>{{ pqrSeleccionada.nombre_completo }}</span>
-              </div>
-              <div class="info-item">
-                <label><fa-icon icon="envelope"></fa-icon> Email:</label>
-                <a href="mailto:{{ pqrSeleccionada.email }}">{{ pqrSeleccionada.email }}</a>
-              </div>
-              <div class="info-item">
-                <label><fa-icon icon="phone"></fa-icon> Teléfono:</label>
-                <a href="tel:{{ pqrSeleccionada.telefono }}">{{ pqrSeleccionada.telefono }}</a>
-              </div>
-              <div class="info-item">
-                <label><fa-icon icon="calendar-alt"></fa-icon> Fecha creación:</label>
-                <span>{{ formatearFecha(pqrSeleccionada.fecha_creacion || '') }}</span>
-              </div>
-              <div class="info-item">
-                <label><fa-icon icon="calendar-check"></fa-icon> Última actualización:</label>
-                <span>{{ formatearFecha(pqrSeleccionada.fecha_actualizacion || '') }}</span>
-              </div>
-              <div class="info-item">
-                <label><fa-icon icon="box"></fa-icon> Producto relacionado:</label>
-                <span>{{ pqrSeleccionada.producto_relacionado || 'No especificado' }}</span>
-              </div>
-            </div>
+    <!-- Grid Bento de 2 Columnas -->
+    <div class="detail-bento-grid">
+      
+      <!-- Columna 1: Información del Solicitante + Gestión de Estado -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        
+        <!-- Solicitante -->
+        <div class="detail-card">
+          <div class="detail-card-title">
+            <fa-icon icon="user-circle"></fa-icon> Datos del Solicitante
           </div>
 
-          <!-- Gestión del estado -->
-          <div class="card estado-card">
-            <div class="card-header">
-              <h3><fa-icon icon="cogs"></fa-icon> Gestión del Estado</h3>
+          <div class="info-fields-grid">
+            <div class="info-field-item">
+              <span class="field-label"><fa-icon icon="user"></fa-icon> Nombre</span>
+              <span class="field-value">{{ pqrSeleccionada.nombre_completo }}</span>
             </div>
-            <div class="card-body">
-              <div class="form-group">
-                <label><fa-icon icon="flag"></fa-icon> Cambiar estado:</label>
-                <select 
-                  class="form-control"
-                  [(ngModel)]="nuevoEstado.estado">
-                  <option value="PENDIENTE">Pendiente</option>
-                  <option value="EN_PROCESO">En proceso</option>
-                  <option value="RESUELTO">Resuelto</option>
-                  <option value="CERRADO">Cerrado</option>
-                </select>
+            <div class="info-field-item">
+              <span class="field-label"><fa-icon icon="envelope"></fa-icon> Correo Electrónico</span>
+              <span class="field-value" style="font-size: 0.85rem;">{{ pqrSeleccionada.email }}</span>
+            </div>
+            <div class="info-field-item">
+              <span class="field-label"><fa-icon icon="phone"></fa-icon> Teléfono</span>
+              <span class="field-value">{{ pqrSeleccionada.telefono || 'No registrado' }}</span>
+            </div>
+            <div class="info-field-item">
+              <span class="field-label"><fa-icon icon="box"></fa-icon> Producto Relacionado</span>
+              <span class="field-value">{{ pqrSeleccionada.producto_relacionado || 'No aplica' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gestión de Estado -->
+        <div class="detail-card">
+          <div class="detail-card-title">
+            <fa-icon icon="cogs"></fa-icon> Actualizar Estado Operativo
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="filter-select-wrapper" style="width: 100%;">
+              <select class="input-minimal-select" [(ngModel)]="nuevoEstado.estado">
+                <option value="PENDIENTE">Pendiente</option>
+                <option value="EN_PROCESO">En proceso</option>
+                <option value="RESUELTO">Resuelto</option>
+                <option value="CERRADO">Cerrado</option>
+              </select>
+              <fa-icon icon="chevron-down" class="select-arrow-icon"></fa-icon>
+            </div>
+
+            <textarea 
+              class="textarea-minimal" 
+              rows="3" 
+              placeholder="Mensaje de actualización o nota interna (opcional)..."
+              [(ngModel)]="nuevoEstado.mensaje_respuesta">
+            </textarea>
+
+            <button 
+              class="btn-primary-black" 
+              style="width: 100%; justify-content: center;"
+              (click)="actualizarEstado()"
+              [disabled]="nuevoEstado.estado === pqrSeleccionada.estado">
+              <fa-icon icon="save"></fa-icon> Guardar y Actualizar Estado
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Columna 2: Descripción y Archivos Adjuntos -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        
+        <!-- Descripción del caso -->
+        <div class="detail-card">
+          <div class="detail-card-title">
+            <fa-icon icon="file-alt"></fa-icon> Motivo y Descripción del Caso
+          </div>
+          <div class="case-description-box">
+            {{ pqrSeleccionada.descripcion }}
+          </div>
+        </div>
+
+        <!-- Archivos Adjuntos -->
+        <div class="detail-card" *ngIf="pqrSeleccionada.archivos && pqrSeleccionada.archivos.length > 0">
+          <div class="detail-card-title">
+            <fa-icon icon="paperclip"></fa-icon> Archivos Adjuntos ({{ pqrSeleccionada.archivos.length }})
+          </div>
+
+          <div class="archivos-list">
+            <div *ngFor="let archivo of pqrSeleccionada.archivos" class="archivo-item-card">
+              <div style="display: flex; align-items: center; gap: 12px; overflow: hidden;">
+                <fa-icon icon="file" style="color: #71717a; font-size: 1.1rem;"></fa-icon>
+                <div style="display: flex; flex-direction: column; overflow: hidden;">
+                  <span style="font-weight: 700; font-size: 0.85rem; color: #09090b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    {{ archivo.nombre_archivo }}
+                  </span>
+                  <small style="color: #71717a; font-size: 0.75rem;">{{ archivo.tipo_archivo }}</small>
+                </div>
               </div>
-              
-              <div class="form-group">
-                <label><fa-icon icon="comment"></fa-icon> Mensaje de actualización (opcional):</label>
-                <textarea 
-                  class="form-control"
-                  rows="3"
-                  placeholder="Explicación del cambio de estado..."
-                  [(ngModel)]="nuevoEstado.mensaje_respuesta"></textarea>
-              </div>
-              
               <button 
-                class="btn btn-primary btn-block"
-                (click)="actualizarEstado()"
-                [disabled]="nuevoEstado.estado === pqrSeleccionada.estado">
-                <fa-icon icon="save"></fa-icon> Actualizar Estado
+                class="page-btn" 
+                style="padding: 6px 12px; font-size: 0.8rem;"
+                (click)="descargarArchivo(archivo.url_archivo, archivo.nombre_archivo)"
+                title="Descargar archivo">
+                <fa-icon icon="download" style="margin-right: 4px;"></fa-icon> Descargar
               </button>
             </div>
           </div>
         </div>
 
-        <!-- Columna derecha: Descripción y archivos -->
-        <div class="detalle-col">
-          <!-- Descripción -->
-          <div class="card descripcion-card">
-            <div class="card-header">
-              <h3><fa-icon icon="file-alt"></fa-icon> Descripción</h3>
-            </div>
-            <div class="card-body">
-              <div class="descripcion-content">
-                {{ pqrSeleccionada.descripcion }}
-              </div>
-            </div>
+      </div>
+
+    </div>
+
+    <!-- Historial de Respuestas & Chat -->
+    <div class="respuestas-panel">
+      <div class="respuestas-header">
+        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 900; color: #09090b; display: flex; align-items: center; gap: 10px;">
+          <fa-icon icon="comments"></fa-icon>
+          Trazabilidad y Conversación
+        </h3>
+        <span class="stat-pill">{{ pqrSeleccionada.respuestas ? pqrSeleccionada.respuestas.length : 0 }} mensajes</span>
+      </div>
+
+      <!-- Timeline de Burbujas -->
+      <div class="respuestas-timeline" *ngIf="pqrSeleccionada.respuestas && pqrSeleccionada.respuestas.length > 0">
+        <div 
+          *ngFor="let r of pqrSeleccionada.respuestas"
+          class="chat-bubble"
+          [class.admin-bubble]="r.tipo === 'ADMINISTRACION'"
+          [class.client-bubble]="r.tipo === 'CLIENTE'">
+          
+          <div class="chat-bubble-header">
+            <span>
+              <fa-icon [icon]="r.tipo === 'ADMINISTRACION' ? 'user-shield' : 'user'" style="margin-right: 6px;"></fa-icon>
+              {{ r.tipo === 'ADMINISTRACION' ? 'Equipo Plaxtilineas' : 'Cliente' }}
+            </span>
+            <span>{{ formatearFecha(r.fecha_creacion || r.fecha_respuesta || '') }}</span>
           </div>
 
-          <!-- Archivos adjuntos -->
-          <div *ngIf="pqrSeleccionada.archivos && pqrSeleccionada.archivos.length > 0" class="card archivos-card">
-            <div class="card-header">
-              <h3><fa-icon icon="paperclip"></fa-icon> Archivos Adjuntos ({{ pqrSeleccionada.archivos.length }})</h3>
+          <div class="chat-bubble-text">{{ r.mensaje }}</div>
+        </div>
+      </div>
+
+      <!-- Sin Respuestas -->
+      <div *ngIf="!pqrSeleccionada.respuestas || pqrSeleccionada.respuestas.length === 0" style="padding: 32px; text-align: center; color: #71717a;">
+        <fa-icon icon="comment-slash" style="font-size: 1.8rem; margin-bottom: 8px; display: block; color: #a1a1aa;"></fa-icon>
+        <p style="margin: 0; font-size: 0.9rem; font-weight: 600;">No hay mensajes registrados en este caso aún.</p>
+      </div>
+
+      <!-- Formulario para Nueva Respuesta -->
+      <div class="nueva-respuesta-box">
+        <h4 style="margin: 0 0 10px 0; font-size: 0.82rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #09090b;">
+          <fa-icon icon="reply" style="margin-right: 6px;"></fa-icon> Responder al Solicitante
+        </h4>
+        <textarea 
+          class="textarea-minimal"
+          rows="3"
+          placeholder="Escribe la respuesta formal para el cliente..."
+          [(ngModel)]="nuevaRespuesta.mensaje">
+        </textarea>
+        <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+          <button 
+            class="btn-primary-black"
+            (click)="agregarRespuesta()"
+            [disabled]="!nuevaRespuesta.mensaje.trim() || cargando">
+            <fa-icon icon="paper-plane"></fa-icon>
+            {{ cargando ? 'Enviando...' : 'Enviar Respuesta' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================================
+       2. VISTA GENERAL DE BANDEJA PQRS (cuando no hay detalle abierto)
+       ========================================================================= -->
+  <ng-container *ngIf="modoVista === 'lista'">
+
+    <!-- 1. Fila de Stat Cards (4 columnas) -->
+    <div class="stats-row" *ngIf="!cargando || pqrs.length > 0">
+      <!-- Total PQRS -->
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-card-label">Total PQRS</span>
+          <div class="stat-icon-box">
+            <fa-icon icon="inbox"></fa-icon>
+          </div>
+        </div>
+        <div class="stat-number">{{ totalPQRS }}</div>
+        <div class="stat-meta">
+          <span class="stat-pill">{{ paginacion.total }} registradas</span>
+          <span class="stat-subtext">Histórico global</span>
+        </div>
+      </div>
+
+      <!-- Pendientes (Acento Rojo de Alerta si > 0) -->
+      <div class="stat-card stat-alert" [class.has-critical]="pendientesCount > 0">
+        <div class="stat-header">
+          <span class="stat-card-label">Pendientes</span>
+          <div class="stat-icon-box alert-icon">
+            <fa-icon icon="clock"></fa-icon>
+          </div>
+        </div>
+        <div class="stat-number stat-alert-number">{{ pendientesCount }}</div>
+        <div class="stat-meta">
+          <span class="stat-pill-alert" *ngIf="pendientesCount > 0">Requiere atención</span>
+          <span class="stat-pill-ok" *ngIf="pendientesCount === 0">Al día sin demoras</span>
+        </div>
+      </div>
+
+      <!-- En Proceso -->
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-card-label">En Proceso</span>
+          <div class="stat-icon-box">
+            <fa-icon icon="cogs"></fa-icon>
+          </div>
+        </div>
+        <div class="stat-number">{{ enProcesoCount }}</div>
+        <div class="stat-meta">
+          <span class="stat-subtext">En investigación o gestión</span>
+        </div>
+      </div>
+
+      <!-- Resueltas -->
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-card-label">Resueltas</span>
+          <div class="stat-icon-box">
+            <fa-icon icon="check-circle"></fa-icon>
+          </div>
+        </div>
+        <div class="stat-number">{{ resueltasCount }}</div>
+        <div class="stat-meta">
+          <span class="stat-pill-ok">Completadas exitosamente</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Bento Grid (Hero Oscuro + Quick Access 360px) -->
+    <div class="bento-grid">
+      <!-- Tarjeta Hero Estilo Bento (Fondo Negro con Efecto de Profundidad) -->
+      <div class="bento-welcome">
+        <div class="bento-status">
+          <span class="status-dot"></span>
+          <span class="bento-status-text">Atención al Cliente en Vivo</span>
+        </div>
+        <h1 class="bento-title">Gestión de PQRS</h1>
+        <p class="bento-subtitle">
+          Bandeja central de peticiones, quejas, reclamos y sugerencias. Administra la atención y asegura el cumplimiento de tiempos de respuesta en Plaxtilineas.
+        </p>
+        <div class="bento-actions">
+          <button class="btn-primary-white" (click)="cargarPQRS(); cargarEstadisticas()" [disabled]="cargando">
+            <fa-icon icon="sync-alt" [class.fa-spin]="cargando"></fa-icon> Sincronizar PQRS
+          </button>
+          <button class="btn-ghost-white" (click)="filtrarPorEstado('PENDIENTE')">
+            Ver Pendientes ({{ pendientesCount }})
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Access (360px) -->
+      <div class="bento-quick-card">
+        <div class="quick-header">
+          <h3>Atajos de Soporte</h3>
+          <span class="quick-pill">Filtro rápido</span>
+        </div>
+        <div class="quick-actions-list">
+          <button class="quick-action-item" (click)="filtrarPorEstado('PENDIENTE')">
+            <div class="quick-item-icon warning"><fa-icon icon="clock"></fa-icon></div>
+            <div class="quick-item-info">
+              <span class="quick-item-title">Casos Pendientes</span>
+              <span class="quick-item-desc">Esperando primera respuesta</span>
             </div>
-            <div class="card-body">
-              <div class="archivos-grid">
-                <div *ngFor="let archivo of pqrSeleccionada.archivos" class="archivo-item">
-                  <div class="archivo-icon">
-                    <i class="fas" 
-                       [class.fa-file-image]="archivo.tipo_archivo.startsWith('image/')"
-                       [class.fa-file-pdf]="archivo.tipo_archivo === 'application/pdf'"
-                       [class.fa-file-word]="archivo.tipo_archivo.includes('word')"
-                       [class.fa-file-excel]="archivo.tipo_archivo.includes('excel')"
-                       [class.fa-file]="true"></i>
+          </button>
+
+          <button class="quick-action-item" (click)="filtrarPorEstado('EN_PROCESO')">
+            <div class="quick-item-icon info"><fa-icon icon="cogs"></fa-icon></div>
+            <div class="quick-item-info">
+              <span class="quick-item-title">Casos en Gestión</span>
+              <span class="quick-item-desc">En trámite por servicio al cliente</span>
+            </div>
+          </button>
+
+          <button class="quick-action-item" (click)="limpiarFiltros()">
+            <div class="quick-item-icon neutral"><fa-icon icon="broom"></fa-icon></div>
+            <div class="quick-item-info">
+              <span class="quick-item-title">Restablecer Filtros</span>
+              <span class="quick-item-desc">Ver todas las solicitudes</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Contenido Principal / Panel de Tabla -->
+    <div class="panel-card">
+
+      <!-- Barra de herramientas con filtros y buscador al mismo nivel -->
+      <div class="panel-header" style="flex-wrap: wrap; gap: 16px;">
+        <h3>
+          <fa-icon icon="inbox" style="margin-right: 10px;"></fa-icon>
+          Buzón de Solicitudes
+        </h3>
+
+        <div class="panel-header-actions">
+          <!-- Combo Box Filtro Estado -->
+          <div class="filter-select-wrapper">
+            <select
+              class="input-minimal-select"
+              [(ngModel)]="filtros.estado"
+              (ngModelChange)="aplicarFiltros()"
+              title="Filtrar por estado">
+              <option *ngFor="let estado of estados" [value]="estado.valor">{{ estado.texto }}</option>
+            </select>
+            <fa-icon icon="chevron-down" class="select-arrow-icon"></fa-icon>
+          </div>
+
+          <!-- Combo Box Filtro Tipo -->
+          <div class="filter-select-wrapper" style="min-width: 170px;">
+            <select
+              class="input-minimal-select"
+              [(ngModel)]="filtros.tipo"
+              (ngModelChange)="aplicarFiltros()"
+              title="Filtrar por tipo">
+              <option *ngFor="let tipo of tipos" [value]="tipo.valor">{{ tipo.texto }}</option>
+            </select>
+            <fa-icon icon="chevron-down" class="select-arrow-icon"></fa-icon>
+          </div>
+
+          <!-- Buscador Minimalista -->
+          <div class="search-box">
+            <fa-icon icon="search" style="position: absolute; left: 14px; color: #71717a; pointer-events: none;"></fa-icon>
+            <input
+              type="text"
+              class="input-minimal"
+              placeholder="Buscar por ticket, cliente o email..."
+              [(ngModel)]="filtros.terminoBusqueda"
+              (input)="onBuscarChange()"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Carga -->
+      <div class="loading-state" *ngIf="cargando">
+        <div class="spinner-grande"></div>
+        <p>Cargando solicitudes PQRS...</p>
+      </div>
+
+      <!-- Vacío -->
+      <div class="empty-state" *ngIf="!cargando && pqrs.length === 0">
+        <p>No se encontraron solicitudes PQRS registradas con los filtros seleccionados.</p>
+      </div>
+
+      <!-- Tabla de Datos -->
+      <div class="table-responsive" *ngIf="!cargando && pqrs.length > 0">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width: 130px;">Ticket</th>
+              <th>Tipo</th>
+              <th>Solicitante</th>
+              <th>Estado</th>
+              <th>Fecha Registro</th>
+              <th style="width: 160px; text-align: right;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let pqr of pqrs" style="transition: background 0.15s ease;">
+              
+              <!-- Ticket -->
+              <td>
+                <span class="ticket-badge">#{{ pqr.numero_ticket }}</span>
+              </td>
+
+              <!-- Tipo -->
+              <td>
+                <span [class]="'tipo-badge ' + obtenerClaseTipo(pqr.tipo)">
+                  {{ traducirTipo(pqr.tipo) }}
+                </span>
+              </td>
+
+              <!-- Solicitante -->
+              <td>
+                <div class="prod-cell">
+                  <div class="prod-thumb" style="display: flex; align-items: center; justify-content: center; background: #f4f5f7; color: #71717a; border-radius: 12px; width: 42px; height: 42px; flex-shrink: 0; border: 1.5px solid #e4e4e7;">
+                    <fa-icon icon="user" style="font-size: 0.95rem;"></fa-icon>
                   </div>
-                  <div class="archivo-info">
-                    <span class="archivo-nombre">{{ archivo.nombre_archivo }}</span>
-                    <small class="archivo-tipo">{{ archivo.tipo_archivo }}</small>
+                  <div>
+                    <span class="prod-name" style="font-weight: 800; font-size: 0.92rem; color: #09090b;">{{ pqr.nombre_completo }}</span>
+                    <span style="display: block; font-size: 0.76rem; color: #71717a; font-weight: 600; margin-top: 1px;">
+                      {{ pqr.email }} &bull; {{ pqr.telefono || 'Sin teléfono' }}
+                    </span>
                   </div>
+                </div>
+              </td>
+
+              <!-- Estado -->
+              <td>
+                <span [class]="'estado-badge ' + obtenerClaseEstado(pqr.estado)">
+                  {{ traducirEstado(pqr.estado) }}
+                </span>
+              </td>
+
+              <!-- Fecha -->
+              <td style="font-size: 0.85rem; color: #52525b; font-weight: 600;">
+                {{ formatearFecha(pqr.fecha_creacion || '') }}
+              </td>
+
+              <!-- Acciones -->
+              <td style="text-align: right;">
+                <div style="display: inline-flex; align-items: center; gap: 8px;">
                   <button 
-                    class="btn-icon btn-download"
-                    (click)="descargarArchivo(archivo.url_archivo, archivo.nombre_archivo)"
-                    title="Descargar">
-                    <fa-icon icon="download"></fa-icon>
+                    class="btn-detail-action" 
+                    style="padding: 7px 14px; font-size: 0.8rem; background: #09090b; color: #ffffff; border-color: #09090b;"
+                    (click)="verDetallePQR(pqr)">
+                    Ver Caso &rarr;
+                  </button>
+                  <button 
+                    class="page-btn" 
+                    style="color: #dc2626; border-color: #fecaca; background: #fef2f2; padding: 7px 10px;"
+                    (click)="eliminarPQR(pqr)" 
+                    title="Eliminar PQR">
+                    <fa-icon icon="trash-alt"></fa-icon>
                   </button>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
       </div>
 
-      <!-- Historial de respuestas -->
-      <div class="card respuestas-card">
-        <div class="card-header">
-          <h3><fa-icon icon="comments"></fa-icon> Historial de Respuestas</h3>
+      <!-- Footer de Tabla con Paginación -->
+      <div class="table-footer-bar" *ngIf="!cargando && pqrs.length > 0">
+        <div class="pagination-summary">
+          Mostrando <strong>{{ pqrs.length }}</strong> de <strong>{{ paginacion.total }}</strong> PQRS
         </div>
-        <div class="card-body">
-          <!-- Lista de respuestas -->
-          <div *ngIf="pqrSeleccionada.respuestas && pqrSeleccionada.respuestas.length > 0; else sinRespuestas">
-            <div *ngFor="let respuesta of pqrSeleccionada.respuestas" 
-                 class="respuesta-item"
-                 [class.respuesta-admin]="respuesta.tipo === 'ADMINISTRACION'"
-                 [class.respuesta-cliente]="respuesta.tipo === 'CLIENTE'">
-              <div class="respuesta-header">
-                <span class="respuesta-tipo">
-                  <i class="fas" 
-                     [class.fa-user-shield]="respuesta.tipo === 'ADMINISTRACION'"
-                     [class.fa-user]="respuesta.tipo === 'CLIENTE'"></i>
-                  {{ respuesta.tipo === 'ADMINISTRACION' ? 'Administración' : 'Cliente' }}
-                </span>
-                <span class="respuesta-fecha">
-                  {{ formatearFecha(respuesta.fecha_creacion || respuesta.fecha_respuesta || '') }}
-                </span>
-              </div>
-              <div class="respuesta-mensaje">
-                {{ respuesta.mensaje }}
-              </div>
-            </div>
-          </div>
+
+        <!-- Controles de Paginación -->
+        <div class="pagination" *ngIf="paginacion.totalPaginas > 1">
+          <button 
+            class="pagination-btn" 
+            (click)="cambiarPagina(paginacion.paginaActual - 1)"
+            [disabled]="paginacion.paginaActual === 1"
+            title="Página anterior">
+            <fa-icon icon="chevron-left"></fa-icon>
+          </button>
           
-          <ng-template #sinRespuestas>
-            <div class="sin-respuestas">
-              <fa-icon icon="comment-slash"></fa-icon>
-              <p>No hay respuestas aún</p>
-            </div>
-          </ng-template>
-          
-          <!-- Formulario para nueva respuesta -->
-          <div class="nueva-respuesta">
-            <h4><fa-icon icon="reply"></fa-icon> Agregar Respuesta</h4>
-            <div class="form-group">
-              <textarea 
-                class="form-control"
-                rows="4"
-                placeholder="Escribe tu respuesta aquí..."
-                [(ngModel)]="nuevaRespuesta.mensaje"></textarea>
-            </div>
-            <button 
-              class="btn btn-success"
-              (click)="agregarRespuesta()"
-              [disabled]="!nuevaRespuesta.mensaje.trim() || cargando">
-              <fa-icon icon="paper-plane"></fa-icon> 
-              {{ cargando ? 'Enviando...' : 'Enviar Respuesta' }}
+          <div class="pagination-numbers">
+            <button
+              *ngFor="let pagina of arrayNumerosPaginas"
+              class="pagination-number"
+              [class.active]="pagina === paginacion.paginaActual"
+              (click)="cambiarPagina(pagina)">
+              {{ pagina }}
             </button>
           </div>
+          
+          <button 
+            class="pagination-btn" 
+            (click)="cambiarPagina(paginacion.paginaActual + 1)"
+            [disabled]="paginacion.paginaActual === paginacion.totalPaginas"
+            title="Página siguiente">
+            <fa-icon icon="chevron-right"></fa-icon>
+          </button>
+        </div>
+
+        <div style="font-size: 0.82rem; color: #71717a; font-weight: 600; display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+          <span>Página <strong style="color: #09090b;">{{ paginacion.paginaActual }}</strong> de <strong style="color: #09090b;">{{ paginacion.totalPaginas }}</strong></span>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Vista de estadísticas -->
-  <div *ngIf="modoVista === 'estadisticas'" class="estadisticas-container fade-in">
-    <div class="estadisticas-header">
-      <button class="btn btn-outline" (click)="modoVista = 'lista'">
-        <fa-icon icon="arrow-left"></fa-icon> Volver a la lista
+    </div>
+
+  </ng-container>
+
+</div>
+
+<!-- Modal de Confirmación -->
+<div *ngIf="showModalConfirmacion" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-warning-icon">
+      <fa-icon icon="exclamation-triangle"></fa-icon>
+    </div>
+    <h2>Confirmar Acción</h2>
+    <p>{{ mensaje }}</p>
+    
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="cancelarAccionModal()">
+        Cancelar
       </button>
-      
-      <h2><fa-icon icon="chart-bar"></fa-icon> Estadísticas de PQRS</h2>
-      
-      <button class="btn btn-primary" (click)="cargarEstadisticas()" [disabled]="cargandoEstadisticas">
-        <i class="fas fa-sync-alt" [class.fa-spin]="cargandoEstadisticas"></i>
-        Actualizar
+      <button class="btn-confirm-danger" (click)="confirmarAccionModal()">
+        Confirmar
       </button>
     </div>
-
-    <div *ngIf="estadisticas && !cargandoEstadisticas" class="estadisticas-grid">
-      <!-- Tarjetas de resumen -->
-      <div class="estadistica-card total">
-        <div class="estadistica-icon">
-          <fa-icon icon="inbox"></fa-icon>
-        </div>
-        <div class="estadistica-content">
-          <h3>{{ estadisticas.estadisticas.total }}</h3>
-          <p>Total PQRS</p>
-        </div>
-      </div>
-
-      <div class="estadistica-card pendientes">
-        <div class="estadistica-icon">
-          <fa-icon icon="clock"></fa-icon>
-        </div>
-        <div class="estadistica-content">
-          <h3>{{ estadisticas.estadisticas.pendientes }}</h3>
-          <p>Pendientes</p>
-        </div>
-      </div>
-
-      <div class="estadistica-card en-proceso">
-        <div class="estadistica-icon">
-          <fa-icon icon="cogs"></fa-icon>
-        </div>
-        <div class="estadistica-content">
-          <h3>{{ estadisticas.estadisticas.en_proceso }}</h3>
-          <p>En Proceso</p>
-        </div>
-      </div>
-
-      <div class="estadistica-card resueltas">
-        <div class="estadistica-icon">
-          <fa-icon icon="check-circle"></fa-icon>
-        </div>
-        <div class="estadistica-content">
-          <h3>{{ estadisticas.estadisticas.resueltas }}</h3>
-          <p>Resueltas</p>
-        </div>
-      </div>
-
-      <!-- Distribución por tipo -->
-      <div class="card chart-card">
-        <div class="card-header">
-          <h3><fa-icon icon="chart-pie"></fa-icon> Distribución por Tipo</h3>
-        </div>
-        <div class="card-body">
-          <div class="distribucion-tipos">
-            <div *ngFor="let distribucion of estadisticas.distribucion_por_tipo" 
-                 class="distribucion-item">
-              <div class="distribucion-header">
-                <span class="distribucion-tipo">
-                  <i class="fas" 
-                     [class.fa-comment]="distribucion.tipo === 'PETICION'"
-                     [class.fa-exclamation-circle]="distribucion.tipo === 'QUEJA'"
-                     [class.fa-exclamation-triangle]="distribucion.tipo === 'RECLAMO'"
-                     [class.fa-lightbulb]="distribucion.tipo === 'SUGERENCIA'"></i>
-                  {{ traducirTipo(distribucion.tipo) }}
-                </span>
-                <span class="distribucion-porcentaje">
-                  {{ distribucion.porcentaje }}%
-                </span>
-              </div>
-              <div class="distribucion-bar">
-                <div class="bar-fill" [style.width.%]="distribucion.porcentaje"></div>
-              </div>
-              <div class="distribucion-cantidad">
-                {{ distribucion.cantidad }} PQRS
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tiempo promedio -->
-      <div class="card chart-card">
-        <div class="card-header">
-          <h3><fa-icon icon="stopwatch"></fa-icon> Tiempo de Respuesta</h3>
-        </div>
-        <div class="card-body">
-          <div class="tiempo-promedio">
-            <div class="tiempo-icon">
-              <fa-icon icon="clock"></fa-icon>
-            </div>
-            <div class="tiempo-content">
-              <h3>{{ estadisticas.estadisticas.tiempo_promedio_horas.toFixed(1) }}h</h3>
-              <p>Tiempo promedio de respuesta</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Loading estadísticas -->
-    <div *ngIf="cargandoEstadisticas" class="loading-container">
-      <div class="loading-spinner"></div>
-      <p>Cargando estadísticas...</p>
-    </div>
-
-    <!-- Sin estadísticas -->
-    <div *ngIf="!estadisticas && !cargandoEstadisticas" class="no-estadisticas">
-      <fa-icon icon="chart-line"></fa-icon>
-      <h3>No hay estadísticas disponibles</h3>
-      <p>Intenta actualizar más tarde</p>
-    </div>
   </div>
-
-  <!-- Modal de confirmación -->
-  <div *ngIf="showModalConfirmacion" class="modal-overlay fade-in">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3><fa-icon icon="exclamation-triangle"></fa-icon> Confirmar acción</h3>
-        <button class="modal-close" (click)="cancelarAccionModal()">
-          <fa-icon icon="times"></fa-icon>
-        </button>
-      </div>
-      
-      <div class="modal-body">
-        <p>{{ mensaje }}</p>
-      </div>
-      
-      <div class="modal-footer">
-        <button class="btn btn-outline" (click)="cancelarAccionModal()">
-          <fa-icon icon="times"></fa-icon> Cancelar
-        </button>
-        <button class="btn btn-danger" (click)="confirmarAccionModal()">
-          <fa-icon icon="check"></fa-icon> Confirmar
-        </button>
-      </div>
-    </div>
-  </div>
-  </main>
 </div>

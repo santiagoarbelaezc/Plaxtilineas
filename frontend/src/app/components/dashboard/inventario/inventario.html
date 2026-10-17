@@ -1,7 +1,125 @@
 <div class="admin-content-wrapper">
   <!-- Contenido principal -->
   <main class="admin-main-content">
-    <!-- Card: Filtros -->
+
+    <!-- 1. Fila de Stat Cards (4 columnas) -->
+    <div class="stats-row">
+      <!-- Total Productos -->
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-card-label">Total Productos</span>
+          <div class="stat-icon-box">
+            <fa-icon [icon]="faBoxes"></fa-icon>
+          </div>
+        </div>
+        <div class="stat-number">{{ productos.length }}</div>
+        <div class="stat-meta">
+          <span class="stat-pill">{{ productosFiltrados.length }} filtrados</span>
+          <span class="stat-subtext">Catálogo general</span>
+        </div>
+      </div>
+
+      <!-- Stock Crítico (Acento Rojo) -->
+      <div class="stat-card stat-alert" [class.has-critical]="productosStockBajo > 0">
+        <div class="stat-header">
+          <span class="stat-card-label">Stock Crítico (≤ 5)</span>
+          <div class="stat-icon-box alert-icon">
+            <fa-icon [icon]="faBox"></fa-icon>
+          </div>
+        </div>
+        <div class="stat-number stat-alert-number">{{ productosStockBajo }}</div>
+        <div class="stat-meta">
+          <span class="stat-pill-alert" *ngIf="productosStockBajo > 0">Requiere reposición</span>
+          <span class="stat-pill-ok" *ngIf="productosStockBajo === 0">Niveles óptimos</span>
+        </div>
+      </div>
+
+      <!-- Categorías Activas -->
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-card-label">Categorías Activas</span>
+          <div class="stat-icon-box">
+            <fa-icon [icon]="faFolder"></fa-icon>
+          </div>
+        </div>
+        <div class="stat-number">{{ totalCategorias }}</div>
+        <div class="stat-meta">
+          <span class="stat-subtext">{{ subcategorias.length }} subcategorías</span>
+        </div>
+      </div>
+
+      <!-- Tráfico / Vistas -->
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-card-label">Vistas Totales</span>
+          <div class="stat-icon-box">
+            <fa-icon [icon]="faEye"></fa-icon>
+          </div>
+        </div>
+        <div class="stat-number">{{ totalVistas | number }}</div>
+        <div class="stat-meta">
+          <span class="stat-subtext">Interés acumulado</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Bento Grid (Hero Oscuro + Quick Access 360px) -->
+    <div class="bento-grid">
+      <!-- Tarjeta Hero Estilo Bento (Fondo Negro con Efecto de Profundidad) -->
+      <div class="bento-welcome">
+        <div class="bento-status">
+          <span class="status-dot"></span>
+          <span class="bento-status-text">Catálogo en Tiempo Real</span>
+        </div>
+        <h1 class="bento-title">Control de Inventario</h1>
+        <p class="bento-subtitle">
+          Supervisión de existencias, variantes, precios y demanda de catálogo en Plaxtilineas.
+        </p>
+        <div class="bento-actions">
+          <button class="btn-primary-white" (click)="cargarProductos()">
+            <fa-icon [icon]="faSyncAlt"></fa-icon> Sincronizar Existencias
+          </button>
+          <button class="btn-ghost-white" (click)="filtrarPorStockBajo()">
+            Ver Alertas de Stock
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Access (360px) -->
+      <div class="bento-quick-card">
+        <div class="quick-header">
+          <h3>Atajos de Inventario</h3>
+          <span class="quick-pill">Filtro rápido</span>
+        </div>
+        <div class="quick-actions-list">
+          <button class="quick-action-item" (click)="filtrarPorStockBajo()">
+            <div class="quick-item-icon warning"><fa-icon [icon]="faBox"></fa-icon></div>
+            <div class="quick-item-info">
+              <span class="quick-item-title">Productos con Bajo Stock</span>
+              <span class="quick-item-desc">{{ productosStockBajo }} productos en nivel crítico</span>
+            </div>
+          </button>
+
+          <button class="quick-action-item" (click)="filtrarPorMasVistos()">
+            <div class="quick-item-icon info"><fa-icon [icon]="faEye"></fa-icon></div>
+            <div class="quick-item-info">
+              <span class="quick-item-title">Más Populares</span>
+              <span class="quick-item-desc">Ordenar por volumen de visitas</span>
+            </div>
+          </button>
+
+          <button class="quick-action-item" (click)="limpiarFiltros()">
+            <div class="quick-item-icon neutral"><fa-icon [icon]="faFilter"></fa-icon></div>
+            <div class="quick-item-info">
+              <span class="quick-item-title">Restablecer Filtros</span>
+              <span class="quick-item-desc">Ver todos los {{ productos.length }} productos</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Card: Filtros Minimalistas -->
     <section class="admin-card filter-card">
       <div class="card-header" style="flex-wrap: wrap; gap: 15px;">
         <h2 class="card-title">
@@ -16,8 +134,8 @@
               type="text"
               [(ngModel)]="searchTerm"
               (input)="filtrarProductos()"
-              class="search-input"
-              placeholder="Buscar producto..."
+              class="search-input input-minimal"
+              placeholder="Buscar por nombre o descripción..."
             />
           </div>
           
@@ -33,13 +151,13 @@
           
           <div class="price-filter-group">
             <span class="currency-symbol">$</span>
-            <input type="number" [(ngModel)]="filtroPrecioMin" (input)="filtrarProductos()" placeholder="Min" class="filter-input-price">
+            <input type="number" [(ngModel)]="filtroPrecioMin" (input)="filtrarProductos()" placeholder="Min" class="filter-input-price input-minimal">
             <span class="price-separator">-</span>
             <span class="currency-symbol">$</span>
-            <input type="number" [(ngModel)]="filtroPrecioMax" (input)="filtrarProductos()" placeholder="Max" class="filter-input-price">
+            <input type="number" [(ngModel)]="filtroPrecioMax" (input)="filtrarProductos()" placeholder="Max" class="filter-input-price input-minimal">
           </div>
           
-          <select [(ngModel)]="ordenSeleccionado" (change)="filtrarProductos()" class="filter-select" style="background-color: rgba(54, 140, 68, 0.1); border-color: rgba(54, 140, 68, 0.3);">
+          <select [(ngModel)]="ordenSeleccionado" (change)="filtrarProductos()" class="filter-select orden-select">
             <option value="recientes">Más recientes</option>
             <option value="vistas_desc">Más vistos</option>
             <option value="stock_asc">Menos stock</option>
@@ -49,13 +167,13 @@
           </select>
 
           <button class="btn-clear-filters" (click)="limpiarFiltros()" *ngIf="searchTerm || filtroCategoria || filtroSubcategoriaId || filtroPrecioMin !== null || filtroPrecioMax !== null || ordenSeleccionado !== 'recientes'" title="Limpiar filtros">
-            <fa-icon [icon]="faTimes"></fa-icon>
+            <fa-icon [icon]="faTimes"></fa-icon> Limpiar
           </button>
         </div>
       </div>
     </section>
 
-    <!-- Card: Lista de productos -->
+    <!-- 4. Card: Lista de productos -->
     <section class="admin-card list-card">
       <div class="card-header">
         <h2 class="card-title">
@@ -230,54 +348,62 @@
           </table>
         </div>
 
-        <!-- Paginación -->
-        <div class="pagination" *ngIf="totalPaginas > 1">
-          <button 
-            class="pagination-btn" 
-            (click)="cambiarPagina(paginaActual - 1)"
-            [disabled]="paginaActual === 1"
-          >
-            <fa-icon [icon]="faChevronLeft"></fa-icon>
-          </button>
-          
-          <div class="pagination-numbers">
-            <button
-              *ngFor="let pagina of getRangoPaginas()"
-              class="pagination-number"
-              [class.active]="pagina === paginaActual"
-              (click)="cambiarPagina(pagina)"
+        <!-- Footer de la Tabla (Paginación Horizontal + Selector de items) -->
+        <div class="table-footer-bar">
+          <div class="pagination-summary">
+            Mostrando <strong>{{ getItemsMostrados() }}</strong> de <strong>{{ totalProductos }}</strong> productos
+          </div>
+
+          <div class="pagination" *ngIf="totalPaginas > 1">
+            <button 
+              class="pagination-btn" 
+              (click)="cambiarPagina(paginaActual - 1)"
+              [disabled]="paginaActual === 1"
+              title="Página anterior"
             >
-              {{ pagina }}
+              <fa-icon [icon]="faChevronLeft"></fa-icon>
+            </button>
+            
+            <div class="pagination-numbers">
+              <button
+                *ngFor="let pagina of getRangoPaginas()"
+                class="pagination-number"
+                [class.active]="pagina === paginaActual"
+                (click)="cambiarPagina(pagina)"
+              >
+                {{ pagina }}
+              </button>
+            </div>
+            
+            <button 
+              class="pagination-btn" 
+              (click)="cambiarPagina(paginaActual + 1)"
+              [disabled]="paginaActual === totalPaginas"
+              title="Página siguiente"
+            >
+              <fa-icon [icon]="faChevronRight"></fa-icon>
             </button>
           </div>
-          
-          <button 
-            class="pagination-btn" 
-            (click)="cambiarPagina(paginaActual + 1)"
-            [disabled]="paginaActual === totalPaginas"
-          >
-            <fa-icon [icon]="faChevronRight"></fa-icon>
-          </button>
-        </div>
 
-        <!-- Selector de items por página -->
-        <div class="page-size-selector">
-          <label for="pageSize">
-            <fa-icon [icon]="faListAlt"></fa-icon>
-            Mostrar:
-          </label>
-          <select 
-            id="pageSize" 
-            [(ngModel)]="itemsPorPagina" 
-            (ngModelChange)="cambiarItemsPorPagina()"
-            class="page-size-select"
-          >
-            <option [value]="5">5</option>
-            <option [value]="10">10</option>
-            <option [value]="20">20</option>
-            <option [value]="50">50</option>
-          </select>
-          <span class="selector-label">productos por página</span>
+          <!-- Selector de items por página -->
+          <div class="page-size-selector">
+            <label for="pageSize" class="page-size-label">
+              <fa-icon [icon]="faListAlt"></fa-icon>
+              Mostrar:
+            </label>
+            <select 
+              id="pageSize" 
+              [(ngModel)]="itemsPorPagina" 
+              (ngModelChange)="cambiarItemsPorPagina()"
+              class="page-size-select"
+            >
+              <option [value]="5">5</option>
+              <option [value]="10">10</option>
+              <option [value]="20">20</option>
+              <option [value]="50">50</option>
+            </select>
+            <span class="selector-label">por pág.</span>
+          </div>
         </div>
       </div>
     </section>

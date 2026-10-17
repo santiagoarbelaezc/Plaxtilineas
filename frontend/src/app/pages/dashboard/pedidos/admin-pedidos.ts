@@ -26,7 +26,13 @@ import {
   faClock,
   faCheck,
   faBan,
-  faEdit
+  faEdit,
+  faArrowLeft,
+  faFileInvoice,
+  faReceipt,
+  faPrint,
+  faChevronLeft,
+  faChevronRight
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -61,6 +67,14 @@ export class AdminPedidos implements OnInit {
   faCheck = faCheck;
   faBan = faBan;
   faEdit = faEdit;
+  faArrowLeft = faArrowLeft;
+  faFileInvoice = faFileInvoice;
+  faReceipt = faReceipt;
+  faPrint = faPrint;
+  faChevronLeft = faChevronLeft;
+  faChevronRight = faChevronRight;
+
+  selectedPedido = signal<Pedido | null>(null);
 
   pedidos = signal<Pedido[]>([]);
   loading = signal(true);
@@ -68,6 +82,10 @@ export class AdminPedidos implements OnInit {
 
   searchTerm = signal('');
   filtroEstado = signal<string>('todos');
+  filtroFecha = signal<string>('todos');
+  fechaPersonalizada = signal<string>('');
+  paginaActual = signal<number>(1);
+  itemsPorPagina = signal<number>(6);
   expandedPedidoId = signal<number | null>(null);
 
   updatingId = signal<number | null>(null);
@@ -80,6 +98,42 @@ export class AdminPedidos implements OnInit {
     if (filtro !== 'todos') {
       result = result.filter(p => p.estado === filtro);
     }
+    const fechaFiltro = this.filtroFecha();
+    if (fechaFiltro !== 'todos') {
+      const now = new Date();
+      result = result.filter(p => {
+        if (!p.fecha) return false;
+        const pedidoDate = new Date(p.fecha);
+        if (isNaN(pedidoDate.getTime())) return true;
+
+        if (fechaFiltro === 'hoy') {
+          return pedidoDate.toDateString() === now.toDateString();
+        }
+        if (fechaFiltro === '7dias') {
+          const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          return pedidoDate >= sevenDaysAgo;
+        }
+        if (fechaFiltro === '30dias') {
+          const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          return pedidoDate >= thirtyDaysAgo;
+        }
+        if (fechaFiltro === 'mes') {
+          return (
+            pedidoDate.getMonth() === now.getMonth() &&
+            pedidoDate.getFullYear() === now.getFullYear()
+          );
+        }
+        if (fechaFiltro === 'custom' && this.fechaPersonalizada()) {
+          const [year, month, day] = this.fechaPersonalizada().split('-').map(Number);
+          return (
+            pedidoDate.getFullYear() === year &&
+            pedidoDate.getMonth() === month - 1 &&
+            pedidoDate.getDate() === day
+          );
+        }
+        return true;
+      });
+    }
     const search = this.searchTerm().toLowerCase().trim();
     if (search) {
       result = result.filter(p =>
@@ -88,7 +142,48 @@ export class AdminPedidos implements OnInit {
         (p.cliente_correo && p.cliente_correo.toLowerCase().includes(search))
       );
     }
+    // Ordenar de más reciente a más antiguo (para ver los últimos pedidos)
+    result = [...result].sort((a, b) => {
+      const timeA = new Date(a.fecha).getTime() || 0;
+      const timeB = new Date(b.fecha).getTime() || 0;
+      return timeB - timeA || (b.id - a.id);
+    });
     return result;
+  }
+
+  get totalPaginas(): number {
+    return Math.ceil(this.filteredPedidos.length / this.itemsPorPagina()) || 1;
+  }
+
+  get paginatedPedidos(): Pedido[] {
+    const startIndex = (this.paginaActual() - 1) * this.itemsPorPagina();
+    return this.filteredPedidos.slice(startIndex, startIndex + this.itemsPorPagina());
+  }
+
+  cambiarPagina(pagina: number): void {
+    if (pagina >= 1 && pagina <= this.totalPaginas) {
+      this.paginaActual.set(pagina);
+    }
+  }
+
+  getRangoPaginas(): number[] {
+    const total = this.totalPaginas;
+    const current = this.paginaActual();
+    const delta = 2;
+    const range: number[] = [];
+    for (let i = Math.max(1, current - delta); i <= Math.min(total, current + delta); i++) {
+      range.push(i);
+    }
+    return range;
+  }
+
+  getInicioItem(): number {
+    if (this.filteredPedidos.length === 0) return 0;
+    return (this.paginaActual() - 1) * this.itemsPorPagina() + 1;
+  }
+
+  getFinItem(): number {
+    return Math.min(this.paginaActual() * this.itemsPorPagina(), this.filteredPedidos.length);
   }
 
   ngOnInit(): void {
@@ -202,6 +297,9 @@ export class AdminPedidos implements OnInit {
               if (extra?.transportadora) updated.transportadora = extra.transportadora;
               if (nuevoEstado === 'en_camino' && !updated.fecha_envio) {
                 updated.fecha_envio = new Date().toISOString();
+              }
+              if (this.selectedPedido()?.id === pedidoId) {
+                this.selectedPedido.set(updated);
               }
               return updated;
             }
@@ -323,5 +421,50 @@ export class AdminPedidos implements OnInit {
 
   getEstadoLabel(estado: string): string {
     return ESTADOS_PEDIDO.find(e => e.key === estado)?.label || estado;
+  }
+
+  get pedidosActivosCount(): number {
+    return this.pedidos().filter(p => ['pendiente', 'pagado', 'confirmado', 'en_preparacion'].includes(p.estado)).length;
+  }
+
+  filtrarPorEstado(estado: string): void {
+    this.filtroEstado.set(estado);
+  }
+
+  limpiarFiltros(): void {
+    this.filtroEstado.set('todos');
+    this.filtroFecha.set('todos');
+    this.fechaPersonalizada.set('');
+    this.searchTerm.set('');
+  }
+
+  verDetalle(pedido: Pedido): void {
+    this.selectedPedido.set(pedido);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  volverALista(): void {
+    this.selectedPedido.set(null);
+  }
+
+  imprimirDetalle(): void {
+    window.print();
+  }
+
+  getStepState(stepIndex: number, estado: string): 'completed' | 'active' | 'pending' {
+    if (estado === 'cancelado') return 'pending';
+    const estadoOrder: Record<string, number> = {
+      'pendiente_pago': 1,
+      'pendiente': 1,
+      'pagado': 2,
+      'confirmado': 2,
+      'en_preparacion': 3,
+      'en_camino': 4,
+      'entregado': 5
+    };
+    const currentLevel = estadoOrder[estado] ?? 0;
+    if (currentLevel > stepIndex) return 'completed';
+    if (currentLevel === stepIndex) return 'active';
+    return 'pending';
   }
 }
