@@ -1,45 +1,45 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '../../enviroments/environment';
+import { Observable, combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { CatalogoService } from './catalogo.service';
 
+/**
+ * Categorías de la tienda. SOLO LECTURA (catálogo externo).
+ * El ícono se toma de la imagen del primer producto de cada categoría.
+ */
 @Injectable({ providedIn: 'root' })
 export class CategoriasService {
-  private apiUrl = `${environment.apiUrl}/categorias`;
-
-  constructor(private http: HttpClient) { }
+  constructor(private catalogo: CatalogoService) { }
 
   getCategorias(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
-  }
-
-  getIdCategoriaPorNombre(nombre: string): Observable<{ success: boolean, categoria: { id: number, nombre: string } }> {
-    return this.http.get<{ success: boolean, categoria: { id: number, nombre: string } }>(
-      `${this.apiUrl}/id-por-nombre/${encodeURIComponent(nombre)}`
+    return combineLatest([this.catalogo.getCategorias(), this.catalogo.getProductos()]).pipe(
+      map(([categorias, productos]) =>
+        categorias
+          .map(c => {
+            const delaCategoria = productos.filter(p => p.categoria_id === c.id);
+            return {
+              id: c.id,
+              nombre: c.nombre,
+              icono_url: delaCategoria.find(p => !!p.imagen_url)?.imagen_url ?? '',
+              subcategorias: c.subcategorias,
+              total_productos: delaCategoria.length
+            };
+          })
+          // Solo categorías que realmente tienen productos de esta marca
+          .filter(c => c.total_productos > 0)
+      )
     );
   }
 
-  crearCategoria(token: string, formData: FormData): Observable<any> {
-    return this.http.post(this.apiUrl, formData, {
-      headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
-    });
-  }
-
-  eliminarCategoria(token: string, id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`, {
-      headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
-    });
-  }
-
-  actualizarCategoria(token: string, id: number, formData: FormData): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${id}`, formData, {
-      headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
-    });
-  }
-
-  eliminarTodasCategorias(token: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/eliminar-todas`, {
-      headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
-    });
+  getIdCategoriaPorNombre(nombre: string): Observable<{ success: boolean, categoria: { id: number, nombre: string } }> {
+    const buscado = (nombre ?? '').trim().toLowerCase();
+    return this.catalogo.getCategorias().pipe(
+      map(categorias => {
+        const c = categorias.find(x => x.nombre.toLowerCase() === buscado);
+        return c
+          ? { success: true, categoria: { id: c.id, nombre: c.nombre } }
+          : { success: false, categoria: { id: 0, nombre } };
+      })
+    );
   }
 }

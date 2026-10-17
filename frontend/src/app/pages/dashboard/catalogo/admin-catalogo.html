@@ -1,0 +1,694 @@
+<div class="admin-catalogo-container">
+
+  <!-- =========================================================================
+       1. CABECERA SUPERIOR / BREADCRUMB Y ESTADO
+       ========================================================================= -->
+  <header class="catalogo-top-bar">
+    <div class="top-bar-left">
+      <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a routerLink="/admin" class="breadcrumb-link">Admin</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">Catálogo & Inventario</span>
+      </nav>
+      <div class="title-with-pill">
+        <h1 class="catalogo-page-title">Catálogo Oficial de Productos</h1>
+        <div class="live-status-pill">
+          <span class="status-dot"></span>
+          <span class="live-status-text">Conexión en Vivo · Solo Lectura</span>
+        </div>
+      </div>
+      <p class="catalogo-page-subtitle">
+        Visualización centralizada de productos sincronizados desde el catálogo oficial Plaxtilineas (Districol).
+      </p>
+    </div>
+
+    <div class="top-bar-actions">
+      <button 
+        type="button" 
+        class="btn-action-outline" 
+        (click)="refrescarCatalogo()" 
+        [disabled]="cargando"
+        title="Refrescar catálogo desde la API">
+        <span class="material-symbols-rounded" [class.spinning]="cargando">sync</span>
+        <span>{{ cargando ? 'Sincronizando...' : 'Actualizar' }}</span>
+      </button>
+
+      <a 
+        routerLink="/productos" 
+        target="_blank" 
+        class="btn-primary-black"
+        title="Abrir la vitrina pública de productos">
+        <span class="material-symbols-rounded">storefront</span>
+        <span>Ver en Tienda</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       2. FILA DE STAT CARDS (4 COLUMNAS - TOKENS EXACTOS)
+       ========================================================================= -->
+  <section class="stat-cards-row">
+    
+    <!-- Card 1: Total Productos -->
+    <div class="stat-card">
+      <div class="stat-card-header">
+        <span class="stat-card-label">Total Productos</span>
+        <div class="stat-card-icon-box">
+          <span class="material-symbols-rounded">inventory_2</span>
+        </div>
+      </div>
+      <div class="stat-number">{{ cargando ? '...' : totalProductos }}</div>
+      <div class="stat-card-footer">
+        <span class="stat-footer-text">Referencias activas sincronizadas</span>
+      </div>
+    </div>
+
+    <!-- Card 2: Categorías -->
+    <div class="stat-card">
+      <div class="stat-card-header">
+        <span class="stat-card-label">Categorías</span>
+        <div class="stat-card-icon-box">
+          <span class="material-symbols-rounded">category</span>
+        </div>
+      </div>
+      <div class="stat-number">{{ cargando ? '...' : totalCategorias }}</div>
+      <div class="stat-card-footer">
+        <span class="stat-footer-text">Familias de producto oficiales</span>
+      </div>
+    </div>
+
+    <!-- Card 3: Productos con Variantes (Acento rojo carmesí #dc2626) -->
+    <div class="stat-card stat-accent-red">
+      <div class="stat-card-header">
+        <span class="stat-card-label">Con Variantes / Calibres</span>
+        <div class="stat-card-icon-box stat-icon-red">
+          <span class="material-symbols-rounded">tune</span>
+        </div>
+      </div>
+      <div class="stat-number stat-red-number">{{ cargando ? '...' : productosConVariantes }}</div>
+      <div class="stat-card-footer">
+        <span class="stat-footer-text">Productos con calibres, medidas o tipos</span>
+      </div>
+    </div>
+
+    <!-- Card 4: Precio Promedio -->
+    <div class="stat-card">
+      <div class="stat-card-header">
+        <span class="stat-card-label">Precio Promedio</span>
+        <div class="stat-card-icon-box">
+          <span class="material-symbols-rounded">payments</span>
+        </div>
+      </div>
+      <div class="stat-number stat-price-number">{{ cargando ? '...' : formatPrecio(precioPromedio) }}</div>
+      <div class="stat-card-footer">
+        <span class="stat-footer-text">Valor promedio de referencia (COP)</span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- =========================================================================
+       3. BENTO GRID (HERO OSCURO 1fr + QUICK ACCESS / FILTROS 360px)
+       ========================================================================= -->
+  <section class="bento-grid">
+    
+    <!-- Hero Bento Oscuro (#0a0a0a con círculos translúcidos y acento) -->
+    <div class="bento-welcome">
+      <div class="bento-welcome-content">
+        <div class="bento-badge">
+          <span class="status-dot"></span>
+          <span>Catálogo Externo · Modo Solo Lectura</span>
+        </div>
+        <h2 class="bento-title">
+          Inventario Oficial <span class="bento-title-accent">Plaxtilineas</span>
+        </h2>
+        <p class="bento-desc">
+          Los productos, especificaciones técnicas, precios y variantes se cargan en tiempo real desde el catálogo centralizado. No se requiere gestión manual de escritura local, garantizando fidelidad comercial absoluta.
+        </p>
+
+        <!-- Metadata API Pills -->
+        <div class="bento-info-pills">
+          <div class="bento-pill">
+            <span class="material-symbols-rounded pill-icon">hub</span>
+            <span class="pill-text">Endpoint: <code>/api/productos/categoria/Districol</code></span>
+          </div>
+          <div class="bento-pill">
+            <span class="material-symbols-rounded pill-icon">verified</span>
+            <span class="pill-text">Integridad: Catálogo Público Cacheado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel Lateral Bento (360px) -->
+    <div class="bento-sidebar-panel">
+      <div class="panel-white-card">
+        
+        <div class="panel-card-header">
+          <div class="panel-header-icon-box">
+            <span class="material-symbols-rounded">filter_alt</span>
+          </div>
+          <div>
+            <h3 class="panel-header-title">Filtros Rápidos</h3>
+            <p class="panel-header-sub">Explora por categoría y visualización</p>
+          </div>
+        </div>
+
+        <div class="quick-filters-body">
+          <!-- Vista Toggle -->
+          <div class="view-switch-row">
+            <span class="view-switch-label">Modo de vista:</span>
+            <div class="view-switch-buttons">
+              <button 
+                type="button" 
+                class="btn-view-toggle" 
+                [class.active]="vistaGrid" 
+                (click)="vistaGrid = true"
+                title="Vista en tarjetas cuadrícula">
+                <span class="material-symbols-rounded">grid_view</span>
+                <span>Tarjetas</span>
+              </button>
+              <button 
+                type="button" 
+                class="btn-view-toggle" 
+                [class.active]="!vistaGrid" 
+                (click)="vistaGrid = false"
+                title="Vista en lista / tabla">
+                <span class="material-symbols-rounded">table_rows</span>
+                <span>Tabla</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Conteo de productos mostrados -->
+          <div class="results-counter-box">
+            <div class="counter-label">Mostrando actualmente:</div>
+            <div class="counter-value">
+              <strong>{{ productosFiltrados.length }}</strong> de {{ totalProductos }} referencias
+            </div>
+            <div class="counter-progress-bar">
+              <div 
+                class="counter-progress-fill" 
+                [style.width.%]="totalProductos > 0 ? (productosFiltrados.length / totalProductos) * 100 : 0">
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón de Limpiar si hay filtros -->
+          <button 
+            type="button" 
+            class="btn-clear-filters-sidebar" 
+            *ngIf="busqueda || categoriaSeleccionada > 0 || ordenSeleccionado !== 'nuevos'" 
+            (click)="limpiarFiltros()">
+            <span class="material-symbols-rounded">restart_alt</span>
+            <span>Restablecer Filtros</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+  <!-- =========================================================================
+       4. BARRA DE CONTROL Y BÚSQUEDA (INPUT MINIMALISTA + SELECTS)
+       ========================================================================= -->
+  <section class="catalogo-controls-card">
+    
+    <div class="search-input-col">
+      <div class="search-box-wrapper">
+        <span class="material-symbols-rounded search-icon">search</span>
+        <input 
+          type="text" 
+          class="input-minimal input-search" 
+          placeholder="Buscar por nombre, subcategoría, material o marca..."
+          [(ngModel)]="busqueda"
+          (input)="aplicarFiltros()"
+          aria-label="Buscar producto">
+        <button 
+          type="button" 
+          class="btn-clear-search" 
+          *ngIf="busqueda" 
+          (click)="busqueda = ''; aplicarFiltros()"
+          aria-label="Borrar búsqueda">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="filters-selectors-row">
+      <!-- Selector de Categoría -->
+      <div class="select-wrapper">
+        <label for="filtro-categoria" class="select-label">Categoría:</label>
+        <select 
+          id="filtro-categoria" 
+          class="select-minimal" 
+          [(ngModel)]="categoriaSeleccionada" 
+          (change)="aplicarFiltros()">
+          <option [ngValue]="0">Todas las categorías ({{ totalCategorias }})</option>
+          <option *ngFor="let cat of categorias" [ngValue]="cat.id">
+            {{ cat.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Selector de Orden -->
+      <div class="select-wrapper">
+        <label for="filtro-orden" class="select-label">Ordenar:</label>
+        <select 
+          id="filtro-orden" 
+          class="select-minimal" 
+          [(ngModel)]="ordenSeleccionado" 
+          (change)="aplicarFiltros()">
+          <option value="nuevos">Más recientes</option>
+          <option value="nombre">Nombre (A - Z)</option>
+          <option value="precio_asc">Precio: Menor a Mayor</option>
+          <option value="precio_desc">Precio: Mayor a Menor</option>
+        </select>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- =========================================================================
+       5. CONTENIDO DE PRODUCTOS (LOADING / ERROR / EMPTY / GRID / TABLE)
+       ========================================================================= -->
+
+  <!-- Estado de Carga -->
+  <div *ngIf="cargando" class="loading-state-container">
+    <div class="loading-spinner"></div>
+    <div class="loading-title">Cargando catálogo oficial...</div>
+    <div class="loading-sub">Obteniendo productos y variantes desde el servidor central</div>
+  </div>
+
+  <!-- Estado de Error -->
+  <div *ngIf="!cargando && error" class="error-state-card">
+    <div class="error-icon-box">
+      <span class="material-symbols-rounded">cloud_off</span>
+    </div>
+    <h3 class="error-title">No fue posible conectar con el catálogo externo</h3>
+    <p class="error-desc">
+      Ocurrió un inconveniente al consultar la API de Plaxtilineas. Verifica tu conexión a internet o reintenta la sincronización.
+    </p>
+    <button type="button" class="btn-primary-black" (click)="cargarDatos()">
+      <span class="material-symbols-rounded">refresh</span>
+      <span>Reintentar Conexión</span>
+    </button>
+  </div>
+
+  <!-- Estado Vacío (Filtros sin resultados) -->
+  <div *ngIf="!cargando && !error && productosFiltrados.length === 0" class="empty-state-card">
+    <div class="empty-icon-box">
+      <span class="material-symbols-rounded">search_off</span>
+    </div>
+    <h3 class="empty-title">Sin resultados coincidentes</h3>
+    <p class="empty-desc">
+      No se encontraron productos que coincidan con "{{ busqueda }}" en la categoría seleccionada.
+    </p>
+    <button type="button" class="btn-primary-black" (click)="limpiarFiltros()">
+      <span class="material-symbols-rounded">restart_alt</span>
+      <span>Limpiar filtros de búsqueda</span>
+    </button>
+  </div>
+
+  <!-- -------------------------------------------------------------------------
+       VISTA 1: CUADRÍCULA DE TARJETAS (CARDS)
+       ------------------------------------------------------------------------- -->
+  <div *ngIf="!cargando && !error && productosFiltrados.length > 0 && vistaGrid" class="products-bento-grid">
+    
+    <article *ngFor="let prod of productosPaginados" class="product-card">
+      
+      <!-- Imagen y Badges -->
+      <div class="product-card-media" (click)="abrirModal(prod)">
+        <img 
+          [src]="getImagenPrincipal(prod)" 
+          [alt]="prod.nombre" 
+          loading="lazy" 
+          class="product-card-img"
+          (error)="$any($event.target).src = 'assets/images/placeholder.png'">
+        
+        <!-- Badge de categoría superior -->
+        <span class="media-category-badge" *ngIf="prod.categoria">
+          {{ prod.categoria }}
+        </span>
+
+        <!-- Badge de variantes -->
+        <span class="media-variants-badge" *ngIf="prod.variantes && prod.variantes.length > 1">
+          <span class="material-symbols-rounded">tune</span>
+          {{ prod.variantes.length }} variantes
+        </span>
+      </div>
+
+      <!-- Cuerpo de la tarjeta -->
+      <div class="product-card-body">
+        
+        <!-- Subcategoría / Marca -->
+        <div class="product-meta-row">
+          <span class="product-subcat">{{ prod.subcategoria || 'General' }}</span>
+          <span class="product-material" *ngIf="prod.material">{{ prod.material }}</span>
+        </div>
+
+        <!-- Título del Producto -->
+        <h3 class="product-title" (click)="abrirModal(prod)" [title]="prod.nombre">
+          {{ prod.nombre }}
+        </h3>
+
+        <!-- Variantes rápidas (primeras 3) -->
+        <div class="product-variants-tags" *ngIf="prod.variantes && prod.variantes.length > 0">
+          <span 
+            *ngFor="let v of prod.variantes.slice(0, 3)" 
+            class="variant-tag"
+            [title]="v.nombre + ' - ' + formatPrecio(v.precio)">
+            {{ v.nombre }}
+          </span>
+          <span *ngIf="prod.variantes.length > 3" class="variant-tag-more">
+            +{{ prod.variantes.length - 3 }} más
+          </span>
+        </div>
+
+        <!-- Footer: Precio y Botón Detalle -->
+        <div class="product-card-footer">
+          <div class="product-price-col">
+            <span class="price-label">
+              {{ prod.variantes && prod.variantes.length > 1 ? 'Desde' : 'Precio Oficial' }}
+            </span>
+            <span class="product-price-val">
+              {{ formatPrecio(prod.precio) }}
+            </span>
+          </div>
+
+          <button 
+            type="button" 
+            class="btn-card-detail" 
+            (click)="abrirModal(prod)"
+            title="Ver ficha técnica completa">
+            <span class="material-symbols-rounded">visibility</span>
+            <span>Detalle</span>
+          </button>
+        </div>
+
+      </div>
+
+    </article>
+
+  </div>
+
+  <!-- -------------------------------------------------------------------------
+       VISTA 2: TABLA DETALLADA DE PRODUCTOS
+       ------------------------------------------------------------------------- -->
+  <div *ngIf="!cargando && !error && productosFiltrados.length > 0 && !vistaGrid" class="table-card-container">
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="th-img">Producto</th>
+            <th>Categoría & Subcategoría</th>
+            <th>Material / Marca</th>
+            <th>Variantes</th>
+            <th class="th-price">Precio Referencia</th>
+            <th class="th-actions">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let prod of productosPaginados" class="table-row">
+            <!-- Producto / Foto / Nombre -->
+            <td class="td-product">
+              <div class="product-thumb-cell">
+                <img 
+                  [src]="getImagenPrincipal(prod)" 
+                  [alt]="prod.nombre" 
+                  class="table-thumb-img"
+                  (error)="$any($event.target).src = 'assets/images/placeholder.png'">
+                <div class="product-thumb-info">
+                  <span class="product-table-name" (click)="abrirModal(prod)">{{ prod.nombre }}</span>
+                  <span class="product-table-id">ID #{{ prod.id }} <span *ngIf="prod.sku">· SKU: {{ prod.sku }}</span></span>
+                </div>
+              </div>
+            </td>
+
+            <!-- Categoría / Subcategoría -->
+            <td>
+              <span class="badge-cat-table">{{ prod.categoria || 'Sin categoría' }}</span>
+              <div class="text-subcat-table">{{ prod.subcategoria || '-' }}</div>
+            </td>
+
+            <!-- Material / Marca -->
+            <td>
+              <span class="text-material">{{ prod.material || 'Estándar' }}</span>
+              <div class="text-brand" *ngIf="prod.marca">{{ prod.marca }}</div>
+            </td>
+
+            <!-- Variantes -->
+            <td>
+              <span class="badge-variants-count" *ngIf="prod.variantes && prod.variantes.length > 0">
+                <span class="material-symbols-rounded">tune</span>
+                {{ prod.variantes.length }} variante(s)
+              </span>
+              <span class="text-secondary-muted" *ngIf="!prod.variantes || prod.variantes.length === 0">
+                Única
+              </span>
+            </td>
+
+            <!-- Precio -->
+            <td class="td-price">
+              <span class="table-price-val">{{ formatPrecio(prod.precio) }}</span>
+            </td>
+
+            <!-- Acciones -->
+            <td class="td-actions">
+              <button 
+                type="button" 
+                class="btn-table-action" 
+                (click)="abrirModal(prod)"
+                title="Ver ficha técnica completa">
+                <span class="material-symbols-rounded">info</span>
+                <span>Ficha</span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       6. PAGINACIÓN MINIMALISTA
+       ========================================================================= -->
+  <footer class="catalogo-pagination-bar" *ngIf="!cargando && !error && totalPaginas > 1">
+    
+    <div class="pagination-info">
+      Mostrando página <strong>{{ paginaActual }}</strong> de <strong>{{ totalPaginas }}</strong> 
+      ({{ productosFiltrados.length }} referencias totales)
+    </div>
+
+    <div class="pagination-controls">
+      <!-- Botón Anterior -->
+      <button 
+        type="button" 
+        class="btn-page-nav" 
+        (click)="cambiarPagina(paginaActual - 1)" 
+        [disabled]="paginaActual === 1"
+        aria-label="Página anterior">
+        <span class="material-symbols-rounded">chevron_left</span>
+        <span>Anterior</span>
+      </button>
+
+      <!-- Botones Numéricos de Página -->
+      <div class="pagination-numbers">
+        <ng-container *ngFor="let p of paginas">
+          <span *ngIf="p === -1" class="page-ellipsis">…</span>
+          <button 
+            *ngIf="p !== -1" 
+            type="button" 
+            class="btn-page-num" 
+            [class.active]="p === paginaActual" 
+            (click)="cambiarPagina(p)">
+            {{ p }}
+          </button>
+        </ng-container>
+      </div>
+
+      <!-- Botón Siguiente -->
+      <button 
+        type="button" 
+        class="btn-page-nav" 
+        (click)="cambiarPagina(paginaActual + 1)" 
+        [disabled]="paginaActual === totalPaginas"
+        aria-label="Página siguiente">
+        <span>Siguiente</span>
+        <span class="material-symbols-rounded">chevron_right</span>
+      </button>
+    </div>
+
+  </footer>
+
+  <!-- =========================================================================
+       7. MODAL DETALLE DE PRODUCTO (FICHA TÉCNICA OFICIAL)
+       ========================================================================= -->
+  <div class="modal-backdrop" *ngIf="productoModal" (click)="cerrarModal()">
+    <div class="modal-dialog-card" (click)="$event.stopPropagation()">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div class="modal-title-col">
+          <div class="modal-category-tag">
+            <span>{{ productoModal.categoria || 'Catálogo Oficial' }}</span>
+            <span *ngIf="productoModal.subcategoria">· {{ productoModal.subcategoria }}</span>
+          </div>
+          <h2 class="modal-product-title">{{ productoModal.nombre }}</h2>
+        </div>
+
+        <button 
+          type="button" 
+          class="modal-close-btn" 
+          (click)="cerrarModal()" 
+          aria-label="Cerrar modal">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        
+        <div class="modal-layout-grid">
+          
+          <!-- Columna Izquierda: Galería de Imágenes -->
+          <div class="modal-gallery-col">
+            <div class="modal-main-img-box">
+              <img 
+                [src]="imagenModalActiva || getImagenPrincipal(productoModal)" 
+                [alt]="productoModal.nombre" 
+                class="modal-main-img"
+                (error)="$any($event.target).src = 'assets/images/placeholder.png'">
+            </div>
+
+            <!-- Miniaturas si tiene múltiples imágenes -->
+            <div class="modal-thumbnails-row" *ngIf="productoModal.imagenes && productoModal.imagenes.length > 1">
+              <button 
+                type="button" 
+                *ngFor="let img of productoModal.imagenes" 
+                class="modal-thumb-btn"
+                [class.active]="(imagenModalActiva || getImagenPrincipal(productoModal)) === img.url"
+                (click)="setImagenModal(img.url)">
+                <img [src]="img.url" [alt]="img.descripcion || productoModal.nombre" class="thumb-mini-img">
+              </button>
+            </div>
+
+            <!-- Badge de solo lectura -->
+            <div class="read-only-banner">
+              <span class="material-symbols-rounded banner-icon">lock</span>
+              <div class="banner-text">
+                <strong>Catálogo de Solo Lectura</strong>
+                <span>Gestionado desde el servidor de Plaxtilineas (Sembradores de Vida API).</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Columna Derecha: Especificaciones y Variantes -->
+          <div class="modal-details-col">
+            
+            <!-- Precio Principal -->
+            <div class="modal-price-card">
+              <span class="modal-price-label">Precio Oficial de Referencia:</span>
+              <div class="modal-price-big">{{ formatPrecio(productoModal.precio) }}</div>
+              <span class="modal-price-sub">Impuestos incluidos en moneda legal (COP)</span>
+            </div>
+
+            <!-- Descripción -->
+            <div class="modal-section-block" *ngIf="productoModal.descripcion">
+              <h4 class="modal-section-title">Descripción del Producto</h4>
+              <p class="modal-desc-text">{{ productoModal.descripcion }}</p>
+            </div>
+
+            <!-- Ficha Técnica / Atributos -->
+            <div class="modal-section-block">
+              <h4 class="modal-section-title">Ficha Técnica</h4>
+              <div class="tech-specs-grid">
+                <div class="spec-item">
+                  <span class="spec-label">ID Catálogo</span>
+                  <span class="spec-val">#{{ productoModal.id }}</span>
+                </div>
+                <div class="spec-item" *ngIf="productoModal.sku">
+                  <span class="spec-label">SKU</span>
+                  <span class="spec-val">{{ productoModal.sku }}</span>
+                </div>
+                <div class="spec-item" *ngIf="productoModal.material">
+                  <span class="spec-label">Material</span>
+                  <span class="spec-val">{{ productoModal.material }}</span>
+                </div>
+                <div class="spec-item" *ngIf="productoModal.marca">
+                  <span class="spec-label">Marca</span>
+                  <span class="spec-val">{{ productoModal.marca }}</span>
+                </div>
+                <div class="spec-item" *ngIf="productoModal.unidad">
+                  <span class="spec-label">Unidad de Venta</span>
+                  <span class="spec-val">{{ productoModal.unidad }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Variantes y Calibres -->
+            <div class="modal-section-block" *ngIf="productoModal.variantes && productoModal.variantes.length > 0">
+              <h4 class="modal-section-title">
+                Variantes y Medidas Disponibles ({{ productoModal.variantes.length }})
+              </h4>
+              <div class="variants-table-wrapper">
+                <table class="variants-mini-table">
+                  <thead>
+                    <tr>
+                      <th>Variante</th>
+                      <th>SKU</th>
+                      <th>Stock / Disp.</th>
+                      <th class="text-right">Precio COP</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let v of productoModal.variantes">
+                      <td class="font-bold">{{ v.nombre }}</td>
+                      <td class="text-muted">{{ v.sku || '-' }}</td>
+                      <td>
+                        <span class="stock-pill" [class.in-stock]="(v.stock ?? 1) > 0">
+                          {{ (v.stock ?? 1) > 0 ? 'Disponible' : 'Bajo pedido' }}
+                        </span>
+                      </td>
+                      <td class="text-right font-bold price-cop">{{ formatPrecio(v.precio) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn-copy-id" 
+          (click)="copiarTexto(productoModal.id.toString())">
+          <span class="material-symbols-rounded">content_copy</span>
+          <span>{{ copiado ? 'Copiado al portapapeles!' : 'Copiar ID #' + productoModal.id }}</span>
+        </button>
+
+        <div class="modal-footer-actions">
+          <a 
+            [routerLink]="['/producto', productoModal.id]" 
+            target="_blank" 
+            class="btn-action-outline">
+            <span class="material-symbols-rounded">open_in_new</span>
+            <span>Ver Ficha en Tienda</span>
+          </a>
+          <button type="button" class="btn-primary-black" (click)="cerrarModal()">
+            <span>Cerrar</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

@@ -1,58 +1,29 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { 
-  Variante, 
-  CrearVarianteDTO, 
-  ActualizarVarianteDTO,
-  CrearVarianteResponse,
-  ActualizarVarianteResponse,
-  EliminarVarianteResponse
-} from '../models/variante.model';
-import { environment } from '../../enviroments/environment';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Variante } from '../models/variante.model';
+import { CatalogoService } from './catalogo.service';
 
+/** Variantes de producto. SOLO LECTURA (vienen embebidas en cada producto del catálogo externo). */
 @Injectable({ providedIn: 'root' })
 export class VariantesService {
-  private apiUrl = `${environment.apiUrl}/variantes`;
+  constructor(private catalogo: CatalogoService) {}
 
-  constructor(private http: HttpClient) {}
-
-  // Obtener todas las variantes de un producto específico (RUTA PÚBLICA)
   getVariantesPorProducto(producto_id: number): Observable<Variante[]> {
-    return this.http.get<Variante[]>(`${this.apiUrl}/producto/${producto_id}`);
+    return this.catalogo
+      .getProductos()
+      .pipe(map(lista => lista.find(p => p.id === Number(producto_id))?.variantes ?? []));
   }
 
-  // Obtener una variante por ID (RUTA PÚBLICA)
-  getVariantePorId(id: number): Observable<Variante> {
-    return this.http.get<Variante>(`${this.apiUrl}/${id}`);
-  }
-
-  // Crear una nueva variante (RUTA PROTEGIDA - Admin)
-  crearVariante(token: string, data: CrearVarianteDTO): Observable<CrearVarianteResponse> {
-    return this.http.post<CrearVarianteResponse>(this.apiUrl, data, {
-      headers: this.getAuthHeaders(token)
-    });
-  }
-
-  // Actualizar una variante (RUTA PROTEGIDA - Admin)
-  actualizarVariante(token: string, id: number, data: ActualizarVarianteDTO): Observable<ActualizarVarianteResponse> {
-    return this.http.put<ActualizarVarianteResponse>(`${this.apiUrl}/${id}`, data, {
-      headers: this.getAuthHeaders(token)
-    });
-  }
-
-  // Eliminar una variante (RUTA PROTEGIDA - Admin)
-  eliminarVariante(token: string, id: number): Observable<EliminarVarianteResponse> {
-    return this.http.delete<EliminarVarianteResponse>(`${this.apiUrl}/${id}`, {
-      headers: this.getAuthHeaders(token)
-    });
-  }
-
-  // Método auxiliar para headers
-  private getAuthHeaders(token: string): HttpHeaders {
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
+  getVariantePorId(id: number): Observable<Variante | null> {
+    return this.catalogo.getProductos().pipe(
+      map(lista => {
+        for (const p of lista) {
+          const v = p.variantes?.find(x => x.id === Number(id));
+          if (v) return v;
+        }
+        return null;
+      })
+    );
   }
 }

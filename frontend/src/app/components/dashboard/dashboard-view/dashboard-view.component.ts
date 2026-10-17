@@ -4,7 +4,6 @@ import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import Swal from 'sweetalert2';
-import { ImportProductsService } from '../../../services/import-products.service';
 import { ThemeService, Theme } from '../../../services/theme.service';
 import { AuthService } from '../../../services/auth.service';
 import { ProductosService } from '../../../services/productos.service';
@@ -87,26 +86,15 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
   searchResults: any = null;
   searchType: 'stock' | 'ventas' | 'redireccion' | 'nombre' | null = null;
 
-  // Estados para la importación
-  cargandoPreview = false;
-  cargandoEstadisticas = false;
-  cargandoImportacion = false;
-  
-  // Datos mostrados
-  datosPreview: any = null;
-  datosEstadisticas: any = null;
-  respuestaImportacion: any = null;
-  analisisPreview: any = null;
-  todoActualizado = false;
-  
-  // Mensajes
-  mensajeError = '';
-  mensajeExito = '';
-
   isMobileSidebarOpen = false;
   isSidebarCollapsed = false;
 
   wompiEnabled = true;
+  mostrarDetallesWompi = false;
+
+  toggleDetallesWompi(): void {
+    this.mostrarDetallesWompi = !this.mostrarDetallesWompi;
+  }
 
   // Métricas del Dashboard (Stat Cards)
   totalProductosCount = 0;
@@ -143,7 +131,6 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     library: FaIconLibrary,
-    private importService: ImportProductsService,
     public themeService: ThemeService,
     private authService: AuthService,
     private productosService: ProductosService,
@@ -392,7 +379,6 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
 
   get tituloSeccion(): string {
     const url = this.router.url;
-    if (url.includes('/inventario')) return 'Gestión de Inventario';
     if (url.includes('/pedidos')) return 'Gestión de Pedidos';
     if (url.includes('/personalizar-web')) return 'Personalizar';
     if (url.includes('/usuarios')) return 'Usuarios Registrados';
@@ -402,127 +388,11 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
 
   get subtituloSeccion(): string {
     const url = this.router.url;
-    if (url.includes('/inventario')) return 'Controla el stock, referencias y precios de tus productos';
     if (url.includes('/pedidos')) return 'Visualiza, gestiona y actualiza el estado de los pedidos';
     if (url.includes('/personalizar-web')) return 'Configura y edita elementos visuales y textos de la tienda';
     if (url.includes('/usuarios')) return 'Visualiza clientes registrados, carritos y actividad';
     if (url.includes('/pqr-admin')) return 'Atiende peticiones, quejas, reclamos y solicitudes de clientes';
-    return 'Administra inventario, pedidos, personalización, usuarios y PQRS de Plaxtilineas';
-  }
-
-  /**
-   * Obtener preview de productos de Hostinger
-   */
-  obtenerPreview(): void {
-    this.mensajeError = '';
-    this.mensajeExito = '';
-    this.cargandoPreview = true;
-
-    this.importService.obtenerPreview(5).subscribe({
-      next: (response) => {
-        this.datosPreview = response;
-        this.analisisPreview = response.analisis || null;
-        this.cargandoPreview = false;
-        
-        if (this.analisisPreview?.todo_actualizado) {
-          this.todoActualizado = true;
-          Swal.fire('✅ Sincronizado', `¡Todo está sincronizado! Los ${this.analisisPreview.total_hostinger} productos de Hostinger ya están en tu catálogo local.`, 'success');
-        } else if (this.analisisPreview) {
-          this.todoActualizado = false;
-          Swal.fire('⚠️ Pendientes', `Hay ${this.analisisPreview.nuevos_por_importar} producto(s) nuevo(s) pendiente(s) de importar.`, 'info');
-        } else {
-          Swal.fire('✅ Cargado', `Preview cargado: ${response.total_en_preview} productos encontrados`, 'success');
-        }
-      },
-      error: (err) => {
-        this.cargandoPreview = false;
-        Swal.fire('❌ Error', `Error al obtener preview: ${err.error?.error || err.message}`, 'error');
-        console.error('Error en preview:', err);
-      }
-    });
-  }
-
-  /**
-   * Obtener estadísticas de productos en Hostinger
-   */
-  obtenerEstadisticas(): void {
-    this.mensajeError = '';
-    this.mensajeExito = '';
-    this.cargandoEstadisticas = true;
-
-    this.importService.obtenerEstadisticas().subscribe({
-      next: (response) => {
-        this.datosEstadisticas = response;
-        this.cargandoEstadisticas = false;
-        Swal.fire('✅ Estadísticas cargadas', `${response.total_productos} productos disponibles`, 'success');
-      },
-      error: (err) => {
-        this.cargandoEstadisticas = false;
-        Swal.fire('❌ Error', `Error al obtener estadísticas: ${err.error?.error || err.message}`, 'error');
-        console.error('Error en estadísticas:', err);
-      }
-    });
-  }
-
-  /**
-   * Ejecutar importación de productos
-   */
-  ejecutarImportacion(): void {
-    if (this.todoActualizado) {
-      Swal.fire('✅ Sincronizado', 'No es necesario importar. Todos los productos ya están sincronizados.', 'success');
-      return;
-    }
-
-    Swal.fire({
-      title: '¿Iniciar importación?',
-      text: '⚠️ Esta operación importará todos los productos nuevos de Hostinger.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, importar',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.cargandoImportacion = true;
-        this.mensajeError = '';
-        this.mensajeExito = '';
-
-        this.importService.ejecutarImportacion().subscribe({
-          next: (response) => {
-            this.respuestaImportacion = response;
-            this.cargandoImportacion = false;
-
-            if (response.todo_actualizado) {
-              this.todoActualizado = true;
-              Swal.fire('✅ Todo Actualizado', response.mensaje || 'Todo está actualizado. No hay productos nuevos.', 'success');
-            } else {
-              let msg = `Sincronización completada: ${response.importados_exitosamente} nuevos`;
-              if (response.actualizados > 0) msg += `, ${response.actualizados} actualizados`;
-              if (response.errores > 0) msg += `, ${response.errores} errores`;
-              Swal.fire('✅ Completado', msg, 'success');
-              this.todoActualizado = true;
-            }
-          },
-          error: (err) => {
-            this.cargandoImportacion = false;
-            Swal.fire('❌ Error', `Error en importación: ${err.error?.error || err.message}`, 'error');
-            console.error('Error en importación:', err);
-          }
-        });
-      }
-    });
-  }
-
-  /**
-   * Limpiar datos mostrados
-   */
-  limpiarDatos(): void {
-    this.datosPreview = null;
-    this.datosEstadisticas = null;
-    this.respuestaImportacion = null;
-    this.analisisPreview = null;
-    this.todoActualizado = false;
-    this.mensajeError = '';
-    this.mensajeExito = '';
+    return 'Administra pedidos, personalización, usuarios y PQRS de Plaxtilineas';
   }
 
   /**

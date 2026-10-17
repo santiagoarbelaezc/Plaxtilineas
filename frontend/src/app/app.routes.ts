@@ -58,10 +58,6 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/dashboard/dashboard/dashboard').then(m => m.Dashboard),
     children: [
       {
-        path: 'inventario',
-        loadComponent: () => import('./pages/dashboard/inventario/inventario').then(m => m.Inventario)
-      },
-      {
         path: 'pedidos',
         loadComponent: () => import('./pages/dashboard/pedidos/admin-pedidos').then(m => m.AdminPedidos)
       },
@@ -77,7 +73,11 @@ export const routes: Routes = [
         path: 'pqr-admin',
         loadComponent: () => import('./pages/dashboard/pqr/pqr').then(m => m.Pqr)
       },
-      // Redirecciones amigables para rutas retiradas
+      {
+        path: 'inventario',
+        loadComponent: () => import('./pages/dashboard/catalogo/admin-catalogo').then(m => m.AdminCatalogo)
+      },
+      { path: 'catalogo', redirectTo: 'inventario' },
       { path: 'categorias', redirectTo: 'inventario' },
       { path: 'subcategorias', redirectTo: 'inventario' },
       { path: 'productos', redirectTo: 'inventario' },

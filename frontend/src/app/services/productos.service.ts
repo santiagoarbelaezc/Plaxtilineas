@@ -1,191 +1,187 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { catchError, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ProductoEditable } from '../models/producto.model';
-import { environment } from '../../enviroments/environment';
+import { CatalogoService } from './catalogo.service';
 
+type ResultadoBusqueda = {
+  resultados: ProductoEditable[];
+  total: number;
+  termino_buscado: string;
+  mensaje?: string;
+  sugerencias?: ProductoEditable[];
+};
+
+/**
+ * Productos de la tienda. SOLO LECTURA: los datos vienen del catálogo externo
+ * (ver CatalogoService). No existen métodos para crear, editar ni eliminar.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class ProductosService {
-  private apiUrl = `${environment.apiUrl}/productos`;
+  constructor(private catalogo: CatalogoService) {}
 
-  constructor(private http: HttpClient) {}
-
-  obtenerProductos(subcategoriaId?: number): Observable<ProductoEditable[]> {
-    let params = new HttpParams();
-    if (subcategoriaId !== undefined) {
-      params = params.set('subcategoria_id', subcategoriaId.toString());
-    }
-    return this.http.get<ProductoEditable[]>(this.apiUrl, { params });
+  /** Normaliza texto para comparar sin tildes ni mayúsculas. */
+  private normalizar(texto: string): string {
+    return (texto ?? '')
+      .toString()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
   }
 
-  // NUEVO: Obtener productos por subcategoría (todos los productos de una subcategoría)
-  obtenerProductosPorSubcategoria(subcategoriaId: number): Observable<ProductoEditable[]> {
-    return this.http.get<ProductoEditable[]>(`${this.apiUrl}/subcategoria/${subcategoriaId}`).pipe(
-      catchError(error => {
-        console.error('Error al obtener productos por subcategoría:', error);
-        return of([]); // Retorna un array vacío en caso de error
-      })
+  private mezclar<T>(lista: T[]): T[] {
+    const copia = [...lista];
+    for (let i = copia.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copia[i], copia[j]] = [copia[j], copia[i]];
+    }
+    return copia;
+  }
+
+  obtenerProductos(subcategoriaId?: number): Observable<ProductoEditable[]> {
+    return this.catalogo.getProductos().pipe(
+      map(lista =>
+        subcategoriaId !== undefined
+          ? lista.filter(p => p.subcategoria_id === subcategoriaId)
+          : lista
+      )
     );
+  }
+
+  obtenerProductosPorSubcategoria(subcategoriaId: number): Observable<ProductoEditable[]> {
+    return this.obtenerProductos(subcategoriaId);
   }
 
   obtenerProductosPorCategoriaId(categoriaId: number): Observable<ProductoEditable[]> {
-    return this.http.get<ProductoEditable[]>(`${this.apiUrl}/categoria/${categoriaId}`).pipe(
-      catchError(error => {
-        console.error('Error al obtener productos por categoría ID:', error);
-        return of([]); // Retorna un array vacío en caso de error
-      })
-    );
+    return this.catalogo
+      .getProductos()
+      .pipe(map(lista => lista.filter(p => p.categoria_id === categoriaId)));
   }
 
-  // NUEVO: Obtener productos aleatorios (productos de interés)
+  /** Productos de interés (selección aleatoria). */
   obtenerProductosAleatorios(limite: number = 8): Observable<ProductoEditable[]> {
-    let params = new HttpParams();
-    if (limite !== 8) { // Solo agregar el parámetro si es diferente al valor por defecto
-      params = params.set('limite', limite.toString());
-    }
-    return this.http.get<ProductoEditable[]>(`${this.apiUrl}/interes/aleatorios`, { params }).pipe(
-      catchError(error => {
-        console.error('Error al obtener productos aleatorios:', error);
-        return of([]); // Retorna un array vacío en caso de error
-      })
-    );
+    return this.catalogo
+      .getProductos()
+      .pipe(map(lista => this.mezclar(lista).slice(0, limite)));
   }
 
-  // NUEVO: Obtener productos relacionados (misma subcategoría excluyendo producto actual)
+  /** Misma subcategoría (o categoría si no hay subcategoría), excluyendo el producto actual. */
   obtenerProductosRelacionados(productoId: number, limite: number = 4): Observable<ProductoEditable[]> {
-    let params = new HttpParams()
-      .set('producto_id', productoId.toString())
-      .set('limite', limite.toString());
-    
-    return this.http.get<ProductoEditable[]>(`${this.apiUrl}/relacionados/por-producto`, { params }).pipe(
-      catchError(error => {
-        console.error('Error al obtener productos relacionados:', error);
-        return of([]); // Retorna un array vacío en caso de error
+    return this.catalogo.getProductos().pipe(
+      map(lista => {
+        const actual = lista.find(p => p.id === productoId);
+        let candidatos = lista.filter(p => p.id !== productoId);
+        if (actual?.subcategoria_id) {
+          candidatos = candidatos.filter(p => p.subcategoria_id === actual.subcategoria_id);
+        } else if (actual?.categoria_id) {
+          candidatos = candidatos.filter(p => p.categoria_id === actual.categoria_id);
+        }
+        return this.mezclar(candidatos).slice(0, limite);
       })
     );
-  }
-
-  crearProducto(token: string, data: FormData): Observable<any> {
-    return this.http.post(this.apiUrl, data, {
-      headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
-    });
-  }
-
-  actualizarProducto(token: string, id: number, data: FormData): Observable<any> {
-    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-    return this.http.post(`${this.apiUrl}/${id}`, data, { headers });
-  }
-
-  eliminarProducto(token: string, id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`, {
-      headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
-    });
   }
 
   obtenerProductoPorId(id: number): Observable<ProductoEditable | null> {
-    return this.http.get<ProductoEditable>(`${this.apiUrl}/${id}`).pipe(
-      catchError(error => {
-        console.error('Error al obtener producto por ID:', error);
-        return of(null);
-      })
+    return this.catalogo
+      .getProductos()
+      .pipe(map(lista => lista.find(p => p.id === Number(id)) ?? null));
+  }
+
+  /** Últimos productos agregados al catálogo (más recientes primero). */
+  obtenerUltimosProductos(): Observable<ProductoEditable[]> {
+    return this.catalogo.getProductos().pipe(
+      map(lista =>
+        [...lista]
+          .sort((a, b) => (b.creado_en ?? '').localeCompare(a.creado_en ?? ''))
+          .slice(0, 2)
+      )
     );
   }
-  // Versión simple (siempre 2 productos)
-obtenerUltimosProductos(): Observable<ProductoEditable[]> {
-  return this.http.get<ProductoEditable[]>(`${this.apiUrl}/novedades/ultimos`).pipe(
-    catchError(error => {
-      console.error('Error al obtener los últimos productos:', error);
-      return of([]);
-    })
-  );
-}
 
-// Agrega este método en tu servicio:
-
-// NUEVO: Buscar productos por nombre
-buscarProductosPorNombre(nombre: string): Observable<{ resultados: ProductoEditable[], total: number, termino_buscado: string, mensaje?: string, sugerencias?: ProductoEditable[] }> {
-  if (!nombre || nombre.trim() === '') {
-    return of({
-      resultados: [],
-      total: 0,
-      termino_buscado: '',
-      mensaje: 'Por favor ingresa un término de búsqueda'
-    });
-  }
-
-  const params = new HttpParams().set('nombre', nombre.trim());
-  
-  return this.http.get<{ 
-    resultados: ProductoEditable[], 
-    total: number, 
-    termino_buscado: string,
-    mensaje?: string,
-    sugerencias?: ProductoEditable[] 
-  }>(`${this.apiUrl}/buscar`, { params }).pipe(
-    catchError(error => {
-      console.error('Error al buscar productos:', error);
+  buscarProductosPorNombre(nombre: string): Observable<ResultadoBusqueda> {
+    if (!nombre || nombre.trim() === '') {
       return of({
         resultados: [],
         total: 0,
-        termino_buscado: nombre,
-        mensaje: 'Error al realizar la búsqueda'
+        termino_buscado: '',
+        mensaje: 'Por favor ingresa un término de búsqueda'
       });
-    })
-  );
-}
+    }
 
-// OPCIONAL: Búsqueda avanzada con filtros
-busquedaAvanzada(filtros: {
-  nombre?: string;
-  categoria_id?: number;
-  precio_min?: number;
-  precio_max?: number;
-  orden?: 'relevancia' | 'precio_asc' | 'precio_desc' | 'nombre';
-  limite?: number;
-}): Observable<ProductoEditable[]> {
-  let params = new HttpParams();
-  
-  if (filtros.nombre) {
-    params = params.set('nombre', filtros.nombre);
-  }
-  if (filtros.categoria_id) {
-    params = params.set('categoria_id', filtros.categoria_id.toString());
-  }
-  if (filtros.precio_min !== undefined) {
-    params = params.set('precio_min', filtros.precio_min.toString());
-  }
-  if (filtros.precio_max !== undefined) {
-    params = params.set('precio_max', filtros.precio_max.toString());
-  }
-  if (filtros.orden) {
-    params = params.set('orden', filtros.orden);
-  }
-  if (filtros.limite) {
-    params = params.set('limite', filtros.limite.toString());
-  }
+    const termino = this.normalizar(nombre);
+    const palabras = termino.split(/\s+/).filter(Boolean);
 
-  return this.http.get<ProductoEditable[]>(`${this.apiUrl}/buscar`, { params }).pipe(
-    catchError(error => {
-      console.error('Error en búsqueda avanzada:', error);
-      return of([]);
-    })
-  );
-}
+    return this.catalogo.getProductos().pipe(
+      map(lista => {
+        const coincide = (p: ProductoEditable, requerirTodas: boolean) => {
+          const texto = this.normalizar(
+            [p.nombre, p.descripcion, p.categoria, p.subcategoria, p.material, p.marca].join(' ')
+          );
+          return requerirTodas
+            ? palabras.every(w => texto.includes(w))
+            : palabras.some(w => texto.includes(w));
+        };
 
-  // NUEVO: Eliminar productos masivamente
-  eliminarProductosMasivo(token: string, ids: number[]): Observable<any> {
-    return this.http.post(`${this.apiUrl}/bulk-delete`, { ids }, {
-      headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
-    });
+        const resultados = lista.filter(p => coincide(p, true));
+        if (resultados.length > 0) {
+          return { resultados, total: resultados.length, termino_buscado: nombre.trim() };
+        }
+
+        const sugerencias = lista.filter(p => coincide(p, false)).slice(0, 6);
+        return {
+          resultados: [],
+          total: 0,
+          termino_buscado: nombre.trim(),
+          mensaje: 'No se encontraron productos para tu búsqueda',
+          sugerencias
+        };
+      })
+    );
   }
 
-  // NUEVO: Eliminar todos los productos
-  eliminarTodosProductos(token: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/eliminar-todos`, {
-      headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
-    });
-  }
+  busquedaAvanzada(filtros: {
+    nombre?: string;
+    categoria_id?: number;
+    precio_min?: number;
+    precio_max?: number;
+    orden?: 'relevancia' | 'precio_asc' | 'precio_desc' | 'nombre';
+    limite?: number;
+  }): Observable<ProductoEditable[]> {
+    return this.catalogo.getProductos().pipe(
+      map(lista => {
+        let res = [...lista];
 
+        if (filtros.nombre) {
+          const t = this.normalizar(filtros.nombre);
+          res = res.filter(p => this.normalizar(`${p.nombre} ${p.descripcion}`).includes(t));
+        }
+        if (filtros.categoria_id) {
+          res = res.filter(p => p.categoria_id === filtros.categoria_id);
+        }
+        if (filtros.precio_min !== undefined) {
+          res = res.filter(p => p.precio >= filtros.precio_min!);
+        }
+        if (filtros.precio_max !== undefined) {
+          res = res.filter(p => p.precio <= filtros.precio_max!);
+        }
+
+        switch (filtros.orden) {
+          case 'precio_asc':
+            res.sort((a, b) => a.precio - b.precio);
+            break;
+          case 'precio_desc':
+            res.sort((a, b) => b.precio - a.precio);
+            break;
+          case 'nombre':
+            res.sort((a, b) => a.nombre.localeCompare(b.nombre));
+            break;
+        }
+
+        return filtros.limite ? res.slice(0, filtros.limite) : res;
+      })
+    );
+  }
 }

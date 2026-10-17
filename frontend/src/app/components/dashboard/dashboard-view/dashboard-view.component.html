@@ -39,21 +39,20 @@
           </a>
         </li>
 
-        <!-- 1. Inventario -->
-        <li class="nav-item">
-          <a routerLink="/admin/inventario" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Inventario">
-            <span class="material-symbols-rounded nav-icon">inventory_2</span>
-            <span class="nav-label" *ngIf="!isSidebarCollapsed">Inventario</span>
-            <span class="nav-badge" *ngIf="!isSidebarCollapsed && totalProductosCount > 0">{{ totalProductosCount }}</span>
-          </a>
-        </li>
-
-        <!-- 2. Pedidos -->
+        <!-- 1. Pedidos -->
         <li class="nav-item">
           <a routerLink="/admin/pedidos" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Pedidos">
             <span class="material-symbols-rounded nav-icon">shopping_bag</span>
             <span class="nav-label" *ngIf="!isSidebarCollapsed">Pedidos</span>
             <span class="nav-badge badge-accent-red" *ngIf="!isSidebarCollapsed && pedidosPendientesCount > 0">{{ pedidosPendientesCount }}</span>
+          </a>
+        </li>
+
+        <!-- 2. Catálogo / Inventario -->
+        <li class="nav-item">
+          <a routerLink="/admin/inventario" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Catálogo & Inventario">
+            <span class="material-symbols-rounded nav-icon">inventory_2</span>
+            <span class="nav-label" *ngIf="!isSidebarCollapsed">Catálogo</span>
           </a>
         </li>
 
@@ -172,17 +171,17 @@
         <!-- 1. FILA DE STAT CARDS (4 Columnas) -->
         <section class="stat-cards-row">
           
-          <!-- Card 1: Inventario -->
-          <div class="stat-card" routerLink="/admin/inventario">
+          <!-- Card 1: Catálogo (solo lectura, viene del catálogo externo) -->
+          <div class="stat-card" routerLink="/admin/inventario" style="cursor: pointer;">
             <div class="stat-card-top">
-              <span class="stat-card-label">Inventario Total</span>
+              <span class="stat-card-label">Catálogo</span>
               <div class="stat-card-icon-box">
                 <span class="material-symbols-rounded">inventory_2</span>
               </div>
             </div>
             <div class="stat-number">{{ totalProductosCount || 0 }}</div>
             <div class="stat-card-footer">
-              <span class="stat-footer-text">Referencias en catálogo local</span>
+              <span class="stat-footer-text">Productos oficiales (solo lectura)</span>
               <span class="stat-footer-arrow">→</span>
             </div>
           </div>
@@ -276,13 +275,14 @@
               </div>
 
               <div class="quick-nav-list">
+
                 <a routerLink="/admin/inventario" class="quick-nav-item">
                   <div class="quick-item-icon">
                     <span class="material-symbols-rounded">inventory_2</span>
                   </div>
                   <div class="quick-item-info">
-                    <span class="quick-item-name">Inventario</span>
-                    <span class="quick-item-sub">Stock, referencias y precios</span>
+                    <span class="quick-item-name">Catálogo</span>
+                    <span class="quick-item-sub">Productos oficiales en vivo</span>
                   </div>
                   <span class="quick-item-arrow">→</span>
                 </a>
@@ -440,9 +440,7 @@
                     </tbody>
                   </table>
                 </div>
-                <div class="action-footer">
-                  <a routerLink="/admin/inventario" class="footer-action-link">Ir a Gestión de Inventario completa →</a>
-                </div>
+
               </div>
 
               <!-- Caso 2: Más Vendidos -->
@@ -519,7 +517,7 @@
 
         <!-- 4. PASARELA DE PAGO WOMPI -->
         <section class="panel-white-card wompi-full-card">
-          <div class="panel-card-header wompi-card-header">
+          <div class="panel-card-header wompi-card-header" [class.no-border-bottom]="!mostrarDetallesWompi">
             <div class="wompi-header-left">
               <div class="panel-header-icon-box wompi-icon-box">
                 <span class="material-symbols-rounded">credit_card</span>
@@ -529,213 +527,181 @@
                   <h2 class="panel-header-title">Pasarela de Pago Wompi</h2>
                   <span class="wompi-status-badge" [class.is-live]="wompiEnabled">
                     <span class="status-dot-sm"></span>
-                    {{ wompiEnabled ? 'Modo Producción Activo (En Vivo)' : 'Modo en Desarrollo (Inactiva)' }}
+                    {{ wompiEnabled ? 'Modo Producción (En Vivo)' : 'Modo en Desarrollo (Inactiva)' }}
                   </span>
                 </div>
                 <p class="panel-header-sub">
-                  Control global de cobros bancarios. Conmuta entre pagos reales y modo de simulación de pruebas para tu tienda.
+                  {{ wompiEnabled ? 'Pagos reales activos en la tienda con tarjetas, PSE, Nequi y Bancolombia.' : 'Aviso de desarrollo activo en tienda. Sin cobros bancarios reales.' }}
                 </p>
               </div>
             </div>
 
-            <div class="wompi-switch-action">
-              <span class="wompi-switch-label">
-                {{ wompiEnabled ? 'Pasarela Activa' : 'Pasarela Inactiva' }}
-              </span>
-              <label class="switch-minimal" title="Conmutar estado de la pasarela Wompi">
-                <input type="checkbox" [checked]="wompiEnabled" (change)="toggleWompi($event)">
-                <span class="slider-minimal"></span>
-              </label>
+            <div class="wompi-header-actions">
+              <!-- Botón desplegable para Ver / Ocultar Guía de Estados -->
+              <button 
+                type="button" 
+                class="btn-wompi-toggle-guide" 
+                (click)="toggleDetallesWompi()"
+                [attr.aria-expanded]="mostrarDetallesWompi"
+                title="Ver o esconder aclaraciones de la pasarela"
+              >
+                <span class="material-symbols-rounded">{{ mostrarDetallesWompi ? 'visibility_off' : 'help_outline' }}</span>
+                <span>{{ mostrarDetallesWompi ? 'Ocultar Guía' : 'Ver Guía de Estados' }}</span>
+              </button>
+
+              <div class="wompi-switch-action">
+                <span class="wompi-switch-label">
+                  {{ wompiEnabled ? 'Pasarela Activa' : 'Pasarela Inactiva' }}
+                </span>
+                <label class="switch-minimal" title="Conmutar estado de la pasarela Wompi">
+                  <input type="checkbox" [checked]="wompiEnabled" (change)="toggleWompi($event)">
+                  <span class="slider-minimal"></span>
+                </label>
+              </div>
             </div>
           </div>
 
-          <!-- Cuadrícula comparativa: Cuándo está Activa vs Cuándo está Inactiva -->
-          <div class="wompi-states-grid">
-            
-            <!-- Estado 1: Pasarela ACTIVA (Modo Producción) -->
-            <div class="wompi-state-card state-live" [class.is-current]="wompiEnabled">
-              <div class="state-card-top">
-                <div class="state-indicator-badge live-badge">
-                  <span class="state-dot live"></span>
-                  <span>CUÁNDO ESTÁ ACTIVA (PRODUCCIÓN)</span>
+          <!-- Sección Plegable: Cuándo está Activa vs Cuándo está Inactiva (Oculta por defecto) -->
+          <div *ngIf="mostrarDetallesWompi" class="wompi-collapsible-wrapper">
+            <div class="wompi-states-grid">
+              
+              <!-- Estado 1: Pasarela ACTIVA (Modo Producción) -->
+              <div class="wompi-state-card state-live" [class.is-current]="wompiEnabled">
+                <div class="state-card-top">
+                  <div class="state-indicator-badge live-badge">
+                    <span class="state-dot live"></span>
+                    <span>CUÁNDO ESTÁ ACTIVA (PRODUCCIÓN)</span>
+                  </div>
+                  <div class="state-current-tag" *ngIf="wompiEnabled">
+                    <span class="material-symbols-rounded">check_circle</span>
+                    <span>Estado Actual</span>
+                  </div>
+                  <button 
+                    type="button" 
+                    class="btn-switch-state" 
+                    *ngIf="!wompiEnabled" 
+                    (click)="setWompiMode(true)"
+                    title="Cambiar a Modo Producción"
+                  >
+                    Activar En Vivo
+                  </button>
                 </div>
-                <div class="state-current-tag" *ngIf="wompiEnabled">
-                  <span class="material-symbols-rounded">check_circle</span>
-                  <span>Estado Actual</span>
-                </div>
-                <button 
-                  type="button" 
-                  class="btn-switch-state" 
-                  *ngIf="!wompiEnabled" 
-                  (click)="setWompiMode(true)"
-                  title="Cambiar a Modo Producción"
-                >
-                  Activar En Vivo
-                </button>
+
+                <h3 class="state-card-title">Cobros Bancarios Reales</h3>
+                <p class="state-card-summary">
+                  La tienda procesa pagos legítimos en dinero real a través de los servidores de Wompi.
+                </p>
+
+                <ul class="state-feature-list">
+                  <li>
+                    <span class="material-symbols-rounded feature-icon live-icon">check_circle</span>
+                    <div>
+                      <strong>Cobros Reales:</strong>
+                      <span>Débitos en línea con tarjetas débito/crédito, PSE, Nequi y Botón Bancolombia.</span>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="material-symbols-rounded feature-icon live-icon">check_circle</span>
+                    <div>
+                      <strong>Checkout Wompi:</strong>
+                      <span>Abre el widget seguro oficial con validación antifraude y comprobante.</span>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="material-symbols-rounded feature-icon live-icon">check_circle</span>
+                    <div>
+                      <strong>Aprobación Automática:</strong>
+                      <span>El pedido pasa de inmediato a "Pagado", descuenta stock y entra a despacho.</span>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="material-symbols-rounded feature-icon live-icon">check_circle</span>
+                    <div>
+                      <strong>¿Cuándo usarlo?:</strong>
+                      <span>Obligatorio en operación comercial diaria para recibir ventas de clientes reales.</span>
+                    </div>
+                  </li>
+                </ul>
               </div>
 
-              <h3 class="state-card-title">Cobros Bancarios Reales</h3>
-              <p class="state-card-summary">
-                La tienda procesa transacciones monetarias legítimas y oficiales mediante los servidores de Wompi Bancolombia.
-              </p>
-
-              <ul class="state-feature-list">
-                <li>
-                  <span class="material-symbols-rounded feature-icon live-icon">check_circle</span>
-                  <div>
-                    <strong>Pagos reales con dinero:</strong>
-                    <span>Los clientes pagan mediante Tarjetas de Crédito/Débito (Visa, Mastercard, AMEX), PSE, Nequi y Botón Bancolombia.</span>
+              <!-- Estado 2: Pasarela INACTIVA (Modo en Desarrollo) -->
+              <div class="wompi-state-card state-dev" [class.is-current]="!wompiEnabled">
+                <div class="state-card-top">
+                  <div class="state-indicator-badge dev-badge">
+                    <span class="state-dot dev"></span>
+                    <span>CUÁNDO ESTÁ INACTIVA (DESARROLLO)</span>
                   </div>
-                </li>
-                <li>
-                  <span class="material-symbols-rounded feature-icon live-icon">check_circle</span>
-                  <div>
-                    <strong>Checkout Oficial Wompi:</strong>
-                    <span>Se abre el widget bancario seguro con validación antifraude, tokenización y comprobante legal.</span>
+                  <div class="state-current-tag dev-current-tag" *ngIf="!wompiEnabled">
+                    <span class="material-symbols-rounded">info</span>
+                    <span>Estado Actual</span>
                   </div>
-                </li>
-                <li>
-                  <span class="material-symbols-rounded feature-icon live-icon">check_circle</span>
-                  <div>
-                    <strong>Aprobación Automática:</strong>
-                    <span>Al aprobarse el pago, el pedido cambia automáticamente a estado "Pagado", se descuenta stock y se notifica al despacho.</span>
-                  </div>
-                </li>
-                <li>
-                  <span class="material-symbols-rounded feature-icon live-icon">check_circle</span>
-                  <div>
-                    <strong>¿Cuándo usar este modo?:</strong>
-                    <span>Obligatorio durante la operación comercial diaria con clientes reales para recibir ventas e ingresos bancarios.</span>
-                  </div>
-                </li>
-              </ul>
-            </div>
-
-            <!-- Estado 2: Pasarela INACTIVA (Modo en Desarrollo) -->
-            <div class="wompi-state-card state-dev" [class.is-current]="!wompiEnabled">
-              <div class="state-card-top">
-                <div class="state-indicator-badge dev-badge">
-                  <span class="state-dot dev"></span>
-                  <span>CUÁNDO ESTÁ INACTIVA (DESARROLLO)</span>
+                  <button 
+                    type="button" 
+                    class="btn-switch-state" 
+                    *ngIf="wompiEnabled" 
+                    (click)="setWompiMode(false)"
+                    title="Cambiar a Modo Desarrollo"
+                  >
+                    Activar Desarrollo
+                  </button>
                 </div>
-                <div class="state-current-tag dev-current-tag" *ngIf="!wompiEnabled">
-                  <span class="material-symbols-rounded">info</span>
-                  <span>Estado Actual</span>
-                </div>
-                <button 
-                  type="button" 
-                  class="btn-switch-state" 
-                  *ngIf="wompiEnabled" 
-                  (click)="setWompiMode(false)"
-                  title="Cambiar a Modo Desarrollo"
-                >
-                  Activar Desarrollo
-                </button>
+
+                <h3 class="state-card-title">Simulación sin Cobros</h3>
+                <p class="state-card-summary">
+                  Entorno de prueba seguro. No se debita dinero ni se generan cargos bancarios.
+                </p>
+
+                <ul class="state-feature-list">
+                  <li>
+                    <span class="material-symbols-rounded feature-icon dev-icon">shield</span>
+                    <div>
+                      <strong>Cero cobros bancarios:</strong>
+                      <span>Ningún cliente ni tarjeta es debitado bajo ninguna circunstancia.</span>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="material-symbols-rounded feature-icon dev-icon">shield</span>
+                    <div>
+                      <strong>Aviso en Tienda:</strong>
+                      <span>Al pulsar "Pagar", muestra la pantalla de cortesía "Modo en Desarrollo".</span>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="material-symbols-rounded feature-icon dev-icon">shield</span>
+                    <div>
+                      <strong>Pruebas de Catálogo:</strong>
+                      <span>Permite simular compras, probar fletes y navegación sin transferir fondos.</span>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="material-symbols-rounded feature-icon dev-icon">shield</span>
+                    <div>
+                      <strong>¿Cuándo usarlo?:</strong>
+                      <span>Mantenimiento técnico, actualización de inventario o pruebas internas.</span>
+                    </div>
+                  </li>
+                </ul>
               </div>
 
-              <h3 class="state-card-title">Simulación sin Cobros Reales</h3>
-              <p class="state-card-summary">
-                Entorno seguro de pruebas. Los compradores visualizan un aviso de desarrollo y no se debita dinero de ninguna cuenta.
-              </p>
-
-              <ul class="state-feature-list">
-                <li>
-                  <span class="material-symbols-rounded feature-icon dev-icon">shield</span>
-                  <div>
-                    <strong>Cero cobros bancarios:</strong>
-                    <span>No se genera ningún cobro, cargo a tarjetas ni débito de fondos a compradores o usuarios de prueba.</span>
-                  </div>
-                </li>
-                <li>
-                  <span class="material-symbols-rounded feature-icon dev-icon">shield</span>
-                  <div>
-                    <strong>Aviso en Carrito y Tienda:</strong>
-                    <span>Al presionar "Pagar", la tienda redirige a la pantalla de cortesía informativa indicando que la pasarela está en desarrollo.</span>
-                  </div>
-                </li>
-                <li>
-                  <span class="material-symbols-rounded feature-icon dev-icon">shield</span>
-                  <div>
-                    <strong>Pruebas de Catálogo y Carrito:</strong>
-                    <span>Tu equipo administrativo puede ensayar pedidos, variantes de productos, cálculo de fletes y precios sin transferir fondos.</span>
-                  </div>
-                </li>
-                <li>
-                  <span class="material-symbols-rounded feature-icon dev-icon">shield</span>
-                  <div>
-                    <strong>¿Cuándo usar este modo?:</strong>
-                    <span>Durante labores de mantenimiento técnico, actualización de inventarios, revisiones de diseño o demostraciones internas.</span>
-                  </div>
-                </li>
-              </ul>
             </div>
 
-          </div>
-
-          <!-- Banner Informativo Inferior -->
-          <div class="wompi-status-note" [class.is-live-note]="wompiEnabled">
-            <span class="material-symbols-rounded note-icon">{{ wompiEnabled ? 'verified' : 'info' }}</span>
-            <div class="note-text">
-              <strong *ngIf="wompiEnabled">Operación en Vivo:</strong>
-              <strong *ngIf="!wompiEnabled">Atención - Modo Simulación:</strong>
-              <span *ngIf="wompiEnabled"> Tu tienda está recibiendo pagos en dinero real a través de Wompi. Cualquier compra completada descontará saldo bancario al cliente y generará un pedido pagado.</span>
-              <span *ngIf="!wompiEnabled"> La tienda se encuentra protegida en modo desarrollo. Ningún cliente podrá completar transacciones bancarias reales hasta que actives el Modo Producción.</span>
+            <!-- Banner Informativo Resumido -->
+            <div class="wompi-status-note" [class.is-live-note]="wompiEnabled">
+              <span class="material-symbols-rounded note-icon">{{ wompiEnabled ? 'verified' : 'info' }}</span>
+              <div class="note-text">
+                <strong *ngIf="wompiEnabled">Modo En Vivo:</strong>
+                <strong *ngIf="!wompiEnabled">Modo Desarrollo:</strong>
+                <span *ngIf="wompiEnabled"> Recibiendo pagos reales por Wompi con confirmación automática de pedidos.</span>
+                <span *ngIf="!wompiEnabled"> Pagos reales suspendidos. Los clientes verán aviso de cortesía y no se debitará dinero.</span>
+              </div>
             </div>
           </div>
         </section>
 
-        <!-- 5. SINCRONIZACIÓN CON HOSTINGER (Catálogo en la Nube) -->
-        <section class="panel-white-card hostinger-sync-card">
-          <div class="panel-card-header">
-            <div class="panel-header-icon-box">
-              <span class="material-symbols-rounded">cloud_sync</span>
-            </div>
-            <div>
-              <h2 class="panel-header-title">Sincronización con Hostinger</h2>
-              <p class="panel-header-sub">Compara y actualiza los productos almacenados en tu hosting remoto</p>
-            </div>
-          </div>
-
-          <div class="sync-actions-row">
-            <button type="button" class="btn-primary-black" (click)="obtenerPreview()" [disabled]="cargandoPreview">
-              <span class="material-symbols-rounded">preview</span>
-              <span>{{ cargandoPreview ? 'Analizando catálogo...' : 'Analizar Catálogo en Hostinger' }}</span>
-            </button>
-          </div>
-
-          <!-- Panel de Análisis -->
-          <div *ngIf="analisisPreview" class="sync-analysis-panel">
-            <div class="stat-mini-grid">
-              <div class="stat-mini-card">
-                <span class="stat-mini-val">{{ analisisPreview.total_hostinger }}</span>
-                <span class="stat-mini-lbl">En Hostinger</span>
-              </div>
-              <div class="stat-mini-card">
-                <span class="stat-mini-val">{{ analisisPreview.total_local }}</span>
-                <span class="stat-mini-lbl">En Catálogo Local</span>
-              </div>
-              <div class="stat-mini-card">
-                <span class="stat-mini-val">{{ analisisPreview.ya_importados }}</span>
-                <span class="stat-mini-lbl">Sincronizados</span>
-              </div>
-              <div class="stat-mini-card" [class.stat-warning]="analisisPreview.nuevos_por_importar > 0">
-                <span class="stat-mini-val">{{ analisisPreview.nuevos_por_importar }}</span>
-                <span class="stat-mini-lbl">Pendientes</span>
-              </div>
-            </div>
-
-            <div *ngIf="analisisPreview.todo_actualizado" class="sync-ok-alert">
-              <span class="material-symbols-rounded">check_circle</span>
-              <div>
-                <strong>¡Catálogo sincronizado al 100%!</strong>
-                <p>No hay referencias pendientes por importar desde Hostinger.</p>
-              </div>
-            </div>
-          </div>
-        </section>
       </div>
 
-      <!-- VISTAS HIJAS DEL DASHBOARD (Inventario, Pedidos, Personalizar, Usuarios, PQRS) -->
+      <!-- VISTAS HIJAS DEL DASHBOARD (Pedidos, Personalizar, Usuarios, PQRS) -->
+
       <div *ngIf="!estaEnInicio" class="dash-child-view-container">
         <router-outlet></router-outlet>
       </div>
