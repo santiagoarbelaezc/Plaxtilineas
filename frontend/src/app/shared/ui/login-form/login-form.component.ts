@@ -145,7 +145,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   loginForm: FormGroup = this.fb.group({
     correo: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    captcha_code: ['', [Validators.required]]
+    rememberEmail: [true]
   });
 
   private passwordMatchValidator = (g: FormGroup) => {
@@ -203,7 +203,8 @@ export class LoginFormComponent implements OnInit, OnDestroy {
     direccion: ['', [Validators.required, Validators.minLength(5)]],
     departamento: ['', [Validators.required]],
     ciudad: ['', [Validators.required]],
-    captcha_code: ['', [Validators.required]]
+    captcha_code: ['', [Validators.required]],
+    autoriza_tratamiento_datos: [false, [Validators.requiredTrue]]
   }, { validators: this.passwordMatchValidator });
 
   departamentos: { [key: string]: string[] } = {
@@ -325,6 +326,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   showSuccessModal = false;
   showPasswordChangeModal = false;
   showPassword = false;
+  showPolicyModal = false;
   errorMsg = '';
   successMsg = '';
   userToRedirect: any = null;
@@ -342,7 +344,6 @@ export class LoginFormComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.captchaId = res.id;
         this.captchaSvg = this.sanitizer.bypassSecurityTrustHtml(res.svg);
-        this.loginForm.get('captcha_code')?.setValue('');
         this.registerForm.get('captcha_code')?.setValue('');
         this.forgotForm.get('captcha_code')?.setValue('');
       },
@@ -353,7 +354,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = 'auto';
     this.fetchCaptcha();
     this.startAutoSlide();
     this.cargarProductosReales();
@@ -371,6 +372,22 @@ export class LoginFormComponent implements OnInit, OnDestroy {
       this.ciudadesDisponibles = dept ? (this.departamentos[dept] || []) : [];
       this.registerForm.get('ciudad')?.setValue('');
     });
+
+    // Recordar correo guardado previamente
+    const savedEmail = localStorage.getItem('plaxtilineas_remembered_email');
+    if (savedEmail) {
+      this.loginForm.patchValue({
+        correo: savedEmail,
+        rememberEmail: true
+      });
+      // Enfocar directamente el campo de contraseña para que solo tenga que escribir la clave
+      setTimeout(() => {
+        const pwdInput = document.getElementById('login-password-input');
+        if (pwdInput) {
+          pwdInput.focus();
+        }
+      }, 250);
+    }
   }
 
   ngOnDestroy(): void {
@@ -512,6 +529,24 @@ export class LoginFormComponent implements OnInit, OnDestroy {
     this.redirectUser(this.userToRedirect);
   }
 
+  openPolicyModal(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    this.showPolicyModal = true;
+  }
+
+  closePolicyModal(): void {
+    this.showPolicyModal = false;
+  }
+
+  acceptPolicyFromModal(): void {
+    this.registerForm.get('autoriza_tratamiento_datos')?.setValue(true);
+    this.registerForm.get('autoriza_tratamiento_datos')?.markAsTouched();
+    this.showPolicyModal = false;
+  }
+
   async onSubmit(): Promise<void> {
     if (this.mode === 'login') {
       if (this.loginForm.invalid) {
@@ -523,14 +558,16 @@ export class LoginFormComponent implements OnInit, OnDestroy {
 
       this.isSubmitting = true;
       this.sessionExpired = false;
-      const { correo, password, captcha_code } = this.loginForm.value;
+      const { correo, password, rememberEmail } = this.loginForm.value;
 
-      const captchaData = {
-        captchaId: this.captchaId,
-        captchaCode: captcha_code
-      };
+      // Persistir correo en localStorage si 'Recordar correo' está activo
+      if (rememberEmail && correo) {
+        localStorage.setItem('plaxtilineas_remembered_email', correo.trim());
+      } else {
+        localStorage.removeItem('plaxtilineas_remembered_email');
+      }
 
-      this.authService.login(correo, password, captchaData).subscribe({
+      this.authService.login(correo, password).subscribe({
         next: (res) => {
           this.isSubmitting = false;
           this.userToRedirect = res.usuario;
@@ -550,10 +587,9 @@ export class LoginFormComponent implements OnInit, OnDestroy {
           }
         },
         error: (err) => {
-          this.errorMsg = err.error?.error || 'Correo, contraseña o código de seguridad incorrectos. Por favor, verifica e inténtalo de nuevo.';
+          this.errorMsg = err.error?.error || 'Correo o contraseña incorrectos. Por favor, verifica e inténtalo de nuevo.';
           this.showErrorModal = true;
           this.isSubmitting = false;
-          this.fetchCaptcha();
         }
       });
     } else if (this.mode === 'forgot') {
@@ -641,9 +677,14 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   async onConfirmRegister(): Promise<void> {
     this.showConfirmModal = false;
     this.isSubmitting = true;
-    const { departamento, ciudad, confirmPassword, captcha_code, ...rest } = this.registerForm.value;
+    const { departamento, ciudad, confirmPassword, captcha_code, autoriza_tratamiento_datos, ...rest } = this.registerForm.value;
     const fullCiudad = `${ciudad}, ${departamento}`;
     const userData = { ...rest, ciudad: fullCiudad, rol: 'cliente' };
+
+    // Recordar el correo del nuevo usuario registrado para su conveniencia
+    if (rest.correo) {
+      localStorage.setItem('plaxtilineas_remembered_email', rest.correo.trim());
+    }
 
     const captchaData = {
       captchaId: this.captchaId,
