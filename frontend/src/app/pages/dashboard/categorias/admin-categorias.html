@@ -8,7 +8,7 @@
       <nav class="breadcrumb-nav" aria-label="Breadcrumb">
         <a routerLink="/admin" class="breadcrumb-link">Admin</a>
         <span class="breadcrumb-separator">/</span>
-        <span class="breadcrumb-current">Categorías</span>
+        <span class="breadcrumb-current">Categorías Plaxtilineas</span>
       </nav>
       <div class="title-with-pill">
         <h1 class="catalogo-page-title">Categorías del Catálogo</h1>
@@ -18,7 +18,7 @@
         </div>
       </div>
       <p class="catalogo-page-subtitle">
-        Familias oficiales de productos, marcas comerciales y subcategorías sincronizadas con el catálogo centralizado Plaxtilineas.
+        Familias oficiales de producto y subcategorías sincronizadas con el catálogo centralizado de Plaxtilineas.
       </p>
     </div>
 
@@ -67,7 +67,7 @@
       </div>
       <div class="stat-number">{{ cargando ? '...' : totalCategorias }}</div>
       <div class="stat-card-footer">
-        <span class="stat-footer-text">Familias oficiales registradas</span>
+        <span class="stat-footer-text">Familias oficiales Plaxtilineas</span>
       </div>
     </div>
 
@@ -99,17 +99,17 @@
       </div>
     </div>
 
-    <!-- Card 4: Marcas -->
+    <!-- Card 4: Productos Sincronizados -->
     <div class="stat-card">
       <div class="stat-card-header">
-        <span class="stat-card-label">Marcas Vinculadas</span>
+        <span class="stat-card-label">Productos Vinculados</span>
         <div class="stat-card-icon-box">
-          <span class="material-symbols-rounded">branding_watermark</span>
+          <span class="material-symbols-rounded">inventory_2</span>
         </div>
       </div>
-      <div class="stat-number">{{ cargando ? '...' : totalMarcas }}</div>
+      <div class="stat-number">{{ cargando ? '...' : totalProductosVinculados }}</div>
       <div class="stat-card-footer">
-        <span class="stat-footer-text">Líneas comerciales oficiales</span>
+        <span class="stat-footer-text">Referencias oficiales en catálogo</span>
       </div>
     </div>
 
@@ -125,7 +125,7 @@
       <div class="bento-welcome-content">
         <div class="bento-badge">
           <span class="status-dot"></span>
-          <span>Catálogo Oficial · Sincronización en Vivo</span>
+          <span>Catálogo Plaxtilineas · Sincronización en Vivo</span>
         </div>
         
         <h2 class="bento-title">
@@ -133,7 +133,7 @@
         </h2>
         
         <p class="bento-desc">
-          Audita en tiempo real las 32 categorías oficiales del catálogo. Los productos asociados y sus variantes se sincronizan automáticamente con la tienda pública sin intervención manual.
+          Audita en tiempo real las 29 categorías oficiales de Plaxtilineas. Los productos asociados y sus variantes técnicas se sincronizan de forma directa con la vitrina pública e inventario.
         </p>
 
         <div class="bento-cta-row">
@@ -149,35 +149,73 @@
       </div>
     </div>
 
-    <!-- Columna 2: Quick Access 360px (Filtro Rápido de Marcas) -->
+    <!-- Columna 2: Quick Access 360px (Filtros Rápidos) -->
     <div class="bento-sidebar-panel">
       <div class="panel-white-card">
         <div class="panel-card-header">
           <div class="panel-header-icon-box">
-            <span class="material-symbols-rounded">filter_alt</span>
+            <span class="material-symbols-rounded">bolt</span>
           </div>
           <div>
-            <h3 class="panel-card-title">Filtro por Marca</h3>
-            <p class="panel-card-subtitle">Líneas de producto catalogadas</p>
+            <h3 class="panel-card-title">Acceso Rápido</h3>
+            <p class="panel-card-subtitle">Filtros dinámicos de catálogo</p>
           </div>
         </div>
 
-        <div class="brand-filter-chips">
+        <div class="quick-filter-list">
           <button 
-            *ngFor="let m of marcasDisponibles"
-            type="button"
-            class="brand-chip-btn"
-            [class.active]="marcaSeleccionada === m"
-            (click)="seleccionarMarca(m)">
-            <span class="brand-chip-name">{{ m === 'Todas' ? 'Todas las marcas' : m }}</span>
-            <span class="brand-chip-count">{{ getCantidadPorMarca(m) }}</span>
+            type="button" 
+            class="quick-filter-btn" 
+            [class.active]="filtroActivo === 'todas'" 
+            (click)="setFiltroRapido('todas')">
+            <div class="quick-filter-info">
+              <span class="material-symbols-rounded filter-btn-icon">category</span>
+              <span>Todas las categorías</span>
+            </div>
+            <span class="quick-filter-count">{{ totalCategorias }}</span>
+          </button>
+
+          <button 
+            type="button" 
+            class="quick-filter-btn" 
+            [class.active]="filtroActivo === 'con_productos'" 
+            (click)="setFiltroRapido('con_productos')">
+            <div class="quick-filter-info">
+              <span class="material-symbols-rounded filter-btn-icon">verified</span>
+              <span>Con productos en vitrina</span>
+            </div>
+            <span class="quick-filter-count">{{ categoriasConProductos }}</span>
+          </button>
+
+          <button 
+            type="button" 
+            class="quick-filter-btn" 
+            [class.active]="filtroActivo === 'con_subcategorias'" 
+            (click)="setFiltroRapido('con_subcategorias')">
+            <div class="quick-filter-info">
+              <span class="material-symbols-rounded filter-btn-icon">account_tree</span>
+              <span>Con subcategorías</span>
+            </div>
+            <span class="quick-filter-count">{{ categoriasConSubcategorias }}</span>
+          </button>
+
+          <button 
+            type="button" 
+            class="quick-filter-btn" 
+            [class.active]="filtroActivo === 'sin_subcategorias'" 
+            (click)="setFiltroRapido('sin_subcategorias')">
+            <div class="quick-filter-info">
+              <span class="material-symbols-rounded filter-btn-icon">info</span>
+              <span>Sin subcategorías</span>
+            </div>
+            <span class="quick-filter-count">{{ categoriasSinSubcategorias }}</span>
           </button>
         </div>
 
-        <div class="panel-card-footer" *ngIf="marcaSeleccionada !== 'Todas'">
-          <button type="button" class="btn-reset-brand" (click)="seleccionarMarca('Todas')">
+        <div class="panel-card-footer" *ngIf="filtroActivo !== 'todas'">
+          <button type="button" class="btn-reset-brand" (click)="setFiltroRapido('todas')">
             <span class="material-symbols-rounded">close</span>
-            <span>Quitar filtro de marca</span>
+            <span>Mostrar todas las categorías</span>
           </button>
         </div>
       </div>
@@ -198,7 +236,7 @@
         class="input-minimal" 
         [(ngModel)]="busqueda" 
         (ngModelChange)="aplicarFiltros()"
-        placeholder="Buscar por categoría, subcategoría o marca..." 
+        placeholder="Buscar por categoría o subcategoría..." 
         aria-label="Buscar categoría">
       <button 
         *ngIf="busqueda" 
@@ -271,12 +309,11 @@
   <!-- Contador de Resultados y Reset -->
   <div class="results-meta-bar" *ngIf="!cargando && !error">
     <div class="results-count">
-      Mostrando <strong>{{ categoriasFiltradas.length }}</strong> de <strong>{{ totalCategorias }}</strong> categorías
-      <span *ngIf="marcaSeleccionada !== 'Todas'"> · Marca: <strong>{{ marcaSeleccionada }}</strong></span>
+      Mostrando <strong>{{ categoriasFiltradas.length }}</strong> de <strong>{{ totalCategorias }}</strong> categorías Plaxtilineas
     </div>
 
     <button 
-      *ngIf="busqueda || marcaSeleccionada !== 'Todas' || filtroConProductos || filtroConSubcategorias" 
+      *ngIf="busqueda || filtroActivo !== 'todas' || filtroConProductos || filtroConSubcategorias" 
       type="button" 
       class="btn-reset-filters" 
       (click)="limpiarFiltros()">
@@ -294,7 +331,7 @@
     <div class="loading-spinner-ring"></div>
     <div class="state-text-box">
       <h3 class="state-title">Cargando categorías oficiales...</h3>
-      <p class="state-subtitle">Sincronizando familias y marcas desde la API centralizada.</p>
+      <p class="state-subtitle">Sincronizando familias de producto desde la API Plaxtilineas.</p>
     </div>
   </div>
 
@@ -334,11 +371,9 @@
       class="clean-cat-card"
       (click)="abrirModal(cat)">
       
-      <!-- Top de la Tarjeta: Marca + ID -->
+      <!-- Top de la Tarjeta: Marca Oficial + ID -->
       <div class="clean-card-top">
-        <span class="clean-brand-pill" [class.brand-espumas]="cat.marca === 'Espumas'">
-          {{ cat.marca || 'Plaxtilineas' }}
-        </span>
+        <span class="clean-brand-pill">Plaxtilineas</span>
         <span class="clean-id-pill">#{{ cat.id }}</span>
       </div>
 
@@ -354,7 +389,7 @@
 
       <!-- Métricas Clave (Subcategorías + En Vitrina) -->
       <div class="clean-card-stats">
-        <div class="clean-stat-chip" title="{{ cat.total_subcategorias }} subcategorías oficiales">
+        <div class="clean-stat-chip" title="{{ cat.total_subcategorias }} subcategorías registradas">
           <span class="material-symbols-rounded chip-stat-icon">account_tree</span>
           <span class="chip-stat-num">{{ cat.total_subcategorias }}</span>
           <span class="chip-stat-text">{{ cat.total_subcategorias === 1 ? 'subcategoría' : 'subcategorías' }}</span>
@@ -450,7 +485,7 @@
 
             <!-- Marca -->
             <td class="td-brand">
-              <span class="table-brand-pill">{{ cat.marca || 'Plaxtilineas' }}</span>
+              <span class="table-brand-pill">Plaxtilineas</span>
             </td>
 
             <!-- Subcategorías -->
@@ -561,7 +596,7 @@
           </div>
           <div>
             <div class="modal-brand-tag">
-              <span class="brand-pill">{{ categoriaModal.marca || 'Plaxtilineas' }}</span>
+              <span class="brand-pill">Plaxtilineas</span>
               <span class="id-pill">ID Oficial: #{{ categoriaModal.id }}</span>
             </div>
             <h2 class="modal-title">{{ categoriaModal.nombre }}</h2>

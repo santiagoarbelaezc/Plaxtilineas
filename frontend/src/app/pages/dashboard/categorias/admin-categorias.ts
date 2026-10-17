@@ -47,7 +47,8 @@ export class AdminCategorias implements OnInit {
   totalCategorias = 0;
   totalSubcategorias = 0;
   categoriasConProductos = 0;
-  totalMarcas = 0;
+  categoriasConSubcategorias = 0;
+  totalProductosVinculados = 0;
 
   constructor(
     private catalogoService: CatalogoService,
@@ -67,14 +68,15 @@ export class AdminCategorias implements OnInit {
       next: (prods) => {
         this.productos = prods;
 
-        // Cargar todas las categorías del catálogo
-        this.catalogoService.getTodasLasCategorias().subscribe({
+        // Cargar exclusivamente las categorías de Plaxtilineas
+        this.catalogoService.getCategorias().subscribe({
           next: (cats) => {
-            const marcasSet = new Set<string>();
+            // Filtrar estrictamente solo marca Plaxtilineas (excluyendo Espumas y otras)
+            const plaxtilineasOnly = cats.filter(c => 
+              (c.marca ?? 'Plaxtilineas').trim().toLowerCase() === 'plaxtilineas'
+            );
 
-            this.categorias = cats.map(c => {
-              if (c.marca) marcasSet.add(c.marca);
-
+            this.categorias = plaxtilineasOnly.map(c => {
               // Productos asociados por ID o por nombre
               const prodsCat = this.productos.filter(p => 
                 (p.categoria_id && p.categoria_id === c.id) ||
@@ -83,23 +85,24 @@ export class AdminCategorias implements OnInit {
 
               return {
                 ...c,
+                marca: 'Plaxtilineas',
                 total_productos: prodsCat.length,
                 productos_asociados: prodsCat,
                 total_subcategorias: (c.subcategorias || []).length
               };
             });
 
-            this.marcasDisponibles = ['Todas', ...Array.from(marcasSet)];
             this.totalCategorias = this.categorias.length;
             this.totalSubcategorias = this.categorias.reduce((acc, curr) => acc + curr.total_subcategorias, 0);
             this.categoriasConProductos = this.categorias.filter(c => c.total_productos > 0).length;
-            this.totalMarcas = marcasSet.size;
+            this.categoriasConSubcategorias = this.categorias.filter(c => c.total_subcategorias > 0).length;
+            this.totalProductosVinculados = this.categorias.reduce((acc, curr) => acc + curr.total_productos, 0);
 
             this.aplicarFiltros();
             this.cargando = false;
           },
           error: (err) => {
-            console.error('Error al cargar categorías:', err);
+            console.error('Error al cargar categorías de Plaxtilineas:', err);
             this.error = true;
             this.cargando = false;
           }
@@ -113,6 +116,8 @@ export class AdminCategorias implements OnInit {
     });
   }
 
+  filtroActivo: 'todas' | 'con_productos' | 'con_subcategorias' | 'sin_subcategorias' = 'todas';
+
   aplicarFiltros(): void {
     let resultado = [...this.categorias];
 
@@ -121,28 +126,25 @@ export class AdminCategorias implements OnInit {
       const q = this.normalizar(this.busqueda);
       resultado = resultado.filter(c => {
         const enNombre = this.normalizar(c.nombre).includes(q);
-        const enMarca = this.normalizar(c.marca || '').includes(q);
         const enSubcategorias = (c.subcategorias || []).some(s => this.normalizar(s.nombre).includes(q));
-        return enNombre || enMarca || enSubcategorias;
+        return enNombre || enSubcategorias;
       });
     }
 
-    // 2. Filtro por marca
-    if (this.marcaSeleccionada !== 'Todas') {
-      resultado = resultado.filter(c => c.marca === this.marcaSeleccionada);
-    }
-
-    // 3. Filtro categorías con productos
-    if (this.filtroConProductos) {
+    // 2. Filtros de estado / producto
+    if (this.filtroActivo === 'con_productos' || this.filtroConProductos) {
       resultado = resultado.filter(c => c.total_productos > 0);
     }
 
-    // 4. Filtro categorías con subcategorías
-    if (this.filtroConSubcategorias) {
+    if (this.filtroActivo === 'con_subcategorias' || this.filtroConSubcategorias) {
       resultado = resultado.filter(c => c.total_subcategorias > 0);
     }
 
-    // 5. Ordenamiento
+    if (this.filtroActivo === 'sin_subcategorias') {
+      resultado = resultado.filter(c => c.total_subcategorias === 0);
+    }
+
+    // 3. Ordenamiento
     resultado.sort((a, b) => {
       switch (this.ordenSeleccionado) {
         case 'nombre_desc':
@@ -161,25 +163,24 @@ export class AdminCategorias implements OnInit {
     this.paginaActual = 1;
   }
 
+  setFiltroRapido(tipo: 'todas' | 'con_productos' | 'con_subcategorias' | 'sin_subcategorias'): void {
+    this.filtroActivo = tipo;
+    this.filtroConProductos = tipo === 'con_productos';
+    this.filtroConSubcategorias = tipo === 'con_subcategorias';
+    this.aplicarFiltros();
+  }
+
   limpiarFiltros(): void {
     this.busqueda = '';
-    this.marcaSeleccionada = 'Todas';
+    this.filtroActivo = 'todas';
     this.filtroConProductos = false;
     this.filtroConSubcategorias = false;
     this.ordenSeleccionado = 'nombre_asc';
     this.aplicarFiltros();
   }
 
-  seleccionarMarca(marca: string): void {
-    this.marcaSeleccionada = marca;
-    this.aplicarFiltros();
-  }
-
-  getCantidadPorMarca(marca: string): number {
-    if (marca === 'Todas') {
-      return this.categorias.length;
-    }
-    return this.categorias.filter(c => c.marca === marca).length;
+  get categoriasSinSubcategorias(): number {
+    return Math.max(0, this.totalCategorias - this.categoriasConSubcategorias);
   }
 
   refrescarCatalogo(): void {
