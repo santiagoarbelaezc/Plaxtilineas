@@ -5,7 +5,7 @@
   position: relative;
   padding: 20px;
   border-radius: 8px; /* Diseño premium y sobrio */
-  margin: 40px auto;
+  margin: 0;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
   font-family: var(--font-primary);
   border: 1px solid #dfdfdf;
