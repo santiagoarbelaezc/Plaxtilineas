@@ -129,6 +129,16 @@
         <!-- Cart -->
         <app-cart-icon></app-cart-icon>
 
+        <!-- Volver al Dashboard (Logged in) -->
+        <a *ngIf="authService.isLoggedIn | async" 
+           routerLink="/admin" 
+           class="btn-dashboard-pill"
+           title="Volver al Panel de Administración"
+           id="nav-return-dashboard-btn">
+          <span class="material-symbols-rounded pill-dash-icon">dashboard</span>
+          <span class="pill-dash-text">Volver al dashboard</span>
+        </a>
+
         <!-- User (Logged In) -->
         <div *ngIf="authService.isLoggedIn | async" class="user-area-tw">
           <div class="user-greeting-tw">
@@ -145,6 +155,11 @@
               <span class="dropdown-title">Mi Cuenta</span>
               <span class="dropdown-email">{{ (authService.currentUser | async)?.correo }}</span>
             </div>
+            <div class="dropdown-divider-tw"></div>
+            <a routerLink="/admin" class="dropdown-item-tw dropdown-item-dashboard" (click)="userDropdownOpen = false">
+              <span class="material-symbols-rounded dropdown-dash-icon">dashboard</span>
+              <span>Volver al dashboard</span>
+            </a>
             <div class="dropdown-divider-tw"></div>
             <a class="dropdown-item-tw" (click)="onUserAction('editar-perfil')">
               <fa-icon [icon]="['fas', 'user']" class="dropdown-item-icon-tw"></fa-icon>
@@ -247,6 +262,10 @@
     <!-- Logged in -->
     <div *ngIf="authService.isLoggedIn | async" class="drawer-user-section-tw">
       <div class="drawer-section-title-tw">Bienvenido, {{ (authService.currentUser | async)?.nombre }}</div>
+      <a routerLink="/admin" class="drawer-link-tw drawer-dashboard-link" (click)="closeMenu()">
+        <span class="material-symbols-rounded drawer-dash-icon">dashboard</span>
+        <span>Volver al dashboard</span>
+      </a>
       <a class="drawer-link-tw" (click)="closeMenu(); onUserAction('editar-perfil')">
         <fa-icon [icon]="['fas', 'user']"></fa-icon> <span>Editar datos</span>
       </a>

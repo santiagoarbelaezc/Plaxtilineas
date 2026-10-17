@@ -439,6 +439,54 @@
   display: none;
 }
 
+/* ── Volver al Dashboard Pill Button (Navbar) ── */
+.btn-dashboard-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #09090b;
+  color: #ffffff !important;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  border: 1px solid #27272a;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-dashboard-pill:hover {
+  background: #18181b;
+  border-color: #3f3f46;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
+}
+
+.btn-dashboard-pill:active {
+  transform: translateY(0);
+}
+
+.pill-dash-icon {
+  font-size: 18px;
+  line-height: 1;
+  color: #ffffff;
+  transition: transform 0.2s ease;
+}
+
+.btn-dashboard-pill:hover .pill-dash-icon {
+  transform: rotate(-8deg) scale(1.08);
+}
+
+.pill-dash-text {
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
 /* User area */
 .user-area-tw {
   position: relative;
@@ -541,6 +589,28 @@
   background: #f8fafc;
   color: var(--green);
   text-decoration: none;
+}
+
+.dropdown-item-dashboard {
+  background: #f4f5f7;
+  color: #09090b !important;
+  font-weight: 700;
+}
+
+.dropdown-item-dashboard:hover {
+  background: #09090b !important;
+  color: #ffffff !important;
+}
+
+.dropdown-dash-icon {
+  font-size: 18px;
+  color: #09090b;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.dropdown-item-dashboard:hover .dropdown-dash-icon {
+  color: #ffffff;
 }
 
 .dropdown-item-icon-tw {
@@ -857,6 +927,31 @@ button.action-icon-btn.search-toggle {
   flex-direction: column;
 }
 
+.drawer-dashboard-link {
+  background: #09090b !important;
+  color: #ffffff !important;
+  border-radius: 12px;
+  margin: 6px 1.5rem 10px;
+  padding: 11px 16px;
+  width: auto;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.drawer-dashboard-link:hover {
+  background: #18181b !important;
+  color: #ffffff !important;
+}
+
+.drawer-dash-icon {
+  font-size: 20px;
+  line-height: 1;
+  color: #ffffff;
+}
+
 .drawer-logout-tw {
   color: #ef4444 !important;
 }
@@ -1092,6 +1187,16 @@ button.action-icon-btn.search-toggle {
   }
   .mobile-bottom-nav {
     display: flex;
+  }
+}
+
+@media (max-width: 640px) {
+  .btn-dashboard-pill {
+    padding: 8px 10px;
+    gap: 0;
+  }
+  .btn-dashboard-pill .pill-dash-text {
+    display: none;
   }
 }
 

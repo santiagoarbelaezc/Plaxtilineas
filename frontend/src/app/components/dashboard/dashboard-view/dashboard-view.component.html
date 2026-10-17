@@ -83,12 +83,19 @@
       </ul>
     </nav>
 
-    <!-- Footer del Sidebar: Salir -->
+    <!-- Footer del Sidebar: Volver al Sitio Web & Cerrar Sesión -->
     <div class="sidebar-footer">
-      <button type="button" class="nav-link btn-sidebar-logout" (click)="logout()" title="Cerrar sesión">
-        <span class="material-symbols-rounded nav-icon">logout</span>
-        <span class="nav-label" *ngIf="!isSidebarCollapsed">Cerrar Sesión</span>
-      </button>
+      <div class="sidebar-footer-actions">
+        <a routerLink="/" class="nav-link btn-sidebar-site" (click)="closeMobileSidebar()" title="Volver al sitio web">
+          <span class="material-symbols-rounded nav-icon">storefront</span>
+          <span class="nav-label" *ngIf="!isSidebarCollapsed">Volver al sitio web</span>
+        </a>
+
+        <button type="button" class="nav-link btn-sidebar-logout" (click)="logout()" title="Cerrar sesión">
+          <span class="material-symbols-rounded nav-icon">logout</span>
+          <span class="nav-label" *ngIf="!isSidebarCollapsed">Cerrar Sesión</span>
+        </button>
+      </div>
     </div>
   </aside>
 
@@ -138,10 +145,10 @@
           </label>
         </div>
 
-        <!-- Enlace a Tienda Pública -->
-        <a routerLink="/" target="_blank" class="header-action-pill" title="Abrir tienda en nueva pestaña">
+        <!-- Enlace al Sitio Web (Volver al sitio web) -->
+        <a routerLink="/" class="header-action-pill" title="Volver al sitio web">
           <span class="material-symbols-rounded">storefront</span>
-          <span class="pill-label">Ver Tienda</span>
+          <span class="pill-label">Volver al sitio web</span>
         </a>
 
         <!-- Botón Asistente Mateo IA -->
