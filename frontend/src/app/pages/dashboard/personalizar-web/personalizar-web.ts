@@ -2,6 +2,39 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {
+  faLayerGroup,
+  faEye,
+  faEyeSlash,
+  faDesktop,
+  faTabletAlt,
+  faMobileAlt,
+  faSync,
+  faArrowUp,
+  faArrowDown,
+  faPen,
+  faTrash,
+  faCheck,
+  faPlus,
+  faSearch,
+  faExternalLinkAlt,
+  faTimes,
+  faImage,
+  faBullhorn,
+  faAlignLeft,
+  faComments,
+  faQuestionCircle,
+  faImages,
+  faShoppingBag,
+  faFilter,
+  faGlobe,
+  faSlidersH,
+  faCheckCircle,
+  faExclamationCircle,
+  faClock,
+  faCloudUploadAlt
+} from '@fortawesome/free-solid-svg-icons';
 import { ComponentesService, ComponenteDinamico } from '../../../services/componentes.service';
 import { CategoriasService } from '../../../services/categorias.service';
 import Swal from 'sweetalert2';
@@ -9,11 +42,43 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-personalizar-web',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule],
   templateUrl: './personalizar-web.html',
   styleUrls: ['./personalizar-web.css']
 })
 export class PersonalizarWeb implements OnInit {
+
+  // Iconos FontAwesome
+  faLayerGroup = faLayerGroup;
+  faEye = faEye;
+  faEyeSlash = faEyeSlash;
+  faDesktop = faDesktop;
+  faTabletAlt = faTabletAlt;
+  faMobileAlt = faMobileAlt;
+  faSync = faSync;
+  faArrowUp = faArrowUp;
+  faArrowDown = faArrowDown;
+  faPen = faPen;
+  faTrash = faTrash;
+  faCheck = faCheck;
+  faPlus = faPlus;
+  faSearch = faSearch;
+  faExternalLinkAlt = faExternalLinkAlt;
+  faTimes = faTimes;
+  faImage = faImage;
+  faBullhorn = faBullhorn;
+  faAlignLeft = faAlignLeft;
+  faComments = faComments;
+  faQuestionCircle = faQuestionCircle;
+  faImages = faImages;
+  faShoppingBag = faShoppingBag;
+  faFilter = faFilter;
+  faGlobe = faGlobe;
+  faSlidersH = faSlidersH;
+  faCheckCircle = faCheckCircle;
+  faExclamationCircle = faExclamationCircle;
+  faClock = faClock;
+  faCloudUploadAlt = faCloudUploadAlt;
 
   componentes: ComponenteDinamico[] = [];
   categoriasLista: any[] = [];
@@ -21,6 +86,12 @@ export class PersonalizarWeb implements OnInit {
   error = '';
   mensajeExito = '';
   subiendoImagen = false;
+
+  // ─── Filtros y búsqueda ─────────────────────────────
+  filtroBusqueda: string = '';
+  filtroEstado: 'todos' | 'activos' | 'inactivos' = 'todos';
+  filtroZona: 'todas' | 'superior' | 'inferior' = 'todas';
+  filtroTipo: string = 'todos';
 
   // ─── Vista previa iframe ────────────────────────────
   vistaPrevia = false;
@@ -123,6 +194,101 @@ export class PersonalizarWeb implements OnInit {
     });
   }
 
+  // ─── Getters para estadísticas y filtros ────────────
+  get totalSecciones(): number {
+    return this.componentes.length;
+  }
+
+  get activasCount(): number {
+    return this.componentes.filter(c => c.activo == 1 || c.activo === true).length;
+  }
+
+  get inactivasCount(): number {
+    return this.componentes.filter(c => c.activo == 0 || c.activo === false).length;
+  }
+
+  get zonaSuperiorCount(): number {
+    return this.componentes.filter(c => c.contenido?.posicion !== 'inferior').length;
+  }
+
+  get zonaInferiorCount(): number {
+    return this.componentes.filter(c => c.contenido?.posicion === 'inferior').length;
+  }
+
+  get filteredComponentes(): ComponenteDinamico[] {
+    return this.componentes.filter(comp => {
+      // 1. Filtro por estado
+      if (this.filtroEstado === 'activos' && !(comp.activo == 1 || comp.activo === true)) return false;
+      if (this.filtroEstado === 'inactivos' && (comp.activo == 1 || comp.activo === true)) return false;
+
+      // 2. Filtro por zona
+      const pos = comp.contenido?.posicion === 'inferior' ? 'inferior' : 'superior';
+      if (this.filtroZona !== 'todas' && pos !== this.filtroZona) return false;
+
+      // 3. Filtro por tipo
+      if (this.filtroTipo !== 'todos' && comp.tipo !== this.filtroTipo) return false;
+
+      // 4. Búsqueda de texto
+      if (this.filtroBusqueda.trim()) {
+        const query = this.filtroBusqueda.toLowerCase().trim();
+        const tipoMatch = (comp.tipo || '').toLowerCase().includes(query);
+        const tipoLabelMatch = this.getTipoLabel(comp.tipo).toLowerCase().includes(query);
+        const c = comp.contenido || {};
+        const tituloMatch = (c.titulo || '').toLowerCase().includes(query);
+        const subtituloMatch = (c.subtitulo || '').toLowerCase().includes(query);
+        const descMatch = (c.descripcion || c.texto || c.cuerpo || '').toLowerCase().includes(query);
+        return tipoMatch || tipoLabelMatch || tituloMatch || subtituloMatch || descMatch;
+      }
+
+      return true;
+    });
+  }
+
+  getPosicionOriginal(comp: ComponenteDinamico): number {
+    return this.componentes.findIndex(c => c.id === comp.id);
+  }
+
+  isFirstInGlobal(comp: ComponenteDinamico): boolean {
+    return this.getPosicionOriginal(comp) === 0;
+  }
+
+  isLastInGlobal(comp: ComponenteDinamico): boolean {
+    const idx = this.getPosicionOriginal(comp);
+    return idx === this.componentes.length - 1;
+  }
+
+  limpiarFiltros(): void {
+    this.filtroBusqueda = '';
+    this.filtroEstado = 'todos';
+    this.filtroZona = 'todas';
+    this.filtroTipo = 'todos';
+  }
+
+  setFiltroEstado(estado: 'todos' | 'activos' | 'inactivos'): void {
+    this.filtroEstado = estado;
+  }
+
+  setFiltroZona(zona: 'todas' | 'superior' | 'inferior'): void {
+    this.filtroZona = zona;
+  }
+
+  setFiltroTipo(tipo: string): void {
+    this.filtroTipo = tipo;
+  }
+
+  getTipoLabel(tipo: string): string {
+    switch (tipo) {
+      case 'banner': return 'Banner Publicitario';
+      case 'anuncio': return 'Anuncio / Novedades';
+      case 'texto': return 'Bloque Informativo';
+      case 'testimonios': return 'Testimonios & Clientes';
+      case 'faq': return 'Preguntas Frecuentes';
+      case 'galeria': return 'Galería Fotográfica';
+      case 'carrusel_productos': return 'Carrusel de Catálogo';
+      default: return tipo || 'Sección';
+    }
+  }
+
   // ─── Orden ─────────────────────────────────────────
   moverArriba(index: number, event: Event): void {
     event.stopPropagation();
@@ -142,11 +308,31 @@ export class PersonalizarWeb implements OnInit {
     this.guardarOrden();
   }
 
+  moverCompArriba(comp: ComponenteDinamico, event: Event): void {
+    event.stopPropagation();
+    const index = this.getPosicionOriginal(comp);
+    if (index <= 0) return;
+    const temp = this.componentes[index];
+    this.componentes[index] = this.componentes[index - 1];
+    this.componentes[index - 1] = temp;
+    this.guardarOrden();
+  }
+
+  moverCompAbajo(comp: ComponenteDinamico, event: Event): void {
+    event.stopPropagation();
+    const index = this.getPosicionOriginal(comp);
+    if (index < 0 || index >= this.componentes.length - 1) return;
+    const temp = this.componentes[index];
+    this.componentes[index] = this.componentes[index + 1];
+    this.componentes[index + 1] = temp;
+    this.guardarOrden();
+  }
+
   guardarOrden(): void {
     const ids = this.componentes.map(c => c.id).filter(id => id !== undefined) as number[];
     this.componentesService.reordenarComponentes(ids).subscribe({
       next: () => {
-        this.mostrarMensaje('Orden actualizado correctamente');
+        this.mostrarMensaje('Secuencia de secciones actualizada en vivo');
       },
       error: (err) => {
         console.error('Error al guardar el nuevo orden:', err);
@@ -162,7 +348,7 @@ export class PersonalizarWeb implements OnInit {
       this.componentesService.actualizarComponente(comp.id, { activo: nuevoEstado }).subscribe({
         next: () => {
           comp.activo = nuevoEstado;
-          this.mostrarMensaje(`Componente ${nuevoEstado ? 'activado' : 'desactivado'} correctamente`);
+          this.mostrarMensaje(`Sección ${nuevoEstado ? 'activada' : 'desactivada'} correctamente`);
         },
         error: (err) => console.error(err)
       });

@@ -803,8 +803,16 @@ export class PqrAdminComponent implements OnInit, OnDestroy {
     return this.pqrUtil.obtenerClaseTipo(tipo);
   }
   
-  formatearFecha(fecha: string): string {
-    return this.pqrUtil.formatearFecha(fecha);
+  formatearFecha(fechaOObjeto: any): string {
+    if (!fechaOObjeto) return '';
+    if (typeof fechaOObjeto === 'object') {
+      if (fechaOObjeto.fecha_creacion_format) return fechaOObjeto.fecha_creacion_format;
+      if (fechaOObjeto.fecha_creacion_formateada) return fechaOObjeto.fecha_creacion_formateada;
+      if (fechaOObjeto.fecha_creacion) return this.pqrUtil.formatearFecha(fechaOObjeto.fecha_creacion);
+      if (fechaOObjeto.fecha) return this.pqrUtil.formatearFecha(fechaOObjeto.fecha);
+      return '';
+    }
+    return this.pqrUtil.formatearFecha(fechaOObjeto);
   }
   
   get arrayNumerosPaginas(): number[] {

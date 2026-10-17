@@ -575,3 +575,58 @@
   background: #b91c1c;
   transform: translateY(-1px);
 }
+
+/* ==========================================================================
+   BOTONES DE ACCIÓN DE TABLA (VER CASO Y ELIMINAR)
+   ========================================================================== */
+.btn-ver-caso {
+  background: #09090b !important;
+  color: #ffffff !important;
+  border: 1.5px solid #09090b !important;
+  padding: 8px 18px !important;
+  border-radius: 12px !important;
+  font-size: 0.82rem !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  white-space: nowrap !important;
+  letter-spacing: 0.02em !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
+  font-family: inherit !important;
+  text-decoration: none !important;
+}
+
+.btn-ver-caso:hover {
+  background: #27272a !important;
+  border-color: #27272a !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn-delete-pqr {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  border-radius: 12px !important;
+  border: 1.5px solid #fecaca !important;
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+  font-size: 0.85rem !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  padding: 0 !important;
+}
+
+.btn-delete-pqr:hover {
+  background: #fee2e2 !important;
+  border-color: #dc2626 !important;
+  color: #b91c1c !important;
+  transform: translateY(-1px) !important;
+}

@@ -25,7 +25,7 @@
       </div>
 
       <div style="font-size: 0.85rem; color: #71717a; font-weight: 600;">
-        Registrada el: <strong style="color: #09090b;">{{ formatearFecha(pqrSeleccionada.fecha_creacion || '') }}</strong>
+        Registrada el: <strong style="color: #09090b;">{{ formatearFecha(pqrSeleccionada) }}</strong>
       </div>
     </div>
 
@@ -391,12 +391,12 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th style="width: 130px;">Ticket</th>
-              <th>Tipo</th>
+              <th style="width: 140px;">Ticket</th>
+              <th style="width: 120px;">Tipo</th>
               <th>Solicitante</th>
-              <th>Estado</th>
-              <th>Fecha Registro</th>
-              <th style="width: 160px; text-align: right;">Acciones</th>
+              <th style="width: 130px;">Estado</th>
+              <th style="width: 160px;">Fecha Registro</th>
+              <th style="width: 180px; text-align: right;">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -436,23 +436,24 @@
                 </span>
               </td>
 
-              <!-- Fecha -->
-              <td style="font-size: 0.85rem; color: #52525b; font-weight: 600;">
-                {{ formatearFecha(pqr.fecha_creacion || '') }}
+              <!-- Fecha Registro -->
+              <td style="font-size: 0.85rem; color: #52525b; font-weight: 600; white-space: nowrap;">
+                <fa-icon icon="calendar-alt" style="color: #a1a1aa; margin-right: 6px; font-size: 0.8rem;"></fa-icon>
+                {{ formatearFecha(pqr) || 'Reciente' }}
               </td>
 
               <!-- Acciones -->
-              <td style="text-align: right;">
-                <div style="display: inline-flex; align-items: center; gap: 8px;">
+              <td style="text-align: right; white-space: nowrap;">
+                <div style="display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px;">
                   <button 
-                    class="btn-detail-action" 
-                    style="padding: 7px 14px; font-size: 0.8rem; background: #09090b; color: #ffffff; border-color: #09090b;"
-                    (click)="verDetallePQR(pqr)">
-                    Ver Caso &rarr;
+                    class="btn-ver-caso" 
+                    (click)="verDetallePQR(pqr)"
+                    title="Ver detalle y responder caso">
+                    <fa-icon icon="eye" style="font-size: 0.82rem;"></fa-icon>
+                    <span>Ver Caso</span>
                   </button>
                   <button 
-                    class="page-btn" 
-                    style="color: #dc2626; border-color: #fecaca; background: #fef2f2; padding: 7px 10px;"
+                    class="btn-delete-pqr" 
                     (click)="eliminarPQR(pqr)" 
                     title="Eliminar PQR">
                     <fa-icon icon="trash-alt"></fa-icon>

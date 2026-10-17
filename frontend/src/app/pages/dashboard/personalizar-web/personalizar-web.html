@@ -1,70 +1,175 @@
 <div class="admin-content-wrapper-inner">
-  
-  <!-- Encabezado -->
-  <div class="admin-view-header">
-    <div class="header-left">
-      <h1 class="admin-view-title">Personalizar</h1>
-      <p class="admin-view-subtitle">Organiza y gestiona las secciones dinámicas de la Landing Page</p>
+
+  <!-- 1. Fila de Stat Cards (4 columnas) -->
+  <div class="stats-row" *ngIf="!cargando">
+    <!-- Total Secciones -->
+    <div class="stat-card">
+      <div class="stat-header">
+        <span class="stat-card-label">Total Secciones</span>
+        <div class="stat-icon-box">
+          <fa-icon [icon]="faLayerGroup"></fa-icon>
+        </div>
+      </div>
+      <div class="stat-number">{{ totalSecciones }}</div>
+      <div class="stat-meta">
+        <span class="stat-pill">{{ activasCount }} visibles</span>
+        <span class="stat-subtext">Componentes creados</span>
+      </div>
     </div>
-    <button class="btn-preview-toggle" (click)="togglePreview()">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-      </svg>
-      {{ vistaPrevia ? 'Cerrar vista previa' : 'Ver inicio en vivo' }}
-    </button>
+
+    <!-- Secciones Activas / En Vivo -->
+    <div class="stat-card stat-highlight">
+      <div class="stat-header">
+        <span class="stat-card-label">Visibles en Vivo</span>
+        <div class="stat-icon-box highlight-icon">
+          <fa-icon [icon]="faEye"></fa-icon>
+        </div>
+      </div>
+      <div class="stat-number">{{ activasCount }}</div>
+      <div class="stat-meta">
+        <span class="stat-pill-ok" *ngIf="activasCount > 0">Publicadas en web</span>
+        <span class="stat-pill-alert" *ngIf="activasCount === 0">Ninguna visible</span>
+      </div>
+    </div>
+
+    <!-- Zona Superior -->
+    <div class="stat-card">
+      <div class="stat-header">
+        <span class="stat-card-label">Zona Superior</span>
+        <div class="stat-icon-box">
+          <fa-icon [icon]="faDesktop"></fa-icon>
+        </div>
+      </div>
+      <div class="stat-number">{{ zonaSuperiorCount }}</div>
+      <div class="stat-meta">
+        <span class="stat-subtext">Inicio y cabecera</span>
+      </div>
+    </div>
+
+    <!-- Zona Inferior -->
+    <div class="stat-card">
+      <div class="stat-header">
+        <span class="stat-card-label">Zona Inferior</span>
+        <div class="stat-icon-box">
+          <fa-icon [icon]="faSlidersH"></fa-icon>
+        </div>
+      </div>
+      <div class="stat-number">{{ zonaInferiorCount }}</div>
+      <div class="stat-meta">
+        <span class="stat-subtext">Secciones antes del pie</span>
+      </div>
+    </div>
   </div>
 
-  <!-- Toast de éxito -->
+  <!-- 2. Bento Grid (Hero Oscuro + Quick Access 360px) -->
+  <div class="bento-grid">
+    <!-- Tarjeta Hero Estilo Bento (Fondo Negro con Efecto de Profundidad) -->
+    <div class="bento-welcome">
+      <div class="bento-status">
+        <span class="status-dot"></span>
+        <span class="bento-status-text">Diseñador Dinámico en Tiempo Real</span>
+      </div>
+      <h1 class="bento-title">Personalización Web</h1>
+      <p class="bento-subtitle">
+        Organiza, reordena y configura los bloques de contenido de la página principal. Cualquier cambio se sincroniza instantáneamente con la tienda de Plaxtilineas.
+      </p>
+      <div class="bento-actions">
+        <button class="btn-primary-white" (click)="togglePreview()">
+          <fa-icon [icon]="vistaPrevia ? faEyeSlash : faEye"></fa-icon>
+          {{ vistaPrevia ? 'Ocultar Simulador' : 'Simulador en Vivo' }}
+        </button>
+        <button class="btn-ghost-white" (click)="abrirEnNuevaPestana()">
+          <fa-icon [icon]="faExternalLinkAlt"></fa-icon> Abrir Web en Nueva Pestaña
+        </button>
+        <button class="btn-ghost-white" (click)="cargarComponentes()" [disabled]="cargando">
+          <fa-icon [icon]="faSync" [class.fa-spin]="cargando"></fa-icon> Sincronizar
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Access (360px) -->
+    <div class="bento-quick-card">
+      <div class="quick-header">
+        <h3>Atajos de Creación</h3>
+        <span class="quick-pill">Añadir Rápido</span>
+      </div>
+      <div class="quick-actions-list">
+        <button class="quick-action-item" (click)="abrirCreador('banner')">
+          <div class="quick-item-icon banner"><fa-icon [icon]="faImage"></fa-icon></div>
+          <div class="quick-item-info">
+            <span class="quick-item-title">Nuevo Banner</span>
+            <span class="quick-item-desc">Promoción visual panorámica</span>
+          </div>
+        </button>
+        <button class="quick-action-item" (click)="abrirCreador('anuncio')">
+          <div class="quick-item-icon anuncio"><fa-icon [icon]="faBullhorn"></fa-icon></div>
+          <div class="quick-item-info">
+            <span class="quick-item-title">Nueva Tarjeta Novedad</span>
+            <span class="quick-item-desc">Tarjeta bento con beneficios</span>
+          </div>
+        </button>
+        <button class="quick-action-item" (click)="setFiltroEstado('activos')">
+          <div class="quick-item-icon view"><fa-icon [icon]="faEye"></fa-icon></div>
+          <div class="quick-item-info">
+            <span class="quick-item-title">Ver Sólo Activas ({{ activasCount }})</span>
+            <span class="quick-item-desc">Filtrar secciones publicadas</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de éxito flotante -->
   <div *ngIf="mensajeExito" class="toast-success">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-    {{ mensajeExito }}
+    <fa-icon [icon]="faCheckCircle"></fa-icon>
+    <span>{{ mensajeExito }}</span>
   </div>
 
-  <!-- ════════════ PANEL DE VISTA PREVIA (iframe real) ════════════ -->
+  <!-- 3. PANEL DE VISTA PREVIA / SIMULADOR RESPONSIVE -->
   <div class="preview-panel" *ngIf="vistaPrevia">
     <div class="preview-panel-bar">
       <div class="preview-url-pill">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        <span>http://localhost:4200/</span>
+        <fa-icon [icon]="faGlobe"></fa-icon>
+        <span>http://localhost:4200/ (Vista previa en vivo)</span>
       </div>
       <div class="preview-bar-actions">
-        <button class="btn-preview-action" (click)="recargarPreview()" title="Recargar para ver cambios">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-          Recargar
+        <button class="btn-preview-action" (click)="recargarPreview()" title="Recargar vista previa">
+          <fa-icon [icon]="faSync"></fa-icon> Recargar
         </button>
-        <button class="btn-preview-action btn-preview-open" (click)="abrirEnNuevaPestana()" title="Abrir en nueva pestaña">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          Abrir
+        <button class="btn-preview-action" (click)="abrirEnNuevaPestana()" title="Abrir en pestaña completa">
+          <fa-icon [icon]="faExternalLinkAlt"></fa-icon> Abrir
         </button>
-        <button class="btn-preview-close" (click)="togglePreview()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <button class="btn-preview-close" (click)="togglePreview()" title="Cerrar vista previa">
+          <fa-icon [icon]="faTimes"></fa-icon>
         </button>
       </div>
     </div>
 
-    <!-- Selector de escala de dispositivo -->
+    <!-- Selector de Dispositivo -->
     <div class="preview-device-bar">
-      <button class="btn-device" [class.active]="deviceMode === 'desktop'" (click)="setDevice('desktop')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        Desktop
-      </button>
-      <button class="btn-device" [class.active]="deviceMode === 'tablet'" (click)="setDevice('tablet')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-        Tablet
-      </button>
-      <button class="btn-device" [class.active]="deviceMode === 'mobile'" (click)="setDevice('mobile')">
-        <svg width="14" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-        Móvil
-      </button>
-      <span class="device-hint">Los cambios guardados se reflejan al recargar</span>
+      <div class="device-switcher-group">
+        <button class="btn-device" [class.active]="deviceMode === 'desktop'" (click)="setDevice('desktop')">
+          <fa-icon [icon]="faDesktop"></fa-icon> Desktop (100%)
+        </button>
+        <button class="btn-device" [class.active]="deviceMode === 'tablet'" (click)="setDevice('tablet')">
+          <fa-icon [icon]="faTabletAlt"></fa-icon> Tablet (768px)
+        </button>
+        <button class="btn-device" [class.active]="deviceMode === 'mobile'" (click)="setDevice('mobile')">
+          <fa-icon [icon]="faMobileAlt"></fa-icon> Móvil (390px)
+        </button>
+      </div>
+      <span class="device-hint">
+        <fa-icon [icon]="faClock"></fa-icon> Los cambios guardados se reflejan inmediatamente al recargar
+      </span>
     </div>
 
-    <!-- Contenedor del iframe -->
+    <!-- Contenedor del Iframe -->
     <div class="iframe-container" [ngClass]="'device-' + deviceMode">
       <div class="iframe-chrome">
         <div class="iframe-chrome-dots">
           <span></span><span></span><span></span>
         </div>
+        <span class="chrome-title">Plaxtilineas Landing Page — Modo {{ deviceMode | uppercase }}</span>
       </div>
       <div class="iframe-body-wrapper">
         <iframe
@@ -79,229 +184,367 @@
     </div>
   </div>
 
-  <!-- ════════════ PANEL EDITOR ════════════ -->
-  <div class="editor-panel">
-
-    <!-- Botones de Acción Rápida -->
-    <div class="action-bar">
-      <h3 class="action-bar-title">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Añadir nueva sección
-      </h3>
-      <div class="quick-add-grid">
-
-        <button class="btn-quick-add btn-banner" (click)="abrirCreador('banner')">
-          <div class="quick-icon-box icon-banner">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/>
-            </svg>
-          </div>
-          <div class="quick-text">
-            <strong>Banner</strong>
-            <span>Imagen + descripción</span>
-          </div>
-        </button>
-
-        <button class="btn-quick-add btn-anuncio" (click)="abrirCreador('anuncio')">
-          <div class="quick-icon-box icon-anuncio">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/>
-            </svg>
-          </div>
-          <div class="quick-text">
-            <strong>Anuncio</strong>
-            <span>Tarjeta de novedades</span>
-          </div>
-        </button>
-
-        <button class="btn-quick-add btn-texto" (click)="abrirCreador('texto')">
-          <div class="quick-icon-box icon-texto">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
-            </svg>
-          </div>
-          <div class="quick-text">
-            <strong>Bloque Texto</strong>
-            <span>Título + párrafo</span>
-          </div>
-        </button>
-
-        <button class="btn-quick-add btn-testimonios" (click)="abrirCreador('testimonios')">
-          <div class="quick-icon-box icon-testimonios">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-          </div>
-          <div class="quick-text">
-            <strong>Testimonios</strong>
-            <span>Carrusel de opiniones</span>
-          </div>
-        </button>
-
-        <button class="btn-quick-add btn-faq" (click)="abrirCreador('faq')">
-          <div class="quick-icon-box icon-faq">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-            </svg>
-          </div>
-          <div class="quick-text">
-            <strong>Preguntas Frecuentes</strong>
-            <span>Acordeón interactivo</span>
-          </div>
-        </button>
-
-        <button class="btn-quick-add btn-galeria" (click)="abrirCreador('galeria')">
-          <div class="quick-icon-box icon-galeria">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
-            </svg>
-          </div>
-          <div class="quick-text">
-            <strong>Galería</strong>
-            <span>Mosaico de fotos</span>
-          </div>
-        </button>
-
-        <button class="btn-quick-add btn-carrusel_productos" (click)="abrirCreador('carrusel_productos')">
-          <div class="quick-icon-box icon-carrusel_productos">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-            </svg>
-          </div>
-          <div class="quick-text">
-            <strong>Carrusel Productos</strong>
-            <span>Filtrado por categoría</span>
-          </div>
-        </button>
-
+  <!-- 4. CATÁLOGO DE SECCIONES (Añadir Nueva Sección) -->
+  <div class="catalog-card">
+    <div class="catalog-header">
+      <div class="catalog-header-text">
+        <span class="catalog-badge">Catálogo de Componentes</span>
+        <h2 class="catalog-title">Añadir Nueva Sección a la Página</h2>
+        <p class="catalog-subtitle">Selecciona el tipo de bloque interactivo que deseas diseñar y ubicar en la tienda</p>
       </div>
+    </div>
+
+    <div class="catalog-grid">
+      <!-- 1. Banner -->
+      <button class="catalog-item-btn" (click)="abrirCreador('banner')">
+        <div class="catalog-icon-wrapper banner-style">
+          <fa-icon [icon]="faImage"></fa-icon>
+        </div>
+        <div class="catalog-item-info">
+          <div class="catalog-title-row">
+            <h4>Banner Hero</h4>
+            <span class="add-plus-badge">+ Añadir</span>
+          </div>
+          <p>Imagen full width con mensaje promocional y enlace de redirección.</p>
+        </div>
+      </button>
+
+      <!-- 2. Anuncio -->
+      <button class="catalog-item-btn" (click)="abrirCreador('anuncio')">
+        <div class="catalog-icon-wrapper anuncio-style">
+          <fa-icon [icon]="faBullhorn"></fa-icon>
+        </div>
+        <div class="catalog-item-info">
+          <div class="catalog-title-row">
+            <h4>Anuncio Novedades</h4>
+            <span class="add-plus-badge">+ Añadir</span>
+          </div>
+          <p>Tarjeta bento con hasta dos productos destacados y lista de beneficios.</p>
+        </div>
+      </button>
+
+      <!-- 3. Texto -->
+      <button class="catalog-item-btn" (click)="abrirCreador('texto')">
+        <div class="catalog-icon-wrapper texto-style">
+          <fa-icon [icon]="faAlignLeft"></fa-icon>
+        </div>
+        <div class="catalog-item-info">
+          <div class="catalog-title-row">
+            <h4>Bloque Informativo</h4>
+            <span class="add-plus-badge">+ Añadir</span>
+          </div>
+          <p>Título editorial con párrafo amplio y alineación personalizada.</p>
+        </div>
+      </button>
+
+      <!-- 4. Testimonios -->
+      <button class="catalog-item-btn" (click)="abrirCreador('testimonios')">
+        <div class="catalog-icon-wrapper testimonios-style">
+          <fa-icon [icon]="faComments"></fa-icon>
+        </div>
+        <div class="catalog-item-info">
+          <div class="catalog-title-row">
+            <h4>Testimonios Clientes</h4>
+            <span class="add-plus-badge">+ Añadir</span>
+          </div>
+          <p>Carrusel de valoraciones con estrellas, fotos y comentarios reales.</p>
+        </div>
+      </button>
+
+      <!-- 5. FAQ -->
+      <button class="catalog-item-btn" (click)="abrirCreador('faq')">
+        <div class="catalog-icon-wrapper faq-style">
+          <fa-icon [icon]="faQuestionCircle"></fa-icon>
+        </div>
+        <div class="catalog-item-info">
+          <div class="catalog-title-row">
+            <h4>Preguntas Frecuentes</h4>
+            <span class="add-plus-badge">+ Añadir</span>
+          </div>
+          <p>Acordeón interactivo para aclarar envíos, pagos y garantías.</p>
+        </div>
+      </button>
+
+      <!-- 6. Galería -->
+      <button class="catalog-item-btn" (click)="abrirCreador('galeria')">
+        <div class="catalog-icon-wrapper galeria-style">
+          <fa-icon [icon]="faImages"></fa-icon>
+        </div>
+        <div class="catalog-item-info">
+          <div class="catalog-title-row">
+            <h4>Galería de Fotos</h4>
+            <span class="add-plus-badge">+ Añadir</span>
+          </div>
+          <p>Mosaico de imágenes de proyectos realizados e insumos instalados.</p>
+        </div>
+      </button>
+
+      <!-- 7. Carrusel Productos -->
+      <button class="catalog-item-btn" (click)="abrirCreador('carrusel_productos')">
+        <div class="catalog-icon-wrapper carrusel-style">
+          <fa-icon [icon]="faShoppingBag"></fa-icon>
+        </div>
+        <div class="catalog-item-info">
+          <div class="catalog-title-row">
+            <h4>Carrusel de Catálogo</h4>
+            <span class="add-plus-badge">+ Añadir</span>
+          </div>
+          <p>Vitrina dinámica de productos filtrados automáticamente por categoría.</p>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- 5. GESTOR DE SECCIONES (Lista Reordenable & Filtros) -->
+  <div class="sections-manager-card">
+
+    <!-- Header y Barra de Filtros Unificada -->
+    <div class="manager-header">
+      <div class="manager-header-info">
+        <div class="manager-title-row">
+          <h3 class="manager-title">Secciones Diseñadas</h3>
+          <span class="manager-count-badge">{{ filteredComponentes.length }} de {{ componentes.length }}</span>
+        </div>
+        <p class="manager-subtitle">
+          Utiliza las flechas para ordenar la posición en la página o el switch para publicar/ocultar en vivo
+        </p>
+      </div>
+
+      <!-- Barra de Filtros y Búsqueda -->
+      <div class="manager-filters-toolbar">
+        <!-- Búsqueda Minimalista -->
+        <div class="filter-search-box">
+          <fa-icon [icon]="faSearch" class="search-icon"></fa-icon>
+          <input
+            type="text"
+            [(ngModel)]="filtroBusqueda"
+            placeholder="Buscar por título, tipo o contenido..."
+            class="filter-search-input">
+          <button *ngIf="filtroBusqueda" (click)="filtroBusqueda = ''" class="btn-clear-search">
+            <fa-icon [icon]="faTimes"></fa-icon>
+          </button>
+        </div>
+
+        <!-- Combo Box Estado -->
+        <div class="filter-select-wrapper">
+          <select [(ngModel)]="filtroEstado" class="filter-select">
+            <option value="todos">Todos los Estados</option>
+            <option value="activos">Solo Visibles</option>
+            <option value="inactivos">Solo Ocultos</option>
+          </select>
+        </div>
+
+        <!-- Combo Box Zona -->
+        <div class="filter-select-wrapper">
+          <select [(ngModel)]="filtroZona" class="filter-select">
+            <option value="todas">Todas las Zonas</option>
+            <option value="superior">Zona Superior</option>
+            <option value="inferior">Zona Inferior</option>
+          </select>
+        </div>
+
+        <!-- Combo Box Tipo -->
+        <div class="filter-select-wrapper">
+          <select [(ngModel)]="filtroTipo" class="filter-select">
+            <option value="todos">Todos los Tipos</option>
+            <option value="banner">Banners</option>
+            <option value="anuncio">Anuncios</option>
+            <option value="texto">Bloques Texto</option>
+            <option value="testimonios">Testimonios</option>
+            <option value="faq">Preguntas Frecuentes</option>
+            <option value="galeria">Galerías</option>
+            <option value="carrusel_productos">Carrusel Productos</option>
+          </select>
+        </div>
+
+        <!-- Botón Limpiar Filtros si alguno activo -->
+        <button
+          *ngIf="filtroBusqueda || filtroEstado !== 'todos' || filtroZona !== 'todas' || filtroTipo !== 'todos'"
+          (click)="limpiarFiltros()"
+          class="btn-reset-filters"
+          title="Restablecer todos los filtros">
+          <fa-icon [icon]="faTimes"></fa-icon> Limpiar
+        </button>
+      </div>
+    </div>
+
+    <!-- Indicador de Reordenamiento -->
+    <div class="reorder-tip-strip" *ngIf="!filtroBusqueda && filtroEstado === 'todos' && filtroZona === 'todas' && filtroTipo === 'todos'">
+      <span class="tip-dot"></span>
+      <span><strong>Secuencia de Renderizado:</strong> El elemento #1 aparece primero en el inicio de la página. Usa las flechas para subir o bajar de puesto.</span>
     </div>
 
     <!-- Estado de Carga -->
     <div *ngIf="cargando" class="loading-state">
       <div class="spinner-grande"></div>
-      <p>Cargando estructura...</p>
+      <p>Cargando estructura de la landing page...</p>
     </div>
+
+    <!-- Estado de Error -->
     <div *ngIf="error && !cargando" class="error-state">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <fa-icon [icon]="faExclamationCircle" class="error-icon"></fa-icon>
       <p>{{ error }}</p>
-      <button class="btn-retry" (click)="cargarComponentes()">Reintentar</button>
+      <button class="btn-primary-white" (click)="cargarComponentes()">Reintentar Carga</button>
     </div>
 
-    <!-- Lista de Componentes -->
+    <!-- Lista de Secciones -->
     <div *ngIf="!cargando && !error">
-      <h3 class="section-subtitle-custom">Secciones activas — clic para editar</h3>
 
-      <div *ngIf="componentes.length === 0" class="no-components-state">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-        <p>No hay secciones. ¡Añade una arriba!</p>
+      <!-- Estado Vacío General -->
+      <div *ngIf="componentes.length === 0" class="empty-sections-box">
+        <div class="empty-icon-circle">
+          <fa-icon [icon]="faLayerGroup"></fa-icon>
+        </div>
+        <h4>No hay secciones creadas</h4>
+        <p>Selecciona un bloque del catálogo superior para comenzar a diseñar tu tienda.</p>
       </div>
 
-      <div class="components-list-wrapper">
-        <div
-          class="comp-list-item"
-          *ngFor="let comp of componentes; let i = index"
-          [class.disabled-item]="comp.activo == 0"
-          (click)="abrirEditor(comp)">
+      <!-- Estado Vacío por Filtros -->
+      <div *ngIf="componentes.length > 0 && filteredComponentes.length === 0" class="empty-sections-box">
+        <div class="empty-icon-circle">
+          <fa-icon [icon]="faSearch"></fa-icon>
+        </div>
+        <h4>No se encontraron secciones</h4>
+        <p>No hay componentes que coincidan con los filtros o el término de búsqueda ingresado.</p>
+        <button class="btn-primary-white" (click)="limpiarFiltros()" style="margin-top: 12px;">
+          Limpiar Filtros
+        </button>
+      </div>
 
-          <!-- Flechas de orden -->
-          <div class="comp-order-controls">
-            <button class="btn-order btn-up" [disabled]="i === 0" (click)="moverArriba(i, $event)" title="Subir">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
+      <!-- Grid / Lista de Componentes -->
+      <div class="sections-list-container" *ngIf="filteredComponentes.length > 0">
+        <div
+          class="section-card-row"
+          *ngFor="let comp of filteredComponentes"
+          [class.is-hidden-row]="comp.activo == 0 || comp.activo === false">
+
+          <!-- 1. Controles de Orden & Número -->
+          <div class="order-column">
+            <button
+              class="btn-order-arrow up"
+              [disabled]="isFirstInGlobal(comp)"
+              (click)="moverCompArriba(comp, $event)"
+              title="Mover arriba en la secuencia">
+              <fa-icon [icon]="faArrowUp"></fa-icon>
             </button>
-            <span class="comp-index">{{ i + 1 }}</span>
-            <button class="btn-order btn-down" [disabled]="i === componentes.length - 1" (click)="moverAbajo(i, $event)" title="Bajar">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+            <div class="order-badge">
+              <span class="order-hash">#</span>
+              <span class="order-number">{{ getPosicionOriginal(comp) + 1 }}</span>
+            </div>
+            <button
+              class="btn-order-arrow down"
+              [disabled]="isLastInGlobal(comp)"
+              (click)="moverCompAbajo(comp, $event)"
+              title="Mover abajo en la secuencia">
+              <fa-icon [icon]="faArrowDown"></fa-icon>
             </button>
           </div>
 
-          <!-- Tipo badge + icono -->
-          <div class="comp-type-col">
-            <div class="type-icon-box" [ngClass]="'icon-' + comp.tipo">
-              <svg *ngIf="comp.tipo === 'banner'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-              <svg *ngIf="comp.tipo === 'anuncio'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-              <svg *ngIf="comp.tipo === 'texto'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
-              <svg *ngIf="comp.tipo === 'testimonios'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              <svg *ngIf="comp.tipo === 'faq'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-              <svg *ngIf="comp.tipo === 'galeria'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-              <svg *ngIf="comp.tipo === 'carrusel_productos'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-            </div>
-            <span class="comp-badge" [ngClass]="'badge-' + comp.tipo">{{ comp.tipo }}</span>
-            <span style="font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; margin-top: 4px; background: var(--dash-bg-input); color: var(--dash-text-muted); text-transform: uppercase; text-align: center; display: block; width: 100%;">
-              {{ comp.contenido?.posicion === 'inferior' ? 'Zona Inf' : 'Zona Sup' }}
+          <!-- 2. Tipo y Zona -->
+          <div class="type-badge-column">
+            <span class="type-pill" [ngClass]="'pill-' + comp.tipo">
+              <fa-icon *ngIf="comp.tipo === 'banner'" [icon]="faImage"></fa-icon>
+              <fa-icon *ngIf="comp.tipo === 'anuncio'" [icon]="faBullhorn"></fa-icon>
+              <fa-icon *ngIf="comp.tipo === 'texto'" [icon]="faAlignLeft"></fa-icon>
+              <fa-icon *ngIf="comp.tipo === 'testimonios'" [icon]="faComments"></fa-icon>
+              <fa-icon *ngIf="comp.tipo === 'faq'" [icon]="faQuestionCircle"></fa-icon>
+              <fa-icon *ngIf="comp.tipo === 'galeria'" [icon]="faImages"></fa-icon>
+              <fa-icon *ngIf="comp.tipo === 'carrusel_productos'" [icon]="faShoppingBag"></fa-icon>
+              {{ getTipoLabel(comp.tipo) }}
+            </span>
+            <span class="zone-pill" [class.zone-inf]="comp.contenido?.posicion === 'inferior'">
+              {{ comp.contenido?.posicion === 'inferior' ? 'Zona Inferior' : 'Zona Superior' }}
             </span>
           </div>
 
-          <!-- Detalles del componente -->
-          <div class="comp-details">
-            <div *ngIf="comp.tipo === 'banner'" class="details-row">
-              <div class="details-thumb" *ngIf="comp.contenido?.imageUrl">
-                <img [src]="comp.contenido.imageUrl" alt="">
-              </div>
-              <div class="details-text">
-                <strong>Banner Publicitario</strong>
-                <p>{{ comp.contenido?.descripcion || 'Sin descripción' }}</p>
-              </div>
+          <!-- 3. Previsualización de Contenido -->
+          <div class="content-preview-column" (click)="abrirEditor(comp)">
+            <!-- Thumbnail si tiene imagen -->
+            <div class="preview-thumbnail" *ngIf="comp.contenido?.imageUrl || comp.contenido?.imagenes?.[0]?.url">
+              <img [src]="comp.contenido?.imageUrl || comp.contenido?.imagenes?.[0]?.url" alt="Miniatura">
             </div>
-            <div *ngIf="comp.tipo === 'anuncio'" class="details-row">
-              <div class="details-thumb" *ngIf="comp.contenido?.imageUrl">
-                <img [src]="comp.contenido.imageUrl" alt="">
+
+            <!-- Información textual según el tipo -->
+            <div class="preview-text-wrapper">
+              <!-- Banner -->
+              <div *ngIf="comp.tipo === 'banner'">
+                <h5 class="preview-main-title">{{ comp.contenido?.descripcion || 'Banner Publicitario' }}</h5>
+                <span class="preview-meta-text" *ngIf="comp.contenido?.linkUrl">Enlace: {{ comp.contenido?.linkUrl }}</span>
+                <span class="preview-meta-text" *ngIf="!comp.contenido?.linkUrl">Sin enlace directo</span>
               </div>
-              <div class="details-text">
-                <strong>{{ comp.contenido?.titulo || 'Anuncio sin título' }}</strong>
-                <p>{{ comp.contenido?.texto || 'Sin descripción' }}</p>
+
+              <!-- Anuncio -->
+              <div *ngIf="comp.tipo === 'anuncio'">
+                <div class="preview-badge-row" *ngIf="comp.contenido?.badge">
+                  <span class="item-tag-badge">{{ comp.contenido?.badge }}</span>
+                </div>
+                <h5 class="preview-main-title">{{ comp.contenido?.titulo || 'Anuncio sin título' }}</h5>
+                <p class="preview-meta-text">{{ comp.contenido?.texto || comp.contenido?.caracteristicas || 'Sin descripción' }}</p>
               </div>
-            </div>
-            <div *ngIf="comp.tipo === 'texto'" class="details-row">
-              <div class="details-text">
-                <strong>{{ comp.contenido?.titulo || 'Bloque de texto' }}</strong>
-                <p>{{ comp.contenido?.cuerpo || 'Sin cuerpo de texto' }}</p>
+
+              <!-- Texto -->
+              <div *ngIf="comp.tipo === 'texto'">
+                <h5 class="preview-main-title">{{ comp.contenido?.titulo || 'Bloque informativo' }}</h5>
+                <p class="preview-meta-text">{{ comp.contenido?.cuerpo || 'Sin cuerpo de texto' }}</p>
               </div>
-            </div>
-            <div *ngIf="comp.tipo === 'testimonios'" class="details-row">
-              <div class="details-text">
-                <strong>{{ comp.contenido?.titulo || 'Opiniones de Clientes' }}</strong>
-                <p>{{ comp.contenido?.subtitulo }} ({{ comp.contenido?.testimonios?.length || 0 }} testimonios)</p>
+
+              <!-- Testimonios -->
+              <div *ngIf="comp.tipo === 'testimonios'">
+                <h5 class="preview-main-title">{{ comp.contenido?.titulo || 'Testimonios y Reseñas' }}</h5>
+                <div class="preview-counts-row">
+                  <span class="count-chip">{{ comp.contenido?.testimonios?.length || 0 }} testimonios</span>
+                  <span class="preview-meta-text">{{ comp.contenido?.subtitulo || 'Opiniones de clientes' }}</span>
+                </div>
               </div>
-            </div>
-            <div *ngIf="comp.tipo === 'faq'" class="details-row">
-              <div class="details-text">
-                <strong>{{ comp.contenido?.titulo || 'Sección de FAQ' }}</strong>
-                <p>{{ comp.contenido?.subtitulo }} ({{ comp.contenido?.preguntas?.length || 0 }} preguntas)</p>
+
+              <!-- FAQ -->
+              <div *ngIf="comp.tipo === 'faq'">
+                <h5 class="preview-main-title">{{ comp.contenido?.titulo || 'Preguntas Frecuentes' }}</h5>
+                <div class="preview-counts-row">
+                  <span class="count-chip">{{ comp.contenido?.preguntas?.length || 0 }} preguntas</span>
+                  <span class="preview-meta-text">{{ comp.contenido?.subtitulo || 'Respuestas rápidas' }}</span>
+                </div>
               </div>
-            </div>
-            <div *ngIf="comp.tipo === 'galeria'" class="details-row">
-              <div class="details-thumb" *ngIf="comp.contenido?.imagenes?.[0]?.url">
-                <img [src]="comp.contenido.imagenes[0].url" alt="">
+
+              <!-- Galería -->
+              <div *ngIf="comp.tipo === 'galeria'">
+                <h5 class="preview-main-title">{{ comp.contenido?.titulo || 'Galería de Trabajos' }}</h5>
+                <div class="preview-counts-row">
+                  <span class="count-chip">{{ comp.contenido?.imagenes?.length || 0 }} fotos</span>
+                  <span class="preview-meta-text">{{ comp.contenido?.subtitulo || 'Mosaico visual' }}</span>
+                </div>
               </div>
-              <div class="details-text">
-                <strong>{{ comp.contenido?.titulo || 'Galería de Imágenes' }}</strong>
-                <p>{{ comp.contenido?.subtitulo }} ({{ comp.contenido?.imagenes?.length || 0 }} fotos)</p>
-              </div>
-            </div>
-            <div *ngIf="comp.tipo === 'carrusel_productos'" class="details-row">
-              <div class="details-text">
-                <strong>{{ comp.contenido?.titulo || 'Carrusel de Productos' }}</strong>
-                <p>Categoría ID: {{ comp.contenido?.categoriaId }}</p>
+
+              <!-- Carrusel Productos -->
+              <div *ngIf="comp.tipo === 'carrusel_productos'">
+                <h5 class="preview-main-title">{{ comp.contenido?.titulo || 'Carrusel de Productos' }}</h5>
+                <span class="preview-meta-text">Categoría ID: {{ comp.contenido?.categoriaId || 'Todas' }}</span>
               </div>
             </div>
           </div>
 
-          <!-- Botones de acción -->
-          <div class="comp-actions">
-            <button class="btn-act-icon btn-toggle-vis" [class.is-active]="comp.activo == 1" (click)="toggleActivo(comp, $event)" [title]="comp.activo == 1 ? 'Desactivar' : 'Activar'">
-              <svg *ngIf="comp.activo == 1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              <svg *ngIf="comp.activo != 1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-              <span>{{ comp.activo == 1 ? 'Activo' : 'Inactivo' }}</span>
+          <!-- 4. Acciones y Switch de Estado -->
+          <div class="actions-column">
+            <!-- Switch Moderno de Visibilidad -->
+            <label class="switch-toggle" [title]="comp.activo == 1 || comp.activo === true ? 'Desactivar y ocultar' : 'Activar y publicar'">
+              <input
+                type="checkbox"
+                [checked]="comp.activo == 1 || comp.activo === true"
+                (change)="toggleActivo(comp, $event)">
+              <span class="slider"></span>
+              <span class="switch-label">
+                {{ comp.activo == 1 || comp.activo === true ? 'Visible' : 'Oculto' }}
+              </span>
+            </label>
+
+            <!-- Botón Editar -->
+            <button class="btn-action-round edit" (click)="abrirEditor(comp); $event.stopPropagation()" title="Configurar y editar sección">
+              <fa-icon [icon]="faPen"></fa-icon>
             </button>
 
-            <button class="btn-act-icon btn-edit-icon" (click)="abrirEditor(comp); $event.stopPropagation()" title="Editar">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              <span>Editar</span>
-            </button>
-
-            <button class="btn-act-icon btn-delete-icon" (click)="eliminarComponente(comp.id!, $event)" title="Eliminar">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            <!-- Botón Eliminar -->
+            <button class="btn-action-round delete" (click)="eliminarComponente(comp.id!, $event)" title="Eliminar permanentemente">
+              <fa-icon [icon]="faTrash"></fa-icon>
             </button>
           </div>
 
@@ -311,167 +554,185 @@
   </div>
 
   <!-- ════════════ MODAL DE EDICIÓN Y CREACIÓN ════════════ -->
-  <div class="modal-overlay" *ngIf="modalAbierto">
-    <div class="modal-container">
+  <div class="modal-overlay" *ngIf="modalAbierto" (click)="cerrarModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
 
+      <!-- Encabezado del Modal -->
       <div class="modal-header">
         <div class="modal-header-title">
           <div class="modal-type-icon" [ngClass]="'icon-' + tempTipo">
-            <svg *ngIf="tempTipo === 'banner'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-            <svg *ngIf="tempTipo === 'anuncio'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-            <svg *ngIf="tempTipo === 'texto'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
+            <fa-icon *ngIf="tempTipo === 'banner'" [icon]="faImage"></fa-icon>
+            <fa-icon *ngIf="tempTipo === 'anuncio'" [icon]="faBullhorn"></fa-icon>
+            <fa-icon *ngIf="tempTipo === 'texto'" [icon]="faAlignLeft"></fa-icon>
+            <fa-icon *ngIf="tempTipo === 'testimonios'" [icon]="faComments"></fa-icon>
+            <fa-icon *ngIf="tempTipo === 'faq'" [icon]="faQuestionCircle"></fa-icon>
+            <fa-icon *ngIf="tempTipo === 'galeria'" [icon]="faImages"></fa-icon>
+            <fa-icon *ngIf="tempTipo === 'carrusel_productos'" [icon]="faShoppingBag"></fa-icon>
           </div>
-          <h3 class="modal-title">{{ editando ? 'Editar Sección' : 'Nueva Sección' }} — <span class="modal-type-text">{{ tempTipo | uppercase }}</span></h3>
+          <div>
+            <h3 class="modal-title">{{ editando ? 'Editar Sección' : 'Configurar Nueva Sección' }}</h3>
+            <span class="modal-subtitle-type">{{ getTipoLabel(tempTipo) }}</span>
+          </div>
         </div>
-        <button class="btn-modal-close" (click)="cerrarModal()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <button class="btn-modal-close" (click)="cerrarModal()" title="Cerrar ventana">
+          <fa-icon [icon]="faTimes"></fa-icon>
         </button>
       </div>
 
+      <!-- Cuerpo del Formulario -->
       <div class="modal-body">
-        <div class="form-group-row">
-          <label class="form-label-toggle">
-            <input type="checkbox" [(ngModel)]="tempActivo">
-            <span>Visible en la Landing Page</span>
-          </label>
+
+        <!-- 1. SECCIÓN AJUSTES GENERALES (Ubicación y Visibilidad) -->
+        <div class="modal-settings-grid">
+          <!-- Toggle Visibilidad -->
+          <div class="setting-box">
+            <span class="setting-label">Estado de Publicación</span>
+            <label class="switch-toggle">
+              <input type="checkbox" [(ngModel)]="tempActivo">
+              <span class="slider"></span>
+              <span class="switch-label">{{ tempActivo ? 'Visible en vivo' : 'Oculto (Borrador)' }}</span>
+            </label>
+          </div>
+
+          <!-- Ubicación / Zona -->
+          <div class="setting-box">
+            <span class="setting-label">Ubicación en la Landing Page</span>
+            <select [(ngModel)]="cPosicion" class="modal-select">
+              <option value="superior">Zona Superior (Cabecera y Hero)</option>
+              <option value="inferior">Zona Inferior (Antes del Pie)</option>
+            </select>
+          </div>
         </div>
 
-        <div class="form-group" style="margin-bottom: 24px;">
-          <label class="form-label">Ubicación / Zona de la Sección</label>
-          <select [(ngModel)]="cPosicion" class="form-control">
-            <option value="superior">Zona Superior (Inicio de la página)</option>
-            <option value="inferior">Zona Inferior (Antes de Grilla de Productos 2)</option>
-          </select>
-        </div>
+        <div class="modal-divider"></div>
 
-        <!-- BANNER -->
+        <!-- 2. FORMULARIOS ESPECÍFICOS SEGÚN TIPO -->
+
+        <!-- A. BANNER -->
         <div *ngIf="tempTipo === 'banner'" class="form-section-dynamic">
           <div class="form-group">
-            <label class="form-label">Imagen del Banner</label>
+            <label class="form-label">Imagen Panorámica del Banner</label>
             <div class="custom-file-upload" [class.is-uploading]="subiendoImagen">
               <input type="file" (change)="onFileSelected($event)" accept="image/*" class="upload-input" *ngIf="!subiendoImagen">
               <div class="upload-content" *ngIf="!subiendoImagen">
-                <svg class="upload-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-                </svg>
+                <fa-icon [icon]="faCloudUploadAlt" class="upload-cloud-icon"></fa-icon>
                 <span class="upload-text">Seleccionar o arrastrar imagen</span>
-                <span class="upload-hint">Formatos soportados: JPG, PNG, WEBP</span>
+                <span class="upload-hint">Formatos soportados: WEBP, PNG, JPG (Recomendado 1920x600px)</span>
               </div>
               <div class="upload-content" *ngIf="subiendoImagen">
                 <div class="spinner-upload"></div>
                 <span class="upload-loading-text">Subiendo a Cloudinary...</span>
               </div>
             </div>
-            <div class="cloudinary-url-box" *ngIf="cImageUrl">
-              <input type="text" [value]="cImageUrl" readonly class="form-control">
+            <div class="image-preview-card" *ngIf="cImageUrl && !subiendoImagen">
+              <img [src]="cImageUrl" alt="Vista previa banner">
+              <span class="preview-url-tag">{{ cImageUrl }}</span>
             </div>
-            <div class="image-preview-box" *ngIf="cImageUrl && !subiendoImagen"><img [src]="cImageUrl" alt=""></div>
           </div>
+
           <div class="form-group">
-            <label class="form-label">Descripción del Banner</label>
-            <textarea [(ngModel)]="cTexto" rows="3" placeholder="Mensaje que aparece en el banner..." class="form-control"></textarea>
+            <label class="form-label">Descripción o Mensaje del Banner</label>
+            <textarea [(ngModel)]="cTexto" rows="3" placeholder="Mensaje visible en el banner..." class="form-control"></textarea>
           </div>
+
           <div class="form-group">
-            <label class="form-label">Enlace de redirección (opcional)</label>
-            <input type="text" [(ngModel)]="cLinkUrl" placeholder="/productos?subcategoria_id=13" class="form-control">
+            <label class="form-label">Enlace de Redirección (Opcional)</label>
+            <input type="text" [(ngModel)]="cLinkUrl" placeholder="Ej: /productos?subcategoria_id=13" class="form-control">
           </div>
         </div>
 
-        <!-- ANUNCIO -->
+        <!-- B. ANUNCIO -->
         <div *ngIf="tempTipo === 'anuncio'" class="form-section-dynamic">
           <div class="form-group">
-            <label class="form-label">Texto de la Etiqueta (Badge)</label>
+            <label class="form-label">Etiqueta Superior (Badge)</label>
             <input type="text" [(ngModel)]="cBadge" placeholder="Ej: ⭐️ NOVEDAD DE LA SEMANA" class="form-control">
           </div>
 
-          <div style="border-bottom: 1px dashed var(--dash-border); margin: 20px 0; padding-bottom: 5px;">
-            <h4 style="color: #368C44; margin: 0; font-size: 0.95rem; font-weight: 700;">Elemento 1 (Izquierdo / Principal)</h4>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Título del Anuncio 1</label>
-            <input type="text" [(ngModel)]="cTitulo" placeholder="Ej: YUMBOLON - THERMOLON" class="form-control">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Imagen del Anuncio 1</label>
-            <div class="custom-file-upload" [class.is-uploading]="subiendoImagen">
-              <input type="file" (change)="onFileSelected($event, 1)" accept="image/*" class="upload-input" *ngIf="!subiendoImagen">
-              <div class="upload-content" *ngIf="!subiendoImagen">
-                <svg class="upload-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-                </svg>
-                <span class="upload-text">Seleccionar o arrastrar imagen</span>
-                <span class="upload-hint">Formatos soportados: JPG, PNG, WEBP</span>
-              </div>
-              <div class="upload-content" *ngIf="subiendoImagen">
-                <div class="spinner-upload"></div>
-                <span class="upload-loading-text">Subiendo a Cloudinary...</span>
-              </div>
+          <div class="sub-form-card">
+            <div class="sub-form-header">
+              <span class="sub-form-num">1</span>
+              <h4>Elemento Principal (Izquierdo)</h4>
             </div>
-            <div class="cloudinary-url-box" *ngIf="cImageUrl">
-              <input type="text" [value]="cImageUrl" readonly class="form-control">
+            <div class="form-group">
+              <label class="form-label">Título del Producto o Novedad</label>
+              <input type="text" [(ngModel)]="cTitulo" placeholder="Ej: YUMBOLON - THERMOLON" class="form-control">
             </div>
-            <div class="image-preview-box" *ngIf="cImageUrl && !subiendoImagen"><img [src]="cImageUrl" alt=""></div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Descripción de la Novedad 1</label>
-            <textarea [(ngModel)]="cTexto" rows="3" placeholder="Describe la novedad o promoción..." class="form-control"></textarea>
-          </div>
-
-          <div style="border-bottom: 1px dashed var(--dash-border); margin: 25px 0 20px 0; padding-bottom: 5px;">
-            <h4 style="color: #368C44; margin: 0; font-size: 0.95rem; font-weight: 700;">Elemento 2 (Derecho / Secundario - Opcional)</h4>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Título del Anuncio 2</label>
-            <input type="text" [(ngModel)]="cTitulo2" placeholder="Ej: THERMOLON - AISLANTE" class="form-control">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Imagen del Anuncio 2</label>
-            <div class="custom-file-upload" [class.is-uploading]="subiendoImagen2">
-              <input type="file" (change)="onFileSelected($event, 2)" accept="image/*" class="upload-input" *ngIf="!subiendoImagen2">
-              <div class="upload-content" *ngIf="!subiendoImagen2">
-                <svg class="upload-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-                </svg>
-                <span class="upload-text">Seleccionar o arrastrar imagen</span>
-                <span class="upload-hint">Formatos soportados: JPG, PNG, WEBP</span>
+            <div class="form-group">
+              <label class="form-label">Imagen del Elemento 1</label>
+              <div class="custom-file-upload" [class.is-uploading]="subiendoImagen">
+                <input type="file" (change)="onFileSelected($event, 1)" accept="image/*" class="upload-input" *ngIf="!subiendoImagen">
+                <div class="upload-content" *ngIf="!subiendoImagen">
+                  <fa-icon [icon]="faCloudUploadAlt" class="upload-cloud-icon"></fa-icon>
+                  <span class="upload-text">Seleccionar imagen del producto 1</span>
+                </div>
+                <div class="upload-content" *ngIf="subiendoImagen">
+                  <div class="spinner-upload"></div>
+                  <span class="upload-loading-text">Subiendo a Cloudinary...</span>
+                </div>
               </div>
-              <div class="upload-content" *ngIf="subiendoImagen2">
-                <div class="spinner-upload"></div>
-                <span class="upload-loading-text">Subiendo a Cloudinary...</span>
+              <div class="image-preview-card" *ngIf="cImageUrl && !subiendoImagen">
+                <img [src]="cImageUrl" alt="Elemento 1">
               </div>
             </div>
-            <div class="cloudinary-url-box" *ngIf="cImageUrl2">
-              <input type="text" [value]="cImageUrl2" readonly class="form-control">
+            <div class="form-group">
+              <label class="form-label">Descripción del Elemento 1</label>
+              <textarea [(ngModel)]="cTexto" rows="3" placeholder="Describe los detalles de este producto..." class="form-control"></textarea>
             </div>
-            <div class="image-preview-box" *ngIf="cImageUrl2 && !subiendoImagen2"><img [src]="cImageUrl2" alt=""></div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Descripción de la Novedad 2</label>
-            <textarea [(ngModel)]="cTexto2" rows="3" placeholder="Describe la segunda novedad o promoción..." class="form-control"></textarea>
           </div>
 
-          <div style="border-bottom: 1px dashed var(--dash-border); margin: 25px 0 20px 0; padding-bottom: 5px;">
-            <h4 style="color: var(--dash-text-muted); margin: 0; font-size: 0.95rem;">Configuraciones Comunes</h4>
+          <div class="sub-form-card">
+            <div class="sub-form-header">
+              <span class="sub-form-num">2</span>
+              <h4>Elemento Secundario (Derecho - Opcional)</h4>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Título del Segundo Producto</label>
+              <input type="text" [(ngModel)]="cTitulo2" placeholder="Ej: THERMOLON - AISLANTE" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Imagen del Elemento 2</label>
+              <div class="custom-file-upload" [class.is-uploading]="subiendoImagen2">
+                <input type="file" (change)="onFileSelected($event, 2)" accept="image/*" class="upload-input" *ngIf="!subiendoImagen2">
+                <div class="upload-content" *ngIf="!subiendoImagen2">
+                  <fa-icon [icon]="faCloudUploadAlt" class="upload-cloud-icon"></fa-icon>
+                  <span class="upload-text">Seleccionar imagen del producto 2</span>
+                </div>
+                <div class="upload-content" *ngIf="subiendoImagen2">
+                  <div class="spinner-upload"></div>
+                  <span class="upload-loading-text">Subiendo a Cloudinary...</span>
+                </div>
+              </div>
+              <div class="image-preview-card" *ngIf="cImageUrl2 && !subiendoImagen2">
+                <img [src]="cImageUrl2" alt="Elemento 2">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Descripción del Elemento 2</label>
+              <textarea [(ngModel)]="cTexto2" rows="3" placeholder="Describe las características secundarias..." class="form-control"></textarea>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Características / Beneficios (Separados por comas)</label>
-            <input type="text" [(ngModel)]="cCaracteristicas" placeholder="Ej: Excelente aislamiento, 100% impermeable, Fácil instalación" class="form-control">
-            <small style="color: var(--dash-text-muted); font-size: 0.75rem; display: block; margin-top: 4px;">Escribe características separadas por comas para mostrarlas como lista.</small>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Texto del Botón</label>
-            <input type="text" [(ngModel)]="cBtnText" placeholder="Ej: Descubrir más →" class="form-control">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Enlace de redirección (opcional)</label>
-            <input type="text" [(ngModel)]="cLinkUrl" placeholder="/productos" class="form-control">
+          <div class="sub-form-card">
+            <h4 style="margin: 0 0 14px 0; font-size: 0.92rem; font-weight: 700;">Configuración de Enlace y Botón</h4>
+            <div class="form-group">
+              <label class="form-label">Beneficios / Características Clave</label>
+              <input type="text" [(ngModel)]="cCaracteristicas" placeholder="Ej: Excelente aislamiento, 100% impermeable, Fácil instalación" class="form-control">
+              <small class="field-hint">Separa cada ventaja con una coma para que aparezcan en viñetas ordenadas.</small>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label">Texto del Botón</label>
+                <input type="text" [(ngModel)]="cBtnText" placeholder="Ej: Descubrir más →" class="form-control">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Enlace URL</label>
+                <input type="text" [(ngModel)]="cLinkUrl" placeholder="/productos" class="form-control">
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- TEXTO -->
+        <!-- C. TEXTO EDITORIAL -->
         <div *ngIf="tempTipo === 'texto'" class="form-section-dynamic">
           <div class="form-group">
             <label class="form-label">Título del Bloque</label>
@@ -482,160 +743,208 @@
             <textarea [(ngModel)]="cCuerpo" rows="5" placeholder="Escribe el párrafo informativo..." class="form-control"></textarea>
           </div>
           <div class="form-group">
-            <label class="form-label">Alineación del texto</label>
+            <label class="form-label">Alineación del Texto</label>
             <select [(ngModel)]="cAlineacion" class="form-control">
-              <option value="left">Izquierda</option>
-              <option value="center">Centrado</option>
-              <option value="right">Derecha</option>
+              <option value="left">Alineado a la Izquierda</option>
+              <option value="center">Centrado (Recomendado)</option>
+              <option value="right">Alineado a la Derecha</option>
             </select>
           </div>
         </div>
 
-        <!-- TESTIMONIOS -->
+        <!-- D. TESTIMONIOS -->
         <div *ngIf="tempTipo === 'testimonios'" class="form-section-dynamic">
-          <div class="form-group">
-            <label class="form-label">Título de la Sección</label>
-            <input type="text" [(ngModel)]="cTitulo" placeholder="Ej: Lo que dicen nuestros clientes" class="form-control">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Subtítulo</label>
-            <input type="text" [(ngModel)]="cSubtitulo" placeholder="Ej: Opiniones reales de compradores" class="form-control">
-          </div>
-          <div class="form-group">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-              <label class="form-label" style="margin: 0;">Lista de Testimonios</label>
-              <button type="button" class="btn-retry" style="padding: 6px 14px; font-size: 0.8rem;" (click)="addTestimonio()">+ Añadir Testimonio</button>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Título Principal</label>
+              <input type="text" [(ngModel)]="cTitulo" placeholder="Ej: Lo que dicen nuestros clientes" class="form-control">
             </div>
-            <div *ngFor="let item of tempTestimonios; let idx = index" style="border: 1px solid var(--dash-border); padding: 16px; border-radius: 10px; margin-bottom: 14px; background: var(--dash-bg-input);">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <span style="font-weight: 700; color: #f43f5e; font-size: 0.85rem;">Testimonio #{{ idx + 1 }}</span>
-                <button type="button" class="btn-delete-icon" style="padding: 4px 8px; border: none; background: none; color: #f87171; cursor: pointer;" (click)="removeTestimonio(idx)">Eliminar</button>
+            <div class="form-group">
+              <label class="form-label">Subtítulo Descriptivo</label>
+              <input type="text" [(ngModel)]="cSubtitulo" placeholder="Ej: Opiniones reales de compradores y constructores" class="form-control">
+            </div>
+          </div>
+
+          <div class="list-manager-box">
+            <div class="list-manager-header">
+              <div>
+                <h4>Testimonios Añadidos ({{ tempTestimonios.length }})</h4>
+                <p>Configura las opiniones que rotarán en el carrusel de la página</p>
               </div>
-              <div class="form-group">
-                <label class="form-label">Nombre del Cliente</label>
-                <input type="text" [(ngModel)]="item.nombre" placeholder="Nombre completo" class="form-control">
+              <button type="button" class="btn-primary-white small" (click)="addTestimonio()">
+                <fa-icon [icon]="faPlus"></fa-icon> Añadir Testimonio
+              </button>
+            </div>
+
+            <div *ngFor="let item of tempTestimonios; let idx = index" class="list-item-card">
+              <div class="list-item-header">
+                <span class="list-index-tag">Testimonio #{{ idx + 1 }}</span>
+                <button type="button" class="btn-delete-row" (click)="removeTestimonio(idx)" title="Eliminar este testimonio">
+                  <fa-icon [icon]="faTrash"></fa-icon> Eliminar
+                </button>
               </div>
-              <div class="form-group">
-                <label class="form-label">Puesto / Empresa</label>
-                <input type="text" [(ngModel)]="item.puesto" placeholder="Ej: Constructor" class="form-control">
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label">Nombre del Cliente</label>
+                  <input type="text" [(ngModel)]="item.nombre" placeholder="Nombre completo" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Puesto o Empresa</label>
+                  <input type="text" [(ngModel)]="item.puesto" placeholder="Ej: Contratista / Arquitecto" class="form-control">
+                </div>
               </div>
-              <div class="form-group">
-                <label class="form-label">Estrellas</label>
-                <select [(ngModel)]="item.estrellas" class="form-control">
-                  <option [value]="5">5 estrellas</option>
-                  <option [value]="4">4 estrellas</option>
-                  <option [value]="3">3 estrellas</option>
-                  <option [value]="2">2 estrellas</option>
-                  <option [value]="1">1 estrella</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Foto del Cliente (Avatar)</label>
-                <input type="file" (change)="onItemFileSelected($event, item)" accept="image/*" class="form-control" style="font-size: 0.8rem; padding: 6px;">
-                <span *ngIf="item.subiendo" style="color: #fbbf24; font-size: 0.75rem; display: block; margin-top: 4px;">Subiendo avatar...</span>
-                <img *ngIf="item.avatar" [src]="item.avatar" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; margin-top: 8px; border: 1px solid var(--dash-border);">
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label">Calificación (Estrellas)</label>
+                  <select [(ngModel)]="item.estrellas" class="form-control">
+                    <option [value]="5">⭐️⭐️⭐️⭐️⭐️ (5 Estrellas)</option>
+                    <option [value]="4">⭐️⭐️⭐️⭐️ (4 Estrellas)</option>
+                    <option [value]="3">⭐️⭐️⭐️ (3 Estrellas)</option>
+                    <option [value]="2">⭐️⭐️ (2 Estrellas)</option>
+                    <option [value]="1">⭐️ (1 Estrella)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Foto / Avatar del Cliente</label>
+                  <input type="file" (change)="onItemFileSelected($event, item)" accept="image/*" class="form-control file-input">
+                  <span *ngIf="item.subiendo" class="uploading-mini">Subiendo foto...</span>
+                  <div *ngIf="item.avatar" class="avatar-preview-row">
+                    <img [src]="item.avatar" class="avatar-thumb">
+                    <span class="avatar-ok-badge">Foto cargada</span>
+                  </div>
+                </div>
               </div>
               <div class="form-group" style="margin: 0;">
-                <label class="form-label">Comentario</label>
-                <textarea [(ngModel)]="item.comentario" rows="3" placeholder="Mensaje..." class="form-control"></textarea>
+                <label class="form-label">Comentario o Reseña</label>
+                <textarea [(ngModel)]="item.comentario" rows="3" placeholder="Mensaje del testimonio..." class="form-control"></textarea>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- FAQ -->
+        <!-- E. FAQ (PREGUNTAS FRECUENTES) -->
         <div *ngIf="tempTipo === 'faq'" class="form-section-dynamic">
-          <div class="form-group">
-            <label class="form-label">Título de la Sección</label>
-            <input type="text" [(ngModel)]="cTitulo" placeholder="Ej: Preguntas Frecuentes" class="form-control">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Subtítulo</label>
-            <input type="text" [(ngModel)]="cSubtitulo" placeholder="Ej: Resuelve tus dudas al instante" class="form-control">
-          </div>
-          <div class="form-group">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-              <label class="form-label" style="margin: 0;">Lista de Preguntas</label>
-              <button type="button" class="btn-retry" style="padding: 6px 14px; font-size: 0.8rem;" (click)="addPregunta()">+ Añadir Pregunta</button>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Título Principal</label>
+              <input type="text" [(ngModel)]="cTitulo" placeholder="Ej: Preguntas Frecuentes" class="form-control">
             </div>
-            <div *ngFor="let item of tempPreguntas; let idx = index" style="border: 1px solid var(--dash-border); padding: 16px; border-radius: 10px; margin-bottom: 14px; background: var(--dash-bg-input);">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <span style="font-weight: 700; color: #10b981; font-size: 0.85rem;">Pregunta #{{ idx + 1 }}</span>
-                <button type="button" class="btn-delete-icon" style="padding: 4px 8px; border: none; background: none; color: #f87171; cursor: pointer;" (click)="removePregunta(idx)">Eliminar</button>
+            <div class="form-group">
+              <label class="form-label">Subtítulo Descriptivo</label>
+              <input type="text" [(ngModel)]="cSubtitulo" placeholder="Ej: Resuelve tus dudas al instante" class="form-control">
+            </div>
+          </div>
+
+          <div class="list-manager-box">
+            <div class="list-manager-header">
+              <div>
+                <h4>Preguntas Añadidas ({{ tempPreguntas.length }})</h4>
+                <p>Preguntas y respuestas del acordeón interactivo</p>
+              </div>
+              <button type="button" class="btn-primary-white small" (click)="addPregunta()">
+                <fa-icon [icon]="faPlus"></fa-icon> Añadir Pregunta
+              </button>
+            </div>
+
+            <div *ngFor="let item of tempPreguntas; let idx = index" class="list-item-card">
+              <div class="list-item-header">
+                <span class="list-index-tag">Pregunta #{{ idx + 1 }}</span>
+                <button type="button" class="btn-delete-row" (click)="removePregunta(idx)" title="Eliminar pregunta">
+                  <fa-icon [icon]="faTrash"></fa-icon> Eliminar
+                </button>
               </div>
               <div class="form-group">
                 <label class="form-label">Pregunta</label>
-                <input type="text" [(ngModel)]="item.pregunta" placeholder="¿Cómo comprar?" class="form-control">
+                <input type="text" [(ngModel)]="item.pregunta" placeholder="Ej: ¿Cuáles son los tiempos de entrega?" class="form-control">
               </div>
               <div class="form-group" style="margin: 0;">
-                <label class="form-label">Respuesta</label>
-                <textarea [(ngModel)]="item.respuesta" rows="3" placeholder="Respuesta..." class="form-control"></textarea>
+                <label class="form-label">Respuesta Clara y Detallada</label>
+                <textarea [(ngModel)]="item.respuesta" rows="3" placeholder="Escribe la respuesta..." class="form-control"></textarea>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- GALERIA -->
+        <!-- F. GALERÍA FOTOGRÁFICA -->
         <div *ngIf="tempTipo === 'galeria'" class="form-section-dynamic">
-          <div class="form-group">
-            <label class="form-label">Título de la Sección</label>
-            <input type="text" [(ngModel)]="cTitulo" placeholder="Ej: Nuestra Galería de Trabajos" class="form-control">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Subtítulo</label>
-            <input type="text" [(ngModel)]="cSubtitulo" placeholder="Ej: Conoce aplicaciones reales de nuestros insumos" class="form-control">
-          </div>
-          <div class="form-group">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-              <label class="form-label" style="margin: 0;">Fotos de la Galería</label>
-              <button type="button" class="btn-retry" style="padding: 6px 14px; font-size: 0.8rem;" (click)="addImagen()">+ Añadir Foto</button>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Título de la Galería</label>
+              <input type="text" [(ngModel)]="cTitulo" placeholder="Ej: Nuestra Galería de Trabajos" class="form-control">
             </div>
-            <div *ngFor="let item of tempImagenes; let idx = index" style="border: 1px solid var(--dash-border); padding: 16px; border-radius: 10px; margin-bottom: 14px; background: var(--dash-bg-input);">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <span style="font-weight: 700; color: #06b6d4; font-size: 0.85rem;">Imagen #{{ idx + 1 }}</span>
-                <button type="button" class="btn-delete-icon" style="padding: 4px 8px; border: none; background: none; color: #f87171; cursor: pointer;" (click)="removeImagen(idx)">Eliminar</button>
+            <div class="form-group">
+              <label class="form-label">Subtítulo</label>
+              <input type="text" [(ngModel)]="cSubtitulo" placeholder="Ej: Aplicaciones reales de nuestros insumos" class="form-control">
+            </div>
+          </div>
+
+          <div class="list-manager-box">
+            <div class="list-manager-header">
+              <div>
+                <h4>Fotografías ({{ tempImagenes.length }})</h4>
+                <p>Mosaico de imágenes de proyectos terminados</p>
+              </div>
+              <button type="button" class="btn-primary-white small" (click)="addImagen()">
+                <fa-icon [icon]="faPlus"></fa-icon> Añadir Foto
+              </button>
+            </div>
+
+            <div *ngFor="let item of tempImagenes; let idx = index" class="list-item-card">
+              <div class="list-item-header">
+                <span class="list-index-tag">Foto #{{ idx + 1 }}</span>
+                <button type="button" class="btn-delete-row" (click)="removeImagen(idx)" title="Eliminar fotografía">
+                  <fa-icon [icon]="faTrash"></fa-icon> Eliminar
+                </button>
               </div>
               <div class="form-group">
-                <label class="form-label">Archivo de Imagen</label>
-                <input type="file" (change)="onItemFileSelected($event, item)" accept="image/*" class="form-control" style="font-size: 0.8rem; padding: 6px;">
-                <span *ngIf="item.subiendo" style="color: #fbbf24; font-size: 0.75rem; display: block; margin-top: 4px;">Subiendo a Cloudinary...</span>
-                <img *ngIf="item.url" [src]="item.url" style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px; margin-top: 8px; border: 1px solid var(--dash-border);">
+                <label class="form-label">Archivo de Fotografía</label>
+                <input type="file" (change)="onItemFileSelected($event, item)" accept="image/*" class="form-control file-input">
+                <span *ngIf="item.subiendo" class="uploading-mini">Subiendo imagen a Cloudinary...</span>
+                <div *ngIf="item.url" class="photo-preview-box">
+                  <img [src]="item.url" alt="Foto">
+                </div>
               </div>
               <div class="form-group" style="margin: 0;">
-                <label class="form-label">Descripción corta (opcional)</label>
-                <input type="text" [(ngModel)]="item.caption" placeholder="Ej: Techos de PVC instalados" class="form-control">
+                <label class="form-label">Pie de Foto / Título Corto (Opcional)</label>
+                <input type="text" [(ngModel)]="item.caption" placeholder="Ej: Techos de PVC instalados en obra" class="form-control">
               </div>
             </div>
           </div>
         </div>
 
-        <!-- CARRUSEL PRODUCTOS -->
+        <!-- G. CARRUSEL PRODUCTOS -->
         <div *ngIf="tempTipo === 'carrusel_productos'" class="form-section-dynamic">
-          <div class="form-group">
-            <label class="form-label">Título de la Sección</label>
-            <input type="text" [(ngModel)]="cTitulo" placeholder="Ej: Nuestros mejores productos" class="form-control">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Título de la Vitrina</label>
+              <input type="text" [(ngModel)]="cTitulo" placeholder="Ej: Nuestros mejores productos" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subtítulo</label>
+              <input type="text" [(ngModel)]="cSubtitulo" placeholder="Ej: Compra con envíos rápidos en el Quindío" class="form-control">
+            </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Subtítulo</label>
-            <input type="text" [(ngModel)]="cSubtitulo" placeholder="Ej: Compra con envíos rápidos en el Quindío" class="form-control">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Categoría a Filtrar y Mostrar</label>
+            <label class="form-label">Categoría a Filtrar y Exponer</label>
             <select [(ngModel)]="tempCategoriaId" class="form-control">
-              <option [value]="null">-- Seleccionar una Categoría --</option>
+              <option [value]="null">-- Todas las Categorías (Productos Generales) --</option>
               <option *ngFor="let cat of categoriasLista" [value]="cat.id">{{ cat.nombre }}</option>
             </select>
+            <small class="field-hint">Los productos de esta categoría se mostrarán automáticamente en un carrusel dinámico.</small>
           </div>
         </div>
+
       </div>
 
+      <!-- Pie del Modal -->
       <div class="modal-footer">
         <button class="btn-modal-cancel" (click)="cerrarModal()">Cancelar</button>
-        <button class="btn-modal-save" (click)="guardarComponente()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          {{ editando ? 'Guardar Cambios' : 'Añadir Sección' }}
+        <button class="btn-primary-white" (click)="guardarComponente()">
+          <fa-icon [icon]="faCheck"></fa-icon>
+          {{ editando ? 'Guardar Cambios' : 'Crear y Publicar Sección' }}
         </button>
       </div>
+
     </div>
   </div>
 
