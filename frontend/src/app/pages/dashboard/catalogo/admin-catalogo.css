@@ -159,7 +159,7 @@
 }
 
 /* ==========================================================================
-   2. FILA DE STAT CARDS (ESTILO BENTO OSCURO #0a0a0a)
+   2. FILA DE STAT CARDS (4 COLUMNAS - TOKEN EXACTO)
    ========================================================================== */
 
 .stat-cards-row {
@@ -169,119 +169,77 @@
 }
 
 .stat-card {
-  background: #0a0a0a;
-  border: 1.5px solid #27272a;
-  border-radius: 18px;
-  padding: 22px 24px;
-  position: relative;
-  overflow: hidden;
-  color: #ffffff;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-/* Efecto de profundidad con halo translúcido */
-.stat-card::before {
-  content: '';
-  position: absolute;
-  width: 140px;
-  height: 140px;
-  background: rgba(255, 255, 255, 0.035);
-  border-radius: 50%;
-  right: -40px;
-  top: -40px;
-  pointer-events: none;
+  background: #ffffff;
+  border: 1.5px solid #e4e4e7;
+  border-left: 4px solid #09090b;
+  border-radius: 16px;
+  padding: 20px 22px;
+  transition: all 0.2s ease;
 }
 
 .stat-card:hover {
-  border-color: #3f3f46;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
-  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(9, 9, 11, 0.06);
+  transform: translateY(-2px);
 }
 
 .stat-card.stat-accent-red {
-  background: radial-gradient(circle at top right, rgba(220, 38, 38, 0.14), transparent 70%), #0a0a0a;
-  border-color: rgba(220, 38, 38, 0.35);
-}
-
-.stat-card.stat-accent-red:hover {
-  border-color: #ef4444;
-  box-shadow: 0 14px 34px rgba(220, 38, 38, 0.2);
+  border-left-color: #dc2626;
 }
 
 .stat-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: relative;
-  z-index: 2;
 }
 
 .stat-card-label {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #a1a1aa;
+  color: #71717a;
 }
 
 .stat-card-icon-box {
-  width: 38px;
-  height: 38px;
-  border-radius: 11px;
-  background: #18181b;
-  border: 1px solid #2e2e33;
-  color: #ffffff;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #f4f5f7;
+  color: #09090b;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.stat-card-icon-box .material-symbols-rounded {
-  font-size: 1.25rem;
-}
-
 .stat-card-icon-box.stat-icon-red {
-  background: rgba(220, 38, 38, 0.15);
-  border-color: rgba(220, 38, 38, 0.4);
-  color: #ef4444;
+  background: #fef2f2;
+  color: #dc2626;
 }
 
 .stat-number {
-  font-size: 2.3rem;
+  font-size: 2.2rem;
   font-weight: 900;
-  color: #ffffff;
+  color: #09090b;
   letter-spacing: -0.04em;
   line-height: 1;
-  margin: 14px 0 10px 0;
-  position: relative;
-  z-index: 2;
+  margin: 12px 0 8px 0;
 }
 
 .stat-red-number {
-  color: #ef4444;
-  text-shadow: 0 0 16px rgba(239, 68, 68, 0.35);
+  color: #dc2626;
 }
 
 .stat-price-number {
   font-size: 1.85rem;
-  color: #ffffff;
 }
 
 .stat-card-footer {
   display: flex;
   align-items: center;
-  border-top: 1px solid #1a1a1e;
-  padding-top: 12px;
-  margin-top: 4px;
-  position: relative;
-  z-index: 2;
 }
 
 .stat-footer-text {
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   font-weight: 500;
   color: #71717a;
 }
