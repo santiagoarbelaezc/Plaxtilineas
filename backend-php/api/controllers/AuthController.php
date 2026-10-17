@@ -176,16 +176,8 @@ class AuthController
             $body     = ResponseHandler::getBody();
             $correo   = ResponseHandler::sanitize($body['correo'] ?? '');
             $password = $body['password'] ?? '';
-            
-            $captchaId   = $body['captchaId'] ?? $body['captcha_id'] ?? null;
-            $captchaCode = $body['captchaCode'] ?? $body['captcha_code'] ?? $body['captcha_respuesta'] ?? null;
-
             if (!$correo || !$password) {
                 throw new InvalidArgumentException('Correo y contraseña son obligatorios');
-            }
-
-            if (!self::verifyCaptcha($captchaId, $captchaCode)) {
-                throw new InvalidArgumentException('El código captcha ha expirado o es incorrecto. Intenta nuevamente.');
             }
 
             $db   = Database::getConnection();

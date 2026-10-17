@@ -246,6 +246,7 @@ class PqrsController
             $stmt = $db->prepare("
                 SELECT p.id, p.tipo, p.nombre_completo, p.email, p.telefono, p.producto_relacionado,
                        p.descripcion, p.estado, p.numero_ticket,
+                       p.fecha_creacion, p.fecha_actualizacion,
                        DATE_FORMAT(p.fecha_creacion,    '%d/%m/%Y %H:%i') as fecha_creacion_format,
                        DATE_FORMAT(p.fecha_actualizacion,'%d/%m/%Y %H:%i') as fecha_actualizacion_format,
                        COALESCE(r.total_respuestas, 0) as total_respuestas,

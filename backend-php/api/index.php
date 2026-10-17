@@ -22,19 +22,15 @@ if (PHP_SAPI === 'cli-server') {
 
 
 // ─── Controllers ─────────────────────────────────────────────────────────────
+// Nota: Producto, Categoria, Subcategoria, Variante, Importar, Estadisticas y
+// AiController han sido eliminados. El catálogo ahora proviene del API externo
+// (catalogoplaxtilineas.sembradoresdevida.org) — solo lectura desde el frontend.
 require_once __DIR__ . '/controllers/AuthController.php';
-require_once __DIR__ . '/controllers/ProductoController.php';
-require_once __DIR__ . '/controllers/CategoriaController.php';
-require_once __DIR__ . '/controllers/SubcategoriaController.php';
-require_once __DIR__ . '/controllers/VarianteController.php';
 require_once __DIR__ . '/controllers/PqrsController.php';
-require_once __DIR__ . '/controllers/ImportarController.php';
 require_once __DIR__ . '/controllers/StatsController.php';
 require_once __DIR__ . '/controllers/LeadsController.php';
 require_once __DIR__ . '/controllers/ComponentesController.php';
-require_once __DIR__ . '/controllers/EstadisticasController.php';
 require_once __DIR__ . '/controllers/DashboardAssistantController.php';
-require_once __DIR__ . '/controllers/AiController.php';
 require_once __DIR__ . '/controllers/PedidoController.php';
 require_once __DIR__ . '/controllers/WompiController.php';
 require_once __DIR__ . '/controllers/ConfiguracionController.php';
@@ -76,14 +72,6 @@ function matchRoute(string $pattern, string $uri): array|false
 // ─── Dispatch (con try/catch global) ─────────────────────────────────────────
 try {
 
-    // ── Estadísticas Catálogo ───────────────────────────────────────────────
-    if (str_starts_with($uri, '/estadisticas/catalogo')) {
-        AuthMiddleware::verify();
-        if ($method === 'GET') {
-            EstadisticasController::getCatalogStats();
-            exit;
-        }
-    }
 
     // ── Configuraciones ─────────────────────────────────────────────────────────────
     if (str_starts_with($uri, '/configuraciones')) {
@@ -113,15 +101,19 @@ try {
             'version'   => '1.0.0',
             'timestamp' => date('c'),
             'endpoints' => [
-                'auth'          => '/api/auth/login',
-                'productos'     => '/api/productos',
-                'categorias'    => '/api/categorias',
-                'subcategorias' => '/api/subcategorias',
-                'variantes'     => '/api/variantes',
-                'pqrs'          => '/api/pqrs',
-                'importar'      => '/api/importar',
-                'chat'          => '/api/chat',
-                'debug'         => '/api/debug/extensions'
+                'auth'                => '/api/auth/login',
+                'pqrs'                => '/api/pqrs',
+                'pedidos'             => '/api/pedidos',
+                'wompi'               => '/api/wompi/datos-pago',
+                'carrito'             => '/api/carrito/sync',
+                'componentes'         => '/api/componentes',
+                'leads'               => '/api/leads',
+                'stats'               => '/api/stats/dashboard',
+                'dashboard_assistant' => '/api/dashboard-assistant',
+                'configuraciones'     => '/api/configuraciones',
+                'chat'                => '/api/chat',
+                'debug'               => '/api/debug/extensions',
+                'catalogo_externo'    => 'https://catalogoplaxtilineas.sembradoresdevida.org/api',
             ],
         ]);
     }
@@ -185,143 +177,13 @@ try {
         exit;
     }
 
-    // ═════════════════════════════════════════════════════════════════════════════
-    // PRODUCTOS  /api/productos/*
-    // ═════════════════════════════════════════════════════════════════════════════
+    // ─────────────────────────────────────────────────────────────────────────────
+    // NOTA: Las rutas de /productos, /categorias, /subcategorias y /variantes han
+    // sido eliminadas. El catálogo de productos es ahora de solo lectura y proviene
+    // del API externo: https://catalogoplaxtilineas.sembradoresdevida.org/api
+    // El frontend consume ese endpoint directamente (CatalogoService).
+    // ─────────────────────────────────────────────────────────────────────────────
 
-    if ($uri === '/productos' && $method === 'GET') {
-        ProductoController::obtenerProductos();
-    }
-    if ($uri === '/productos' && $method === 'POST') {
-        AuthMiddleware::verify();
-        ProductoController::crearProducto();
-    }
-    if ($uri === '/productos/bulk-delete' && $method === 'POST') {
-        AuthMiddleware::verify();
-        ProductoController::eliminarProductosMasivo();
-    }
-    if ($uri === '/productos/eliminar-todos' && $method === 'DELETE') {
-        AuthMiddleware::verify();
-        ProductoController::eliminarTodos();
-    }
-
-    if ($uri === '/productos/buscar' && $method === 'GET') {
-        ProductoController::buscarProductosPorNombre();
-    }
-    if ($uri === '/productos/busqueda-avanzada' && $method === 'GET') {
-        ProductoController::busquedaAvanzada();
-    }
-    if ($uri === '/productos/estadisticas' && $method === 'GET') {
-        ProductoController::obtenerEstadisticasProductos();
-    }
-    if ($uri === '/productos/interes/aleatorios' && $method === 'GET') {
-        ProductoController::obtenerProductosAleatorios();
-    }
-    if ($uri === '/productos/novedades/ultimos' && $method === 'GET') {
-        ProductoController::obtenerUltimosProductos();
-    }
-    if ($uri === '/productos/verificar-stock' && $method === 'POST') {
-        ProductoController::verificarStockCarrito();
-    }
-    if ($uri === '/productos/relacionados/por-producto' && $method === 'GET') {
-        ProductoController::obtenerProductosRelacionados();
-    }
-
-    if ($p = matchRoute('/productos/subcategoria/:subcategoria_id', $uri)) {
-        if ($method === 'GET') ProductoController::obtenerProductosPorSubcategoria((int)$p['subcategoria_id']);
-    }
-    if ($p = matchRoute('/productos/categoria/:categoria_id', $uri)) {
-        if ($method === 'GET') ProductoController::obtenerProductosPorCategoria((int)$p['categoria_id']);
-    }
-    if ($p = matchRoute('/productos/:producto_id/variantes', $uri)) {
-        if ($method === 'GET') ProductoController::verificarVariantesProducto((int)$p['producto_id']);
-    }
-    if ($p = matchRoute('/productos/:id', $uri)) {
-        match ($method) {
-            'GET'    => ProductoController::obtenerProductoPorId((int)$p['id']),
-            'PUT', 'POST'=> (AuthMiddleware::verify() && ProductoController::actualizarProducto((int)$p['id'])),
-            'DELETE' => (AuthMiddleware::verify() && ProductoController::eliminarProducto((int)$p['id'])),
-            default  => null,
-        };
-    }
-
-    // ═════════════════════════════════════════════════════════════════════════════
-    // CATEGORIAS  /api/categorias/*
-    // ═════════════════════════════════════════════════════════════════════════════
-
-    if ($uri === '/categorias' && $method === 'GET') {
-        CategoriaController::obtenerCategorias();
-    }
-    if ($uri === '/categorias' && $method === 'POST') {
-        AuthMiddleware::verify();
-        CategoriaController::crearCategoria();
-    }
-    if ($uri === '/categorias/eliminar-todas' && $method === 'DELETE') {
-        AuthMiddleware::verify();
-        CategoriaController::eliminarTodas();
-    }
-    if ($uri === '/categorias/con-subcategorias' && $method === 'GET') {
-        CategoriaController::obtenerCategoriasConSubcategorias();
-    }
-    if ($p = matchRoute('/categorias/nombre/:nombre', $uri)) {
-        if ($method === 'GET') CategoriaController::obtenerPorNombre($p['nombre']);
-    }
-    if ($p = matchRoute('/categorias/id-por-nombre/:nombre', $uri)) {
-        if ($method === 'GET') CategoriaController::getIdPorNombre($p['nombre']);
-    }
-    if ($p = matchRoute('/categorias/:id', $uri)) {
-        match ($method) {
-            'PUT', 'POST'=> (AuthMiddleware::verify() && CategoriaController::actualizarCategoria((int)$p['id'])),
-            'DELETE' => (AuthMiddleware::verify() && CategoriaController::eliminarCategoria((int)$p['id'])),
-            default  => null,
-        };
-    }
-
-    // ═════════════════════════════════════════════════════════════════════════════
-    // SUBCATEGORIAS  /api/subcategorias/*
-    // ═════════════════════════════════════════════════════════════════════════════
-
-    if ($uri === '/subcategorias' && $method === 'GET') {
-        SubcategoriaController::obtenerSubcategorias();
-    }
-    if ($uri === '/subcategorias' && $method === 'POST') {
-        AuthMiddleware::verify();
-        SubcategoriaController::crearSubcategoria();
-    }
-    if ($uri === '/subcategorias/eliminar-todas' && $method === 'DELETE') {
-        AuthMiddleware::verify();
-        SubcategoriaController::eliminarTodas();
-    }
-    if ($p = matchRoute('/subcategorias/por-categoria/:categoria_id', $uri)) {
-        if ($method === 'GET') SubcategoriaController::obtenerSubcategoriasPorCategoria((int)$p['categoria_id']);
-    }
-    if ($p = matchRoute('/subcategorias/:id', $uri)) {
-        match ($method) {
-            'PUT'    => (AuthMiddleware::verify() && SubcategoriaController::actualizarSubcategoria((int)$p['id'])),
-            'DELETE' => (AuthMiddleware::verify() && SubcategoriaController::eliminarSubcategoria((int)$p['id'])),
-            default  => null,
-        };
-    }
-
-    // ═════════════════════════════════════════════════════════════════════════════
-    // VARIANTES  /api/variantes/*
-    // ═════════════════════════════════════════════════════════════════════════════
-
-    if ($uri === '/variantes' && $method === 'POST') {
-        AuthMiddleware::verify();
-        VarianteController::crearVariante();
-    }
-    if ($p = matchRoute('/variantes/producto/:producto_id', $uri)) {
-        if ($method === 'GET') VarianteController::obtenerVariantesPorProducto((int)$p['producto_id']);
-    }
-    if ($p = matchRoute('/variantes/:id', $uri)) {
-        match ($method) {
-            'GET'    => VarianteController::obtenerVariantePorId((int)$p['id']),
-            'PUT'    => (AuthMiddleware::verify() && VarianteController::actualizarVariante((int)$p['id'])),
-            'DELETE' => (AuthMiddleware::verify() && VarianteController::eliminarVariante((int)$p['id'])),
-            default  => null,
-        };
-    }
 
     // ═════════════════════════════════════════════════════════════════════════════
     // PQRS  /api/pqrs/*
@@ -369,10 +231,6 @@ try {
     }
 
     // ═════════════════════════════════════════════════════════════════════════════
-    // IMPORTAR  /api/importar/*
-    // ═════════════════════════════════════════════════════════════════════════════
-
-    // ═════════════════════════════════════════════════════════════════════════════
     // DASHBOARD ASSISTANT  /api/dashboard-assistant
     // ═════════════════════════════════════════════════════════════════════════════
 
@@ -380,19 +238,6 @@ try {
         AuthMiddleware::verify();
         $controller = new DashboardAssistantController();
         $controller->chat();
-    }
-
-    if ($uri === '/importar/ejecutar' && $method === 'POST') {
-        AuthMiddleware::verify();
-        ImportarController::importarProductosHostinger();
-    }
-    if ($uri === '/importar/estadisticas' && $method === 'GET') {
-        AuthMiddleware::verify();
-        ImportarController::obtenerEstadisticasHostinger();
-    }
-    if ($uri === '/importar/preview' && $method === 'GET') {
-        AuthMiddleware::verify();
-        ImportarController::previewProductosHostinger();
     }
 
     // ═════════════════════════════════════════════════════════════════════════════
@@ -452,17 +297,6 @@ try {
         }
     }
 
-    // ═════════════════════════════════════════════════════════════════════════════
-    // INTELIGENCIA ARTIFICIAL  /api/ia/*
-    // ═════════════════════════════════════════════════════════════════════════════
-    if ($uri === '/ia/sugerir-subcategoria' && $method === 'POST') {
-        AuthMiddleware::verify();
-        AiController::sugerirSubcategoria();
-    }
-    if ($uri === '/ia/generar-descripcion' && $method === 'POST') {
-        AuthMiddleware::verify();
-        AiController::generarDescripcion();
-    }
 
     // ═════════════════════════════════════════════════════════════════════════════
     // ASISTENTE VIRTUAL MATEO  /api/chat/*
