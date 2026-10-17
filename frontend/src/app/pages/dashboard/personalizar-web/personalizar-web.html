@@ -40,11 +40,11 @@
             <span class="quick-item-desc">Promoción visual panorámica</span>
           </div>
         </button>
-        <button class="quick-action-item" (click)="abrirCreador('anuncio')">
-          <div class="quick-item-icon anuncio"><fa-icon [icon]="faBullhorn"></fa-icon></div>
+        <button class="quick-action-item" (click)="abrirCreador('texto')">
+          <div class="quick-item-icon texto"><fa-icon [icon]="faAlignLeft"></fa-icon></div>
           <div class="quick-item-info">
-            <span class="quick-item-title">Nueva Tarjeta Novedad</span>
-            <span class="quick-item-desc">Tarjeta bento con beneficios</span>
+            <span class="quick-item-title">Nuevo Bloque Texto</span>
+            <span class="quick-item-desc">Mensaje editorial o informativo</span>
           </div>
         </button>
         <button class="quick-action-item" (click)="setFiltroEstado('activos')">
@@ -148,21 +148,7 @@
         </div>
       </button>
 
-      <!-- 2. Anuncio -->
-      <button class="catalog-item-btn" (click)="abrirCreador('anuncio')">
-        <div class="catalog-icon-wrapper anuncio-style">
-          <fa-icon [icon]="faBullhorn"></fa-icon>
-        </div>
-        <div class="catalog-item-info">
-          <div class="catalog-title-row">
-            <h4>Anuncio Novedades</h4>
-            <span class="add-plus-badge">+ Añadir</span>
-          </div>
-          <p>Tarjeta bento con hasta dos productos destacados y lista de beneficios.</p>
-        </div>
-      </button>
-
-      <!-- 3. Texto -->
+      <!-- 2. Texto -->
       <button class="catalog-item-btn" (click)="abrirCreador('texto')">
         <div class="catalog-icon-wrapper texto-style">
           <fa-icon [icon]="faAlignLeft"></fa-icon>
@@ -173,34 +159,6 @@
             <span class="add-plus-badge">+ Añadir</span>
           </div>
           <p>Título editorial con párrafo amplio y alineación personalizada.</p>
-        </div>
-      </button>
-
-      <!-- 4. Testimonios -->
-      <button class="catalog-item-btn" (click)="abrirCreador('testimonios')">
-        <div class="catalog-icon-wrapper testimonios-style">
-          <fa-icon [icon]="faComments"></fa-icon>
-        </div>
-        <div class="catalog-item-info">
-          <div class="catalog-title-row">
-            <h4>Testimonios Clientes</h4>
-            <span class="add-plus-badge">+ Añadir</span>
-          </div>
-          <p>Carrusel de valoraciones con estrellas, fotos y comentarios reales.</p>
-        </div>
-      </button>
-
-      <!-- 5. FAQ -->
-      <button class="catalog-item-btn" (click)="abrirCreador('faq')">
-        <div class="catalog-icon-wrapper faq-style">
-          <fa-icon [icon]="faQuestionCircle"></fa-icon>
-        </div>
-        <div class="catalog-item-info">
-          <div class="catalog-title-row">
-            <h4>Preguntas Frecuentes</h4>
-            <span class="add-plus-badge">+ Añadir</span>
-          </div>
-          <p>Acordeón interactivo para aclarar envíos, pagos y garantías.</p>
         </div>
       </button>
 
