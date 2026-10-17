@@ -33,7 +33,8 @@ import {
   faCheckCircle,
   faExclamationCircle,
   faClock,
-  faCloudUploadAlt
+  faCloudUploadAlt,
+  faBook
 } from '@fortawesome/free-solid-svg-icons';
 import { ComponentesService, ComponenteDinamico } from '../../../services/componentes.service';
 import { CategoriasService } from '../../../services/categorias.service';
@@ -79,6 +80,17 @@ export class PersonalizarWeb implements OnInit {
   faExclamationCircle = faExclamationCircle;
   faClock = faClock;
   faCloudUploadAlt = faCloudUploadAlt;
+  faBook = faBook;
+
+  modalManualAbierto = false;
+
+  abrirModalManual(): void {
+    this.modalManualAbierto = true;
+  }
+
+  cerrarModalManual(): void {
+    this.modalManualAbierto = false;
+  }
 
   componentes: ComponenteDinamico[] = [];
   categoriasLista: any[] = [];

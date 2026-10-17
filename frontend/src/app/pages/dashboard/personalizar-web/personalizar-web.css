@@ -16,22 +16,129 @@
   color: #09090b;
 }
 
-/* ─── Bento Quick Access Icons ───────────────────────────── */
-.quick-item-icon.banner {
+/* ─── Bento Hero Compacto ────────────────────────────────── */
+.bento-welcome.bento-welcome-compact {
+  padding: 24px 30px;
+  min-height: auto;
+  border-radius: 18px;
+}
+
+.bento-welcome.bento-welcome-compact .bento-title {
+  font-size: 1.85rem;
+  letter-spacing: -0.03em;
+  margin: 0 0 6px 0;
+  line-height: 1.15;
+}
+
+.bento-welcome.bento-welcome-compact .bento-subtitle {
+  font-size: 0.88rem;
+  color: #a1a1aa;
+  margin: 0 0 18px 0;
+  max-width: 640px;
+  line-height: 1.45;
+}
+
+.bento-welcome.bento-welcome-compact .bento-actions {
+  gap: 10px;
+}
+
+/* ─── Modal Manual de Uso ─────────────────────────────────── */
+.modal-manual-container {
+  max-width: 620px;
+}
+
+.manual-icon-box {
+  background: #09090b;
+  color: #ffffff;
+}
+
+.manual-modal-intro {
+  margin-bottom: 20px;
+  padding: 12px 16px;
   background: #f4f5f7;
-  border-color: #e4e4e7;
+  border-radius: 12px;
+  border: 1px solid #e4e4e7;
+}
+
+.manual-modal-intro p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: #09090b;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.manual-modal-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal-step-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: #fcfcfd;
+  border: 1.5px solid #e4e4e7;
+  padding: 16px 18px;
+  border-radius: 16px;
+  transition: all 0.2s ease;
+}
+
+.modal-step-card:hover {
+  background: #ffffff;
+  border-color: #09090b;
+  box-shadow: 0 4px 16px rgba(9, 9, 11, 0.04);
+}
+
+.step-card-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #09090b;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.step-card-content {
+  flex: 1;
+}
+
+.step-card-content h4 {
+  margin: 0 0 6px 0;
+  font-size: 0.95rem;
+  font-weight: 800;
   color: #09090b;
 }
 
-.quick-item-icon.anuncio {
-  background: #f4f5f7;
-  border-color: #e4e4e7;
-  color: #09090b;
+.step-card-content p {
+  margin: 0 0 8px 0;
+  font-size: 0.82rem;
+  color: #71717a;
+  line-height: 1.45;
 }
 
-.quick-item-icon.view {
-  background: #f4f5f7;
-  border-color: #e4e4e7;
+.step-bullets {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.step-bullets li {
+  font-size: 0.78rem;
+  color: #71717a;
+  line-height: 1.4;
+}
+
+.step-bullets li strong {
   color: #09090b;
 }
 

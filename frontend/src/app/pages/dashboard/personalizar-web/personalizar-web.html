@@ -1,60 +1,20 @@
 <div class="admin-content-wrapper-inner">
 
-  <!-- 1. Bento Grid (Hero Oscuro + Quick Access 360px) -->
-  <div class="bento-grid">
-    <!-- Tarjeta Hero Estilo Bento (Fondo Negro con Efecto de Profundidad) -->
-    <div class="bento-welcome">
-      <div class="bento-status">
-        <span class="status-dot"></span>
-        <span class="bento-status-text">Diseñador Dinámico en Tiempo Real</span>
-      </div>
-      <h1 class="bento-title">Personalización Web</h1>
-      <p class="bento-subtitle">
-        Organiza, reordena y configura los bloques de contenido de la página principal. Cualquier cambio se sincroniza instantáneamente con la tienda de Plaxtilineas.
-      </p>
-      <div class="bento-actions">
-        <button class="btn-primary-white" (click)="togglePreview()">
-          <fa-icon [icon]="vistaPrevia ? faEyeSlash : faEye"></fa-icon>
-          {{ vistaPrevia ? 'Ocultar Simulador' : 'Simulador en Vivo' }}
-        </button>
-        <button class="btn-ghost-white" (click)="abrirEnNuevaPestana()">
-          <fa-icon [icon]="faExternalLinkAlt"></fa-icon> Abrir Web en Nueva Pestaña
-        </button>
-        <button class="btn-ghost-white" (click)="cargarComponentes()" [disabled]="cargando">
-          <fa-icon [icon]="faSync" [class.fa-spin]="cargando"></fa-icon> Sincronizar
-        </button>
-      </div>
-    </div>
-
-    <!-- Quick Access (360px) -->
-    <div class="bento-quick-card">
-      <div class="quick-header">
-        <h3>Atajos de Creación</h3>
-        <span class="quick-pill">Añadir Rápido</span>
-      </div>
-      <div class="quick-actions-list">
-        <button class="quick-action-item" (click)="abrirCreador('banner')">
-          <div class="quick-item-icon banner"><fa-icon [icon]="faImage"></fa-icon></div>
-          <div class="quick-item-info">
-            <span class="quick-item-title">Nuevo Banner</span>
-            <span class="quick-item-desc">Promoción visual panorámica</span>
-          </div>
-        </button>
-        <button class="quick-action-item" (click)="abrirCreador('texto')">
-          <div class="quick-item-icon texto"><fa-icon [icon]="faAlignLeft"></fa-icon></div>
-          <div class="quick-item-info">
-            <span class="quick-item-title">Nuevo Bloque Texto</span>
-            <span class="quick-item-desc">Mensaje editorial o informativo</span>
-          </div>
-        </button>
-        <button class="quick-action-item" (click)="setFiltroEstado('activos')">
-          <div class="quick-item-icon view"><fa-icon [icon]="faEye"></fa-icon></div>
-          <div class="quick-item-info">
-            <span class="quick-item-title">Ver Sólo Activas ({{ activasCount }})</span>
-            <span class="quick-item-desc">Filtrar secciones publicadas</span>
-          </div>
-        </button>
-      </div>
+  <!-- 1. Hero Bento Header (Compacto con Subtítulo y Botones) -->
+  <div class="bento-welcome bento-welcome-compact">
+    <h1 class="bento-title">Personalización Web</h1>
+    <p class="bento-subtitle">Diseña, organiza y publica los bloques visuales de la página principal en tiempo real.</p>
+    <div class="bento-actions">
+      <button class="btn-primary-white" (click)="togglePreview()">
+        <fa-icon [icon]="vistaPrevia ? faEyeSlash : faEye"></fa-icon>
+        {{ vistaPrevia ? 'Ocultar Simulador' : 'Simulador en Vivo' }}
+      </button>
+      <button class="btn-ghost-white" (click)="abrirEnNuevaPestana()">
+        <fa-icon [icon]="faExternalLinkAlt"></fa-icon> Abrir Web en Nueva Pestaña
+      </button>
+      <button class="btn-ghost-white" (click)="abrirModalManual()">
+        <fa-icon [icon]="faBook"></fa-icon> Manual de Uso
+      </button>
     </div>
   </div>
 
@@ -842,6 +802,83 @@
         </button>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ════════════ MODAL MANUAL DE USO ════════════ -->
+  <div class="modal-overlay" *ngIf="modalManualAbierto" (click)="cerrarModalManual()">
+    <div class="modal-container modal-manual-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-header-title">
+          <div class="modal-type-icon manual-icon-box">
+            <fa-icon [icon]="faBook"></fa-icon>
+          </div>
+          <div>
+            <h3 class="modal-title">Manual de Uso</h3>
+            <span class="modal-subtitle-type">Guía Rápida de Personalización</span>
+          </div>
+        </div>
+        <button class="btn-modal-close" (click)="cerrarModalManual()" title="Cerrar ventana">
+          <fa-icon [icon]="faTimes"></fa-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="manual-modal-intro">
+          <p>Aprende en 3 simples pasos cómo estructurar, diseñar y publicar secciones dinámicas en la página de inicio de Plaxtilineas.</p>
+        </div>
+
+        <div class="manual-modal-steps">
+          <!-- Paso 1 -->
+          <div class="modal-step-card">
+            <div class="step-card-num">1</div>
+            <div class="step-card-content">
+              <h4>Elegir y Añadir Sección</h4>
+              <p>Haz clic en cualquiera de los bloques del <strong>Catálogo de Componentes</strong>:</p>
+              <ul class="step-bullets">
+                <li><strong>Banner Hero:</strong> Imagen horizontal completa con enlace comercial y texto descriptivo.</li>
+                <li><strong>Bloque Informativo:</strong> Texto editorial con título, cuerpo y alineación.</li>
+                <li><strong>Galería de Fotos:</strong> Mosaico fotográfico de proyectos o insumos instalados.</li>
+                <li><strong>Carrusel de Catálogo:</strong> Muestra productos filtrados dinámicamente por categoría.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Paso 2 -->
+          <div class="modal-step-card">
+            <div class="step-card-num">2</div>
+            <div class="step-card-content">
+              <h4>Configuración y Ubicación</h4>
+              <p>Al editar o crear un bloque podrás definir:</p>
+              <ul class="step-bullets">
+                <li><strong>Zona Superior:</strong> Se mostrará al comienzo de la página (antes de productos principales).</li>
+                <li><strong>Zona Inferior:</strong> Se mostrará en la parte baja (antes del pie de página).</li>
+                <li><strong>Imágenes:</strong> Sube tus archivos directamente a Cloudinary sin necesidad de configuraciones adicionales.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Paso 3 -->
+          <div class="modal-step-card">
+            <div class="step-card-num">3</div>
+            <div class="step-card-content">
+              <h4>Reordenar Secuencia y Publicar en Vivo</h4>
+              <p>En el listado inferior puedes gestionar tus bloques:</p>
+              <ul class="step-bullets">
+                <li><strong>Flechas Arriba/Abajo:</strong> Cambian el orden de aparición. El bloque <strong>#1</strong> es el primero que verán los clientes.</li>
+                <li><strong>Switch Visible / Oculto:</strong> Activa o desactiva la visibilidad en tiempo real sin eliminar el contenido.</li>
+                <li><strong>Simulador en Vivo:</strong> Usa el botón superior para ver exactamente cómo luce la tienda en escritorio, tablet o celular.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-primary-white" (click)="cerrarModalManual()">
+          <fa-icon [icon]="faCheck"></fa-icon> Entendido
+        </button>
+      </div>
     </div>
   </div>
 
