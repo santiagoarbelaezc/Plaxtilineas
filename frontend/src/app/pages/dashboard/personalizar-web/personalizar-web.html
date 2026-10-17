@@ -1,19 +1,38 @@
 <div class="admin-content-wrapper-inner">
 
-  <!-- 1. Hero Bento Header (Compacto con Subtítulo y Botones) -->
-  <div class="bento-welcome bento-welcome-compact">
-    <h1 class="bento-title">Personalización Web</h1>
-    <p class="bento-subtitle">Diseña, organiza y publica los bloques visuales de la página principal en tiempo real.</p>
-    <div class="bento-actions">
-      <button class="btn-primary-white" (click)="togglePreview()">
-        <fa-icon [icon]="vistaPrevia ? faEyeSlash : faEye"></fa-icon>
-        {{ vistaPrevia ? 'Ocultar Simulador' : 'Simulador en Vivo' }}
-      </button>
-      <button class="btn-ghost-white" (click)="abrirEnNuevaPestana()">
-        <fa-icon [icon]="faExternalLinkAlt"></fa-icon> Abrir Web en Nueva Pestaña
-      </button>
-      <button class="btn-ghost-white" (click)="abrirModalManual()">
-        <fa-icon [icon]="faBook"></fa-icon> Manual de Uso
+  <!-- 1. Fila Dividida en Dos Secciones -->
+  <div class="bento-split-row">
+    <!-- Sección Izquierda: Hero Principal -->
+    <div class="bento-welcome bento-welcome-compact">
+      <h1 class="bento-title">Personalización Web</h1>
+      <p class="bento-subtitle">Diseña, organiza y publica los bloques visuales de la página principal en tiempo real.</p>
+      <div class="bento-actions">
+        <button class="btn-primary-white" (click)="togglePreview()">
+          <fa-icon [icon]="vistaPrevia ? faEyeSlash : faEye"></fa-icon>
+          {{ vistaPrevia ? 'Ocultar Simulador' : 'Simulador en Vivo' }}
+        </button>
+        <button class="btn-ghost-white" (click)="abrirEnNuevaPestana()">
+          <fa-icon [icon]="faExternalLinkAlt"></fa-icon> Abrir Web en Nueva Pestaña
+        </button>
+      </div>
+    </div>
+
+    <!-- Sección Derecha: Tarjeta Manual de Uso -->
+    <div class="bento-manual-card">
+      <div class="manual-card-header">
+        <div class="manual-icon-circle">
+          <fa-icon [icon]="faBook"></fa-icon>
+        </div>
+        <div>
+          <span class="manual-card-badge">Documentación</span>
+          <h3 class="manual-card-title">Manual de Uso</h3>
+        </div>
+      </div>
+      <p class="manual-card-desc">
+        Consulta el paso a paso detallado para configurar, ordenar y publicar las secciones de la tienda.
+      </p>
+      <button class="btn-open-manual" (click)="abrirModalManual()">
+        <fa-icon [icon]="faBook"></fa-icon> Ver Manual Completo
       </button>
     </div>
   </div>

@@ -455,6 +455,85 @@
   color: #ffffff;
 }
 
+/* Header Wompi Pill */
+.header-wompi-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1.5px solid var(--dash-card-border);
+  padding: 5px 12px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.header-wompi-pill.is-live {
+  border-color: #10b981;
+  background: #f0fdf4;
+}
+
+.header-wompi-pill .material-symbols-rounded {
+  font-size: 17px;
+  color: #71717a;
+}
+
+.header-wompi-pill.is-live .material-symbols-rounded {
+  color: #10b981;
+}
+
+.wompi-pill-label {
+  font-size: 0.74rem;
+  color: #71717a;
+}
+
+.wompi-pill-label strong {
+  color: #09090b;
+}
+
+.switch-minimal-sm {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.switch-minimal-sm input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider-minimal-sm {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #e4e4e7;
+  transition: 0.25s ease;
+  border-radius: 20px;
+}
+
+.slider-minimal-sm:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 12px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.25s ease;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.switch-minimal-sm input:checked + .slider-minimal-sm {
+  background-color: #10b981;
+}
+
+.switch-minimal-sm input:checked + .slider-minimal-sm:before {
+  transform: translateX(16px);
+}
+
 .header-user-profile {
   display: flex;
   align-items: center;
@@ -633,6 +712,40 @@
   justify-content: space-between;
   border: 1.5px solid var(--dash-dark-border);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.bento-welcome.bento-welcome-compact {
+  padding: 20px 26px;
+  min-height: auto;
+}
+
+.bento-welcome.bento-welcome-compact .bento-welcome-content {
+  max-width: 100%;
+}
+
+.bento-welcome.bento-welcome-compact .bento-badge {
+  padding: 3px 10px;
+  font-size: 0.7rem;
+}
+
+.bento-welcome.bento-welcome-compact .bento-title {
+  font-size: 1.65rem;
+  letter-spacing: -0.03em;
+  margin: 8px 0 4px 0;
+  line-height: 1.15;
+}
+
+.bento-welcome.bento-welcome-compact .bento-desc {
+  font-size: 0.84rem;
+  margin-bottom: 14px;
+  max-width: 520px;
+  line-height: 1.45;
+}
+
+.bento-welcome.bento-welcome-compact .btn-primary-white {
+  padding: 9px 18px;
+  font-size: 0.76rem;
+  border-radius: 10px;
 }
 
 .bento-welcome::before {
@@ -894,31 +1007,321 @@
   transform: translateX(2px);
 }
 
-/* Wompi Switch Card */
-.wompi-setting-card {
-  padding: 18px 22px;
+/* Wompi Full Card (Sección Dedicada de Pasarela de Pago) */
+.wompi-full-card {
+  border-radius: 18px;
+  padding: 24px 28px;
+  background: #ffffff;
+  border: 1.5px solid var(--dash-card-border);
+}
+
+.wompi-card-header {
+  margin-bottom: 22px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  gap: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--dash-card-border);
 }
 
-.wompi-info {
+.wompi-header-left {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
 }
 
-.wompi-heading {
-  font-size: 0.9rem;
+.wompi-icon-box {
+  background: #09090b !important;
+  color: #ffffff !important;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.wompi-header-content {
+  flex: 1;
+}
+
+.wompi-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.wompi-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+  transition: all 0.2s ease;
+}
+
+.wompi-status-badge.is-live {
+  background: #dcfce7;
+  color: #166534;
+  border-color: #bbf7d0;
+}
+
+.status-dot-sm {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.wompi-switch-action {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  background: #f4f5f7;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  border: 1px solid var(--dash-card-border);
+}
+
+.wompi-switch-label {
+  font-size: 0.78rem;
   font-weight: 800;
   color: var(--dash-text-dark);
-  margin: 0;
 }
 
-.wompi-sub {
+/* Grilla comparativa: Cuándo está Activa vs Cuándo está Inactiva */
+.wompi-states-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.wompi-state-card {
+  background: #ffffff;
+  border: 1.5px solid var(--dash-card-border);
+  border-radius: 16px;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.wompi-state-card:hover {
+  box-shadow: 0 8px 24px rgba(9, 9, 11, 0.05);
+}
+
+.wompi-state-card.state-live.is-current {
+  border-color: #22c55e;
+  background: #fcfdfc;
+  box-shadow: 0 10px 28px rgba(34, 197, 94, 0.08);
+}
+
+.wompi-state-card.state-dev.is-current {
+  border-color: #f59e0b;
+  background: #fffdf8;
+  box-shadow: 0 10px 28px rgba(245, 158, 11, 0.08);
+}
+
+.state-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.state-indicator-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 9999px;
+}
+
+.state-indicator-badge.live-badge {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.state-indicator-badge.dev-badge {
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.state-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.state-dot.live {
+  background: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.25);
+}
+
+.state-dot.dev {
+  background: #d97706;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.25);
+}
+
+.state-current-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 0.72rem;
+  font-weight: 800;
+  color: #15803d;
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+  padding: 3px 9px;
+  border-radius: 8px;
+}
+
+.state-current-tag .material-symbols-rounded {
+  font-size: 15px;
+}
+
+.state-current-tag.dev-current-tag {
+  color: #b45309;
+  background: #fef3c7;
+  border-color: #fde68a;
+}
+
+.btn-switch-state {
+  background: #ffffff;
+  border: 1.5px solid var(--dash-card-border);
+  color: #09090b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-switch-state:hover {
+  background: #09090b;
+  color: #ffffff;
+  border-color: #09090b;
+}
+
+.state-card-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--dash-text-dark);
+  margin: 0 0 6px 0;
+  letter-spacing: -0.02em;
+}
+
+.state-card-summary {
+  font-size: 0.82rem;
   color: var(--dash-text-muted);
-  margin: 2px 0 0 0;
+  line-height: 1.45;
+  margin: 0 0 18px 0;
+  min-height: 38px;
+}
+
+.state-feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+
+.state-feature-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.feature-icon {
+  font-size: 19px;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.feature-icon.live-icon {
+  color: #16a34a;
+}
+
+.feature-icon.dev-icon {
+  color: #d97706;
+}
+
+.state-feature-list strong {
+  display: block;
+  color: var(--dash-text-dark);
+  font-weight: 700;
+  font-size: 0.82rem;
+  margin-bottom: 2px;
+}
+
+.state-feature-list span {
+  color: #52525b;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+/* Banner de Nota Informativa Inferior */
+.wompi-status-note {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 12px;
+  color: #92400e;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.wompi-status-note.is-live-note {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.wompi-status-note .note-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.wompi-status-note.is-live-note .note-icon {
+  color: #16a34a;
+}
+
+.wompi-status-note:not(.is-live-note) .note-icon {
+  color: #d97706;
+}
+
+.wompi-status-note .note-text strong {
+  font-weight: 800;
 }
 
 /* Switch Minimal */
@@ -1461,5 +1864,21 @@
 
   .stat-mini-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .wompi-states-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wompi-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .wompi-switch-action {
+    width: 100%;
+    justify-content: space-between;
+    box-sizing: border-box;
   }
 }

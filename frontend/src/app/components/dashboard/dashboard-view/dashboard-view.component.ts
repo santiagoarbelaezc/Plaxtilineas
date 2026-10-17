@@ -342,13 +342,22 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
 
   toggleWompi(event: Event): void {
     const isChecked = (event.target as HTMLInputElement).checked;
-    this.configuracionService.updateWompiStatus(isChecked).subscribe({
+    this.aplicarCambioWompi(isChecked, event);
+  }
+
+  setWompiMode(activar: boolean): void {
+    if (this.wompiEnabled === activar) return;
+    this.aplicarCambioWompi(activar);
+  }
+
+  private aplicarCambioWompi(nuevoEstado: boolean, event?: Event): void {
+    this.configuracionService.updateWompiStatus(nuevoEstado).subscribe({
       next: () => {
-        const estado = isChecked ? 'activada' : 'desactivada';
+        const modoNombre = nuevoEstado ? 'Modo Producción (En Vivo)' : 'Modo en Desarrollo (Inactiva)';
         Swal.fire({
           icon: 'success',
-          title: 'Configuraci&oacute;n guardada',
-          html: '<p style="color: #cbd5e1; font-size: 0.95rem;">La pasarela Wompi ha sido <strong>' + estado + '</strong> con &eacute;xito.</p>',
+          title: 'Pasarela Wompi Actualizada',
+          html: `<p style="color: #cbd5e1; font-size: 0.95rem;">Estado de pagos establecido en <strong>${modoNombre}</strong>.</p>`,
           background: '#1e293b',
           color: '#f8fafc',
           iconColor: '#4ade80',
@@ -360,19 +369,18 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
         });
       },
       error: () => {
-        (event.target as HTMLInputElement).checked = !isChecked;
+        if (event && event.target) {
+          (event.target as HTMLInputElement).checked = !nuevoEstado;
+        }
         Swal.fire({
           icon: 'error',
-          title: 'Error de conexi&oacute;n',
-          html: '<p style="color: #cbd5e1; font-size: 0.95rem;">No se pudo actualizar la configuraci&oacute;n de la pasarela.</p>',
+          title: 'Error de conexión',
+          html: '<p style="color: #cbd5e1; font-size: 0.95rem;">No se pudo actualizar la configuración de la pasarela Wompi.</p>',
           background: '#1e293b',
           color: '#f8fafc',
           iconColor: '#f87171',
-          confirmButtonColor: '#368c44',
-          confirmButtonText: 'Entendido',
-          customClass: {
-            popup: 'rounded-xl shadow-2xl border border-slate-700'
-          }
+          confirmButtonColor: '#dc2626',
+          confirmButtonText: 'Cerrar'
         });
       }
     });

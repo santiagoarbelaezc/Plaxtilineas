@@ -16,11 +16,27 @@
   color: #09090b;
 }
 
-/* ─── Bento Hero Compacto ────────────────────────────────── */
+/* ─── Fila Dividida en Dos Secciones ─────────────────────── */
+.bento-split-row {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 20px;
+  align-items: stretch;
+}
+
+@media (max-width: 992px) {
+  .bento-split-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 .bento-welcome.bento-welcome-compact {
-  padding: 24px 30px;
+  padding: 22px 28px;
   min-height: auto;
   border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .bento-welcome.bento-welcome-compact .bento-title {
@@ -33,13 +49,102 @@
 .bento-welcome.bento-welcome-compact .bento-subtitle {
   font-size: 0.88rem;
   color: #a1a1aa;
-  margin: 0 0 18px 0;
+  margin: 0 0 16px 0;
   max-width: 640px;
   line-height: 1.45;
 }
 
 .bento-welcome.bento-welcome-compact .bento-actions {
   gap: 10px;
+}
+
+/* ─── Tarjeta Manual de Uso (Derecha) ─────────────────────── */
+.bento-manual-card {
+  background: #ffffff;
+  border: 1.5px solid #e4e4e7;
+  border-radius: 18px;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
+.bento-manual-card:hover {
+  border-color: #09090b;
+  box-shadow: 0 8px 24px rgba(9, 9, 11, 0.05);
+}
+
+.manual-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.manual-icon-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #09090b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.manual-card-badge {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #71717a;
+  margin-bottom: 2px;
+}
+
+.manual-card-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #09090b;
+  letter-spacing: -0.02em;
+}
+
+.manual-card-desc {
+  font-size: 0.82rem;
+  color: #71717a;
+  line-height: 1.45;
+  margin: 0 0 16px 0;
+}
+
+.btn-open-manual {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #09090b;
+  color: #ffffff;
+  border: none;
+  padding: 11px 18px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.btn-open-manual:hover {
+  background: #27272a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(9, 9, 11, 0.15);
 }
 
 /* ─── Modal Manual de Uso ─────────────────────────────────── */
