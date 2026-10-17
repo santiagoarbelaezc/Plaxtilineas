@@ -1,67 +1,6 @@
 <div class="admin-content-wrapper-inner">
 
-  <!-- 1. Fila de Stat Cards (4 columnas) -->
-  <div class="stats-row" *ngIf="!cargando">
-    <!-- Total Secciones -->
-    <div class="stat-card">
-      <div class="stat-header">
-        <span class="stat-card-label">Total Secciones</span>
-        <div class="stat-icon-box">
-          <fa-icon [icon]="faLayerGroup"></fa-icon>
-        </div>
-      </div>
-      <div class="stat-number">{{ totalSecciones }}</div>
-      <div class="stat-meta">
-        <span class="stat-pill">{{ activasCount }} visibles</span>
-        <span class="stat-subtext">Componentes creados</span>
-      </div>
-    </div>
-
-    <!-- Secciones Activas / En Vivo -->
-    <div class="stat-card stat-highlight">
-      <div class="stat-header">
-        <span class="stat-card-label">Visibles en Vivo</span>
-        <div class="stat-icon-box highlight-icon">
-          <fa-icon [icon]="faEye"></fa-icon>
-        </div>
-      </div>
-      <div class="stat-number">{{ activasCount }}</div>
-      <div class="stat-meta">
-        <span class="stat-pill-ok" *ngIf="activasCount > 0">Publicadas en web</span>
-        <span class="stat-pill-alert" *ngIf="activasCount === 0">Ninguna visible</span>
-      </div>
-    </div>
-
-    <!-- Zona Superior -->
-    <div class="stat-card">
-      <div class="stat-header">
-        <span class="stat-card-label">Zona Superior</span>
-        <div class="stat-icon-box">
-          <fa-icon [icon]="faDesktop"></fa-icon>
-        </div>
-      </div>
-      <div class="stat-number">{{ zonaSuperiorCount }}</div>
-      <div class="stat-meta">
-        <span class="stat-subtext">Inicio y cabecera</span>
-      </div>
-    </div>
-
-    <!-- Zona Inferior -->
-    <div class="stat-card">
-      <div class="stat-header">
-        <span class="stat-card-label">Zona Inferior</span>
-        <div class="stat-icon-box">
-          <fa-icon [icon]="faSlidersH"></fa-icon>
-        </div>
-      </div>
-      <div class="stat-number">{{ zonaInferiorCount }}</div>
-      <div class="stat-meta">
-        <span class="stat-subtext">Secciones antes del pie</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- 2. Bento Grid (Hero Oscuro + Quick Access 360px) -->
+  <!-- 1. Bento Grid (Hero Oscuro + Quick Access 360px) -->
   <div class="bento-grid">
     <!-- Tarjeta Hero Estilo Bento (Fondo Negro con Efecto de Profundidad) -->
     <div class="bento-welcome">
