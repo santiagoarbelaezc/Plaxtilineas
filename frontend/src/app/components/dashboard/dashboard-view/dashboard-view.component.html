@@ -39,20 +39,21 @@
           </a>
         </li>
 
-        <!-- 1. Pedidos -->
+        <!-- 1. Inventario -->
+        <li class="nav-item">
+          <a routerLink="/admin/inventario" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Inventario de Productos">
+            <span class="material-symbols-rounded nav-icon">inventory_2</span>
+            <span class="nav-label" *ngIf="!isSidebarCollapsed">Inventario</span>
+            <span class="nav-badge" *ngIf="!isSidebarCollapsed && totalProductosCount > 0">{{ totalProductosCount }}</span>
+          </a>
+        </li>
+
+        <!-- 2. Pedidos -->
         <li class="nav-item">
           <a routerLink="/admin/pedidos" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Pedidos">
             <span class="material-symbols-rounded nav-icon">shopping_bag</span>
             <span class="nav-label" *ngIf="!isSidebarCollapsed">Pedidos</span>
             <span class="nav-badge badge-accent-red" *ngIf="!isSidebarCollapsed && pedidosPendientesCount > 0">{{ pedidosPendientesCount }}</span>
-          </a>
-        </li>
-
-        <!-- 2. Catálogo / Inventario -->
-        <li class="nav-item">
-          <a routerLink="/admin/inventario" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Catálogo & Inventario">
-            <span class="material-symbols-rounded nav-icon">inventory_2</span>
-            <span class="nav-label" *ngIf="!isSidebarCollapsed">Catálogo</span>
           </a>
         </li>
 
@@ -171,17 +172,17 @@
         <!-- 1. FILA DE STAT CARDS (4 Columnas) -->
         <section class="stat-cards-row">
           
-          <!-- Card 1: Catálogo (solo lectura, viene del catálogo externo) -->
+          <!-- Card 1: Inventario -->
           <div class="stat-card" routerLink="/admin/inventario" style="cursor: pointer;">
             <div class="stat-card-top">
-              <span class="stat-card-label">Catálogo</span>
+              <span class="stat-card-label">Inventario</span>
               <div class="stat-card-icon-box">
                 <span class="material-symbols-rounded">inventory_2</span>
               </div>
             </div>
             <div class="stat-number">{{ totalProductosCount || 0 }}</div>
             <div class="stat-card-footer">
-              <span class="stat-footer-text">Productos oficiales (solo lectura)</span>
+              <span class="stat-footer-text">Referencias oficiales sincronizadas</span>
               <span class="stat-footer-arrow">→</span>
             </div>
           </div>

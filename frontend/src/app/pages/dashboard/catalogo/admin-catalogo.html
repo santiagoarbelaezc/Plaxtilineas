@@ -8,10 +8,10 @@
       <nav class="breadcrumb-nav" aria-label="Breadcrumb">
         <a routerLink="/admin" class="breadcrumb-link">Admin</a>
         <span class="breadcrumb-separator">/</span>
-        <span class="breadcrumb-current">Catálogo & Inventario</span>
+        <span class="breadcrumb-current">Inventario</span>
       </nav>
       <div class="title-with-pill">
-        <h1 class="catalogo-page-title">Catálogo Oficial de Productos</h1>
+        <h1 class="catalogo-page-title">Inventario de Productos</h1>
         <div class="live-status-pill">
           <span class="status-dot"></span>
           <span class="live-status-text">Conexión en Vivo · Solo Lectura</span>
@@ -45,7 +45,7 @@
   </header>
 
   <!-- =========================================================================
-       2. FILA DE STAT CARDS (4 COLUMNAS - TOKENS EXACTOS)
+       2. FILA DE STAT CARDS (ESTILO BENTO OSCURO #0a0a0a)
        ========================================================================= -->
   <section class="stat-cards-row">
     
@@ -108,110 +108,7 @@
   </section>
 
   <!-- =========================================================================
-       3. BENTO GRID (HERO OSCURO 1fr + QUICK ACCESS / FILTROS 360px)
-       ========================================================================= -->
-  <section class="bento-grid">
-    
-    <!-- Hero Bento Oscuro (#0a0a0a con círculos translúcidos y acento) -->
-    <div class="bento-welcome">
-      <div class="bento-welcome-content">
-        <div class="bento-badge">
-          <span class="status-dot"></span>
-          <span>Catálogo Externo · Modo Solo Lectura</span>
-        </div>
-        <h2 class="bento-title">
-          Inventario Oficial <span class="bento-title-accent">Plaxtilineas</span>
-        </h2>
-        <p class="bento-desc">
-          Los productos, especificaciones técnicas, precios y variantes se cargan en tiempo real desde el catálogo centralizado. No se requiere gestión manual de escritura local, garantizando fidelidad comercial absoluta.
-        </p>
-
-        <!-- Metadata API Pills -->
-        <div class="bento-info-pills">
-          <div class="bento-pill">
-            <span class="material-symbols-rounded pill-icon">hub</span>
-            <span class="pill-text">Endpoint: <code>/api/productos/categoria/Districol</code></span>
-          </div>
-          <div class="bento-pill">
-            <span class="material-symbols-rounded pill-icon">verified</span>
-            <span class="pill-text">Integridad: Catálogo Público Cacheado</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Panel Lateral Bento (360px) -->
-    <div class="bento-sidebar-panel">
-      <div class="panel-white-card">
-        
-        <div class="panel-card-header">
-          <div class="panel-header-icon-box">
-            <span class="material-symbols-rounded">filter_alt</span>
-          </div>
-          <div>
-            <h3 class="panel-header-title">Filtros Rápidos</h3>
-            <p class="panel-header-sub">Explora por categoría y visualización</p>
-          </div>
-        </div>
-
-        <div class="quick-filters-body">
-          <!-- Vista Toggle -->
-          <div class="view-switch-row">
-            <span class="view-switch-label">Modo de vista:</span>
-            <div class="view-switch-buttons">
-              <button 
-                type="button" 
-                class="btn-view-toggle" 
-                [class.active]="vistaGrid" 
-                (click)="vistaGrid = true"
-                title="Vista en tarjetas cuadrícula">
-                <span class="material-symbols-rounded">grid_view</span>
-                <span>Tarjetas</span>
-              </button>
-              <button 
-                type="button" 
-                class="btn-view-toggle" 
-                [class.active]="!vistaGrid" 
-                (click)="vistaGrid = false"
-                title="Vista en lista / tabla">
-                <span class="material-symbols-rounded">table_rows</span>
-                <span>Tabla</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Conteo de productos mostrados -->
-          <div class="results-counter-box">
-            <div class="counter-label">Mostrando actualmente:</div>
-            <div class="counter-value">
-              <strong>{{ productosFiltrados.length }}</strong> de {{ totalProductos }} referencias
-            </div>
-            <div class="counter-progress-bar">
-              <div 
-                class="counter-progress-fill" 
-                [style.width.%]="totalProductos > 0 ? (productosFiltrados.length / totalProductos) * 100 : 0">
-              </div>
-            </div>
-          </div>
-
-          <!-- Botón de Limpiar si hay filtros -->
-          <button 
-            type="button" 
-            class="btn-clear-filters-sidebar" 
-            *ngIf="busqueda || categoriaSeleccionada > 0 || ordenSeleccionado !== 'nuevos'" 
-            (click)="limpiarFiltros()">
-            <span class="material-symbols-rounded">restart_alt</span>
-            <span>Restablecer Filtros</span>
-          </button>
-        </div>
-
-      </div>
-    </div>
-
-  </section>
-
-  <!-- =========================================================================
-       4. BARRA DE CONTROL Y BÚSQUEDA (INPUT MINIMALISTA + SELECTS)
+       3. BARRA DE CONTROL Y BÚSQUEDA (INPUT MINIMALISTA + SELECTS + VISTA)
        ========================================================================= -->
   <section class="catalogo-controls-card">
     
@@ -266,6 +163,43 @@
           <option value="precio_desc">Precio: Mayor a Menor</option>
         </select>
       </div>
+
+      <!-- Switch Modo de Vista (Tarjetas / Tabla) -->
+      <div class="view-switch-buttons">
+        <button 
+          type="button" 
+          class="btn-view-toggle" 
+          [class.active]="vistaGrid" 
+          (click)="vistaGrid = true"
+          title="Vista en tarjetas cuadrícula">
+          <span class="material-symbols-rounded">grid_view</span>
+          <span>Tarjetas</span>
+        </button>
+        <button 
+          type="button" 
+          class="btn-view-toggle" 
+          [class.active]="!vistaGrid" 
+          (click)="vistaGrid = false"
+          title="Vista en tabla detallada">
+          <span class="material-symbols-rounded">table_rows</span>
+          <span>Tabla</span>
+        </button>
+      </div>
+
+      <!-- Contador de resultados -->
+      <div class="results-badge-pill" *ngIf="!cargando" title="Productos mostrados de total">
+        <strong>{{ productosFiltrados.length }}</strong> de {{ totalProductos }}
+      </div>
+
+      <!-- Botón de Limpiar filtros activos -->
+      <button 
+        type="button" 
+        class="btn-clear-active" 
+        *ngIf="busqueda || categoriaSeleccionada > 0 || ordenSeleccionado !== 'nuevos'" 
+        (click)="limpiarFiltros()"
+        title="Restablecer filtros">
+        <span class="material-symbols-rounded">restart_alt</span>
+      </button>
     </div>
 
   </section>

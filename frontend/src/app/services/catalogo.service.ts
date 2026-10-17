@@ -133,7 +133,9 @@ export class CatalogoService {
         nombre: (v.name ?? '').trim(),
         precio: Number(v.price) || 0,
         producto_id: p.id,
-        creado_en: v.created_at ?? ''
+        creado_en: v.created_at ?? '',
+        sku: v.sku,
+        stock: v.stock !== undefined ? Number(v.stock) : undefined
       }));
 
     const preciosValidos = variantes.map(v => v.precio).filter(n => n > 0);

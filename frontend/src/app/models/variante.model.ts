@@ -3,5 +3,7 @@ export interface Variante {
   nombre: string;
   precio: number;
   producto_id: number;
-  creado_en: string;
+  creado_en?: string;
+  sku?: string;
+  stock?: number;
 }
