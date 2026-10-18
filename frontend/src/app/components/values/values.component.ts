@@ -1,68 +1,53 @@
-import { Component, OnInit, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import {
-  faClock,
-  faUsers,
-  faLightbulb,
-  faHandshake,
-  faGraduationCap
-} from '@fortawesome/free-solid-svg-icons';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+
+export interface Milestone {
+  year: string;
+  title: string;
+  subtitle: string;
+}
 
 @Component({
   selector: 'app-values',
   standalone: true,
-  imports: [CommonModule, FontAwesomeModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './values.component.html',
   styleUrls: ['./values.component.css']
 })
-export class Values implements OnInit, AfterViewInit {
-  
-  private isBrowser: boolean;
+export class Values {
+  activeHitoIndex: number = 0;
+  hoveredHitoIndex: number | null = null;
 
-  constructor(
-    library: FaIconLibrary,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-    
-    // Añadir los íconos a la librería
-    library.addIcons(
-      faClock, 
-      faUsers, 
-      faLightbulb, 
-      faHandshake, 
-      faGraduationCap
-    );
-  }
-
-  ngOnInit() {
-    console.log('✅ Componente Values inicializado');
-  }
-
-  ngAfterViewInit() {
-    if (this.isBrowser) {
-      // Inicializar animaciones simples si es necesario
-      this.initSimpleAnimations();
+  hitos: Milestone[] = [
+    {
+      year: '2004',
+      title: 'Fundación',
+      subtitle: 'Armenia, Quindío'
+    },
+    {
+      year: '2010',
+      title: 'Peletería & Espumas',
+      subtitle: 'Densidades Certificadas'
+    },
+    {
+      year: '2016',
+      title: 'Línea Agro & Obras',
+      subtitle: 'Polisombras y Construcción'
+    },
+    {
+      year: '2021',
+      title: 'Centro Logístico',
+      subtitle: 'Sede Principal Cra. 19'
+    },
+    {
+      year: 'Hoy',
+      title: 'Liderazgo Regional',
+      subtitle: '+80 Referencias Oficiales'
     }
-  }
+  ];
 
-  private initSimpleAnimations(): void {
-    // Animaciones básicas que se pueden hacer con CSS puro
-    // El componente AOS se encargará de las animaciones al hacer scroll
-    
-    console.log('🔍 Animaciones simples inicializadas');
-    
-    // Solo para debug - puedes eliminar esto
-    const cards = document.querySelectorAll('.valor-card');
-    cards.forEach((card, index) => {
-      card.addEventListener('mouseenter', () => {
-        card.classList.add('hover-active');
-      });
-      
-      card.addEventListener('mouseleave', () => {
-        card.classList.remove('hover-active');
-      });
-    });
+  selectHito(index: number): void {
+    this.activeHitoIndex = index;
   }
 }
