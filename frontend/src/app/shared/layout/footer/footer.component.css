@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════════
    FOOTER — MINIMALISTA & MODERNO (FONDO NEGRO PURO #000000)
    Fondo: #000000 (negro azabache puro)
-   Tipografía: 'Montserrat', sans-serif
+   Tipografía: 'Inter Tight', sans-serif
    Acentos: #4ade80 / #22c55e (línea esmeralda y flechas)
    Texto: #ffffff (títulos/destacados), #cbd5e1 (enlaces), #94a3b8 (secundario)
    ═══════════════════════════════════════════════════════════════════ */
@@ -14,7 +14,7 @@
 .footer-root {
   background-color: #000000;
   color: #94a3b8;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   position: relative;
   width: 100%;
   overflow: hidden;

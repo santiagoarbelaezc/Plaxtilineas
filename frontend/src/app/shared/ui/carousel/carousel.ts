@@ -325,29 +325,22 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onWheel(event: WheelEvent): void {
-    if (event.deltaY !== 0 && !event.shiftKey) {
+    // Solo manejamos scroll horizontal si el usuario usa Shift + rueda o gesto lateral del trackpad
+    if (event.shiftKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
       if (this.carouselViewport) {
         const el = this.carouselViewport.nativeElement;
-        
-        // Verificar si podemos scrollear
-        const isAtLeftEnd = el.scrollLeft <= 0;
-        const isAtRightEnd = Math.abs(el.scrollWidth - el.clientWidth - el.scrollLeft) < 1;
-        
-        const scrollingLeft = event.deltaY < 0;
-        const scrollingRight = event.deltaY > 0;
-        
-        // Solo prevenir el scroll vertical de la página si el carrusel AÚN puede moverse en esa dirección
-        if ((scrollingLeft && !isAtLeftEnd) || (scrollingRight && !isAtRightEnd)) {
+        const delta = event.shiftKey ? event.deltaY : event.deltaX;
+        if (delta !== 0) {
           event.preventDefault();
           this.detenerAutoSlide();
-          
           el.scrollBy({
-            left: event.deltaY > 0 ? 200 : -200,
-            behavior: 'auto' // 'auto' responde mejor a la rueda del ratón que 'smooth'
+            left: delta * 0.75,
+            behavior: 'auto'
           });
         }
       }
     }
+    // Si es scroll vertical normal (sin Shift), permitimos que la página navegue con total fluidez sin atrapar el scroll
   }
 
   moveNext(): void {

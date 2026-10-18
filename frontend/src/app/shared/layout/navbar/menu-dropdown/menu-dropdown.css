@@ -150,7 +150,7 @@
   color: #111827;
   font-weight: 700;
   font-size: 0.95rem;
-  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-family: var(--font-primary, 'Inter Tight', sans-serif);
   text-transform: uppercase;
   letter-spacing: 0.02em;
   transition: all 0.3s ease;
@@ -197,7 +197,7 @@
   color: #4b5563;
   text-decoration: none;
   font-size: 0.85rem;
-  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-family: var(--font-primary, 'Inter Tight', sans-serif);
   font-weight: 500;
   padding: 8px 12px;
   border-radius: 8px;
@@ -247,7 +247,7 @@
   background-color: #f8fafc;
   color: #368C44;
   text-decoration: none;
-  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-family: var(--font-primary, 'Inter Tight', sans-serif);
   font-weight: 700;
   font-size: 0.95rem;
   border-radius: 50px;

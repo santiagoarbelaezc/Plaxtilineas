@@ -123,18 +123,25 @@
   user-select: none;
 }
 
-/* Pausa suave al pasar el cursor */
-.marquee-track-container:hover .marquee-group {
-  animation-play-state: paused;
-}
-
+/* Por defecto pausado: solo se reproduce cuando el componente es visible en pantalla */
 .marquee-group {
   display: flex;
   align-items: center;
   gap: 84px;
   padding-right: 84px;
   animation: marqueeLoop 34s linear infinite;
+  animation-play-state: paused;
   will-change: transform;
+}
+
+/* Reproduce la animación de desplazamiento continuo cuando entra al viewport */
+.aliados-marquee-section.is-visible .marquee-group {
+  animation-play-state: running;
+}
+
+/* Pausa suave al pasar el cursor si está visible */
+.aliados-marquee-section.is-visible .marquee-track-container:hover .marquee-group {
+  animation-play-state: paused !important;
 }
 
 @keyframes marqueeLoop {

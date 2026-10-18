@@ -2,7 +2,7 @@
 .categories-section {
   padding: 10px 0; /* Reducido de 30px para mayor densidad */
   background-color: #ffffff;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   overflow: hidden;
 }
 
