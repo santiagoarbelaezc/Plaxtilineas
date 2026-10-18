@@ -1,6 +1,6 @@
 /* ==========================================================================
-   NOSOTROS INICIO — SHOWCASE DE IDENTIDAD & SEO (ESTILO DISTRICOL / PREMIUM)
-   Fondo: #061822 (petróleo oscuro profundo)
+   NOSOTROS INICIO — SHOWCASE DE IDENTIDAD & SEO (MINIMALISTA & MODERNO)
+   Fondo: #05241b (verde bosque petróleo profundo)
    Texto: #ffffff (títulos), #cbd5e1 (subtítulos), #94a3b8 (descripción)
    Acentos: #16a34a / #22c55e (esmeralda), #f1f5f9 (botón de contraste)
    ========================================================================== */
@@ -33,7 +33,7 @@
   align-items: center;
 }
 
-/* ── Columna Izquierda: Showcase Visual con Badge ── */
+/* ── Columna Izquierda: Showcase Visual Limpio ── */
 .showcase-visual-wrapper {
   width: 100%;
 }
@@ -68,133 +68,43 @@
   }
 }
 
-/* Badge Flotante Inferior Izquierdo (Estilo Exacto de la Referencia) */
-.image-pill-badge {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(3, 26, 19, 0.90);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 6px 16px 6px 6px;
-  border-radius: 50px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-  z-index: 5;
-}
-
-.badge-capsule {
-  background: #16a34a;
-  color: #ffffff;
-  font-size: 0.7rem;
-  font-weight: 850;
-  letter-spacing: 0.06em;
-  padding: 4px 12px;
-  border-radius: 50px;
-  text-transform: uppercase;
-}
-
-.badge-text {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #f1f5f9;
-  letter-spacing: 0.02em;
-}
-
-/* Dots Discretos de Navegación de Galería */
-.image-dots-nav {
-  position: absolute;
-  bottom: 22px;
-  right: 22px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  z-index: 5;
-}
-
-.img-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.35);
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  transition: all 0.25s ease;
-}
-
-.img-dot.active {
-  background: #ffffff;
-  width: 22px;
-  border-radius: 6px;
-}
-
 /* ── Columna Derecha: Contenido Editorial ── */
 .identity-content-wrapper {
   display: flex;
   flex-direction: column;
 }
 
-/* Kicker Superior: ¿QUÉ HACEMOS? */
+/* Kicker Minimalista: ¿QUÉ HACEMOS? */
 .kicker-badge-row {
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .identity-kicker {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.76rem;
-  font-weight: 850;
+  gap: 10px;
+  font-size: 0.74rem;
+  font-weight: 700;
   color: #4ade80;
-  background: rgba(74, 222, 128, 0.1);
-  border: 1px solid rgba(74, 222, 128, 0.25);
-  padding: 5px 14px;
-  border-radius: 50px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
-.kicker-pulse-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: #4ade80;
-  box-shadow: 0 0 10px #4ade80;
-  animation: pulseDot 2s infinite;
+.kicker-line {
+  width: 22px;
+  height: 1.5px;
+  background: #4ade80;
+  display: inline-block;
+  border-radius: 2px;
 }
 
-@keyframes pulseDot {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.3);
-    opacity: 0.7;
-  }
-}
-
-/* Titular Principal con Fondo Técnico de Puntos y Efecto Typewriter */
+/* Titular Principal con Efecto Typewriter */
 .headline-container {
   position: relative;
   margin-bottom: 18px;
-}
-
-.dot-grid-pattern {
-  position: absolute;
-  right: 10px;
-  top: -10px;
-  width: 190px;
-  height: 110px;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.18) 1.5px, transparent 1.5px);
-  background-size: 16px 16px;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.55;
 }
 
 .identity-title {
@@ -255,7 +165,7 @@
   color: #cbd5e1;
   line-height: 1.7;
   font-weight: 400;
-  margin: 0 0 26px 0;
+  margin: 0 0 24px 0;
   max-width: 720px;
 }
 
@@ -268,7 +178,7 @@
 .identity-checklist {
   list-style: none;
   padding: 0;
-  margin: 0 0 32px 0;
+  margin: 0 0 30px 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -398,27 +308,8 @@
     border-radius: 18px;
   }
 
-  .image-pill-badge {
-    bottom: 14px;
-    left: 14px;
-    padding: 4px 12px 4px 4px;
-  }
-
-  .badge-capsule {
-    font-size: 0.65rem;
-    padding: 3px 8px;
-  }
-
-  .badge-text {
-    font-size: 0.72rem;
-  }
-
   .identity-title {
     font-size: 1.85rem;
-  }
-
-  .identity-subtitle {
-    font-size: 0.8rem;
   }
 
   .identity-lead {

@@ -2,7 +2,7 @@
   <div class="identity-container">
     <div class="identity-grid">
       
-      <!-- Columna Izquierda: Imagen Showcase de Gran Formato con Badge -->
+      <!-- Columna Izquierda: Imagen Showcase de Gran Formato -->
       <div class="showcase-visual-wrapper">
         <div class="showcase-frame">
           <img 
@@ -10,29 +10,22 @@
             [alt]="showcaseImage.alt"
             class="showcase-img"
             loading="lazy">
-
-          <!-- Badge Flotante Inferior Izquierdo -->
-          <div class="image-pill-badge">
-            <span class="badge-capsule">{{ showcaseImage.badgeCapsule }}</span>
-            <span class="badge-text">{{ showcaseImage.badgeText }}</span>
-          </div>
         </div>
       </div>
 
       <!-- Columna Derecha: Contenido Editorial con Efecto Typewriter -->
       <div class="identity-content-wrapper">
         
-        <!-- Kicker Solicitado: ¿Qué hacemos? con pulso -->
+        <!-- Kicker Minimalista: ¿QUÉ HACEMOS? -->
         <div class="kicker-badge-row">
           <span class="identity-kicker">
-            <span class="kicker-pulse-dot"></span>
+            <span class="kicker-line"></span>
             ¿QUÉ HACEMOS?
           </span>
         </div>
 
-        <!-- Gran Titular con Fondo Técnico de Puntos y Efecto Typewriter -->
+        <!-- Gran Titular con Efecto Typewriter Preservado -->
         <div class="headline-container">
-          <div class="dot-grid-pattern" aria-hidden="true"></div>
           <h2 class="identity-title">
             <span class="title-lead-line">Materiales y plásticos</span>
             <span class="title-dynamic-line">
@@ -41,12 +34,12 @@
           </h2>
         </div>
 
-        <!-- Párrafo Descriptivo Enfocado en Espumas, Plásticos, Mallas para Fincas y Construcciones -->
+        <!-- Párrafo Descriptivo Conciso y Directo -->
         <p class="identity-lead">
-          En <strong>Plaxtilineas</strong> comercializamos y distribuimos espumas industriales, plásticos técnicos, mallas agrícolas y empaques de alta resistencia, abasteciendo sectores estratégicos como: fincas cafeteras, obras de construcción, talleres de tapicería, empresas de logística y hogares de todo el Eje Cafetero.
+          En <strong>Plaxtilineas</strong> distribuimos espumas industriales, plásticos técnicos, mallas y empaques para fincas, obras, talleres y empresas del Eje Cafetero.
         </p>
 
-        <!-- Lista de Ejes Principales con Checkmarks y Enlaces SEO -->
+        <!-- Lista de Ejes Principales con Textos Reducidos y Enlaces -->
         <ul class="identity-checklist">
           <li *ngFor="let eje of ejesPrincipales" class="checklist-item">
             <a 
@@ -55,7 +48,7 @@
               (click)="limpiarFiltros()"
               class="checklist-link">
               <!-- Checkmark SVG -->
-              <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
               <!-- Texto -->
@@ -64,7 +57,7 @@
                 <span class="eje-detail">{{ eje.detalle }}</span>
               </span>
               <!-- Flecha Sutil en Hover -->
-              <svg class="hover-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="hover-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>

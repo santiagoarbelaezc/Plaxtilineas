@@ -1,146 +1,297 @@
-/* Sección del mapa - Estilo moderno */
-.map-section {
-  position: relative;
-  overflow: hidden;
-  font-family: var(--font-primary, 'Montserrat', sans-serif);
+/* ═══════════════════════════════════════════════════════════════════
+   MAP SHOWCASE — SEDE FÍSICA & UBICACIÓN (MINIMALISTA & MODERNO)
+   Fondo: #05241b (verde bosque profundo)
+   Texto: #ffffff (títulos), #cbd5e1 (subtítulos), #94a3b8 (descripción)
+   Acentos: #16a34a / #22c55e (esmeralda), #f1f5f9 (botón de contraste)
+   ═══════════════════════════════════════════════════════════════════ */
+
+:host {
+  display: block;
+  width: 100%;
 }
 
-.map-wrapper {
-  max-width: 1400px;
+.map-showcase-section {
+  background-color: #05241b;
+  font-family: 'Montserrat', sans-serif;
+  padding: 58px 0 64px 0;
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.map-container-inner {
+  max-width: 1460px;
   margin: 0 auto;
-  padding: 0;
+  padding: 0 32px;
+  box-sizing: border-box;
+}
+
+.map-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 54px;
+  align-items: center;
+}
+
+/* ── Columna Izquierda: Marco del Mapa Interactivo Limpio ── */
+.map-visual-wrapper {
+  width: 100%;
+}
+
+.map-frame {
+  position: relative;
+  width: 100%;
+  height: 440px;
+  border-radius: 24px;
+  overflow: hidden;
+  background-color: #031a13;
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.map-frame:hover {
+  box-shadow: 0 25px 55px -10px rgba(22, 163, 74, 0.35);
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.map-frame iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+  filter: contrast(1.05) saturate(1.05);
+}
+
+/* ── Columna Derecha: Contenido Editorial ── */
+.map-content-wrapper {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 30px;
 }
 
-/* Contenedor del mapa */
-.map-container {
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-  background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 20px 40px -10px rgba(54, 140, 68, 0.15), 0 0 20px rgba(0, 0, 0, 0.05);
-  border: 1px solid #f3f4f6;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+/* Kicker Minimalista: ¿DÓNDE ENCONTRARNOS? */
+.kicker-badge-row {
+  margin-bottom: 14px;
 }
 
-.map-container:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 30px 50px -15px rgba(54, 140, 68, 0.25), 0 0 25px rgba(0, 0, 0, 0.05);
-}
-
-/* Iframe del mapa */
-.map-container iframe {
-  display: block;
-  border: none;
-  width: 100%;
-  position: relative;
-  z-index: 2;
-  filter: grayscale(0.1) contrast(1.05);
-  transition: filter 0.4s ease;
-  animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.map-container:hover iframe {
-  filter: grayscale(0) contrast(1.1);
-}
-
-@keyframes slideUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Botones */
-.map-buttons {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-top: 10px;
-}
-
-/* Botón principal - Estilo actualizado */
-.btn-modern-map {
+.map-kicker {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 16px 40px;
-  background: #ffffff;
-  color: #368C44;
-  text-decoration: none;
-  border-radius: 50px;
+  gap: 10px;
+  font-size: 0.74rem;
   font-weight: 700;
-  font-size: 0.95rem;
-  letter-spacing: 0.02em;
+  color: #4ade80;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  border: 2px solid #368C44;
-  cursor: pointer;
-  box-shadow: 0 4px 15px rgba(54, 140, 68, 0.1);
-  min-width: 250px;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
-.btn-modern-map:hover {
-  background: #368C44;
+.kicker-line {
+  width: 22px;
+  height: 1.5px;
+  background: #4ade80;
+  display: inline-block;
+  border-radius: 2px;
+}
+
+/* Titular Principal Limpio */
+.headline-container {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+.map-title {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+}
+
+.title-lead-line {
+  display: block;
+  font-size: 2.75rem;
+  font-weight: 900;
   color: #ffffff;
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(54, 140, 68, 0.3);
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+  text-transform: uppercase;
 }
 
-.btn-modern-map:active {
-  transform: translateY(-1px);
+.title-dynamic-line {
+  display: block;
+  font-size: 2.35rem;
+  font-weight: 850;
+  line-height: 1.22;
+  margin-top: 6px;
 }
 
-.spn2 {
-  position: relative;
-  z-index: 1;
+.gradient-text {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 50%, #86efac 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 14px rgba(74, 222, 128, 0.3));
+  display: inline;
 }
 
-.btn-modern-map .icon {
-  transition: transform 0.3s ease;
+/* Párrafo Descriptivo Lead */
+.map-lead {
+  font-size: 1.02rem;
+  color: #cbd5e1;
+  line-height: 1.7;
+  font-weight: 400;
+  margin: 0 0 24px 0;
+  max-width: 720px;
 }
 
-.btn-modern-map:hover .icon {
-  transform: scale(1.1);
+.map-lead strong {
+  color: #ffffff;
+  font-weight: 750;
 }
 
-/* Responsive Design */
-@media (max-width: 992px) {
-  .map-wrapper {
-    gap: 20px;
+/* Lista de Detalles Clave (Checklist) */
+.map-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 30px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checklist-item {
+  display: block;
+}
+
+.checklist-entry {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.check-icon {
+  color: #ffffff;
+  flex-shrink: 0;
+  stroke-width: 2.5;
+  opacity: 0.9;
+}
+
+.entry-text-group {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 0.94rem;
+  line-height: 1.4;
+  flex-wrap: wrap;
+}
+
+.entry-name {
+  color: #ffffff;
+  font-weight: 750;
+  letter-spacing: 0.01em;
+}
+
+.entry-detail {
+  color: #cbd5e1;
+  font-weight: 450;
+}
+
+/* ── Botón de Acción Principal ── */
+.map-action-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.map-cta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #f1f5f9;
+  color: #05241b;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 850;
+  letter-spacing: 0.07em;
+  padding: 14px 34px;
+  border-radius: 50px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s ease;
+}
+
+.map-cta-pill:hover {
+  background: #ffffff;
+  color: #041d15;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+}
+
+.map-arrow-icon {
+  transition: transform 0.25s ease;
+}
+
+.map-cta-pill:hover .map-arrow-icon {
+  transform: translate(2px, -2px);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVIDAD
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .map-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
   }
-  .btn-modern-map {
-    width: 100%;
-    max-width: 400px;
+
+  .map-frame {
+    height: 340px;
+  }
+
+  .title-lead-line {
+    font-size: 2.25rem;
+  }
+
+  .title-dynamic-line {
+    font-size: 1.95rem;
   }
 }
 
-@media (max-width: 768px) {
-  .map-container {
-    border-radius: 16px;
+@media (max-width: 640px) {
+  .map-showcase-section {
+    padding: 42px 0 48px 0;
   }
-  
-  .map-container iframe {
-    height: 350px;
+
+  .map-container-inner {
+    padding: 0 18px;
   }
-  
-  .btn-modern-map {
-    padding: 14px 24px;
+
+  .map-frame {
+    height: 270px;
+    border-radius: 18px;
+  }
+
+  .title-lead-line {
+    font-size: 1.85rem;
+  }
+
+  .title-dynamic-line {
+    font-size: 1.55rem;
+  }
+
+  .map-lead {
     font-size: 0.9rem;
   }
-}
 
-@media (max-width: 480px) {
-  .map-container iframe {
-    height: 300px;
+  .entry-text-group {
+    font-size: 0.88rem;
+  }
+
+  .map-cta-pill {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
   }
 }

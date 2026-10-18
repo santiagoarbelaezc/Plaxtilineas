@@ -22,11 +22,9 @@ export class NosotrosInicioComponent implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
 
-  // Imagen única de identidad (sin mateo)
+  // Imagen única de identidad
   showcaseImage = {
     url: 'assets/images/identidad/identidad.jpg',
-    badgeCapsule: 'EJE CAFETERO',
-    badgeText: '+20 Años de Trayectoria',
     alt: 'Plaxtilineas - Plásticos, Espumas, Mallas y Empaques'
   };
 
@@ -45,23 +43,23 @@ export class NosotrosInicioComponent implements OnInit, OnDestroy {
   ejesPrincipales: EjePrincipal[] = [
     {
       nombre: 'Peletería & Tapicería',
-      detalle: 'Espumas en densidades D20 a D30, cueros y pegantes Afix',
+      detalle: 'Espumas D20 a D30, cueros y pegantes Afix',
       link: '/productos'
     },
     {
       nombre: 'Plásticos & Mallas',
-      detalle: 'Polisombras del 35% al 80% para fincas, agro y construcción',
+      detalle: 'Polisombras del 35% al 80% para agro y obra',
       link: '/busqueda',
       queryParams: { q: 'plastico' }
     },
     {
       nombre: 'Empaques & Embalaje',
-      detalle: 'Cajas de cartón corrugado, vinipel stretch y plástico burbuja',
+      detalle: 'Cajas de cartón, vinipel stretch y plástico burbuja',
       link: '/productos'
     },
     {
       nombre: 'Logística Regional',
-      detalle: 'Despachos oportunos para empresas, fincas y hogares',
+      detalle: 'Despachos oportunos en todo el Eje Cafetero',
       link: '/busqueda',
       queryParams: { q: 'carton' }
     }
