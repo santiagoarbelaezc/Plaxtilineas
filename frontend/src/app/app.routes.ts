@@ -44,7 +44,11 @@ export const routes: Routes = [
     path: 'contacto',
     loadComponent: () => import('./pages/contacto/contacto').then(m => m.Contacto)
   },
-   {
+  {
+    path: 'car-seat',
+    loadComponent: () => import('./components/car-seat/car-seat.component').then(m => m.CarSeatComponent)
+  },
+  {
     path: 'busqueda',
     loadComponent: () => import('./pages/buscar/buscar').then(m => m.Buscar)
   },

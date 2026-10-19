@@ -581,8 +581,8 @@
                       <td class="font-bold">{{ v.nombre }}</td>
                       <td class="text-muted">{{ v.sku || '-' }}</td>
                       <td>
-                        <span class="stock-pill" [class.in-stock]="(v.stock ?? 1) > 0">
-                          {{ (v.stock ?? 1) > 0 ? 'Disponible' : 'Bajo pedido' }}
+                        <span class="stock-pill" [class.in-stock]="($any(v).stock ?? 1) > 0">
+                          {{ ($any(v).stock ?? 1) > 0 ? 'Disponible' : 'Bajo pedido' }}
                         </span>
                       </td>
                       <td class="text-right font-bold price-cop">{{ formatPrecio(v.precio) }}</td>
