@@ -39,31 +39,13 @@
           En <strong>Plaxtilineas</strong> distribuimos espumas industriales, plásticos técnicos, mallas y empaques para fincas, obras, talleres y empresas del Eje Cafetero.
         </p>
 
-        <!-- Lista de Ejes Principales con Textos Reducidos y Enlaces -->
-        <ul class="identity-checklist">
-          <li *ngFor="let eje of ejesPrincipales" class="checklist-item">
-            <a 
-              [routerLink]="eje.link" 
-              [queryParams]="eje.queryParams"
-              (click)="limpiarFiltros()"
-              class="checklist-link">
-              <!-- Checkmark SVG -->
-              <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-              <!-- Texto -->
-              <span class="eje-text-group">
-                <strong class="eje-name">{{ eje.nombre }}:</strong>
-                <span class="eje-detail">{{ eje.detalle }}</span>
-              </span>
-              <!-- Flecha Sutil en Hover -->
-              <svg class="hover-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </a>
-          </li>
-        </ul>
+        <!-- Ejes Principales (Grid Moderno de Títulos) -->
+        <div class="identity-ejes-grid">
+          <div *ngFor="let eje of ejesPrincipales; let i = index" class="eje-pill-card">
+            <span class="eje-pill-index">0{{ i + 1 }}</span>
+            <span class="eje-pill-name">{{ eje }}</span>
+          </div>
+        </div>
 
         <!-- Botón de Acción Principal -->
         <div class="identity-action-row">

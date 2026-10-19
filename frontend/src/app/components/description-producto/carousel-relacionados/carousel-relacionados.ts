@@ -1,20 +1,23 @@
-import { Component, OnInit, Input, AfterViewInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { Component, OnInit, Input, AfterViewInit, OnDestroy, OnChanges, SimpleChanges, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ProductosService } from '../../../services/productos.service';
 import { ProductoEditable } from '../../../models/producto.model';
 import { CarouselSignalService } from '../../../services/carousel-signal.service';
 import { optimizeForThumbnail } from '../../../utils/cloudinary-optimizer';
+import { PrecioOfertaService } from '../../../services/precio-oferta.service';
 
 @Component({
   selector: 'app-carousel-relacionados',
   standalone: true,
-  imports: [CommonModule, RouterModule, CurrencyPipe],
+  imports: [CommonModule, RouterModule],
   templateUrl: './carousel-relacionados.html',
   styleUrls: ['./carousel-relacionados.css']
 })
 export class CarouselRelacionados implements OnInit, AfterViewInit, OnDestroy, OnChanges {
+  private precioOfertaService = inject(PrecioOfertaService);
+
   @Input() titulo: string = 'Productos relacionados';
   @Input() subtitulo: string = 'Descubre productos similares que podrían interesarte';
   @Input() limite: number = 10; // Mínimo 10 productos
@@ -463,7 +466,7 @@ export class CarouselRelacionados implements OnInit, AfterViewInit, OnDestroy, O
   }
 
   /**
-   * Navegación del carrusel
+   * Navegación del carrusel suave
    */
   scrollCarousel(direction: 'prev' | 'next'): void {
     const carousel = document.getElementById(this.carouselId);
@@ -472,39 +475,12 @@ export class CarouselRelacionados implements OnInit, AfterViewInit, OnDestroy, O
       return;
     }
 
-    const itemWidth = this.getItemWidth();
-    const scrollAmount = itemWidth * this.visibleItems;
-    const currentScroll = carousel.scrollLeft;
-    const maxScroll = carousel.scrollWidth - carousel.clientWidth;
-
-    let newScroll: number;
-    let newIndex: number;
-
-    if (direction === 'next') {
-      newScroll = Math.min(currentScroll + scrollAmount, maxScroll);
-      newIndex = Math.min(
-        this.currentIndex + this.visibleItems,
-        this.productos.length - this.visibleItems
-      );
+    const scrollAmount = carousel.clientWidth * 0.82;
+    if (direction === 'prev') {
+      carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
     } else {
-      newScroll = Math.max(currentScroll - scrollAmount, 0);
-      newIndex = Math.max(this.currentIndex - this.visibleItems, 0);
+      carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
-
-    carousel.scrollTo({
-      left: newScroll,
-      behavior: 'smooth'
-    });
-
-    this.currentIndex = newIndex;
-    console.log(`🔄 Carrusel desplazado a: ${direction}, índice: ${this.currentIndex}`);
-  }
-
-  /**
-   * Obtener ancho del item (valor fijo para cálculo)
-   */
-  private getItemWidth(): number {
-    return 320;
   }
 
   /**
@@ -512,7 +488,7 @@ export class CarouselRelacionados implements OnInit, AfterViewInit, OnDestroy, O
    */
   isPrevEnabled(): boolean {
     const carousel = document.getElementById(this.carouselId);
-    return carousel ? carousel.scrollLeft > 0 : false;
+    return carousel ? carousel.scrollLeft > 10 : false;
   }
 
   /**
@@ -520,15 +496,42 @@ export class CarouselRelacionados implements OnInit, AfterViewInit, OnDestroy, O
    */
   isNextEnabled(): boolean {
     const carousel = document.getElementById(this.carouselId);
-    return carousel ? carousel.scrollLeft < carousel.scrollWidth - carousel.clientWidth : false;
+    return carousel ? carousel.scrollLeft < (carousel.scrollWidth - carousel.clientWidth - 10) : true;
   }
 
   /**
-   * Obtener URL de imagen del producto
+   * Formatear precio
+   */
+  formatearPrecio(precio: number): string {
+    return this.precioOfertaService.formatearPrecio(precio);
+  }
+
+  /**
+   * Obtener precio tachado de referencia
+   */
+  obtenerPrecioReferencia(precioReal: number): string {
+    const precioRef = this.precioOfertaService.calcularPrecioReferencia(precioReal, 25);
+    return this.precioOfertaService.formatearPrecio(precioRef);
+  }
+
+  /**
+   * Formatear nombre en Title Case
+   */
+  formatearNombre(nombre: string): string {
+    if (!nombre) return '';
+    return nombre
+      .toLowerCase()
+      .split(' ')
+      .map(p => p.charAt(0).toUpperCase() + p.slice(1))
+      .join(' ');
+  }
+
+  /**
+   * Obtener URL de imagen del producto optimizada
    */
   getProductoImagen(producto: ProductoEditable): string {
     if (producto?.imagen_url && producto.imagen_url.trim() !== '') {
-      return optimizeForThumbnail(producto.imagen_url, 200);
+      return optimizeForThumbnail(producto.imagen_url, 300);
     }
     return 'assets/images/default-product.png';
   }

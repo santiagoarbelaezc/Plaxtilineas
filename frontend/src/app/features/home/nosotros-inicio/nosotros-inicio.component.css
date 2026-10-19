@@ -174,85 +174,55 @@
   font-weight: 750;
 }
 
-/* Lista de Ejes Principales (Checklist) */
-.identity-checklist {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 30px 0;
-  display: flex;
-  flex-direction: column;
+/* Ejes Principales (Grid Moderno de Títulos) */
+.identity-ejes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
+  margin: 0 0 32px 0;
+  max-width: 620px;
 }
 
-.checklist-item {
-  display: block;
-}
-
-.checklist-link {
-  display: inline-flex;
+.eje-pill-card {
+  display: flex;
   align-items: center;
   gap: 12px;
-  text-decoration: none;
-  padding: 4px 0;
-  transition: transform 0.2s ease;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 12px 16px;
+  transition: all 0.25s ease;
+  box-sizing: border-box;
 }
 
-.check-icon {
-  color: #ffffff;
+.eje-pill-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(74, 222, 128, 0.25);
+  transform: translateY(-2px);
+}
+
+.eje-pill-index {
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #4ade80;
+  letter-spacing: 0.06em;
+  background: rgba(74, 222, 128, 0.1);
+  padding: 4px 8px;
+  border-radius: 8px;
+  line-height: 1;
   flex-shrink: 0;
-  stroke-width: 2.5;
-  opacity: 0.9;
 }
 
-.eje-text-group {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
+.eje-pill-name {
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 0.94rem;
-  line-height: 1.4;
-}
-
-.eje-name {
-  color: #ffffff;
   font-weight: 750;
-  transition: color 0.2s ease;
-}
-
-.eje-detail {
-  color: #cbd5e1;
-  font-weight: 450;
-  transition: color 0.2s ease;
-}
-
-.hover-arrow {
-  color: #22c55e;
-  opacity: 0;
-  transform: translateX(-4px);
-  transition: all 0.2s ease;
-}
-
-.checklist-link:hover {
-  transform: translateX(4px);
-}
-
-.checklist-link:hover .eje-name {
   color: #ffffff;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  letter-spacing: 0.01em;
+  line-height: 1.25;
 }
 
-.checklist-link:hover .eje-detail {
-  color: #f1f5f9;
-}
-
-.checklist-link:hover .check-icon {
-  color: #ffffff;
-}
-
-.checklist-link:hover .hover-arrow {
-  opacity: 1;
-  transform: translateX(0);
-}
 
 /* Botón CTA Pill Blanco / Alto Contraste */
 .identity-action-row {
@@ -320,6 +290,12 @@
 
   .identity-lead {
     font-size: 0.9rem;
+  }
+
+  .identity-ejes-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 24px;
   }
 
   .identity-cta-pill {

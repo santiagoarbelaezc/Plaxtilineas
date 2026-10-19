@@ -424,4 +424,11 @@ span:not([class*="material-"]):not([class*="fa-"]):not(.fa) {
    ═══════════════════════════════════════════════════════════════════ */
 html, body {
   scroll-behavior: auto !important;
+  overflow-x: clip !important;
+}
+
+/* ── Garantía de Comportamiento Sticky para Menú de Categorías ── */
+app-menu-categorias-component {
+  height: auto !important;
+  align-self: flex-start !important;
 }

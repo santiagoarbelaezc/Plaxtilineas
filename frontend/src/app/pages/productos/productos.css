@@ -21,11 +21,13 @@
   }
   
   app-menu-categorias-component {
+    display: block;
     flex: 0 0 250px;
     position: sticky;
-    top: 90px;
+    top: 124px;
     align-self: flex-start;
     height: fit-content;
+    z-index: 30;
   }
   
   app-product-list-component {
@@ -45,11 +47,13 @@
   }
   
   app-menu-categorias-component {
+    display: block;
     flex: 0 0 300px;
     position: sticky;
-    top: 90px;
+    top: 124px;
     align-self: flex-start;
     height: fit-content;
+    z-index: 30;
   }
   
   app-product-list-component {

@@ -47,29 +47,11 @@ export class NosotrosInicioComponent implements OnInit, AfterViewInit, OnDestroy
   isDeleting = false;
   private typewriterTimer: any;
 
-  ejesPrincipales: EjePrincipal[] = [
-    {
-      nombre: 'Peletería & Tapicería',
-      detalle: 'Espumas D20 a D30, cueros y pegantes Afix',
-      link: '/productos'
-    },
-    {
-      nombre: 'Plásticos & Mallas',
-      detalle: 'Polisombras del 35% al 80% para agro y obra',
-      link: '/busqueda',
-      queryParams: { q: 'plastico' }
-    },
-    {
-      nombre: 'Empaques & Embalaje',
-      detalle: 'Cajas de cartón, vinipel stretch y plástico burbuja',
-      link: '/productos'
-    },
-    {
-      nombre: 'Logística Regional',
-      detalle: 'Despachos oportunos en todo el Eje Cafetero',
-      link: '/busqueda',
-      queryParams: { q: 'carton' }
-    }
+  ejesPrincipales: string[] = [
+    'Peletería & Tapicería',
+    'Plásticos & Mallas',
+    'Empaques & Embalaje',
+    'Logística Regional'
   ];
 
   ngOnInit(): void {
