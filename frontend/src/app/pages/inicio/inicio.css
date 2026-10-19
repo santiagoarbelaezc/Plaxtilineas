@@ -24,7 +24,7 @@
 }
 
 .home-main {
-  overflow-x: hidden;
+  overflow-x: clip;
   background-color: #f4f5f7;
   padding-top: 110px; /* Topbar (36px) + Navbar Sticky (74px) */
 }

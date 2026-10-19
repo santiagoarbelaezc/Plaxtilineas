@@ -41,7 +41,7 @@ export interface StageInfo {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CarSeatComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('scrollContainer', { static: true }) scrollContainer!: ElementRef<HTMLElement>;
+  @ViewChild('scrollTrack', { static: true }) scrollTrack!: ElementRef<HTMLElement>;
 
   private ngZone = inject(NgZone);
   private platformId = inject(PLATFORM_ID);
@@ -136,11 +136,12 @@ export class CarSeatComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const container = this.scrollContainer.nativeElement;
-    if (container) {
-      container.addEventListener('scroll', this.boundScroll, { passive: true });
-    }
+    window.addEventListener('scroll', this.boundScroll, { passive: true });
+    window.addEventListener('resize', this.boundScroll, { passive: true });
     window.addEventListener('keydown', this.boundKeyDown, { passive: false });
+
+    // Cálculo inicial
+    this.onNativeScroll();
 
     // Iniciamos el motor cinemático
     this.startRenderEngine();
@@ -152,10 +153,8 @@ export class CarSeatComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const container = this.scrollContainer?.nativeElement;
-    if (container) {
-      container.removeEventListener('scroll', this.boundScroll);
-    }
+    window.removeEventListener('scroll', this.boundScroll);
+    window.removeEventListener('resize', this.boundScroll);
     window.removeEventListener('keydown', this.boundKeyDown);
 
     if (this.animationFrameId !== null) {
@@ -164,30 +163,37 @@ export class CarSeatComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  // ── Listener de Scroll Nativo: Suave y Equilibrado ──
+  // ── Listener de Scroll de Ventana: Suave y Equilibrado para el Home ──
   private onNativeScroll(): void {
-    const el = this.scrollContainer.nativeElement;
+    const el = this.scrollTrack?.nativeElement;
     if (!el) return;
 
-    const maxScroll = el.scrollHeight - el.clientHeight;
+    const rect = el.getBoundingClientRect();
+    const maxScroll = el.offsetHeight - window.innerHeight;
     if (maxScroll <= 0) return;
 
-    const raw = el.scrollTop / maxScroll;
+    const scrolled = -rect.top;
+    const raw = scrolled / maxScroll;
     this.targetProgress = Math.max(0, Math.min(1, raw));
   }
 
   private onKeyDown(e: KeyboardEvent): void {
-    const el = this.scrollContainer?.nativeElement;
+    const el = this.scrollTrack?.nativeElement;
     if (!el) return;
 
-    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
-      e.preventDefault();
-      const nextStage = Math.min(4, this.activeStage + 1);
-      this.goToStage(nextStage);
-    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-      e.preventDefault();
-      const prevStage = Math.max(0, this.activeStage - 1);
-      this.goToStage(prevStage);
+    const rect = el.getBoundingClientRect();
+    if (rect.top <= 100 && rect.bottom >= window.innerHeight - 100) {
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+        if (this.activeStage < 4) {
+          e.preventDefault();
+          this.goToStage(this.activeStage + 1);
+        }
+      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        if (this.activeStage > 0) {
+          e.preventDefault();
+          this.goToStage(this.activeStage - 1);
+        }
+      }
     }
   }
 
@@ -197,10 +203,13 @@ export class CarSeatComponent implements AfterViewInit, OnDestroy {
       const render = () => {
         if (this.isDestroyed) return;
 
-        // Suavizado lerp calibrado para estabilidad (0.09)
+        // Medir la posición real del track en la ventana en cada frame
+        this.onNativeScroll();
+
+        // Suavizado lerp calibrado a 0.12 para respuesta inmediata y fluida
         const diff = this.targetProgress - this.smoothProgress;
         if (Math.abs(diff) > 0.00008) {
-          this.smoothProgress += diff * 0.09;
+          this.smoothProgress += diff * 0.12;
         } else {
           this.smoothProgress = this.targetProgress;
         }
@@ -337,15 +346,18 @@ export class CarSeatComponent implements AfterViewInit, OnDestroy {
 
   // ── Navegación Directa por Etapas ──
   public goToStage(stageIndex: number): void {
-    const el = this.scrollContainer?.nativeElement;
+    const el = this.scrollTrack?.nativeElement;
     if (!el) return;
 
     const targets = [0.0, 0.28, 0.52, 0.74, 1.0];
     const target = targets[stageIndex] ?? 0;
-    const maxScroll = el.scrollHeight - el.clientHeight;
+    const maxScroll = el.offsetHeight - window.innerHeight;
 
-    el.scrollTo({
-      top: target * maxScroll,
+    const trackTop = window.scrollY + el.getBoundingClientRect().top;
+    const targetScrollY = trackTop + (target * maxScroll);
+
+    window.scrollTo({
+      top: targetScrollY,
       behavior: 'smooth'
     });
   }
