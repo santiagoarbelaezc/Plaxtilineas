@@ -6,6 +6,9 @@
     <!-- Viewport Fijo / Sticky: SE QUEDA INMÓVIL EN PANTALLA durante todo el recorrido -->
     <div class="apple-sticky-viewport">
 
+      <!-- Línea Superior de Acento Esmeralda Sutil (Estilo Footer) -->
+      <div class="apple-accent-glow"></div>
+
       <!-- Escenario Visual Cinemático: Cuero Microperforado con Respiración Activa -->
       <div class="apple-visual-stage">
 
@@ -55,33 +58,6 @@
             class="stage-img">
         </div>
 
-        <!-- Capa 4: Producto Real del Catálogo con Redirección a Descripción Select -->
-        <div 
-          class="stage-layer layer-front"
-          [class.interactive]="activeStage === 4"
-          [style.opacity]="frontOpacity"
-          [style.transform]="'scale(' + frontScale + ')'">
-          <a 
-            [routerLink]="['/producto', productId]" 
-            class="catalog-product-showcase"
-            aria-label="Ver descripción de Continental Plus Cyrus en el catálogo"
-            title="Abrir descripción detallada del producto">
-            <div class="product-badge-overlay">
-              <span class="pulse-indicator"></span>
-              <span>VER EN CATÁLOGO &bull; SELECCIÓN</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                <polyline points="15 3 21 3 21 9"></polyline>
-                <line x1="10" y1="14" x2="21" y2="3"></line>
-              </svg>
-            </div>
-            <img 
-              src="assets/images/cuerina/cyrus-catalog.png" 
-              alt="Muestrario oficial de catálogo Continental Plus Cyrus con 3 tonalidades y microperforado" 
-              class="stage-img catalog-real-img">
-          </a>
-        </div>
-
       </div>
 
       <!-- Tarjetas de Texto Cinemáticas Flotantes por Etapa -->
@@ -90,10 +66,13 @@
         <!-- Texto Etapa 0: Hero Asiento -->
         <div class="info-card stage-card-0" [class.active]="activeStage === 0">
           <div class="kicker-badge">
-            <span class="kicker-dot"></span>
+            <span class="kicker-line"></span>
             <span>TAPICERÍA AUTOMOTRIZ &bull; VENTILACIÓN ACTIVA</span>
           </div>
-          <h1 class="main-title">CONTINENTAL PLUS CYRUS</h1>
+          <h1 class="main-title">
+            <span class="title-lead">CONTINENTAL PLUS CYRUS</span>
+            <span class="title-highlight">Cuerina Microperforada</span>
+          </h1>
           <p class="main-desc">
             Cuerina automotriz de alta especificación con matriz de microperforaciones (huequitos respirables) para máxima frescura, tacto cuero mate y resistencia al calor en climas cálidos.
           </p>
@@ -109,20 +88,33 @@
         <!-- Texto Etapa 1: Muestrario Oficial de Tonos -->
         <div class="info-card stage-card-1" [class.active]="activeStage === 1">
           <div class="kicker-badge">
-            <span class="kicker-dot"></span>
+            <span class="kicker-line"></span>
             <span>MATERIA PRIMA &bull; 3 TONALIDADES DISPONIBLES</span>
           </div>
-          <h2 class="section-title">Gama de Tonalidades Cyrus</h2>
+          <h2 class="section-title">
+            <span class="title-lead">GAMA DE TONALIDADES</span>
+            <span class="title-highlight">Muestrario Oficial Continental Plus</span>
+          </h2>
           <p class="section-lead-text">
             Suministramos el material original en metros y bobinas para talleres de tapicería, fabricantes de silletería y concesionarios.
           </p>
           <div class="specs-chips">
             <div class="spec-chip">
-              <span class="chip-val">1210 Gris A</span>
+              <div class="chip-header">
+                <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="chip-val">1210 Gris A</span>
+              </div>
               <span class="chip-sub">Gris claro elegante con orificios oscuros de contraste térmico.</span>
             </div>
             <div class="spec-chip">
-              <span class="chip-val">800 Negro &amp; 1131 Charcoat</span>
+              <div class="chip-header">
+                <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="chip-val">800 Negro &amp; 1131 Charcoat</span>
+              </div>
               <span class="chip-sub">Negro mate profundo y grafito antracita para interiores deportivos.</span>
             </div>
           </div>
@@ -147,17 +139,30 @@
         <!-- Texto Etapa 2: Macro Microperforado 8K -->
         <div class="info-card stage-card-2" [class.active]="activeStage === 2">
           <div class="kicker-badge">
-            <span class="kicker-dot"></span>
+            <span class="kicker-line"></span>
             <span>TEXTURA &bull; MATRIZ PINHOLE</span>
           </div>
-          <h2 class="section-title">Microperforaciones Precisas</h2>
+          <h2 class="section-title">
+            <span class="title-lead">MICROPERFORACIONES</span>
+            <span class="title-highlight">Disipación Térmica Continua</span>
+          </h2>
           <div class="specs-chips">
             <div class="spec-chip">
-              <span class="chip-val">Huequitos Respirables</span>
+              <div class="chip-header">
+                <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="chip-val">Huequitos Respirables</span>
+              </div>
               <span class="chip-sub">Matriz de perforación láser uniforme sin deformar la resistencia del material.</span>
             </div>
             <div class="spec-chip">
-              <span class="chip-val">Acabado Mate Antirreflejo</span>
+              <div class="chip-header">
+                <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="chip-val">Acabado Mate Antirreflejo</span>
+              </div>
               <span class="chip-sub">Tacto seco de lujo, resistente al desgaste por radiación solar y rayos UV.</span>
             </div>
           </div>
@@ -166,146 +171,87 @@
         <!-- Texto Etapa 3: Bobina Industrial Continental Plus Cyrus -->
         <div class="info-card stage-card-3" [class.active]="activeStage === 3">
           <div class="kicker-badge">
-            <span class="kicker-dot"></span>
+            <span class="kicker-line"></span>
             <span>SUMINISTRO &bull; MAYORISTA</span>
           </div>
-          <h2 class="section-title">En Bobinas de 1.50 Metros</h2>
+          <h2 class="section-title">
+            <span class="title-lead">BOBINAS INDUSTRIALES</span>
+            <span class="title-highlight">1.50 Metros de Ancho Útil</span>
+          </h2>
           <div class="specs-chips">
             <div class="spec-chip">
-              <span class="chip-val">Ancho Útil 1.50 M</span>
+              <div class="chip-header">
+                <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="chip-val">Ancho Útil 1.50 M</span>
+              </div>
               <span class="chip-sub">Ideal para patrones continuos de silletería, paneles de puertas y techos.</span>
             </div>
             <div class="spec-chip">
-              <span class="chip-val">Respaldo Textil Técnico</span>
+              <div class="chip-header">
+                <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="chip-val">Respaldo Textil Técnico</span>
+              </div>
               <span class="chip-sub">Malla flexible de alta adherencia para pegado limpio y sin arrugas.</span>
             </div>
           </div>
         </div>
 
-        <!-- Texto Etapa 4: Ficha Final Minimalista & Cotizador en Tiempo Real -->
+        <!-- Etapa 4: Ficha Final Minimalista & Redirección al Catálogo -->
         <div 
           class="info-card stage-card-4" 
           [class.active]="activeStage === 4"
-          [style.transform]="'translateY(' + configTranslateY + 'px)'"
+          [style.transform]="'translate(-50%, calc(-50% + ' + configTranslateY + 'px)) scale(' + frontScale + ')'"
           [style.opacity]="configOpacity">
-          
-          <div class="configurator-box">
+
+          <div class="simple-catalog-card">
             
-            <a [routerLink]="['/producto', productId]" class="config-top-link" title="Abrir ficha y descripción completa en el catálogo">
-              <div class="config-top">
-                <div class="config-badge-row">
-                  <span class="config-badge">CATÁLOGO OFICIAL &bull; PLAXTILINEAS</span>
-                  <span class="catalog-code-badge">ID: #188</span>
-                </div>
-                <h2 class="config-product-title">
-                  CONTINENTAL PLUS CYRUS
-                  <svg class="title-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                    <polyline points="15 3 21 3 21 9"></polyline>
-                    <line x1="10" y1="14" x2="21" y2="3"></line>
-                  </svg>
-                </h2>
-                <div class="config-price-line">
-                  <span class="price-num">{{ formatCop(unitPrice) }}</span>
-                  <span class="price-unit">COP / metro</span>
-                </div>
-              </div>
+            <!-- Imagen del Producto Real del Catálogo con marco estilizado -->
+            <a 
+              [routerLink]="['/producto', productId]" 
+              class="simple-catalog-image-link"
+              title="Abrir descripción de Continental Plus Cyrus en el catálogo">
+              <img 
+                src="assets/images/cuerina/cyrus-catalog.png" 
+                alt="Continental Plus Cyrus - Tapicería Automotriz" 
+                class="simple-catalog-img">
             </a>
 
-            <!-- Ficha Técnica Rápida -->
-            <div class="quick-specs-row">
-              <div class="q-spec">
-                <span class="q-label">Uso:</span>
-                <span class="q-val">TAPICERÍA AUTOMOTRIZ</span>
+            <!-- Información Minimalista Estilo Home / Product-Feature-Split -->
+            <div class="simple-catalog-body">
+              <div class="kicker-badge">
+                <span class="kicker-line"></span>
+                <span>TAPICERÍA AUTOMOTRIZ</span>
               </div>
-              <div class="q-spec">
-                <span class="q-label">Textura:</span>
-                <span class="q-val">MICROPERFORADO</span>
-              </div>
-              <div class="q-spec">
-                <span class="q-label">Material:</span>
-                <span class="q-val">AUTOMOTRIZ</span>
-              </div>
-            </div>
+              <h2 class="simple-product-title">
+                <span class="title-lead">CONTINENTAL PLUS CYRUS</span>
+                <span class="title-highlight">Catálogo Oficial Plaxtilineas</span>
+              </h2>
+              
+              <p class="simple-product-desc">
+                Cuerina automotriz de alta especificación con matriz de microperforaciones respirables para óptima circulación de aire, tacto de lujo y resistencia térmica superior.
+              </p>
 
-            <!-- Selector de Referencias Oficiales con Muestrario -->
-            <div class="config-swatches">
-              <div class="swatches-header">
-                <span class="swatches-label">Referencias disponibles:</span>
-                <span class="swatches-selected-badge">{{ selectedReference.shortLabel }}</span>
+              <!-- Botón de Redirección hacia Descripción en Catálogo Estilo Pill -->
+              <div class="feature-action-row">
+                <a 
+                  [routerLink]="['/producto', productId]" 
+                  class="feature-cta-pill"
+                  title="Ver descripción de Continental Plus Cyrus en el catálogo">
+                  <span>VER DESCRIPCIÓN EN EL CATÁLOGO</span>
+                  <svg class="btn-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </a>
               </div>
-              <div class="swatches-list">
-                <button 
-                  *ngFor="let ref of references" 
-                  type="button" 
-                  class="swatch-btn"
-                  [class.active]="selectedReference.id === ref.id"
-                  (click)="selectReference(ref)">
-                  <span class="color-dot" [style.background-color]="ref.colorHex"></span>
-                  <div class="ref-texts">
-                    <span class="ref-code">{{ ref.code }}</span>
-                    <span class="ref-sub">Microperforado Automotriz</span>
-                  </div>
-                  <span class="ref-price">{{ formatCop(ref.price) }}</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Calculadora de Metros -->
-            <div class="config-calc">
-              <div class="meter-counter">
-                <button 
-                  type="button" 
-                  class="btn-step" 
-                  (click)="decrementQuantity()" 
-                  [disabled]="quantity <= 1"
-                  aria-label="Disminuir metros">-</button>
-                <span class="count-value">{{ quantity }} m</span>
-                <button 
-                  type="button" 
-                  class="btn-step" 
-                  (click)="incrementQuantity()"
-                  aria-label="Aumentar metros">+</button>
-              </div>
-
-              <div class="calc-subtotal">
-                <span class="subtotal-label">{{ formatCop(unitPrice) }} &times; {{ quantity }} unds</span>
-                <span class="subtotal-amount">Total: {{ formatCop(totalEstimated) }}</span>
-              </div>
-            </div>
-
-            <!-- Botones de Acción -->
-            <div class="config-actions">
-              <!-- Botón Principal: Redirige a Descripción Select -->
-              <a 
-                [routerLink]="['/producto', productId]" 
-                class="cta-description-btn"
-                title="Ir a descripción select de Continental Plus Cyrus">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                  <line x1="3" y1="6" x2="21" y2="6"></line>
-                  <path d="M16 10a4 4 0 0 1-8 0"></path>
-                </svg>
-                <span>VER DESCRIPCIÓN EN CATÁLOGO</span>
-              </a>
-
-              <a 
-                [href]="whatsappUrl" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="cta-whatsapp-btn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                </svg>
-                <span>COTIZAR ESTE PEDIDO</span>
-              </a>
-
-              <a routerLink="/productos" class="link-catalog-back">
-                &larr; Volver a todos los productos
-              </a>
             </div>
 
           </div>
+
         </div>
 
       </div>
