@@ -196,6 +196,21 @@ export class DashboardAssistantComponent implements AfterViewChecked, OnDestroy 
     this.isOpen = false;
   }
 
+  reiniciarChat(): void {
+    this.messages = [
+      {
+        id: Date.now(),
+        text: '¡Hola! Soy Mateo, el asistente inteligente del sistema. ¿En qué te puedo ayudar hoy con el panel de administración?',
+        sender: 'assistant',
+        timestamp: new Date(),
+        type: 'normal'
+      }
+    ];
+    this.showQuickReplies = true;
+    this.newMessage = '';
+    setTimeout(() => this.scrollToBottom(), 50);
+  }
+
   get charCount(): number {
     return this.newMessage.length;
   }
