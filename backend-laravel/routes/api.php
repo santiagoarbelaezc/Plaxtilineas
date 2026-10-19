@@ -15,7 +15,7 @@ Route::get('/test', function (Request $request) {
     return response()->json([
         'status' => 'success',
         'message' => '¡API Laravel de Plaxtilineas funcionando correctamente! 🚀',
-        'framework' => 'Laravel ' . app()->version(),
+        'framework' => 'Laravel '.app()->version(),
         'php_version' => PHP_VERSION,
         'environment' => app()->environment(),
         'server_time' => now()->toIso8601String(),
@@ -62,7 +62,7 @@ Route::get('/db-check', function () {
             'driver' => $driver,
             'database' => $dbName,
         ]);
-    } catch (\Throwable $e) {
+    } catch (Throwable $e) {
         return response()->json([
             'status' => 'warning',
             'message' => 'No hay conexión a la base de datos aún o las credenciales del .env son incorrectas.',
