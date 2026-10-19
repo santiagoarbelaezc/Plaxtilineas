@@ -1,8 +1,8 @@
 /* ═══════════════════════════════════════════════════════════════════
-   MAP SHOWCASE — SEDE FÍSICA & UBICACIÓN (MINIMALISTA & MODERNO)
+   MAP SHOWCASE — SEDE FÍSICA & UBICACIÓN (MINIMALISTA, ALTO & ANCHO)
    Fondo: #05241b (verde bosque profundo)
    Texto: #ffffff (títulos), #cbd5e1 (subtítulos), #94a3b8 (descripción)
-   Acentos: #16a34a / #22c55e (esmeralda), #f1f5f9 (botón de contraste)
+   Acentos: #4ade80 / #22c55e (esmeralda), #ffffff (botón de contraste)
    ═══════════════════════════════════════════════════════════════════ */
 
 :host {
@@ -12,8 +12,8 @@
 
 .map-showcase-section {
   background-color: #05241b;
-  font-family: 'Montserrat', sans-serif;
-  padding: 58px 0 64px 0;
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 85px 0 95px 0;
   position: relative;
   overflow: hidden;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
@@ -21,7 +21,7 @@
 }
 
 .map-container-inner {
-  max-width: 1460px;
+  max-width: 1480px;
   margin: 0 auto;
   padding: 0 32px;
   box-sizing: border-box;
@@ -29,12 +29,12 @@
 
 .map-grid {
   display: grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: 54px;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 64px;
   align-items: center;
 }
 
-/* ── Columna Izquierda: Marco del Mapa Interactivo Limpio ── */
+/* ── Columna Izquierda: Marco del Mapa Más Ancho y Alto ── */
 .map-visual-wrapper {
   width: 100%;
 }
@@ -42,18 +42,18 @@
 .map-frame {
   position: relative;
   width: 100%;
-  height: 440px;
-  border-radius: 24px;
+  height: 530px;
+  border-radius: 20px;
   overflow: hidden;
   background-color: #031a13;
-  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 55px -12px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
 }
 
 .map-frame:hover {
-  box-shadow: 0 25px 55px -10px rgba(0, 0, 0, 0.65);
-  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 28px 65px -12px rgba(0, 0, 0, 0.75);
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .map-frame iframe {
@@ -64,7 +64,7 @@
   filter: contrast(1.05) saturate(1.05);
 }
 
-/* ── Columna Derecha: Contenido Editorial ── */
+/* ── Columna Derecha: Contenido Editorial Minimalista ── */
 .map-content-wrapper {
   display: flex;
   flex-direction: column;
@@ -72,17 +72,17 @@
 
 /* Kicker Minimalista: ¿DÓNDE ENCONTRARNOS? */
 .kicker-badge-row {
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .map-kicker {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: #4ade80;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   background: transparent;
   border: none;
@@ -111,24 +111,24 @@
 
 .title-lead-line {
   display: block;
-  font-size: 2.75rem;
-  font-weight: 900;
+  font-size: clamp(2.1rem, 2.8vw, 2.75rem);
+  font-weight: 850;
   color: #ffffff;
   letter-spacing: -0.025em;
-  line-height: 1.12;
+  line-height: 1.14;
   text-transform: uppercase;
 }
 
 .title-dynamic-line {
   display: block;
-  font-size: 2.35rem;
-  font-weight: 850;
-  line-height: 1.22;
+  font-size: clamp(1.85rem, 2.4vw, 2.35rem);
+  font-weight: 800;
+  line-height: 1.2;
   margin-top: 6px;
 }
 
 .gradient-text {
-  color: #22c55e;
+  color: #4ade80;
   background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -137,44 +137,45 @@
 
 /* Párrafo Descriptivo Lead */
 .map-lead {
-  font-size: 1.02rem;
-  color: #cbd5e1;
-  line-height: 1.7;
-  font-weight: 400;
-  margin: 0 0 24px 0;
-  max-width: 720px;
+  font-size: 0.98rem;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.68;
+  font-weight: 350;
+  margin: 0 0 28px 0;
+  max-width: 640px;
 }
 
 .map-lead strong {
   color: #ffffff;
-  font-weight: 750;
+  font-weight: 600;
 }
 
-/* Grid Moderno de Información (Cuadrícula 2x2) */
+/* Grid Moderno de Información (Líneas Minimalistas con Hairline) */
 .map-info-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin: 0 0 32px 0;
-  max-width: 620px;
+  gap: 14px 28px;
+  margin: 0 0 34px 0;
+  max-width: 580px;
 }
 
 .map-info-card {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  padding: 14px 16px;
-  transition: all 0.25s ease;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 0 12px 0;
+  border-radius: 0;
   box-sizing: border-box;
+  transition: border-color 0.25s ease, transform 0.25s ease;
 }
 
 .map-info-card:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(74, 222, 128, 0.25);
-  transform: translateY(-2px);
+  background: transparent;
+  border-color: rgba(74, 222, 128, 0.45);
+  transform: translateX(3px);
 }
 
 .info-card-header {
@@ -186,55 +187,54 @@
 .info-card-badge {
   font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 0.72rem;
-  font-weight: 800;
+  font-weight: 600;
   color: #4ade80;
-  letter-spacing: 0.06em;
-  background: rgba(74, 222, 128, 0.1);
-  padding: 4px 8px;
-  border-radius: 8px;
+  letter-spacing: 0.08em;
+  background: transparent;
+  padding: 0;
   line-height: 1;
   flex-shrink: 0;
 }
 
 .info-card-title {
   font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 0.94rem;
-  font-weight: 750;
-  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 550;
+  color: rgba(255, 255, 255, 0.92);
   letter-spacing: 0.01em;
   line-height: 1.25;
 }
 
 .info-card-detail {
   font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 0.85rem;
-  font-weight: 450;
-  color: #cbd5e1;
+  font-size: 0.82rem;
+  font-weight: 350;
+  color: rgba(255, 255, 255, 0.65);
   line-height: 1.45;
   margin: 0;
+  padding-left: 22px;
 }
 
-/* ── Botón de Acción Principal ── */
+/* ── Botón de Acción Principal Minimalista ── */
 .map-action-row {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-top: 4px;
 }
 
 .map-cta-pill {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: #f1f5f9;
+  background: #ffffff;
   color: #05241b;
   text-decoration: none;
-  font-size: 0.85rem;
-  font-weight: 850;
-  letter-spacing: 0.07em;
-  padding: 14px 34px;
+  font-size: 0.82rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 13px 30px;
   border-radius: 50px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
   transition: all 0.25s ease;
 }
 
@@ -242,7 +242,7 @@
   background: #ffffff;
   color: #041d15;
   transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
 }
 
 .map-arrow-icon {
@@ -257,44 +257,40 @@
    RESPONSIVIDAD
    ═══════════════════════════════════════════════════════════ */
 @media (max-width: 1024px) {
+  .map-showcase-section {
+    padding: 65px 0 75px 0;
+  }
+
   .map-grid {
     grid-template-columns: 1fr;
-    gap: 36px;
+    gap: 42px;
   }
 
   .map-frame {
-    height: 340px;
-  }
-
-  .title-lead-line {
-    font-size: 2.25rem;
-  }
-
-  .title-dynamic-line {
-    font-size: 1.95rem;
+    height: 400px;
   }
 }
 
 @media (max-width: 640px) {
   .map-showcase-section {
-    padding: 42px 0 48px 0;
+    padding: 50px 0 55px 0;
   }
 
   .map-container-inner {
-    padding: 0 18px;
+    padding: 0 20px;
   }
 
   .map-frame {
-    height: 270px;
-    border-radius: 18px;
+    height: 300px;
+    border-radius: 16px;
   }
 
   .title-lead-line {
-    font-size: 1.85rem;
+    font-size: 1.95rem;
   }
 
   .title-dynamic-line {
-    font-size: 1.55rem;
+    font-size: 1.65rem;
   }
 
   .map-lead {
@@ -304,12 +300,13 @@
   .map-info-grid {
     grid-template-columns: 1fr;
     gap: 10px;
-    margin-bottom: 24px;
+    margin-bottom: 26px;
   }
 
   .map-cta-pill {
     width: 100%;
     justify-content: center;
     text-align: center;
+    box-sizing: border-box;
   }
 }
