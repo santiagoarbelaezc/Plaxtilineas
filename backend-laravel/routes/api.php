@@ -1,5 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
+use App\Http\Controllers\Api\AdminUserController;
+use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -10,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// Endpoint de prueba GET (para verificar despliegue en Hostinger/Local)
+// Endpoint de prueba GET
 Route::get('/test', function (Request $request) {
     return response()->json([
         'status' => 'success',
@@ -23,7 +27,7 @@ Route::get('/test', function (Request $request) {
     ]);
 });
 
-// Endpoint de prueba POST (para verificar recepción de payloads y CORS)
+// Endpoint de prueba POST
 Route::post('/test', function (Request $request) {
     return response()->json([
         'status' => 'success',
@@ -37,7 +41,7 @@ Route::post('/test', function (Request $request) {
     ]);
 });
 
-// Endpoint de salud del servidor y permisos de escritura (storage/bootstrap)
+// Endpoint de salud del servidor
 Route::get('/health', function () {
     return response()->json([
         'status' => 'healthy',
@@ -49,7 +53,7 @@ Route::get('/health', function () {
     ]);
 });
 
-// Endpoint para probar conexión a base de datos (MySQL en Hostinger)
+// Endpoint para probar conexión a base de datos
 Route::get('/db-check', function () {
     try {
         DB::connection()->getPdo();
@@ -65,14 +69,43 @@ Route::get('/db-check', function () {
     } catch (Throwable $e) {
         return response()->json([
             'status' => 'warning',
-            'message' => 'No hay conexión a la base de datos aún o las credenciales del .env son incorrectas.',
+            'message' => 'No hay conexión a la base de datos aún.',
             'error' => $e->getMessage(),
-            'tip' => 'Revisa los parámetros DB_HOST, DB_DATABASE, DB_USERNAME y DB_PASSWORD en el archivo .env',
         ], 200);
     }
 });
 
-// Ruta protegida con Sanctum (ejemplo)
+// Ruta de usuario autenticado
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
+// ═════════════════════════════════════════════════════════════════════════════
+// AUTHENTICATION  /api/auth/*
+// ═════════════════════════════════════════════════════════════════════════════
+
+Route::prefix('auth')->group(function () {
+    Route::get('/captcha', [AuthController::class, 'captcha']);
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:auth');
+    Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:auth');
+    Route::post('/google', [AuthController::class, 'googleLogin'])->middleware('throttle:auth');
+    Route::post('/recuperar-password', [AuthController::class, 'recuperarPassword'])->middleware('throttle:auth');
+    Route::get('/verificar-email', [AuthController::class, 'verificarEmail']);
+
+    // Rutas protegidas
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/cambiar-password-temporal', [AuthController::class, 'cambiarPasswordTemporal']);
+        Route::get('/perfil', [AuthController::class, 'perfil']);
+        Route::put('/actualizar', [AuthController::class, 'actualizar']);
+        Route::delete('/cuenta', [AuthController::class, 'cuenta']);
+    });
+});
+
+// ═════════════════════════════════════════════════════════════════════════════
+// ADMIN USUARIOS  /api/admin/*
+// ═════════════════════════════════════════════════════════════════════════════
+
+Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/usuarios-detalle', [AdminUserController::class, 'obtenerUsuariosDetalle']);
+    Route::delete('/usuarios/{id}', [AdminUserController::class, 'eliminarUsuario']);
+});
