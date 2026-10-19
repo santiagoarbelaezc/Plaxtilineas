@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Api\AdminUserController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CarritoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -109,3 +110,12 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::get('/usuarios-detalle', [AdminUserController::class, 'obtenerUsuariosDetalle']);
     Route::delete('/usuarios/{id}', [AdminUserController::class, 'eliminarUsuario']);
 });
+
+// ═════════════════════════════════════════════════════════════════════════════
+// CARRITO  /api/carrito/*
+// ═════════════════════════════════════════════════════════════════════════════
+
+Route::middleware('auth:sanctum')->prefix('carrito')->group(function () {
+    Route::post('/sync', [CarritoController::class, 'sync']);
+});
+
