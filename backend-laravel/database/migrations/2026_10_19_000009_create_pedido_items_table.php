@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('producto_id')->constrained('productos')->cascadeOnDelete();
             $table->unsignedBigInteger('variante_id')->nullable();
             $table->string('nombre_producto');
+            $table->string('imagen_url', 500)->nullable();
             $table->integer('cantidad');
             $table->decimal('precio_unitario', 12, 2);
             $table->decimal('subtotal', 12, 2);

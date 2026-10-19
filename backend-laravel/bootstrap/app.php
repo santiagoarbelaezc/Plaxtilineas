@@ -114,6 +114,25 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
+        // 8. HttpExceptionInterface (BadRequest, NotFound, etc.)
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\HttpExceptionInterface $e, Request $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                $status = $e->getStatusCode();
+                $msg = $e->getMessage();
+                if ($msg === '') {
+                    $msg = match ($status) {
+                        404 => 'Ruta no encontrada.',
+                        403 => 'Acceso denegado.',
+                        default => 'Petición inválida.',
+                    };
+                }
+
+                return response()->json([
+                    'error' => $msg,
+                ], $status, [], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            }
+        });
+
         // 8. Fallback general para Throwable bajo /api/* -> 500
         $exceptions->render(function (Throwable $e, Request $request) {
             if ($request->is('api/*') || $request->expectsJson()) {

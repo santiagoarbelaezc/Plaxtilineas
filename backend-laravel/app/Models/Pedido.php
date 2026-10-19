@@ -17,11 +17,12 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int|null $usuario_id
  * @property string $codigo_pedido
- * @property string $nombre_cliente
- * @property string $email_cliente
- * @property string $telefono_cliente
+ * @property string|null $nombre_cliente
+ * @property string|null $email_cliente
+ * @property string|null $telefono_cliente
  * @property string $direccion_envio
- * @property string $ciudad_envio
+ * @property string|null $ciudad_envio
+ * @property string|null $departamento
  * @property string|null $notas
  * @property string $subtotal
  * @property string $iva
@@ -29,10 +30,14 @@ use Illuminate\Support\Carbon;
  * @property string $total
  * @property string $metodo_pago
  * @property string|null $wompi_referencia
+ * @property string|null $wompi_link_id
  * @property string|null $wompi_transaction_id
  * @property string|null $wompi_evento_id
  * @property int|null $wompi_monto_centavos
  * @property Carbon|null $wompi_pagado_at
+ * @property string|null $guia_numero
+ * @property string|null $transportadora
+ * @property Carbon|null $fecha_envio
  * @property EstadoPedido $estado
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -55,6 +60,7 @@ class Pedido extends Model
         'telefono_cliente',
         'direccion_envio',
         'ciudad_envio',
+        'departamento',
         'notas',
         'subtotal',
         'iva',
@@ -62,10 +68,14 @@ class Pedido extends Model
         'total',
         'metodo_pago',
         'wompi_referencia',
+        'wompi_link_id',
         'wompi_transaction_id',
         'wompi_evento_id',
         'wompi_monto_centavos',
         'wompi_pagado_at',
+        'guia_numero',
+        'transportadora',
+        'fecha_envio',
         'estado',
     ];
 
@@ -81,6 +91,7 @@ class Pedido extends Model
             'total' => 'decimal:2',
             'wompi_monto_centavos' => 'integer',
             'wompi_pagado_at' => 'datetime',
+            'fecha_envio' => 'datetime',
             'estado' => EstadoPedido::class,
         ];
     }

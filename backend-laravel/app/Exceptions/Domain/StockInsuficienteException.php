@@ -28,6 +28,14 @@ final class StockInsuficienteException extends DomainException
         return $instance;
     }
 
+    public static function paraPedido(string $nombre, int $disponible, int $solicitado): self
+    {
+        $instance = new self(0, $disponible, $solicitado, ['nombre' => $nombre], 400);
+        $instance->message = "Stock insuficiente para \"{$nombre}\". Disponible: {$disponible}, solicitado: {$solicitado}.";
+
+        return $instance;
+    }
+
     public function httpStatus(): int
     {
         return $this->status;

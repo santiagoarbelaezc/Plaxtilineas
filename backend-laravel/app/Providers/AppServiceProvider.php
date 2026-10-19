@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Contracts\GoogleAuthClientInterface;
+use App\Contracts\WompiClientInterface;
 use App\Services\GoogleAuthService;
+use App\Services\WompiService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -21,6 +23,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             GoogleAuthClientInterface::class,
             GoogleAuthService::class
+        );
+
+        $this->app->bind(
+            WompiClientInterface::class,
+            WompiService::class
         );
     }
 

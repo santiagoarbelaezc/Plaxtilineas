@@ -14,6 +14,7 @@ use Illuminate\Support\Carbon;
  * @property int $producto_id
  * @property int|null $variante_id
  * @property string $nombre_producto
+ * @property string|null $imagen_url
  * @property int $cantidad
  * @property string $precio_unitario
  * @property string $subtotal
@@ -32,6 +33,7 @@ class PedidoItem extends Model
         'producto_id',
         'variante_id',
         'nombre_producto',
+        'imagen_url',
         'cantidad',
         'precio_unitario',
         'subtotal',

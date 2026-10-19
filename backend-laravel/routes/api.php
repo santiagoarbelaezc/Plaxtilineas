@@ -5,6 +5,8 @@ declare(strict_types=1);
 use App\Http\Controllers\Api\AdminUserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CarritoController;
+use App\Http\Controllers\Api\PedidoController;
+use App\Http\Controllers\Api\WompiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -118,4 +120,41 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 Route::middleware('auth:sanctum')->prefix('carrito')->group(function () {
     Route::post('/sync', [CarritoController::class, 'sync']);
 });
+
+// ═════════════════════════════════════════════════════════════════════════════
+// PEDIDOS  /api/pedidos/*
+// ═════════════════════════════════════════════════════════════════════════════
+
+Route::middleware('auth:sanctum')->prefix('pedidos')->group(function () {
+    Route::post('/draft', [PedidoController::class, 'crearDraft']);
+    Route::get('/mis-pedidos', [PedidoController::class, 'obtenerMisPedidos']);
+    Route::get('/estado', [PedidoController::class, 'verificarEstado']);
+    Route::post('/{id}/cancelar', [PedidoController::class, 'cancelar']);
+    Route::delete('/{id}', [PedidoController::class, 'eliminar']);
+
+    // Compatibilidad legacy para rutas anidadas bajo /pedidos/admin/
+    Route::middleware('admin')->prefix('admin')->group(function () {
+        Route::get('/todos', [PedidoController::class, 'adminObtenerTodos']);
+        Route::put('/actualizar-estado/{id}', [PedidoController::class, 'adminActualizarEstado']);
+    });
+});
+
+// Rutas admin estándar
+Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/pedidos', [PedidoController::class, 'adminObtenerTodos']);
+    Route::put('/pedidos/{id}/estado', [PedidoController::class, 'adminActualizarEstado']);
+});
+
+// ═════════════════════════════════════════════════════════════════════════════
+// WOMPI  /api/wompi/*
+// ═════════════════════════════════════════════════════════════════════════════
+
+Route::prefix('wompi')->group(function () {
+    // Generación de link de pago (requiere autenticación)
+    Route::post('/datos-pago', [WompiController::class, 'datosPago'])->middleware('auth:sanctum');
+
+    // Webhook público para eventos de Wompi (protegido por checksum)
+    Route::post('/webhook', [WompiController::class, 'webhook'])->middleware('throttle:wompi-webhook');
+});
+
 
