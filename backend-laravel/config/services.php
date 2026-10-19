@@ -50,4 +50,11 @@ return [
         'client_id' => env('GOOGLE_CLIENT_ID', ''),
     ],
 
+    'groq' => [
+        'api_key' => env('GROQ_API_KEY', ''),
+        'dashboard_api_key' => env('GROQ_API_KEY_DASHBOARD', env('GROQ_API_KEY', '')),
+        'model' => env('GROQ_MODEL', 'openai/gpt-oss-120b'),
+        'base_url' => env('GROQ_BASE_URL', 'https://api.groq.com/openai/v1'),
+    ],
+
 ];

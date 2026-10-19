@@ -67,9 +67,9 @@ class PagoConfirmadoMailable extends Mailable
                 <tbody>{$itemsHtml}</tbody>
             </table>
             <div style='margin-top: 20px; text-align: right;'>
-                <p><strong>Subtotal:</strong> \$".number_format($this->subtotal, 2)." COP</p>
-                <p><strong>IVA:</strong> \$".number_format($this->iva, 2)." COP</p>
-                <p><strong>Costo de Envío:</strong> \$".number_format($this->costoEnvio, 2)." COP</p>
+                <p><strong>Subtotal:</strong> \$".number_format($this->subtotal, 2).' COP</p>
+                <p><strong>IVA:</strong> $'.number_format($this->iva, 2).' COP</p>
+                <p><strong>Costo de Envío:</strong> $'.number_format($this->costoEnvio, 2)." COP</p>
                 <h3 style='color: #1e293b;'>Total: \$".number_format($this->total, 2)." COP</h3>
             </div>
             <p style='color: #64748b; font-size: 13px; margin-top: 20px;'>Te notificaremos tan pronto como tu paquete esté en camino.</p>

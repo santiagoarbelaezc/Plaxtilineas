@@ -5,7 +5,11 @@ declare(strict_types=1);
 use App\Http\Controllers\Api\AdminUserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CarritoController;
+use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\DashboardAssistantController;
+use App\Http\Controllers\Api\LeadsController;
 use App\Http\Controllers\Api\PedidoController;
+use App\Http\Controllers\Api\PqrsController;
 use App\Http\Controllers\Api\WompiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -157,4 +161,51 @@ Route::prefix('wompi')->group(function () {
     Route::post('/webhook', [WompiController::class, 'webhook'])->middleware('throttle:wompi-webhook');
 });
 
+// ═════════════════════════════════════════════════════════════════════════════
+// PQRS  /api/pqrs/*
+// ═════════════════════════════════════════════════════════════════════════════
 
+Route::prefix('pqrs')->group(function () {
+    Route::post('/', [PqrsController::class, 'crearPQR']);
+    Route::get('/consulta/{id}', [PqrsController::class, 'obtenerPQRPorId']);
+
+    Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+        Route::get('/', [PqrsController::class, 'obtenerPQRS']);
+        Route::get('/estadisticas', [PqrsController::class, 'obtenerEstadisticas']);
+        Route::get('/ultimas', [PqrsController::class, 'obtenerUltimaPQR']);
+        Route::get('/buscar', [PqrsController::class, 'buscarPQRS']);
+        Route::put('/{id}/estado', [PqrsController::class, 'actualizarEstadoPQR']);
+        Route::post('/{id}/respuestas', [PqrsController::class, 'agregarRespuesta']);
+        Route::delete('/{id}', [PqrsController::class, 'eliminarPQR']);
+    });
+});
+
+// ═════════════════════════════════════════════════════════════════════════════
+// CHAT ASISTENTE MATEO  /api/chat/*
+// ═════════════════════════════════════════════════════════════════════════════
+
+Route::prefix('chat')->middleware('throttle:chat')->group(function () {
+    Route::post('/', [ChatController::class, 'chat']);
+    Route::get('/historial', [ChatController::class, 'historial']);
+    Route::delete('/limpiar', [ChatController::class, 'limpiar']);
+});
+
+// ═════════════════════════════════════════════════════════════════════════════
+// DASHBOARD ASSISTANT  /api/dashboard-assistant
+// ═════════════════════════════════════════════════════════════════════════════
+
+Route::post('/dashboard-assistant', [DashboardAssistantController::class, 'chat'])
+    ->middleware(['auth:sanctum', 'admin']);
+
+// ═════════════════════════════════════════════════════════════════════════════
+// LEADS  /api/leads/*
+// ═════════════════════════════════════════════════════════════════════════════
+
+Route::prefix('leads')->group(function () {
+    Route::post('/', [LeadsController::class, 'create']);
+
+    Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+        Route::get('/stats', [LeadsController::class, 'getStats']);
+        Route::get('/', [LeadsController::class, 'getAll']);
+    });
+});

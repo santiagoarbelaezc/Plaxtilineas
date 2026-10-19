@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Contracts\AiChatClientInterface;
 use App\Contracts\GoogleAuthClientInterface;
+use App\Contracts\MediaStorageInterface;
 use App\Contracts\WompiClientInterface;
+use App\Services\CloudinaryStorageService;
 use App\Services\GoogleAuthService;
+use App\Services\GroqAiChatService;
 use App\Services\WompiService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -28,6 +32,16 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             WompiClientInterface::class,
             WompiService::class
+        );
+
+        $this->app->bind(
+            MediaStorageInterface::class,
+            CloudinaryStorageService::class
+        );
+
+        $this->app->bind(
+            AiChatClientInterface::class,
+            GroqAiChatService::class
         );
     }
 
