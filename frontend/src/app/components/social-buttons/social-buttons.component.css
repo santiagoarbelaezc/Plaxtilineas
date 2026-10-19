@@ -1,6 +1,6 @@
 /* ============================================
    SOCIAL BUTTONS — CONTENEDOR PRINCIPAL
-   Subido a bottom: 120px para que quede más arriba
+   3 Botones: Carrito, Asistente Mateo, WhatsApp
    ============================================ */
 .social-buttons-container {
   position: fixed;
@@ -8,67 +8,52 @@
   bottom: 24px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 14px;
+  align-items: flex-end;
+  gap: 12px;
   z-index: 1000000;
   pointer-events: none;
-  width: 120px;
+  width: auto;
 }
 
 /* ============================================
    BOTONES BASE
    ============================================ */
 .social-button {
-  width: 46px;
-  height: 46px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background: white;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background 0.2s ease, border-color 0.2s ease;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
   text-decoration: none;
   position: relative;
   overflow: visible;
   pointer-events: auto;
-  animation: slide-in 0.5s ease forwards;
+  border: 1px solid #e2e8f0;
+  padding: 0;
+  animation: slide-in 0.4s ease forwards;
   opacity: 0;
-  border: none;
 }
 
 .social-button:nth-child(1) { animation-delay: 0.05s; }
-.social-button:nth-child(2) { animation-delay: 0.15s; }
-.social-button:nth-child(3) { animation-delay: 0.25s; }
-.social-button:nth-child(4) { animation-delay: 0.35s; }
-.social-button:nth-child(5) { animation-delay: 0.45s; }
+.social-button:nth-child(2) { animation-delay: 0.12s; }
+.social-button:nth-child(3) { animation-delay: 0.19s; }
 
 @keyframes slide-in {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0);    }
 }
 
 .social-button:hover {
-  transform: scale(1.12);
-  box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+  transform: translateY(-3px) scale(1.08);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
 }
 
-/* ============================================
-   BOTÓN CARRITO FLOTANTE
-   ============================================ */
-.cart-float-button {
-  background: #111 !important;
-  box-shadow: none !important;
-  margin-bottom: 30px;
-  /* Centrado perfecto del icono */
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 !important;
-}
-
-.cart-float-button .button-content {
+.social-button .button-content {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -77,95 +62,138 @@
   position: relative;
 }
 
+/* ============================================
+   1. BOTÓN CARRITO FLOTANTE
+   ============================================ */
+.cart-float-button {
+  background: #000000 !important;
+  border-color: #000000 !important;
+  color: #ffffff;
+}
+
 .cart-float-button svg {
-  stroke: #fff;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.cart-float-button:hover {
-  background: #111 !important;
-  transform: scale(1.06) translateY(-2px) !important;
-  box-shadow: 0 0 0 2px rgba(255,255,255,0.7),
-              0 6px 18px rgba(0,0,0,0.2) !important;
-}
-
-.cart-float-button:hover svg {
-  transform: translateY(-1px) scale(1.05);
+  stroke: #ffffff;
   transition: transform 0.25s ease;
 }
 
+.cart-float-button:hover {
+  background: #16a34a !important;
+  border-color: #16a34a !important;
+  box-shadow: 0 10px 25px rgba(22, 163, 74, 0.35) !important;
+}
+
+.cart-float-button:hover svg {
+  transform: scale(1.08);
+}
+
 .cart-float-active {
-  background: #111 !important;
-  box-shadow: 0 0 0 3px rgba(17,17,17,0.2), 0 8px 28px rgba(0,0,0,0.4) !important;
+  background: #16a34a !important;
+  border-color: #16a34a !important;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.3), 0 10px 28px rgba(0, 0, 0, 0.25) !important;
 }
 
 .cart-badge {
-  background: #fff !important;
-  color: #111 !important;
-  border: 2px solid #111 !important;
-  font-weight: 900;
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #16a34a !important;
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 50%;
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
 }
 
 /* ============================================
-   ASISTENTE MATEO
+   2. ASISTENTE MATEO (ICONO SVG MODERNO)
    ============================================ */
 .assistant-button {
-  width: 120px !important;
-  height: 120px !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
-  padding: 0;
-  margin: 0 !important;
-  backdrop-filter: none !important;
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  color: #16a34a !important;
 }
 
-.assistant-avatar {
+.assistant-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.assistant-button:hover .assistant-avatar {
-  transform: scale(1.1) translateY(-5px);
+.assistant-icon {
+  stroke: #16a34a;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.assistant-button:hover {
+  background: #f0fdf4 !important;
+  border-color: #16a34a !important;
+  box-shadow: 0 10px 25px rgba(22, 163, 74, 0.22) !important;
+}
+
+.assistant-button:hover .assistant-icon {
+  transform: scale(1.12);
 }
 
 .mateo-pill {
   position: absolute;
-  bottom: -15px;
-  left: 50%;
-  transform: translateX(-50%);
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
   background: #ffffff;
-  color: #1e293b;
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 0.8rem;
+  color: #0f172a;
+  padding: 7px 16px;
+  border-radius: 50px;
+  font-size: 0.80rem;
   font-weight: 800;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   white-space: nowrap;
-  z-index: 5;
   pointer-events: none;
-  animation: float-bubble 4s ease-in-out infinite;
+  border: 1px solid #e2e8f0;
   font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  border: 1px solid rgba(54,140,68,0.15);
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.mateo-pill span { color: #368C44; }
-
-@keyframes float-bubble {
-  0%, 100% { transform: translate(-50%, 0); }
-  50%       { transform: translate(-50%, -6px); }
+.mateo-pill span {
+  color: #16a34a;
+  font-weight: 900;
 }
 
 /* ============================================
-   ICONOS SOCIALES
+   3. WHATSAPP FLOTANTE
    ============================================ */
-.social-icon            { width: 22px; height: 22px; }
-.whatsapp-button  .social-icon { color: #111111; }
-.facebook-button  .social-icon { color: #111111; }
-.instagram-button .social-icon { color: #111111; }
+.whatsapp-button {
+  background: #25d366 !important;
+  border-color: #25d366 !important;
+}
+
+.whatsapp-button .social-icon {
+  width: 24px;
+  height: 24px;
+  fill: #ffffff;
+  color: #ffffff;
+  transition: transform 0.25s ease;
+}
+
+.whatsapp-button:hover {
+  background: #20bd5a !important;
+  border-color: #20bd5a !important;
+  box-shadow: 0 10px 25px rgba(37, 211, 102, 0.38) !important;
+}
+
+.whatsapp-button:hover .social-icon {
+  transform: scale(1.08);
+}
 
 /* ============================================
    BADGE / NOTIFICACIÓN
@@ -174,7 +202,7 @@
   position: absolute;
   top: -3px;
   right: -3px;
-  background: #e53e3e;
+  background: #ef4444;
   color: white;
   font-size: 10px;
   font-weight: 800;

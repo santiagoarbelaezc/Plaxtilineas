@@ -2,32 +2,41 @@
   <div class="chat-mobile-backdrop"></div>
   <div class="chat-window" (click)="$event.stopPropagation()" [style.height]="viewportHeight">
 
-    <!-- Header Premium -->
+    <!-- Línea Superior de Acento Esmeralda (Estilo Footer Plaxtilineas) -->
+    <div class="chat-accent-glow"></div>
+
+    <!-- Header Minimalista y Limpio -->
     <header class="chat-header">
       <div class="assistant-info">
-        <div class="avatar-container">
-          <img src="assets/images/mateo5.png" alt="Mateo" class="header-avatar">
-          <span class="status-dot"></span>
+        <div class="header-avatar-bot">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v2"></path>
+            <path d="M12 4a2 2 0 0 1 2 2v1h-4V6a2 2 0 0 1 2-2z"></path>
+            <rect x="3" y="7" width="18" height="13" rx="4"></rect>
+            <circle cx="8.5" cy="12.5" r="1.5" fill="currentColor"></circle>
+            <circle cx="15.5" cy="12.5" r="1.5" fill="currentColor"></circle>
+            <path d="M9 16c1 .8 2 1 3 1s2-.2 3-1"></path>
+          </svg>
         </div>
         <div class="text-info">
           <h3>Mateo</h3>
           <span class="online-label">
             <span class="status-pulse-dot"></span>
-            En línea · Asistente IA
+            En línea
           </span>
         </div>
       </div>
       <div class="header-actions">
-        <button class="reload-btn" (click)="reiniciarChat()" title="Reiniciar conversación" aria-label="Reiniciar conversación">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <button class="action-btn" (click)="reiniciarChat()" title="Reiniciar chat" aria-label="Reiniciar conversación">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="1 4 1 10 7 10"></polyline>
             <path d="M3.51 15a9 9 0 1 0 .49-4.5"></path>
           </svg>
         </button>
-        <button class="close-btn" (click)="onClose()" aria-label="Cerrar chat">
+        <button class="action-btn close-btn" (click)="onClose()" title="Cerrar chat" aria-label="Cerrar chat">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
@@ -38,31 +47,46 @@
     <!-- Messages Area -->
     <div class="chat-messages" #scrollMe>
 
-      <!-- Welcome Hero -->
+      <!-- Welcome Hero Editorial (Alineado y Sin Cortes) -->
       <div class="welcome-hero">
-        <div class="welcome-glow"></div>
-        <img src="assets/images/mateo5.png" alt="Mateo Asistente" class="large-mateo">
-        <div class="welcome-text">
-          <h2>Hola, Soy <span>Mateo</span></h2>
-          <p>
-            Tu asistente personal de Plaxtilineas.<br>
-            ¿Qué buscas? ¿Qué producto necesitas?<br>
-            <strong>¡Yo te ayudo!</strong>
-          </p>
+        <div class="hero-bot-badge">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v2"></path>
+            <path d="M12 4a2 2 0 0 1 2 2v1h-4V6a2 2 0 0 1 2-2z"></path>
+            <rect x="3" y="7" width="18" height="13" rx="4"></rect>
+            <circle cx="8.5" cy="12.5" r="1.5" fill="currentColor"></circle>
+            <circle cx="15.5" cy="12.5" r="1.5" fill="currentColor"></circle>
+            <path d="M9 16c1 .8 2 1 3 1s2-.2 3-1"></path>
+          </svg>
         </div>
+
+        <div class="kicker-badge-chat">
+          <span class="kicker-line"></span>
+          <span>ASESORÍA VIRTUAL OFICIAL</span>
+          <span class="kicker-line"></span>
+        </div>
+
+        <h2 class="welcome-heading">
+          <span class="title-lead">HOLA, SOY MATEO</span>
+          <span class="title-highlight">Asesor Inteligente Plaxtilineas</span>
+        </h2>
+
+        <p class="welcome-desc">
+          ¿Buscas mallas, plásticos, espumas o tapicería? Cotiza rollos, medidas y asesoría técnica en tiempo real.
+        </p>
       </div>
 
-      <!-- Quick Replies -->
+      <!-- Quick Replies (Centradas y Equilibradas) -->
       <div class="quick-replies-section" *ngIf="showQuickReplies && messages.length === 0">
         <p class="quick-replies-label">
-          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="label-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="#16a34a" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="label-icon">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
           </svg>
-          PREGUNTAS FRECUENTES:
+          CONSULTAS RÁPIDAS
         </p>
         <div class="quick-replies-grid">
           <button class="quick-reply-btn" (click)="sendQuickReply('Ver productos')" [disabled]="moderation.isBlocked" type="button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
               <line x1="3" y1="6" x2="21" y2="6"></line>
               <path d="M16 10a4 4 0 0 1-8 0"></path>
@@ -71,7 +95,7 @@
           </button>
 
           <button class="quick-reply-btn" (click)="sendQuickReply('¿Dónde están?')" [disabled]="moderation.isBlocked" type="button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
               <circle cx="12" cy="10" r="3"></circle>
             </svg>
@@ -79,8 +103,8 @@
           </button>
 
           <button class="quick-reply-btn" (click)="sendQuickReply('Hablar con asesor')" [disabled]="moderation.isBlocked" type="button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
             </svg>
             <span>Hablar con asesor</span>
           </button>
