@@ -1,8 +1,9 @@
 /* ═══════════════════════════════════════════════════════════════════
    SOBRE NOSOTROS — CINEMATIC MINIMALIST & SHOWCASE DE PRODUCTOS
    - Espaciado amplio para respirar con el Navbar fijo
-   - Línea de tiempo precisa (1px) con imágenes de productos reales
-   - Tarjetas glassmorphism con miniaturas de catálogo y tags
+   - Línea de tiempo BLANCA continua (espina, conectores y nodos)
+   - Tarjetas GRANDES con fondo VERDE bosque (#05241b glass)
+   - Minimalista: Solo Imagen, Fecha, Título y Texto
    - Sección editorial de Mateo Moreno (Fundador & Dueño)
    ═══════════════════════════════════════════════════════════════════ */
 
@@ -98,29 +99,7 @@
 .minimal-intro {
   text-align: center;
   max-width: 980px;
-  margin: 0 auto 70px auto;
-}
-
-.intro-eyebrow-wrap {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.intro-eyebrow-line {
-  width: 28px;
-  height: 1.5px;
-  background: #4ade80;
-  border-radius: 2px;
-}
-
-.intro-eyebrow {
-  font-size: 0.76rem;
-  font-weight: 750;
-  letter-spacing: 0.2em;
-  color: #4ade80;
-  text-transform: uppercase;
+  margin: 0 auto 60px auto;
 }
 
 .cinematic-title {
@@ -130,7 +109,7 @@
   text-transform: uppercase;
   letter-spacing: -0.025em;
   line-height: 1.12;
-  margin: 0 0 18px 0;
+  margin: 0 0 16px 0;
   text-shadow: 0 4px 25px rgba(0, 0, 0, 0.95);
 }
 
@@ -146,54 +125,30 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
-   2. LÍNEA DE TIEMPO CON IMÁGENES REALES DE PRODUCTOS
+   2. LÍNEA DE TIEMPO BLANCA & TARJETAS MINIMALISTAS
    ═══════════════════════════════════════════════════════════ */
 .timeline-interactive-container {
   position: relative;
-  max-width: 1100px;
+  max-width: 1180px;
   margin: 0 auto;
-}
-
-.timeline-header {
-  text-align: center;
-  margin-bottom: 50px;
-}
-
-.timeline-eyebrow {
-  display: block;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  color: rgba(255, 255, 255, 0.5);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-.timeline-heading {
-  font-size: clamp(1.4rem, 2.4vw, 1.95rem);
-  font-weight: 400;
-  letter-spacing: 0.14em;
-  color: #ffffff;
-  text-transform: uppercase;
-  margin: 0;
 }
 
 .timeline-track-wrapper {
   position: relative;
-  padding: 30px 0;
+  padding: 20px 0;
   box-sizing: border-box;
 }
 
-/* Espina Vertical Continua Fina (1px) */
+/* ── Espina Vertical BLANCA Continua ── */
 .timeline-spine-glow {
   position: absolute;
   top: 15px;
   bottom: 15px;
   left: 50%;
-  width: 1px;
-  background: linear-gradient(180deg, rgba(74, 222, 128, 0.45) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.08) 100%);
+  width: 2px;
+  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.65) 50%, rgba(255, 255, 255, 0.18) 100%);
   transform: translateX(-50%);
-  box-shadow: none;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
   z-index: 2;
 }
 
@@ -202,8 +157,9 @@
   position: relative;
   width: 50%;
   box-sizing: border-box;
-  cursor: pointer;
-  margin-bottom: 36px;
+  cursor: default;
+  user-select: text;
+  margin-bottom: 44px;
 }
 
 .timeline-glass-item:last-child {
@@ -212,46 +168,72 @@
 
 .timeline-glass-item.item-left {
   left: 0;
-  padding-right: 56px;
+  padding-right: 60px;
 }
 
 .timeline-glass-item.item-right {
   left: 50%;
-  padding-left: 56px;
+  padding-left: 60px;
 }
 
-/* ── Conectores Horizontales (1px) ── */
+/* ── Conectores Horizontales BLANCOS ── */
 .timeline-connector {
   position: absolute;
-  top: 48px;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.16);
+  top: 54px;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.65);
   pointer-events: none;
   z-index: 3;
-  transition: background 0.25s ease;
 }
 
 .timeline-glass-item.item-left .timeline-connector {
   right: 0;
-  width: 56px;
+  width: 60px;
 }
 
 .timeline-glass-item.item-right .timeline-connector {
   left: 0;
-  width: 56px;
+  width: 60px;
 }
 
-.timeline-glass-item:hover .timeline-connector,
-.timeline-glass-item.is-active .timeline-connector {
-  background: #4ade80;
+/* ── Fecha al Otro Lado de la Línea de Tiempo (Delgada y Más Pequeña) ── */
+.timeline-opposite-date {
+  position: absolute;
+  top: 44px;
+  width: auto;
+  z-index: 4;
+  pointer-events: none;
+  white-space: nowrap;
 }
 
-/* ── Nodos Centrales Minimalistas ── */
+.timeline-glass-item.item-left .timeline-opposite-date {
+  left: 100%;
+  padding-left: 60px;
+  text-align: left;
+}
+
+.timeline-glass-item.item-right .timeline-opposite-date {
+  right: 100%;
+  padding-right: 60px;
+  text-align: right;
+}
+
+.opposite-year-text {
+  display: block;
+  font-size: clamp(1.1rem, 1.6vw, 1.45rem);
+  font-weight: 200;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Nodos Centrales BLANCOS ── */
 .timeline-center-node {
   position: absolute;
-  top: 42px;
-  width: 14px;
-  height: 14px;
+  top: 46px;
+  width: 18px;
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -270,69 +252,56 @@
 }
 
 .node-glow-outer {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: #000000;
-  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  border: 2px solid #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.25s ease;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
 }
 
 .node-glow-inner {
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: #ffffff;
-  transition: background 0.25s ease;
 }
 
-.timeline-glass-item:hover .node-glow-outer,
-.timeline-glass-item.is-active .node-glow-outer {
-  border-color: #4ade80;
-  transform: scale(1.3);
-}
-
-.timeline-glass-item:hover .node-glow-inner,
-.timeline-glass-item.is-active .node-glow-inner {
-  background: #4ade80;
-}
-
-/* ── Tarjeta Glassmorphism con Imagen de Producto ── */
+/* ── Tarjetas Transparentes Minimalistas ── */
 .glass-milestone-card {
-  background: rgba(15, 23, 42, 0.45);
+  background: rgba(255, 255, 255, 0.025);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.45);
   position: relative;
   overflow: hidden;
   text-align: left;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, background 0.3s ease;
 }
 
-.timeline-glass-item:hover .glass-milestone-card,
-.timeline-glass-item.is-active .glass-milestone-card {
-  background: rgba(22, 34, 52, 0.65);
-  border-color: rgba(74, 222, 128, 0.35);
-  transform: translateY(-3px);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55), 0 0 20px rgba(74, 222, 128, 0.08);
+.glass-milestone-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.6);
+  transform: translateY(-2px);
 }
 
-/* ── Contenedor de Imagen de Producto ── */
+/* ── Marco Visual del Producto con Badge Flotante ── */
 .milestone-media-container {
   position: relative;
   width: 100%;
-  height: 150px;
-  border-radius: 10px;
+  height: 200px;
+  border-radius: 14px;
   overflow: hidden;
-  background-color: #031a13;
-  margin-bottom: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background-color: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .milestone-product-image {
@@ -340,86 +309,33 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.timeline-glass-item:hover .milestone-product-image,
-.timeline-glass-item.is-active .milestone-product-image {
-  transform: scale(1.05);
+.glass-milestone-card:hover .milestone-product-image {
+  transform: scale(1.03);
 }
 
-.milestone-media-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.6) 100%);
-  pointer-events: none;
-}
-
-.milestone-category-tag {
-  position: absolute;
-  bottom: 8px;
-  left: 8px;
-  font-size: 0.68rem;
-  font-weight: 750;
-  color: #4ade80;
-  background: rgba(4, 28, 20, 0.88);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 4px 9px;
-  border-radius: 6px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  border: 1px solid rgba(74, 222, 128, 0.28);
-}
-
-.milestone-year-pill {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  font-size: 0.74rem;
-  font-weight: 850;
-  color: #ffffff;
-  background: rgba(0, 0, 0, 0.78);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 4px 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  letter-spacing: 0.04em;
-}
-
-/* ── Cuerpo del Hito ── */
+/* ── Cuerpo: Título y Texto Minimalistas ── */
 .milestone-body {
-  padding: 4px 2px 2px 2px;
+  padding: 14px 4px 2px 4px;
 }
 
-.milestone-badge-row {
-  margin-bottom: 6px;
-}
-
-.milestone-pill-badge {
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: #94a3b8;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.milestone-title-big {
-  font-size: 1.15rem;
-  font-weight: 750;
+.milestone-title {
+  font-size: 1.12rem;
+  font-weight: 600;
   letter-spacing: -0.01em;
   color: #ffffff;
   margin: 0 0 6px 0;
   line-height: 1.25;
 }
 
-.milestone-subtitle-clean {
-  font-size: 0.86rem;
-  font-weight: 350;
+.milestone-text {
+  font-size: 0.88rem;
+  font-weight: 300;
   letter-spacing: 0.01em;
-  color: rgba(226, 232, 240, 0.82);
-  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.55;
   margin: 0;
 }
 
@@ -467,39 +383,27 @@
 
 .bottom-frame-badge {
   position: absolute;
-  bottom: 18px;
-  left: 18px;
-  right: 18px;
-  background: rgba(4, 20, 15, 0.88);
+  bottom: 16px;
+  left: 16px;
+  right: auto;
+  background: rgba(0, 0, 0, 0.72);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(74, 222, 128, 0.22);
-  border-radius: 14px;
-  padding: 12px 18px;
-  display: flex;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 8px 14px;
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .badge-status-dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: #22c55e;
+  background: #4ade80;
   flex-shrink: 0;
-  box-shadow: 0 0 10px rgba(34, 197, 94, 0.85);
-  animation: pulseDot 2s infinite ease-in-out;
-}
-
-@keyframes pulseDot {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.3);
-    opacity: 0.7;
-  }
 }
 
 .badge-text-group {
@@ -508,19 +412,19 @@
 }
 
 .badge-title {
-  font-size: 0.82rem;
-  font-weight: 850;
+  font-size: 0.75rem;
+  font-weight: 800;
   letter-spacing: 0.08em;
   color: #ffffff;
   text-transform: uppercase;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 .badge-subtitle {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 400;
-  letter-spacing: 0.03em;
-  color: #4ade80;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.65);
   margin-top: 2px;
 }
 
@@ -528,29 +432,6 @@
 .banner-editorial {
   display: flex;
   flex-direction: column;
-}
-
-.founder-identity-kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.founder-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 8px rgba(34, 197, 94, 0.7);
-}
-
-.founder-label {
-  font-size: 0.75rem;
-  font-weight: 750;
-  color: #4ade80;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
 }
 
 .banner-minimal-title {
@@ -573,99 +454,34 @@
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
 }
 
-/* ── Tarjeta con Información de Mateo ── */
-.founder-details-box {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 22px 24px;
-  margin-bottom: 32px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.founder-quote {
-  margin-bottom: 20px;
-  border-left: 2px solid #22c55e;
-  padding-left: 16px;
-}
-
-.quote-text {
-  font-size: 0.96rem;
-  font-style: italic;
-  color: #e2e8f0;
-  line-height: 1.6;
-  margin: 0 0 8px 0;
-  font-weight: 350;
-}
-
-.quote-author-row {
+/* ── 3 Puntos Clave Minimalistas (Sin Iconos) ── */
+.founder-pills-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-
-.quote-author {
-  font-size: 0.82rem;
-  font-weight: 750;
-  color: #ffffff;
-}
-
-.quote-role {
-  font-size: 0.74rem;
-  color: #94a3b8;
-  font-weight: 400;
-}
-
-/* Ejes / Pilares Minimalistas */
-.founder-pillars-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-
-.founder-pillar-pill {
-  display: flex;
-  align-items: flex-start;
   gap: 10px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 10px;
-  padding: 10px 12px;
+  margin-bottom: 34px;
+  flex-wrap: wrap;
+}
+
+.founder-pill {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  letter-spacing: 0.03em;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 6px 14px;
+  border-radius: 50px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   transition: all 0.25s ease;
 }
 
-.founder-pillar-pill:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(74, 222, 128, 0.25);
-  transform: translateY(-1px);
-}
-
-.pillar-icon {
-  width: 18px;
-  height: 18px;
-  color: #4ade80;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.pillar-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.pillar-text strong {
-  font-size: 0.78rem;
-  font-weight: 750;
+.founder-pill:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(74, 222, 128, 0.4);
   color: #ffffff;
-  line-height: 1.2;
-}
-
-.pillar-text span {
-  font-size: 0.7rem;
-  color: #94a3b8;
-  line-height: 1.25;
-  margin-top: 2px;
 }
 
 /* ── Botones de Acción ── */
@@ -737,9 +553,6 @@
     max-width: 400px;
     height: 480px;
   }
-  .founder-pillars-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 768px) {
@@ -755,18 +568,28 @@
     left: 20px;
     transform: none;
   }
+  .timeline-opposite-date {
+    position: static !important;
+    padding: 0 !important;
+    margin-bottom: 8px !important;
+    text-align: left !important;
+  }
+  .opposite-year-text {
+    font-size: 1.15rem !important;
+    font-weight: 200 !important;
+  }
   .timeline-glass-item {
     width: 100% !important;
     left: 0 !important;
-    padding-left: 50px !important;
+    padding-left: 54px !important;
     padding-right: 0 !important;
     text-align: left !important;
-    margin-bottom: 24px;
+    margin-bottom: 26px;
   }
   .timeline-connector {
     left: 20px !important;
     right: auto !important;
-    width: 30px !important;
+    width: 34px !important;
   }
   .timeline-center-node {
     left: 20px !important;
@@ -774,10 +597,10 @@
     transform: translateX(-50%) !important;
   }
   .glass-milestone-card {
-    padding: 14px;
+    padding: 16px;
   }
   .milestone-media-container {
-    height: 130px;
+    height: 160px;
   }
 }
 
