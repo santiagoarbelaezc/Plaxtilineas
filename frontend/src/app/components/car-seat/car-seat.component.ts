@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
+import { NavbarVisibilityService } from '../../services/navbar-visibility.service';
 
 export interface ProductReference {
   id: number;
@@ -47,6 +48,7 @@ export class CarSeatComponent implements AfterViewInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
+  private navbarVisibilityService = inject(NavbarVisibilityService);
 
   // ID oficial del producto Continental Plus Cyrus en el catálogo externo
   public readonly productId: number = 188;
@@ -149,6 +151,7 @@ export class CarSeatComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.isDestroyed = true;
+    this.navbarVisibilityService.setHidden(false);
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
@@ -175,6 +178,10 @@ export class CarSeatComponent implements AfterViewInit, OnDestroy {
     const scrolled = -rect.top;
     const raw = scrolled / maxScroll;
     this.targetProgress = Math.max(0, Math.min(1, raw));
+
+    // Ocultar navbar al llegar al nivel del componente Car Seat
+    const isAtCarSeatLevel = rect.top <= 100 && rect.bottom >= 60;
+    this.navbarVisibilityService.setHidden(isAtCarSeatLevel);
   }
 
   private onKeyDown(e: KeyboardEvent): void {

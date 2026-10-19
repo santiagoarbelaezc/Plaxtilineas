@@ -1,4 +1,4 @@
-<header class="main-header" [class.scrolled]="isScrolled" [class.chat-active]="isChatOpen">
+<header class="main-header" [class.scrolled]="isScrolled" [class.chat-active]="isChatOpen" [class.nav-hidden]="isNavbarHidden">
 
   <!-- ── Top Bar ── -->
   <div class="topbar-tw">
@@ -303,7 +303,7 @@
 </div>
 
 <!-- ── Mobile Bottom Nav (PWA) ── -->
-<nav class="mobile-bottom-nav" [class.dark-mode]="isChatOpen" [class.nav-hidden]="searchActive || isChatOpen" #bottomNav
+<nav class="mobile-bottom-nav" [class.dark-mode]="isChatOpen" [class.nav-hidden]="searchActive || isChatOpen || isNavbarHidden" #bottomNav
      (touchstart)="onTouchStart($event)"
      (touchmove)="onTouchMove($event)"
      (touchend)="onTouchEnd($event)"

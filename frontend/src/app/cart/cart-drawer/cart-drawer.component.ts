@@ -46,114 +46,105 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
     <!-- Panel Lateral -->
     @if (isOpen) {
-      <div class="fixed left-0 right-0 bottom-0 bg-black/30 z-40 backdrop-blur-sm top-[calc(var(--navbar-height)+40px)] transition-all duration-500 cursor-pointer hidden md:block" (click)="closeDrawer()"></div>
+      <div class="fixed inset-0 bg-black/45 z-[9998] backdrop-blur-sm transition-all duration-300 cursor-pointer hidden md:block" (click)="closeDrawer()"></div>
       
-      <div class="fixed right-0 bottom-0 w-[420px] max-w-[95vw] bg-white/95 backdrop-blur-md z-50 flex flex-col shadow-[-8px_0_40px_rgba(0,0,0,0.15)] border-l border-gray-100 rounded-l-[20px] top-[calc(var(--navbar-height)+40px)] transition-all duration-500 hidden md:flex">
+      <div class="fixed top-0 right-0 bottom-0 w-[440px] max-w-[95vw] bg-white z-[9999] flex flex-col shadow-[-12px_0_40px_rgba(0,0,0,0.15)] border-l border-zinc-200 transition-all duration-300 hidden md:flex font-['Inter_Tight',sans-serif]">
+        <!-- Línea Superior de Resplandor Esmeralda -->
+        <div class="h-[2px] w-full bg-gradient-to-r from-transparent via-[#16a34a] to-transparent"></div>
         
         <!-- Header -->
-        <div class="px-6 py-5 border-b border-gray-100/50 flex items-center justify-between">
-          <h3 class="font-bold text-[19px] text-gray-800 m-0 flex items-center gap-2.5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-800">
-              <circle cx="9" cy="21" r="1"></circle>
-              <circle cx="20" cy="21" r="1"></circle>
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-            </svg>
-            Mi Carrito ({{ totalCount() }})
-          </h3>
-          <button class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition-all duration-300 hover:rotate-90 border-none cursor-pointer" (click)="closeDrawer()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        <div class="px-6 py-5 border-b border-zinc-100 flex items-center justify-between bg-white">
+          <div class="flex flex-col">
+            <span class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#16a34a] flex items-center gap-1.5">
+              <span class="w-3.5 h-[2px] bg-[#16a34a] inline-block rounded"></span>
+              Plaxtilineas
+            </span>
+            <h3 class="font-extrabold text-[19px] text-zinc-900 m-0 tracking-tight flex items-center gap-2 mt-0.5">
+              Mi Carrito ({{ totalCount() }})
+            </h3>
+          </div>
+          <button class="w-9 h-9 rounded-full bg-zinc-100 text-zinc-500 hover:bg-zinc-900 hover:text-white flex items-center justify-center transition-all duration-200 border-none cursor-pointer" (click)="closeDrawer()" title="Cerrar carrito">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
         </div>
 
-        <div class="flex-1 overflow-y-auto px-4 py-2 flex flex-col gap-1 custom-scrollbar">
+        <div class="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-2 custom-scrollbar bg-white">
           
           @if (items().length === 0) {
-            <div class="flex flex-col items-center justify-center h-full py-12 text-center">
-              <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-300"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <div class="flex flex-col items-center justify-center h-full py-16 text-center">
+              <div class="w-20 h-20 bg-zinc-50 rounded-full flex items-center justify-center mb-4 border border-zinc-100 text-zinc-400">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
               </div>
-              <p class="text-gray-500 font-medium">Tu carrito está vacío</p>
-              <button (click)="closeDrawer()" class="mt-4 text-[#368c44] font-bold text-sm hover:underline cursor-pointer border-none bg-transparent">Continuar comprando</button>
+              <h4 class="text-zinc-900 font-bold text-[16px] m-0">Tu carrito está vacío</h4>
+              <p class="text-zinc-500 font-normal text-xs mt-1 max-w-[240px]">Agrega productos técnicos, lonas o empaques de nuestro catálogo.</p>
+              <button (click)="closeDrawer()" routerLink="/productos" class="mt-4 px-5 py-2.5 rounded-full bg-zinc-900 text-white font-bold text-xs uppercase tracking-wider hover:bg-[#16a34a] transition-colors cursor-pointer border-none">Explorar Catálogo</button>
             </div>
           } @else {
-            <!-- Encabezados de tabla -->
-            <div class="grid grid-cols-[2.5fr_1.2fr_1fr_0.6fr] items-center px-2 py-3 mb-2 font-semibold text-[12px] text-gray-500 uppercase tracking-wider bg-gray-50/80 rounded-lg">
-              <span class="text-left">Producto</span>
-              <span class="text-center">Cant.</span>
-              <span class="text-right">Subtotal</span>
-              <span class="text-center">Acc.</span>
-            </div>
-
             @for (item of items(); track item.id) {
-              <div class="grid grid-cols-[2.5fr_1.2fr_1fr_0.6fr] items-center p-3 border-b border-gray-50/50 transition-all duration-300 hover:bg-[#368c44]/5 hover:translate-x-1 rounded-xl cursor-default group">
-                <div class="flex flex-col justify-center pe-2">
-                  <span class="text-[14px] font-semibold text-gray-800 group-hover:text-[#368c44] transition-colors leading-tight">{{ item.producto.nombre }}</span>
-                  <span class="text-[11px] text-gray-400 mt-1">
-                    {{ item.variante?.nombre || item.producto.subcategoria || 'Genérico' }}
-                  </span>
-                  @if (item.producto.controlar_stock && item.producto.stock !== undefined) {
-                    <span class="text-[10px] text-orange-600 font-semibold mt-0.5">
-                      {{ item.producto.stock - item.cantidad }} disp.
-                    </span>
+              <div class="flex items-center gap-3 p-3.5 bg-white border border-zinc-200/80 rounded-2xl hover:border-[#16a34a]/40 hover:shadow-sm transition-all group">
+                <div class="w-16 h-16 bg-zinc-50 rounded-xl border border-zinc-100 flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
+                  @if (item.producto.imagen_url) {
+                    <img [src]="item.producto.imagen_url" [alt]="item.producto.nombre" class="w-full h-full object-contain">
+                  } @else {
+                    <svg class="text-zinc-300" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                   }
                 </div>
-                
-                <div class="flex items-center justify-center gap-2 bg-gray-50/80 p-1.5 rounded-lg border border-gray-100 group-hover:bg-white group-hover:border-[#368c44]/20 transition-all">
-                  <button 
-                    (click)="decreaseQuantity(item.id, item.cantidad)"
-                    class="w-7 h-7 flex items-center justify-center bg-white border border-gray-200 text-gray-600 rounded-md font-bold text-[15px] cursor-pointer hover:bg-[#368c44]/10 hover:text-[#368c44] hover:border-[#368c44]/30 transition-all">−</button>
-                  <span class="min-w-[14px] text-center text-[14px] font-bold text-gray-800">{{ item.cantidad }}</span>
-                  <button 
-                    (click)="increaseQuantity(item.id, item.cantidad)"
-                    [disabled]="isAtMaxStock(item)"
-                    [class.opacity-40]="isAtMaxStock(item)"
-                    [class.cursor-not-allowed]="isAtMaxStock(item)"
-                    class="w-7 h-7 flex items-center justify-center bg-white border border-gray-200 text-gray-600 rounded-md font-bold text-[15px] cursor-pointer hover:bg-[#368c44]/10 hover:text-[#368c44] hover:border-[#368c44]/30 transition-all">+</button>
+
+                <div class="flex-1 min-w-0">
+                  <h4 class="text-[13.5px] font-bold text-zinc-900 group-hover:text-[#16a34a] transition-colors truncate m-0">{{ item.producto.nombre }}</h4>
+                  <div class="flex items-center gap-1.5 text-[11px] text-zinc-500 mt-0.5">
+                    <span class="truncate">{{ item.variante?.nombre || item.producto.subcategoria || 'General' }}</span>
+                  </div>
+                  <div class="text-[14px] font-extrabold text-zinc-900 mt-1">
+                    {{ formatearPrecio(item.precioUnitario * item.cantidad) }}
+                  </div>
                 </div>
-                
-                <div class="text-[14.5px] font-bold text-gray-800 text-right group-hover:text-[#368c44] transition-colors">
-                  {{ formatearPrecio(item.precioUnitario * item.cantidad) }}
-                </div>
-                
-                <div class="flex items-center justify-center">
+
+                <div class="flex flex-col items-end gap-2">
                   <button 
                     (click)="removeItem(item.id)"
-                    class="w-9 h-9 flex items-center justify-center bg-red-50/50 text-red-500 border border-red-100 rounded-lg cursor-pointer hover:bg-red-100 hover:scale-110 shadow-sm transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    class="w-7 h-7 flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors border-none bg-transparent cursor-pointer"
+                    title="Eliminar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                   </button>
+
+                  <div class="flex items-center border border-zinc-200 rounded-lg overflow-hidden h-7 bg-zinc-50">
+                    <button 
+                      (click)="decreaseQuantity(item.id, item.cantidad)"
+                      class="w-6 h-full bg-white flex items-center justify-center text-zinc-700 hover:bg-[#16a34a] hover:text-white font-bold text-xs transition-colors border-none cursor-pointer">−</button>
+                    <span class="w-7 text-center text-xs font-bold text-zinc-900">{{ item.cantidad }}</span>
+                    <button 
+                      (click)="increaseQuantity(item.id, item.cantidad)"
+                      [disabled]="isAtMaxStock(item)"
+                      class="w-6 h-full bg-white flex items-center justify-center text-zinc-700 hover:bg-[#16a34a] hover:text-white font-bold text-xs transition-colors border-none cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed">+</button>
+                  </div>
                 </div>
               </div>
             }
           }
         </div>
 
-        <div class="border-t border-gray-100/50 px-5 py-5 mt-2">
-          
-          <div class="bg-gradient-to-r from-[#368c44]/5 to-transparent border border-[#368c44]/10 rounded-[14px] p-4 flex justify-between items-center mb-5">
-            <span class="text-[16px] font-bold text-gray-600">Total:</span>
-            <div class="flex items-center gap-1">
-              <span class="text-[19px] font-medium tracking-[0.01em] text-[#368c44]">{{ formatearPrecio(totalPrice()) }}</span>
-            </div>
+        <div class="border-t border-zinc-100 p-5 bg-white">
+          <div class="flex justify-between items-baseline mb-4">
+            <span class="text-xs font-extrabold uppercase tracking-wider text-zinc-500">Total a Pagar:</span>
+            <span class="text-2xl font-extrabold text-[#16a34a] tracking-tight">{{ formatearPrecio(totalPrice()) }}</span>
           </div>
 
           <button 
             [disabled]="items().length === 0"
             routerLink="/carrito"
             (click)="closeDrawer()"
-            class="w-full h-12 rounded-[14px] bg-gradient-to-br from-[#368c44] to-[#25d366] text-white text-[16px] font-bold flex items-center justify-center gap-2 hover:-translate-y-1 hover:shadow-[0_8px_25px_rgba(37,211,102,0.35)] transition-all cursor-pointer border-none shadow-[0_4px_15px_rgba(54,140,68,0.2)] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+            class="w-full h-12 rounded-full bg-zinc-950 hover:bg-[#16a34a] text-white text-[14px] font-bold uppercase tracking-wider flex items-center justify-center gap-2 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#16a34a]/25 transition-all cursor-pointer border-none disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
             Finalizar Pedido
           </button>
           
           @if (items().length > 0) {
-            <div class="flex gap-3 mt-3">
-              <button 
-                (click)="clearCart()"
-                class="flex-1 h-10 rounded-xl bg-white border border-red-200 text-red-600 text-[14px] font-semibold hover:bg-red-50 hover:-translate-y-0.5 hover:border-red-300 hover:shadow-[0_4px_15px_rgba(239,68,68,0.1)] transition-all cursor-pointer flex items-center justify-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
-                Vaciar carrito
-              </button>
-            </div>
+            <button 
+              (click)="clearCart()"
+              class="w-full mt-2 py-2 text-zinc-400 hover:text-red-500 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer border-none bg-transparent flex items-center justify-center gap-1.5">
+              Vaciar carrito
+            </button>
           }
         </div>
       </div>
@@ -216,10 +207,10 @@ export class CartDrawerComponent implements OnInit, OnDestroy {
       }
     });
 
-    // El panel flotante del social-buttons ahora maneja la apertura automática.
-    // El cart-drawer lateral ya no se abre automáticamente al añadir un producto.
-    this.drawerSub = this.cartService.isOpenDrawer.subscribe(open => {
-      this.isOpen = open;
+    // El panel flotante del social-buttons maneja la apertura del carrito.
+    // Desactivamos apertura redundante en cart-drawer.
+    this.drawerSub = this.cartService.isOpenDrawer.subscribe(_open => {
+      this.isOpen = false;
     });
 
     this.intervalId = setInterval(() => {

@@ -2,7 +2,7 @@ import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
 import { environment } from '../../enviroments/environment';
-import { CartItem } from '../models/cart.model';
+import { CartItem, CartItemDetalle } from '../models/cart.model';
 import { Producto } from '../models/producto.model';
 import { Variante } from '../models/variante.model';
 import Swal from 'sweetalert2';
@@ -11,6 +11,13 @@ import Swal from 'sweetalert2';
   providedIn: 'root'
 })
 export class CartService {
+  private static readonly STORAGE_KEY = 'plaxtilineas_cart';
+  /**
+   * Mientras el backend del carrito no exista, el carrito vive solo en el frontend.
+   * Ver docs/BACKEND_CARRITO.md para activar la sincronización.
+   */
+  private static readonly BACKEND_SYNC_ENABLED = false;
+
   private http = inject(HttpClient);
   private itemsSubject = new BehaviorSubject<CartItem[]>([]);
   items$ = this.itemsSubject.asObservable();
@@ -27,12 +34,44 @@ export class CartService {
   }
 
   private saveCart(items: CartItem[]) {
-    localStorage.setItem('plaxtilineas_cart', JSON.stringify(items));
+    items.forEach(item => item.detalle = this.construirDetalle(item));
+    try {
+      localStorage.setItem(CartService.STORAGE_KEY, JSON.stringify(items));
+    } catch (e) {
+      console.warn('[Carrito] No se pudo persistir en localStorage', e);
+    }
     this.itemsSubject.next([...items]);
     this.syncCartWithBackend(items);
   }
 
+  /** Convierte el producto del catálogo (+ variante) en el detalle de la línea del carrito */
+  private construirDetalle(item: CartItem): CartItemDetalle {
+    const p = item.producto;
+    const v = item.variante;
+    const controla = p.controlar_stock === true || p.controlar_stock === 1;
+    return {
+      producto_id: p.id,
+      variante_id: v?.id ?? null,
+      nombre: p.nombre,
+      variante_nombre: v?.nombre ?? null,
+      sku: p.sku ?? null,
+      slug: p.slug ?? null,
+      categoria: p.categoria ?? null,
+      subcategoria: p.subcategoria ?? null,
+      material: p.material ?? null,
+      marca: p.marca ?? null,
+      imagen_url: p.imagen_url ?? null,
+      unidad: p.unidad || 'unidad',
+      precio_unitario: item.precioUnitario,
+      cantidad: item.cantidad,
+      minimo_compra: p.minimo_compra || 1,
+      stock_disponible: controla && p.stock !== undefined ? p.stock : null,
+      subtotal: item.precioUnitario * item.cantidad
+    };
+  }
+
   private syncCartWithBackend(items: CartItem[]) {
+    if (!CartService.BACKEND_SYNC_ENABLED) return;
     if (typeof localStorage === 'undefined') return;
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -57,9 +96,15 @@ export class CartService {
   }
 
   private loadCart() {
-    const saved = localStorage.getItem('plaxtilineas_cart');
-    if (saved) {
-      this.itemsSubject.next(JSON.parse(saved));
+    if (typeof localStorage === 'undefined') return;
+    try {
+      const saved = localStorage.getItem(CartService.STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) this.itemsSubject.next(parsed);
+      }
+    } catch {
+      localStorage.removeItem(CartService.STORAGE_KEY);
     }
   }
 
@@ -68,24 +113,10 @@ export class CartService {
   }
 
   addToCart(producto: Producto, cantidad: number = 1, variante?: Variante): boolean {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      Swal.fire({
-        title: 'Acceso Requerido',
-        text: 'Debes iniciar sesión o registrarte como usuario para añadir productos al carrito.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Iniciar Sesión',
-        cancelButtonText: 'Cancelar',
-        confirmButtonColor: '#368C44',
-        cancelButtonColor: '#6c757d'
-      }).then(result => {
-        if (result.isConfirmed) {
-          window.location.href = '/login?returnUrl=' + encodeURIComponent(window.location.pathname);
-        }
-      });
-      return false;
-    }
+    // Normalizar tipos que pueden llegar como string desde el catálogo/API
+    producto = { ...producto, precio: Number(producto.precio) || 0 };
+    if (variante) variante = { ...variante, precio: Number(variante.precio) || 0 };
+    cantidad = Math.max(1, Math.floor(Number(cantidad) || 1));
 
     const items = this.itemsSubject.getValue();
     const id = this.generateItemId(producto.id, variante?.id);
@@ -127,7 +158,8 @@ export class CartService {
         sku: producto.sku,
         imagen_url: producto.imagen_url,
         categoria: producto.categoria,
-        unidad_medida: producto.unidad
+        unidad_medida: producto.unidad,
+        agregadoEn: new Date().toISOString()
       };
       items.push(nuevoItem);
     }

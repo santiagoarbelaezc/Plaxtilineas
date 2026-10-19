@@ -26,6 +26,7 @@ export class SocialButtonsComponent implements OnInit, OnDestroy {
   hoveredButton: string | null = null;
   isChatOpen = false;
   isCartOpen = false;
+  showFloatingWhileCartOpen = false;
 
   // Señales reactivas del carrito
   items = toSignal(this.cartService.items$, { initialValue: [] });
@@ -64,12 +65,14 @@ export class SocialButtonsComponent implements OnInit, OnDestroy {
     this.drawerSubscription = this.cartService.isOpenDrawer.subscribe(open => {
       if (open) {
         this.isCartOpen = true;
+        this.showFloatingWhileCartOpen = false;
         // Cerrar el asistente si estaba abierto
         if (this.isChatOpen) {
           this.chatService.toggleChat();
         }
       } else {
         this.isCartOpen = false;
+        this.showFloatingWhileCartOpen = false;
       }
     });
 
@@ -93,13 +96,28 @@ export class SocialButtonsComponent implements OnInit, OnDestroy {
 
   toggleCartPanel(): void {
     this.isCartOpen = !this.isCartOpen;
+    this.showFloatingWhileCartOpen = false;
     if (this.isCartOpen && this.isChatOpen) {
       this.chatService.toggleChat(); // Cierra el asistente si abre el carrito
+    }
+    if (!this.isCartOpen) {
+      this.cartService.closeDrawer();
+    }
+  }
+
+  toggleFloatingButtonsWhileCartOpen(): void {
+    this.showFloatingWhileCartOpen = !this.showFloatingWhileCartOpen;
+  }
+
+  clearCart(): void {
+    if (confirm('¿Estás seguro de que deseas vaciar el carrito?')) {
+      this.cartService.clearCart();
     }
   }
 
   closeCartPanel(): void {
     this.isCartOpen = false;
+    this.showFloatingWhileCartOpen = false;
     this.cartService.closeDrawer(); // Sincroniza el estado con el servicio
   }
 
