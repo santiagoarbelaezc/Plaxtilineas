@@ -383,27 +383,18 @@
 
 .bottom-frame-badge {
   position: absolute;
-  bottom: 16px;
-  left: 16px;
+  bottom: 18px;
+  left: 18px;
   right: auto;
-  background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
-  padding: 8px 14px;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  padding: 12px 20px;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-}
-
-.badge-status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #4ade80;
-  flex-shrink: 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
 }
 
 .badge-text-group {
@@ -412,20 +403,21 @@
 }
 
 .badge-title {
-  font-size: 0.75rem;
+  font-size: 1.05rem;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
   color: #ffffff;
   text-transform: uppercase;
-  line-height: 1.15;
+  line-height: 1.2;
 }
 
 .badge-subtitle {
-  font-size: 0.68rem;
+  font-size: 0.88rem;
   font-weight: 400;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.65);
-  margin-top: 2px;
+  letter-spacing: 0.015em;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 3px;
+  line-height: 1.25;
 }
 
 /* ── Contenido Editorial de la Sección ── */

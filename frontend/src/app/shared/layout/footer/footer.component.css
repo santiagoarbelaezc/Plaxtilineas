@@ -1,9 +1,9 @@
 /* ═══════════════════════════════════════════════════════════════════
-   FOOTER — MINIMALISTA & MODERNO (FONDO NEGRO PURO #000000)
-   Fondo: #000000 (negro azabache puro)
+   FOOTER — MINIMALISTA & MODERNO (FONDO BLANCO PURO #FFFFFF)
+   Fondo: #ffffff (blanco puro)
    Tipografía: 'Inter Tight', sans-serif
-   Acentos: #4ade80 / #22c55e (línea esmeralda y flechas)
-   Texto: #ffffff (títulos/destacados), #cbd5e1 (enlaces), #94a3b8 (secundario)
+   Acentos: #16a34a / #15803d (verde esmeralda)
+   Texto: #0f172a (títulos/marca), #334155 (enlaces), #64748b (secundario)
    ═══════════════════════════════════════════════════════════════════ */
 
 :host {
@@ -12,13 +12,13 @@
 }
 
 .footer-root {
-  background-color: #000000;
-  color: #94a3b8;
+  background-color: #ffffff;
+  color: #64748b;
   font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   position: relative;
   width: 100%;
   overflow: hidden;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid #e2e8f0;
 }
 
 /* ── Línea Superior de Acento Esmeralda Sutil ── */
@@ -27,12 +27,12 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
+  height: 2px;
   background: linear-gradient(90deg, 
     transparent 0%, 
-    rgba(74, 222, 128, 0.25) 20%, 
-    #4ade80 50%, 
-    rgba(74, 222, 128, 0.25) 80%, 
+    rgba(22, 163, 74, 0.25) 20%, 
+    #16a34a 50%, 
+    rgba(22, 163, 74, 0.25) 80%, 
     transparent 100%
   );
   z-index: 2;
@@ -42,7 +42,7 @@
 .footer-container {
   max-width: 1460px;
   margin: 0 auto;
-  padding: 96px 32px 48px;
+  padding: 80px 32px 40px;
   box-sizing: border-box;
   position: relative;
   z-index: 1;
@@ -80,7 +80,7 @@
 }
 
 .brand-logo-img {
-  height: 40px;
+  height: 42px;
   width: auto;
   display: block;
 }
@@ -88,7 +88,7 @@
 .brand-desc {
   font-size: 0.92rem;
   line-height: 1.65;
-  color: #94a3b8;
+  color: #475569;
   margin: 0 0 24px 0;
   font-weight: 400;
 }
@@ -109,9 +109,9 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #cbd5e1;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #475569;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -120,9 +120,9 @@
 }
 
 .social-chip:hover {
-  background: rgba(74, 222, 128, 0.15);
-  border-color: #4ade80;
-  color: #4ade80;
+  background: #f0fdf4;
+  border-color: #16a34a;
+  color: #16a34a;
   transform: translateY(-2px);
 }
 
@@ -134,8 +134,8 @@
   align-items: center;
   gap: 10px;
   font-size: 0.74rem;
-  font-weight: 700;
-  color: #4ade80;
+  font-weight: 800;
+  color: #16a34a;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   margin: 0 0 24px 0;
@@ -143,8 +143,8 @@
 
 .kicker-line {
   width: 20px;
-  height: 1.5px;
-  background: #4ade80;
+  height: 2px;
+  background: #16a34a;
   display: inline-block;
   border-radius: 2px;
 }
@@ -165,7 +165,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #cbd5e1;
+  color: #334155;
   text-decoration: none;
   font-size: 0.88rem;
   font-weight: 500;
@@ -174,29 +174,29 @@
 }
 
 .nav-arrow {
-  color: #4ade80;
+  color: #16a34a;
   font-size: 1.15rem;
   line-height: 1;
   transition: transform 0.2s ease;
 }
 
 .footer-nav-link:hover {
-  color: #ffffff;
+  color: #0f172a;
   transform: translateX(4px);
 }
 
 .footer-nav-link:hover .nav-arrow {
   transform: translateX(2px);
-  color: #86efac;
+  color: #15803d;
 }
 
 .highlight-pqr {
-  color: #4ade80;
+  color: #16a34a;
   font-weight: 600;
 }
 
 .highlight-pqr:hover {
-  color: #86efac;
+  color: #15803d;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -218,7 +218,7 @@
 }
 
 .contact-icon {
-  color: #4ade80;
+  color: #16a34a;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -232,18 +232,18 @@
 
 .contact-val {
   font-size: 0.88rem;
-  color: #cbd5e1;
+  color: #334155;
   font-weight: 500;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .contact-val.hover-link:hover {
-  color: #ffffff;
+  color: #0f172a;
 }
 
 .contact-val.text-dim {
-  color: #94a3b8;
+  color: #64748b;
   font-size: 0.84rem;
 }
 
@@ -251,9 +251,9 @@
    SUB-FOOTER INFERIOR (MINIMALISTA)
    ═══════════════════════════════════════════════════════════════════ */
 .footer-bottom-bar {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 34px;
-  margin-top: 64px;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 30px;
+  margin-top: 56px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -262,14 +262,14 @@
 
 .copy-text {
   font-size: 0.82rem;
-  color: #94a3b8;
+  color: #64748b;
   margin: 0;
   line-height: 1.5;
   letter-spacing: 0.02em;
 }
 
 .copy-text strong {
-  color: #ffffff;
+  color: #0f172a;
   font-weight: 700;
 }
 
@@ -289,23 +289,23 @@
 
 @media (max-width: 768px) {
   .footer-container {
-    padding: 70px 24px 40px;
+    padding: 60px 24px 36px;
   }
 
   .footer-bottom-bar {
-    margin-top: 48px;
+    margin-top: 40px;
     padding-top: 24px;
   }
 }
 
 @media (max-width: 640px) {
   .footer-container {
-    padding: 56px 20px 32px;
+    padding: 48px 20px 28px;
   }
 
   .footer-grid {
     grid-template-columns: 1fr;
-    gap: 36px;
+    gap: 32px;
   }
 
   .copy-text {
