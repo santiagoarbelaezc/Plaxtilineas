@@ -1,7 +1,7 @@
 <section id="nosotros" class="nosotros-cinematic-section" aria-label="Sobre Nosotros - Plaxtilineas">
 
   <!-- ═══════════════════════════════════════════════════════════
-       CANVAS 1: HERO & LÍNEA DE TIEMPO DELGADA, SUTIL Y ALINEADA
+       CANVAS 1: HERO & LÍNEA DE TIEMPO CON PRODUCTOS REALES
        ═══════════════════════════════════════════════════════════ -->
   <div class="cinematic-block timeline-block">
     
@@ -11,14 +11,18 @@
 
     <div class="cinematic-content">
       
-      <!-- Contexto Alejado del Navbar con Tipografía Minimalista Blanca -->
+      <!-- Contexto con Tipografía Minimalista Blanca -->
       <div class="minimal-intro">
+        <div class="intro-eyebrow-wrap">
+          <span class="intro-eyebrow-line"></span>
+          <span class="intro-eyebrow">TRAYECTORIA & COMPROMISO REGIONAL</span>
+        </div>
         <h1 class="cinematic-title">
           MÁS DE 20 AÑOS IMPULSANDO EL EJE CAFETERO
         </h1>
         
         <p class="cinematic-lead">
-          Plásticos técnicos, espumas industriales y empaques en Armenia.
+          Plásticos técnicos, espumas industriales, mallas agrícolas y empaques con atención directa y corte exacto en Armenia.
         </p>
       </div>
 
@@ -27,11 +31,11 @@
         
         <div class="timeline-header">
           <span class="timeline-eyebrow">EVOLUCIÓN CONSTANTE</span>
-          <h2 class="timeline-heading">NUESTRA TRAYECTORIA</h2>
+          <h2 class="timeline-heading">NUESTRA TRAYECTORIA Y PRODUCTOS</h2>
         </div>
 
         <div class="timeline-track-wrapper">
-          <!-- Espina Vertical Fina (1px, Sin Brillo) -->
+          <!-- Espina Vertical Fina (1px, Sin Brillo Estridente) -->
           <div class="timeline-spine-glow"></div>
 
           <!-- Items de la Línea de Tiempo -->
@@ -48,18 +52,36 @@
             <!-- Conector Horizontal Delgado al Nodo -->
             <div class="timeline-connector"></div>
 
-            <!-- Nodo Central Minimalista (Exactamente Centrado en el Eje de 1px) -->
+            <!-- Nodo Central Minimalista -->
             <div class="timeline-center-node">
               <div class="node-glow-outer">
                 <span class="node-glow-inner"></span>
               </div>
             </div>
 
-            <!-- Tarjeta Glassmorphism Esbelta y Sutil -->
+            <!-- Tarjeta Glassmorphism Esbelta con Imagen Real de Producto -->
             <div class="glass-milestone-card">
-              <span class="milestone-year-big">{{ hito.year }}</span>
-              <h3 class="milestone-title-big">{{ hito.title }}</h3>
-              <p class="milestone-subtitle-clean">{{ hito.subtitle }}</p>
+              <!-- Visual de Producto Real del Catálogo -->
+              <div class="milestone-media-container">
+                <img 
+                  [src]="hito.image" 
+                  [alt]="hito.title"
+                  class="milestone-product-image"
+                  loading="lazy"
+                />
+                <div class="milestone-media-overlay"></div>
+                <span class="milestone-category-tag">{{ hito.category }}</span>
+                <span class="milestone-year-pill">{{ hito.year }}</span>
+              </div>
+
+              <!-- Contenido de Texto del Hito -->
+              <div class="milestone-body">
+                <div class="milestone-badge-row">
+                  <span class="milestone-pill-badge">{{ hito.badge }}</span>
+                </div>
+                <h3 class="milestone-title-big">{{ hito.title }}</h3>
+                <p class="milestone-subtitle-clean">{{ hito.subtitle }}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -71,7 +93,7 @@
 
 
   <!-- ═══════════════════════════════════════════════════════════
-       CANVAS 2: SEGUNDO BANNER (FONDO HOME-CHATGPT + FOTO DE MATEO)
+       CANVAS 2: SEGUNDO BANNER — MATEO MORENO & PLAXTILINEAS
        ═══════════════════════════════════════════════════════════ -->
   <div class="cinematic-block banner-block">
     
@@ -82,27 +104,33 @@
     <div class="cinematic-content">
       <div class="banner-minimal-wrap">
         
-        <!-- Foto de Mateo a la Izquierda -->
+        <!-- Foto de Mateo a la Izquierda con Tarjeta de Fundador -->
         <div class="bottom-visual-col">
           <div class="bottom-image-frame mateo-frame">
             <img 
               src="assets/images/identidad/mateo.jpeg" 
-              alt="Mateo Moreno - Plaxtilineas" 
+              alt="Mateo Moreno - Fundador y Dueño de Plaxtilineas" 
               class="bottom-featured-img"
               loading="lazy"
             />
             <div class="bottom-frame-badge">
-              <span class="badge-subtle-dot"></span>
+              <span class="badge-status-dot" aria-hidden="true"></span>
               <div class="badge-text-group">
                 <span class="badge-title">MATEO MORENO</span>
-                <span class="badge-subtitle">Plaxtilineas</span>
+                <span class="badge-subtitle">Fundador & Dueño · Plaxtilineas</span>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Editorial de Gran Tamaño en Blanco Puro -->
+        <!-- Editorial de Gran Tamaño con Información del Fundador -->
         <div class="banner-editorial">
+          
+          <div class="founder-identity-kicker">
+            <span class="founder-dot"></span>
+            <span class="founder-label">LIDERAZGO & ATENCIÓN DIRECTA</span>
+          </div>
+
           <h2 class="banner-minimal-title">
             SOLUCIONES DIRECTAS Y A TU MEDIDA
           </h2>
@@ -111,6 +139,56 @@
             Atención personalizada, corte exacto y despacho inmediato para fincas, obras y talleres de todo el Eje Cafetero.
           </p>
 
+          <!-- Tarjeta Compacta con Información de Mateo -->
+          <div class="founder-details-box">
+            <div class="founder-quote">
+              <p class="quote-text">
+                "En Plaxtilineas garantizamos especificación técnica precisa, corte exacto y el metraje justo que cada proyecto necesita, sin intermediarios ni demoras."
+              </p>
+              <div class="quote-author-row">
+                <span class="quote-author">Mateo Moreno</span>
+                <span class="quote-role">Fundador & Propietario</span>
+              </div>
+            </div>
+
+            <!-- Ejes Clave de Valor / Pilares Minimalistas -->
+            <div class="founder-pillars-grid">
+              <div class="founder-pillar-pill">
+                <svg class="pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                <div class="pillar-text">
+                  <strong>Corte al Milímetro</strong>
+                  <span>Sin sobrantes ni desperdicios</span>
+                </div>
+              </div>
+
+              <div class="founder-pillar-pill">
+                <svg class="pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+                <div class="pillar-text">
+                  <strong>Despacho Ágil</strong>
+                  <span>Envíos directos en el Eje Cafetero</span>
+                </div>
+              </div>
+
+              <div class="founder-pillar-pill">
+                <svg class="pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+                <div class="pillar-text">
+                  <strong>Trato Personalizado</strong>
+                  <span>Asesoría directa en punto físico</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón de Acción Principal y Secundario -->
           <div class="banner-action-wrap">
             <a routerLink="/productos" class="cta-minimal-btn">
               <span>EXPLORAR CATÁLOGO</span>
@@ -119,7 +197,19 @@
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
             </a>
+
+            <a 
+              href="https://wa.me/573105423854?text=Hola%20Mateo,%20deseo%20asesor%C3%ADa%20personalizada%20en%20materiales%20de%20Plaxtilineas"
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="cta-secondary-contact">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+              </svg>
+              <span>CONTACTAR A MATEO</span>
+            </a>
           </div>
+
         </div>
 
       </div>

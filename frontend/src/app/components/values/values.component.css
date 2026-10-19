@@ -1,10 +1,9 @@
 /* ═══════════════════════════════════════════════════════════════════
-   SOBRE NOSOTROS — CINEMATIC MONOCHROME WHITE (SLENDER & SUBTLE)
-   - Título alejado del Navbar fijo (padding superior 230px)
-   - Línea de tiempo ultra delgada (1px), sin brillos estridentes
-   - Nodos matemáticamente alineados al 50% con conector horizontal
-   - Tarjetas esbeltas, tipografía blanca y ligera
-   - Fondo estático home-chatgpt.png + Foto de Mateo a la izquierda
+   SOBRE NOSOTROS — CINEMATIC MINIMALIST & SHOWCASE DE PRODUCTOS
+   - Espaciado amplio para respirar con el Navbar fijo
+   - Línea de tiempo precisa (1px) con imágenes de productos reales
+   - Tarjetas glassmorphism con miniaturas de catálogo y tags
+   - Sección editorial de Mateo Moreno (Fundador & Dueño)
    ═══════════════════════════════════════════════════════════════════ */
 
 :host {
@@ -16,7 +15,7 @@
   width: 100%;
   margin: 0;
   padding: 0;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: #ffffff;
   overflow: hidden;
   background-color: #000000;
@@ -36,14 +35,13 @@
   box-sizing: border-box;
 }
 
-/* Título alejado del Navbar fijo de 110px para dar gran respiro */
 .timeline-block {
-  padding: 230px 24px 120px 24px;
+  padding: 210px 24px 120px 24px;
 }
 
 .banner-block {
   padding: 120px 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* ── Capas de Fondo Estáticas (Fixed) ── */
@@ -62,27 +60,27 @@
 
 .hero-bg {
   background-image: url('/assets/images/hero/hero-chatgpt.png');
-  filter: brightness(0.38) contrast(1.18) saturate(1.05);
+  filter: brightness(0.35) contrast(1.18) saturate(1.05);
 }
 
 .banner-bg {
   background-image: url('/assets/images/hero/home-chatgpt.png');
-  filter: brightness(0.35) contrast(1.2) saturate(1.05);
+  filter: brightness(0.32) contrast(1.2) saturate(1.05);
 }
 
-/* ── Capa de Oscurecimiento Sutil y Profunda ── */
+/* ── Capa de Oscurecimiento ── */
 .dark-overlay-layer {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 50% 30%, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.9) 100%);
+  background: radial-gradient(circle at 50% 25%, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.94) 100%);
   z-index: 2;
   pointer-events: none;
 }
 
 .dark-overlay-layer.subtle-dark {
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0.9) 100%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.96) 100%);
 }
 
 /* ── Contenedor de Contenido ── */
@@ -95,54 +93,76 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
-   1. INTRODUCCIÓN (ALEJADA DEL NAVBAR)
+   1. INTRODUCCIÓN HERO
    ═══════════════════════════════════════════════════════════ */
 .minimal-intro {
   text-align: center;
   max-width: 980px;
-  margin: 0 auto 80px auto;
+  margin: 0 auto 70px auto;
+}
+
+.intro-eyebrow-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.intro-eyebrow-line {
+  width: 28px;
+  height: 1.5px;
+  background: #4ade80;
+  border-radius: 2px;
+}
+
+.intro-eyebrow {
+  font-size: 0.76rem;
+  font-weight: 750;
+  letter-spacing: 0.2em;
+  color: #4ade80;
+  text-transform: uppercase;
 }
 
 .cinematic-title {
-  font-size: clamp(2.5rem, 5vw, 4.2rem);
+  font-size: clamp(2.3rem, 4.6vw, 3.9rem);
   font-weight: 900;
   color: #ffffff;
   text-transform: uppercase;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  margin: 0 0 22px 0;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+  margin: 0 0 18px 0;
   text-shadow: 0 4px 25px rgba(0, 0, 0, 0.95);
 }
 
 .cinematic-lead {
-  font-size: clamp(1.15rem, 1.9vw, 1.45rem);
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.88);
+  font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+  font-weight: 350;
+  color: rgba(255, 255, 255, 0.86);
   line-height: 1.6;
-  max-width: 800px;
+  max-width: 820px;
   margin: 0 auto;
   letter-spacing: 0.01em;
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
 }
 
 /* ═══════════════════════════════════════════════════════════
-   2. LÍNEA DE TIEMPO DELGADA, SUTIL Y ALINEADA (SIN BRILLO)
+   2. LÍNEA DE TIEMPO CON IMÁGENES REALES DE PRODUCTOS
    ═══════════════════════════════════════════════════════════ */
 .timeline-interactive-container {
   position: relative;
-  max-width: 1050px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
 .timeline-header {
   text-align: center;
-  margin-bottom: 55px;
+  margin-bottom: 50px;
 }
 
 .timeline-eyebrow {
   display: block;
   font-size: 0.72rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.22em;
   color: rgba(255, 255, 255, 0.5);
   text-transform: uppercase;
@@ -150,9 +170,9 @@
 }
 
 .timeline-heading {
-  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
-  font-weight: 300;
-  letter-spacing: 0.16em;
+  font-size: clamp(1.4rem, 2.4vw, 1.95rem);
+  font-weight: 400;
+  letter-spacing: 0.14em;
   color: #ffffff;
   text-transform: uppercase;
   margin: 0;
@@ -164,14 +184,14 @@
   box-sizing: border-box;
 }
 
-/* Espina Vertical Continua Fina (1px, Sin Brillo Estridente) */
+/* Espina Vertical Continua Fina (1px) */
 .timeline-spine-glow {
   position: absolute;
-  top: 10px;
-  bottom: 10px;
+  top: 15px;
+  bottom: 15px;
   left: 50%;
   width: 1px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.18) 50%, rgba(255, 255, 255, 0.08) 100%);
+  background: linear-gradient(180deg, rgba(74, 222, 128, 0.45) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.08) 100%);
   transform: translateX(-50%);
   box-shadow: none;
   z-index: 2;
@@ -183,7 +203,7 @@
   width: 50%;
   box-sizing: border-box;
   cursor: pointer;
-  margin-bottom: 24px;
+  margin-bottom: 36px;
 }
 
 .timeline-glass-item:last-child {
@@ -192,22 +212,20 @@
 
 .timeline-glass-item.item-left {
   left: 0;
-  text-align: right;
   padding-right: 56px;
 }
 
 .timeline-glass-item.item-right {
   left: 50%;
-  text-align: left;
   padding-left: 56px;
 }
 
-/* ── Conectores Horizontales Delgados (1px) ── */
+/* ── Conectores Horizontales (1px) ── */
 .timeline-connector {
   position: absolute;
-  top: 36px;
+  top: 48px;
   height: 1px;
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.16);
   pointer-events: none;
   z-index: 3;
   transition: background 0.25s ease;
@@ -225,15 +243,15 @@
 
 .timeline-glass-item:hover .timeline-connector,
 .timeline-glass-item.is-active .timeline-connector {
-  background: rgba(255, 255, 255, 0.4);
+  background: #4ade80;
 }
 
-/* ── Nodos Centrales Minimalistas (Alineación Matemática Exacta al 50%) ── */
+/* ── Nodos Centrales Minimalistas ── */
 .timeline-center-node {
   position: absolute;
-  top: 30px;
-  width: 12px;
-  height: 12px;
+  top: 42px;
+  width: 14px;
+  height: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -252,15 +270,14 @@
 }
 
 .node-glow-outer {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: #000000;
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: none; /* Cero resplandor/brillo */
   transition: all 0.25s ease;
 }
 
@@ -269,65 +286,145 @@
   height: 4px;
   border-radius: 50%;
   background: #ffffff;
+  transition: background 0.25s ease;
 }
 
 .timeline-glass-item:hover .node-glow-outer,
 .timeline-glass-item.is-active .node-glow-outer {
-  border-color: #ffffff;
-  transform: scale(1.25);
+  border-color: #4ade80;
+  transform: scale(1.3);
 }
 
-/* ── Tarjeta Glassmorphism Esbelta y Sutil ── */
+.timeline-glass-item:hover .node-glow-inner,
+.timeline-glass-item.is-active .node-glow-inner {
+  background: #4ade80;
+}
+
+/* ── Tarjeta Glassmorphism con Imagen de Producto ── */
 .glass-milestone-card {
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 12px;
-  padding: 18px 24px;
-  box-shadow: none;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
+  overflow: hidden;
+  text-align: left;
 }
 
 .timeline-glass-item:hover .glass-milestone-card,
 .timeline-glass-item.is-active .glass-milestone-card {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.25);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  background: rgba(22, 34, 52, 0.65);
+  border-color: rgba(74, 222, 128, 0.35);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55), 0 0 20px rgba(74, 222, 128, 0.08);
 }
 
-.milestone-year-big {
+/* ── Contenedor de Imagen de Producto ── */
+.milestone-media-container {
+  position: relative;
+  width: 100%;
+  height: 150px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #031a13;
+  margin-bottom: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.milestone-product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
-  font-size: clamp(1.75rem, 2.6vw, 2.25rem);
-  font-weight: 300;
-  letter-spacing: 0.06em;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.timeline-glass-item:hover .milestone-product-image,
+.timeline-glass-item.is-active .milestone-product-image {
+  transform: scale(1.05);
+}
+
+.milestone-media-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.6) 100%);
+  pointer-events: none;
+}
+
+.milestone-category-tag {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  font-size: 0.68rem;
+  font-weight: 750;
+  color: #4ade80;
+  background: rgba(4, 28, 20, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 4px 9px;
+  border-radius: 6px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid rgba(74, 222, 128, 0.28);
+}
+
+.milestone-year-pill {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 0.74rem;
+  font-weight: 850;
   color: #ffffff;
-  line-height: 1;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  letter-spacing: 0.04em;
+}
+
+/* ── Cuerpo del Hito ── */
+.milestone-body {
+  padding: 4px 2px 2px 2px;
+}
+
+.milestone-badge-row {
   margin-bottom: 6px;
 }
 
+.milestone-pill-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .milestone-title-big {
-  font-size: clamp(1.1rem, 1.7vw, 1.38rem);
-  font-weight: 600;
+  font-size: 1.15rem;
+  font-weight: 750;
   letter-spacing: -0.01em;
   color: #ffffff;
-  margin: 0 0 4px 0;
+  margin: 0 0 6px 0;
   line-height: 1.25;
 }
 
 .milestone-subtitle-clean {
-  font-size: 0.88rem;
-  font-weight: 300;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.65);
-  line-height: 1.4;
+  font-size: 0.86rem;
+  font-weight: 350;
+  letter-spacing: 0.01em;
+  color: rgba(226, 232, 240, 0.82);
+  line-height: 1.5;
   margin: 0;
 }
 
 /* ═══════════════════════════════════════════════════════════
-   3. SEGUNDO CANVAS: FONDO HOME-CHATGPT + MATEO A LA IZQUIERDA
+   3. SEGUNDO CANVAS: MATEO MORENO & PLAXTILINEAS
    ═══════════════════════════════════════════════════════════ */
 .banner-minimal-wrap {
   display: grid;
@@ -336,7 +433,7 @@
   align-items: center;
 }
 
-/* ── Marco de Retrato de Mateo ── */
+/* ── Retrato Editorial de Mateo ── */
 .bottom-visual-col {
   display: flex;
   justify-content: center;
@@ -347,11 +444,11 @@
   position: relative;
   width: 100%;
   max-width: 440px;
-  height: 520px;
-  border-radius: 18px;
+  height: 540px;
+  border-radius: 20px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
   background: #000000;
 }
 
@@ -359,7 +456,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: center 15%;
   display: block;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -370,26 +467,39 @@
 
 .bottom-frame-badge {
   position: absolute;
-  bottom: 16px;
-  left: 16px;
-  right: 16px;
-  background: rgba(0, 0, 0, 0.82);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
-  padding: 10px 16px;
+  bottom: 18px;
+  left: 18px;
+  right: 18px;
+  background: rgba(4, 20, 15, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(74, 222, 128, 0.22);
+  border-radius: 14px;
+  padding: 12px 18px;
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.badge-subtle-dot {
-  width: 6px;
-  height: 6px;
+.badge-status-dot {
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: #ffffff;
+  background: #22c55e;
   flex-shrink: 0;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.85);
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.7;
+  }
 }
 
 .badge-text-group {
@@ -398,8 +508,8 @@
 }
 
 .badge-title {
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: 0.82rem;
+  font-weight: 850;
   letter-spacing: 0.08em;
   color: #ffffff;
   text-transform: uppercase;
@@ -407,61 +517,212 @@
 }
 
 .badge-subtitle {
-  font-size: 0.68rem;
-  font-weight: 300;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  color: #4ade80;
+  margin-top: 2px;
 }
 
-/* ── Contenido Editorial ── */
+/* ── Contenido Editorial de la Sección ── */
 .banner-editorial {
   display: flex;
   flex-direction: column;
 }
 
+.founder-identity-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.founder-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.7);
+}
+
+.founder-label {
+  font-size: 0.75rem;
+  font-weight: 750;
+  color: #4ade80;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
 .banner-minimal-title {
-  font-size: clamp(2.4rem, 4.6vw, 3.85rem);
+  font-size: clamp(2.3rem, 4.4vw, 3.8rem);
   font-weight: 900;
   color: #ffffff;
   text-transform: uppercase;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   line-height: 1.12;
-  margin: 0 0 20px 0;
+  margin: 0 0 16px 0;
   text-shadow: 0 4px 25px rgba(0, 0, 0, 0.95);
 }
 
 .banner-minimal-desc {
-  font-size: clamp(1.15rem, 1.9vw, 1.42rem);
-  font-weight: 300;
+  font-size: clamp(1.08rem, 1.8vw, 1.35rem);
+  font-weight: 350;
   color: rgba(255, 255, 255, 0.9);
   line-height: 1.6;
-  margin: 0 0 36px 0;
+  margin: 0 0 28px 0;
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+}
+
+/* ── Tarjeta con Información de Mateo ── */
+.founder-details-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 22px 24px;
+  margin-bottom: 32px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.founder-quote {
+  margin-bottom: 20px;
+  border-left: 2px solid #22c55e;
+  padding-left: 16px;
+}
+
+.quote-text {
+  font-size: 0.96rem;
+  font-style: italic;
+  color: #e2e8f0;
+  line-height: 1.6;
+  margin: 0 0 8px 0;
+  font-weight: 350;
+}
+
+.quote-author-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quote-author {
+  font-size: 0.82rem;
+  font-weight: 750;
+  color: #ffffff;
+}
+
+.quote-role {
+  font-size: 0.74rem;
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+/* Ejes / Pilares Minimalistas */
+.founder-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.founder-pillar-pill {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 10px 12px;
+  transition: all 0.25s ease;
+}
+
+.founder-pillar-pill:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(74, 222, 128, 0.25);
+  transform: translateY(-1px);
+}
+
+.pillar-icon {
+  width: 18px;
+  height: 18px;
+  color: #4ade80;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.pillar-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.pillar-text strong {
+  font-size: 0.78rem;
+  font-weight: 750;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.pillar-text span {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  line-height: 1.25;
+  margin-top: 2px;
+}
+
+/* ── Botones de Acción ── */
+.banner-action-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .cta-minimal-btn {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  background: transparent;
-  color: #ffffff;
+  gap: 10px;
+  background: #ffffff;
+  color: #05241b;
   border: 1.5px solid #ffffff;
-  padding: 16px 36px;
+  padding: 15px 34px;
   border-radius: 12px;
-  font-size: 0.88rem;
-  font-weight: 800;
+  font-size: 0.86rem;
+  font-weight: 850;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   text-decoration: none;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  width: fit-content;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
 }
 
 .cta-minimal-btn:hover {
-  background: #ffffff;
-  color: #000000;
+  background: #f1f5f9;
+  color: #031a13;
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 14px 32px rgba(255, 255, 255, 0.2);
+}
+
+.cta-secondary-contact {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  padding: 15px 26px;
+  border-radius: 12px;
+  font-size: 0.84rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.cta-secondary-contact:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(74, 222, 128, 0.4);
+  color: #4ade80;
+  transform: translateY(-2px);
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -474,13 +735,16 @@
   }
   .bottom-image-frame.mateo-frame {
     max-width: 400px;
-    height: 460px;
+    height: 480px;
+  }
+  .founder-pillars-grid {
+    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 768px) {
   .timeline-block {
-    padding: 175px 18px 70px 18px;
+    padding: 165px 18px 70px 18px;
   }
   .banner-block {
     padding: 70px 18px;
@@ -497,7 +761,7 @@
     padding-left: 50px !important;
     padding-right: 0 !important;
     text-align: left !important;
-    margin-bottom: 18px;
+    margin-bottom: 24px;
   }
   .timeline-connector {
     left: 20px !important;
@@ -510,16 +774,25 @@
     transform: translateX(-50%) !important;
   }
   .glass-milestone-card {
-    padding: 16px 18px;
+    padding: 14px;
+  }
+  .milestone-media-container {
+    height: 130px;
   }
 }
 
 @media (max-width: 480px) {
-  .cta-minimal-btn {
+  .banner-action-wrap {
+    flex-direction: column;
+    width: 100%;
+  }
+  .cta-minimal-btn,
+  .cta-secondary-contact {
     width: 100%;
     justify-content: center;
+    box-sizing: border-box;
   }
   .bottom-image-frame.mateo-frame {
-    height: 380px;
+    height: 400px;
   }
 }

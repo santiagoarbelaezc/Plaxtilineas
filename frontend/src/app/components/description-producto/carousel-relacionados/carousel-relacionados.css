@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════════
-   CAROUSEL RELACIONADOS — REDISEÑO CON DESIGN TOKENS ESTILO HOME
+   CAROUSEL RELACIONADOS — ESPACIADO Y PADDING IDÉNTICO A INTERÉS
    Paleta: #09090b (texto), #71717a (secundario), #f4f5f7 (fondo),
-   #ffffff (cards), #e4e4e7 (bordes 1.5px), #16a34a / #22c55e (acento esmeralda)
+   #ffffff (cards), #e4e4e7 (bordes 1.5px), #16a34a / #22c55e (acento verde)
    ═══════════════════════════════════════════════════════════════════ */
 
 .productos-relacionados-section {
@@ -34,6 +34,11 @@
   line-height: 1.15;
 }
 
+.highlight-green {
+  color: #16a34a;
+  font-weight: 850;
+}
+
 .productos-relacionados-section .section-subtitle {
   font-size: 0.96rem;
   font-weight: 500;
@@ -43,8 +48,8 @@
   line-height: 1.45;
 }
 
-/* ── Contenedor del Carrusel & Wrapper ── */
-.productos-relacionados-section .carousel-container {
+/* ── Carrusel Wrapper & Viewport ── */
+.productos-relacionados-section .carrusel-wrapper {
   position: relative;
   display: flex;
   align-items: center;
@@ -55,60 +60,29 @@
   box-sizing: border-box;
 }
 
-.productos-relacionados-section .carousel-wrapper {
+.productos-relacionados-section .carousel-viewport {
   flex: 1;
   overflow: hidden;
-  padding: 4px 0;
+  padding: 2px 0;
 }
 
-.productos-relacionados-section .carousel {
-  display: flex;
+.productos-relacionados-section .productos-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - (4 * 1.25rem)) / 5);
   gap: 1.25rem;
   overflow-x: auto;
   scroll-behavior: smooth;
   scrollbar-width: none;
-  padding: 4px 4px 16px 4px;
+  padding: 4px 6px 14px 6px;
   scroll-snap-type: x mandatory;
 }
 
-.productos-relacionados-section .carousel::-webkit-scrollbar {
+.productos-relacionados-section .productos-grid::-webkit-scrollbar {
   display: none;
 }
 
-/* ── Item del Carrusel & Tarjeta ── */
-.productos-relacionados-section .carousel-item {
-  flex: 0 0 calc((100% - (4 * 1.25rem)) / 5);
-  min-width: 230px;
-  scroll-snap-align: start;
-  box-sizing: border-box;
-}
-
-@media (max-width: 1400px) {
-  .productos-relacionados-section .carousel-item {
-    flex: 0 0 calc((100% - (3 * 1.25rem)) / 4);
-  }
-}
-
-@media (max-width: 1024px) {
-  .productos-relacionados-section .carousel-item {
-    flex: 0 0 calc((100% - (2 * 1rem)) / 3);
-  }
-}
-
-@media (max-width: 768px) {
-  .productos-relacionados-section .carousel-item {
-    flex: 0 0 calc((100% - 1rem) / 2);
-    min-width: 180px;
-  }
-}
-
-@media (max-width: 480px) {
-  .productos-relacionados-section .carousel-item {
-    flex: 0 0 82%;
-    min-width: 220px;
-  }
-}
-
+/* ── Tarjetas de Producto ── */
 .productos-relacionados-section .producto-card {
   background: #ffffff;
   border-radius: 18px;
@@ -118,10 +92,11 @@
   flex-direction: column;
   height: 100%;
   padding: 10px;
-  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
   position: relative;
   box-sizing: border-box;
+  scroll-snap-align: start;
 }
 
 .productos-relacionados-section .producto-card:hover {
@@ -130,7 +105,6 @@
   box-shadow: 0 14px 30px -6px rgba(22, 163, 74, 0.16), 0 4px 10px rgba(0, 0, 0, 0.04);
 }
 
-/* ── Imagen Wrapper & Imagen ── */
 .productos-relacionados-section .producto-imagen-wrapper {
   position: relative;
   width: 100%;
@@ -143,7 +117,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .productos-relacionados-section .producto-card:hover .producto-imagen-wrapper {
@@ -152,56 +126,17 @@
 }
 
 .productos-relacionados-section .producto-imagen {
-  width: 90%;
-  height: 90%;
+  width: 92%;
+  height: 92%;
   object-fit: contain;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.05));
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.06));
 }
 
 .productos-relacionados-section .producto-card:hover .producto-imagen {
   transform: scale(1.06);
 }
 
-/* ── Badges ── */
-.productos-relacionados-section .promo-badge {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  padding: 4px 10px;
-  border-radius: 9999px;
-  font-size: 0.68rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  z-index: 2;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-}
-
-.productos-relacionados-section .promo-badge.destacado {
-  background: #09090b;
-  color: #ffffff;
-}
-
-.productos-relacionados-section .promo-badge.recomendado {
-  background: rgba(22, 163, 74, 0.12);
-  color: #16a34a;
-  border: 1px solid rgba(22, 163, 74, 0.25);
-}
-
-.productos-relacionados-section .promo-badge.especial {
-  background: #fef3c7;
-  color: #b45309;
-  border: 1px solid #fde68a;
-}
-
-.productos-relacionados-section .promo-badge.garantizado {
-  background: #e0f2fe;
-  color: #0369a1;
-  border: 1px solid #bae6fd;
-}
-
-/* ── Información de Producto ── */
 .productos-relacionados-section .producto-info {
   width: 100%;
   padding: 10px 4px 4px 4px;
@@ -227,7 +162,7 @@
 
 .productos-relacionados-section .producto-titulo {
   font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 0.96rem;
+  font-size: 0.98rem;
   font-weight: 750;
   color: #09090b;
   text-transform: uppercase;
@@ -239,7 +174,7 @@
   overflow: hidden;
   min-height: 2.5em;
   letter-spacing: -0.01em;
-  transition: color 0.2s ease;
+  transition: color 0.18s ease;
   cursor: pointer;
 }
 
@@ -247,12 +182,11 @@
   color: #16a34a;
 }
 
-/* ── Fila de Precios ── */
 .productos-relacionados-section .producto-precio-row {
   display: flex;
   align-items: baseline;
   justify-content: flex-start;
-  gap: 0.6rem;
+  gap: 0.65rem;
   margin-top: 6px;
   padding-top: 6px;
   border-top: 1px dashed #e4e4e7;
@@ -261,27 +195,28 @@
 
 .productos-relacionados-section .producto-precio {
   font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 1.42rem;
+  font-size: 1.58rem;
   font-weight: 850;
   color: #09090b;
   letter-spacing: -0.025em;
   line-height: 1.1;
-  transition: color 0.2s ease;
+  transition: color 0.18s ease;
   display: inline-flex;
   align-items: baseline;
   gap: 3px;
 }
 
 .productos-relacionados-section .precio-unidad {
-  font-size: 0.82rem;
+  font-size: 0.86rem;
   font-weight: 700;
   color: #71717a;
   text-transform: lowercase;
+  letter-spacing: 0;
 }
 
 .productos-relacionados-section .precio-tachado {
   font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   font-weight: 600;
   color: #a1a1aa;
   text-decoration: line-through;
@@ -294,7 +229,6 @@
   color: #16a34a;
 }
 
-/* ── Botones de Navegación ── */
 .productos-relacionados-section .carrusel-btn {
   width: 44px;
   height: 44px;
@@ -306,7 +240,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
   z-index: 10;
@@ -322,7 +256,7 @@
 }
 
 .productos-relacionados-section .carrusel-btn[disabled] {
-  opacity: 0.3;
+  opacity: 0.35;
   cursor: not-allowed;
   background: #f4f5f7;
   border-color: #e4e4e7;
@@ -331,7 +265,32 @@
   box-shadow: none;
 }
 
-/* ── Estados de Carga y Error ── */
+.productos-relacionados-section .carrusel-indicators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.productos-relacionados-section .indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: #d4d4d8;
+  border: none;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  padding: 0;
+}
+
+.productos-relacionados-section .indicator-dot.active {
+  width: 28px;
+  background: #16a34a;
+  border-radius: 9999px;
+  box-shadow: 0 0 10px rgba(22, 163, 74, 0.35);
+}
+
 .productos-relacionados-section .loading-state {
   display: flex;
   flex-direction: column;
@@ -356,14 +315,13 @@
 }
 
 .productos-relacionados-section .error-state,
-.productos-relacionados-section .no-productos {
+.productos-relacionados-section .empty-state {
   text-align: center;
   padding: 40px 20px;
   color: #71717a;
 }
 
-.productos-relacionados-section .error-icon,
-.productos-relacionados-section .no-productos-icon {
+.productos-relacionados-section .error-icon {
   font-size: 2.2rem;
   margin-bottom: 8px;
 }
@@ -377,43 +335,63 @@
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  transition: background 0.2s ease;
+  transition: background 0.18s ease;
 }
 
 .productos-relacionados-section .retry-btn:hover {
   background: #16a34a;
 }
 
-/* ── Responsivo ── */
-@media (max-width: 640px) {
-  .productos-relacionados-section {
-    padding: 24px 0 32px 0;
+/* ════════════ RESPONSIVE ════════════ */
+@media (max-width: 1400px) {
+  .productos-relacionados-section .productos-grid {
+    grid-auto-columns: calc((100% - (3 * 1.25rem)) / 4);
+    gap: 1.25rem;
   }
+}
 
-  .productos-relacionados-section .section-header {
-    padding: 0 16px;
-    margin-bottom: 18px;
+@media (max-width: 1050px) {
+  .productos-relacionados-section .productos-grid {
+    grid-auto-columns: calc((100% - (2 * 1rem)) / 3);
+    gap: 1rem;
   }
-
-  .productos-relacionados-section .section-title {
-    font-size: 1.65rem;
-  }
-
-  .productos-relacionados-section .carousel-container {
-    padding: 0 12px;
-    gap: 8px;
-  }
-
-  .productos-relacionados-section .carrusel-btn {
-    width: 36px;
-    height: 36px;
-  }
-
   .productos-relacionados-section .producto-imagen-wrapper {
-    height: 160px;
+    height: 185px;
   }
+}
 
+@media (max-width: 768px) {
+  .productos-relacionados-section .productos-grid {
+    grid-auto-columns: calc((100% - 1rem) / 2);
+    gap: 1rem;
+  }
+  .productos-relacionados-section .carrusel-btn {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .productos-relacionados-section {
+    padding: 24px 0;
+  }
+  .productos-relacionados-section .section-title {
+    font-size: 1.55rem;
+  }
+  .productos-relacionados-section .section-subtitle {
+    font-size: 0.92rem;
+  }
+  .productos-relacionados-section .productos-grid {
+    grid-auto-columns: 78%;
+    gap: 0.85rem;
+    padding: 8px 4px 16px 4px;
+  }
+  .productos-relacionados-section .producto-imagen-wrapper {
+    height: 200px;
+  }
+  .productos-relacionados-section .producto-titulo {
+    font-size: 0.92rem;
+  }
   .productos-relacionados-section .producto-precio {
-    font-size: 1.25rem;
+    font-size: 1.38rem;
   }
 }

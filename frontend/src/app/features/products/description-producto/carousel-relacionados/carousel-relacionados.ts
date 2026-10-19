@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, AfterViewInit, OnDestroy, OnChanges, SimpleChanges, inject } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges, ViewChild, ElementRef, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ProductosService } from '../../../../services/productos.service';
 import { ProductoEditable } from '../../../../models/producto.model';
@@ -15,8 +15,13 @@ import { PrecioOfertaService } from '../../../../services/precio-oferta.service'
   templateUrl: './carousel-relacionados.html',
   styleUrls: ['./carousel-relacionados.css']
 })
-export class CarouselRelacionados implements OnInit, AfterViewInit, OnDestroy, OnChanges {
+export class CarouselRelacionados implements OnInit, OnDestroy, OnChanges {
+  @ViewChild('productosGrid') productosGrid?: ElementRef<HTMLDivElement>;
+
+  private router = inject(Router);
   private precioOfertaService = inject(PrecioOfertaService);
+  private productosService = inject(ProductosService);
+  private carouselSignalService = inject(CarouselSignalService);
 
   @Input() titulo: string = 'Productos relacionados';
   @Input() subtitulo: string = 'Descubre productos similares que podrían interesarte';
@@ -26,13 +31,22 @@ export class CarouselRelacionados implements OnInit, AfterViewInit, OnDestroy, O
   @Input() forzarRecarga: boolean = false;
   
   productos: ProductoEditable[] = [];
-  public carouselId = 'productos-relacionados-carousel';
   isLoading: boolean = false;
   error: string | null = null;
   
-  // Variables para el carrusel
-  currentIndex = 0;
-  visibleItems = 4;
+  currentPage = 0;
+  itemsPerPage = 5;
+  pagesArray: number[] = [];
+
+  get tituloPartes(): { inicio: string; destacado: string } {
+    if (!this.titulo) return { inicio: '', destacado: '' };
+    const palabras = this.titulo.trim().toUpperCase().split(' ');
+    if (palabras.length === 1) {
+      return { inicio: '', destacado: palabras[0] };
+    }
+    const destacado = palabras.pop() || '';
+    return { inicio: palabras.join(' '), destacado };
+  }
 
   // Para almacenar timestamp de última carga
   private ultimaCarga: number = 0;
@@ -46,10 +60,7 @@ export class CarouselRelacionados implements OnInit, AfterViewInit, OnDestroy, O
   private productosRelacionados: any[] = [];
   private productosGenerales: any[] = [];
 
-  constructor(
-    private productosService: ProductosService,
-    private carouselSignalService: CarouselSignalService
-  ) {}
+  constructor() {}
 
   ngOnInit(): void {
     console.log('🔄 Iniciando CarouselRelacionados...');
@@ -74,11 +85,6 @@ export class CarouselRelacionados implements OnInit, AfterViewInit, OnDestroy, O
     }
   }
 
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.initCarousel();
-    }, 500);
-  }
 
   ngOnDestroy(): void {
     if (this.signalSubscription) {
@@ -324,22 +330,99 @@ export class CarouselRelacionados implements OnInit, AfterViewInit, OnDestroy, O
    * Finalizar el proceso de carga
    */
   private finalizarCarga(): void {
-    this.calculateVisibleItems();
+    this.updateItemsPerPage();
     this.isLoading = false;
     this.recargaForzadaInterna = false;
+    this.currentPage = 0;
     
     if (this.productos.length > 0) {
       console.log(`🎉 ${this.productos.length} productos cargados exitosamente`);
-      console.log(`📍 PRIMEROS productos del carrusel: ${this.productosRelacionados.length} productos relacionados`);
-      
-      // Inicializar carrusel
       setTimeout(() => {
-        this.initCarousel();
-      }, 100);
+        if (this.productosGrid) {
+          this.productosGrid.nativeElement.scrollLeft = 0;
+        }
+      }, 50);
     } else {
       console.log('ℹ️ No se encontraron productos');
       this.error = 'No hay productos relacionados disponibles';
     }
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.updateItemsPerPage();
+  }
+
+  private updateItemsPerPage(): void {
+    const width = window.innerWidth;
+    if (width < 640) {
+      this.itemsPerPage = 1;
+    } else if (width < 768) {
+      this.itemsPerPage = 2;
+    } else if (width < 1050) {
+      this.itemsPerPage = 3;
+    } else if (width < 1400) {
+      this.itemsPerPage = 4;
+    } else {
+      this.itemsPerPage = 5;
+    }
+    this.updatePagesArray();
+  }
+
+  private updatePagesArray(): void {
+    const totalPages = Math.ceil(this.productos.length / this.itemsPerPage);
+    this.pagesArray = Array.from({ length: Math.max(totalPages, 1) }, (_, i) => i);
+  }
+
+  scrollCarrusel(direction: 'prev' | 'next'): void {
+    if (!this.productosGrid) return;
+    const grid = this.productosGrid.nativeElement;
+    const scrollAmount = grid.clientWidth * 0.85;
+
+    if (direction === 'prev') {
+      grid.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else {
+      grid.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  }
+
+  goToPage(page: number): void {
+    if (!this.productosGrid) return;
+    const grid = this.productosGrid.nativeElement;
+    const maxScroll = grid.scrollWidth - grid.clientWidth;
+    const scrollAmount = this.pagesArray.length > 1
+      ? (maxScroll / (this.pagesArray.length - 1)) * page
+      : 0;
+
+    grid.scrollTo({
+      left: scrollAmount,
+      behavior: 'smooth'
+    });
+
+    this.currentPage = page;
+  }
+
+  onScroll(event: Event): void {
+    if (!this.productosGrid || this.productos.length === 0 || this.pagesArray.length <= 1) return;
+    const grid = this.productosGrid.nativeElement;
+    const maxScroll = grid.scrollWidth - grid.clientWidth;
+    if (maxScroll <= 0) return;
+
+    const scrollRatio = grid.scrollLeft / maxScroll;
+    const calculatedPage = Math.min(
+      this.pagesArray.length - 1,
+      Math.max(0, Math.round(scrollRatio * (this.pagesArray.length - 1)))
+    );
+
+    if (calculatedPage !== this.currentPage) {
+      this.currentPage = calculatedPage;
+    }
+  }
+
+  verDetalles(productoId: number, nombre?: string): void {
+    const slug = nombre ? nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '') : '';
+    const urlParam = slug ? `${productoId}-${slug}` : productoId;
+    this.router.navigate(['/producto', urlParam]);
   }
 
   /**
@@ -367,7 +450,7 @@ export class CarouselRelacionados implements OnInit, AfterViewInit, OnDestroy, O
     this.productosRelacionados = [];
     this.productosGenerales = [];
     this.error = null;
-    this.currentIndex = 0;
+    this.currentPage = 0;
     
     // 🔴 IMPORTANTE: Resetear subcategoriaId para que se obtenga la del nuevo producto
     this.subcategoriaId = undefined;
@@ -380,7 +463,6 @@ export class CarouselRelacionados implements OnInit, AfterViewInit, OnDestroy, O
    */
   private convertirAProductoEditable(producto: any): ProductoEditable {
     if (!producto) {
-      // Si el producto es null o undefined, devolver un objeto por defecto
       return {
         id: 0,
         nombre: 'Producto no disponible',
@@ -414,109 +496,25 @@ export class CarouselRelacionados implements OnInit, AfterViewInit, OnDestroy, O
     };
   }
 
-  // ===========================
-  // MÉTODOS PÚBLICOS Y DE INTERFAZ
-  // ===========================
-
-  /**
-   * Método público para recargar (usado por el botón de reintento)
-   */
   recargar(): void {
-    console.log('🔄 Recargando productos relacionados...');
     this.recargarProductos();
   }
 
-  /**
-   * Obtener información del producto actual (para depuración)
-   */
   getProductoActualInfo(): string {
     return this.productoId 
       ? `ID: ${this.productoId}, Subcategoría: ${this.subcategoriaId || 'N/A'}` 
       : 'No hay producto actual';
   }
 
-  /**
-   * Inicializar el carrusel
-   */
-  private initCarousel(): void {
-    const carousel = document.getElementById(this.carouselId);
-    if (!carousel || this.productos.length === 0) {
-      console.log('⚠️ No se puede inicializar carrusel: sin productos');
-      return;
-    }
-
-    carousel.scrollLeft = 0;
-    carousel.style.scrollBehavior = 'smooth';
-    
-    console.log('🎠 Carrusel de productos relacionados inicializado');
-  }
-
-  /**
-   * Calcular items visibles según el tamaño de pantalla
-   */
-  private calculateVisibleItems(): void {
-    const width = window.innerWidth;
-    if (width < 768) {
-      this.visibleItems = 1;
-    } else if (width < 1024) {
-      this.visibleItems = 2;
-    } else {
-      this.visibleItems = 3;
-    }
-  }
-
-  /**
-   * Navegación del carrusel suave
-   */
-  scrollCarousel(direction: 'prev' | 'next'): void {
-    const carousel = document.getElementById(this.carouselId);
-    if (!carousel || this.productos.length === 0) {
-      console.warn('⚠️ No se encontró el elemento del carrusel');
-      return;
-    }
-
-    const scrollAmount = carousel.clientWidth * 0.82;
-    if (direction === 'prev') {
-      carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-    } else {
-      carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  }
-
-  /**
-   * Verificar si se puede navegar hacia atrás
-   */
-  isPrevEnabled(): boolean {
-    const carousel = document.getElementById(this.carouselId);
-    return carousel ? carousel.scrollLeft > 10 : false;
-  }
-
-  /**
-   * Verificar si se puede navegar hacia adelante
-   */
-  isNextEnabled(): boolean {
-    const carousel = document.getElementById(this.carouselId);
-    return carousel ? carousel.scrollLeft < (carousel.scrollWidth - carousel.clientWidth - 10) : true;
-  }
-
-  /**
-   * Formatear precio
-   */
   formatearPrecio(precio: number): string {
     return this.precioOfertaService.formatearPrecio(precio);
   }
 
-  /**
-   * Obtener precio tachado de referencia
-   */
   obtenerPrecioReferencia(precioReal: number): string {
     const precioRef = this.precioOfertaService.calcularPrecioReferencia(precioReal, 25);
     return this.precioOfertaService.formatearPrecio(precioRef);
   }
 
-  /**
-   * Formatear nombre en Title Case
-   */
   formatearNombre(nombre: string): string {
     if (!nombre) return '';
     return nombre
@@ -526,9 +524,6 @@ export class CarouselRelacionados implements OnInit, AfterViewInit, OnDestroy, O
       .join(' ');
   }
 
-  /**
-   * Obtener URL de imagen del producto optimizada
-   */
   getProductoImagen(producto: ProductoEditable): string {
     if (producto?.imagen_url && producto.imagen_url.trim() !== '') {
       return optimizeForThumbnail(producto.imagen_url, 300);
@@ -536,18 +531,12 @@ export class CarouselRelacionados implements OnInit, AfterViewInit, OnDestroy, O
     return 'assets/images/default-product.png';
   }
 
-  /**
-   * Manejar error de carga de imagen
-   */
   handleImageError(event: Event, producto: ProductoEditable): void {
     const imgElement = event.target as HTMLImageElement;
     console.warn(`⚠️ Error cargando imagen para ${producto?.nombre || 'producto desconocido'}`);
     imgElement.src = 'assets/images/default-product.png';
   }
 
-  /**
-   * Generar URL amigable con el slug (SEO)
-   */
   getProductoUrl(producto: ProductoEditable): any[] {
     const slug = producto.nombre ? producto.nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '') : '';
     const urlParam = slug ? `${producto.id}-${slug}` : producto.id;
