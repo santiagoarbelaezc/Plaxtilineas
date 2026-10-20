@@ -1,174 +1,106 @@
 # VARIABLES_ENTORNO.md — Plaxtilineas
 
-> Todas las variables que lee `backend-php/api/config/config.php`.
-> Mapeo a las variables de `.env` de Laravel en `backend-laravel/`.
+> Mapeo y referencia completa de variables de entorno para Laravel 11 (`backend-laravel/.env`).
+> Reemplaza la configuración anterior basada en `backend-php/api/config/config.php`.
 
 ---
 
-## Base de Datos Principal (negocio)
+## 1. Base de Datos Principal
 
-> **Desarrollo local / Tests:** Se utiliza SQLite (`DB_CONNECTION=sqlite`). Para tests se utiliza `:memory:`. Para desarrollo local se utiliza `database/database.sqlite`. No se requiere conexión a MySQL remoto durante el desarrollo.
-> **Producción:** MySQL (Hostinger) configurado en Fase 9.
+> **Desarrollo local / Tests:** Se utiliza SQLite (`DB_CONNECTION=sqlite`). Para tests se utiliza `:memory:`. Para desarrollo local se utiliza `database/database.sqlite`.
+> **Producción:** MySQL (Hostinger) con conexión PDO directa configurada en `.env`.
 
-| PHP (`config.php`) | Laravel (`.env`) | Descripcion |
+| Variable Laravel | Default / Ejemplo | Descripción |
 |---|---|---|
-| `DB_CONNECTION` | `DB_CONNECTION` | Driver (`sqlite` en local, `mysql` en prod) |
-| `DB_HOST` | `DB_HOST` | Host MySQL |
-| `DB_PORT` | `DB_PORT` | Puerto (default: 3306) |
-| `DB_USER` | `DB_USERNAME` | Usuario MySQL |
-| `DB_PASSWORD` | `DB_PASSWORD` | Password MySQL |
-| `DB_NAME` | `DB_DATABASE` | Nombre de la BD |
-
-## Base de Datos Catalogo Externo
-
-| PHP | Laravel (`config/services.php`) | Descripcion |
-|---|---|---|
-| `HOSTINGER_DB_HOST` | `services.catalogo.host` | Host catalogo |
-| `HOSTINGER_DB_PORT` | `services.catalogo.port` | Puerto catalogo |
-| `HOSTINGER_DB_USER` | `services.catalogo.username` | Usuario catalogo |
-| `HOSTINGER_DB_PASSWORD` | `services.catalogo.password` | Password catalogo |
-| `HOSTINGER_DB_NAME` | `services.catalogo.database` | BD catalogo |
-
-## Seguridad / Tokens
-
-| PHP | Laravel | Descripcion |
-|---|---|---|
-| `TOKEN_SECRET` | (no aplica, Sanctum usa APP_KEY) | HMAC secret — reemplazado por Sanctum |
-| `TOKEN_EXPIRATION` | `SANCTUM_TOKEN_EXPIRATION` | Segundos de vida del token |
-
-## Cloudinary
-
-| PHP | Laravel (`config/services.php`) | Descripcion |
-|---|---|---|
-| `CLOUDINARY_CLOUD_NAME` | `CLOUDINARY_CLOUD_NAME` | Nombre del cloud |
-| `CLOUDINARY_API_KEY` | `CLOUDINARY_API_KEY` | API Key publica |
-| `CLOUDINARY_API_SECRET` | `CLOUDINARY_API_SECRET` | API Secret (firma SHA-1) |
-
-## Email SMTP
-
-| PHP | Laravel | Descripcion |
-|---|---|---|
-| `SMTP_HOST` | `MAIL_HOST` | Host SMTP (default: smtp.gmail.com) |
-| `SMTP_PORT` | `MAIL_PORT` | Puerto (default: 587) |
-| `SMTP_USER` | `MAIL_USERNAME` | Usuario SMTP |
-| `SMTP_PASS` | `MAIL_PASSWORD` | Password SMTP |
-| `EMAIL_FROM_NAME` | `MAIL_FROM_NAME` | Nombre remitente (default: Plaxtilineas SAS) |
-| `SUPPORT_EMAIL` | `SUPPORT_EMAIL` | Email de soporte (en config/mail.php) |
-
-## Empresa
-
-| PHP | Laravel (`config/app.php` o custom) | Descripcion |
-|---|---|---|
-| `COMPANY_NAME` | `COMPANY_NAME` | Nombre empresa (default: Plaxtilineas SAS) |
-| `COMPANY_PHONE_1` | `COMPANY_PHONE_1` | Telefono 1 |
-| `COMPANY_PHONE_2` | `COMPANY_PHONE_2` | Telefono 2 |
-| `COMPANY_ADDRESS` | `COMPANY_ADDRESS` | Direccion |
-
-## App
-
-| PHP | Laravel | Descripcion |
-|---|---|---|
-| `APP_ENV` | `APP_ENV` | Entorno: development/production |
-| `FRONTEND_URL` | `FRONTEND_URL` | URL del frontend Angular |
-| `UPLOAD_MAX_SIZE` | (en config) | Tamano max upload: 5242880 (5MB) |
-
-## Wompi
-
-| PHP | Laravel (`config/services.php`) | Descripcion |
-|---|---|---|
-| `WOMPI_PUBLIC_KEY` | `WOMPI_PUBLIC_KEY` | Llave publica Wompi |
-| `WOMPI_PRIVATE_KEY` | `WOMPI_PRIVATE_KEY` | Llave privada Wompi |
-| `WOMPI_INTEGRITY_KEY` | `WOMPI_INTEGRITY_KEY` | Llave de integridad (firma de transaccion) |
-| `WOMPI_EVENTS_KEY` | `WOMPI_EVENTS_KEY` | Llave de eventos (firma de webhook) |
-
-## Negocio / Precios (constantes, no variables)
-
-| Constante PHP | Valor | Descripcion |
-|---|---|---|
-| `COSTO_ENVIO_COP` | `10000` | Costo de envio fijo en COP |
-| `IVA_PORCENTAJE` | `0.0` | IVA (incluido en precio del producto) |
-
-Estas se configuran en `config/business.php`:
-```php
-return [
-    'costo_envio' => env('COSTO_ENVIO_COP', 10000),
-    'iva_porcentaje' => env('IVA_PORCENTAJE', 0.0),
-];
-```
-
-## Google OAuth
-
-| PHP | Laravel (`config/services.php`) | Descripcion |
-|---|---|---|
-| (endpoint hardcoded) | `GOOGLE_CLIENT_ID` | Client ID para verificar id_token |
+| `DB_CONNECTION` | `sqlite` (local) / `mysql` (prod) | Driver de base de datos |
+| `DB_HOST` | `127.0.0.1` | Host MySQL en el servidor |
+| `DB_PORT` | `3306` | Puerto de conexión MySQL |
+| `DB_DATABASE` | `plaxtilineas` | Nombre de la base de datos |
+| `DB_USERNAME` | `u123456_user` | Usuario de MySQL |
+| `DB_PASSWORD` | `...` | Contraseña de MySQL |
 
 ---
 
-## Template `.env` para Laravel
+## 2. Seguridad y Autenticación (Sanctum)
 
-```env
-APP_NAME="Plaxtilineas"
-APP_ENV=local
-APP_KEY=base64:...
-APP_DEBUG=true
-APP_URL=http://localhost:8000
+| Variable Laravel | Default / Ejemplo | Descripción |
+|---|---|---|
+| `APP_KEY` | `base64:...` | Clave criptográfica única generada con `php artisan key:generate` |
+| `BCRYPT_ROUNDS` | `12` | Factor de costo para hash de contraseñas |
+| `SANCTUM_TOKEN_EXPIRATION` | `null` (o minutos) | Expiración de Personal Access Tokens (si aplica) |
 
-# Base de datos principal
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=plaxtilineas
-DB_USERNAME=root
-DB_PASSWORD=
+---
 
-# Base de datos catalogo externo
-CATALOGO_DB_HOST=
-CATALOGO_DB_PORT=3306
-CATALOGO_DB_DATABASE=
-CATALOGO_DB_USERNAME=
-CATALOGO_DB_PASSWORD=
+## 3. Pasarela de Pagos Wompi
 
-# Frontend CORS
-FRONTEND_URL=http://localhost:4200
+| Variable Laravel | Default / Ejemplo | Descripción |
+|---|---|---|
+| `WOMPI_PUBLIC_KEY` | `pub_prod_...` | Llave pública utilizada por el frontend y widget Wompi |
+| `WOMPI_PRIVATE_KEY` | `prv_prod_...` | Llave privada para consultas de transacciones y estados |
+| `WOMPI_INTEGRITY_KEY` | `prod_integrity_...` | Llave para calcular el hash de integridad (SHA-256) |
+| `WOMPI_EVENTS_KEY` | `prod_events_...` | Llave para validar la firma de eventos en webhooks |
+| `WOMPI_BASE_URL` | `https://production.wompi.co/v1` | URL base del API de Wompi (`sandbox.wompi.co` para pruebas) |
 
-# Correo SMTP
-MAIL_MAILER=smtp
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=587
-MAIL_USERNAME=
-MAIL_PASSWORD=
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=noreply@plaxtilineas.com
-MAIL_FROM_NAME="Plaxtilineas SAS"
+---
 
-# Wompi
-WOMPI_PUBLIC_KEY=
-WOMPI_PRIVATE_KEY=
-WOMPI_INTEGRITY_KEY=
-WOMPI_EVENTS_KEY=
+## 4. Almacenamiento Multimedia (Cloudinary)
 
-# Cloudinary
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
+| Variable Laravel | Default / Ejemplo | Descripción |
+|---|---|---|
+| `CLOUDINARY_CLOUD_NAME` | `...` | Nombre de la nube de Cloudinary |
+| `CLOUDINARY_API_KEY` | `...` | API Key pública para carga de imágenes (PQRS, banners) |
+| `CLOUDINARY_API_SECRET` | `...` | API Secret para generación de firmas SHA-1 de subida |
 
-# Google OAuth
-GOOGLE_CLIENT_ID=
+---
 
-# Empresa
-COMPANY_NAME="Plaxtilineas SAS"
-COMPANY_PHONE_1=
-COMPANY_PHONE_2=
-COMPANY_ADDRESS=
+## 5. Inteligencia Artificial (Groq API)
 
-# Negocio
-COSTO_ENVIO_COP=10000
-IVA_PORCENTAJE=0.0
+Utilizado por el Asistente Mateo (Chat de soporte al cliente) y el Asistente del Dashboard administrativo:
 
-# Gemini AI (Chat)
-GEMINI_API_KEY=
-GEMINI_MODEL=gemini-1.5-flash
+| Variable Laravel | Default / Ejemplo | Descripción |
+|---|---|---|
+| `GROQ_API_KEY` | `gsk_...` | API Key de Groq para el Asistente Mateo |
+| `GROQ_API_KEY_DASHBOARD`| `gsk_...` | API Key alternativa o compartida para analítica del Dashboard |
+| `GROQ_MODEL` | `openai/gpt-oss-120b` | Modelo LLM configurado en Groq (`llama-3.3-70b-versatile`, etc.) |
+| `GROQ_BASE_URL` | `https://api.groq.com/openai/v1` | Endpoint compatible OpenAI de Groq |
 
-# Soporte
-SUPPORT_EMAIL=
-```
+---
+
+## 6. Autenticación Social (Google OAuth)
+
+| Variable Laravel | Default / Ejemplo | Descripción |
+|---|---|---|
+| `GOOGLE_CLIENT_ID` | `...apps.googleusercontent.com` | Client ID de Google para validar los `id_token` enviados desde Angular |
+
+---
+
+## 7. Correo Electrónico SMTP
+
+| Variable Laravel | Default / Ejemplo | Descripción |
+|---|---|---|
+| `MAIL_MAILER` | `smtp` | Driver de correo (Hostinger / Gmail) |
+| `MAIL_HOST` | `smtp.hostinger.com` | Servidor SMTP |
+| `MAIL_PORT` | `465` (o `587`) | Puerto de envío SMTP |
+| `MAIL_USERNAME` | `notificaciones@plaxtilineas.com` | Usuario o buzón de correo remitente |
+| `MAIL_PASSWORD` | `...` | Contraseña del buzón de correo |
+| `MAIL_ENCRYPTION` | `ssl` (o `tls`) | Protocolo de cifrado |
+| `MAIL_FROM_ADDRESS` | `notificaciones@plaxtilineas.com`| Dirección visible del remitente |
+| `MAIL_FROM_NAME` | `Plaxtilineas SAS` | Nombre visible del remitente |
+
+---
+
+## 8. Frontend y CORS
+
+| Variable Laravel | Default / Ejemplo | Descripción |
+|---|---|---|
+| `FRONTEND_URL` | `https://plaxtilineas.com` | Origen permitido para solicitudes CORS desde el frontend Angular |
+
+---
+
+## 9. Reglas de Negocio y Valores por Defecto
+
+| Variable Laravel | Default / Ejemplo | Descripción |
+|---|---|---|
+| `ADMIN_EMAIL` | `admin@plaxtilineas.com` | Correo receptor de alertas de pedidos y PQRS |
+| `COSTO_ENVIO_COP` | `10000.0` | Costo de envío estándar en pesos colombianos |
+| `IVA_PORCENTAJE` | `0.0` | Porcentaje de IVA (actualmente incluido en precio de catálogo) |

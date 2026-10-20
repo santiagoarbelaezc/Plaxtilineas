@@ -1,90 +1,75 @@
 # PREGUNTAS_ABIERTAS.md — Plaxtilineas
 
-> Ambiguedades o decisiones pendientes durante la migracion.
-> Cada pregunta debe ser respondida antes de cerrar la fase correspondiente.
+> Registro de ambigüedades, decisiones arquitectónicas y su resolución final en la migración a Laravel 11.
 
 ---
 
-## PA-001: No-enumeracion en recuperacion de password
+## PA-001: No-enumeración en recuperación de contraseña
 
-**Contexto:** El PHP actual devuelve 404 si el email no existe en `/api/auth/recuperar-password`.
-Esto permite a un atacante enumerar emails validos.
-
-**Decision:** Se replica el comportamiento exacto del PHP (404 si no existe) para garantizar paridad con el frontend Angular.
-
-**Fase:** 4 (Autenticacion)
-**Estado:** Resuelto (Paridad PHP)
+- **Contexto:** El PHP legacy devolvía código HTTP 404 si el correo no existía en `/api/auth/recuperar-password`.
+- **Decisión:** Se replicó exactamente el comportamiento para garantizar 100% paridad con el cliente Angular existente.
+- **Fase:** 4 (Autenticación)
+- **Estado:** ✅ Resuelto (Paridad con frontend preservada).
 
 ---
 
-## PA-002: Expiracion de reservas de stock
+## PA-002: Expiración de reservas de stock
 
-**Contexto:** El PHP tiene logica de reservas de stock pero no es claro el tiempo de expiracion exacto.
-
-**Pregunta:** Cual es el tiempo de expiracion de `stock_reservas.expira_at`?
-
-**Accion:** Leer `PedidoController.php` para confirmar el valor exacto (probablemente 15 o 30 minutos).
-
-**Fase:** 6 (Pedidos)
-**Estado:** Pendiente — leer `PedidoController.php`
+- **Contexto:** Tiempo de retención de stock reservado durante el proceso de compra.
+- **Decisión:** Confirmado en `PedidoController.php` y `StockReservaService.php`. La reserva temporal expira a los 15 minutos (`now()->addMinutes(15)`). El comando programado `carrito:limpiar-expirados` libera automáticamente el stock retenido una vez cumplido este intervalo.
+- **Fase:** 6 (Pedidos y Wompi)
+- **Estado:** ✅ Resuelto (15 minutos con liberación programada).
 
 ---
 
-## PA-003: Autenticacion en `GET /api/pedidos/estado`
+## PA-003: Autenticación en `GET /api/pedidos/estado`
 
-**Contexto:** El plan indica "Auth: Sí/Pública (verificar en PHP)" para este endpoint.
-
-**Pregunta:** ¿El endpoint es público (sin token) o requiere autenticación?
-
-**Accion:** Leer `PedidoController.php` para confirmar.
-
-**Fase:** 6 (Pedidos)
-**Estado:** Pendiente — leer `PedidoController.php`
+- **Contexto:** Verificación de permisos para consultar el estado de un pedido.
+- **Decisión:** Confirmado en `PedidoController.php`. La ruta es pública para permitir la consulta por `referencia` o `id` tanto a usuarios invitados como a integraciones externas de confirmación de pago.
+- **Fase:** 6 (Pedidos y Wompi)
+- **Estado:** ✅ Resuelto (Ruta pública por referencia).
 
 ---
 
-## PA-004: Autenticacion en `GET /api/configuraciones`
+## PA-004: Autenticación y permisos en `GET /api/configuraciones`
 
-**Contexto:** El plan indica "Auth: Pública/Admin (verificar)".
-
-**Pregunta:** ¿Todas las configuraciones son publicas o solo algunas?
-
-**Accion:** Leer `ConfiguracionController.php` para confirmar.
-
-**Fase:** 8 (Configuracion)
-**Estado:** Pendiente — leer `ConfiguracionController.php`
+- **Contexto:** Verificación de visibilidad pública vs administrativa de configuraciones.
+- **Decisión:** `GET /api/configuraciones` es público para permitir que la tienda Angular obtenga costos de envío, teléfonos de contacto y parámetros generales. Las operaciones de mutación (`POST /api/configuraciones` y `PUT /api/configuraciones/{clave}`) están estrictamente protegidas bajo middleware `auth:sanctum` con validación de rol `admin`.
+- **Fase:** 8 (Configuración)
+- **Estado:** ✅ Resuelto (Lectura pública, mutaciones exclusivas de Admin).
 
 ---
 
-## PA-005: Tabla `productos` y catalogo externo
+## PA-005: Catálogo de productos externo y stock local
 
-**Contexto:** El schema SQL tiene FKs a `productos` en `carritos` y `pedido_items`, pero `productos` no esta en `schema_completo.sql`.
-
-**Decision:** El usuario instruyó utilizar SQLite y no conectarse a la BD remota real. Se modela `productos` localmente en SQLite con los campos identificados en `PedidoController` y `CarritoController`: `(id, nombre, precio, stock, controlar_stock, imagen_url, activo, created_at, updated_at)`.
-
-**Fase:** 5 (Carrito)
-**Estado:** Resuelto (Tabla local en SQLite)
+- **Contexto:** El catálogo completo de productos reside en una API externa (`catalogoplaxtilineas.sembradoresdevida.org`), mientras que los pedidos y carritos requieren control local de inventario y precios.
+- **Decisión:** Se implementó el modelo local `Producto` con los campos necesarios para stock pesimista y validación de transacciones: `id, nombre, precio, stock, controlar_stock, imagen_url, activo`. Los controladores no intentan hacer JOINs directos con tablas de categorías del catálogo externo.
+- **Fase:** 5 (Carrito) y 8 (Estadísticas y Chat)
+- **Estado:** ✅ Resuelto (Modelo local sincronizado).
 
 ---
 
-## PA-006: Modelo Gemini del Chat
+## PA-006: Proveedor y modelo de IA para el Asistente Mateo y Dashboard
 
-**Contexto:** No se ha leido aun `ChatController.php` para confirmar el modelo de Gemini usado.
-
-**Pregunta:** ¿Cual es el modelo exacto de Gemini (gemini-pro, gemini-1.5-flash, etc.)?
-
-**Accion:** Leer `ChatController.php`.
-
-**Fase:** 7 (Chat)
-**Estado:** Pendiente
+- **Contexto:** En el plan preliminar se mencionaba Gemini AI.
+- **Decisión:** Al auditar el código fuente legacy (`ChatController.php` y `DashboardAssistantController.php`), se constató que la implementación real utiliza la API de Groq con el modelo `openai/gpt-oss-120b` (o compatible como `llama-3.3-70b-versatile`), usando HTTP client estándar con endpoint OpenAI compatible. Se mantuvo y tipó fielmente esta integración en `GroqService.php`.
+- **Fase:** 7 (Chat Mateo y Dashboard Assistant)
+- **Estado:** ✅ Resuelto (Groq API en `GroqService`).
 
 ---
 
-## PA-007: Pqrs — formato del codigo de ticket
+## PA-007: Formato de código de ticket en PQRS
 
-**Contexto:** Formato del código de ticket de PQRS verificado en `PqrsController.php`.
+- **Contexto:** Estructura del código identificador para seguimiento de reclamos.
+- **Decisión:** Se confirmó la convención legacy: `'PQR-' . date('ymd') . '-' . str_pad((string)mt_rand(0, 999), 3, '0', STR_PAD_LEFT)`. El identificador interno principal es un UUID v4 (`Str::uuid()`).
+- **Fase:** 7 (PQRS)
+- **Estado:** ✅ Resuelto (Formato legacy preservado).
 
-**Decision:** Formato verificado: `'PQR-' . date('ymd') . '-' . str_pad((string)mt_rand(0, 999), 3, '0', STR_PAD_LEFT)`. ID de PQR es UUID v4.
+---
 
-**Fase:** 7 (PQRS)
-**Estado:** Resuelto (Confirmado en PqrsController.php)
+## PA-008: Compatibilidad de columnas en analítica (`estadisticas_visitas`)
+
+- **Contexto:** Diferencia de nomenclatura histórica entre `(ip_address, pagina_url, session_id)` y `(ip, pagina)`.
+- **Decisión:** La migración y el modelo `EstadisticaVisita` soportan ambos nombres de columnas mediante atributos dinámicos y columnas en base de datos con índices para optimizar los conteos de `StatsController`.
+- **Fase:** 8 (Analítica)
+- **Estado:** ✅ Resuelto (Dual-column compatibility).

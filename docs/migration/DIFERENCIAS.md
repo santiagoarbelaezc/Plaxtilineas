@@ -43,14 +43,9 @@ Los usuarios deben volver a iniciar sesion.
 
 | | PHP | Laravel |
 |---|---|---|
-| Comportamiento | 404 si email no existe | Pendiente decision |
+| Comportamiento | 404 si email no existe | 404 si email no existe (replicado para paridad con frontend) |
 
-**Riesgo:** El PHP actual permite enumerar emails validos.
-**Opciones:**
-- A) Replicar comportamiento PHP (misma respuesta 200 independientemente)
-- B) Cambiar a no-enumeracion (misma respuesta para existente/inexistente)
-
-**PREGUNTA ABIERTA:** Ver PREGUNTAS_ABIERTAS.md #PA-001
+**Decisión:** Se mantiene el comportamiento 404 legacy para preservar 100% de compatibilidad con la experiencia y mensajes del cliente Angular. Ver `PREGUNTAS_ABIERTAS.md` #PA-001.
 
 ---
 
@@ -76,10 +71,36 @@ Los usuarios deben volver a iniciar sesion.
 
 ---
 
-## D-007: Gemini — Modelo de IA del Chat
+## D-007: Modelo de IA del Chat y Asistente
 
 | | PHP | Laravel |
 |---|---|---|
-| Modelo | Verificar `ChatController.php` | `gemini-1.5-flash` (configurable via `GEMINI_MODEL`) |
+| Proveedor / Modelo | Groq API (`openai/gpt-oss-120b`) | Groq API (`openai/gpt-oss-120b`, configurable via `GROQ_MODEL`) con fallback a WhatsApp |
+| Abstracción | Curl directo en controlador | `AiChatClientInterface` inyectado en constructor |
 
-**Pendiente:** Leer `ChatController.php` para confirmar el modelo exacto.
+**Estado:** Resuelto con `GroqAiChatService` y fallback idéntico a WhatsApp oficial de Plaxtilineas.
+
+---
+
+## D-008: Rate Limiting & Throttling
+
+| | PHP | Laravel |
+|---|---|---|
+| Mecanismo | Custom manual en base de datos (`ChatModerationService`) | Laravel RateLimiter integrado (`throttle:auth`, `throttle:chat`, `throttle:wompi-webhook`) + `ChatModerationService` para bans |
+
+---
+
+## D-009: Validación y Respuestas de Error
+
+| | PHP | Laravel |
+|---|---|---|
+| Validación | `empty()` y `filter_var()` manuales en cada endpoint | `FormRequest` tipados por caso de uso con `failedValidation` personalizado |
+| Formato Error | `{ "error": "mensaje" }` | `{ "error": "mensaje" }` idéntico para paridad frontend |
+
+---
+
+## D-010: Concurrencia e Inventario
+
+| | PHP | Laravel |
+|---|---|---|
+| Control de Stock | Checks manuales en PHP con posible race condition | Bloqueo pesimista `lockForUpdate()` con tabla `stock_reservas` y two-phase commit |
