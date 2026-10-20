@@ -6,10 +6,13 @@ use App\Http\Controllers\Api\AdminUserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CarritoController;
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\ComponentesController;
+use App\Http\Controllers\Api\ConfiguracionController;
 use App\Http\Controllers\Api\DashboardAssistantController;
 use App\Http\Controllers\Api\LeadsController;
 use App\Http\Controllers\Api\PedidoController;
 use App\Http\Controllers\Api\PqrsController;
+use App\Http\Controllers\Api\StatsController;
 use App\Http\Controllers\Api\WompiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -208,4 +211,38 @@ Route::prefix('leads')->group(function () {
         Route::get('/stats', [LeadsController::class, 'getStats']);
         Route::get('/', [LeadsController::class, 'getAll']);
     });
+});
+
+// ═════════════════════════════════════════════════════════════════════════════
+// COMPONENTES DINÁMICOS /api/componentes/*
+// ═════════════════════════════════════════════════════════════════════════════
+
+Route::prefix('componentes')->group(function () {
+    Route::get('/', [ComponentesController::class, 'index']);
+
+    Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+        Route::post('/upload', [ComponentesController::class, 'uploadImage']);
+        Route::put('/reordenar', [ComponentesController::class, 'reordenar']);
+        Route::post('/', [ComponentesController::class, 'create']);
+        Route::put('/{id}', [ComponentesController::class, 'update']);
+        Route::delete('/{id}', [ComponentesController::class, 'delete']);
+    });
+});
+
+// ═════════════════════════════════════════════════════════════════════════════
+// CONFIGURACIONES /api/configuraciones/*
+// ═════════════════════════════════════════════════════════════════════════════
+
+Route::prefix('configuraciones')->group(function () {
+    Route::get('/', [ConfiguracionController::class, 'getAll']);
+    Route::put('/{clave}', [ConfiguracionController::class, 'update'])->middleware(['auth:sanctum', 'admin']);
+});
+
+// ═════════════════════════════════════════════════════════════════════════════
+// ESTADÍSTICAS Y ANALÍTICA /api/stats/*
+// ═════════════════════════════════════════════════════════════════════════════
+
+Route::prefix('stats')->group(function () {
+    Route::post('/track', [StatsController::class, 'track']);
+    Route::get('/dashboard', [StatsController::class, 'getDashboardStats'])->middleware(['auth:sanctum', 'admin']);
 });

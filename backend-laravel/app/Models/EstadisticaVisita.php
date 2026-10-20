@@ -25,8 +25,11 @@ class EstadisticaVisita extends Model
      */
     protected $fillable = [
         'ip',
+        'ip_address',
         'user_agent',
         'pagina',
+        'pagina_url',
+        'session_id',
         'fecha',
     ];
 
