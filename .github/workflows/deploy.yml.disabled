@@ -1,4 +1,9 @@
+# ==============================================================================
+# WORKFLOW DESACTIVADO TEMPORALMENTE
+# Para reactivarlo: renombrar este archivo de 'deploy.yml.disabled' a 'deploy.yml'
+# ==============================================================================
 name: Deploy Continuo a Hostinger
+
 
 on:
   push:

@@ -69,3 +69,26 @@ frontend/src/assets/img/
 *.7z
 *.tar.gz
 backend-php/api.zip
+backend-laravel.zip
+
+# === Laravel backend ===
+backend-laravel/.env
+backend-laravel/.env.*
+!backend-laravel/.env.example
+backend-laravel/auth.json
+backend-laravel/vendor/
+backend-laravel/storage/*.key
+backend-laravel/storage/logs/*.log
+backend-laravel/storage/framework/cache/data/*
+backend-laravel/storage/framework/sessions/*
+backend-laravel/storage/framework/views/*
+backend-laravel/storage/framework/testing/*
+backend-laravel/storage/app/*
+!backend-laravel/storage/app/.gitignore
+!backend-laravel/storage/app/public/
+!backend-laravel/storage/app/public/.gitignore
+backend-laravel/bootstrap/cache/*
+!backend-laravel/bootstrap/cache/.gitignore
+backend-laravel/*.sqlite*
+backend-laravel/*.sql
+backend-laravel/*.sql.gz
