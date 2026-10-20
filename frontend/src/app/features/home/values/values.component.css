@@ -1,287 +1,613 @@
-/* ====== SECCIÓN NOSOTROS PREMIUM ====== */
-.seccion-nosotros {
+/* ═══════════════════════════════════════════════════════════════════
+   SOBRE NOSOTROS — CINEMATIC MINIMALIST & SHOWCASE DE PRODUCTOS
+   - Espaciado amplio para respirar con el Navbar fijo
+   - Línea de tiempo BLANCA continua (espina, conectores y nodos)
+   - Tarjetas GRANDES con fondo VERDE bosque (#05241b glass)
+   - Minimalista: Solo Imagen, Fecha, Título y Texto
+   - Sección editorial de Mateo Moreno (Fundador & Dueño)
+   ═══════════════════════════════════════════════════════════════════ */
+
+:host {
+  display: block;
   width: 100%;
-  background-color: #ffffff;
-  padding: 180px 0 80px 0; /* Aumentado a 180px para dar más espacio bajo el navbar */
-  font-family: 'Montserrat', sans-serif;
+}
+
+.nosotros-cinematic-section {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #ffffff;
   overflow: hidden;
+  background-color: #000000;
 }
 
-.nosotros-container {
-  max-width: 1500px;
-  margin: 0 auto;
-  padding: 0 40px;
-}
-
-/* === LAYOUT PRINCIPAL === */
-.layout-grid {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr; /* Proporciones invertidas: Grid (Izquierda) es más ancho que Intro (Derecha) */
-  gap: 60px;
-  align-items: stretch;
-}
-
-/* === COLUMNA DERECHA: INTRO Y MATEO === */
-.intro-column {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start; /* Cambio a flex-start para mejor alineación superior */
+/* ═══════════════════════════════════════════════════════════
+   BLOQUES CINEMATOGRÁFICOS FULLWIDTH
+   ═══════════════════════════════════════════════════════════ */
+.cinematic-block {
   position: relative;
-  z-index: 2;
-  padding-top: 20px;
-}
-
-.badge-new {
-  background: #368C44;
-  color: white;
-  padding: 8px 20px;
-  border-radius: 50px;
-  font-size: 0.9rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  width: fit-content;
-  letter-spacing: 0.1em;
-  box-shadow: 0 4px 15px rgba(54, 140, 68, 0.3);
-  margin-bottom: 24px;
-}
-
-.title {
-  font-size: 3.5rem;
-  font-weight: 900;
-  color: #1e293b;
-  line-height: 1.1;
-  margin: 0 0 20px 0;
-}
-
-.title span {
-  color: #368C44;
-}
-
-.description {
-  font-size: 1.15rem;
-  color: #64748b;
-  line-height: 1.6;
-  margin: 0 0 40px 0;
-}
-
-.description strong {
-  color: #1e293b;
-  font-weight: 800;
-}
-
-/* Presentación de Mateo */
-.mateo-presentation {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  margin-top: auto;
-  min-height: 350px;
-}
-
-.blob-bg {
-  position: absolute;
   width: 100%;
-  height: 80%;
-  background: radial-gradient(circle, rgba(54, 140, 68, 0.1) 0%, transparent 70%);
-  bottom: 0;
-  z-index: 1;
-}
-
-.mateo-img {
-  width: 100%;
-  max-width: 380px;
-  height: auto;
-  z-index: 2;
-  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.15));
-  transition: transform 0.4s ease;
-}
-
-.mateo-presentation:hover .mateo-img {
-  transform: translateY(-10px) scale(1.02);
-}
-
-.floating-badge {
-  position: absolute;
-  top: 20%;
-  right: 0;
-  background: white;
-  padding: 12px 24px;
-  border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-  font-size: 1rem;
-  font-weight: 800;
-  color: #1e293b;
-  z-index: 3;
-  animation: float 4s ease-in-out infinite;
-  border-left: 5px solid #368C44;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
-}
-
-/* === COLUMNA DERECHA: GRID DE VALORES === */
-.valores-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 25px;
-  align-content: center;
-}
-
-@keyframes customFadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Tarjetas de Valor */
-.valor-card {
-  background: #f8fafc;
-  border-radius: 24px;
-  padding: 30px;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 1px solid rgba(0, 0, 0, 0.03);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  height: 100%;
-  
-  /* Animación de entrada personalizada */
-  opacity: 0;
-  animation: customFadeUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-}
-
-/* Stagger animations for cards */
-.valor-card:nth-child(1) { animation-delay: 0.1s; }
-.valor-card:nth-child(2) { animation-delay: 0.2s; }
-.valor-card:nth-child(3) { animation-delay: 0.3s; }
-.valor-card:nth-child(4) { animation-delay: 0.4s; }
-.valor-card:nth-child(5) { animation-delay: 0.5s; }
-.valor-card:nth-child(6) { animation-delay: 0.6s; }
-
-.valor-card:hover {
-  transform: translateY(-8px);
-  background: #ffffff;
-  border-color: rgba(54, 140, 68, 0.2);
-  box-shadow: 0 20px 40px rgba(54, 140, 68, 0.12);
-}
-
-/* Icono */
-.valor-icono-container {
-  width: 60px;
-  height: 60px;
-  background: rgba(54, 140, 68, 0.1);
-  border-radius: 16px;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.4s ease;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
-.valor-card:hover .valor-icono-container {
-  background: #368C44;
-  transform: rotate(-10deg) scale(1.1);
-  box-shadow: 0 10px 20px rgba(54, 140, 68, 0.3);
+.timeline-block {
+  padding: 210px 24px 120px 24px;
 }
 
-.valor-icono {
-  font-size: 1.5rem;
-  color: #368C44;
-  transition: all 0.4s ease;
+.banner-block {
+  padding: 120px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.valor-card:hover .valor-icono {
+/* ── Capas de Fondo Estáticas (Fixed) ── */
+.static-bg-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-bg {
+  background-image: url('/assets/images/hero/hero-chatgpt.png');
+  filter: brightness(0.35) contrast(1.18) saturate(1.05);
+}
+
+.banner-bg {
+  background-image: url('/assets/images/hero/home-chatgpt.png');
+  filter: brightness(0.32) contrast(1.2) saturate(1.05);
+}
+
+/* ── Capa de Oscurecimiento ── */
+.dark-overlay-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 25%, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.94) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.dark-overlay-layer.subtle-dark {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.96) 100%);
+}
+
+/* ── Contenedor de Contenido ── */
+.cinematic-content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 1350px;
+  margin: 0 auto;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   1. INTRODUCCIÓN HERO
+   ═══════════════════════════════════════════════════════════ */
+.minimal-intro {
+  text-align: center;
+  max-width: 980px;
+  margin: 0 auto 60px auto;
+}
+
+.cinematic-title {
+  font-size: clamp(2.3rem, 4.6vw, 3.9rem);
+  font-weight: 900;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+  margin: 0 0 16px 0;
+  text-shadow: 0 4px 25px rgba(0, 0, 0, 0.95);
+}
+
+.cinematic-lead {
+  font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+  font-weight: 350;
+  color: rgba(255, 255, 255, 0.86);
+  line-height: 1.6;
+  max-width: 820px;
+  margin: 0 auto;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   2. LÍNEA DE TIEMPO BLANCA & TARJETAS MINIMALISTAS
+   ═══════════════════════════════════════════════════════════ */
+.timeline-interactive-container {
+  position: relative;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.timeline-track-wrapper {
+  position: relative;
+  padding: 20px 0;
+  box-sizing: border-box;
+}
+
+/* ── Espina Vertical BLANCA Continua ── */
+.timeline-spine-glow {
+  position: absolute;
+  top: 15px;
+  bottom: 15px;
+  left: 50%;
+  width: 2px;
+  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.65) 50%, rgba(255, 255, 255, 0.18) 100%);
+  transform: translateX(-50%);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+  z-index: 2;
+}
+
+/* Item de la Línea de Tiempo */
+.timeline-glass-item {
+  position: relative;
+  width: 50%;
+  box-sizing: border-box;
+  cursor: default;
+  user-select: text;
+  margin-bottom: 44px;
+}
+
+.timeline-glass-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-glass-item.item-left {
+  left: 0;
+  padding-right: 60px;
+}
+
+.timeline-glass-item.item-right {
+  left: 50%;
+  padding-left: 60px;
+}
+
+/* ── Conectores Horizontales BLANCOS ── */
+.timeline-connector {
+  position: absolute;
+  top: 54px;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.65);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.timeline-glass-item.item-left .timeline-connector {
+  right: 0;
+  width: 60px;
+}
+
+.timeline-glass-item.item-right .timeline-connector {
+  left: 0;
+  width: 60px;
+}
+
+/* ── Fecha al Otro Lado de la Línea de Tiempo (Delgada y Más Pequeña) ── */
+.timeline-opposite-date {
+  position: absolute;
+  top: 44px;
+  width: auto;
+  z-index: 4;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.timeline-glass-item.item-left .timeline-opposite-date {
+  left: 100%;
+  padding-left: 60px;
+  text-align: left;
+}
+
+.timeline-glass-item.item-right .timeline-opposite-date {
+  right: 100%;
+  padding-right: 60px;
+  text-align: right;
+}
+
+.opposite-year-text {
+  display: block;
+  font-size: clamp(1.1rem, 1.6vw, 1.45rem);
+  font-weight: 200;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Nodos Centrales BLANCOS ── */
+.timeline-center-node {
+  position: absolute;
+  top: 46px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.timeline-glass-item.item-left .timeline-center-node {
+  right: 0;
+  transform: translateX(50%);
+}
+
+.timeline-glass-item.item-right .timeline-center-node {
+  left: 0;
+  transform: translateX(-50%);
+}
+
+.node-glow-outer {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #000000;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+}
+
+.node-glow-inner {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+/* ── Tarjetas Transparentes Minimalistas ── */
+.glass-milestone-card {
+  background: rgba(255, 255, 255, 0.025);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.45);
+  position: relative;
+  overflow: hidden;
+  text-align: left;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, background 0.3s ease;
+}
+
+.glass-milestone-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.6);
+  transform: translateY(-2px);
+}
+
+/* ── Marco Visual del Producto con Badge Flotante ── */
+.milestone-media-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  border-radius: 14px;
+  overflow: hidden;
+  background-color: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.milestone-product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-milestone-card:hover .milestone-product-image {
+  transform: scale(1.03);
+}
+
+/* ── Cuerpo: Título y Texto Minimalistas ── */
+.milestone-body {
+  padding: 14px 4px 2px 4px;
+}
+
+.milestone-title {
+  font-size: 1.12rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+  line-height: 1.25;
+}
+
+.milestone-text {
+  font-size: 0.88rem;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   3. SEGUNDO CANVAS: MATEO MORENO & PLAXTILINEAS
+   ═══════════════════════════════════════════════════════════ */
+.banner-minimal-wrap {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 60px;
+  align-items: center;
+}
+
+/* ── Retrato Editorial de Mateo ── */
+.bottom-visual-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bottom-image-frame.mateo-frame {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  height: 540px;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+  background: #000000;
+}
+
+.bottom-featured-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bottom-image-frame:hover .bottom-featured-img {
+  transform: scale(1.03);
+}
+
+.bottom-frame-badge {
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  right: auto;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  padding: 12px 20px;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+}
+
+.badge-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.badge-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.badge-subtitle {
+  font-size: 0.88rem;
+  font-weight: 400;
+  letter-spacing: 0.015em;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 3px;
+  line-height: 1.25;
+}
+
+/* ── Contenido Editorial de la Sección ── */
+.banner-editorial {
+  display: flex;
+  flex-direction: column;
+}
+
+.banner-minimal-title {
+  font-size: clamp(2.3rem, 4.4vw, 3.8rem);
+  font-weight: 900;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+  margin: 0 0 16px 0;
+  text-shadow: 0 4px 25px rgba(0, 0, 0, 0.95);
+}
+
+.banner-minimal-desc {
+  font-size: clamp(1.08rem, 1.8vw, 1.35rem);
+  font-weight: 350;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  margin: 0 0 28px 0;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+}
+
+/* ── 3 Puntos Clave Minimalistas (Sin Iconos) ── */
+.founder-pills-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 34px;
+  flex-wrap: wrap;
+}
+
+.founder-pill {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  letter-spacing: 0.03em;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 6px 14px;
+  border-radius: 50px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.25s ease;
+}
+
+.founder-pill:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(74, 222, 128, 0.4);
   color: #ffffff;
 }
 
-/* Texto */
-.valor-texto {
+/* ── Botones de Acción ── */
+.banner-action-wrap {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.cta-minimal-btn {
+  display: inline-flex;
+  align-items: center;
   gap: 10px;
+  background: #ffffff;
+  color: #05241b;
+  border: 1.5px solid #ffffff;
+  padding: 15px 34px;
+  border-radius: 12px;
+  font-size: 0.86rem;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
 }
 
-.valor-titulo {
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: #1e293b;
-  margin: 0;
-  line-height: 1.3;
+.cta-minimal-btn:hover {
+  background: #f1f5f9;
+  color: #031a13;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(255, 255, 255, 0.2);
 }
 
-.valor-descripcion {
-  font-size: 0.95rem;
-  color: #64748b;
-  line-height: 1.6;
-  margin: 0;
-  font-weight: 500;
+.cta-secondary-contact {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  padding: 15px 26px;
+  border-radius: 12px;
+  font-size: 0.84rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  transition: all 0.25s ease;
 }
 
-/* === RESPONSIVE === */
-@media (max-width: 1200px) {
-  .layout-grid {
-    gap: 40px;
-  }
-  .title {
-    font-size: 3rem;
-  }
-  .valores-grid {
-    gap: 20px;
-  }
+.cta-secondary-contact:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(74, 222, 128, 0.4);
+  color: #4ade80;
+  transform: translateY(-2px);
 }
 
-@media (max-width: 992px) {
-  .layout-grid {
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE DESIGN
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .banner-minimal-wrap {
     grid-template-columns: 1fr;
-    text-align: center;
+    gap: 45px;
   }
-  .intro-column {
-    align-items: center;
-  }
-  .mateo-presentation {
-    min-height: 300px;
-  }
-  .floating-badge {
-    right: 10%;
+  .bottom-image-frame.mateo-frame {
+    max-width: 400px;
+    height: 480px;
   }
 }
 
 @media (max-width: 768px) {
-  .seccion-nosotros {
-    padding: 180px 0 50px 0; /* Aumentado a 180px para dar más espacio bajo el navbar */
+  .timeline-block {
+    padding: 165px 18px 70px 18px;
   }
-  .nosotros-container {
-    padding: 0 20px;
+  .banner-block {
+    padding: 70px 18px;
   }
-  .title {
-    font-size: 2.5rem;
+  
+  /* Timeline Móvil: Alineada a la izquierda */
+  .timeline-spine-glow {
+    left: 20px;
+    transform: none;
   }
-  .valores-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
+  .timeline-opposite-date {
+    position: static !important;
+    padding: 0 !important;
+    margin-bottom: 8px !important;
+    text-align: left !important;
   }
-  .valor-card {
-    flex-direction: row;
-    align-items: center;
-    text-align: left;
-    padding: 24px;
+  .opposite-year-text {
+    font-size: 1.15rem !important;
+    font-weight: 200 !important;
   }
-  .floating-badge {
-    display: none; /* Ocultar en móvil para dar espacio a Mateo */
+  .timeline-glass-item {
+    width: 100% !important;
+    left: 0 !important;
+    padding-left: 54px !important;
+    padding-right: 0 !important;
+    text-align: left !important;
+    margin-bottom: 26px;
+  }
+  .timeline-connector {
+    left: 20px !important;
+    right: auto !important;
+    width: 34px !important;
+  }
+  .timeline-center-node {
+    left: 20px !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+  }
+  .glass-milestone-card {
+    padding: 16px;
+  }
+  .milestone-media-container {
+    height: 160px;
   }
 }
 
 @media (max-width: 480px) {
-  .valor-card {
+  .banner-action-wrap {
     flex-direction: column;
-    text-align: center;
+    width: 100%;
   }
-}
+  .cta-minimal-btn,
+  .cta-secondary-contact {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  .bottom-image-frame.mateo-frame {
+    height: 400px;
+  }
+}

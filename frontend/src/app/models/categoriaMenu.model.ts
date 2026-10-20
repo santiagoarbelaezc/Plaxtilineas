@@ -9,5 +9,6 @@ export interface SubcategoriaConCantidad {
 export interface CategoriaConSubcategorias {
   id: number;
   nombre: string;
+  cantidad?: number;
   subcategorias: SubcategoriaConCantidad[];
 }

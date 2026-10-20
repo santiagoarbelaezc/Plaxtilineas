@@ -1,8 +1,8 @@
 /* ==========================================================================
-   NOSOTROS INICIO — SHOWCASE DE IDENTIDAD & SEO (ESTILO DISTRICOL / PREMIUM)
-   Fondo: #061822 (petróleo oscuro profundo)
+   NOSOTROS INICIO — SHOWCASE DE IDENTIDAD & SEO (MINIMALISTA, ALTO & ANCHO)
+   Fondo: #05241b (verde bosque petróleo profundo)
    Texto: #ffffff (títulos), #cbd5e1 (subtítulos), #94a3b8 (descripción)
-   Acentos: #16a34a / #22c55e (esmeralda), #f1f5f9 (botón de contraste)
+   Acentos: #4ade80 / #22c55e (esmeralda), #ffffff (botón de contraste)
    ========================================================================== */
 
 :host {
@@ -12,8 +12,8 @@
 
 .identity-showcase-section {
   background-color: #05241b;
-  font-family: 'Montserrat', sans-serif;
-  padding: 58px 0 64px 0;
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 85px 0 95px 0;
   position: relative;
   overflow: hidden;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
@@ -21,19 +21,19 @@
 }
 
 .identity-container {
-  max-width: 1460px;
+  max-width: 1480px;
   margin: 0 auto;
   padding: 0 32px;
 }
 
 .identity-grid {
   display: grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: 54px;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 64px;
   align-items: center;
 }
 
-/* ── Columna Izquierda: Showcase Visual con Badge ── */
+/* ── Columna Izquierda: Showcase Visual Más Ancho y Alto ── */
 .showcase-visual-wrapper {
   width: 100%;
 }
@@ -41,12 +41,12 @@
 .showcase-frame {
   position: relative;
   width: 100%;
-  height: 440px;
-  border-radius: 24px;
+  height: 530px;
+  border-radius: 20px;
   overflow: hidden;
   background-color: #031a13;
-  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 55px -12px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .showcase-img {
@@ -54,147 +54,53 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  animation: fadeInShowcase 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0.85;
+  transform: scale(1.02);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes fadeInShowcase {
-  from {
-    opacity: 0.6;
-    transform: scale(1.02);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+.identity-showcase-section.is-visible .showcase-img {
+  opacity: 1;
+  transform: scale(1);
 }
 
-/* Badge Flotante Inferior Izquierdo (Estilo Exacto de la Referencia) */
-.image-pill-badge {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(3, 26, 19, 0.90);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 6px 16px 6px 6px;
-  border-radius: 50px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-  z-index: 5;
-}
-
-.badge-capsule {
-  background: #16a34a;
-  color: #ffffff;
-  font-size: 0.7rem;
-  font-weight: 850;
-  letter-spacing: 0.06em;
-  padding: 4px 12px;
-  border-radius: 50px;
-  text-transform: uppercase;
-}
-
-.badge-text {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #f1f5f9;
-  letter-spacing: 0.02em;
-}
-
-/* Dots Discretos de Navegación de Galería */
-.image-dots-nav {
-  position: absolute;
-  bottom: 22px;
-  right: 22px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  z-index: 5;
-}
-
-.img-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.35);
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  transition: all 0.25s ease;
-}
-
-.img-dot.active {
-  background: #ffffff;
-  width: 22px;
-  border-radius: 6px;
-}
-
-/* ── Columna Derecha: Contenido Editorial ── */
+/* ── Columna Derecha: Contenido Editorial Minimalista ── */
 .identity-content-wrapper {
   display: flex;
   flex-direction: column;
 }
 
-/* Kicker Superior: ¿QUÉ HACEMOS? */
+/* Kicker Minimalista: ¿QUÉ HACEMOS? */
 .kicker-badge-row {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .identity-kicker {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.76rem;
-  font-weight: 850;
+  gap: 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
   color: #4ade80;
-  background: rgba(74, 222, 128, 0.1);
-  border: 1px solid rgba(74, 222, 128, 0.25);
-  padding: 5px 14px;
-  border-radius: 50px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
-.kicker-pulse-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: #4ade80;
-  box-shadow: 0 0 10px #4ade80;
-  animation: pulseDot 2s infinite;
+.kicker-line {
+  width: 22px;
+  height: 1.5px;
+  background: #4ade80;
+  display: inline-block;
+  border-radius: 2px;
 }
 
-@keyframes pulseDot {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.3);
-    opacity: 0.7;
-  }
-}
-
-/* Titular Principal con Fondo Técnico de Puntos y Efecto Typewriter */
+/* Titular Principal con Efecto Typewriter */
 .headline-container {
   position: relative;
   margin-bottom: 18px;
-}
-
-.dot-grid-pattern {
-  position: absolute;
-  right: 10px;
-  top: -10px;
-  width: 190px;
-  height: 110px;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.18) 1.5px, transparent 1.5px);
-  background-size: 16px 16px;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.55;
 }
 
 .identity-title {
@@ -205,28 +111,28 @@
 
 .title-lead-line {
   display: block;
-  font-size: 2.75rem;
-  font-weight: 900;
+  font-size: clamp(2.1rem, 2.8vw, 2.75rem);
+  font-weight: 850;
   color: #ffffff;
   letter-spacing: -0.025em;
-  line-height: 1.12;
+  line-height: 1.14;
   text-transform: uppercase;
 }
 
 .title-dynamic-line {
   display: block;
-  font-size: 2.35rem;
-  font-weight: 850;
-  line-height: 1.22;
+  font-size: clamp(1.85rem, 2.4vw, 2.35rem);
+  font-weight: 800;
+  line-height: 1.2;
   margin-top: 6px;
   min-height: 1.25em;
 }
 
 .typewriter-text {
-  background: linear-gradient(135deg, #4ade80 0%, #22c55e 50%, #86efac 100%);
+  color: #4ade80;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 14px rgba(74, 222, 128, 0.3));
   display: inline;
 }
 
@@ -236,8 +142,12 @@
   color: #4ade80;
   margin-left: 3px;
   animation: blinkCursor 0.85s infinite;
-  text-shadow: 0 0 12px rgba(74, 222, 128, 0.8);
   vertical-align: baseline;
+}
+
+.identity-showcase-section:not(.is-visible) .typewriter-cursor {
+  animation-play-state: paused;
+  opacity: 0;
 }
 
 @keyframes blinkCursor {
@@ -251,94 +161,69 @@
 
 /* Párrafo Descriptivo Lead */
 .identity-lead {
-  font-size: 1.02rem;
-  color: #cbd5e1;
-  line-height: 1.7;
-  font-weight: 400;
-  margin: 0 0 26px 0;
-  max-width: 720px;
+  font-size: 0.98rem;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.68;
+  font-weight: 350;
+  margin: 0 0 28px 0;
+  max-width: 640px;
 }
 
 .identity-lead strong {
   color: #ffffff;
-  font-weight: 750;
+  font-weight: 600;
 }
 
-/* Lista de Ejes Principales (Checklist) */
-.identity-checklist {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 32px 0;
+/* Ejes Principales (Diseño Minimalista sin cajas pesadas) */
+.identity-ejes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px 28px;
+  margin: 0 0 34px 0;
+  max-width: 580px;
+}
+
+.eje-pill-card {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.checklist-item {
-  display: block;
-}
-
-.checklist-link {
-  display: inline-flex;
   align-items: center;
   gap: 12px;
-  text-decoration: none;
-  padding: 4px 0;
-  transition: transform 0.2s ease;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 10px 0;
+  border-radius: 0;
+  box-sizing: border-box;
+  transition: border-color 0.25s ease, transform 0.25s ease;
 }
 
-.check-icon {
-  color: #ffffff;
+.eje-pill-card:hover {
+  background: transparent;
+  border-color: rgba(74, 222, 128, 0.45);
+  transform: translateX(3px);
+}
+
+.eje-pill-index {
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #4ade80;
+  letter-spacing: 0.08em;
+  background: transparent;
+  padding: 0;
+  line-height: 1;
   flex-shrink: 0;
-  stroke-width: 2.5;
-  opacity: 0.9;
 }
 
-.eje-text-group {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  font-size: 0.94rem;
-  line-height: 1.4;
+.eje-pill-name {
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.92rem;
+  font-weight: 550;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0.01em;
+  line-height: 1.25;
 }
 
-.eje-name {
-  color: #ffffff;
-  font-weight: 750;
-  transition: color 0.2s ease;
-}
-
-.eje-detail {
-  color: #cbd5e1;
-  font-weight: 450;
-  transition: color 0.2s ease;
-}
-
-.hover-arrow {
-  color: #22c55e;
-  opacity: 0;
-  transform: translateX(-4px);
-  transition: all 0.2s ease;
-}
-
-.checklist-link:hover {
-  transform: translateX(4px);
-}
-
-.checklist-link:hover .eje-name {
-  color: #22c55e;
-}
-
-.checklist-link:hover .check-icon {
-  color: #22c55e;
-}
-
-.checklist-link:hover .hover-arrow {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* Botón CTA Pill Blanco / Alto Contraste */
+/* Botón CTA Minimalista */
 .identity-action-row {
   display: flex;
   align-items: center;
@@ -347,86 +232,82 @@
 .identity-cta-pill {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  background: #f1f5f9;
+  gap: 10px;
+  background: #ffffff;
   color: #05241b;
-  font-size: 0.85rem;
-  font-weight: 850;
-  letter-spacing: 0.07em;
+  font-size: 0.82rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 14px 34px;
+  padding: 13px 30px;
   border-radius: 50px;
   text-decoration: none;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
   transition: all 0.25s ease;
+}
+
+.identity-cta-pill svg {
+  transition: transform 0.25s ease;
 }
 
 .identity-cta-pill:hover {
   background: #ffffff;
   color: #041d15;
   transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+}
+
+.identity-cta-pill:hover svg {
+  transform: translateX(3px);
 }
 
 /* ── Responsividad ── */
 @media (max-width: 1024px) {
+  .identity-showcase-section {
+    padding: 65px 0 75px 0;
+  }
+
   .identity-grid {
     grid-template-columns: 1fr;
-    gap: 36px;
+    gap: 42px;
   }
 
   .showcase-frame {
-    height: 340px;
-  }
-
-  .identity-title {
-    font-size: 2.25rem;
+    height: 400px;
   }
 }
 
 @media (max-width: 640px) {
   .identity-showcase-section {
-    padding: 42px 0 48px 0;
+    padding: 50px 0 55px 0;
   }
 
   .identity-container {
-    padding: 0 18px;
+    padding: 0 20px;
   }
 
   .showcase-frame {
-    height: 270px;
-    border-radius: 18px;
+    height: 300px;
+    border-radius: 16px;
   }
 
-  .image-pill-badge {
-    bottom: 14px;
-    left: 14px;
-    padding: 4px 12px 4px 4px;
+  .title-lead-line {
+    font-size: 1.95rem;
   }
 
-  .badge-capsule {
-    font-size: 0.65rem;
-    padding: 3px 8px;
+  .title-dynamic-line {
+    font-size: 1.65rem;
   }
 
-  .badge-text {
-    font-size: 0.72rem;
-  }
-
-  .identity-title {
-    font-size: 1.85rem;
-  }
-
-  .identity-subtitle {
-    font-size: 0.8rem;
-  }
-
-  .identity-lead {
-    font-size: 0.9rem;
+  .identity-ejes-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 26px;
   }
 
   .identity-cta-pill {
     width: 100%;
-    text-align: center;
+    justify-content: center;
+    box-sizing: border-box;
   }
 }

@@ -20,14 +20,43 @@ export class AuthService {
     this.checkToken();
   }
 
-  private hasToken(): boolean {
+  public hasToken(): boolean {
     return !!localStorage.getItem('token');
+  }
+
+  public decodeTokenPayload(token: string): any {
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) return null;
+      let base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      while (base64.length % 4) {
+        base64 += '=';
+      }
+      return JSON.parse(decodeURIComponent(escape(atob(base64))));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  public isAdmin(): boolean {
+    const user = this.currentUser.value;
+    if (user && user.rol === 'admin') return true;
+    const token = localStorage.getItem('token');
+    if (token) {
+      const payload = this.decodeTokenPayload(token);
+      if (payload && payload.rol === 'admin') return true;
+    }
+    return false;
   }
 
   checkToken(): void {
     const token = localStorage.getItem('token');
     if (token) {
       this.isLoggedIn.next(true);
+      const payload = this.decodeTokenPayload(token);
+      if (payload && !this.currentUser.value) {
+        this.currentUser.next(payload);
+      }
       this.http.get(`${environment.apiUrl}/auth/perfil`).subscribe({
         next: (user) => this.currentUser.next(user),
         error: () => this.logout()

@@ -66,21 +66,21 @@ export class DashboardAssistantComponent implements AfterViewChecked, OnDestroy 
   };
   private blockInterval: any = null;
 
-  // Quick replies sugeridas
+  // Quick replies sugeridas (sin emojis para usar SVGs limpios)
   quickReplies: string[] = [
-    '📦 Stock bajo',
-    '📊 Más vendidos',
-    '👥 Usuarios',
-    '🛒 Pedidos',
-    '🏷️ Categorías',
-    '📨 PQR'
+    'Stock bajo',
+    'Más vendidos',
+    'Pedidos',
+    'Usuarios',
+    'Categorías',
+    'PQR'
   ];
   showQuickReplies = true;
 
   messages: Message[] = [
     {
       id: 1,
-      text: '¡Hola! Soy Mateo, el asistente inteligente del sistema. ¿En qué te puedo ayudar hoy con el panel de administración?',
+      text: '¡Hola! ¿En qué te puedo ayudar hoy?',
       sender: 'assistant',
       timestamp: new Date(),
       type: 'normal'
@@ -194,6 +194,21 @@ export class DashboardAssistantComponent implements AfterViewChecked, OnDestroy 
 
   closeChat() {
     this.isOpen = false;
+  }
+
+  reiniciarChat(): void {
+    this.messages = [
+      {
+        id: Date.now(),
+        text: '¡Hola! ¿En qué te puedo ayudar hoy?',
+        sender: 'assistant',
+        timestamp: new Date(),
+        type: 'normal'
+      }
+    ];
+    this.showQuickReplies = true;
+    this.newMessage = '';
+    setTimeout(() => this.scrollToBottom(), 50);
   }
 
   get charCount(): number {

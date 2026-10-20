@@ -44,7 +44,7 @@ export const routes: Routes = [
     path: 'contacto',
     loadComponent: () => import('./pages/contacto/contacto').then(m => m.Contacto)
   },
-   {
+  {
     path: 'busqueda',
     loadComponent: () => import('./pages/buscar/buscar').then(m => m.Buscar)
   },
@@ -77,9 +77,12 @@ export const routes: Routes = [
         path: 'inventario',
         loadComponent: () => import('./pages/dashboard/catalogo/admin-catalogo').then(m => m.AdminCatalogo)
       },
+      {
+        path: 'categorias',
+        loadComponent: () => import('./pages/dashboard/categorias/admin-categorias').then(m => m.AdminCategorias)
+      },
       { path: 'catalogo', redirectTo: 'inventario' },
-      { path: 'categorias', redirectTo: 'inventario' },
-      { path: 'subcategorias', redirectTo: 'inventario' },
+      { path: 'subcategorias', redirectTo: 'categorias' },
       { path: 'productos', redirectTo: 'inventario' },
       { path: 'analiticas', redirectTo: '' },
       { path: 'estadisticas', redirectTo: '' },

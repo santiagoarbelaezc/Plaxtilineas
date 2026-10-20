@@ -1,105 +1,103 @@
 <section class="productos-relacionados-section">
-  <!-- 🔹 Encabezado de la sección -->
+  <!-- Header de Sección con Design Tokens -->
   <div class="section-header" *ngIf="productos.length > 0">
-    <h2 class="section-title">{{ titulo }}</h2>
-    <p class="section-subtitle">{{ subtitulo }}</p>
+    <h2 class="section-title">
+      {{ tituloPartes.inicio }} <span class="highlight-green">{{ tituloPartes.destacado }}</span>
+    </h2>
+    <p class="section-subtitle" *ngIf="subtitulo">
+      {{ subtitulo }}
+    </p>
   </div>
 
-  <!-- 🔹 Estado de carga -->
-  <div class="loading-state" *ngIf="isLoading">
-    <div class="spinner"></div>
-    <p>Cargando productos interes...</p>
-  </div>
-
-  <!-- 🔹 Estado de error -->
-  <div class="error-state" *ngIf="error && !isLoading">
-    <div class="error-icon">⚠️</div>
-    <h3>No se pudieron cargar productos interes</h3>
-    <p>{{ error }}</p>
-    <button class="retry-btn" (click)="recargar()">Reintentar</button>
-  </div>
-
-  <!-- 🔹 Contenedor del carrusel -->
-  <div class="carousel-container" *ngIf="productos.length > 0 && !isLoading">
-    <!-- Botón de navegación anterior -->
-    <button class="carousel-nav prev" 
-            (click)="scrollCarousel('prev')" 
-            [disabled]="!isPrevEnabled()"
-            aria-label="Productos anteriores"
-            [class.disabled]="!isPrevEnabled()">
-      ‹
+  <!-- Carrusel de Productos -->
+  <div class="carrusel-wrapper" *ngIf="!isLoading && productos.length > 0">
+    
+    <!-- Botón Anterior -->
+    <button 
+      class="carrusel-btn prev-btn" 
+      (click)="scrollCarrusel('prev')" 
+      [disabled]="currentPage === 0"
+      aria-label="Anterior">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
     </button>
 
-    <!-- Wrapper del carrusel -->
-    <div class="carousel-wrapper">
-      <div class="carousel" [id]="carouselId">
-        <!-- Items del carrusel -->
-        <div class="carousel-item" 
-             *ngFor="let producto of productos; let i = index">
+    <div class="carousel-viewport">
+      <div class="productos-grid" #productosGrid (scroll)="onScroll($event)">
+        
+        <!-- Tarjeta de Producto -->
+        <div *ngFor="let producto of productos; let i = index" class="producto-card">
           
-          <a [routerLink]="getProductoUrl(producto)" class="producto-card">
+          <div class="producto-imagen-wrapper" (click)="verDetalles(producto.id, producto.nombre)">
+            <img [src]="getProductoImagen(producto)" 
+                 [alt]="producto.nombre" 
+                 class="producto-imagen"
+                 loading="lazy"
+                 (error)="handleImageError($event, producto)">
+          </div>
+
+          <div class="producto-info">
+            <span class="product-subcategory" *ngIf="producto.subcategoria || producto.categoria">
+              {{ producto.subcategoria || producto.categoria }}
+            </span>
+            <h3 class="producto-titulo" (click)="verDetalles(producto.id, producto.nombre)" [title]="producto.nombre">
+              {{ formatearNombre(producto.nombre) }}
+            </h3>
             
-            <!-- Contenedor de la imagen del producto -->
-            <div class="producto-image-container">
-              <div class="image-wrapper">
-                <img [src]="getProductoImagen(producto)" 
-                     [alt]="producto.nombre"
-                     class="producto-image"
-                     (error)="handleImageError($event, producto)">
-                <div class="image-glow"></div>
-                <!-- Tags (Promocionales) -->
-                <span *ngIf="i % 4 === 0" class="tag promo descuento-15">15% descuento</span>
-                <span *ngIf="i % 4 === 1" class="tag promo ultimas-unidades">Últimas unidades</span>
-                <span *ngIf="i % 4 === 2" class="tag promo descuento-50">50% descuento</span>
-                <span *ngIf="i % 4 === 3" class="tag promo promo-dia">Promo del día</span>
-              </div>
+            <div class="producto-precio-row" *ngIf="producto.precio">
+              <span class="precio-tachado">{{ obtenerPrecioReferencia(producto.precio) }}</span>
+              <span class="producto-precio">
+                {{ formatearPrecio(producto.precio) }}
+                <span class="precio-unidad">und</span>
+              </span>
             </div>
+          </div>
 
-            <!-- Contenedor del texto -->
-            <div class="producto-text-container">
-              <div class="producto-content">
-                <!-- Contenedor para el nombre del producto con altura fija -->
-                <div class="producto-title-container">
-                  <h3 class="producto-title" [title]="producto.nombre">
-                    {{ producto.nombre }}
-                  </h3>
-                </div>
-                
-                <!-- Subcategoría -->
-                <div class="producto-subcategoria">
-                  <span class="subcategoria-badge">
-                    {{ producto.subcategoria || 'Sin categoría' }}
-                  </span>
-                </div>
-
-                <!-- Precio -->
-                <div class="producto-precio" *ngIf="producto.precio">
-                  <span class="precio-actual">
-                    {{ producto.precio | currency:'USD':'symbol':'1.2-2' }}
-                  </span>
-                </div>
-
-              </div>
-            </div>
-          </a>
         </div>
       </div>
     </div>
 
-    <!-- Botón de navegación siguiente -->
-    <button class="carousel-nav next" 
-            (click)="scrollCarousel('next')" 
-            [disabled]="!isNextEnabled()"
-            aria-label="Siguientes productos"
-            [class.disabled]="!isNextEnabled()">
-      ›
+    <!-- Botón Siguiente -->
+    <button 
+      class="carrusel-btn next-btn" 
+      (click)="scrollCarrusel('next')" 
+      [disabled]="currentPage >= pagesArray.length - 1"
+      aria-label="Siguiente">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+
+  </div>
+
+  <!-- Indicadores -->
+  <div class="carrusel-indicators" *ngIf="!isLoading && pagesArray.length > 1">
+    <button *ngFor="let page of pagesArray" 
+            class="indicator-dot" 
+            [class.active]="currentPage === page"
+            (click)="goToPage(page)"
+            [attr.aria-label]="'Ir a página ' + (page + 1)">
     </button>
   </div>
-  
-  <!-- 🔹 Mensaje si no hay productos relacionados -->
-  <div class="no-productos" *ngIf="productos.length === 0 && !isLoading && !error">
-    <div class="no-productos-icon">📦</div>
-    <h3>No hay productos relacionados</h3>
-    <p>Explora otras categorías para encontrar más productos.</p>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Cargando productos de interés...</p>
   </div>
+
+  <!-- Error State -->
+  <div class="error-state" *ngIf="error && !isLoading">
+    <div class="error-icon">⚠️</div>
+    <h3>No se pudieron cargar productos</h3>
+    <p>{{ error }}</p>
+    <button class="retry-btn" (click)="recargar()">Reintentar</button>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!isLoading && productos.length === 0 && !error">
+    <p>No hay productos disponibles por el momento.</p>
+  </div>
+
 </section>

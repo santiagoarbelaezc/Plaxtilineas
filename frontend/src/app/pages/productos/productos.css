@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 130px 16px 16px 16px; /* Aumentado padding-top a 130px */
+  padding: 118px 16px 16px 16px;
   width: 100%; /* Ocupa el 100% del ancho disponible */
   margin: 0; /* Elimina el margen automático */
   box-sizing: border-box;
@@ -15,17 +15,19 @@
   .productos-layout {
     flex-direction: row;
     gap: 30px;
-    padding: 130px 20px 20px 20px; /* Aumentado padding-top a 130px */
+    padding: 118px 20px 20px 20px;
     width: 100%; /* Asegura el 100% en tablet */
     max-width: 100%;
   }
   
   app-menu-categorias-component {
+    display: block;
     flex: 0 0 250px;
     position: sticky;
-    top: 100px;
+    top: 124px;
     align-self: flex-start;
     height: fit-content;
+    z-index: 30;
   }
   
   app-product-list-component {
@@ -39,17 +41,19 @@
   .productos-layout {
     flex-direction: row;
     gap: 40px;
-    padding: 130px 40px 24px 40px; /* Aumentado padding-top a 130px */
+    padding: 118px 40px 24px 40px;
     width: 100%; /* 100% en escritorio también */
     max-width: 100%;
   }
   
   app-menu-categorias-component {
+    display: block;
     flex: 0 0 300px;
     position: sticky;
-    top: 100px;
+    top: 124px;
     align-self: flex-start;
     height: fit-content;
+    z-index: 30;
   }
   
   app-product-list-component {
@@ -66,7 +70,7 @@
   .productos-layout {
     width: 100%;
     max-width: 100%;
-    padding: 130px 16px 16px 16px; /* Aumentado padding-top a 130px */
+    padding: 118px 16px 16px 16px;
   }
   
   app-menu-categorias-component {

@@ -1,8 +1,8 @@
 /* ═══════════════════════════════════════════════════════════════════
-   MAP SHOWCASE — SEDE FÍSICA & UBICACIÓN (ESTILO NOSOTROS INICIO)
+   MAP SHOWCASE — SEDE FÍSICA & UBICACIÓN (MINIMALISTA, ALTO & ANCHO)
    Fondo: #05241b (verde bosque profundo)
    Texto: #ffffff (títulos), #cbd5e1 (subtítulos), #94a3b8 (descripción)
-   Acentos: #16a34a / #22c55e (esmeralda), #f1f5f9 (botón de contraste)
+   Acentos: #4ade80 / #22c55e (esmeralda), #ffffff (botón de contraste)
    ═══════════════════════════════════════════════════════════════════ */
 
 :host {
@@ -12,8 +12,8 @@
 
 .map-showcase-section {
   background-color: #05241b;
-  font-family: 'Montserrat', sans-serif;
-  padding: 58px 0 64px 0;
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 85px 0 95px 0;
   position: relative;
   overflow: hidden;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
@@ -21,7 +21,7 @@
 }
 
 .map-container-inner {
-  max-width: 1460px;
+  max-width: 1480px;
   margin: 0 auto;
   padding: 0 32px;
   box-sizing: border-box;
@@ -29,12 +29,12 @@
 
 .map-grid {
   display: grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: 54px;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 64px;
   align-items: center;
 }
 
-/* ── Columna Izquierda: Marco del Mapa Interactivo con Badge ── */
+/* ── Columna Izquierda: Marco del Mapa Más Ancho y Alto ── */
 .map-visual-wrapper {
   width: 100%;
 }
@@ -42,18 +42,18 @@
 .map-frame {
   position: relative;
   width: 100%;
-  height: 460px;
-  border-radius: 24px;
+  height: 530px;
+  border-radius: 20px;
   overflow: hidden;
   background-color: #031a13;
-  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 55px -12px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
 }
 
 .map-frame:hover {
-  box-shadow: 0 25px 55px -10px rgba(22, 163, 74, 0.35);
-  border-color: rgba(74, 222, 128, 0.3);
+  box-shadow: 0 28px 65px -12px rgba(0, 0, 0, 0.75);
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .map-frame iframe {
@@ -64,106 +64,43 @@
   filter: contrast(1.05) saturate(1.05);
 }
 
-/* Badge Flotante Inferior Izquierdo (Mismo Estilo Nosotros Inicio) */
-.map-pill-badge {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(3, 26, 19, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 6px 16px 6px 6px;
-  border-radius: 50px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-  z-index: 5;
-  pointer-events: none;
-}
-
-.badge-capsule {
-  background: #16a34a;
-  color: #ffffff;
-  font-size: 0.7rem;
-  font-weight: 850;
-  letter-spacing: 0.06em;
-  padding: 4px 12px;
-  border-radius: 50px;
-  text-transform: uppercase;
-}
-
-.badge-text {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #f1f5f9;
-  letter-spacing: 0.02em;
-}
-
-/* ── Columna Derecha: Contenido Editorial ── */
+/* ── Columna Derecha: Contenido Editorial Minimalista ── */
 .map-content-wrapper {
   display: flex;
   flex-direction: column;
 }
 
-/* Kicker Superior: ¿DÓNDE ENCONTRARNOS? */
+/* Kicker Minimalista: ¿DÓNDE ENCONTRARNOS? */
 .kicker-badge-row {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .map-kicker {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.76rem;
-  font-weight: 850;
+  gap: 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
   color: #4ade80;
-  background: rgba(74, 222, 128, 0.1);
-  border: 1px solid rgba(74, 222, 128, 0.25);
-  padding: 5px 14px;
-  border-radius: 50px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
-.kicker-pulse-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: #4ade80;
-  box-shadow: 0 0 10px #4ade80;
-  animation: pulseDot 2s infinite cubic-bezier(0.66, 0, 0, 1);
+.kicker-line {
+  width: 22px;
+  height: 1.5px;
+  background: #4ade80;
+  display: inline-block;
+  border-radius: 2px;
 }
 
-@keyframes pulseDot {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.3);
-    opacity: 0.7;
-  }
-}
-
-/* Titular Principal con Fondo Técnico de Puntos */
+/* Titular Principal Limpio */
 .headline-container {
   position: relative;
   margin-bottom: 18px;
-}
-
-.dot-grid-pattern {
-  position: absolute;
-  right: 10px;
-  top: -10px;
-  width: 190px;
-  height: 110px;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.18) 1.5px, transparent 1.5px);
-  background-size: 16px 16px;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.55;
 }
 
 .map-title {
@@ -174,99 +111,114 @@
 
 .title-lead-line {
   display: block;
-  font-size: 2.75rem;
-  font-weight: 900;
+  font-size: clamp(2.1rem, 2.8vw, 2.75rem);
+  font-weight: 850;
   color: #ffffff;
   letter-spacing: -0.025em;
-  line-height: 1.12;
+  line-height: 1.14;
   text-transform: uppercase;
 }
 
 .title-dynamic-line {
   display: block;
-  font-size: 2.35rem;
-  font-weight: 850;
-  line-height: 1.22;
+  font-size: clamp(1.85rem, 2.4vw, 2.35rem);
+  font-weight: 800;
+  line-height: 1.2;
   margin-top: 6px;
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #4ade80 0%, #22c55e 50%, #86efac 100%);
+  color: #4ade80;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 14px rgba(74, 222, 128, 0.3));
   display: inline;
 }
 
 /* Párrafo Descriptivo Lead */
 .map-lead {
-  font-size: 1.02rem;
-  color: #cbd5e1;
-  line-height: 1.7;
-  font-weight: 400;
-  margin: 0 0 24px 0;
-  max-width: 720px;
+  font-size: 0.98rem;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.68;
+  font-weight: 350;
+  margin: 0 0 28px 0;
+  max-width: 640px;
 }
 
 .map-lead strong {
   color: #ffffff;
-  font-weight: 750;
+  font-weight: 600;
 }
 
-/* Lista de Detalles Clave (Checklist) */
-.map-checklist {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 28px 0;
+/* Grid Moderno de Información (Líneas Minimalistas con Hairline) */
+.map-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px 28px;
+  margin: 0 0 34px 0;
+  max-width: 580px;
+}
+
+.map-info-card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 0 12px 0;
+  border-radius: 0;
+  box-sizing: border-box;
+  transition: border-color 0.25s ease, transform 0.25s ease;
 }
 
-.checklist-item {
-  display: block;
+.map-info-card:hover {
+  background: transparent;
+  border-color: rgba(74, 222, 128, 0.45);
+  transform: translateX(3px);
 }
 
-.checklist-entry {
-  display: inline-flex;
+.info-card-header {
+  display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 4px 0;
+  gap: 10px;
 }
 
-.check-icon {
+.info-card-badge {
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
   color: #4ade80;
+  letter-spacing: 0.08em;
+  background: transparent;
+  padding: 0;
+  line-height: 1;
   flex-shrink: 0;
-  stroke-width: 2.5;
-  opacity: 0.95;
 }
 
-.entry-text-group {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.entry-name {
-  color: #ffffff;
-  font-size: 0.94rem;
-  font-weight: 750;
-  letter-spacing: 0.01em;
-}
-
-.entry-detail {
-  color: #94a3b8;
+.info-card-title {
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 0.92rem;
-  font-weight: 450;
+  font-weight: 550;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0.01em;
+  line-height: 1.25;
 }
 
-/* ── Botón de Acción Principal ── */
+.info-card-detail {
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 350;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.45;
+  margin: 0;
+  padding-left: 22px;
+}
+
+/* ── Botón de Acción Principal Minimalista ── */
 .map-action-row {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-top: 4px;
 }
 
 .map-cta-pill {
@@ -274,24 +226,23 @@
   align-items: center;
   gap: 10px;
   background: #ffffff;
-  color: #0f172a;
+  color: #05241b;
   text-decoration: none;
-  font-size: 0.86rem;
-  font-weight: 850;
+  font-size: 0.82rem;
+  font-weight: 750;
   letter-spacing: 0.08em;
-  padding: 14px 28px;
+  text-transform: uppercase;
+  padding: 13px 30px;
   border-radius: 50px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s ease;
 }
 
 .map-cta-pill:hover {
-  background: #16a34a;
-  color: #ffffff;
-  border-color: #16a34a;
+  background: #ffffff;
+  color: #041d15;
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(22, 163, 74, 0.45);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
 }
 
 .map-arrow-icon {
@@ -302,31 +253,27 @@
   transform: translate(2px, -2px);
 }
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    RESPONSIVIDAD
-   ═══════════════════════════════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════════ */
 @media (max-width: 1024px) {
+  .map-showcase-section {
+    padding: 65px 0 75px 0;
+  }
+
   .map-grid {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 42px;
   }
 
   .map-frame {
-    height: 380px;
-  }
-
-  .title-lead-line {
-    font-size: 2.2rem;
-  }
-
-  .title-dynamic-line {
-    font-size: 1.9rem;
+    height: 400px;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .map-showcase-section {
-    padding: 42px 0 48px 0;
+    padding: 50px 0 55px 0;
   }
 
   .map-container-inner {
@@ -335,44 +282,31 @@
 
   .map-frame {
     height: 300px;
-    border-radius: 18px;
+    border-radius: 16px;
   }
 
   .title-lead-line {
-    font-size: 1.75rem;
+    font-size: 1.95rem;
   }
 
   .title-dynamic-line {
-    font-size: 1.55rem;
+    font-size: 1.65rem;
   }
 
   .map-lead {
-    font-size: 0.94rem;
+    font-size: 0.9rem;
   }
 
-  .entry-name,
-  .entry-detail {
-    font-size: 0.86rem;
-  }
-
-  .map-pill-badge {
-    bottom: 12px;
-    left: 12px;
-    padding: 4px 12px 4px 4px;
-  }
-
-  .badge-capsule {
-    font-size: 0.65rem;
-    padding: 3px 8px;
-  }
-
-  .badge-text {
-    font-size: 0.72rem;
+  .map-info-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 26px;
   }
 
   .map-cta-pill {
     width: 100%;
     justify-content: center;
-    padding: 13px 20px;
+    text-align: center;
+    box-sizing: border-box;
   }
 }

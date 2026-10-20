@@ -2,7 +2,7 @@
   <div class="map-container-inner">
     <div class="map-grid">
       
-      <!-- Columna Izquierda: Marco del Mapa Interactivo con Badge Flotante -->
+      <!-- Columna Izquierda: Marco del Mapa Interactivo Limpio -->
       <div class="map-visual-wrapper">
         <div class="map-frame">
           <iframe 
@@ -16,29 +16,22 @@
             sandbox="allow-scripts allow-same-origin allow-popups"
             aria-label="Ubicación de Plaxtilineas en Armenia, Quindío">
           </iframe>
-
-          <!-- Badge Flotante Inferior Izquierdo (Mismo Estilo Nosotros) -->
-          <div class="map-pill-badge">
-            <span class="badge-capsule">SEDE PRINCIPAL</span>
-            <span class="badge-text">Cra. 19 # 19-35, Armenia</span>
-          </div>
         </div>
       </div>
 
       <!-- Columna Derecha: Contenido Editorial y Datos de Atención -->
       <div class="map-content-wrapper">
         
-        <!-- Kicker Superior con Pulso -->
+        <!-- Kicker Minimalista: ¿DÓNDE ENCONTRARNOS? -->
         <div class="kicker-badge-row">
           <span class="map-kicker">
-            <span class="kicker-pulse-dot"></span>
+            <span class="kicker-line"></span>
             ¿DÓNDE ENCONTRARNOS?
           </span>
         </div>
 
-        <!-- Titular Principal con Fondo Técnico de Puntos -->
+        <!-- Titular Principal Limpio -->
         <div class="headline-container">
-          <div class="dot-grid-pattern" aria-hidden="true"></div>
           <h2 class="map-title">
             <span class="title-lead-line">Punto de atención</span>
             <span class="title-dynamic-line">
@@ -47,61 +40,45 @@
           </h2>
         </div>
 
-        <!-- Párrafo Descriptivo -->
+        <!-- Párrafo Descriptivo Breve y Directo -->
         <p class="map-lead">
-          En <strong>Plaxtilineas</strong> te esperamos en nuestra tienda física en Armenia para brindarte asesoría directa, entrega inmediata en mostrador y coordinación de despachos para fincas, constructoras y talleres de todo el departamento.
+          Visítanos en nuestra sede en Armenia para asesoría técnica, venta inmediata y coordinación de despachos a toda la región.
         </p>
 
-        <!-- Lista de Detalles Clave con Iconos -->
-        <ul class="map-checklist">
-          <li class="checklist-item">
-            <div class="checklist-entry">
-              <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-              <span class="entry-text-group">
-                <strong class="entry-name">Dirección Comercial:</strong>
-                <span class="entry-detail">Carrera 19 # 19-35, Centro de Armenia, Quindío</span>
-              </span>
+        <!-- Información Clave en Grid 2x2 -->
+        <div class="map-info-grid">
+          <div class="map-info-card">
+            <div class="info-card-header">
+              <span class="info-card-badge">01</span>
+              <strong class="info-card-title">Dirección</strong>
             </div>
-          </li>
+            <p class="info-card-detail">Cra. 19 # 19-35, Centro de Armenia</p>
+          </div>
 
-          <li class="checklist-item">
-            <div class="checklist-entry">
-              <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-              <span class="entry-text-group">
-                <strong class="entry-name">Horario de Atención:</strong>
-                <span class="entry-detail">Lunes a Viernes 8:00 AM - 6:00 PM | Sábados 8:00 AM - 2:00 PM</span>
-              </span>
+          <div class="map-info-card">
+            <div class="info-card-header">
+              <span class="info-card-badge">02</span>
+              <strong class="info-card-title">Horario</strong>
             </div>
-          </li>
+            <p class="info-card-detail">Lun - Vie 8:00 AM - 6:00 PM | Sáb 8:00 AM - 2:00 PM</p>
+          </div>
 
-          <li class="checklist-item">
-            <div class="checklist-entry">
-              <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-              <span class="entry-text-group">
-                <strong class="entry-name">Muestrarios en Vivo:</strong>
-                <span class="entry-detail">Conoce en persona densidades de espuma, calibres de plástico y mallas</span>
-              </span>
+          <div class="map-info-card">
+            <div class="info-card-header">
+              <span class="info-card-badge">03</span>
+              <strong class="info-card-title">Muestrarios</strong>
             </div>
-          </li>
+            <p class="info-card-detail">Espumas, plásticos y mallas en exhibición</p>
+          </div>
 
-          <li class="checklist-item">
-            <div class="checklist-entry">
-              <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-              <span class="entry-text-group">
-                <strong class="entry-name">Cargue &amp; Despachos:</strong>
-                <span class="entry-detail">Fácil acceso para carga de mercancía y envíos a municipios</span>
-              </span>
+          <div class="map-info-card">
+            <div class="info-card-header">
+              <span class="info-card-badge">04</span>
+              <strong class="info-card-title">Despachos</strong>
             </div>
-          </li>
-        </ul>
+            <p class="info-card-detail">Envíos inmediatos a todo el Quindío y el Eje Cafetero</p>
+          </div>
+        </div>
 
         <!-- Botón de Acción Principal -->
         <div class="map-action-row">
@@ -112,7 +89,7 @@
             class="map-cta-pill"
             aria-label="Abrir ruta en Google Maps">
             <span>ABRIR EN GOOGLE MAPS</span>
-            <svg class="map-arrow-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="map-arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="7" y1="17" x2="17" y2="7"></line>
               <polyline points="7 7 17 7 17 17"></polyline>
             </svg>

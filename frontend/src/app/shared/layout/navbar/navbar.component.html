@@ -1,4 +1,4 @@
-<header class="main-header" [class.scrolled]="isScrolled" [class.chat-active]="isChatOpen">
+<header class="main-header" [class.scrolled]="isScrolled" [class.chat-active]="isChatOpen" [class.nav-hidden]="isNavbarHidden">
 
   <!-- ── Top Bar ── -->
   <div class="topbar-tw">
@@ -40,34 +40,24 @@
         </a>
       </div>
 
-      <!-- Header Status Pill -->
-      <div class="header-status-pill hide-tablet-down">
-        <span class="status-dot"></span>
-        <span class="status-pill-text">Armenia &amp; Eje Cafetero</span>
-      </div>
-
       <!-- Desktop Nav Links -->
       <div class="nav-links-tw">
         <a routerLink="/" routerLinkActive="nav-link-active" [routerLinkActiveOptions]="{exact: true}" class="nav-link-tw">
-          <fa-icon [icon]="['fas', 'home']" class="nav-link-icon"></fa-icon>
           <span>Inicio</span>
           <span class="nav-link-underline"></span>
         </a>
 
         <a routerLink="/productos" routerLinkActive="nav-link-active" class="nav-link-tw">
-          <fa-icon [icon]="['fas', 'layer-group']" class="nav-link-icon"></fa-icon>
           <span>Catálogo</span>
           <span class="nav-link-underline"></span>
         </a>
 
         <a routerLink="/nosotros" routerLinkActive="nav-link-active" class="nav-link-tw">
-          <fa-icon [icon]="['fas', 'users']" class="nav-link-icon"></fa-icon>
           <span>Nosotros</span>
           <span class="nav-link-underline"></span>
         </a>
 
         <a routerLink="/" fragment="grupo" (click)="scrollToGrupo($event)" class="nav-link-tw">
-          <fa-icon [icon]="['fas', 'city']" class="nav-link-icon"></fa-icon>
           <span>Grupo</span>
           <span class="nav-link-underline"></span>
         </a>
@@ -93,14 +83,14 @@
           <div class="search-suggestions-tw" *ngIf="showSuggestions">
             <div class="suggestions-header-tw">Búsquedas frecuentes</div>
             <div class="suggestions-list-tw">
-              <div class="suggestion-item-tw" (click)="navigateToSearch('Espumas')">
-                <fa-icon [icon]="['fas', 'search']"></fa-icon> Espumas
+              <div class="suggestion-item-tw" (click)="navigateToSearch('Espuma')">
+                <fa-icon [icon]="['fas', 'search']"></fa-icon> Espuma
               </div>
-              <div class="suggestion-item-tw" (click)="navigateToSearch('Plásticos')">
-                <fa-icon [icon]="['fas', 'search']"></fa-icon> Plásticos
+              <div class="suggestion-item-tw" (click)="navigateToSearch('Plástico')">
+                <fa-icon [icon]="['fas', 'search']"></fa-icon> Plástico
               </div>
-              <div class="suggestion-item-tw" (click)="navigateToSearch('Empaques')">
-                <fa-icon [icon]="['fas', 'search']"></fa-icon> Empaques
+              <div class="suggestion-item-tw" (click)="navigateToSearch('Empaque')">
+                <fa-icon [icon]="['fas', 'search']"></fa-icon> Empaque
               </div>
             </div>
           </div>
@@ -129,8 +119,8 @@
         <!-- Cart -->
         <app-cart-icon></app-cart-icon>
 
-        <!-- Volver al Dashboard (Logged in) -->
-        <a *ngIf="authService.isLoggedIn | async" 
+        <!-- Volver al Dashboard (Visible únicamente si está logueado como Admin) -->
+        <a *ngIf="(authService.isLoggedIn | async) && isAdmin" 
            routerLink="/admin" 
            class="btn-dashboard-pill"
            title="Volver al Panel de Administración"
@@ -139,8 +129,8 @@
           <span class="pill-dash-text">Volver al dashboard</span>
         </a>
 
-        <!-- User (Logged In) -->
-        <div *ngIf="authService.isLoggedIn | async" class="user-area-tw">
+        <!-- User (Logged In como Cliente Normal - No Admin) -->
+        <div *ngIf="(authService.isLoggedIn | async) && !isAdmin" class="user-area-tw">
           <div class="user-greeting-tw">
             <span class="user-greeting-label">Bienvenido,</span>
             <span class="user-greeting-name">{{ (authService.currentUser | async)?.nombre }}</span>
@@ -149,17 +139,12 @@
             <fa-icon [icon]="['fas', 'user']"></fa-icon>
           </button>
 
-          <!-- User Dropdown -->
+          <!-- User Dropdown (Cliente) -->
           <div *ngIf="userDropdownOpen" class="user-dropdown-tw" (click)="$event.stopPropagation()">
             <div class="user-dropdown-header-tw">
               <span class="dropdown-title">Mi Cuenta</span>
               <span class="dropdown-email">{{ (authService.currentUser | async)?.correo }}</span>
             </div>
-            <div class="dropdown-divider-tw"></div>
-            <a routerLink="/admin" class="dropdown-item-tw dropdown-item-dashboard" (click)="userDropdownOpen = false">
-              <span class="material-symbols-rounded dropdown-dash-icon">dashboard</span>
-              <span>Volver al dashboard</span>
-            </a>
             <div class="dropdown-divider-tw"></div>
             <a class="dropdown-item-tw" (click)="onUserAction('editar-perfil')">
               <fa-icon [icon]="['fas', 'user']" class="dropdown-item-icon-tw"></fa-icon>
@@ -199,6 +184,8 @@
 
       </div>
     </div>
+    <!-- Línea inferior de acento esmeralda sutil (estilo footer) -->
+    <div class="navbar-accent-line"></div>
   </nav>
 
   <!-- ── Mobile Search Overlay ── -->
@@ -259,13 +246,22 @@
       <span>Contacto</span>
     </a>
 
-    <!-- Logged in -->
-    <div *ngIf="authService.isLoggedIn | async" class="drawer-user-section-tw">
-      <div class="drawer-section-title-tw">Bienvenido, {{ (authService.currentUser | async)?.nombre }}</div>
+    <!-- Logged in Admin -->
+    <div *ngIf="(authService.isLoggedIn | async) && isAdmin" class="drawer-user-section-tw">
+      <div class="drawer-section-title-tw">Panel Administrativo</div>
       <a routerLink="/admin" class="drawer-link-tw drawer-dashboard-link" (click)="closeMenu()">
         <span class="material-symbols-rounded drawer-dash-icon">dashboard</span>
         <span>Volver al dashboard</span>
       </a>
+      <a class="drawer-link-tw drawer-logout-tw" (click)="closeMenu(); logoutUser()">
+        <fa-icon [icon]="['fas', 'times']"></fa-icon> <span>Cerrar sesión</span>
+      </a>
+      <hr class="drawer-divider-tw">
+    </div>
+
+    <!-- Logged in Cliente (No Admin) -->
+    <div *ngIf="(authService.isLoggedIn | async) && !isAdmin" class="drawer-user-section-tw">
+      <div class="drawer-section-title-tw">Bienvenido, {{ (authService.currentUser | async)?.nombre }}</div>
       <a class="drawer-link-tw" (click)="closeMenu(); onUserAction('editar-perfil')">
         <fa-icon [icon]="['fas', 'user']"></fa-icon> <span>Editar datos</span>
       </a>
@@ -307,7 +303,7 @@
 </div>
 
 <!-- ── Mobile Bottom Nav (PWA) ── -->
-<nav class="mobile-bottom-nav" [class.dark-mode]="isChatOpen" [class.nav-hidden]="searchActive || isChatOpen" #bottomNav
+<nav class="mobile-bottom-nav" [class.dark-mode]="isChatOpen" [class.nav-hidden]="searchActive || isChatOpen || isNavbarHidden" #bottomNav
      (touchstart)="onTouchStart($event)"
      (touchmove)="onTouchMove($event)"
      (touchend)="onTouchEnd($event)"

@@ -1,0 +1,287 @@
+<div class="apple-scroll-container">
+  
+  <!-- Pista de Scroll Real Extensa: Otorga recorrido amplio y relajado para que el scroll no se sienta apresurado -->
+  <div class="apple-scroll-track" #scrollTrack>
+
+    <!-- Viewport Fijo / Sticky: SE QUEDA INMÓVIL EN PANTALLA durante todo el recorrido -->
+    <div class="apple-sticky-viewport">
+
+      <!-- Línea Superior de Acento Esmeralda Sutil (Estilo Footer) -->
+      <div class="apple-accent-glow"></div>
+
+      <!-- Escenario Visual Cinemático: Cuero Microperforado con Respiración Activa -->
+      <div class="apple-visual-stage">
+
+        <!-- Capa 0: Hero Asiento Deportivo Microperforado -->
+        <div 
+          class="stage-layer layer-hero"
+          [style.opacity]="heroOpacity"
+          [style.transform]="'scale(' + heroScale + ')'">
+          <img 
+            src="assets/images/cuerina/cyrus-hero.jpg" 
+            alt="Asiento deportivo tapizado en Continental Plus Cyrus microperforado" 
+            class="stage-img"
+            [style.filter]="selectedReference.filterStyle">
+        </div>
+
+        <!-- Capa 1: Muestrario Oficial con los 3 Tonos de Material (Negro, Gris Claro, Gris Oscuro Charcoat) -->
+        <div 
+          class="stage-layer layer-angle"
+          [style.opacity]="angleOpacity"
+          [style.transform]="'translateX(' + angleTranslateX + 'px) scale(' + angleScale + ')'">
+          <img 
+            src="assets/images/cuerina/cyrus-swatches-display.png" 
+            alt="Muestrario oficial de Continental Plus Cyrus en sus 3 tonos: 800 Negro, 1210 Gris y 1131 Charcoat" 
+            class="stage-img">
+        </div>
+
+        <!-- Capa 2: Macro 8K Microperforado (Detalle Pinhole / Huequitos de Ventilación) -->
+        <div 
+          class="stage-layer layer-macro"
+          [style.opacity]="macroOpacity"
+          [style.transform]="'scale(' + macroScale + ')'"
+          [style.filter]="selectedReference.filterStyle + ' blur(' + macroBlur + 'px)'">
+          <img 
+            src="assets/images/cuerina/cyrus-macro.jpg" 
+            alt="Detalle macro del cuero sintético microperforado con huequitos de ventilación" 
+            class="stage-img">
+        </div>
+
+        <!-- Capa 3: Bobina Industrial Continental Plus Cyrus 1.50m -->
+        <div 
+          class="stage-layer layer-roll"
+          [style.opacity]="rollOpacity"
+          [style.transform]="'scale(' + rollScale + ')'">
+          <img 
+            src="assets/images/cuerina/cyrus-roll.jpg" 
+            alt="Rollo industrial de Continental Plus Cyrus microperforado de 1.50 metros" 
+            class="stage-img">
+        </div>
+
+      </div>
+
+      <!-- Tarjetas de Texto Cinemáticas Flotantes por Etapa -->
+      <div class="apple-text-layers">
+
+        <!-- Texto Etapa 0: Hero Asiento -->
+        <div class="info-card stage-card-0" [class.active]="activeStage === 0">
+          <div class="kicker-badge">
+            <span class="kicker-line"></span>
+            <span>TAPICERÍA AUTOMOTRIZ &bull; VENTILACIÓN ACTIVA</span>
+          </div>
+          <h1 class="main-title">
+            <span class="title-lead">CONTINENTAL PLUS CYRUS</span>
+            <span class="title-highlight">Cuerina Microperforada</span>
+          </h1>
+          <p class="main-desc">
+            Cuerina automotriz de alta especificación con matriz de microperforaciones (huequitos respirables) para máxima frescura, tacto cuero mate y resistencia al calor en climas cálidos.
+          </p>
+
+          <div class="scroll-cue">
+            <div class="mouse-track">
+              <div class="mouse-wheel"></div>
+            </div>
+            <span>Desliza suavemente la rueda del ratón para explorar el material</span>
+          </div>
+        </div>
+
+        <!-- Texto Etapa 1: Muestrario Oficial de Tonos -->
+        <div class="info-card stage-card-1" [class.active]="activeStage === 1">
+          <div class="kicker-badge">
+            <span class="kicker-line"></span>
+            <span>MATERIA PRIMA &bull; 3 TONALIDADES DISPONIBLES</span>
+          </div>
+          <h2 class="section-title">
+            <span class="title-lead">GAMA DE TONALIDADES</span>
+            <span class="title-highlight">Muestrario Oficial Continental Plus</span>
+          </h2>
+          <p class="section-lead-text">
+            Suministramos el material original en metros y bobinas para talleres de tapicería, fabricantes de silletería y concesionarios.
+          </p>
+          <div class="specs-chips">
+            <div class="spec-chip">
+              <div class="chip-header">
+                <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="chip-val">1210 Gris A</span>
+              </div>
+              <span class="chip-sub">Gris claro elegante con orificios oscuros de contraste térmico.</span>
+            </div>
+            <div class="spec-chip">
+              <div class="chip-header">
+                <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="chip-val">800 Negro &amp; 1131 Charcoat</span>
+              </div>
+              <span class="chip-sub">Negro mate profundo y grafito antracita para interiores deportivos.</span>
+            </div>
+          </div>
+
+          <!-- Selector Rápido de Tonalidades -->
+          <div class="stage-swatch-pills">
+            <span class="pills-title">Seleccionar tono para el pedido:</span>
+            <div class="pills-group">
+              <button 
+                *ngFor="let ref of references" 
+                type="button" 
+                class="tone-pill" 
+                [class.active]="selectedReference.id === ref.id"
+                (click)="selectReference(ref)">
+                <span class="dot" [style.background-color]="ref.colorHex"></span>
+                <span>{{ ref.shortLabel }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Texto Etapa 2: Macro Microperforado 8K -->
+        <div class="info-card stage-card-2" [class.active]="activeStage === 2">
+          <div class="kicker-badge">
+            <span class="kicker-line"></span>
+            <span>TEXTURA &bull; MATRIZ PINHOLE</span>
+          </div>
+          <h2 class="section-title">
+            <span class="title-lead">MICROPERFORACIONES</span>
+            <span class="title-highlight">Disipación Térmica Continua</span>
+          </h2>
+          <div class="specs-chips">
+            <div class="spec-chip">
+              <div class="chip-header">
+                <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="chip-val">Huequitos Respirables</span>
+              </div>
+              <span class="chip-sub">Matriz de perforación láser uniforme sin deformar la resistencia del material.</span>
+            </div>
+            <div class="spec-chip">
+              <div class="chip-header">
+                <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="chip-val">Acabado Mate Antirreflejo</span>
+              </div>
+              <span class="chip-sub">Tacto seco de lujo, resistente al desgaste por radiación solar y rayos UV.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Texto Etapa 3: Bobina Industrial Continental Plus Cyrus -->
+        <div class="info-card stage-card-3" [class.active]="activeStage === 3">
+          <div class="kicker-badge">
+            <span class="kicker-line"></span>
+            <span>SUMINISTRO &bull; MAYORISTA</span>
+          </div>
+          <h2 class="section-title">
+            <span class="title-lead">BOBINAS INDUSTRIALES</span>
+            <span class="title-highlight">1.50 Metros de Ancho Útil</span>
+          </h2>
+          <div class="specs-chips">
+            <div class="spec-chip">
+              <div class="chip-header">
+                <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="chip-val">Ancho Útil 1.50 M</span>
+              </div>
+              <span class="chip-sub">Ideal para patrones continuos de silletería, paneles de puertas y techos.</span>
+            </div>
+            <div class="spec-chip">
+              <div class="chip-header">
+                <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="chip-val">Respaldo Textil Técnico</span>
+              </div>
+              <span class="chip-sub">Malla flexible de alta adherencia para pegado limpio y sin arrugas.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Etapa 4: Ficha Final Minimalista & Redirección al Catálogo -->
+        <div 
+          class="info-card stage-card-4" 
+          [class.active]="activeStage === 4"
+          [style.transform]="'translate(-50%, calc(-50% + ' + configTranslateY + 'px)) scale(' + frontScale + ')'"
+          [style.opacity]="configOpacity">
+
+          <div class="simple-catalog-card">
+            
+            <!-- Imagen del Producto Real del Catálogo con marco estilizado -->
+            <a 
+              [routerLink]="['/producto', productId]" 
+              class="simple-catalog-image-link"
+              title="Abrir descripción de Continental Plus Cyrus en el catálogo">
+              <img 
+                src="assets/images/cuerina/cyrus-catalog.png" 
+                alt="Continental Plus Cyrus - Tapicería Automotriz" 
+                class="simple-catalog-img">
+            </a>
+
+            <!-- Información Minimalista Estilo Home / Product-Feature-Split -->
+            <div class="simple-catalog-body">
+              <div class="kicker-badge">
+                <span class="kicker-line"></span>
+                <span>TAPICERÍA AUTOMOTRIZ</span>
+              </div>
+              <h2 class="simple-product-title">
+                <span class="title-lead">CONTINENTAL PLUS CYRUS</span>
+                <span class="title-highlight">Catálogo Oficial Plaxtilineas</span>
+              </h2>
+              
+              <p class="simple-product-desc">
+                Cuerina automotriz de alta especificación con matriz de microperforaciones respirables para óptima circulación de aire, tacto de lujo y resistencia térmica superior.
+              </p>
+
+              <!-- Botón de Redirección hacia Descripción en Catálogo Estilo Pill -->
+              <div class="feature-action-row">
+                <a 
+                  [routerLink]="['/producto', productId]" 
+                  class="feature-cta-pill"
+                  title="Ver descripción de Continental Plus Cyrus en el catálogo">
+                  <span>VER DESCRIPCIÓN EN EL CATÁLOGO</span>
+                  <svg class="btn-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Flechas Flotantes Laterales Anterior / Siguiente -->
+      <aside class="apple-side-arrows" aria-label="Navegación por etapas">
+        <button 
+          type="button" 
+          class="arrow-btn" 
+          [disabled]="activeStage === 0" 
+          (click)="prevStage()"
+          aria-label="Etapa anterior">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
+        </button>
+        <button 
+          type="button" 
+          class="arrow-btn" 
+          [disabled]="activeStage === 4" 
+          (click)="nextStage()"
+          aria-label="Etapa siguiente">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+      </aside>
+
+    </div>
+
+  </div>
+
+</div>

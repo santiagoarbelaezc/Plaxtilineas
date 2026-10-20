@@ -23,7 +23,7 @@
   border: 1px solid rgba(54, 140, 68, 0.18);
   box-shadow: 0 20px 48px -10px rgba(15, 23, 42, 0.22), 
               0 8px 20px rgba(54, 140, 68, 0.06);
-  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-family: var(--font-primary, 'Inter Tight', sans-serif);
   color: #1e293b;
   position: relative;
   overflow: hidden;
@@ -231,7 +231,7 @@
   flex-direction: column;
   overflow: hidden;
   animation: modalPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-family: var(--font-primary, 'Inter Tight', sans-serif);
 }
 
 /* Header Modal */

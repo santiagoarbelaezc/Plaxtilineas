@@ -6,7 +6,9 @@ import { Subject, debounceTime, distinctUntilChanged, takeUntil, switchMap, catc
 import { ProductosService } from '../../../services/productos.service';
 import { ProductoEditable } from '../../../models/producto.model';
 import { SearchStateService } from '../../../services/search-state.service';
-import { optimizeForThumbnail } from '../../../utils/cloudinary-optimizer';
+import { PrecioOfertaService } from '../../../services/precio-oferta.service';
+import { ProductSelectService } from '../../../services/product-select.service';
+import { optimizeForCard, optimizeForThumbnail } from '../../../utils/cloudinary-optimizer';
 
 @Component({
   selector: 'app-search-component',
@@ -53,6 +55,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     private router: Router,
     private productosService: ProductosService,
     private searchStateService: SearchStateService,
+    private precioOfertaService: PrecioOfertaService,
+    private productSelectService: ProductSelectService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -161,17 +165,6 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.guardarBusquedaReciente(term);
     this.showSuggestions = false;
     this.buscar();
-  }
-
-  /**
-   * Navegar atrás o a la página principal
-   */
-  volverAtras(): void {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      this.router.navigate(['/']);
-    }
   }
 
   /**
@@ -475,29 +468,47 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   verDetallesProducto(producto: ProductoEditable): void {
-    const currentSearch = this.terminoBusqueda;
-    const slug = producto.nombre ? producto.nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '') : '';
-    const urlParam = slug ? `${producto.id}-${slug}` : producto.id;
+    this.productSelectService.verDetallesProducto(producto as any);
+  }
 
-    this.router.navigate(['/producto', urlParam], {
-      state: { fromSearch: true, searchTerm: currentSearch }
-    });
+  volverAtras(): void {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      window.history.back();
+    } else {
+      this.router.navigate(['/']);
+    }
+  }
+
+  verTodosLosProductos(): void {
+    this.limpiarBusqueda();
+  }
+
+  formatearPrecio(precio: number): string {
+    return this.precioOfertaService.formatearPrecio(precio);
+  }
+
+  obtenerPrecioReferencia(precioReal: number): string {
+    const precioRef = this.precioOfertaService.calcularPrecioReferencia(precioReal, 25);
+    return this.precioOfertaService.formatearPrecio(precioRef);
+  }
+
+  formatearNombre(nombre: string): string {
+    if (!nombre) return '';
+    return nombre
+      .toLowerCase()
+      .split(' ')
+      .map(p => p.charAt(0).toUpperCase() + p.slice(1))
+      .join(' ');
   }
 
   mostrarPrecio(producto: ProductoEditable): string {
-    const formatearPrecio = (precio: number): string => {
-      if (precio === null || precio === undefined) return '$ 0';
-      const precioEntero = Math.round(precio);
-      return `$ ${precioEntero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
-    };
-
     if (producto.variantes && producto.variantes.length > 0) {
       const precios = producto.variantes.map(v => v.precio);
       const minPrecio = Math.min(...precios);
-      return `Desde ${formatearPrecio(minPrecio)}`;
+      return `Desde ${this.formatearPrecio(minPrecio)}`;
     }
 
-    return formatearPrecio(producto.precio || 0);
+    return this.formatearPrecio(producto.precio || 0);
   }
 
   trackByProducto(index: number, producto: ProductoEditable): any {
@@ -517,7 +528,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   optimizarImagen(url: string): string {
-    return optimizeForThumbnail(url, 240);
+    return optimizeForCard(url, 400);
   }
 
   private normalizarTexto(str: string): string {

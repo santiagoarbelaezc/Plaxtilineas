@@ -79,7 +79,7 @@ export class FeatureNewProducts implements OnInit {
     this.loading = true;
     this.error = null;
     
-    this.productosService.obtenerUltimosProductos().subscribe({
+    this.productosService.obtenerUltimosProductos(20).subscribe({
       next: (productos) => {
         this.productos = productos.map(p => ({
           ...p,

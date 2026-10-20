@@ -1,25 +1,26 @@
 <section id="search-section" class="search-section">
   <div class="search-container">
 
-    <!-- Encabezado Versión Desktop (original) -->
-    <div class="search-header desktop-only-header">
-      <h2 class="search-title">
-        <span class="title-text" *ngIf="!terminoBusqueda">Buscar Productos</span>
-        <span class="title-text" *ngIf="terminoBusqueda">Resultados de Búsqueda</span>
-        <span *ngIf="!isLoadingInicial" class="search-count">
-          {{ productos.length }} resultado{{ productos.length !== 1 ? 's' : '' }}
-        </span>
-      </h2>
+    <!-- Encabezado de Sección con Design Tokens (Exacto Home & Product List) -->
+    <div class="section-header">
+      <div class="header-titles">
+        <h1 class="section-title">
+          <span *ngIf="!terminoBusqueda">BÚSQUEDA DE <span class="highlight-green">PRODUCTOS</span></span>
+          <span *ngIf="terminoBusqueda">RESULTADOS PARA <span class="highlight-green">"{{ terminoBusqueda }}"</span></span>
+        </h1>
 
-      <div class="search-subtitle" *ngIf="!terminoBusqueda">
-        Encuentra exactamente lo que necesitas entre nuestra amplia selección de productos.
-      </div>
-      <div class="search-subtitle" *ngIf="terminoBusqueda">
-        Mostrando resultados para <strong>"{{ terminoBusqueda }}"</strong>
+        <p class="section-subtitle">
+          <span *ngIf="!terminoBusqueda">
+            Explora nuestro catálogo en tiempo real de espumas, plásticos industriales, peletería y empaques en Armenia.
+          </span>
+          <span *ngIf="terminoBusqueda">
+            Mostrando referencias encontradas para tu consulta. Cotiza rollos, medidas y pedidos personalizados.
+          </span>
+        </p>
       </div>
     </div>
 
-    <!-- Barra de Búsqueda Estilo App Nativa (Solo Móvil) -->
+    <!-- Barra de Búsqueda Móvil Estilo App Nativa -->
     <div class="mobile-app-search-bar mobile-only-header">
       <button class="back-nav-button" (click)="volverAtras()" aria-label="Volver atrás" type="button" title="Regresar">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -59,7 +60,7 @@
       </div>
     </div>
 
-    <!-- Campo de Búsqueda Versión Desktop -->
+    <!-- Campo de Búsqueda Versión Desktop (Moderno Pill con Tokens) -->
     <div class="search-input-container desktop-only-header">
       <div class="search-input-wrapper" [class.searching]="isSearchInProgress">
         <span class="search-input-icon">
@@ -78,7 +79,7 @@
           (keydown.enter)="onKeyPress($event)"
           (blur)="onFocusOut()"
           (focus)="showSuggestions = terminoBusqueda.trim().length >= 2"
-          placeholder="¿Qué producto estás buscando? Ej: 'espuma', 'piso', 'pegante'..."
+          placeholder="¿Qué producto buscas? Ej: 'espuma', 'piso', 'pegante', 'malla'..."
           class="search-input"
           aria-label="Buscar productos"
           autocomplete="off"
@@ -91,7 +92,8 @@
             (click)="limpiarBusqueda()"
             class="clear-button"
             aria-label="Limpiar búsqueda"
-            type="button">
+            type="button"
+            title="Borrar término">
             ✕
           </button>
           <button
@@ -106,12 +108,12 @@
       </div>
     </div>
 
-    <!-- Sugerencias en tiempo real -->
+    <!-- Dropdown de Sugerencias en tiempo real -->
     <div
       *ngIf="showSuggestions && productosSugeridos.length > 0"
       class="suggestions-dropdown">
       <div class="suggestions-header">
-        <span class="suggestions-title">Sugerencias:</span>
+        <span class="suggestions-title">Sugerencias inmediatas:</span>
         <span class="suggestions-count">{{ productosSugeridos.length }} encontradas</span>
       </div>
       <div class="suggestions-list">
@@ -123,22 +125,22 @@
           type="button">
           <div class="suggestion-image">
             <img
-              [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/placeholder.jpg'"
+              [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/default-product.png'"
               [alt]="producto.nombre"
               loading="lazy"
-              onerror="this.src='assets/images/placeholder.jpg'">
+              (error)="producto.imagen_url = 'assets/images/default-product.png'">
           </div>
           <div class="suggestion-info">
-            <div class="suggestion-name">{{ producto.nombre }}</div>
+            <div class="suggestion-name">{{ formatearNombre(producto.nombre) }}</div>
             <div class="suggestion-price">{{ mostrarPrecio(producto) }}</div>
-            <div class="suggestion-category">{{ producto.categoria }}</div>
+            <div class="suggestion-category" *ngIf="producto.categoria">{{ producto.categoria }}</div>
           </div>
           <div class="suggestion-arrow">→</div>
         </button>
       </div>
     </div>
 
-    <!-- Chips de Búsquedas Recientes y Frecuentes (interactivas) -->
+    <!-- Chips de Búsquedas Recientes y Frecuentes -->
     <div class="chips-section">
       <!-- Recientes -->
       <div class="chips-block" *ngIf="busquedasRecientes.length > 0">
@@ -158,7 +160,7 @@
         </div>
       </div>
 
-      <!-- Frecuentes (Términos en Singular) -->
+      <!-- Frecuentes -->
       <div class="chips-block">
         <div class="chips-block-header">
           <span class="chips-title">BÚSQUEDAS FRECUENTES</span>
@@ -176,86 +178,114 @@
       </div>
     </div>
 
-    <!-- Estado de carga -->
-    <div *ngIf="isLoadingInicial" class="search-loading">
-      <div class="loading-animation">
-        <div class="loading-dot" style="animation-delay: 0s"></div>
-        <div class="loading-dot" style="animation-delay: 0.2s"></div>
-        <div class="loading-dot" style="animation-delay: 0.4s"></div>
+    <!-- Barra de Estado / Filtro Activo (Estilo Product List) -->
+    <div class="filter-status-bar" *ngIf="terminoBusqueda">
+      <div class="filter-active-pill">
+        <span class="filter-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </span>
+        <span class="filter-text">
+          Búsqueda: <strong>"{{ terminoBusqueda }}"</strong>
+        </span>
+        <span class="filter-count" *ngIf="!isLoading">({{ productos.length }} {{ productos.length === 1 ? 'referencia' : 'referencias' }})</span>
       </div>
-      <p class="loading-text">Cargando catálogo de productos...</p>
-    </div>
 
-    <!-- Sin resultados -->
-    <div *ngIf="!isLoadingInicial && !isLoading && productos.length === 0" class="no-results">
-      <h3 class="no-results-title">No encontramos resultados para "{{ terminoBusqueda }}"</h3>
-      <p class="no-results-message">Intenta con otros términos de búsqueda.</p>
-      <button (click)="limpiarBusqueda()" class="retry-button" type="button">
-        Ver catálogo completo
+      <button type="button" class="btn-clear-filter" (click)="limpiarBusqueda()" title="Quitar filtro y ver todo el catálogo">
+        <span>✕ Ver todo el catálogo</span>
       </button>
     </div>
 
-    <!-- Grid de Productos por defecto y de resultados -->
-    <div *ngIf="!isLoadingInicial && productos.length > 0" class="search-results">
-      <div class="results-header">
-        <div class="results-info-container">
-          <p class="results-info">
-            <span *ngIf="!terminoBusqueda">Mostrando <strong>{{ productos.length }}</strong> productos en el catálogo</span>
-            <span *ngIf="terminoBusqueda">Mostrando <strong>{{ productos.length }}</strong> productos para <strong>"{{ terminoBusqueda }}"</strong></span>
-          </p>
-        </div>
-        <div class="results-actions" *ngIf="terminoBusqueda">
-          <button (click)="limpiarBusqueda()" class="clear-results-button" type="button">
-            ✕ Limpiar búsqueda
-          </button>
+    <!-- Contador de Referencias disponibles (cuando no hay búsqueda) -->
+    <div class="catalog-meta-info" *ngIf="!isLoadingInicial && !terminoBusqueda && productos.length > 0">
+      <span class="product-count-label">
+        Catálogo general: <strong>{{ productos.length }}</strong> referencias disponibles
+      </span>
+    </div>
+
+    <!-- Estado de Carga (Skeletons Idénticos a Product List y Carruseles) -->
+    <div *ngIf="isLoadingInicial || isLoading" class="products-grid-container">
+      <div class="products-grid">
+        <div class="producto-card skeleton-card" *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8]">
+          <div class="producto-imagen-wrapper skeleton-box"></div>
+          <div class="producto-info">
+            <div class="skeleton-text skeleton-subcat"></div>
+            <div class="skeleton-text skeleton-title"></div>
+            <div class="skeleton-text skeleton-title-short"></div>
+            <div class="skeleton-precio-row">
+              <div class="skeleton-text skeleton-price-old"></div>
+              <div class="skeleton-text skeleton-price-main"></div>
+            </div>
+          </div>
         </div>
       </div>
+    </div>
 
-      <!-- Tarjetas de Productos -->
+    <!-- Estado Sin Resultados (Estilo Product List) -->
+    <div *ngIf="!isLoadingInicial && !isLoading && productos.length === 0" class="empty-state">
+      <div class="empty-icon-box">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          <line x1="8" y1="11" x2="14" y2="11"></line>
+        </svg>
+      </div>
+      <h3 class="empty-title">No encontramos resultados para "{{ terminoBusqueda }}"</h3>
+      <p class="empty-subtitle">Revisa la ortografía o intenta buscar por categorías generales como espumas, lonas o plásticos.</p>
+      <button type="button" class="btn-empty-action" (click)="limpiarBusqueda()">
+        <span>Ver Todo el Catálogo</span>
+      </button>
+    </div>
+
+    <!-- Grid de Productos (Diseño Idéntico al Home y Product List) -->
+    <div class="products-grid-container" *ngIf="!isLoadingInicial && !isLoading && productos.length > 0">
       <div class="products-grid">
+
         <div
-          class="product-card"
-          *ngFor="let prod of productos; trackBy: trackByProducto; let i = index"
-          (click)="verDetallesProducto(prod)">
+          *ngFor="let prod of productos; trackBy: trackByProducto"
+          class="producto-card"
+          (click)="verDetallesProducto(prod)"
+          tabindex="0"
+          role="button"
+          (keydown.enter)="verDetallesProducto(prod)">
 
-          <div class="card-image-wrapper">
+          <!-- Contenedor Visual de la Imagen -->
+          <div class="producto-imagen-wrapper">
             <img
-              [src]="prod.imagen_url ? optimizarImagen(prod.imagen_url) : 'assets/images/placeholder.jpg'"
+              [src]="prod.imagen_url ? optimizarImagen(prod.imagen_url) : 'assets/images/default-product.png'"
               [alt]="prod.nombre"
-              class="product-img"
+              class="producto-imagen"
               loading="lazy"
-              onerror="this.src='assets/images/placeholder.jpg'">
-
-            <span class="badge" *ngIf="prod.categoria">{{ prod.categoria }}</span>
-
-            <span *ngIf="prod.controlar_stock && prod.stock === 0" class="tag promo agotado">Agotado</span>
-            <span *ngIf="!(prod.controlar_stock && prod.stock === 0) && i % 4 === 0" class="tag promo descuento-15">15% dto</span>
-            <span *ngIf="!(prod.controlar_stock && prod.stock === 0) && i % 4 === 1" class="tag promo ultimas-unidades">Últimas uds.</span>
-            <span *ngIf="!(prod.controlar_stock && prod.stock === 0) && i % 4 === 2" class="tag promo descuento-50">50% dto</span>
-            <span *ngIf="!(prod.controlar_stock && prod.stock === 0) && i % 4 === 3" class="tag promo promo-dia">Promo del día</span>
+              (error)="prod.imagen_url = 'assets/images/default-product.png'">
           </div>
 
-          <div class="card-info">
-            <h3 class="product-name">{{ prod.nombre }}</h3>
-            <p class="product-description" *ngIf="prod.descripcion">{{ prod.descripcion }}</p>
+          <!-- Información de Producto -->
+          <div class="producto-info">
+            <span class="product-subcategory" *ngIf="prod.subcategoria || prod.categoria">
+              {{ prod.subcategoria || prod.categoria }}
+            </span>
 
-            <div class="price-row">
-              <span class="price">{{ mostrarPrecio(prod) }}</span>
-              <span class="unit" *ngIf="prod.unidad && !(prod.variantes && prod.variantes.length > 0)">/ {{ prod.unidad }}</span>
+            <h3 class="producto-titulo" [title]="prod.nombre">
+              {{ formatearNombre(prod.nombre) }}
+            </h3>
+
+            <div class="producto-precio-row">
+              <span class="precio-tachado" *ngIf="prod.precio">
+                {{ obtenerPrecioReferencia(prod.precio) }}
+              </span>
+              <span class="producto-precio">
+                {{ formatearPrecio(prod.precio) }}
+                <span class="precio-unidad" *ngIf="prod.unidad && !(prod.variantes && prod.variantes.length > 0)">
+                  / {{ prod.unidad }}
+                </span>
+              </span>
             </div>
           </div>
 
-          <div class="card-footer">
-            <button class="view-details-btn" type="button">
-              <span>Ver Detalles</span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"
-                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </button>
-          </div>
         </div>
+
       </div>
     </div>
 

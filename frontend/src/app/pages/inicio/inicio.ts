@@ -28,6 +28,8 @@ import { MeshBannerComponent } from '../../features/home/mesh-banner/mesh-banner
 // Nuevos componentes dinámicos
 import { DynamicGaleriaComponent } from '../../features/dynamic/dynamic-galeria/dynamic-galeria.component';
 import { DynamicProductCarouselComponent } from '../../features/dynamic/dynamic-product-carousel/dynamic-product-carousel.component';
+import { ProductFeatureSplitComponent } from '../../features/home/product-feature-split/product-feature-split.component';
+import { CarSeatComponent } from '../../components/car-seat/car-seat.component';
 
 @Component({
   selector: 'app-inicio',
@@ -42,13 +44,15 @@ import { DynamicProductCarouselComponent } from '../../features/dynamic/dynamic-
     LongMap,
     CategoriasDestacadasComponent,
     MeshBannerComponent,
+    CarSeatComponent,
     SolucionesBannerComponent,
     FeatureNewProducts,
     FullBanner,
     UtilGridProductoOther,
     NosotrosInicioComponent,
     DynamicGaleriaComponent,
-    DynamicProductCarouselComponent
+    DynamicProductCarouselComponent,
+    ProductFeatureSplitComponent
   ],
   templateUrl: './inicio.html',
   styleUrls: ['./inicio.css']

@@ -1,6 +1,6 @@
 /* ============================================
    SOCIAL BUTTONS — CONTENEDOR PRINCIPAL
-   Subido a bottom: 120px para que quede más arriba
+   3 Botones: Carrito, Asistente Mateo, WhatsApp
    ============================================ */
 .social-buttons-container {
   position: fixed;
@@ -8,67 +8,67 @@
   bottom: 24px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 14px;
+  align-items: flex-end;
+  gap: 12px;
   z-index: 1000000;
   pointer-events: none;
-  width: 120px;
+  width: auto;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+}
+
+/* Estado cuando el carrito está abierto: Se esconden hacia la derecha */
+.social-buttons-container.hidden-by-cart {
+  transform: translateX(110px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Estado reactivado: El usuario hizo click en el icono para mostrarlos */
+.social-buttons-container.visible-in-cart {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* ============================================
-   BOTONES BASE
+   BOTONES BASE FLOTANTES
    ============================================ */
 .social-button {
-  width: 46px;
-  height: 46px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background: white;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background 0.2s ease, border-color 0.2s ease;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
   text-decoration: none;
   position: relative;
   overflow: visible;
   pointer-events: auto;
-  animation: slide-in 0.5s ease forwards;
+  border: 1px solid #e2e8f0;
+  padding: 0;
+  animation: slide-in 0.4s ease forwards;
   opacity: 0;
-  border: none;
 }
 
 .social-button:nth-child(1) { animation-delay: 0.05s; }
-.social-button:nth-child(2) { animation-delay: 0.15s; }
-.social-button:nth-child(3) { animation-delay: 0.25s; }
-.social-button:nth-child(4) { animation-delay: 0.35s; }
-.social-button:nth-child(5) { animation-delay: 0.45s; }
+.social-button:nth-child(2) { animation-delay: 0.12s; }
+.social-button:nth-child(3) { animation-delay: 0.19s; }
 
 @keyframes slide-in {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0);    }
 }
 
 .social-button:hover {
-  transform: scale(1.12);
-  box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+  transform: translateY(-3px) scale(1.08);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
 }
 
-/* ============================================
-   BOTÓN CARRITO FLOTANTE
-   ============================================ */
-.cart-float-button {
-  background: #111 !important;
-  box-shadow: none !important;
-  margin-bottom: 30px;
-  /* Centrado perfecto del icono */
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 !important;
-}
-
-.cart-float-button .button-content {
+.social-button .button-content {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -77,104 +77,145 @@
   position: relative;
 }
 
+/* ============================================
+   1. BOTÓN CARRITO FLOTANTE
+   ============================================ */
+.cart-float-button {
+  background: #09090b !important;
+  border-color: #09090b !important;
+  color: #ffffff;
+}
+
 .cart-float-button svg {
-  stroke: #fff;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.cart-float-button:hover {
-  background: #111 !important;
-  transform: scale(1.06) translateY(-2px) !important;
-  box-shadow: 0 0 0 2px rgba(255,255,255,0.7),
-              0 6px 18px rgba(0,0,0,0.2) !important;
-}
-
-.cart-float-button:hover svg {
-  transform: translateY(-1px) scale(1.05);
+  stroke: #ffffff;
   transition: transform 0.25s ease;
 }
 
+.cart-float-button:hover {
+  background: #16a34a !important;
+  border-color: #16a34a !important;
+  box-shadow: 0 10px 25px rgba(22, 163, 74, 0.35) !important;
+}
+
+.cart-float-button:hover svg {
+  transform: scale(1.08);
+}
+
 .cart-float-active {
-  background: #111 !important;
-  box-shadow: 0 0 0 3px rgba(17,17,17,0.2), 0 8px 28px rgba(0,0,0,0.4) !important;
+  background: #16a34a !important;
+  border-color: #16a34a !important;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.3), 0 10px 28px rgba(0, 0, 0, 0.25) !important;
 }
 
 .cart-badge {
-  background: #fff !important;
-  color: #111 !important;
-  border: 2px solid #111 !important;
-  font-weight: 900;
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #16a34a !important;
+  color: #ffffff !important;
+  font-size: 10px;
+  font-weight: 800;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 /* ============================================
-   ASISTENTE MATEO
+   2. ASISTENTE MATEO FLOTANTE
    ============================================ */
 .assistant-button {
-  width: 120px !important;
-  height: 120px !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
-  padding: 0;
-  margin: 0 !important;
-  backdrop-filter: none !important;
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  color: #16a34a !important;
 }
 
-.assistant-avatar {
+.assistant-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.assistant-button:hover .assistant-avatar {
-  transform: scale(1.1) translateY(-5px);
+.assistant-icon {
+  stroke: #16a34a;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.assistant-button:hover {
+  background: #f0fdf4 !important;
+  border-color: #16a34a !important;
+  box-shadow: 0 10px 25px rgba(22, 163, 74, 0.22) !important;
+}
+
+.assistant-button:hover .assistant-icon {
+  transform: scale(1.12);
 }
 
 .mateo-pill {
   position: absolute;
-  bottom: -15px;
-  left: 50%;
-  transform: translateX(-50%);
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
   background: #ffffff;
-  color: #1e293b;
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 0.8rem;
+  color: #0f172a;
+  padding: 7px 16px;
+  border-radius: 50px;
+  font-size: 0.80rem;
   font-weight: 800;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   white-space: nowrap;
-  z-index: 5;
   pointer-events: none;
-  animation: float-bubble 4s ease-in-out infinite;
-  font-family: 'Montserrat', sans-serif;
-  border: 1px solid rgba(54,140,68,0.15);
+  border: 1px solid #e2e8f0;
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.mateo-pill span { color: #368C44; }
-
-@keyframes float-bubble {
-  0%, 100% { transform: translate(-50%, 0); }
-  50%       { transform: translate(-50%, -6px); }
+.mateo-pill span {
+  color: #16a34a;
+  font-weight: 900;
 }
 
 /* ============================================
-   ICONOS SOCIALES
+   3. WHATSAPP FLOTANTE
    ============================================ */
-.social-icon            { width: 22px; height: 22px; }
-.whatsapp-button  .social-icon { color: #111111; }
-.facebook-button  .social-icon { color: #111111; }
-.instagram-button .social-icon { color: #111111; }
+.whatsapp-button {
+  background: #25d366 !important;
+  border-color: #25d366 !important;
+}
 
-/* ============================================
-   BADGE / NOTIFICACIÓN
-   ============================================ */
+.whatsapp-button .social-icon {
+  width: 24px;
+  height: 24px;
+  fill: #ffffff;
+  color: #ffffff;
+  transition: transform 0.25s ease;
+}
+
+.whatsapp-button:hover {
+  background: #20bd5a !important;
+  border-color: #20bd5a !important;
+  box-shadow: 0 10px 25px rgba(37, 211, 102, 0.38) !important;
+}
+
+.whatsapp-button:hover .social-icon {
+  transform: scale(1.08);
+}
+
+/* Badge notificaciones */
 .notification {
   position: absolute;
   top: -3px;
   right: -3px;
-  background: #e53e3e;
+  background: #ef4444;
   color: white;
   font-size: 10px;
   font-weight: 800;
@@ -187,15 +228,13 @@
   border: 2px solid white;
 }
 
-/* ============================================
-   TOOLTIP
-   ============================================ */
+/* Tooltip lateral */
 .button-tooltip {
   position: absolute;
   right: calc(100% + 12px);
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(10,10,10,0.88);
+  background: rgba(10, 10, 10, 0.9);
   color: white;
   font-size: 12px;
   font-weight: 600;
@@ -203,16 +242,15 @@
   border-radius: 8px;
   white-space: nowrap;
   pointer-events: none;
+  font-family: 'Inter Tight', sans-serif;
 }
 
-/* ============================================
-   MENSAJE EMERGENTE
-   ============================================ */
+/* Mensaje emergente inicial */
 .help-message {
   position: absolute;
   right: calc(100% + 15px);
   bottom: 0;
-  background: #368C44;
+  background: #16a34a;
   color: white;
   padding: 10px 15px;
   border-radius: 12px;
@@ -222,50 +260,57 @@
   gap: 10px;
   white-space: nowrap;
   pointer-events: auto;
+  font-family: 'Inter Tight', sans-serif;
 }
 
 /* ============================================
-   BACKDROP
+   BACKDROP TRANSPARENTE
    ============================================ */
 .cart-backdrop {
   position: fixed;
   inset: 0;
   z-index: 999990;
-  background: transparent;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(2px);
+  animation: fadeInBackdrop 0.25s ease forwards;
+}
+
+@keyframes fadeInBackdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* ============================================
-   PANEL DEL CARRITO
-   Estilo IKEA / corporativo — igual que cart-summary
-   y description-producto-select
+   PANEL FLOTANTE DEL CARRITO (CART-PANEL)
+   Estilo Premium: Footer & Description Select
    ============================================ */
 .cart-panel {
   position: fixed;
   bottom: 24px;
-  right: 100px;             /* Justo a la izquierda del cluster */
-  width: 420px;
-  max-width: 92vw;
-  height: 700px;
-  max-height: 85vh;
+  right: 24px;
+  width: 430px;
+  max-width: calc(100vw - 32px);
+  height: 680px;
+  max-height: calc(100vh - 48px);
 
-  /* Estilo blanco / corporativo */
   background: #ffffff;
-  border: 1px solid #e5e5e5;
+  border: 1px solid #e4e4e7;
   border-radius: 24px;
 
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible; /* Permite mostrar el tab lateral flotante */
   z-index: 999999;
-  font-family: var(--font-primary, 'Inter', 'Montserrat', sans-serif);
-  box-shadow: -4px 8px 40px rgba(0,0,0,0.14);
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18), 0 4px 12px rgba(0, 0, 0, 0.05);
 
-  /* Animación de entrada */
+  /* Animación de entrada y posición */
   opacity: 0;
-  transform: translateY(20px) scale(0.98);
+  transform: translateY(24px) scale(0.97);
   pointer-events: none;
-  transition: opacity 0.3s cubic-bezier(0.175,0.885,0.32,1.275),
-              transform 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .cart-panel.open {
@@ -274,145 +319,338 @@
   pointer-events: auto;
 }
 
-/* --- Header (borde inferior negro grueso, estilo IKEA) --- */
-.cart-panel-header {
-  padding: 1rem 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #fff;
-  border-bottom: 2px solid #111;
+/* Cuando el usuario reactiva los botones flotantes mientras el carrito está abierto,
+   el panel se desplaza suavemente para no colisionar con ellos */
+.cart-panel.buttons-visible {
+  right: 90px;
+}
+
+/* Línea Superior de Resplandor Esmeralda (Estilo Footer & Car-Seat) */
+.cart-panel-accent-glow {
+  height: 3px;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, #16a34a 50%, transparent);
+  border-radius: 24px 24px 0 0;
   flex-shrink: 0;
 }
 
-.cart-panel-title {
+/* ============================================
+   TAB FLOTANTE LATERAL (REACTIVADOR DE BOTONES)
+   ============================================ */
+.cart-attached-tab {
+  position: absolute;
+  left: -48px;
+  top: 68px;
+  background: #09090b;
+  color: #ffffff;
+  border: 1px solid #27272a;
+  border-radius: 12px 0 0 12px;
+  padding: 10px 8px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  box-shadow: -6px 6px 18px rgba(0, 0, 0, 0.14);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100;
+  user-select: none;
 }
 
-.cart-header-icon-wrap {
-  width: 36px;
-  height: 36px;
-  background: #f5f5f5;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
+.cart-attached-tab:hover {
+  background: #16a34a;
+  border-color: #16a34a;
+  transform: translateX(-3px);
+}
+
+.cart-attached-tab.active {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #ffffff;
+}
+
+.tab-icon-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #111;
-  flex-shrink: 0;
 }
 
-.cart-header-text {
+.attached-tab-label {
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  margin-top: 2px;
+}
+
+.tab-pulse-indicator {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 9px;
+  height: 9px;
+  background: #22c55e;
+  border-radius: 50%;
+  border: 2px solid #09090b;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.8);
+  animation: pulseGreen 1.8s infinite;
+}
+
+@keyframes pulseGreen {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+/* ============================================
+   HEADER DEL PANEL FLOTANTE
+   ============================================ */
+.cart-panel-header {
+  padding: 1rem 1.25rem 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-bottom: 1px solid #f4f4f5;
+  flex-shrink: 0;
+  border-radius: 21px 21px 0 0;
+}
+
+.cart-panel-title-group {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
-.cart-header-name {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #111;
+/* Kicker badge estilo Footer */
+.cart-kicker-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #16a34a;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
 }
 
-.cart-header-sub {
+.kicker-line {
+  display: inline-block;
+  width: 14px;
+  height: 2px;
+  background: #16a34a;
+  border-radius: 2px;
+}
+
+.cart-main-heading-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cart-panel-heading {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #09090b;
+  letter-spacing: -0.02em;
+}
+
+.cart-count-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: #f0fdf4;
+  color: #16a34a;
   font-size: 0.72rem;
-  color: #555;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  font-weight: 700;
+  border: 1px solid #dcfce7;
 }
 
-.cart-header-empty {
-  color: #aaa !important;
+.cart-count-pill.empty {
+  background: #f4f4f5;
+  color: #71717a;
+  border-color: #e4e4e7;
 }
 
-.cart-panel-close {
-  background: transparent;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
-  color: #999;
-  width: 32px;
-  height: 32px;
-  font-size: 1.2rem;
+/* Acciones en el header */
+.cart-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cart-header-action-btn {
+  background: #f4f4f5;
+  border: 1px solid transparent;
+  color: #71717a;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
-  line-height: 1;
+  transition: all 0.2s ease;
+  position: relative;
+  padding: 0;
 }
 
-.cart-panel-close:hover {
-  border-color: #111;
-  color: #111;
+.cart-header-action-btn:hover {
+  background: #09090b;
+  color: #ffffff;
 }
 
-/* --- Items scrollable --- */
+.cart-header-action-btn.toggle-social-btn.active {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.toggle-indicator-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #16a34a;
+}
+
+.cart-header-action-btn.clear-cart-btn:hover {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fca5a5;
+}
+
+.cart-header-action-btn.close-btn:hover {
+  background: #09090b;
+  color: #ffffff;
+}
+
+/* ============================================
+   LISTA DE ITEMS CON SCROLL
+   ============================================ */
 .cart-panel-items {
   flex: 1;
   overflow-y: auto;
-  background: #fff;
+  background: #ffffff;
+  padding: 4px 0;
   scrollbar-width: thin;
-  scrollbar-color: #ccc transparent;
+  scrollbar-color: #d4d4d8 transparent;
 }
 
-.cart-panel-items::-webkit-scrollbar { width: 4px; }
-.cart-panel-items::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
-.cart-panel-items::-webkit-scrollbar-thumb:hover { background: #bbb; }
+.cart-panel-items::-webkit-scrollbar {
+  width: 5px;
+}
 
-/* --- Empty state --- */
+.cart-panel-items::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cart-panel-items::-webkit-scrollbar-thumb {
+  background: #d4d4d8;
+  border-radius: 4px;
+}
+
+.cart-panel-items::-webkit-scrollbar-thumb:hover {
+  background: #a1a1aa;
+}
+
+/* Estado Vacío */
 .cart-panel-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100%;
-  gap: 10px;
-  color: #ccc;
-  padding: 2rem;
+  min-height: 280px;
+  padding: 2rem 1.5rem;
   text-align: center;
 }
 
-.cart-empty-title {
-  margin: 0;
-  font-size: 0.95rem;
+.empty-icon-bubble {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  background: #f4f4f5;
+  border: 1px solid #e4e4e7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a1a1aa;
+  margin-bottom: 1rem;
+}
+
+.empty-title {
+  margin: 0 0 6px 0;
+  font-size: 1rem;
   font-weight: 800;
-  color: #555;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  color: #09090b;
+  letter-spacing: -0.01em;
 }
 
-.cart-empty-sub {
-  margin: 0;
+.empty-sub {
+  margin: 0 0 1.25rem 0;
   font-size: 0.8rem;
-  color: #aaa;
-  font-weight: 500;
+  color: #71717a;
+  max-width: 260px;
+  line-height: 1.4;
 }
 
-/* --- Item individual --- */
+.empty-catalog-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #16a34a;
+  color: #ffffff;
+  border-radius: 9999px;
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.3);
+}
+
+.empty-catalog-btn:hover {
+  background: #15803d;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(22, 163, 74, 0.4);
+}
+
+/* Item Individual (Estilo description-producto-select) */
 .cart-item {
   display: grid;
-  grid-template-columns: 68px 1fr auto;
+  grid-template-columns: 66px 1fr auto;
   gap: 12px;
   align-items: center;
-  padding: 14px 20px;
-  border-bottom: 1px solid #e5e5e5;
-  transition: background 0.15s;
+  padding: 12px 18px;
+  border-bottom: 1px solid #f4f4f5;
+  transition: background 0.15s ease;
 }
 
-.cart-item:hover { background: #fafafa; }
-.cart-item:last-child { border-bottom: none; }
+.cart-item:hover {
+  background: #fafafa;
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
 
 /* Thumbnail */
 .cart-item-img {
-  width: 68px;
-  height: 68px;
-  background: #f9f9f9;
-  border: 1px solid #eee;
-  border-radius: 12px;
+  width: 66px;
+  height: 66px;
+  background: #fbfbfb;
+  border: 1px solid #e4e4e7;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -424,11 +662,11 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: 6px;
+  padding: 4px;
   mix-blend-mode: multiply;
 }
 
-/* Info */
+/* Info del Producto */
 .cart-item-info {
   display: flex;
   flex-direction: column;
@@ -438,196 +676,307 @@
 }
 
 .cart-item-name {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: #111;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #09090b;
   margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.01em;
 }
 
-.cart-item-variant {
-  font-size: 0.7rem;
-  color: #777;
-  margin: 0;
-  font-weight: 500;
+.cart-item-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
-.cart-item-price-row { margin-top: 2px; }
-
-.cart-item-unit {
-  font-size: 0.7rem;
-  color: #555;
-  font-weight: 500;
+.cart-item-variant-pill {
+  font-size: 0.68rem;
+  color: #71717a;
+  background: #f4f4f5;
+  padding: 1px 7px;
+  border-radius: 6px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-/* Controles */
+.cart-item-stock-pill {
+  font-size: 0.65rem;
+  color: #b45309;
+  background: #fef3c7;
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.cart-item-unit-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.70rem;
+}
+
+.unit-price-label {
+  color: #a1a1aa;
+}
+
+.unit-price-val {
+  color: #52525b;
+  font-weight: 600;
+}
+
+/* Controles y Subtotal */
 .cart-item-controls {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 7px;
+  gap: 6px;
   flex-shrink: 0;
-}
-
-.cart-item-total {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: #111;
-}
-
-.cart-qty-control {
-  display: flex;
-  align-items: center;
-  border: 1px solid #111;
-  border-radius: 8px;
-  height: 26px;
-  width: 72px;
-  overflow: hidden;
-}
-
-.cart-qty-btn {
-  width: 24px;
-  height: 100%;
-  background: #fff;
-  border: none;
-  color: #111;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.15s;
-  flex-shrink: 0;
-}
-
-.cart-qty-btn:first-child { border-right: 1px solid #111; }
-.cart-qty-btn:last-child  { border-left:  1px solid #111; }
-.cart-qty-btn:hover { background: #f5f5f5; }
-
-.cart-qty-val {
-  flex: 1;
-  text-align: center;
-  font-size: 0.76rem;
-  font-weight: 600;
-  color: #111;
 }
 
 .cart-item-del {
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #ccc;
-  padding: 0;
+  color: #a1a1aa;
+  padding: 2px;
   display: flex;
-  transition: color 0.2s;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, transform 0.15s ease;
 }
 
-.cart-item-del:hover { color: #111; }
+.cart-item-del:hover {
+  color: #ef4444;
+  transform: scale(1.1);
+}
 
-/* --- Footer --- */
-.cart-panel-footer {
-  padding: 1.25rem 1.5rem;
-  border-top: 1px solid #e5e5e5;
+.cart-item-total {
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #16a34a;
+  letter-spacing: -0.01em;
+}
+
+/* Selector de Cantidad en Cápsula (Estilo description-producto-select) */
+.cart-qty-control {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  background: #fff;
+  align-items: center;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  background: #ffffff;
+  height: 26px;
+  width: 74px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.cart-qty-btn {
+  width: 24px;
+  height: 100%;
+  background: #ffffff;
+  border: none;
+  color: #09090b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
   flex-shrink: 0;
+  padding: 0;
 }
 
-.cart-summary-rows {
+.cart-qty-btn:first-child {
+  border-right: 1px solid #e4e4e7;
+}
+
+.cart-qty-btn:last-child {
+  border-left: 1px solid #e4e4e7;
+}
+
+.cart-qty-btn:hover:not(.disabled) {
+  background: #f4f4f5;
+  color: #16a34a;
+}
+
+.cart-qty-btn.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.cart-qty-val {
+  flex: 1;
+  text-align: center;
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #09090b;
+}
+
+/* ============================================
+   FOOTER DEL PANEL FLOTANTE
+   ============================================ */
+.cart-panel-footer {
+  padding: 1rem 1.25rem 1.15rem;
+  border-top: 1px solid #f4f4f5;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  margin-bottom: 2px;
+  gap: 10px;
+  background: #ffffff;
+  flex-shrink: 0;
+  border-radius: 0 0 24px 24px;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.03);
 }
 
-.cart-summary-row {
+.cart-summary-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summary-line {
   display: flex;
   justify-content: space-between;
-  font-size: 0.78rem;
-  color: #555;
+  align-items: center;
+  font-size: 0.76rem;
+  color: #52525b;
   font-weight: 600;
 }
 
-.cart-summary-row.muted { color: #aaa; }
-
-/* Total row */
-.cart-total-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 10px 0 8px;
-  border-top: 1px solid #e5e5e5;
-  border-bottom: 1px solid #e5e5e5;
-  margin-bottom: 4px;
+.summary-line.muted {
+  color: #71717a;
 }
 
-.cart-total-label {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: #111;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.cart-total-value {
-  font-size: 1.4rem;
+.summary-line-value {
   font-weight: 700;
-  color: #111;
+  color: #09090b;
+}
+
+/* Caja de Total */
+.cart-total-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #fbfbfb;
+  border: 1px solid #f4f4f5;
+  border-radius: 12px;
+}
+
+.total-text-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.total-kicker {
+  font-size: 0.70rem;
+  font-weight: 800;
+  color: #09090b;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.total-iva-note {
+  font-size: 0.62rem;
+  color: #a1a1aa;
+  font-weight: 500;
+}
+
+.cart-total-amount {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #16a34a;
   letter-spacing: -0.02em;
 }
 
-/* CTA principal — negro sólido, igual que cart-summary */
+/* Acciones en el Footer */
+.cart-footer-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* CTA Principal: Píldora Negra de Alto Contraste con Hover Esmeralda */
 .cart-checkout-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 14px;
-  background: #111;
-  color: #fff;
+  padding: 12px;
+  background: #09090b;
+  color: #ffffff;
   border: none;
-  border-radius: 12px;
+  border-radius: 9999px;
   font-weight: 800;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
 }
 
 .cart-checkout-btn:hover {
-  background: #333;
-  color: #fff;
+  background: #16a34a;
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.35);
+  transform: translateY(-1px);
 }
 
-/* CTA secundario */
+.cart-checkout-btn svg {
+  transition: transform 0.2s ease;
+}
+
+.cart-checkout-btn:hover svg {
+  transform: translateX(3px);
+}
+
+/* CTA Secundario */
 .cart-continue-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px;
-  background: #fff;
-  color: #111;
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  font-weight: 800;
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  padding: 8px;
+  background: #ffffff;
+  color: #71717a;
+  border: 1px solid #e4e4e7;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.74rem;
+  letter-spacing: 0.03em;
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition: all 0.15s ease;
 }
 
-.cart-continue-btn:hover { border-color: #111; }
+.cart-continue-btn:hover {
+  border-color: #09090b;
+  color: #09090b;
+  background: #fafafa;
+}
+
+/* Micro-badging de confianza en el pie */
+.cart-trust-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.64rem;
+  color: #a1a1aa;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 2px;
+}
+
+.cart-trust-footer svg {
+  color: #16a34a;
+}
 
 /* ============================================
-   OCULTAR EN MÓVIL
+   RESPONSIVE MÓVIL
    ============================================ */
 @media (max-width: 768px) {
   .social-buttons-container { display: none !important; }

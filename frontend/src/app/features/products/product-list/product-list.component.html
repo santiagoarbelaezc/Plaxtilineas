@@ -1,4 +1,5 @@
 <section id="productos-seccion">
+  
   <!-- Componente ProductoBackground - Mostrar solo si está configurado para esta categoría -->
   <app-producto-background 
     *ngIf="mostrarProductoBackground"
@@ -6,161 +7,162 @@
     [imagenes]="imagenesProductoBackground">
   </app-producto-background>
 
-  <!-- Encabezado elegante -->
+  <!-- Encabezado de Sección con Design Tokens -->
   <div class="section-header">
-    <h2 *ngIf="productos.length && !cargando">
-      <span class="title-text">Productos disponibles</span>
-      <span class="product-count">({{rangoProductos}} de {{productos.length}})</span>
-    </h2>
+    <div class="header-titles">
+      <h1 class="section-title">
+        CATÁLOGO DE <span class="highlight-green">PRODUCTOS</span>
+      </h1>
+
+      <p class="section-subtitle">
+        Descubre nuestra selección especializada en plásticos industriales, espumas, peletería y empaques en Armenia.
+      </p>
+    </div>
+
+    <!-- Barra de Filtro Activo (Categoría / Subcategoría) -->
+    <div class="filter-status-bar" *ngIf="filtroNombre">
+      <div class="filter-active-pill">
+        <span class="filter-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+          </svg>
+        </span>
+        <span class="filter-text">
+          {{ filtroTipo }}: <strong>{{ filtroNombre }}</strong>
+        </span>
+        <span class="filter-count">({{ productos.length }} {{ productos.length === 1 ? 'referencia' : 'referencias' }})</span>
+      </div>
+
+      <button type="button" class="btn-clear-filter" (click)="verTodosLosProductos()" title="Quitar filtro y ver todos">
+        <span>✕ Ver todos los productos</span>
+      </button>
+    </div>
+
+    <!-- Metadatos de Contador cuando no hay filtro específico -->
+    <div class="catalog-meta-info" *ngIf="!cargando && !filtroNombre && productos.length > 0">
+      <span class="product-count-label">
+        Mostrando <strong>{{ rangoProductos }}</strong> de <strong>{{ productos.length }}</strong> referencias disponibles
+      </span>
+    </div>
   </div>
 
-  <!-- Estados de carga (Skeleton Premium) -->
+  <!-- Estados de Carga (Skeletons con el Diseño Exacto del Home) -->
   <div *ngIf="cargando" class="products-grid-container">
     <div class="products-grid">
-      <div class="product-card-wrapper skeleton-wrapper" *ngFor="let i of [1, 2, 3, 4, 5, 6]">
-        <div class="product-card-container skeleton-card">
-          <!-- Imagen -->
-          <div class="product-image-section skeleton-box"></div>
-          
-          <!-- Información -->
-          <div class="product-info-section">
-            <div class="product-text-container">
-              <div class="skeleton-text skeleton-title"></div>
-              <div class="skeleton-text skeleton-subtitle"></div>
-              <div class="skeleton-text skeleton-desc"></div>
-              <div class="skeleton-text skeleton-desc-short"></div>
-            </div>
-            
-            <!-- Detalles / Precio -->
-            <div class="product-details-container mt-auto">
-              <div class="price-display skeleton-price-box">
-                <div class="skeleton-text skeleton-label"></div>
-                <div class="skeleton-text skeleton-price"></div>
-              </div>
-            </div>
+      <div class="producto-card skeleton-card" *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8]">
+        <div class="producto-imagen-wrapper skeleton-box"></div>
+        <div class="producto-info">
+          <div class="skeleton-text skeleton-subcat"></div>
+          <div class="skeleton-text skeleton-title"></div>
+          <div class="skeleton-text skeleton-title-short"></div>
+          <div class="skeleton-precio-row">
+            <div class="skeleton-text skeleton-price-old"></div>
+            <div class="skeleton-text skeleton-price-main"></div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Estado sin productos -->
+  <!-- Estado Sin Productos -->
   <div *ngIf="!productos.length && !cargando" class="empty-state">
-    <div class="empty-icon">
-      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+    <div class="empty-icon-box">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
         <line x1="3" y1="6" x2="21" y2="6"></line>
         <path d="M16 10a4 4 0 0 1-8 0"></path>
       </svg>
     </div>
-    <p class="empty-text">No hay productos para esta categoría</p>
-    <p class="empty-subtext">Intenta con otra subcategoría</p>
+    <h3 class="empty-title">No hay productos en esta selección</h3>
+    <p class="empty-subtitle">Prueba explorando otra categoría o restablece el filtro para ver todo el catálogo.</p>
+    <button type="button" class="btn-empty-action" (click)="verTodosLosProductos()">
+      <span>Ver Todos los Productos</span>
+    </button>
   </div>
 
-  <!-- Grid de productos -->
-  <div class="products-grid-container" 
-       [class.productos-cambiando]="cargando"
-       *ngIf="productos.length && !cargando">
-    
+  <!-- Grid de Productos (Diseño Idéntico a los Carruseles del Home) -->
+  <div class="products-grid-container" *ngIf="productos.length && !cargando">
     <div class="products-grid">
-      <div class="product-card-wrapper"
-           *ngFor="let producto of productosPaginaActual; let i = index"
-           [@fadeInUp]>
+      
+      <div 
+        *ngFor="let producto of productosPaginaActual" 
+        class="producto-card"
+        (click)="verDetalles(producto)"
+        tabindex="0"
+        role="button"
+        [@fadeInUp]>
         
-        <!-- Tarjeta de producto con click en toda la card -->
-        <div class="product-card-container" (click)="verDetalles(producto)" tabindex="0" role="button">
-          
-          <!-- Contenedor superior: Imagen -->
-          <div class="product-image-section">
-            <div class="product-image-wrapper">
-              <div class="product-image-container">
-                <!-- Badges Decorativos (Simulados basados en ID) -->
-                <div class="product-badges">
-                  <span class="badge badge-stock" *ngIf="producto.controlar_stock && producto.stock === 0" style="background-color: #ef4444 !important; color: white !important; font-weight: bold;">Agotado</span>
-                  <span class="badge badge-discount" *ngIf="!(producto.controlar_stock && producto.stock === 0) && producto.id % 2 !== 0">-15% OFF</span>
-                  <span class="badge badge-stock" *ngIf="!(producto.controlar_stock && producto.stock === 0) && producto.id % 5 === 0">Pocas Unidades</span>
-                  <span class="badge badge-new" *ngIf="!(producto.controlar_stock && producto.stock === 0) && producto.id % 6 === 0">Nuevo</span>
-                </div>
-                
-                <img [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/placeholder.jpg'" [alt]="producto.nombre" class="product-image" loading="lazy">
-                <div class="image-overlay"></div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Contenedor medio: Información -->
-          <div class="product-info-section">
-            
-            <!-- Contenedor de texto -->
-            <div class="product-text-container">
-              <div class="product-title-wrapper">
-                <h3 class="product-title">{{producto.nombre}}</h3>
-                <div class="product-subtitle">{{producto.subcategoria}}</div>
-              </div>
-              
-              <div class="product-description-container">
-                <p class="product-description">
-                  {{producto.descripcion || 'Descripción no disponible'}}
-                </p>
-              </div>
-            </div>
-            
-            <!-- Contenedor de detalles - Solo precio -->
-            <div class="product-details-container">
-              
-              <!-- Precio y Botón de Carrito -->
-              <!-- Precio Elegante y Minimalista -->
-              <div class="product-price-section">
-                <span class="price-value">{{formatearPrecio(producto.precio)}}</span>
-              </div>
-
-              <!-- Botón Agregar al Carrito removido a petición -->
-            </div>
-            
-          </div>
-          
-          <!-- Contenedor inferior: Acción principal -->
-          
-          
+        <!-- Contenedor Visual de la Imagen -->
+        <div class="producto-imagen-wrapper">
+          <img 
+            [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/default-product.png'" 
+            [alt]="producto.nombre" 
+            class="producto-imagen"
+            loading="lazy"
+            (error)="producto.imagen_url = 'assets/images/default-product.png'">
         </div>
-        
+
+        <!-- Información de Producto -->
+        <div class="producto-info">
+          <span class="product-subcategory" *ngIf="producto.subcategoria || producto.categoria">
+            {{ producto.subcategoria || producto.categoria }}
+          </span>
+
+          <h3 class="producto-titulo" title="{{ producto.nombre }}">
+            {{ formatearNombre(producto.nombre) }}
+          </h3>
+
+          <div class="producto-precio-row">
+            <span class="precio-tachado" *ngIf="producto.precio">
+              {{ obtenerPrecioReferencia(producto.precio) }}
+            </span>
+            <span class="producto-precio">
+              {{ formatearPrecio(producto.precio) }}
+              <span class="precio-unidad">und</span>
+            </span>
+          </div>
+        </div>
+
       </div>
+
     </div>
-    
-    <!-- Controles de paginación -->
+
+    <!-- Controles de Paginación Elegantes -->
     <div class="pagination-controls" *ngIf="totalPages > 1 && !cargando">
       <button 
         class="pagination-btn pagination-prev" 
         [disabled]="currentPage === 1"
         (click)="paginaAnterior()"
         aria-label="Página anterior">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <path d="M15 18l-6-6 6-6"></path>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
-        Anterior
+        <span>Anterior</span>
       </button>
-      
+
       <div class="pagination-numbers">
         <button 
           *ngFor="let page of paginasVisibles"
-          class="pagination-btn pagination-number" 
+          class="pagination-number-btn" 
           [class.active]="page === currentPage"
           (click)="cambiarPagina(page)"
           [attr.aria-label]="'Ir a página ' + page">
-          {{page}}
+          {{ page }}
         </button>
       </div>
-      
+
       <button 
         class="pagination-btn pagination-next" 
         [disabled]="currentPage === totalPages"
         (click)="paginaSiguiente()"
         aria-label="Página siguiente">
-        Siguiente
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <path d="M9 18l6-6-6-6"></path>
+        <span>Siguiente</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
         </svg>
       </button>
     </div>
+
   </div>
+
 </section>

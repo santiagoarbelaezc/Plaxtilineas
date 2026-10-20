@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, HostListener, ViewEncapsulation, OnDestroy, inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, HostListener, ViewEncapsulation, OnDestroy, inject, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
@@ -20,6 +20,7 @@ import { ChatService } from '../../../services/chat.service';
 import { AuthService } from '../../../services/auth.service';
 import { CartService } from '../../../services/cart.service';
 import { PromoBannerService } from '../../../services/promo-banner.service';
+import { NavbarVisibilityService } from '../../../services/navbar-visibility.service';
 
 @Component({
   selector: 'app-navbar',
@@ -37,6 +38,10 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   
   public authService = inject(AuthService);
   public cartService = inject(CartService);
+
+  get isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
   
   userDropdownOpen = false;
   showToast = false;
@@ -50,6 +55,10 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   
   isChatOpen: boolean = false;
   isPromoBannerVisible: boolean = false;
+  isNavbarHidden: boolean = false;
+
+  private cdr = inject(ChangeDetectorRef);
+  private navbarVisibilityService = inject(NavbarVisibilityService);
 
   @ViewChild('bottomNav') bottomNav!: ElementRef;
   isDragging = false;
@@ -107,6 +116,16 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.chatService.isChatOpen$.pipe(takeUntil(this.destroy$)).subscribe(isOpen => {
       this.isChatOpen = isOpen;
     });
+
+    this.navbarVisibilityService.isHidden$.pipe(takeUntil(this.destroy$)).subscribe(hidden => {
+      this.isNavbarHidden = hidden;
+      this.cdr.markForCheck();
+    });
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    this.scrollSubject.next();
   }
 
   private setupScrollListener(): void {
@@ -138,6 +157,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
       filter(event => event instanceof NavigationEnd),
       takeUntil(this.destroy$)
     ).subscribe((event: NavigationEnd) => {
+      this.navbarVisibilityService.setHidden(false);
       this.isSearchRoute = event.url.includes('/busqueda');
       
       // Si estamos en la ruta de búsqueda, extraer el término de búsqueda

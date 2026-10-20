@@ -1,94 +1,158 @@
-<section id="nosotros" class="seccion-nosotros premium-values" aria-label="Sección sobre los valores de Plaxtilineas">
-  <div class="nosotros-container">
+<section id="nosotros" class="nosotros-cinematic-section" aria-label="Sobre Nosotros - Plaxtilineas">
+
+  <!-- ═══════════════════════════════════════════════════════════
+       CANVAS 1: HERO & LÍNEA DE TIEMPO MINIMALISTA
+       ═══════════════════════════════════════════════════════════ -->
+  <div class="cinematic-block timeline-block">
     
-    <div class="layout-grid">
+    <!-- Imagen de Fondo Estática Oscurecida a Pantalla Completa -->
+    <div class="static-bg-layer hero-bg" aria-hidden="true"></div>
+    <div class="dark-overlay-layer"></div>
+
+    <div class="cinematic-content">
       
-      <!-- Columna Izquierda: Valores -->
-      <div class="valores-grid">
+      <!-- Contexto Minimalista Directo -->
+      <div class="minimal-intro">
+        <h1 class="cinematic-title">
+          MÁS DE 10 AÑOS IMPULSANDO EL EJE CAFETERO
+        </h1>
         
-        <!-- Valor 1 -->
-        <div class="valor-card">
-          <div class="valor-icono-container">
-            <fa-icon [icon]="['fas', 'clock']" class="valor-icono"></fa-icon>
-          </div>
-          <div class="valor-texto">
-            <h3 class="valor-titulo">Eficiencia con el dinero y el tiempo</h3>
-            <p class="valor-descripcion">Optimizamos cada proceso para garantizar la mejor relación costo-beneficio en cada proyecto.</p>
-          </div>
-        </div>
+        <p class="cinematic-lead">
+          Plásticos técnicos, espumas industriales, mallas agrícolas y empaques con atención directa y corte exacto en Armenia.
+        </p>
+      </div>
 
-        <!-- Valor 2 -->
-        <div class="valor-card">
-          <div class="valor-icono-container">
-            <fa-icon [icon]="['fas', 'lightbulb']" class="valor-icono"></fa-icon>
-          </div>
-          <div class="valor-texto">
-            <h3 class="valor-titulo">Rompemos paradigmas</h3>
-            <p class="valor-descripcion">No seguimos las normas, las innovamos. Ofrecemos soluciones disruptivas y a la vanguardia.</p>
-          </div>
-        </div>
+      <!-- Línea de Tiempo Delgada, Sutil y Perfectamente Alineada -->
+      <div class="timeline-interactive-container">
 
-        <!-- Valor 3 -->
-        <div class="valor-card">
-          <div class="valor-icono-container">
-            <fa-icon [icon]="['fas', 'users']" class="valor-icono"></fa-icon>
-          </div>
-          <div class="valor-texto">
-            <h3 class="valor-titulo">Sincronía como reloj suizo</h3>
-            <p class="valor-descripcion">Precisión y coordinación para ser eficientes y entregar resultados excepcionales.</p>
-          </div>
-        </div>
+        <div class="timeline-track-wrapper">
+          <!-- Espina Vertical Fina Blanca -->
+          <div class="timeline-spine-glow"></div>
 
-        <!-- Valor 4 -->
-        <div class="valor-card">
-          <div class="valor-icono-container">
-            <fa-icon [icon]="['fas', 'graduation-cap']" class="valor-icono"></fa-icon>
-          </div>
-          <div class="valor-texto">
-            <h3 class="valor-titulo">Aprendizaje continuo</h3>
-            <p class="valor-descripcion">Capacitación constante para ser líderes indiscutibles en cada área de la industria.</p>
-          </div>
-        </div>
+          <!-- Items de la Línea de Tiempo (Solo Lectura, No Seleccionables) -->
+          <div 
+            *ngFor="let hito of hitos; let isEven = even" 
+            class="timeline-glass-item"
+            [class.item-left]="isEven"
+            [class.item-right]="!isEven"
+          >
+            <!-- Fecha al Otro Lado de la Línea de Tiempo -->
+            <div class="timeline-opposite-date">
+              <span class="opposite-year-text">{{ hito.year }}</span>
+            </div>
 
-        <!-- Valor 5 -->
-        <div class="valor-card">
-          <div class="valor-icono-container">
-            <fa-icon [icon]="['fas', 'handshake']" class="valor-icono"></fa-icon>
-          </div>
-          <div class="valor-texto">
-            <h3 class="valor-titulo">El éxito del cliente es el nuestro</h3>
-            <p class="valor-descripcion">Trabajamos como socios cercanos asegurando productos de calidad que impulsan el crecimiento.</p>
-          </div>
-        </div>
+            <!-- Conector Horizontal Blanco -->
+            <div class="timeline-connector"></div>
 
-        <!-- Valor 6 -->
-        <div class="valor-card">
-          <div class="valor-icono-container">
-            <fa-icon [icon]="['fas', 'lightbulb']" class="valor-icono"></fa-icon>
-          </div>
-          <div class="valor-texto">
-            <h3 class="valor-titulo">Calidad certificada</h3>
-            <p class="valor-descripcion">Rigurosos controles en cada producto para superar las expectativas y estándares de la industria.</p>
+            <!-- Nodo Central Blanco -->
+            <div class="timeline-center-node">
+              <div class="node-glow-outer">
+                <span class="node-glow-inner"></span>
+              </div>
+            </div>
+
+            <!-- Tarjeta Glassmorphism Transparente -->
+            <div class="glass-milestone-card">
+              <!-- Visual de Producto Real del Catálogo -->
+              <div class="milestone-media-container">
+                <img 
+                  [src]="hito.image" 
+                  [alt]="hito.title"
+                  class="milestone-product-image"
+                  loading="lazy"
+                />
+              </div>
+
+              <!-- Contenido Minimalista: Título y Texto -->
+              <div class="milestone-body">
+                <h3 class="milestone-title">{{ hito.title }}</h3>
+                <p class="milestone-text">{{ hito.subtitle }}</p>
+              </div>
+            </div>
           </div>
         </div>
 
       </div>
 
-      <!-- Columna Derecha: Intro y Mateo -->
-      <div class="intro-column">
-        <div class="badge-new">Nuestra Esencia</div>
-        <h2 class="title">Sobre <span>Nosotros</span></h2>
-        <p class="description">
-          En <strong>PLAXTILINEAS</strong>, nos esforzamos cada día para ofrecer a nuestros clientes productos de la más alta calidad, mientras rompemos paradigmas en la industria y trabajamos de la mano para garantizar su éxito.
-        </p>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       CANVAS 2: SEGUNDO BANNER — MATEO MORENO & PLAXTILINEAS
+       ═══════════════════════════════════════════════════════════ -->
+  <div class="cinematic-block banner-block">
+    
+    <!-- Imagen de Fondo Estática Oscurecida (home-chatgpt.png) -->
+    <div class="static-bg-layer banner-bg" aria-hidden="true"></div>
+    <div class="dark-overlay-layer subtle-dark"></div>
+
+    <div class="cinematic-content">
+      <div class="banner-minimal-wrap">
         
-        <div class="mateo-presentation">
-          <div class="blob-bg"></div>
-          <img src="assets/images/mateo4.png" alt="Mateo, asistente de Plaxtilineas" class="mateo-img">
-          <div class="floating-badge">Nuestros Valores</div>
+        <!-- Foto de Mateo a la Izquierda con Tarjeta de Fundador -->
+        <div class="bottom-visual-col">
+          <div class="bottom-image-frame mateo-frame">
+            <img 
+              src="assets/images/identidad/mateo.jpeg" 
+              alt="Mateo Moreno - Fundador y Dueño de Plaxtilineas" 
+              class="bottom-featured-img"
+              loading="lazy"
+            />
+            <div class="bottom-frame-badge">
+              <div class="badge-text-group">
+                <span class="badge-title">MATEO MORENO</span>
+                <span class="badge-subtitle">Fundador & Dueño · Plaxtilineas</span>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- Editorial Minimalista Directo -->
+        <div class="banner-editorial">
+
+          <h2 class="banner-minimal-title">
+            SOLUCIONES DIRECTAS Y A TU MEDIDA
+          </h2>
+          
+          <p class="banner-minimal-desc">
+            Atención personalizada, corte exacto y despacho inmediato para fincas, obras y talleres de todo el Eje Cafetero.
+          </p>
+
+          <!-- 3 Puntos Clave Minimalistas (Sin Iconos) -->
+          <div class="founder-pills-row">
+            <span class="founder-pill">Corte exacto</span>
+            <span class="founder-pill">Despacho inmediato</span>
+            <span class="founder-pill">Trato directo</span>
+          </div>
+
+          <!-- Botones de Acción -->
+          <div class="banner-action-wrap">
+            <a routerLink="/productos" class="cta-minimal-btn">
+              <span>EXPLORAR CATÁLOGO</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+
+            <a 
+              href="https://wa.me/573105423854?text=Hola%20Mateo,%20deseo%20asesor%C3%ADa%20personalizada%20en%20materiales%20de%20Plaxtilineas"
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="cta-secondary-contact">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+              </svg>
+              <span>CONTACTAR A MATEO</span>
+            </a>
+          </div>
+
+        </div>
+
       </div>
     </div>
 
   </div>
-</section>
+
+</section>

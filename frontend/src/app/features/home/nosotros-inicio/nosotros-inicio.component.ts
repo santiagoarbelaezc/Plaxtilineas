@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { Component, inject, OnInit, AfterViewInit, OnDestroy, PLATFORM_ID, ElementRef, NgZone, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuStateService } from '../../../services/menu-state.service';
@@ -17,16 +17,21 @@ export interface EjePrincipal {
   templateUrl: './nosotros-inicio.component.html',
   styleUrls: ['./nosotros-inicio.component.css']
 })
-export class NosotrosInicioComponent implements OnInit, OnDestroy {
+export class NosotrosInicioComponent implements OnInit, AfterViewInit, OnDestroy {
   private menuStateService = inject(MenuStateService);
   private platformId = inject(PLATFORM_ID);
+  private elementRef = inject(ElementRef);
+  private ngZone = inject(NgZone);
+  private cdr = inject(ChangeDetectorRef);
   private isBrowser = isPlatformBrowser(this.platformId);
+  private observer?: IntersectionObserver;
 
-  // Imagen única de identidad (sin mateo)
+  isVisible = false;
+  private hasStarted = false;
+
+  // Imagen única de identidad
   showcaseImage = {
     url: 'assets/images/identidad/identidad.jpg',
-    badgeCapsule: 'EJE CAFETERO',
-    badgeText: '+20 Años de Trayectoria',
     alt: 'Plaxtilineas - Plásticos, Espumas, Mallas y Empaques'
   };
 
@@ -42,38 +47,53 @@ export class NosotrosInicioComponent implements OnInit, OnDestroy {
   isDeleting = false;
   private typewriterTimer: any;
 
-  ejesPrincipales: EjePrincipal[] = [
-    {
-      nombre: 'Peletería & Tapicería',
-      detalle: 'Espumas en densidades D20 a D30, cueros y pegantes Afix',
-      link: '/productos'
-    },
-    {
-      nombre: 'Plásticos & Mallas',
-      detalle: 'Polisombras del 35% al 80% para fincas, agro y construcción',
-      link: '/busqueda',
-      queryParams: { q: 'plastico' }
-    },
-    {
-      nombre: 'Empaques & Embalaje',
-      detalle: 'Cajas de cartón corrugado, vinipel stretch y plástico burbuja',
-      link: '/productos'
-    },
-    {
-      nombre: 'Logística Regional',
-      detalle: 'Despachos oportunos para empresas, fincas y hogares',
-      link: '/busqueda',
-      queryParams: { q: 'carton' }
-    }
+  ejesPrincipales: string[] = [
+    'Peletería & Tapicería',
+    'Plásticos & Mallas',
+    'Empaques & Embalaje',
+    'Logística Regional'
   ];
 
   ngOnInit(): void {
-    this.startTypewriter();
+    if (!this.isBrowser) {
+      this.displayedText = this.phrases[0];
+    }
+  }
+
+  ngAfterViewInit(): void {
+    if (!this.isBrowser || typeof IntersectionObserver === 'undefined') {
+      this.isVisible = true;
+      this.startTypewriter();
+      return;
+    }
+
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        this.ngZone.run(() => {
+          if (entry.isIntersecting) {
+            this.isVisible = true;
+            this.resumeTypewriter();
+          } else {
+            this.isVisible = false;
+            this.pauseTypewriter();
+          }
+          this.cdr.markForCheck();
+        });
+      },
+      {
+        root: null,
+        threshold: 0.15
+      }
+    );
+
+    this.observer.observe(this.elementRef.nativeElement);
   }
 
   ngOnDestroy(): void {
-    if (this.typewriterTimer) {
-      clearTimeout(this.typewriterTimer);
+    this.pauseTypewriter();
+    if (this.observer) {
+      this.observer.disconnect();
     }
   }
 
@@ -85,7 +105,36 @@ export class NosotrosInicioComponent implements OnInit, OnDestroy {
     this.typeNextChar();
   }
 
+  private pauseTypewriter(): void {
+    if (this.typewriterTimer) {
+      clearTimeout(this.typewriterTimer);
+      this.typewriterTimer = null;
+    }
+  }
+
+  private resumeTypewriter(): void {
+    if (!this.isBrowser) return;
+    if (this.typewriterTimer) return; // Ya en ejecución activa
+
+    if (!this.hasStarted) {
+      this.hasStarted = true;
+      // Pausa elegante al ingresar al viewport para apreciar el inicio
+      this.typewriterTimer = setTimeout(() => {
+        this.typeNextChar();
+      }, 300);
+    } else {
+      // Reanuda suavemente donde se quedó
+      this.typewriterTimer = setTimeout(() => {
+        this.typeNextChar();
+      }, 100);
+    }
+  }
+
   private typeNextChar(): void {
+    if (!this.isVisible) {
+      return;
+    }
+
     const fullPhrase = this.phrases[this.currentPhraseIndex];
 
     if (this.isDeleting) {
@@ -93,6 +142,8 @@ export class NosotrosInicioComponent implements OnInit, OnDestroy {
     } else {
       this.displayedText = fullPhrase.substring(0, this.displayedText.length + 1);
     }
+
+    this.cdr.markForCheck();
 
     let speed = this.isDeleting ? 40 : 85;
 

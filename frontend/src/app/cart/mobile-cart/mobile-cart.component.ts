@@ -12,6 +12,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
     <style>
       .mobile-cart-container {
         display: flex !important;
+        font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
       }
       @media (min-width: 768px) {
         .mobile-cart-container {
@@ -20,8 +21,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
       }
     </style>
     @if (isOpen && isAllowedRoute) {
-      <div class="mobile-cart-container fixed inset-0 bg-white flex flex-col animate-slide-in font-sans" style="padding-top: 60px !important; background-color: white !important; z-index: 99000 !important;">
+      <div class="mobile-cart-container fixed inset-0 bg-white flex flex-col animate-slide-in" style="padding-top: 60px !important; background-color: #ffffff !important; z-index: 99000 !important;">
         
+        <!-- Línea Superior de Resplandor Esmeralda -->
+        <div style="height: 2px; width: 100%; background: linear-gradient(90deg, transparent, #16a34a 50%, transparent);"></div>
+
         <!-- Header del Carrito Móvil -->
         <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0 z-10 safe-top">
           <button (click)="closeCart()" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-800 active:scale-95 transition-all">
@@ -31,7 +35,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
             </svg>
           </button>
           
-          <h2 class="font-extrabold text-[17px] text-gray-900 tracking-tight uppercase">Mi Carrito ({{ totalCount() }})</h2>
+          <div class="text-center">
+            <h2 class="font-extrabold text-[16px] text-gray-900 tracking-tight uppercase" style="letter-spacing: 0.04em;">Mi Carrito</h2>
+            <span class="text-[11px] font-bold text-[#16a34a]">{{ totalCount() }} {{ totalCount() === 1 ? 'producto' : 'productos' }}</span>
+          </div>
           
           @if (items().length > 0) {
             <button (click)="clearCart()" class="text-xs font-bold text-red-500 hover:text-red-600 active:scale-95 transition-all uppercase tracking-wider">
@@ -47,16 +54,16 @@ import { toSignal } from '@angular/core/rxjs-interop';
           
           @if (items().length === 0) {
             <div class="flex flex-col items-center justify-center h-[60vh] text-center px-6">
-              <div class="w-24 h-24 bg-white rounded-full shadow-sm flex items-center justify-center mb-6 border border-gray-100/50">
-                <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-300">
+              <div class="w-20 h-20 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-6 border border-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="text-gray-300">
                   <circle cx="9" cy="21" r="1"></circle>
                   <circle cx="20" cy="21" r="1"></circle>
                   <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                 </svg>
               </div>
-              <h3 class="text-lg font-bold text-gray-800 mb-2">Tu carrito está vacío</h3>
-              <p class="text-sm text-gray-500 max-w-xs mb-6">Agrega los mejores productos plásticos y empaques de nuestro catálogo.</p>
-              <button (click)="closeCart()" class="w-full max-w-xs py-3.5 rounded-2xl bg-gradient-to-r from-[#368c44] to-[#25d366] text-white font-extrabold text-sm uppercase tracking-wider shadow-md active:scale-[0.98] transition-all">
+              <h3 class="text-lg font-bold text-gray-900 mb-2">Tu carrito está vacío</h3>
+              <p class="text-sm text-gray-500 max-w-xs mb-6">Agrega los mejores productos plásticos, espumas y empaques de nuestro catálogo.</p>
+              <button (click)="closeCart()" class="w-full max-w-xs py-3.5 rounded-full bg-[#16a34a] text-white font-extrabold text-sm uppercase tracking-wider shadow-md hover:bg-[#15803d] active:scale-[0.98] transition-all">
                 Ver Catálogo
               </button>
             </div>
@@ -82,26 +89,26 @@ import { toSignal } from '@angular/core/rxjs-interop';
                     <h4 class="font-bold text-sm text-gray-900 leading-snug truncate pr-6">{{ item.producto.nombre }}</h4>
                     <p class="text-xs text-gray-400 font-medium mt-0.5">{{ item.variante?.nombre || item.producto.subcategoria || 'Genérico' }}</p>
                     @if (item.producto.controlar_stock && item.producto.stock !== undefined) {
-                      <p class="text-[10px] text-orange-600 font-semibold mt-0.5">{{ item.producto.stock - item.cantidad }} disponibles</p>
+                      <p class="text-[10px] text-amber-700 font-semibold mt-0.5">{{ item.producto.stock - item.cantidad }} disponibles</p>
                     }
                   </div>
 
                   <div class="flex items-center justify-between mt-3">
                     <!-- Controles Cantidad -->
-                    <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-1 border border-gray-100">
-                      <button (click)="decreaseQuantity(item.id, item.cantidad)" class="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-700 font-extrabold active:scale-90 transition-all border border-gray-100">−</button>
-                      <span class="w-6 text-center text-sm font-bold text-gray-900">{{ item.cantidad }}</span>
+                    <div class="flex items-center gap-2 bg-gray-50 rounded-xl p-1 border border-gray-100">
+                      <button (click)="decreaseQuantity(item.id, item.cantidad)" class="w-7 h-7 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-700 font-extrabold active:scale-90 transition-all border border-gray-100">−</button>
+                      <span class="w-6 text-center text-xs font-bold text-gray-900">{{ item.cantidad }}</span>
                       <button (click)="increaseQuantity(item.id, item.cantidad)" 
                               [disabled]="isAtMaxStock(item)"
                               [class.opacity-40]="isAtMaxStock(item)"
                               [class.cursor-not-allowed]="isAtMaxStock(item)"
-                              class="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-700 font-extrabold active:scale-90 transition-all border border-gray-100">+</button>
+                              class="w-7 h-7 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-700 font-extrabold active:scale-90 transition-all border border-gray-100">+</button>
                     </div>
 
                     <!-- Precio Subtotal -->
                     <div class="text-right">
-                      <span class="text-xs text-gray-400 block font-medium">Subtotal</span>
-                      <span class="font-extrabold text-sm text-[#368c44]">{{ formatearPrecio(item.precioUnitario * item.cantidad) }}</span>
+                      <span class="text-[11px] text-gray-400 block font-medium">Subtotal</span>
+                      <span class="font-extrabold text-sm text-[#16a34a]">{{ formatearPrecio(item.precioUnitario * item.cantidad) }}</span>
                     </div>
                   </div>
                 </div>
@@ -120,19 +127,19 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
         <!-- Footer / Checkout (Estilo App Móvil Horizontal) -->
         @if (items().length > 0) {
-          <div class="fixed left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-100 p-4 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex items-center justify-between gap-4 z-50" style="bottom: 82px;">
+          <div class="fixed left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-100 p-4 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex items-center justify-between gap-4 z-50" style="bottom: 0;">
             <div class="flex flex-col text-left">
               <span class="text-[10px] text-gray-400 font-extrabold uppercase tracking-wider">Total</span>
-              <span class="text-lg font-extrabold text-[#368c44] tracking-tight">{{ formatearPrecio(totalPrice()) }}</span>
+              <span class="text-lg font-extrabold text-[#16a34a] tracking-tight">{{ formatearPrecio(totalPrice()) }}</span>
             </div>
 
             <button 
               [disabled]="items().length === 0"
               routerLink="/carrito"
               (click)="closeCart()"
-              class="flex-1 max-w-[220px] py-3.5 rounded-2xl bg-gradient-to-r from-[#368c44] to-[#25d366] text-white font-extrabold text-sm uppercase tracking-wider shadow-md hover:shadow-lg active:scale-[0.96] transition-all flex items-center justify-center gap-2 border-none">
+              class="flex-1 max-w-[220px] py-3.5 rounded-full bg-[#09090b] text-white font-extrabold text-xs uppercase tracking-wider shadow-md hover:bg-[#16a34a] active:scale-[0.96] transition-all flex items-center justify-center gap-2 border-none">
               <span>Finalizar Pedido</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>

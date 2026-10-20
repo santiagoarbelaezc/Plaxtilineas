@@ -87,6 +87,9 @@ export class MenuCategoriasComponent implements OnInit {
   }
 
   private calcularCantidadTotal(categoria: CategoriaConSubcategorias): number {
+    if (categoria.cantidad !== undefined && categoria.cantidad > 0) {
+      return categoria.cantidad;
+    }
     if (!categoria.subcategorias || categoria.subcategorias.length === 0) {
       return 0;
     }
@@ -97,62 +100,38 @@ export class MenuCategoriasComponent implements OnInit {
   }
 
   private checkForSavedSubcategory(): void {
-    // Solo verificar y navegar automáticamente si la ruta actual está en /productos
     if (!this.router.url.includes('/productos')) {
       return;
     }
 
     const savedSubcategoryId = this.menuStateService.getLastSelectedSubcategory();
-    
     if (savedSubcategoryId) {
-      console.log(`📌 Subcategoría guardada encontrada: ${savedSubcategoryId}`);
-      
       let categoriaPadreId: number | null = null;
-      
       for (const categoria of this.categorias) {
         const tieneSubcategoria = categoria.subcategorias?.some(
           sub => sub.id === savedSubcategoryId
         );
-        
         if (tieneSubcategoria) {
           categoriaPadreId = categoria.id;
           break;
         }
       }
-      
+
       if (categoriaPadreId) {
         const categoria = this.categorias.find(c => c.id === categoriaPadreId);
         if (categoria && !categoria.expanded) {
           categoria.expanded = true;
           this.menuStateService.expandCategory(categoria.id);
         }
-        
-        setTimeout(() => {
-          this.cargarProductosDeSubcategoria(savedSubcategoryId);
-        }, 500);
       }
     }
-  }
-
-  private cargarProductosDeSubcategoria(subcatId: number): void {
-    // Verificación adicional de seguridad para evitar redirecciones fuera de la página de productos
-    if (!this.router.url.includes('/productos')) {
-      return;
-    }
-
-    console.log(`🔄 Cargando productos de subcategoría guardada: ${subcatId}`);
-    
-    this.router.navigate(['/productos'], {
-      queryParams: { subcategoria_id: subcatId },
-      queryParamsHandling: 'merge',
-      replaceUrl: true
-    });
   }
 
   toggle(cat: CategoriaExtendida) {
     const newExpandedState = !cat.expanded;
     cat.expanded = newExpandedState;
     this.menuStateService.toggleCategory(cat.id, newExpandedState);
+    this.seleccionarCategoria(cat.id);
   }
 
   seleccionarSubcategoria(subcatId: number) {
