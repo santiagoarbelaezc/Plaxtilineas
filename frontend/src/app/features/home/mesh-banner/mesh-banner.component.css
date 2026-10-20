@@ -139,10 +139,11 @@
   animation-play-state: running;
 }
 
-/* Pausa suave al pasar el cursor si está visible */
+/* Animación continua permanente: no se detiene al pasar el cursor */
 .aliados-marquee-section.is-visible .marquee-track-container:hover .marquee-group {
-  animation-play-state: paused !important;
+  animation-play-state: running;
 }
+
 
 @keyframes marqueeLoop {
   0% {
