@@ -121,8 +121,8 @@ php artisan key:generate --force
 # 3. Ejecutar migraciones de base de datos en producción
 php artisan migrate --force
 
-# 4. Sembrar configuraciones iniciales del sistema
-php artisan db:seed --class=ConfiguracionSeeder --force
+# 4. Sembrar datos iniciales del sistema (Administrador inicial y catálogo)
+php artisan db:seed --force
 
 # 5. Optimizar y compilar cachés de producción
 php artisan config:cache
