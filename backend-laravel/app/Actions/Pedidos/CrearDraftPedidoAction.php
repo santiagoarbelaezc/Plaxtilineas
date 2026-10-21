@@ -8,6 +8,7 @@ use App\Enums\EstadoPedido;
 use App\Exceptions\Domain\AccesoNoPermitidoException;
 use App\Exceptions\Domain\StockInsuficienteException;
 use App\Mail\PagoConfirmadoMailable;
+use App\Models\Carrito;
 use App\Models\Pedido;
 use App\Models\StockReserva;
 use App\Models\Usuario;
@@ -138,6 +139,57 @@ final class CrearDraftPedidoAction
 
             $minutos = (int) config('business.reserva_stock_expiracion_minutos', 180);
             $expiraAt = now()->addMinutes($minutos);
+            $carritoItems = Carrito::where('usuario_id', $user->id)->get();
+            $carritoPorProducto = [];
+            foreach ($carritoItems as $carritoItem) {
+                $productoId = (int) $carritoItem->producto_id;
+                $carritoPorProducto[$productoId] = ($carritoPorProducto[$productoId] ?? 0)
+                    + (int) $carritoItem->cantidad;
+            }
+
+            $pedidoPorProducto = [];
+            foreach ($detallesParaInsertar as $det) {
+                $productoId = (int) $det['producto_id'];
+                $pedidoPorProducto[$productoId] = ($pedidoPorProducto[$productoId] ?? 0)
+                    + (int) $det['cantidad'];
+            }
+
+            // El carrito ya reservó su stock. Ajustar solo diferencias y transferir
+            // la reserva al pedido para no descontar dos veces.
+            $allProductIds = array_values(array_unique(array_merge(
+                array_keys($carritoPorProducto),
+                array_keys($pedidoPorProducto)
+            )));
+            $ajustesPedido = [];
+            try {
+                foreach ($allProductIds as $productoId) {
+                    $diff = ($pedidoPorProducto[$productoId] ?? 0) - ($carritoPorProducto[$productoId] ?? 0);
+                    if ($diff === 0) {
+                        continue;
+                    }
+
+                    $deltaCatalogo = -$diff;
+                    if (! $this->catalogo->ajustarStockProducto($productoId, $deltaCatalogo)) {
+                        throw new \RuntimeException(
+                            "No se pudo sincronizar la reserva del producto {$productoId}"
+                        );
+                    }
+
+                    $ajustesPedido[] = [
+                        'producto_id' => $productoId,
+                        'delta' => $deltaCatalogo,
+                    ];
+                }
+            } catch (Throwable $e) {
+                foreach (array_reverse($ajustesPedido) as $ajuste) {
+                    $this->catalogo->ajustarStockProducto(
+                        $ajuste['producto_id'],
+                        -$ajuste['delta']
+                    );
+                }
+
+                throw $e;
+            }
 
             foreach ($detallesParaInsertar as $det) {
                 StockReserva::create([
@@ -149,9 +201,8 @@ final class CrearDraftPedidoAction
                     'expira_at' => $expiraAt,
                 ]);
 
-                // Descontar inmediatamente en la API del catálogo externo
-                $this->catalogo->ajustarStockProducto((int) $det['producto_id'], -(int) $det['cantidad']);
             }
+            Carrito::where('usuario_id', $user->id)->delete();
 
             if ($estadoInicial !== EstadoPedido::DRAFT) {
 

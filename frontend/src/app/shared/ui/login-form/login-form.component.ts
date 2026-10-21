@@ -353,9 +353,15 @@ export class LoginFormComponent implements OnInit, OnDestroy {
     });
   }
 
+  setMode(mode: 'login' | 'register' | 'forgot'): void {
+    this.mode = mode;
+    if (mode === 'register' || mode === 'forgot') {
+      this.fetchCaptcha();
+    }
+  }
+
   ngOnInit(): void {
     document.body.style.overflow = 'auto';
-    this.fetchCaptcha();
     this.startAutoSlide();
     this.cargarProductosReales();
 
@@ -363,7 +369,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
     this.route.queryParams.subscribe(params => {
       this.sessionExpired = params['expired'] === 'true';
       if (params['mode'] === 'register') {
-        this.mode = 'register';
+        this.setMode('register');
       }
     });
 
@@ -458,7 +464,9 @@ export class LoginFormComponent implements OnInit, OnDestroy {
     this.mode = this.mode === 'login' ? 'register' : 'login';
     this.errorMsg = '';
     this.showPassword = false;
-    this.fetchCaptcha();
+    if (this.mode === 'register') {
+      this.fetchCaptcha();
+    }
     // Ya no es necesario volver a renderizar el botón de Google
     // porque su contenedor está fuera del *ngIf y siempre está en el DOM.
   }

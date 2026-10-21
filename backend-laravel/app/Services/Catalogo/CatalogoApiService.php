@@ -21,7 +21,9 @@ use Illuminate\Support\Facades\Log;
 final class CatalogoApiService
 {
     private string $baseUrl;
+
     private string $token;
+
     private string $origin;
 
     public function __construct()
@@ -196,7 +198,6 @@ final class CatalogoApiService
             'producto_id' => $productoId,
             'nuevo_stock' => $nuevoStock,
             'url' => $url,
-            'token_preview' => $this->token ? (substr($this->token, 0, 8) . '...') : 'NO_CONFIGURADO',
             'origin' => $this->origin,
         ]);
 
@@ -204,7 +205,7 @@ final class CatalogoApiService
             $http = Http::timeout(10)
                 ->acceptJson()
                 ->withHeaders([
-                    'Authorization' => 'Bearer ' . $this->token,
+                    'Authorization' => 'Bearer '.$this->token,
                     'Origin' => $this->origin,
                 ]);
 
@@ -257,26 +258,52 @@ final class CatalogoApiService
             'delta' => $delta,
         ]);
 
-        $producto = $this->getProducto($productoId);
-        if (! $producto) {
-            Log::warning('[CATALOGO_API_STOCK] Producto no encontrado al intentar ajustar stock', [
+        if ($delta === 0) {
+            return true;
+        }
+
+        $url = "{$this->baseUrl}/integraciones/inventario/productos/{$productoId}/ajustar";
+
+        try {
+            $http = Http::timeout(10)
+                ->acceptJson()
+                ->withHeaders([
+                    'Authorization' => 'Bearer '.$this->token,
+                    'Origin' => $this->origin,
+                ]);
+
+            if (! app()->isProduction()) {
+                $http = $http->withoutVerifying();
+            }
+
+            $response = $http->post($url, ['delta' => $delta]);
+
+            if (! $response->successful()) {
+                Log::error('[CATALOGO_API_STOCK] Ajuste rechazado por el catálogo', [
+                    'producto_id' => $productoId,
+                    'delta' => $delta,
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+
+                return false;
+            }
+
+            Log::info('[CATALOGO_API_STOCK] Ajuste atómico aplicado', [
                 'producto_id' => $productoId,
+                'delta' => $delta,
+                'status' => $response->status(),
+            ]);
+
+            return true;
+        } catch (\Throwable $e) {
+            Log::error('[CATALOGO_API_STOCK] Excepción al ajustar stock', [
+                'producto_id' => $productoId,
+                'delta' => $delta,
+                'error' => $e->getMessage(),
             ]);
 
             return false;
         }
-
-        $stockActual = (int) ($producto['stock'] ?? 0);
-        $nuevoStock = max(0, $stockActual + $delta);
-
-        Log::info('[CATALOGO_API_STOCK] Cálculo de ajuste', [
-            'producto_id' => $productoId,
-            'delta' => $delta,
-            'stock_anterior' => $stockActual,
-            'nuevo_stock' => $nuevoStock,
-        ]);
-
-        return $this->actualizarStockProducto($productoId, $nuevoStock);
     }
 }
-

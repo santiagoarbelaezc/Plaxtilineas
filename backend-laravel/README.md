@@ -64,3 +64,14 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Inventario y carritos
+
+El endpoint de sincronización del carrito (`POST /api/carrito/sync`) reserva o
+libera inmediatamente la diferencia de stock en el catálogo externo. Esto
+evita que dos clientes puedan reservar las mismas unidades.
+
+La reserva del carrito dura `CARRITO_EXPIRA_HORAS` (por defecto, 3 horas). Se
+libera automáticamente cuando el carrito queda inactivo, mediante el comando
+programado `carrito:limpiar-expirados`. Al crear el pedido, la reserva del
+carrito se transfiere al pedido sin descontar nuevamente el stock y la reserva
+del pedido usa `STOCK_RESERVA_EXPIRA_MINUTOS` como límite de pago.

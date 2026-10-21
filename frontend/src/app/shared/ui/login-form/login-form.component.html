@@ -38,7 +38,7 @@
           <button 
             type="button" 
             class="bento-cta-btn" 
-            (click)="mode = 'register'">
+            (click)="setMode('register')">
             <span>Crea tu cuenta</span>
             <span class="material-symbols-rounded bento-cta-icon">arrow_forward</span>
           </button>
@@ -47,7 +47,7 @@
           <button 
             type="button" 
             class="bento-cta-btn" 
-            (click)="mode = 'login'">
+            (click)="setMode('login')">
             <span>Inicia sesión</span>
             <span class="material-symbols-rounded bento-cta-icon">login</span>
           </button>
@@ -86,7 +86,7 @@
       <!-- Pestañas Segmentadas Estilo Píldora (Ingresar / Registrarse) -->
       <div class="segmented-tab-container">
         <button type="button" 
-                (click)="mode = 'login'" 
+                (click)="setMode('login')" 
                 class="segmented-tab-btn"
                 [class.active]="mode === 'login'">
           <span class="material-symbols-rounded tab-icon">login</span>
@@ -134,7 +134,7 @@
         <div class="form-group">
           <div class="label-row-between">
             <label class="form-field-label">Contraseña</label>
-            <button type="button" (click)="mode = 'forgot'" class="forgot-link">¿Olvidaste tu contraseña?</button>
+            <button type="button" (click)="setMode('forgot')" class="forgot-link">¿Olvidaste tu contraseña?</button>
           </div>
           <div class="input-with-icon">
             <span class="material-symbols-rounded input-icon">lock</span>
@@ -211,7 +211,7 @@
 
         <div class="form-switch-footer">
           <span>¿Recordaste tu clave?</span>
-          <button type="button" (click)="mode = 'login'" class="switch-action-btn">Volver a iniciar sesión</button>
+          <button type="button" (click)="setMode('login')" class="switch-action-btn">Volver a iniciar sesión</button>
         </div>
       </form>
 
@@ -425,7 +425,7 @@
 
         <div class="form-switch-footer mt-4">
           <span>¿Ya tienes una cuenta registrada?</span>
-          <button type="button" (click)="mode = 'login'" class="switch-action-btn">Inicia sesión</button>
+          <button type="button" (click)="setMode('login')" class="switch-action-btn">Inicia sesión</button>
         </div>
 
         <div class="form-privacy-note">

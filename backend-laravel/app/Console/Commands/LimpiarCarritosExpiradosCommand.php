@@ -17,7 +17,7 @@ class LimpiarCarritosExpiradosCommand extends Command
     /**
      * @var string
      */
-    protected $description = 'Limpia carritos inactivos con más de 24 horas y devuelve su stock al inventario';
+    protected $description = 'Limpia carritos inactivos con más de 3 horas y devuelve su stock';
 
     public function handle(LimpiarCarritosExpiradosAction $action): int
     {

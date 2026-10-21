@@ -254,7 +254,6 @@ test('limpieza automatica de carritos expirados mas de 24 horas devuelve stock a
 
     $response->assertOk();
 
-    // El stock del producto debe haberse restituido (+3)
     expect($producto->fresh()->stock)->toBe(8);
 
     // El carrito expirado debe haber sido eliminado

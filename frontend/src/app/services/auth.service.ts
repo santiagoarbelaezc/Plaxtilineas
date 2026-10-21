@@ -88,12 +88,10 @@ export class AuthService {
     });
   }
 
-  login(correo: string, password: string, captchaData?: { captchaId: string; captchaCode: string }): Observable<any> {
+  login(correo: string, password: string): Observable<any> {
     const payload = { 
       correo, 
-      password, 
-      captchaId: captchaData?.captchaId,
-      captchaCode: captchaData?.captchaCode
+      password
     };
     return this.http.post<{ token: string, usuario: any }>(`${environment.apiUrl}/auth/login`, payload).pipe(
       tap(res => {

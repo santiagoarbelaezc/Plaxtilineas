@@ -16,8 +16,7 @@ final class LimpiarCarritosExpiradosAction
     ) {}
 
     /**
-     * Limpia los carritos expirados (más de 3 horas sin actualizar)
-     * y devuelve el stock reservado al catálogo externo.
+     * Limpia carritos inactivos y devuelve al catálogo el stock reservado.
      */
     public function execute(): int
     {
@@ -33,19 +32,26 @@ final class LimpiarCarritosExpiradosAction
         $totalLimpiados = 0;
 
         foreach ($expirados as $item) {
-            $prodId = (int) $item->producto_id;
+            $productoId = (int) $item->producto_id;
             $cantidad = (int) $item->cantidad;
 
-            if ($prodId > 0 && $cantidad > 0) {
-                Log::info('[LIMPIAR_CARRITO_EXPIRADO] Devolviendo stock por carrito expirado', [
-                    'producto_id' => $prodId,
-                    'cantidad' => $cantidad,
+            if ($productoId > 0 && $cantidad > 0
+                && ! $this->catalogo->ajustarStockProducto($productoId, $cantidad)) {
+                Log::error('[LIMPIAR_CARRITO_EXPIRADO] No se pudo devolver stock; se conserva el carrito', [
                     'usuario_id' => $item->usuario_id,
+                    'producto_id' => $productoId,
+                    'cantidad' => $cantidad,
                 ]);
 
-                $this->catalogo->ajustarStockProducto($prodId, $cantidad);
+                continue;
             }
 
+            Log::info('[LIMPIAR_CARRITO_EXPIRADO] Eliminando carrito inactivo y liberando stock', [
+                'usuario_id' => $item->usuario_id,
+                'producto_id' => $item->producto_id,
+                'cantidad' => $item->cantidad,
+                'stock_devuelto' => true,
+            ]);
             $item->delete();
             $totalLimpiados++;
         }

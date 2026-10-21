@@ -9,6 +9,7 @@ use App\Models\Usuario;
 use App\Services\Catalogo\CatalogoApiService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use RuntimeException;
 
 final class SyncCarritoAction
 {
@@ -18,7 +19,7 @@ final class SyncCarritoAction
     ) {}
 
     /**
-     * Sincroniza el carrito de un usuario autenticado con control estricto de stock en el catálogo externo.
+     * Sincroniza el carrito y reserva/libera inmediatamente la diferencia de stock.
      *
      * @param  array<int, array<string, mixed>>  $itemsInput
      */
@@ -30,76 +31,85 @@ final class SyncCarritoAction
             'items' => $itemsInput,
         ]);
 
-        DB::transaction(function () use ($usuario, $itemsInput) {
-            // 0. Limpiar carritos expirados globalmente antes de la sincronización
-            $this->limpiarExpiradosAction->execute();
+        $this->limpiarExpiradosAction->execute();
+        $ajustesAplicados = [];
 
-            // 1. Obtener carrito actual del usuario en la base de datos
-            $oldCarritos = Carrito::where('usuario_id', $usuario->id)->get();
-            $oldItems = [];
-            foreach ($oldCarritos as $old) {
-                $pid = (int) $old->producto_id;
-                $oldItems[$pid] = ($oldItems[$pid] ?? 0) + (int) $old->cantidad;
-            }
-
-            // 2. Procesar y agrupar nuevos items recibidos
-            $newItems = [];
-            foreach ($itemsInput as $item) {
-                $productoId = (int) ($item['producto_id'] ?? 0);
-                $cantidad = max(0, (int) ($item['cantidad'] ?? 0));
-                if ($productoId > 0 && $cantidad > 0) {
-                    $newItems[$productoId] = ($newItems[$productoId] ?? 0) + $cantidad;
-                }
-            }
-
-            // 3. Calcular diferencias y ajustar stock en el catálogo externo
-            /** @var list<int> $allProductIds */
-            $allProductIds = array_values(array_unique(array_merge(array_keys($oldItems), array_keys($newItems))));
-
-            foreach ($allProductIds as $prodId) {
-                $oldQty = $oldItems[$prodId] ?? 0;
-                $newQty = $newItems[$prodId] ?? 0;
-                $diff = $newQty - $oldQty;
-
-                if ($diff === 0) {
-                    continue;
+        try {
+            DB::transaction(function () use ($usuario, $itemsInput, &$ajustesAplicados) {
+                // 1. Obtener las cantidades actualmente reservadas por el carrito.
+                $oldItems = [];
+                foreach (Carrito::where('usuario_id', $usuario->id)->get() as $old) {
+                    $productoId = (int) $old->producto_id;
+                    $oldItems[$productoId] = ($oldItems[$productoId] ?? 0) + (int) $old->cantidad;
                 }
 
-                Log::info('[SYNC_CARRITO] Modificación de cantidad para producto', [
-                    'producto_id' => $prodId,
-                    'cantidad_anterior' => $oldQty,
-                    'cantidad_nueva' => $newQty,
-                    'diferencia' => $diff,
-                    'accion_catalogo' => $diff > 0 ? "Descontar {$diff} del catálogo" : "Devolver " . abs($diff) . " al catálogo",
-                ]);
+                // 2. Procesar y agrupar nuevos items recibidos.
+                $newItems = [];
+                foreach ($itemsInput as $item) {
+                    $productoId = (int) ($item['producto_id'] ?? 0);
+                    $cantidad = max(0, (int) ($item['cantidad'] ?? 0));
+                    if ($productoId > 0 && $cantidad > 0) {
+                        $newItems[$productoId] = ($newItems[$productoId] ?? 0) + $cantidad;
+                    }
+                }
 
-                // diff > 0 -> cliente añadió más unidades -> restamos (-diff) del catálogo
-                // diff < 0 -> cliente redujo o quitó items -> devolvemos (+|diff|) al catálogo
-                $this->catalogo->ajustarStockProducto($prodId, -$diff);
-            }
+                // 3. Ajustar el catálogo antes de confirmar el nuevo carrito.
+                $allProductIds = array_values(array_unique(array_merge(
+                    array_keys($oldItems),
+                    array_keys($newItems)
+                )));
 
-            // 4. Eliminar el carrito anterior del usuario
-            Carrito::where('usuario_id', $usuario->id)->delete();
+                foreach ($allProductIds as $productoId) {
+                    $diff = ($newItems[$productoId] ?? 0) - ($oldItems[$productoId] ?? 0);
+                    if ($diff === 0) {
+                        continue;
+                    }
 
-            // 5. Insertar los items actuales
-            foreach ($itemsInput as $item) {
-                $productoId = (int) ($item['producto_id'] ?? 0);
-                $varianteId = ! empty($item['variante_id']) ? (int) $item['variante_id'] : null;
-                $cantidad = max(1, (int) ($item['cantidad'] ?? 1));
-                $precioUnitario = (float) ($item['precio_unitario'] ?? 0);
+                    $deltaCatalogo = -$diff;
+                    if (! $this->catalogo->ajustarStockProducto($productoId, $deltaCatalogo)) {
+                        throw new RuntimeException(
+                            "No se pudo actualizar el stock del producto {$productoId} en el catálogo"
+                        );
+                    }
 
-                if ($productoId > 0) {
-                    Carrito::create([
-                        'usuario_id' => $usuario->id,
+                    $ajustesAplicados[] = [
                         'producto_id' => $productoId,
-                        'variante_id' => $varianteId,
-                        'cantidad' => $cantidad,
-                        'precio_unitario' => $precioUnitario,
-                    ]);
+                        'delta' => $deltaCatalogo,
+                    ];
                 }
+
+                // 4. Persistir el carrito solo después de ajustar el catálogo.
+                Carrito::where('usuario_id', $usuario->id)->delete();
+
+                // 5. Insertar los items actuales.
+                foreach ($itemsInput as $item) {
+                    $productoId = (int) ($item['producto_id'] ?? 0);
+                    $varianteId = ! empty($item['variante_id']) ? (int) $item['variante_id'] : null;
+                    $cantidad = max(1, (int) ($item['cantidad'] ?? 1));
+                    $precioUnitario = (float) ($item['precio_unitario'] ?? 0);
+
+                    if ($productoId > 0) {
+                        Carrito::create([
+                            'usuario_id' => $usuario->id,
+                            'producto_id' => $productoId,
+                            'variante_id' => $varianteId,
+                            'cantidad' => $cantidad,
+                            'precio_unitario' => $precioUnitario,
+                        ]);
+                    }
+                }
+
+                Log::info('[SYNC_CARRITO] Sincronización de carrito finalizada con éxito');
+            });
+        } catch (\Throwable $e) {
+            foreach (array_reverse($ajustesAplicados) as $ajuste) {
+                $this->catalogo->ajustarStockProducto(
+                    $ajuste['producto_id'],
+                    -$ajuste['delta']
+                );
             }
 
-            Log::info('[SYNC_CARRITO] Sincronización de carrito finalizada con éxito');
-        });
+            throw $e;
+        }
     }
 }
