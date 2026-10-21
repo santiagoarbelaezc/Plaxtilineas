@@ -20,6 +20,9 @@ class ChatSessionBan extends Model
 {
     protected $table = 'chat_session_bans';
 
+    /** Esquema de producción: solo `created_at`. */
+    public const UPDATED_AT = null;
+
     /**
      * @var list<string>
      */

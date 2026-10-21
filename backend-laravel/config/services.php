@@ -57,4 +57,12 @@ return [
         'base_url' => env('GROQ_BASE_URL', 'https://api.groq.com/openai/v1'),
     ],
 
+    'catalogo' => [
+        'url' => env('CATALOGO_API_URL', 'https://catalogoplaxtilineas.sembradoresdevida.org/api'),
+        'marca' => env('CATALOGO_MARCA', 'Plaxtilineas'),
+        'token' => env('INVENTORY_SYNC_TOKEN', ''),
+        'origin' => env('FRONTEND_URL', 'http://localhost:4200'),
+    ],
+
+
 ];

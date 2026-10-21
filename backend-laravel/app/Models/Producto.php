@@ -28,6 +28,11 @@ class Producto extends Model
 
     protected $table = 'productos';
 
+    /** Esquema legacy de producción: `creado_en` y sin updated_at. */
+    public const CREATED_AT = 'creado_en';
+
+    public const UPDATED_AT = null;
+
     /**
      * @var list<string>
      */
@@ -37,7 +42,6 @@ class Producto extends Model
         'stock',
         'controlar_stock',
         'imagen_url',
-        'activo',
     ];
 
     /**
@@ -49,7 +53,6 @@ class Producto extends Model
             'precio' => 'decimal:2',
             'stock' => 'integer',
             'controlar_stock' => 'boolean',
-            'activo' => 'boolean',
         ];
     }
 
@@ -68,7 +71,8 @@ class Producto extends Model
      */
     public function scopeActivo(Builder $query): Builder
     {
-        return $query->where('activo', true);
+        // La columna `activo` no existe en producción: todos los productos se consideran activos.
+        return $query;
     }
 
     /**

@@ -16,19 +16,19 @@ class AdminUserController extends Controller
     /**
      * GET /api/admin/usuarios-detalle
      */
-    public function obtenerUsuariosDetalle(): JsonResponse
+    public function obtenerUsuariosDetalle(\App\Services\Catalogo\CatalogoApiService $catalogo): JsonResponse
     {
         /** @var Collection<int, Usuario> $usuarios */
         $usuarios = Usuario::query()
             ->where('rol', '!=', RolUsuario::ADMIN->value)
             ->with([
-                'pedidos' => fn ($q) => $q->orderBy('created_at', 'desc'),
-                'carritos.producto',
+                'pedidos' => fn ($q) => $q->orderBy('fecha', 'desc'),
+                'carritos',
             ])
             ->orderBy('nombre', 'asc')
             ->get();
 
-        $data = $usuarios->map(function (Usuario $u) {
+        $data = $usuarios->map(function (Usuario $u) use ($catalogo) {
             $pedidosValidos = $u->pedidos->where('estado.value', '!=', 'cancelado');
             $totalCompras = (float) $pedidosValidos->sum('total');
             $cantidadPedidos = $pedidosValidos->count();
@@ -41,13 +41,17 @@ class AdminUserController extends Controller
                 'estado' => $p->estado->value,
             ])->values();
 
-            $carrito = $u->carritos->map(fn ($c) => [
-                'id' => $c->id,
-                'cantidad' => $c->cantidad,
-                'precio_unitario' => (float) $c->precio_unitario,
-                'producto_nombre' => $c->producto->nombre ?? '',
-                'imagen_url' => $c->producto->imagen_url ?? null,
-            ])->values();
+            $carrito = $u->carritos->map(function ($c) use ($catalogo) {
+                $p = $catalogo->getProducto((int) $c->producto_id);
+                return [
+                    'id' => $c->id,
+                    'producto_id' => $c->producto_id,
+                    'cantidad' => $c->cantidad,
+                    'precio_unitario' => (float) $c->precio_unitario,
+                    'producto_nombre' => $p['name'] ?? "Producto #{$c->producto_id}",
+                    'imagen_url' => $p['images'][0]['url'] ?? null,
+                ];
+            })->values();
 
             return [
                 'id' => $u->id,

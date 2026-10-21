@@ -57,14 +57,6 @@ class StockReserva extends Model
     }
 
     /**
-     * @return BelongsTo<Producto, $this>
-     */
-    public function producto(): BelongsTo
-    {
-        return $this->belongsTo(Producto::class, 'producto_id');
-    }
-
-    /**
      * @param  Builder<StockReserva>  $query
      * @return Builder<StockReserva>
      */

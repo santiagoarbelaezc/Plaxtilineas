@@ -23,6 +23,16 @@ class PqrRespuesta extends Model
 
     protected $table = 'pqr_respuestas';
 
+    /** Esquema legacy de producción: solo `fecha_creacion`. */
+    public const CREATED_AT = 'fecha_creacion';
+
+    public const UPDATED_AT = null;
+
+    protected function getCreatedAtAttribute(): ?Carbon
+    {
+        return $this->fecha_creacion;
+    }
+
     protected $keyType = 'string';
 
     public $incrementing = false;

@@ -13,7 +13,7 @@ return new class extends Migration
         Schema::create('carritos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('usuario_id')->constrained('usuarios')->cascadeOnDelete();
-            $table->foreignId('producto_id')->constrained('productos')->cascadeOnDelete();
+            $table->unsignedBigInteger('producto_id');
             $table->unsignedBigInteger('variante_id')->nullable();
             $table->integer('cantidad')->default(1);
             $table->decimal('precio_unitario', 12, 2);

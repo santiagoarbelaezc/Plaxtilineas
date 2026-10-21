@@ -27,6 +27,9 @@ class Lead extends Model
 
     protected $table = 'leads';
 
+    /** Esquema de producción: solo `created_at`. */
+    public const UPDATED_AT = null;
+
     /**
      * @var list<string>
      */
@@ -34,7 +37,6 @@ class Lead extends Model
         'nombre',
         'telefono',
         'fuente',
-        'email',
         'ip_address',
         'user_agent',
     ];

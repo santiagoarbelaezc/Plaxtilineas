@@ -49,17 +49,20 @@ class Pedido extends Model
 
     protected $table = 'pedidos';
 
+    /** Esquema legacy de producción. */
+    public const CREATED_AT = 'fecha';
+
+    public const UPDATED_AT = 'fecha_actualizacion';
+
     /**
      * @var list<string>
      */
     protected $fillable = [
         'usuario_id',
         'codigo_pedido',
-        'nombre_cliente',
-        'email_cliente',
-        'telefono_cliente',
         'direccion_envio',
-        'ciudad_envio',
+        'ciudad',
+        'telefono_contacto',
         'departamento',
         'notas',
         'subtotal',
@@ -85,6 +88,8 @@ class Pedido extends Model
     protected function casts(): array
     {
         return [
+            'fecha' => 'datetime',
+            'fecha_actualizacion' => 'datetime',
             'subtotal' => 'decimal:2',
             'iva' => 'decimal:2',
             'costo_envio' => 'decimal:2',
@@ -94,6 +99,42 @@ class Pedido extends Model
             'fecha_envio' => 'datetime',
             'estado' => EstadoPedido::class,
         ];
+    }
+
+    public function getCreatedAtAttribute(): ?Carbon
+    {
+        $val = $this->attributes['fecha'] ?? null;
+        return $val ? Carbon::parse($val) : null;
+    }
+
+    public function getUpdatedAtAttribute(): ?Carbon
+    {
+        $val = $this->attributes['fecha_actualizacion'] ?? null;
+        return $val ? Carbon::parse($val) : null;
+    }
+
+    /**
+     * Columnas inexistentes en producción: los datos del cliente se toman
+     * de la relación `usuario` (los consumidores ya usan `?: usuario->...`).
+     */
+    protected function getNombreClienteAttribute(): ?string
+    {
+        return null;
+    }
+
+    protected function getEmailClienteAttribute(): ?string
+    {
+        return null;
+    }
+
+    protected function getTelefonoClienteAttribute(): ?string
+    {
+        return $this->attributes['telefono_contacto'] ?? null;
+    }
+
+    protected function getCiudadEnvioAttribute(): ?string
+    {
+        return $this->attributes['ciudad'] ?? null;
     }
 
     /**

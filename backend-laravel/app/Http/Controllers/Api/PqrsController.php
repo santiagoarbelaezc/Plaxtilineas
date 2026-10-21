@@ -195,15 +195,15 @@ class PqrsController extends Controller
             $query->where('tipo', $tipo);
         }
         if ($fechaInicio) {
-            $query->whereDate('created_at', '>=', $fechaInicio);
+            $query->whereDate('fecha_creacion', '>=', $fechaInicio);
         }
         if ($fechaFin) {
-            $query->whereDate('created_at', '<=', $fechaFin);
+            $query->whereDate('fecha_creacion', '<=', $fechaFin);
         }
 
         $total = $query->count();
         $offset = ($page - 1) * $limit;
-        $pqrs = $query->orderByDesc('created_at')->skip($offset)->take($limit)->get();
+        $pqrs = $query->orderByDesc('fecha_creacion')->skip($offset)->take($limit)->get();
 
         $data = $pqrs->map(fn ($p) => [
             'id' => $p->id,
@@ -273,7 +273,7 @@ class PqrsController extends Controller
      */
     public function obtenerUltimaPQR(): JsonResponse
     {
-        $ultimas = Pqr::orderByDesc('created_at')->take(5)->get();
+        $ultimas = Pqr::orderByDesc('fecha_creacion')->take(5)->get();
 
         $data = $ultimas->map(fn ($p) => [
             'id' => $p->id,
@@ -304,7 +304,7 @@ class PqrsController extends Controller
             ->orWhere('email', 'like', $term)
             ->orWhere('numero_ticket', 'like', $term)
             ->orWhere('descripcion', 'like', $term)
-            ->orderByDesc('created_at')
+            ->orderByDesc('fecha_creacion')
             ->take($limit)
             ->get();
 

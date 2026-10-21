@@ -7,7 +7,6 @@ namespace App\Actions\Pedidos;
 use App\Enums\EstadoPedido;
 use App\Mail\PagoConfirmadoMailable;
 use App\Models\Pedido;
-use App\Models\Producto;
 use App\Models\StockReserva;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -33,7 +32,7 @@ final class ConfirmarPedidoAction
             $wompiMontoCentavos
         ) {
             /** @var Pedido|null $pedido */
-            $pedido = Pedido::with(['items.producto', 'usuario'])
+            $pedido = Pedido::with(['items', 'usuario'])
                 ->where('id', $pedidoId)
                 ->lockForUpdate()
                 ->first();
@@ -53,14 +52,7 @@ final class ConfirmarPedidoAction
                 return true;
             }
 
-            // Deducir stock real de cada producto si controlar_stock está habilitado
-            foreach ($pedido->items as $item) {
-                Producto::where('id', $item->producto_id)
-                    ->where('controlar_stock', true)
-                    ->decrement('stock', $item->cantidad);
-            }
-
-            // Eliminar reservas temporales
+            // Eliminar reservas temporales de stock
             StockReserva::where('pedido_id', $pedidoId)->delete();
 
             // Actualizar pedido a PAGADO

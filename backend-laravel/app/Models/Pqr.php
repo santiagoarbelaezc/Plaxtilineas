@@ -33,6 +33,21 @@ class Pqr extends Model
 
     protected $table = 'pqrs';
 
+    /** Esquema legacy de producción. */
+    public const CREATED_AT = 'fecha_creacion';
+
+    public const UPDATED_AT = 'fecha_actualizacion';
+
+    protected function getCreatedAtAttribute(): ?Carbon
+    {
+        return $this->fecha_creacion;
+    }
+
+    protected function getUpdatedAtAttribute(): ?Carbon
+    {
+        return $this->fecha_actualizacion;
+    }
+
     protected $keyType = 'string';
 
     public $incrementing = false;

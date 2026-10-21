@@ -13,9 +13,9 @@ return [
 
     'iva_porcentaje' => (float) env('IVA_PORCENTAJE', 0.0),
 
-    'reserva_stock_expiracion_minutos' => (int) env('STOCK_RESERVA_EXPIRA_MINUTOS', 30),
+    'reserva_stock_expiracion_minutos' => (int) env('STOCK_RESERVA_EXPIRA_MINUTOS', 180),
 
-    'carrito_expiracion_horas' => (int) env('CARRITO_EXPIRA_HORAS', 24),
+    'carrito_expiracion_horas' => (int) env('CARRITO_EXPIRA_HORAS', 3),
 
     'captcha_expiracion_segundos' => (int) env('CAPTCHA_EXPIRA_SEGUNDOS', 300),
 

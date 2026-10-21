@@ -13,7 +13,7 @@ return new class extends Migration
         Schema::create('pedido_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pedido_id')->constrained('pedidos')->cascadeOnDelete();
-            $table->foreignId('producto_id')->constrained('productos')->cascadeOnDelete();
+            $table->unsignedBigInteger('producto_id');
             $table->unsignedBigInteger('variante_id')->nullable();
             $table->string('nombre_producto');
             $table->string('imagen_url', 500)->nullable();

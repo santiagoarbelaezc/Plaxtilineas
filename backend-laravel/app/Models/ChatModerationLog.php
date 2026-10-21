@@ -21,6 +21,9 @@ class ChatModerationLog extends Model
 {
     protected $table = 'chat_moderation_log';
 
+    /** Esquema de producción: solo `created_at`. */
+    public const UPDATED_AT = null;
+
     /**
      * @var list<string>
      */

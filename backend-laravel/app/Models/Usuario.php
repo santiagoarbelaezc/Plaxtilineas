@@ -41,6 +41,16 @@ class Usuario extends Authenticatable
     protected $table = 'usuarios';
 
     /**
+     * Esquema legacy de producción: solo existe `fecha_creacion` (sin updated_at).
+     */
+    public const CREATED_AT = 'fecha_creacion';
+
+    public const UPDATED_AT = null;
+
+    /** Valor real del enum `usuarios.rol` para clientes en producción. */
+    public const ROL_CLIENTE_DB = 'usuario';
+
+    /**
      * @var list<string>
      */
     protected $fillable = [
@@ -57,7 +67,6 @@ class Usuario extends Authenticatable
         'email_verificado',
         'token_verificacion',
         'token_expira_en',
-        'requiere_cambio_password',
     ];
 
     /**
@@ -76,10 +85,29 @@ class Usuario extends Authenticatable
         return [
             'edad' => 'integer',
             'email_verificado' => 'boolean',
-            'requiere_cambio_password' => 'boolean',
             'token_expira_en' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * El enum de producción solo admite 'admin' | 'usuario'. El código
+     * Laravel usa 'cliente', que se traduce al escribir.
+     */
+    protected function setRolAttribute(?string $value): void
+    {
+        $this->attributes['rol'] = $value === RolUsuario::CLIENTE->value || $value === null || $value === ''
+            ? self::ROL_CLIENTE_DB
+            : $value;
+    }
+
+    /**
+     * La columna no existe en producción (el esquema legacy no soporta
+     * contraseñas temporales persistentes). Se expone siempre como false.
+     */
+    protected function getRequiereCambioPasswordAttribute(): bool
+    {
+        return false;
     }
 
     /**
@@ -113,7 +141,7 @@ class Usuario extends Authenticatable
      */
     public function scopeCliente(Builder $query): Builder
     {
-        return $query->where('rol', RolUsuario::CLIENTE->value);
+        return $query->where('rol', '!=', RolUsuario::ADMIN->value);
     }
 
     public function isAdmin(): bool
@@ -123,7 +151,7 @@ class Usuario extends Authenticatable
 
     public function tienePasswordTemporal(): bool
     {
-        return $this->requiere_cambio_password;
+        return false;
     }
 
     public function emailVerificado(): bool

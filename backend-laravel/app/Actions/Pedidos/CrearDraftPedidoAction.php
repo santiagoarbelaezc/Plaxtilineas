@@ -9,9 +9,9 @@ use App\Exceptions\Domain\AccesoNoPermitidoException;
 use App\Exceptions\Domain\StockInsuficienteException;
 use App\Mail\PagoConfirmadoMailable;
 use App\Models\Pedido;
-use App\Models\Producto;
 use App\Models\StockReserva;
 use App\Models\Usuario;
+use App\Services\Catalogo\CatalogoApiService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -20,6 +20,10 @@ use Throwable;
 
 final class CrearDraftPedidoAction
 {
+    public function __construct(
+        private readonly CatalogoApiService $catalogo
+    ) {}
+
     /**
      * @param  array<string, mixed>  $input
      * @return array<string, mixed>
@@ -54,35 +58,26 @@ final class CrearDraftPedidoAction
                 $productoId = (int) ($item['producto_id'] ?? 0);
                 $varianteId = ! empty($item['variante_id']) ? (int) $item['variante_id'] : null;
                 $cantidad = max(1, (int) ($item['cantidad'] ?? 1));
+                $imagenUrl = (string) ($item['imagen_url'] ?? '');
 
-                /** @var Producto|null $producto */
-                $producto = Producto::where('id', $productoId)->first();
+                // ── Verificar stock y obtener precio desde la API del catálogo externo ──
+                $resultado = $this->catalogo->verificarStockYPrecio($productoId, $varianteId, $cantidad);
 
-                if (! $producto) {
-                    throw new NotFoundHttpException("Producto con ID {$productoId} no encontrado.");
-                }
-
-                // Validar stock disponible considerando reservas activas
-                if ($producto->controlar_stock) {
-                    $reservado = (int) StockReserva::where('producto_id', $productoId)
-                        ->whereHas('pedido', function ($q) {
-                            $q->whereIn('estado', [
-                                EstadoPedido::DRAFT,
-                                EstadoPedido::PENDIENTE_PAGO,
-                            ]);
-                        })
-                        ->where('expira_at', '>', now())
-                        ->sum('cantidad');
-
-                    $stockDisponible = $producto->stock - $reservado;
-
-                    if ($cantidad > $stockDisponible) {
-                        throw StockInsuficienteException::paraPedido($producto->nombre, $stockDisponible, $cantidad);
+                if (! $resultado['disponible']) {
+                    // Producto no encontrado en la API
+                    if ($resultado['stock'] === 0 && $resultado['precio'] === 0.0 && $resultado['nombre'] === "Producto #{$productoId}") {
+                        throw new NotFoundHttpException("Producto con ID {$productoId} no encontrado en el catálogo.");
                     }
+                    // Stock insuficiente
+                    throw StockInsuficienteException::paraPedido(
+                        $resultado['nombre'],
+                        $resultado['stock'],
+                        $cantidad
+                    );
                 }
 
-                $precioUnitario = (float) $producto->precio;
-                $imagenUrl = $producto->imagen_url;
+                $precioUnitario = $resultado['precio'];
+                $nombreProducto = $resultado['nombre'];
 
                 $itemSubtotal = $precioUnitario * $cantidad;
                 $subtotal += $itemSubtotal;
@@ -90,7 +85,7 @@ final class CrearDraftPedidoAction
                 $detallesParaInsertar[] = [
                     'producto_id' => $productoId,
                     'variante_id' => $varianteId,
-                    'nombre_producto' => $producto->nombre,
+                    'nombre_producto' => $nombreProducto,
                     'imagen_url' => $imagenUrl,
                     'cantidad' => $cantidad,
                     'precio_unitario' => $precioUnitario,
@@ -108,7 +103,7 @@ final class CrearDraftPedidoAction
 
             // Generar código de pedido correlativo PX-{año}-{NNNN}
             $anio = date('Y');
-            $count = Pedido::whereYear('created_at', (int) $anio)->count();
+            $count = Pedido::whereYear('fecha', (int) $anio)->count();
             do {
                 $count++;
                 $correlativo = str_pad((string) $count, 4, '0', STR_PAD_LEFT);
@@ -123,11 +118,9 @@ final class CrearDraftPedidoAction
             $pedido = Pedido::create([
                 'usuario_id' => $user->id,
                 'codigo_pedido' => $codigoPedido,
-                'nombre_cliente' => $user->nombre,
-                'email_cliente' => $user->correo,
-                'telefono_cliente' => $input['telefono_contacto'] ?? $user->telefono,
+                'telefono_contacto' => $input['telefono_contacto'] ?? $user->telefono,
                 'direccion_envio' => (string) ($input['direccion_envio'] ?? ''),
-                'ciudad_envio' => $input['ciudad'] ?? null,
+                'ciudad' => $input['ciudad'] ?? null,
                 'departamento' => $input['departamento'] ?? null,
                 'notas' => $input['notas'] ?? null,
                 'subtotal' => $subtotal,
@@ -143,26 +136,24 @@ final class CrearDraftPedidoAction
                 $pedido->items()->create($det);
             }
 
-            if ($estadoInicial === EstadoPedido::DRAFT) {
-                $minutos = (int) config('business.reserva_stock_expiracion_minutos', 30);
-                $expiraAt = now()->addMinutes($minutos);
+            $minutos = (int) config('business.reserva_stock_expiracion_minutos', 180);
+            $expiraAt = now()->addMinutes($minutos);
 
-                foreach ($detallesParaInsertar as $det) {
-                    StockReserva::create([
-                        'pedido_id' => $pedido->id,
-                        'producto_id' => $det['producto_id'],
-                        'variante_id' => $det['variante_id'],
-                        'cantidad' => $det['cantidad'],
-                        'expira_at' => $expiraAt,
-                    ]);
-                }
-            } else {
-                // Deducción de stock inmediata para pedidos offline
-                foreach ($detallesParaInsertar as $det) {
-                    Producto::where('id', $det['producto_id'])
-                        ->where('controlar_stock', true)
-                        ->decrement('stock', $det['cantidad']);
-                }
+            foreach ($detallesParaInsertar as $det) {
+                StockReserva::create([
+                    'pedido_id' => $pedido->id,
+                    'producto_id' => $det['producto_id'],
+                    'variante_id' => $det['variante_id'],
+                    'cantidad' => $det['cantidad'],
+                    'creado_at' => now(),
+                    'expira_at' => $expiraAt,
+                ]);
+
+                // Descontar inmediatamente en la API del catálogo externo
+                $this->catalogo->ajustarStockProducto((int) $det['producto_id'], -(int) $det['cantidad']);
+            }
+
+            if ($estadoInicial !== EstadoPedido::DRAFT) {
 
                 // Enviar correo de confirmación de pedido offline
                 try {

@@ -23,7 +23,10 @@ use Illuminate\Support\Carbon;
  */
 class PedidoItem extends Model
 {
-    protected $table = 'pedido_items';
+    protected $table = 'pedido_detalles';
+
+    /** pedido_detalles no tiene created_at/updated_at en producción. */
+    public $timestamps = false;
 
     /**
      * @var list<string>
@@ -36,7 +39,7 @@ class PedidoItem extends Model
         'imagen_url',
         'cantidad',
         'precio_unitario',
-        'subtotal',
+        // `subtotal` es una columna STORED GENERATED en producción: no se inserta.
     ];
 
     /**
@@ -57,13 +60,5 @@ class PedidoItem extends Model
     public function pedido(): BelongsTo
     {
         return $this->belongsTo(Pedido::class, 'pedido_id');
-    }
-
-    /**
-     * @return BelongsTo<Producto, $this>
-     */
-    public function producto(): BelongsTo
-    {
-        return $this->belongsTo(Producto::class, 'producto_id');
     }
 }

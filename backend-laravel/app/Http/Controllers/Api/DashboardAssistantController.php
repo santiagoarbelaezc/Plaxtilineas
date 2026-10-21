@@ -7,7 +7,6 @@ namespace App\Http\Controllers\Api;
 use App\Contracts\AiChatClientInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Chat\DashboardAssistantRequest;
-use App\Models\Producto;
 use App\Services\ChatModerationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Carbon;
@@ -110,22 +109,9 @@ class DashboardAssistantController extends Controller
 
     private function generarResumenProductos(): string
     {
-        $productos = Producto::where('stock', '<=', 5)
-            ->orderBy('stock', 'asc')
-            ->limit(10)
-            ->get();
-
-        if ($productos->isEmpty()) {
-            return 'Actualmente, el inventario está en niveles óptimos. No hay productos con stock menor o igual a 5.';
-        }
-
-        $resumen = 'Actualmente tienes '.$productos->count()." productos con stock bajo o nulo que requieren atención:\n";
-        foreach ($productos as $p) {
-            $resumen .= '- '.$p->nombre.' (Stock: '.$p->stock.")\n";
-        }
-
-        return $resumen;
+        return 'El inventario y catálogo de productos se sincroniza en tiempo real desde la plataforma externa del Catálogo.';
     }
+
 
     private function getSystemPrompt(): string
     {

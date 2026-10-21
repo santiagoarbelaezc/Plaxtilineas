@@ -181,6 +181,11 @@ export class CartSummaryComponent implements OnInit {
     return this.cartService.isAtMaxStock(item);
   }
 
+  getDisponible(item: any): number | null {
+    return this.cartService.getDisponible(item);
+  }
+
+
   contactarAsesorWhatsApp(): string {
     const items = this.items();
     let mensaje = `👋 *Hola, necesito asesoría para mi compra en Plaxtilineas*\n\n`;

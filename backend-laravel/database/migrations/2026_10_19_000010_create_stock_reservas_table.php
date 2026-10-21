@@ -13,7 +13,7 @@ return new class extends Migration
         Schema::create('stock_reservas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pedido_id')->constrained('pedidos')->cascadeOnDelete();
-            $table->foreignId('producto_id')->constrained('productos')->cascadeOnDelete();
+            $table->unsignedBigInteger('producto_id');
             $table->unsignedBigInteger('variante_id')->nullable();
             $table->integer('cantidad');
             $table->timestamp('creado_at')->useCurrent();

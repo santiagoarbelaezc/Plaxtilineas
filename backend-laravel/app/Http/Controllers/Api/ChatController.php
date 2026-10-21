@@ -9,7 +9,6 @@ use App\Enums\RolChat;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Chat\ChatRequest;
 use App\Models\ChatHistorial;
-use App\Models\Producto;
 use App\Services\ChatModerationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -346,13 +345,7 @@ class ChatController extends Controller
      */
     private function obtenerProductosContexto(int $limite): array
     {
-        return DB::table('productos')
-            ->where('activo', true)
-            ->select('id', 'nombre', 'precio')
-            ->limit($limite)
-            ->get()
-            ->map(fn ($item) => (array) $item)
-            ->all();
+        return [];
     }
 
     /**
@@ -369,18 +362,28 @@ class ChatController extends Controller
 
         if (! empty($matches[1])) {
             $uniqueIds = array_unique(array_map('intval', $matches[1]));
-            $productosDb = Producto::whereIn('id', $uniqueIds)->get();
+            $catalogo = app(\App\Services\Catalogo\CatalogoApiService::class);
 
-            foreach ($productosDb as $p) {
-                $productos[] = [
-                    'id' => (int) $p->id,
-                    'nombre' => (string) $p->nombre,
-                    'precio' => (float) $p->precio,
-                    'imagen' => $p->imagen_url,
-                    'url' => '/producto/'.$p->id,
-                ];
+            foreach ($uniqueIds as $pId) {
+                $p = $catalogo->getProducto($pId);
+                if ($p) {
+                    $precioMin = 0.0;
+                    if (! empty($p['variants'])) {
+                        $precios = array_filter(array_map(fn ($v) => (float) ($v['price'] ?? 0), $p['variants']), fn ($pr) => $pr > 0);
+                        $precioMin = $precios ? min($precios) : 0.0;
+                    }
+                    $imagen = ! empty($p['images'][0]['url']) ? $p['images'][0]['url'] : null;
+                    $productos[] = [
+                        'id' => (int) $p['id'],
+                        'nombre' => (string) ($p['name'] ?? ''),
+                        'precio' => $precioMin,
+                        'imagen' => $imagen,
+                        'url' => '/producto/'.$p['id'],
+                    ];
+                }
             }
         }
+
 
         $respuestaLimpia = preg_replace('/\[PRODUCTO:\d+\]/', '', $respuesta) ?? $respuesta;
 

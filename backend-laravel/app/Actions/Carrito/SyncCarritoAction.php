@@ -4,25 +4,32 @@ declare(strict_types=1);
 
 namespace App\Actions\Carrito;
 
-use App\Exceptions\Domain\StockInsuficienteException;
 use App\Models\Carrito;
-use App\Models\Producto;
 use App\Models\Usuario;
+use App\Services\Catalogo\CatalogoApiService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 final class SyncCarritoAction
 {
     public function __construct(
-        private readonly LimpiarCarritosExpiradosAction $limpiarExpiradosAction
+        private readonly LimpiarCarritosExpiradosAction $limpiarExpiradosAction,
+        private readonly CatalogoApiService $catalogo
     ) {}
 
     /**
-     * Sincroniza el carrito de un usuario autenticado con control estricto de concurrencia y stock.
+     * Sincroniza el carrito de un usuario autenticado con control estricto de stock en el catálogo externo.
      *
      * @param  array<int, array<string, mixed>>  $itemsInput
      */
     public function execute(Usuario $usuario, array $itemsInput): void
     {
+        Log::info('[SYNC_CARRITO] Iniciando sincronización de carrito para usuario', [
+            'usuario_id' => $usuario->id,
+            'items_recibidos' => count($itemsInput),
+            'items' => $itemsInput,
+        ]);
+
         DB::transaction(function () use ($usuario, $itemsInput) {
             // 0. Limpiar carritos expirados globalmente antes de la sincronización
             $this->limpiarExpiradosAction->execute();
@@ -45,7 +52,7 @@ final class SyncCarritoAction
                 }
             }
 
-            // 3. Calcular diferencias y ajustar stock con bloqueo pesimista
+            // 3. Calcular diferencias y ajustar stock en el catálogo externo
             /** @var list<int> $allProductIds */
             $allProductIds = array_values(array_unique(array_merge(array_keys($oldItems), array_keys($newItems))));
 
@@ -58,23 +65,17 @@ final class SyncCarritoAction
                     continue;
                 }
 
-                /** @var Producto|null $prod */
-                $prod = Producto::where('id', $prodId)->lockForUpdate()->first();
+                Log::info('[SYNC_CARRITO] Modificación de cantidad para producto', [
+                    'producto_id' => $prodId,
+                    'cantidad_anterior' => $oldQty,
+                    'cantidad_nueva' => $newQty,
+                    'diferencia' => $diff,
+                    'accion_catalogo' => $diff > 0 ? "Descontar {$diff} del catálogo" : "Devolver " . abs($diff) . " al catálogo",
+                ]);
 
-                if (! $prod) {
-                    continue;
-                }
-
-                if ($prod->controlar_stock) {
-                    if ($diff > 0) {
-                        if ($prod->stock < $diff) {
-                            throw StockInsuficienteException::paraReserva($prod->nombre, $prod->stock);
-                        }
-                        $prod->decrement('stock', $diff);
-                    } else {
-                        $prod->increment('stock', abs($diff));
-                    }
-                }
+                // diff > 0 -> cliente añadió más unidades -> restamos (-diff) del catálogo
+                // diff < 0 -> cliente redujo o quitó items -> devolvemos (+|diff|) al catálogo
+                $this->catalogo->ajustarStockProducto($prodId, -$diff);
             }
 
             // 4. Eliminar el carrito anterior del usuario
@@ -97,6 +98,8 @@ final class SyncCarritoAction
                     ]);
                 }
             }
+
+            Log::info('[SYNC_CARRITO] Sincronización de carrito finalizada con éxito');
         });
     }
 }

@@ -131,12 +131,14 @@
         
         <div class="cart-item-meta-row">
           <span class="cart-item-variant-pill">{{ item.variante?.nombre || item.producto.subcategoria || 'General' }}</span>
-          @if (item.producto.controlar_stock && item.producto.stock !== undefined) {
-            <span class="cart-item-stock-pill">
-              {{ item.producto.stock - item.cantidad }} disp.
+          @if (getDisponible(item) !== null) {
+            <span class="cart-item-stock-pill" [class.out-of-stock]="getDisponible(item)! <= 0">
+              {{ getDisponible(item)! > 0 ? getDisponible(item) + ' disp.' : 'Máximo alcanzado' }}
             </span>
           }
         </div>
+
+
 
         <div class="cart-item-unit-row">
           <span class="unit-price-label">Unitario:</span>

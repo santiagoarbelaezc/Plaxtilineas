@@ -26,10 +26,17 @@ class CarritoController extends Controller
         /** @var Usuario $usuario */
         $usuario = $request->user();
 
+        \Illuminate\Support\Facades\Log::info('[CARRITO_CONTROLLER] Petición /api/carrito/sync recibida', [
+            'usuario_id' => $usuario->id,
+            'usuario_email' => $usuario->correo,
+            'items_count' => count($request->getItems()),
+        ]);
+
         $this->syncCarritoAction->execute($usuario, $request->getItems());
 
         return ApiResponse::success([
             'mensaje' => 'Carrito sincronizado exitosamente.',
         ]);
     }
+
 }

@@ -20,6 +20,9 @@ class ChatHistorial extends Model
 {
     protected $table = 'chat_historial';
 
+    /** Esquema de producción: solo `created_at`. */
+    public const UPDATED_AT = null;
+
     /**
      * @var list<string>
      */

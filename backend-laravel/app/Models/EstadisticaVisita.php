@@ -20,14 +20,15 @@ class EstadisticaVisita extends Model
 {
     protected $table = 'estadisticas_visitas';
 
+    /** Esquema de producción: solo `created_at`. */
+    public const UPDATED_AT = null;
+
     /**
      * @var list<string>
      */
     protected $fillable = [
-        'ip',
         'ip_address',
         'user_agent',
-        'pagina',
         'pagina_url',
         'session_id',
         'fecha',

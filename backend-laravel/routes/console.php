@@ -9,3 +9,5 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command('carrito:limpiar-expirados')->hourly();
+Schedule::command('stock:liberar-expirados')->everyFiveMinutes();
+

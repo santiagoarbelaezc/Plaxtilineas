@@ -94,11 +94,18 @@ import { toSignal } from '@angular/core/rxjs-interop';
                   <h4 class="text-[13.5px] font-bold text-zinc-900 group-hover:text-[#16a34a] transition-colors truncate m-0">{{ item.producto.nombre }}</h4>
                   <div class="flex items-center gap-1.5 text-[11px] text-zinc-500 mt-0.5">
                     <span class="truncate">{{ item.variante?.nombre || item.producto.subcategoria || 'General' }}</span>
+                    @if (getDisponible(item) !== null) {
+                      <span class="text-[10px] font-semibold" [class.text-amber-600]="getDisponible(item)! > 0" [class.text-red-500]="getDisponible(item)! <= 0">
+                        &bull; {{ getDisponible(item)! > 0 ? getDisponible(item) + ' disp.' : 'Máx. alcanzado' }}
+                      </span>
+                    }
                   </div>
+
                   <div class="text-[14px] font-extrabold text-zinc-900 mt-1">
                     {{ formatearPrecio(item.precioUnitario * item.cantidad) }}
                   </div>
                 </div>
+
 
                 <div class="flex flex-col items-end gap-2">
                   <button 
@@ -243,6 +250,11 @@ export class CartDrawerComponent implements OnInit, OnDestroy {
   isAtMaxStock(item: any): boolean {
     return this.cartService.isAtMaxStock(item);
   }
+
+  getDisponible(item: any): number | null {
+    return this.cartService.getDisponible(item);
+  }
+
 
   decreaseQuantity(id: string, current: number) {
     if (current > 1) {

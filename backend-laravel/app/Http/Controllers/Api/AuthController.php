@@ -62,7 +62,10 @@ class AuthController extends Controller
             return ApiResponse::error('Contraseña incorrecta', 401);
         }
 
-        if ($usuario->google_id === null && ! $usuario->email_verificado) {
+        // Los admins pre-existentes en producción tienen email_verificado = false
+        // porque la BD fue creada antes de implementar verificación de email.
+        // Los admins no requieren verificación de email.
+        if ($usuario->google_id === null && ! $usuario->email_verificado && ! $usuario->isAdmin()) {
             return ApiResponse::error('Debes confirmar tu correo electrónico antes de iniciar sesión. Por favor, revisa tu bandeja de entrada.', 403);
         }
 
@@ -118,7 +121,6 @@ class AuthController extends Controller
             'email_verificado' => false,
             'token_verificacion' => $tokenVerificacion,
             'token_expira_en' => $tokenExpiraEn,
-            'requiere_cambio_password' => false,
         ]);
 
         try {
@@ -170,7 +172,6 @@ class AuthController extends Controller
                 'rol' => RolUsuario::CLIENTE->value,
                 'google_id' => $googleUser['sub'],
                 'email_verificado' => true,
-                'requiere_cambio_password' => false,
             ]);
         }
 
@@ -220,7 +221,6 @@ class AuthController extends Controller
 
         $usuario->update([
             'password' => Hash::make($tempPassword),
-            'requiere_cambio_password' => true,
         ]);
 
         try {
@@ -251,7 +251,6 @@ class AuthController extends Controller
 
         $usuario->update([
             'password' => Hash::make($nuevaPassword),
-            'requiere_cambio_password' => false,
         ]);
 
         return ApiResponse::success([

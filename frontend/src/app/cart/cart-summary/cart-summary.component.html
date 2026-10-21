@@ -110,16 +110,18 @@
                   }
                 </div>
                 
-                @if (item.producto.controlar_stock && item.producto.stock !== undefined) {
-                  <div class="item-stock-warning">
+                @if (getDisponible(item) !== null) {
+                  <div class="item-stock-warning" [class.out-of-stock]="getDisponible(item)! <= 0">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                       <circle cx="12" cy="12" r="10"></circle>
                       <line x1="12" y1="8" x2="12" y2="12"></line>
                       <line x1="12" y1="16" x2="12.01" y2="16"></line>
                     </svg>
-                    <span>{{ item.producto.stock - item.cantidad }} disponibles</span>
+                    <span>{{ getDisponible(item)! > 0 ? getDisponible(item) + ' disponibles' : 'Máximo alcanzado' }}</span>
                   </div>
                 }
+
+
 
                 <div class="item-unit-price">
                   Precio unitario: <strong>{{ formatearPrecio(item.precioUnitario) }}</strong>

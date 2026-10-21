@@ -5,6 +5,7 @@ import { environment } from '../../enviroments/environment';
 import { CartItem, CartItemDetalle } from '../models/cart.model';
 import { Producto } from '../models/producto.model';
 import { Variante } from '../models/variante.model';
+import { CatalogoService } from './catalogo.service';
 import Swal from 'sweetalert2';
 
 @Injectable({
@@ -13,14 +14,15 @@ import Swal from 'sweetalert2';
 export class CartService {
   private static readonly STORAGE_KEY = 'plaxtilineas_cart';
   /**
-   * Mientras el backend del carrito no exista, el carrito vive solo en el frontend.
-   * Ver docs/BACKEND_CARRITO.md para activar la sincronización.
+   * Sincronización activa con el backend Laravel y catálogo de producción.
    */
-  private static readonly BACKEND_SYNC_ENABLED = false;
+  private static readonly BACKEND_SYNC_ENABLED = true;
 
   private http = inject(HttpClient);
+  private catalogoService = inject(CatalogoService);
   private itemsSubject = new BehaviorSubject<CartItem[]>([]);
   items$ = this.itemsSubject.asObservable();
+
   
   // Señal para saber si queremos abrir forzosamente el cart-drawer (feedback de añadir al carril)
   isOpenDrawer = new BehaviorSubject<boolean>(false);
@@ -48,7 +50,7 @@ export class CartService {
   private construirDetalle(item: CartItem): CartItemDetalle {
     const p = item.producto;
     const v = item.variante;
-    const controla = p.controlar_stock === true || p.controlar_stock === 1;
+    const stockMax = this.getItemStock(p, v);
     return {
       producto_id: p.id,
       variante_id: v?.id ?? null,
@@ -65,16 +67,23 @@ export class CartService {
       precio_unitario: item.precioUnitario,
       cantidad: item.cantidad,
       minimo_compra: p.minimo_compra || 1,
-      stock_disponible: controla && p.stock !== undefined ? p.stock : null,
+      stock_disponible: stockMax ?? null,
       subtotal: item.precioUnitario * item.cantidad
     };
   }
 
+
   private syncCartWithBackend(items: CartItem[]) {
-    if (!CartService.BACKEND_SYNC_ENABLED) return;
+    if (!CartService.BACKEND_SYNC_ENABLED) {
+      console.log('[Carrito] BACKEND_SYNC_ENABLED está desactivado.');
+      return;
+    }
     if (typeof localStorage === 'undefined') return;
     const token = localStorage.getItem('token');
-    if (!token) return;
+    if (!token) {
+      console.log('[Carrito] Usuario no autenticado; el carrito vive localmente hasta iniciar sesión.');
+      return;
+    }
 
     const payload = {
       items: items.map(item => ({
@@ -90,10 +99,22 @@ export class CartService {
       'Authorization': `Bearer ${token}`
     };
 
+    console.log('[Carrito] Enviando sincronización con backend Laravel:', payload);
+
     this.http.post(`${environment.apiUrl}/carrito/sync`, payload, { headers }).subscribe({
-      error: (err) => this.stockError$.next('Error al sincronizar el carrito con el servidor.')
+      next: (res) => {
+        console.log('[Carrito] Sincronización exitosa con backend:', res);
+        // Refrescar inmediatamente el catálogo en memoria sin recargar página
+        this.catalogoService.refrescar();
+      },
+
+      error: (err) => {
+        console.error('[Carrito] Error al sincronizar con backend:', err);
+        this.stockError$.next('Error al sincronizar el carrito con el servidor.');
+      }
     });
   }
+
 
   private loadCart() {
     if (typeof localStorage === 'undefined') return;
@@ -135,10 +156,12 @@ export class CartService {
     }
 
     // Validación estricta de stock
-    const controlaStock = producto.controlar_stock === true || producto.controlar_stock === 1;
-    if (controlaStock && producto.stock !== undefined) {
-      if (cantidadResultante > producto.stock) {
-        this.stockError$.next(`Stock insuficiente para ${producto.nombre}. Disponible: ${producto.stock}`);
+    const stockMax = this.getItemStock(producto, variante);
+    const controlaStock = this.isItemStockControlled(producto, variante);
+    if (controlaStock && stockMax !== undefined) {
+      if (cantidadResultante > stockMax) {
+        const nombreItem = variante ? `${producto.nombre} (${variante.nombre})` : producto.nombre;
+        this.stockError$.next(`Stock insuficiente para ${nombreItem}. Disponible: ${stockMax}`);
         return false;
       }
     }
@@ -190,10 +213,12 @@ export class CartService {
       }
 
       // Validación estricta de stock
-      const controlaStock = item.producto.controlar_stock === true || item.producto.controlar_stock === 1;
-      if (controlaStock && item.producto.stock !== undefined) {
-        if (cantidad > item.producto.stock) {
-          this.stockError$.next(`Stock insuficiente para ${item.producto.nombre}. Disponible: ${item.producto.stock}`);
+      const stockMax = this.getItemStock(item.producto, item.variante);
+      const controlaStock = this.isItemStockControlled(item.producto, item.variante);
+      if (controlaStock && stockMax !== undefined) {
+        if (cantidad > stockMax) {
+          const nombreItem = item.variante ? `${item.producto.nombre} (${item.variante.nombre})` : item.producto.nombre;
+          this.stockError$.next(`Stock insuficiente para ${nombreItem}. Disponible: ${stockMax}`);
           return false;
         }
       }
@@ -203,6 +228,7 @@ export class CartService {
       return true;
     }
     return false;
+
   }
 
   clearCart() {
@@ -250,19 +276,46 @@ export class CartService {
     this.isOpenDrawer.next(false);
   }
 
+  /** Obtiene el stock físico real aplicable al ítem (variante si existe, o producto base) */
+  getItemStock(producto: Producto, variante?: Variante): number | undefined {
+    if (variante && variante.stock !== undefined && variante.stock !== null) {
+      return Number(variante.stock);
+    }
+    if (producto && producto.stock !== undefined && producto.stock !== null) {
+      return Number(producto.stock);
+    }
+    return undefined;
+  }
+
+  /** Determina si el ítem debe validar stock físico */
+  isItemStockControlled(producto: Producto, variante?: Variante): boolean {
+    if (producto.controlar_stock === false) return false;
+    const stock = this.getItemStock(producto, variante);
+    return stock !== undefined;
+  }
+
   getStockDisponible(producto: Producto, varianteId?: number): number {
     const id = this.generateItemId(producto.id, varianteId);
     const item = this.itemsSubject.getValue().find(i => i.id === id);
-    const stockTotal = producto.stock ?? Infinity;
+    const stockTotal = this.getItemStock(producto, item?.variante) ?? Infinity;
     if (!item) return stockTotal;
-    return stockTotal - item.cantidad;
+    return Math.max(0, stockTotal - item.cantidad);
   }
 
   isAtMaxStock(item: CartItem): boolean {
-    const controlaStock = item.producto.controlar_stock === true || item.producto.controlar_stock === 1;
-    if (!controlaStock || item.producto.stock === undefined) return false;
-    return item.cantidad >= item.producto.stock;
+    const stockMax = this.getItemStock(item.producto, item.variante);
+    const controlaStock = this.isItemStockControlled(item.producto, item.variante);
+    if (!controlaStock || stockMax === undefined) return false;
+    return item.cantidad >= stockMax;
   }
+
+  getDisponible(item: CartItem): number | null {
+    const stockMax = this.getItemStock(item.producto, item.variante);
+    if (stockMax === undefined) return null;
+    return Math.max(0, stockMax - item.cantidad);
+  }
+
+
 
   verificarStockEnBackend(items: { producto_id: number, variante_id?: number, cantidad: number }[]): Observable<{ valido: boolean, items_con_error: any[] }> {
     return this.http.post<{ valido: boolean, items_con_error: any[] }>(`${environment.apiUrl}/productos/verificar-stock`, { items });

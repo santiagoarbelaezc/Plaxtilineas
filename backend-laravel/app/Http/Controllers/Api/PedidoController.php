@@ -9,6 +9,7 @@ use App\Actions\Pedidos\CancelarPedidoAction;
 use App\Actions\Pedidos\ConfirmarPedidoAction;
 use App\Actions\Pedidos\CrearDraftPedidoAction;
 use App\Actions\Pedidos\EliminarPedidoAction;
+use App\Actions\Pedidos\LiberarStockReservaAction;
 use App\Contracts\WompiClientInterface;
 use App\Enums\EstadoPedido;
 use App\Http\Controllers\Controller;
@@ -33,8 +34,10 @@ class PedidoController extends Controller
         protected CancelarPedidoAction $cancelarPedidoAction,
         protected EliminarPedidoAction $eliminarPedidoAction,
         protected AdminActualizarEstadoPedidoAction $adminActualizarEstadoAction,
-        protected WompiClientInterface $wompiService
+        protected WompiClientInterface $wompiService,
+        protected LiberarStockReservaAction $liberarStockReservaAction
     ) {}
+
 
     /**
      * POST /api/pedidos/draft
@@ -69,7 +72,7 @@ class PedidoController extends Controller
         $pedidos = Pedido::with('items')
             ->where('usuario_id', $user->id)
             ->where('estado', '!=', EstadoPedido::DRAFT)
-            ->orderByDesc('created_at')
+            ->orderByDesc('fecha')
             ->get();
 
         $pedidosData = $pedidos->map(function (Pedido $p) {
@@ -162,9 +165,10 @@ class PedidoController extends Controller
                             'wompi_transaction_id' => $wompiTxId,
                             'wompi_evento_id' => 'query-proactive-'.$wompiTxId,
                         ]);
-                        StockReserva::where('pedido_id', $pedido->id)->delete();
+                        $this->liberarStockReservaAction->execute($pedido);
                         $pedido->refresh();
                     }
+
                 }
             } catch (Throwable $e) {
                 Log::error('PedidoController::verificarEstado — Error consultando Wompi API', [
@@ -208,7 +212,7 @@ class PedidoController extends Controller
     {
         $pedidos = Pedido::with(['items', 'usuario'])
             ->where('estado', '!=', EstadoPedido::DRAFT)
-            ->orderByDesc('created_at')
+            ->orderByDesc('fecha')
             ->get();
 
         $pedidosData = $pedidos->map(function (Pedido $p) {

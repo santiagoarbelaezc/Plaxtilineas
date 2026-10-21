@@ -15,6 +15,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class CancelarPedidoAction
 {
+    public function __construct(
+        private readonly LiberarStockReservaAction $liberarStockReservaAction
+    ) {}
+
     /**
      * @return array<string, string>
      */
@@ -52,8 +56,9 @@ final class CancelarPedidoAction
                 'estado' => EstadoPedido::CANCELADO,
             ]);
 
-            StockReserva::where('pedido_id', $pedido->id)->delete();
+            $this->liberarStockReservaAction->execute($pedido);
         });
+
 
         return ['mensaje' => 'Pedido cancelado correctamente.'];
     }

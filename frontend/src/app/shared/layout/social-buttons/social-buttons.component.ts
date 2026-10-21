@@ -129,6 +129,11 @@ export class SocialButtonsComponent implements OnInit, OnDestroy {
     return this.cartService.isAtMaxStock(item);
   }
 
+  getDisponible(item: any): number | null {
+    return this.cartService.getDisponible(item);
+  }
+
+
   decreaseQuantity(id: string, current: number) {
     if (current > 1) this.cartService.updateQuantity(id, current - 1);
   }

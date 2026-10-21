@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Actions\Pedidos\ConfirmarPedidoAction;
+use App\Actions\Pedidos\LiberarStockReservaAction;
 use App\Contracts\WompiClientInterface;
 use App\Enums\EstadoPedido;
 use App\Http\Controllers\Controller;
@@ -22,8 +23,10 @@ class WompiController extends Controller
 {
     public function __construct(
         protected WompiClientInterface $wompiService,
-        protected ConfirmarPedidoAction $confirmarPedidoAction
+        protected ConfirmarPedidoAction $confirmarPedidoAction,
+        protected LiberarStockReservaAction $liberarStockReservaAction
     ) {}
+
 
     /**
      * POST /api/wompi/datos-pago
@@ -192,8 +195,9 @@ class WompiController extends Controller
                     'wompi_transaction_id' => $transId,
                     'wompi_evento_id' => $eventoId,
                 ]);
-                StockReserva::where('pedido_id', $pedido->id)->delete();
+                $this->liberarStockReservaAction->execute($pedido);
                 break;
+
 
             default:
                 Log::info("WompiController::webhook — Estado sin acción: {$status}");

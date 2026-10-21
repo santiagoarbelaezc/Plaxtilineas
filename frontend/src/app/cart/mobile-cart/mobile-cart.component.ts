@@ -88,10 +88,14 @@ import { toSignal } from '@angular/core/rxjs-interop';
                   <div>
                     <h4 class="font-bold text-sm text-gray-900 leading-snug truncate pr-6">{{ item.producto.nombre }}</h4>
                     <p class="text-xs text-gray-400 font-medium mt-0.5">{{ item.variante?.nombre || item.producto.subcategoria || 'Genérico' }}</p>
-                    @if (item.producto.controlar_stock && item.producto.stock !== undefined) {
-                      <p class="text-[10px] text-amber-700 font-semibold mt-0.5">{{ item.producto.stock - item.cantidad }} disponibles</p>
+                    @if (getDisponible(item) !== null) {
+                      <p class="text-[10px] font-semibold mt-0.5" [class.text-amber-700]="getDisponible(item)! > 0" [class.text-red-600]="getDisponible(item)! <= 0">
+                        {{ getDisponible(item)! > 0 ? getDisponible(item) + ' disponibles' : 'Máximo alcanzado' }}
+                      </p>
                     }
                   </div>
+
+
 
                   <div class="flex items-center justify-between mt-3">
                     <!-- Controles Cantidad -->
@@ -223,6 +227,11 @@ export class MobileCartComponent implements OnInit, OnDestroy {
   isAtMaxStock(item: any): boolean {
     return this.cartService.isAtMaxStock(item);
   }
+
+  getDisponible(item: any): number | null {
+    return this.cartService.getDisponible(item);
+  }
+
 
   decreaseQuantity(id: string, current: number) {
     if (current > 1) {
