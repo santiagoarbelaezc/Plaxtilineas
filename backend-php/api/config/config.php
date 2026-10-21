@@ -77,7 +77,7 @@ define('HOSTINGER_DB_NAME',     env('HOSTINGER_DB_NAME'));
 
 // ─── Seguridad / Tokens HMAC-SHA256 ──────────────────────────────────────────
 define('TOKEN_SECRET',     env('TOKEN_SECRET'));
-define('TOKEN_EXPIRATION', (int) env('TOKEN_EXPIRATION', '3600'));
+define('TOKEN_EXPIRATION', (int) env('TOKEN_EXPIRATION', '86400'));
 
 // ─── Cloudinary ───────────────────────────────────────────────────────────────
 define('CLOUDINARY_CLOUD_NAME', env('CLOUDINARY_CLOUD_NAME'));
