@@ -14,7 +14,7 @@
 }
 
 .badge-new {
-  background: #368C44;
+  background: #16a34a;
   color: white;
   padding: 8px 20px;
   border-radius: 50px;
@@ -36,14 +36,62 @@
 }
 
 .title span {
-  color: #368C44;
+  color: #16a34a;
 }
 
 .description {
   font-size: 1.15rem;
   color: #64748b;
   line-height: 1.6;
-  margin: 0 0 40px 0;
+  margin: 0 0 24px 0;
+}
+
+.cookie-page-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0 40px 0;
+  flex-wrap: wrap;
+}
+
+.btn-page-primary {
+  background: #16a34a;
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-family: inherit;
+  font-size: 0.92rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.28);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-page-primary:hover {
+  background: #15803d;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.38);
+}
+
+.btn-page-secondary {
+  background: #ffffff;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-page-secondary:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
 }
 
 /* === GRID LEGAL === */
@@ -88,7 +136,7 @@
 }
 
 .valor-card:hover .valor-icono-container {
-  background: #368C44;
+  background: #16a34a;
   transform: translateY(-3px);
   box-shadow: 0 10px 20px rgba(54, 140, 68, 0.3);
   color: white;

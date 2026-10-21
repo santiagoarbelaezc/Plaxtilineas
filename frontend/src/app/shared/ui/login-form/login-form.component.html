@@ -10,7 +10,7 @@
     <div class="login-left-panel bento-welcome">
       <div class="bento-circles-bg"></div>
 
-      <!-- Top Header con Logo -->
+      <!-- Top Header con Logo y Botón para Regresar al Inicio -->
       <div class="bento-top-row">
         <a routerLink="/" class="bento-brand-logo" aria-label="Ir a Inicio">
           <img 
@@ -18,6 +18,10 @@
             alt="Plaxtilineas" 
             class="bento-logo-img"
           />
+        </a>
+        <a routerLink="/" class="bento-back-btn" title="Regresar al inicio">
+          <span class="material-symbols-rounded">arrow_back</span>
+          <span>Regresar al inicio</span>
         </a>
       </div>
 
@@ -53,11 +57,15 @@
       <!-- Botones Inferiores Armonizados -->
       <div class="bento-bottom-row">
         <div class="bento-footer-actions">
+          <a routerLink="/" class="bento-action-pill" title="Regresar al inicio">
+            <span class="material-symbols-rounded pill-icon">home</span>
+            <span>Ir al Inicio</span>
+          </a>
           <a routerLink="/productos" class="bento-action-pill" title="Volver al catálogo de productos">
-            <span class="material-symbols-rounded pill-icon">arrow_back</span>
+            <span class="material-symbols-rounded pill-icon">storefront</span>
             <span>Volver al Catálogo</span>
           </a>
-          <button type="button" class="bento-action-pill" (click)="openPolicyModal($event)" title="Ver política de tratamiento de datos">
+          <button type="button" class="bento-action-pill full-col-pill" (click)="openPolicyModal($event)" title="Ver política de tratamiento de datos">
             <span class="material-symbols-rounded pill-icon icon-shield">shield</span>
             <span>Tratamiento de Datos</span>
           </button>
