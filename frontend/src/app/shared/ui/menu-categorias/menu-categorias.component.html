@@ -1,57 +1,64 @@
 <div class="menu-categorias">
+  <!-- Header compacto y sobrio -->
   <div class="menu-header">
-    <h2 class="menu-title">Categorías</h2>
-    <span class="menu-subtitle">Encuentra lo que necesitas</span>
+    <div class="menu-title-wrap">
+      <span class="menu-dot"></span>
+      <h2 class="menu-title">Categorías</h2>
+    </div>
+    <span class="categorias-total-badge" *ngIf="!cargandoCategorias && categorias.length > 0">
+      {{ categorias.length }}
+    </span>
   </div>
   
-   <div class="menu-footer">
-    <button class="ver-todos-btn" (click)="verTodosProductos()">
-      <span>Ver todos los productos</span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Botón Ver Todos los Productos -->
+  <div class="menu-footer">
+    <button class="ver-todos-btn" [class.active]="mostrarTodosProductos" (click)="verTodosProductos()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+        <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+        <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+        <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
       </svg>
+      <span>Todos los productos</span>
     </button>
   </div>
   
-  <!-- Contenedor Skeletons -->
+  <!-- Contenedor Skeletons ultra compacto -->
   <div class="categorias-container" *ngIf="cargandoCategorias">
-    <div class="categoria" *ngFor="let i of [1,2,3,4,5,6]">
-      <button class="categoria-btn skeleton-btn">
-        <div class="categoria-content" style="width: 100%;">
-          <div class="skeleton-cat-icon"></div>
-          <div class="skeleton-cat-name"></div>
-        </div>
-      </button>
+    <div class="categoria-skeleton" *ngFor="let i of [1,2,3,4,5,6,7,8]">
+      <div class="skeleton-cat-icon"></div>
+      <div class="skeleton-cat-name"></div>
     </div>
   </div>
 
+  <!-- Contenedor de Categorías ajustado -->
   <div class="categorias-container" *ngIf="!cargandoCategorias">
     <div *ngFor="let cat of categorias" class="categoria" [id]="'cat-' + cat.id" [class.active]="cat.expanded">
       <button class="categoria-btn" (click)="toggle(cat)" [attr.aria-expanded]="cat.expanded">
         <div class="categoria-content">
           <span class="categoria-icon">
-            <!-- Puedes agregar iconos específicos por categoría -->
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
             </svg>
           </span>
           <span class="categoria-nombre">{{ cat.nombre }}</span>
-          <span class="categoria-count" *ngIf="cat.cantidad">{{ cat.cantidad }}</span>
+          <span class="categoria-count" *ngIf="cat.cantidad && cat.cantidad > 0">{{ cat.cantidad }}</span>
         </div>
         
-        <span class="flecha-indicadora" [class.abierta]="cat.expanded">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <span class="flecha-indicadora" [class.abierta]="cat.expanded" *ngIf="cat.subcategorias && cat.subcategorias.length > 0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
           </svg>
         </span>
       </button>
 
-      <div class="subcategorias-wrapper" [class.abierta]="cat.expanded">
+      <!-- Subcategorías en árbol minimalista -->
+      <div class="subcategorias-wrapper" [class.abierta]="cat.expanded" *ngIf="cat.subcategorias && cat.subcategorias.length > 0">
         <ul class="subcategorias">
           <li *ngFor="let sub of cat.subcategorias" class="subcategoria-item">
             <button class="subcategoria-btn" (click)="seleccionarSubcategoria(sub.id)">
               <span class="subcategoria-nombre">{{ sub.nombre }}</span>
-              <span class="subcategoria-count" [attr.data-count]="sub.cantidad">
+              <span class="subcategoria-count" *ngIf="sub.cantidad !== undefined && sub.cantidad > 0">
                 {{ sub.cantidad }}
               </span>
             </button>
@@ -60,6 +67,4 @@
       </div>
     </div>
   </div>
-  
- 
 </div>

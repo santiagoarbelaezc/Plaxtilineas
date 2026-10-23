@@ -12,7 +12,8 @@ export interface UsuarioDetalle {
   direccion: string | null;
   ciudad: string | null;
   rol: string;
-  email_verificado: number;
+  email_verificado: boolean;
+  estado_verificacion: 'verificado' | 'pendiente_verificacion';
   total_compras: number;
   cantidad_pedidos: number;
   pedidos: {

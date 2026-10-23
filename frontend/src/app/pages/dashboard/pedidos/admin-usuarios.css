@@ -350,14 +350,14 @@
 
 .modal-content {
   background: #ffffff;
-  border: 1.5px solid #e4e4e7;
+  border: 1.5px solid #fecaca;
   border-top: 4px solid #dc2626;
-  border-radius: 18px;
+  border-radius: 20px;
   padding: 2.5rem 2rem;
   width: 100%;
   max-width: 480px;
   text-align: center;
-  box-shadow: 0 25px 60px rgba(9, 9, 11, 0.25);
+  box-shadow: 0 20px 50px -10px rgba(220, 38, 38, 0.15), 0 25px 60px rgba(9, 9, 11, 0.2);
   animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   font-family: 'Inter Tight', -apple-system, sans-serif;
   box-sizing: border-box;
@@ -376,10 +376,11 @@
   height: 58px;
   border-radius: 50%;
   background: #fee2e2;
+  border: 2px solid #fecaca;
   color: #dc2626;
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   margin-bottom: 1.25rem;
-  box-shadow: 0 0 16px rgba(220, 38, 38, 0.2);
+  box-shadow: 0 0 0 6px #fef2f2;
 }
 
 .modal-content h2 {
@@ -393,8 +394,16 @@
 .modal-content p {
   color: #71717a;
   margin-bottom: 1.75rem;
-  line-height: 1.5;
+  line-height: 1.55;
   font-size: 0.92rem;
+}
+
+.modal-content p strong {
+  color: #dc2626;
+  background: #fef2f2;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #fee2e2;
 }
 
 .confirm-input-group {
@@ -416,7 +425,7 @@
   width: 100%;
   padding: 12px 16px;
   border: 1.5px solid #e4e4e7;
-  background: #f9f9f9;
+  background: #f9fafb;
   border-radius: 12px;
   font-size: 0.95rem;
   outline: none;
@@ -425,12 +434,13 @@
   font-family: inherit;
   color: #09090b;
   font-weight: 700;
+  text-align: center;
 }
 
 .confirm-input:focus {
   background: #ffffff;
-  border-color: #000000;
-  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+  border-color: #dc2626;
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12);
 }
 
 .modal-actions {
