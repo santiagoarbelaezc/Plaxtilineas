@@ -335,6 +335,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   sessionExpired = false;
 
   requireVerification = false;
+  verificationEmail = '';
 
   captchaId: string = '';
   captchaSvg: SafeHtml = '';
@@ -704,6 +705,10 @@ export class LoginFormComponent implements OnInit, OnDestroy {
         this.isSubmitting = false;
         
         if (res.pendiente_verificacion) {
+          this.verificationEmail = String(res.usuario?.correo || rest.correo || '').trim();
+          if (this.verificationEmail) {
+            localStorage.setItem('plaxtilineas_pending_verification_email', this.verificationEmail);
+          }
           this.requireVerification = true;
         } else {
           this.successMsg = '¡Registro exitoso! Bienvenido a Plaxtilineas.';
@@ -761,7 +766,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
     this.isSubmitting = true;
     this.errorMsg = '';
     
-    this.authService.verificarEmail(code.trim()).subscribe({
+    this.authService.verificarEmail(code.trim(), this.verificationEmail).subscribe({
       next: (res) => {
         this.isSubmitting = false;
         this.requireVerification = false;

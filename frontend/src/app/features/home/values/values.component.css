@@ -42,7 +42,8 @@
 
 .banner-block {
   padding: 120px 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: #ffffff;
+  border-top: 1px solid #e4e4e7;
 }
 
 /* ── Capas de Fondo Estáticas (Fixed) ── */
@@ -363,9 +364,9 @@
   height: 540px;
   border-radius: 20px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
-  background: #000000;
+  border: 1px solid #e4e4e7;
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.12);
+  background: #f4f4f5;
 }
 
 .bottom-featured-img {
@@ -429,21 +430,21 @@
 .banner-minimal-title {
   font-size: clamp(2.3rem, 4.4vw, 3.8rem);
   font-weight: 900;
-  color: #ffffff;
+  color: #09090b;
   text-transform: uppercase;
   letter-spacing: -0.025em;
   line-height: 1.12;
   margin: 0 0 16px 0;
-  text-shadow: 0 4px 25px rgba(0, 0, 0, 0.95);
+  text-shadow: none;
 }
 
 .banner-minimal-desc {
-  font-size: clamp(1.08rem, 1.8vw, 1.35rem);
-  font-weight: 350;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: clamp(1.05rem, 1.7vw, 1.25rem);
+  font-weight: 450;
+  color: #52525b;
   line-height: 1.6;
   margin: 0 0 28px 0;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+  text-shadow: none;
 }
 
 /* ── 3 Puntos Clave Minimalistas (Sin Iconos) ── */
@@ -457,23 +458,22 @@
 
 .founder-pill {
   display: inline-block;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  color: #e2e8f0;
-  letter-spacing: 0.03em;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 6px 14px;
+  color: #166534;
+  letter-spacing: 0.02em;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 7px 16px;
   border-radius: 50px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   transition: all 0.25s ease;
 }
 
 .founder-pill:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(74, 222, 128, 0.4);
-  color: #ffffff;
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #14532d;
+  transform: translateY(-1px);
 }
 
 /* ── Botones de Acción ── */
@@ -488,34 +488,35 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: #ffffff;
-  color: #05241b;
-  border: 1.5px solid #ffffff;
+  background: #09090b;
+  color: #ffffff;
+  border: 1.5px solid #09090b;
   padding: 15px 34px;
   border-radius: 12px;
   font-size: 0.86rem;
-  font-weight: 850;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   text-decoration: none;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 14px rgba(9, 9, 11, 0.2);
 }
 
 .cta-minimal-btn:hover {
-  background: #f1f5f9;
-  color: #031a13;
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 14px 32px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 22px rgba(22, 163, 74, 0.25);
 }
 
 .cta-secondary-contact {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1.5px solid rgba(255, 255, 255, 0.16);
-  color: #ffffff;
+  background: #ffffff;
+  border: 1.5px solid #e4e4e7;
+  color: #09090b;
   padding: 15px 26px;
   border-radius: 12px;
   font-size: 0.84rem;
@@ -524,13 +525,15 @@
   letter-spacing: 0.06em;
   text-decoration: none;
   transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .cta-secondary-contact:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(74, 222, 128, 0.4);
-  color: #4ade80;
+  background: #f8fafc;
+  border-color: #16a34a;
+  color: #16a34a;
   transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.15);
 }
 
 /* ═══════════════════════════════════════════════════════════

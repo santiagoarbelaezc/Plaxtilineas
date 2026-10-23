@@ -123,9 +123,15 @@ export class AuthService {
     );
   }
 
-  verificarEmail(token: string): Observable<any> {
+  verificarEmail(token: string, correo?: string): Observable<any> {
+    const params: Record<string, string> = { token };
+    const correoPendiente = correo?.trim() || localStorage.getItem('plaxtilineas_pending_verification_email') || '';
+    if (correoPendiente) {
+      params['correo'] = correoPendiente;
+    }
+
     return this.http.get<{ token: string, usuario: any }>(`${environment.apiUrl}/auth/verificar-email`, {
-      params: { token }
+      params
     }).pipe(
       tap(res => {
         if (res.token) {
@@ -134,6 +140,7 @@ export class AuthService {
           this.currentUser.next(res.usuario);
           this.checkToken();
         }
+        localStorage.removeItem('plaxtilineas_pending_verification_email');
       })
     );
   }
