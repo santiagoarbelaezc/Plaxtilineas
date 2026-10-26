@@ -312,10 +312,40 @@ import Swal from 'sweetalert2';
               <!-- Datos de entrega compacto -->
               <div class="envio-body-compact">
                 @if (!editandoEnvio()) {
-                  <div class="envio-preview-compact">
-                    <p class="envio-dir-text">📍 {{ datosEnvioForm.direccion || 'Sin dirección registrada' }}</p>
-                    <p class="envio-city-text">{{ datosEnvioForm.ciudad || 'Armenia' }}, {{ datosEnvioForm.departamento || 'Quindío' }} · 📞 {{ datosEnvioForm.telefono || 'Sin teléfono' }}</p>
-                    <p *ngIf="datosEnvioForm.notas" class="envio-nota-text">📝 {{ datosEnvioForm.notas }}</p>
+                  <div class="envio-preview-card">
+                    <div class="envio-card-main-row">
+                      <div class="envio-pin-icon-wrap" title="Dirección de Entrega">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                      </div>
+                      <div class="envio-address-content">
+                        <p class="envio-dir-text">{{ datosEnvioForm.direccion || 'Sin dirección registrada' }}</p>
+                        
+                        <div class="envio-meta-row">
+                          <span class="envio-meta-item">
+                            <span class="envio-meta-icon" title="Ciudad y departamento">
+                              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01"/><path d="M9 12v.01"/><path d="M9 15v.01"/><path d="M9 18v.01"/></svg>
+                            </span>
+                            <span>{{ datosEnvioForm.ciudad || 'Armenia' }}, {{ datosEnvioForm.departamento || 'Quindío' }}</span>
+                          </span>
+
+                          <span class="envio-meta-sep">·</span>
+
+                          <span class="envio-meta-item">
+                            <span class="envio-meta-icon phone" title="Teléfono de contacto">
+                              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            </span>
+                            <span>{{ datosEnvioForm.telefono || 'Sin teléfono' }}</span>
+                          </span>
+                        </div>
+
+                        <div *ngIf="datosEnvioForm.notas" class="envio-nota-row">
+                          <span class="envio-meta-icon note" title="Instrucciones especiales">
+                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                          </span>
+                          <span class="envio-nota-text">{{ datosEnvioForm.notas }}</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 } @else {
                   <div class="envio-form-compact">
@@ -821,18 +851,107 @@ import Swal from 'sweetalert2';
       }
       .btn-toggle-envio-compact:hover { background: #f0fdf4; border-color: #16a34a; }
       .envio-body-compact { margin-top: 6px; }
-      .envio-preview-compact {
+
+      .envio-preview-card {
         background: #fafafa;
-        border: 1px solid #f1f5f9;
-        border-radius: 14px;
-        padding: 14px 18px;
+        border: 1.5px solid #f1f5f9;
+        border-radius: 16px;
+        padding: 16px 20px;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      .envio-preview-card:hover {
+        border-color: #e4e4e7;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      }
+      .envio-card-main-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+      }
+      .envio-pin-icon-wrap {
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
+        background: #0a0a0a;
+        color: #22c55e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-top: 2px;
+      }
+      .envio-address-content {
+        flex: 1;
+        min-width: 0;
         display: flex;
         flex-direction: column;
-        gap: 5px;
+        gap: 6px;
       }
-      .envio-dir-text { font-size: 15px; font-weight: 800; color: #09090b; }
-      .envio-city-text { font-size: 13.5px; color: #64748b; font-weight: 500; }
-      .envio-nota-text { font-size: 13px; color: #16a34a; font-weight: 600; }
+      .envio-dir-text {
+        font-size: 16px;
+        font-weight: 850;
+        color: #09090b;
+        letter-spacing: -0.01em;
+        line-height: 1.35;
+      }
+      .envio-meta-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .envio-meta-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #52525b;
+      }
+      .envio-meta-icon {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        background: #f0fdf4;
+        color: #16a34a;
+        border: 1px solid rgba(22,163,74,0.22);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .envio-meta-icon.phone {
+        background: #f4f4f5;
+        color: #27272a;
+        border-color: #e4e4e7;
+      }
+      .envio-meta-icon.note {
+        background: #ecfdf5;
+        color: #059669;
+        border-color: rgba(5,150,105,0.2);
+      }
+      .envio-meta-sep {
+        color: #d4d4d8;
+        font-size: 14px;
+        font-weight: bold;
+      }
+      .envio-nota-row {
+        margin-top: 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        background: #f0fdf4;
+        border: 1px dashed rgba(22,163,74,0.3);
+        border-radius: 9px;
+        align-self: flex-start;
+      }
+      .envio-nota-text {
+        font-size: 12.5px;
+        color: #15803d;
+        font-weight: 600;
+      }
 
       /* Formulario de entrega inline */
       .envio-form-compact { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }

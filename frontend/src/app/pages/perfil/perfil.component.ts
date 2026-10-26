@@ -9,12 +9,10 @@ import { ConfiguracionComponent } from '../configuracion/configuracion.component
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { 
   faUser, faMapMarkerAlt, faShoppingBag, faKey, 
-  faSignOutAlt, faChevronLeft, faChevronRight, faHome,
-  faStore, faShieldAlt, faCheckCircle, faBars, faTimes
+  faSignOutAlt, faStore, faShieldAlt, faCheckCircle
 } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import { Subject, takeUntil } from 'rxjs';
-import { NavbarComponent } from '../../shared/layout/navbar/navbar.component';
 import { Footer } from '../../shared/layout/footer/footer.component';
 import { SocialButtonsComponent } from '../../shared/layout/social-buttons/social-buttons.component';
 
@@ -30,170 +28,117 @@ export type ProfileTab = 'datos' | 'direccion' | 'pedidos' | 'configuracion';
     MisPedidos,
     ConfiguracionComponent,
     FontAwesomeModule,
-    NavbarComponent,
     Footer,
     SocialButtonsComponent
   ],
   template: `
-    <app-navbar></app-navbar>
-
-    <div class="dash-shell" [class.sidebar-collapsed]="isSidebarCollapsed()">
+    <div class="dash-shell">
       
       <!-- ══════════════════════════════════════════════════════════════
-           SIDEBAR LATERAL IZQUIERDO (#0a0a0a) — IDÉNTICO AL DASHBOARD
+           PANEL DE CONTROL SUPERIOR (TIPO DASHBOARD TABS)
            ══════════════════════════════════════════════════════════════ -->
-      <aside class="dash-sidebar" [class.mobile-open]="isMobileSidebarOpen()">
+      <header class="top-dashboard-panel">
         
-        <!-- Botón Flotante para Colapsar el Sidebar -->
-        <button 
-          type="button"
-          class="sidebar-toggle" 
-          (click)="toggleSidebarCollapse()" 
-          [attr.aria-label]="isSidebarCollapsed() ? 'Expandir menú' : 'Colapsar menú'"
-          [title]="isSidebarCollapsed() ? 'Expandir menú' : 'Colapsar menú'">
-          <fa-icon [icon]="isSidebarCollapsed() ? faChevronRight : faChevronLeft" class="toggle-icon"></fa-icon>
-        </button>
-
-        <!-- Marca / Logo de la Tienda -->
-        <div class="sidebar-brand">
-          <a routerLink="/perfil" class="brand-link" (click)="closeMobileSidebar()">
-            <div class="brand-icon-box">
-              <fa-icon [icon]="faShieldAlt"></fa-icon>
-            </div>
-            <div class="brand-text-col" *ngIf="!isSidebarCollapsed()">
-              <span class="brand-name">Plaxtilineas</span>
-              <span class="brand-role">PANEL CLIENTE</span>
-            </div>
-          </a>
-        </div>
-
-        <!-- Menú de Navegación Principal -->
-        <nav class="sidebar-nav">
-          <div class="nav-section-label" *ngIf="!isSidebarCollapsed()">Mi Cuenta</div>
-          <ul class="nav-list">
-            
-            <!-- 1. Editar datos -->
-            <li class="nav-item">
-              <button type="button" 
-                      class="nav-link" 
-                      [class.active]="activeTab() === 'datos'" 
-                      (click)="setTab('datos')" 
-                      title="Editar datos personales">
-                <fa-icon [icon]="faUser" class="nav-icon"></fa-icon>
-                <span class="nav-label" *ngIf="!isSidebarCollapsed()">Editar datos</span>
-              </button>
-            </li>
-
-            <!-- 2. Actualizar dirección -->
-            <li class="nav-item">
-              <button type="button" 
-                      class="nav-link" 
-                      [class.active]="activeTab() === 'direccion'" 
-                      (click)="setTab('direccion')" 
-                      title="Actualizar dirección de envío">
-                <fa-icon [icon]="faMapMarkerAlt" class="nav-icon"></fa-icon>
-                <span class="nav-label" *ngIf="!isSidebarCollapsed()">Dirección</span>
-              </button>
-            </li>
-
-            <!-- 3. Mis Pedidos (con Badge Verde en lugar de rojo) -->
-            <li class="nav-item">
-              <button type="button" 
-                      class="nav-link" 
-                      [class.active]="activeTab() === 'pedidos'" 
-                      (click)="setTab('pedidos')" 
-                      title="Historial de compras y pedidos">
-                <fa-icon [icon]="faShoppingBag" class="nav-icon"></fa-icon>
-                <span class="nav-label" *ngIf="!isSidebarCollapsed()">Mis Pedidos</span>
-                <span class="nav-badge badge-accent-green" *ngIf="!isSidebarCollapsed() && pedidosCount() > 0">
-                  {{ pedidosCount() }}
-                </span>
-              </button>
-            </li>
-
-            <!-- 4. Configuración -->
-            <li class="nav-item">
-              <button type="button" 
-                      class="nav-link" 
-                      [class.active]="activeTab() === 'configuracion'" 
-                      (click)="setTab('configuracion')" 
-                      title="Seguridad y configuración de cuenta">
-                <fa-icon [icon]="faKey" class="nav-icon"></fa-icon>
-                <span class="nav-label" *ngIf="!isSidebarCollapsed()">Configuración</span>
-              </button>
-            </li>
-
-          </ul>
-        </nav>
-
-        <!-- Footer del Sidebar: Volver al Sitio Web & Cerrar Sesión -->
-        <div class="sidebar-footer">
-          <div class="sidebar-footer-actions">
-            <a routerLink="/" class="nav-link btn-sidebar-site" (click)="closeMobileSidebar()" title="Volver al sitio web">
-              <fa-icon [icon]="faStore" class="nav-icon"></fa-icon>
-              <span class="nav-label" *ngIf="!isSidebarCollapsed()">Volver al sitio web</span>
-            </a>
-
-            <button type="button" class="nav-link btn-sidebar-logout" (click)="logout()" title="Cerrar sesión">
-              <fa-icon [icon]="faSignOutAlt" class="nav-icon"></fa-icon>
-              <span class="nav-label" *ngIf="!isSidebarCollapsed()">Cerrar Sesión</span>
-            </button>
-          </div>
-        </div>
-
-      </aside>
-
-      <!-- Overlay para Móviles -->
-      <div class="sidebar-backdrop" *ngIf="isMobileSidebarOpen()" (click)="closeMobileSidebar()"></div>
-
-      <!-- ══════════════════════════════════════════════════════════════
-           ÁREA DE CONTENIDO (HEADER STICKY 74px + CANVAS #f4f5f7)
-           ══════════════════════════════════════════════════════════════ -->
-      <div class="dash-content-area">
-        
-        <!-- HEADER STICKY (74px, Blanco Puro, Borde 1.5px) -->
-        <header class="dash-header">
-          <div class="header-left">
-            <!-- Botón Hamburguesa Móvil -->
-            <button type="button" class="mobile-hamburger-btn" (click)="toggleMobileSidebar()" aria-label="Abrir Menú">
-              <fa-icon [icon]="isMobileSidebarOpen() ? faTimes : faBars"></fa-icon>
-            </button>
-
-            <!-- Título y Subtítulo Dinámicos -->
-            <div class="header-title-box">
-              <div class="title-with-status">
-                <h1 class="header-title">{{ getHeaderTitle() }}</h1>
-                <div class="status-pill">
-                  <span class="status-dot"></span>
-                  <span class="status-pill-text">Cuenta Activa</span>
-                </div>
+        <!-- Fila 1: Marca, Estado y Acciones Rápidas -->
+        <div class="panel-top-bar">
+          <div class="panel-brand-box">
+            <a routerLink="/" class="brand-link" title="Volver al inicio">
+              <div class="brand-icon-box">
+                <fa-icon [icon]="faShieldAlt"></fa-icon>
               </div>
-              <p class="header-subtitle">{{ getHeaderSubtitle() }}</p>
+              <div class="brand-text-col">
+                <span class="brand-name">Plaxtilineas</span>
+                <span class="brand-role">PANEL CLIENTE</span>
+              </div>
+            </a>
+            <div class="status-pill">
+              <span class="status-dot"></span>
+              <span class="status-pill-text">Cuenta Activa</span>
             </div>
           </div>
 
-          <div class="header-right">
-            <!-- Enlace Volver al Sitio Web -->
-            <a routerLink="/" class="header-action-pill" title="Volver a la tienda">
-              <fa-icon [icon]="faStore" class="pill-icon"></fa-icon>
-              <span class="pill-label">Volver al sitio web</span>
+          <div class="panel-actions-box">
+            <!-- Volver a la Tienda -->
+            <a routerLink="/" class="btn-panel-action ghost" title="Ir a la tienda">
+              <fa-icon [icon]="faStore"></fa-icon>
+              <span>Volver a la tienda</span>
             </a>
 
-            <!-- Perfil del Cliente -->
-            <div class="header-user-profile">
+            <!-- Chip de Usuario -->
+            <div class="user-chip">
               <div class="user-avatar-circle">
                 <span>{{ getInitials() }}</span>
               </div>
               <div class="user-meta-text">
                 <span class="user-name">{{ getFullName() }}</span>
-                <span class="user-sub">Cliente Plaxtilineas</span>
+                <span class="user-sub">{{ getEmail() || 'Cliente' }}</span>
               </div>
             </div>
-          </div>
-        </header>
 
-        <!-- CANVAS PRINCIPAL (#f4f5f7) -->
-        <main class="dash-canvas">
+            <!-- Botón Cerrar Sesión -->
+            <button type="button" class="btn-panel-action logout" (click)="logout()" title="Cerrar sesión">
+              <fa-icon [icon]="faSignOutAlt"></fa-icon>
+              <span>Salir</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Fila 2: Pestañas de Navegación Horizontales -->
+        <div class="panel-tabs-bar">
+          <nav class="panel-nav-track">
+            <!-- 1. Editar datos -->
+            <button 
+              type="button" 
+              class="panel-tab-btn" 
+              [class.active]="activeTab() === 'datos'" 
+              (click)="setTab('datos')"
+              title="Editar datos personales">
+              <fa-icon [icon]="faUser" class="tab-icon"></fa-icon>
+              <span>Editar datos</span>
+            </button>
+
+            <!-- 2. Actualizar dirección -->
+            <button 
+              type="button" 
+              class="panel-tab-btn" 
+              [class.active]="activeTab() === 'direccion'" 
+              (click)="setTab('direccion')"
+              title="Actualizar dirección de envío">
+              <fa-icon [icon]="faMapMarkerAlt" class="tab-icon"></fa-icon>
+              <span>Dirección de Entrega</span>
+            </button>
+
+            <!-- 3. Mis Pedidos -->
+            <button 
+              type="button" 
+              class="panel-tab-btn" 
+              [class.active]="activeTab() === 'pedidos'" 
+              (click)="setTab('pedidos')"
+              title="Historial de compras y pedidos">
+              <fa-icon [icon]="faShoppingBag" class="tab-icon"></fa-icon>
+              <span>Mis Pedidos</span>
+              <span class="tab-badge-pill" *ngIf="pedidosCount() > 0">
+                {{ pedidosCount() }}
+              </span>
+            </button>
+
+            <!-- 4. Configuración -->
+            <button 
+              type="button" 
+              class="panel-tab-btn" 
+              [class.active]="activeTab() === 'configuracion'" 
+              (click)="setTab('configuracion')"
+              title="Seguridad y configuración de cuenta">
+              <fa-icon [icon]="faKey" class="tab-icon"></fa-icon>
+              <span>Seguridad y Cuenta</span>
+            </button>
+          </nav>
+        </div>
+
+      </header>
+
+      <!-- CANVAS PRINCIPAL (#f4f5f7) -->
+      <main class="dash-canvas">
           
           <!-- 1. Editar Datos Personales -->
           <div *ngIf="activeTab() === 'datos'" class="pane-wrapper fade-in">
@@ -312,8 +257,6 @@ export type ProfileTab = 'datos' | 'direccion' | 'pedidos' | 'configuracion';
           </div>
 
         </main>
-      </div>
-
     </div>
 
     <app-footer></app-footer>
@@ -338,10 +281,7 @@ export type ProfileTab = 'datos' | 'direccion' | 'pedidos' | 'configuracion';
         --dash-accent-green-light: #22c55e;
         --dash-accent-green-glow: rgba(22, 163, 74, 0.45);
         
-        --sidebar-w: 240px;
-        --sidebar-w-collapsed: 64px;
         --header-h: 74px;
-        --nav-total-h: 110px;
         --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         --font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         
@@ -360,72 +300,41 @@ export type ProfileTab = 'datos' | 'direccion' | 'pedidos' | 'configuracion';
       /* ── Layout Shell ── */
       .dash-shell {
         display: flex;
-        min-height: calc(100vh - var(--nav-total-h));
-        padding-top: var(--nav-total-h);
+        flex-direction: column;
+        min-height: 100vh;
         background: var(--dash-bg-canvas);
         position: relative;
-        align-items: flex-start;
+        width: 100%;
       }
 
       /* ══════════════════════════════════════════════════════════════
-         SIDEBAR LATERAL IZQUIERDO (#0a0a0a)
+         PANEL DE CONTROL SUPERIOR HORIZONTAL (#0a0a0a)
          ══════════════════════════════════════════════════════════════ */
-      .dash-sidebar {
-        position: sticky;
-        top: var(--header-h);
-        align-self: flex-start;
-        flex-shrink: 0;
-        height: calc(100vh - var(--header-h));
-        width: var(--sidebar-w);
+      .top-dashboard-panel {
+        width: 100%;
         background: var(--dash-dark-surface);
-        border-right: 1px solid var(--dash-dark-border);
-        z-index: 150;
-        display: flex;
-        flex-direction: column;
-        transition: width var(--transition);
-        padding: 20px 14px;
+        border-bottom: 1px solid var(--dash-dark-border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
       }
 
-      .dash-shell.sidebar-collapsed .dash-sidebar {
-        width: var(--sidebar-w-collapsed);
-        padding: 20px 8px;
-      }
-
-      /* Botón Flotante para Colapsar el Sidebar */
-      .sidebar-toggle {
-        width: 28px;
-        height: 28px;
-        background: #18181b;
-        border: 1.5px solid #2e2e33;
-        border-radius: 50%;
-        color: #e4e4e7;
-        cursor: pointer;
-        position: absolute;
-        top: 22px;
-        right: -14px;
-        z-index: 200;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      /* Fila 1: Marca, Estado y Acciones Rápidas */
+      .panel-top-bar {
+        max-width: 1360px;
+        margin: 0 auto;
+        padding: 14px 28px;
         display: flex;
         align-items: center;
-        justify-content: center;
-        padding: 0;
+        justify-content: space-between;
+        gap: 20px;
       }
 
-      .sidebar-toggle:hover {
-        background: #27272a;
-        color: #ffffff;
-        transform: scale(1.15);
-      }
-
-      .toggle-icon {
-        font-size: 11px;
-      }
-
-      /* Marca / Logo */
-      .sidebar-brand {
-        margin-bottom: 28px;
-        padding: 0 4px;
+      .panel-brand-box {
+        display: flex;
+        align-items: center;
+        gap: 16px;
       }
 
       .brand-link {
@@ -453,240 +362,21 @@ export type ProfileTab = 'datos' | 'direccion' | 'pedidos' | 'configuracion';
       .brand-text-col {
         display: flex;
         flex-direction: column;
-        overflow: hidden;
-        white-space: nowrap;
       }
 
       .brand-name {
         font-weight: 800;
-        font-size: 1.05rem;
+        font-size: 1.1rem;
         letter-spacing: -0.02em;
         color: #ffffff;
+        line-height: 1.15;
       }
 
       .brand-role {
         font-size: 0.62rem;
         font-weight: 800;
         letter-spacing: 0.08em;
-        color: var(--dash-text-muted);
-      }
-
-      /* Navegación */
-      .sidebar-nav {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-
-      .nav-section-label {
-        font-size: 0.64rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.09em;
-        color: #52525b;
-        margin: 6px 10px 10px 10px;
-        text-align: left;
-      }
-
-      .nav-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-
-      .nav-item {
-        position: relative;
-      }
-
-      .nav-link {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 10px 14px;
-        border-radius: 12px;
         color: #a1a1aa;
-        text-decoration: none;
-        font-size: 0.88rem;
-        font-weight: 600;
-        transition: all 0.18s ease;
-        white-space: nowrap;
-        background: transparent;
-        border: 1px solid transparent;
-        width: 100%;
-        cursor: pointer;
-        text-align: left;
-        font-family: inherit;
-      }
-
-      .dash-shell.sidebar-collapsed .nav-link {
-        justify-content: center;
-        padding: 11px 0;
-        gap: 0;
-      }
-
-      .nav-icon {
-        font-size: 15px;
-        color: #71717a;
-        transition: color 0.18s ease;
-        flex-shrink: 0;
-        width: 18px;
-        text-align: center;
-      }
-
-      .nav-link:hover {
-        background: #141416;
-        color: #ffffff;
-      }
-
-      .nav-link:hover .nav-icon {
-        color: var(--dash-accent-green-light);
-      }
-
-      /* Estado Activo del Item */
-      .nav-link.active {
-        background: #18181b;
-        color: #ffffff;
-        border: 1px solid #27272a;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
-      }
-
-      .nav-link.active .nav-icon {
-        color: var(--dash-accent-green-light);
-      }
-
-      /* Badge de Contador Verde (Reemplazo del Rojo) */
-      .nav-badge {
-        margin-left: auto;
-        font-size: 0.7rem;
-        font-weight: 700;
-        padding: 2px 8px;
-        border-radius: 9999px;
-      }
-
-      .nav-badge.badge-accent-green {
-        background: var(--dash-accent-green);
-        color: #ffffff;
-        box-shadow: 0 0 8px var(--dash-accent-green-glow);
-      }
-
-      /* Footer del Sidebar */
-      .sidebar-footer {
-        padding-top: 14px;
-        border-top: 1px solid var(--dash-dark-border);
-      }
-
-      .sidebar-footer-actions {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-
-      .btn-sidebar-site {
-        color: #e4e4e7;
-        border: 1px solid transparent;
-        transition: all 0.18s ease;
-        text-decoration: none;
-      }
-
-      .btn-sidebar-site:hover {
-        background: #18181b;
-        color: #ffffff;
-        border-color: #27272a;
-      }
-
-      .btn-sidebar-site .nav-icon {
-        color: #a1a1aa;
-      }
-
-      .btn-sidebar-site:hover .nav-icon {
-        color: var(--dash-accent-green-light);
-      }
-
-      .btn-sidebar-logout {
-        width: 100%;
-        border: none;
-        background: transparent;
-        cursor: pointer;
-        text-align: left;
-        color: #ef4444;
-      }
-
-      .btn-sidebar-logout .nav-icon {
-        color: #ef4444;
-      }
-
-      .btn-sidebar-logout:hover {
-        background: rgba(239, 68, 68, 0.1);
-        color: #f87171;
-      }
-
-      .btn-sidebar-logout:hover .nav-icon {
-        color: #f87171;
-      }
-
-      /* ══════════════════════════════════════════════════════════════
-         CONTENIDO PRINCIPAL (HEADER 74px + CANVAS #f4f5f7)
-         ══════════════════════════════════════════════════════════════ */
-      .dash-content-area {
-        flex: 1;
-        min-width: 0;
-        min-height: calc(100vh - var(--nav-total-h));
-        display: flex;
-        flex-direction: column;
-        transition: margin-left var(--transition), width var(--transition);
-      }
-
-      /* SUB-HEADER (74px, Blanco Puro, Borde 1.5px) */
-      .dash-header {
-        height: var(--header-h);
-        background: #ffffff;
-        border-bottom: 1.5px solid var(--dash-card-border);
-        position: relative;
-        z-index: 50;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 32px;
-      }
-
-      .header-left {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-      }
-
-      .mobile-hamburger-btn {
-        display: none;
-        background: transparent;
-        border: none;
-        font-size: 20px;
-        color: var(--dash-text-dark);
-        cursor: pointer;
-      }
-
-      .header-title-box {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        text-align: left;
-      }
-
-      .title-with-status {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .header-title {
-        font-size: 1.25rem;
-        font-weight: 800;
-        letter-spacing: -0.02em;
-        color: var(--dash-text-dark);
-        margin: 0;
       }
 
       /* Status Pill con Verde */
@@ -694,9 +384,9 @@ export type ProfileTab = 'datos' | 'direccion' | 'pedidos' | 'configuracion';
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background: #ecfdf5;
-        border: 1px solid rgba(22, 163, 74, 0.2);
-        padding: 2px 8px;
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        padding: 4px 10px;
         border-radius: 9999px;
       }
 
@@ -704,105 +394,201 @@ export type ProfileTab = 'datos' | 'direccion' | 'pedidos' | 'configuracion';
         width: 6px;
         height: 6px;
         border-radius: 50%;
-        background: var(--dash-accent-green);
-        box-shadow: 0 0 6px var(--dash-accent-green);
+        background: var(--dash-accent-green-light);
+        box-shadow: 0 0 8px var(--dash-accent-green-light);
       }
 
       .status-pill-text {
         font-size: 0.68rem;
         font-weight: 700;
-        color: var(--dash-accent-green);
+        color: var(--dash-accent-green-light);
         text-transform: uppercase;
         letter-spacing: 0.04em;
       }
 
-      .header-subtitle {
-        font-size: 0.78rem;
-        color: var(--dash-text-muted);
-        margin: 0;
-      }
-
-      /* Header Derecha */
-      .header-right {
+      /* Acciones Rápidas (Derecha) */
+      .panel-actions-box {
         display: flex;
         align-items: center;
-        gap: 14px;
+        gap: 12px;
       }
 
-      .header-action-pill {
+      .btn-panel-action {
         display: inline-flex;
         align-items: center;
         gap: 8px;
         padding: 8px 14px;
-        background: #ffffff;
-        border: 1px solid var(--dash-card-border);
         border-radius: 9999px;
-        text-decoration: none;
-        color: var(--dash-text-dark);
         font-size: 0.8rem;
-        font-weight: 700;
-        transition: all 0.18s ease;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        font-family: inherit;
+        border: 1px solid transparent;
       }
 
-      .header-action-pill:hover {
-        background: #f4f4f5;
+      .btn-panel-action.ghost {
+        background: #18181b;
         border-color: #27272a;
+        color: #e4e4e7;
       }
 
-      .pill-icon {
-        color: var(--dash-accent-green);
-        font-size: 14px;
+      .btn-panel-action.ghost:hover {
+        background: #27272a;
+        color: #ffffff;
+        border-color: #3f3f46;
       }
 
-      .header-user-profile {
+      .btn-panel-action.logout {
+        background: rgba(239, 68, 68, 0.12);
+        border-color: rgba(239, 68, 68, 0.25);
+        color: #f87171;
+      }
+
+      .btn-panel-action.logout:hover {
+        background: rgba(239, 68, 68, 0.22);
+        border-color: rgba(239, 68, 68, 0.4);
+        color: #ffffff;
+      }
+
+      /* Chip de Usuario */
+      .user-chip {
         display: flex;
         align-items: center;
         gap: 10px;
-        padding: 4px 10px 4px 6px;
-        background: #fafafa;
-        border: 1px solid var(--dash-card-border);
+        padding: 4px 12px 4px 6px;
+        background: #18181b;
+        border: 1px solid #27272a;
         border-radius: 9999px;
       }
 
       .user-avatar-circle {
-        width: 32px;
-        height: 32px;
+        width: 30px;
+        height: 30px;
         border-radius: 50%;
         background: #09090b;
         color: #ffffff;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 800;
-        box-shadow: 0 0 0 2px var(--dash-accent-green);
+        border: 1.5px solid var(--dash-accent-green-light);
       }
 
       .user-meta-text {
         display: flex;
         flex-direction: column;
         text-align: left;
-        line-height: 1.15;
+        line-height: 1.2;
       }
 
       .user-name {
-        font-size: 0.82rem;
-        font-weight: 800;
-        color: var(--dash-text-dark);
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #ffffff;
       }
 
       .user-sub {
         font-size: 0.65rem;
-        color: var(--dash-text-muted);
+        color: #a1a1aa;
+        max-width: 140px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      /* ══════════════════════════════════════════════════════════════
+         FILA 2: PESTAÑAS HORIZONTALES (TIPO DASHBOARD TABS)
+         ══════════════════════════════════════════════════════════════ */
+      .panel-tabs-bar {
+        background: #111113;
+        border-top: 1px solid #1f1f23;
+        padding: 0 28px;
+      }
+
+      .panel-nav-track {
+        max-width: 1360px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding: 8px 0;
+      }
+
+      .panel-nav-track::-webkit-scrollbar {
+        display: none;
+      }
+
+      .panel-tab-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 9px 18px;
+        border-radius: 10px;
+        font-size: 0.86rem;
         font-weight: 600;
+        color: #9ca3af;
+        background: transparent;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        white-space: nowrap;
+        font-family: inherit;
+      }
+
+      .panel-tab-btn:hover {
+        color: #ffffff;
+        background: #18181b;
+      }
+
+      .panel-tab-btn.active {
+        background: #222226;
+        color: #ffffff;
+        border: 1px solid #333338;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+      }
+
+      .tab-icon {
+        font-size: 14px;
+        color: #71717a;
+        transition: color 0.2s ease;
+      }
+
+      .panel-tab-btn:hover .tab-icon {
+        color: #d1d5db;
+      }
+
+      .panel-tab-btn.active .tab-icon {
+        color: var(--dash-accent-green-light);
+      }
+
+      .tab-badge-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--dash-accent-green);
+        color: #ffffff;
+        font-size: 0.68rem;
+        font-weight: 800;
+        padding: 2px 7px;
+        border-radius: 9999px;
+        margin-left: 4px;
+        box-shadow: 0 0 8px var(--dash-accent-green-glow);
       }
 
       /* ══════════════════════════════════════════════════════════════
          CANVAS INTERNO (#f4f5f7) & TARJETAS
          ══════════════════════════════════════════════════════════════ */
       .dash-canvas {
-        padding: 28px 32px 64px;
+        width: 94%;
+        max-width: 1280px;
+        margin: 32px auto 70px;
         flex: 1;
+        padding: 0;
       }
 
       .pane-wrapper {
@@ -982,60 +768,62 @@ export type ProfileTab = 'datos' | 'direccion' | 'pedidos' | 'configuracion';
 
       /* Responsivo */
       @media (max-width: 900px) {
-        .dash-shell {
-          padding-top: var(--nav-total-h);
+        .panel-top-bar {
+          flex-direction: column;
+          align-items: stretch;
+          padding: 14px 16px;
+          gap: 12px;
         }
 
-        .dash-sidebar {
-          position: fixed;
-          top: 0;
-          left: 0;
-          bottom: 0;
-          height: auto;
-          padding-top: calc(var(--nav-total-h) + 20px);
-          z-index: 1050;
-          transform: translateX(-100%);
-          transition: transform 0.25s ease;
+        .panel-brand-box {
+          justify-content: space-between;
+          width: 100%;
         }
 
-        .dash-sidebar.mobile-open {
-          transform: translateX(0);
+        .panel-actions-box {
+          justify-content: space-between;
+          width: 100%;
+          flex-wrap: wrap;
+          gap: 8px;
         }
 
-        .sidebar-toggle {
-          display: none;
+        .user-chip {
+          order: -1;
+          width: 100%;
+          justify-content: flex-start;
         }
 
-        .dash-content-area {
-          margin-left: 0 !important;
-          width: 100% !important;
+        .user-sub {
+          max-width: none;
         }
 
-        .mobile-hamburger-btn {
-          display: block;
+        .panel-tabs-bar {
+          padding: 0 12px;
         }
 
-        .dash-header {
-          padding: 0 16px;
+        .panel-nav-track {
+          gap: 6px;
+          padding: 6px 0;
+        }
+
+        .panel-tab-btn {
+          padding: 8px 14px;
+          font-size: 0.8rem;
         }
 
         .dash-canvas {
+          width: 100%;
+          padding: 16px 12px 50px;
+          margin: 16px auto 40px;
+        }
+
+        .dash-card {
           padding: 20px 16px;
+          border-radius: 12px;
         }
 
         .form-grid {
           grid-template-columns: 1fr;
-        }
-
-        .header-action-pill {
-          display: none;
-        }
-
-        .sidebar-backdrop {
-          position: fixed;
-          inset: 0;
-          background: rgba(0, 0, 0, 0.5);
-          z-index: 1040;
         }
       }
     </style>
@@ -1055,18 +843,9 @@ export class PerfilComponent implements OnInit, OnDestroy {
   faShoppingBag = faShoppingBag;
   faKey = faKey;
   faSignOutAlt = faSignOutAlt;
-  faChevronLeft = faChevronLeft;
-  faChevronRight = faChevronRight;
-  faHome = faHome;
   faStore = faStore;
   faShieldAlt = faShieldAlt;
   faCheckCircle = faCheckCircle;
-  faBars = faBars;
-  faTimes = faTimes;
-
-  // Estados del Sidebar
-  isSidebarCollapsed = signal<boolean>(false);
-  isMobileSidebarOpen = signal<boolean>(false);
 
   activeTab = signal<ProfileTab>('datos');
   isSaving = signal<boolean>(false);
@@ -1173,21 +952,8 @@ export class PerfilComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggleSidebarCollapse() {
-    this.isSidebarCollapsed.set(!this.isSidebarCollapsed());
-  }
-
-  toggleMobileSidebar() {
-    this.isMobileSidebarOpen.set(!this.isMobileSidebarOpen());
-  }
-
-  closeMobileSidebar() {
-    this.isMobileSidebarOpen.set(false);
-  }
-
   setTab(tab: ProfileTab) {
     this.activeTab.set(tab);
-    this.closeMobileSidebar();
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { tab },
