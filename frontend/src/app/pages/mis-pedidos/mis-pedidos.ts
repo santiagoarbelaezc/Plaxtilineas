@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -17,6 +17,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./mis-pedidos.css'],
 })
 export class MisPedidos implements OnInit {
+  @Input() isEmbedded: boolean = false;
   private pedidoService = inject(PedidoService);
   public authService = inject(AuthService);
 
@@ -62,6 +63,9 @@ export class MisPedidos implements OnInit {
   totalInvertido = computed(() => this.pedidos().reduce((s, p) => s + Number(p.total), 0));
   pedidosActivos = computed(() =>
     this.pedidos().filter(p => !['entregado', 'cancelado'].includes(p.estado)).length
+  );
+  entregasCompletadas = computed(() =>
+    this.pedidos().filter(p => p.estado === 'entregado').length
   );
 
   ngOnInit(): void {

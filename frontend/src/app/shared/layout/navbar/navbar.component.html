@@ -57,7 +57,7 @@
           <span class="nav-link-underline"></span>
         </a>
 
-        <a routerLink="/" fragment="grupo" (click)="scrollToGrupo($event)" class="nav-link-tw">
+        <a routerLink="/grupo" routerLinkActive="nav-link-active" class="nav-link-tw">
           <span>Grupo</span>
           <span class="nav-link-underline"></span>
         </a>
@@ -131,42 +131,93 @@
 
         <!-- User (Logged In como Cliente Normal - No Admin) -->
         <div *ngIf="(authService.isLoggedIn | async) && !isAdmin" class="user-area-tw">
-          <div class="user-greeting-tw">
-            <span class="user-greeting-label">Bienvenido,</span>
+          <button class="user-profile-trigger" 
+                  [class.active]="userDropdownOpen" 
+                  (click)="toggleUserDropdown($event)" 
+                  aria-label="Menú de mi cuenta" 
+                  id="user-menu-btn">
+            <div class="user-avatar-wrapper">
+              <span class="user-avatar-initial">{{ getUserInitial((authService.currentUser | async)?.nombre) }}</span>
+            </div>
             <span class="user-greeting-name">{{ (authService.currentUser | async)?.nombre }}</span>
-          </div>
-          <button class="action-icon-btn user-icon-btn" (click)="toggleUserDropdown($event)" aria-label="Mi Cuenta" id="user-menu-btn">
-            <fa-icon [icon]="['fas', 'user']"></fa-icon>
+            <fa-icon [icon]="['fas', 'chevron-down']" class="user-chevron-icon" [class.rotated]="userDropdownOpen"></fa-icon>
           </button>
 
-          <!-- User Dropdown (Cliente) -->
+          <!-- User Dropdown (Cliente Minimalista Monocromático) -->
           <div *ngIf="userDropdownOpen" class="user-dropdown-tw" (click)="$event.stopPropagation()">
+            <!-- Dropdown Header -->
             <div class="user-dropdown-header-tw">
-              <span class="dropdown-title">Mi Cuenta</span>
-              <span class="dropdown-email">{{ (authService.currentUser | async)?.correo }}</span>
+              <div class="dropdown-user-info-row">
+                <div class="dropdown-avatar-large">
+                  <span>{{ getUserInitial((authService.currentUser | async)?.nombre) }}</span>
+                </div>
+                <div class="dropdown-user-details">
+                  <span class="dropdown-user-name">{{ (authService.currentUser | async)?.nombre }}</span>
+                  <span class="dropdown-email" [title]="(authService.currentUser | async)?.correo">
+                    {{ (authService.currentUser | async)?.correo }}
+                  </span>
+                </div>
+              </div>
             </div>
-            <div class="dropdown-divider-tw"></div>
-            <a class="dropdown-item-tw" (click)="onUserAction('editar-perfil')">
-              <fa-icon [icon]="['fas', 'user']" class="dropdown-item-icon-tw"></fa-icon>
-              <span>Editar datos</span>
-            </a>
-            <a class="dropdown-item-tw" (click)="onUserAction('actualizar-direccion')">
-              <fa-icon [icon]="['fas', 'map-marker-alt']" class="dropdown-item-icon-tw"></fa-icon>
-              <span>Actualizar dirección</span>
-            </a>
-            <a class="dropdown-item-tw" (click)="onUserAction('pedidos')">
-              <fa-icon [icon]="['fas', 'shopping-bag']" class="dropdown-item-icon-tw"></fa-icon>
-              <span>Pedidos</span>
-            </a>
-            <a class="dropdown-item-tw" (click)="onUserAction('configuracion')">
-              <fa-icon [icon]="['fas', 'key']" class="dropdown-item-icon-tw"></fa-icon>
-              <span>Configuración</span>
-            </a>
-            <div class="dropdown-divider-tw"></div>
-            <a class="dropdown-item-tw dropdown-logout-tw" (click)="logoutUser()">
-              <fa-icon [icon]="['fas', 'times']" class="dropdown-item-icon-tw"></fa-icon>
-              <span>Cerrar sesión</span>
-            </a>
+
+            <!-- Menu List -->
+            <div class="dropdown-menu-list">
+              <a class="dropdown-item-tw" (click)="onUserAction('editar-perfil')">
+                <div class="dropdown-item-icon-box">
+                  <fa-icon [icon]="['fas', 'user']"></fa-icon>
+                </div>
+                <div class="dropdown-item-text">
+                  <span class="item-title">Editar datos</span>
+                  <span class="item-subtitle">Información personal</span>
+                </div>
+                <fa-icon [icon]="['fas', 'chevron-right']" class="item-arrow-icon"></fa-icon>
+              </a>
+
+              <a class="dropdown-item-tw" (click)="onUserAction('actualizar-direccion')">
+                <div class="dropdown-item-icon-box">
+                  <fa-icon [icon]="['fas', 'map-marker-alt']"></fa-icon>
+                </div>
+                <div class="dropdown-item-text">
+                  <span class="item-title">Actualizar dirección</span>
+                  <span class="item-subtitle">Ubicación de entrega</span>
+                </div>
+                <fa-icon [icon]="['fas', 'chevron-right']" class="item-arrow-icon"></fa-icon>
+              </a>
+
+              <a class="dropdown-item-tw" (click)="onUserAction('pedidos')">
+                <div class="dropdown-item-icon-box">
+                  <fa-icon [icon]="['fas', 'shopping-bag']"></fa-icon>
+                </div>
+                <div class="dropdown-item-text">
+                  <span class="item-title">Mis Pedidos</span>
+                  <span class="item-subtitle">Historial de compras</span>
+                </div>
+                <fa-icon [icon]="['fas', 'chevron-right']" class="item-arrow-icon"></fa-icon>
+              </a>
+
+              <a class="dropdown-item-tw" (click)="onUserAction('configuracion')">
+                <div class="dropdown-item-icon-box">
+                  <fa-icon [icon]="['fas', 'key']"></fa-icon>
+                </div>
+                <div class="dropdown-item-text">
+                  <span class="item-title">Configuración</span>
+                  <span class="item-subtitle">Seguridad y acceso</span>
+                </div>
+                <fa-icon [icon]="['fas', 'chevron-right']" class="item-arrow-icon"></fa-icon>
+              </a>
+            </div>
+
+            <!-- Footer / Logout -->
+            <div class="dropdown-footer-tw">
+              <a class="dropdown-item-tw dropdown-logout-tw" (click)="logoutUser()">
+                <div class="dropdown-item-icon-box">
+                  <fa-icon [icon]="['fas', 'sign-out-alt']"></fa-icon>
+                </div>
+                <div class="dropdown-item-text">
+                  <span class="item-title">Cerrar sesión</span>
+                </div>
+              </a>
+            </div>
           </div>
         </div>
 
@@ -246,6 +297,11 @@
       <span>Contacto</span>
     </a>
 
+    <a routerLink="/grupo" (click)="closeMenu()" class="drawer-link-tw">
+      <fa-icon [icon]="['fas', 'layer-group']"></fa-icon>
+      <span>Grupo</span>
+    </a>
+
     <!-- Logged in Admin -->
     <div *ngIf="(authService.isLoggedIn | async) && isAdmin" class="drawer-user-section-tw">
       <div class="drawer-section-title-tw">Panel Administrativo</div>
@@ -254,7 +310,7 @@
         <span>Volver al dashboard</span>
       </a>
       <a class="drawer-link-tw drawer-logout-tw" (click)="closeMenu(); logoutUser()">
-        <fa-icon [icon]="['fas', 'times']"></fa-icon> <span>Cerrar sesión</span>
+        <fa-icon [icon]="['fas', 'sign-out-alt']"></fa-icon> <span>Cerrar sesión</span>
       </a>
       <hr class="drawer-divider-tw">
     </div>
@@ -275,7 +331,7 @@
         <fa-icon [icon]="['fas', 'key']"></fa-icon> <span>Configuración</span>
       </a>
       <a class="drawer-link-tw drawer-logout-tw" (click)="closeMenu(); logoutUser()">
-        <fa-icon [icon]="['fas', 'times']"></fa-icon> <span>Cerrar sesión</span>
+        <fa-icon [icon]="['fas', 'sign-out-alt']"></fa-icon> <span>Cerrar sesión</span>
       </a>
       <hr class="drawer-divider-tw">
     </div>

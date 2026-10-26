@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { PqrService } from '../../../services/pqr.service';
 import { PqrUtilService } from '../../../services/pqr-util.service';
 
 @Component({
   selector: 'app-pqr-cliente',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './pqr-cliente.html',
   styleUrls: ['./pqr-cliente.css']
 })
@@ -36,23 +37,44 @@ export class PqrClienteComponent implements OnInit {
   mensaje = '';
   mensajeTipo: 'success' | 'error' | 'info' = 'info';
   
-  // Tipos de PQR
+  // Tipos de PQR con metadatos descriptivos
   tiposPQR = [
-    { valor: 'PETICION', texto: 'Petición' },
-    { valor: 'QUEJA', texto: 'Queja' },
-    { valor: 'RECLAMO', texto: 'Reclamo' },
-    { valor: 'SUGERENCIA', texto: 'Sugerencia' }
+    { 
+      valor: 'PETICION', 
+      texto: 'Petición', 
+      desc: 'Solicitud formal de información, cotización especial o documentos.',
+      icono: 'peticion'
+    },
+    { 
+      valor: 'QUEJA', 
+      texto: 'Queja', 
+      desc: 'Inconformidad con la atención recibida o tiempos de respuesta.',
+      icono: 'queja'
+    },
+    { 
+      valor: 'RECLAMO', 
+      texto: 'Reclamo', 
+      desc: 'Disconformidad con el material entregado, corte o garantía.',
+      icono: 'reclamo'
+    },
+    { 
+      valor: 'SUGERENCIA', 
+      texto: 'Sugerencia', 
+      desc: 'Propuesta de mejora en nuestros procesos, catálogo o plataforma.',
+      icono: 'sugerencia'
+    }
   ];
   
-  // Productos relacionados (puedes obtener esto de tu base de datos)
+  // Productos relacionados en catálogo Plaxtilineas
   productosRelacionados = [
-    'Espumas',
-    'Thermolon',
-    'Pisos',
-    'Mimbres',
-    'Mallas',
-    'Lonas',
-    'Otro producto'
+    'Espumas a Medida / Láminas',
+    'Thermolon / Aislantes Térmicos',
+    'Pisos PVC / Tráfico Pesado',
+    'Mimbres y Fibras Sintéticas',
+    'Mallas Polisombra y Agrícolas',
+    'Lonas y Cueros Sintéticos',
+    'Adhesivos y Pegantes Industriales',
+    'Otro producto o servicio'
   ];
 
   constructor(
@@ -61,10 +83,14 @@ export class PqrClienteComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Inicializar si es necesario
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   // ==================== MÉTODOS PARA CREAR PQR ====================
+
+  seleccionarTipo(tipoValor: string) {
+    this.pqrData.tipo = tipoValor;
+  }
 
   onFileSelected(event: any) {
     const files: FileList = event.target.files;
@@ -131,7 +157,7 @@ export class PqrClienteComponent implements OnInit {
     // Validar email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this.pqrData.email)) {
-      this.mostrarMensaje('Por favor ingresa un email válido', 'error');
+      this.mostrarMensaje('Por favor ingresa un correo electrónico válido', 'error');
       return;
     }
     
@@ -170,7 +196,7 @@ export class PqrClienteComponent implements OnInit {
       },
       error: (error) => {
         this.cargando = false;
-        const mensajeError = error.error?.error || 'Error al crear la PQR. Por favor intenta nuevamente.';
+        const mensajeError = error.error?.error || 'Error al radicar la PQR. Por favor intenta nuevamente.';
         this.mostrarMensaje(mensajeError, 'error');
         console.error('❌ Error creando PQR:', error);
       }
@@ -204,17 +230,14 @@ export class PqrClienteComponent implements OnInit {
     this.pqrService.consultarPQR(this.numeroTicketConsulta.trim()).subscribe({
       next: (response: any) => {
         this.cargando = false;
-        // Extraer la propiedad pqr si existe, de lo contrario usar la respuesta completa
         this.pqrConsultada = response.pqr || response;
-        console.log('PQR consultada:', this.pqrConsultada);
-        this.mostrarMensaje('✅ PQR encontrada', 'success');
+        this.mostrarMensaje('Solicitud PQR encontrada exitosamente.', 'success');
       },
       error: (error) => {
         this.cargando = false;
         this.pqrConsultada = null;
-        const mensajeError = error.error?.error || 'No se encontró ninguna PQR con ese número de ticket';
+        const mensajeError = error.error?.error || 'No se encontró ninguna solicitud con ese número de ticket.';
         this.mostrarMensaje(mensajeError, 'error');
-        console.error('Error consultando PQR:', error);
       }
     });
   }
@@ -225,11 +248,10 @@ export class PqrClienteComponent implements OnInit {
     this.mensaje = mensaje;
     this.mensajeTipo = tipo;
     
-    // Auto-ocultar mensaje después de 5 segundos
     if (tipo === 'success' || tipo === 'error') {
       setTimeout(() => {
         this.mensaje = '';
-      }, 5000);
+      }, 6000);
     }
   }
 
@@ -247,7 +269,7 @@ export class PqrClienteComponent implements OnInit {
     const iconos: { [key: string]: string } = {
       'PETICION': '📋',
       'QUEJA': '⚠️',
-      'RECLAMO': '🚨',
+      'RECLAMO': '🛡️',
       'SUGERENCIA': '💡'
     };
     return iconos[tipo] || '📄';
@@ -264,7 +286,6 @@ export class PqrClienteComponent implements OnInit {
   }
 
   descargarArchivo(url: string, nombre: string) {
-    // Método simple para descargar archivos
     const link = document.createElement('a');
     link.href = url;
     link.download = nombre;

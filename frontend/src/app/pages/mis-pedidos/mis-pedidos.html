@@ -1,136 +1,173 @@
-<app-navbar></app-navbar>
+<app-navbar *ngIf="!isEmbedded"></app-navbar>
 
-<div class="mis-pedidos-page">
-  <!-- Línea Superior de Acento Esmeralda (Marca Plaxtilineas - idéntica al footer y cart-drawer) -->
-  <div class="page-accent-glow"></div>
+<div class="mis-pedidos-page" [class.embedded]="isEmbedded">
+  <!-- Línea Superior de Acento Esmeralda (Marca Plaxtilineas - cuando no está embebido) -->
+  <div class="page-accent-glow" *ngIf="!isEmbedded"></div>
 
   <div class="pedidos-container">
 
-    <!-- ═══ HERO HEADER (Estilo Footer & Carrito Flotante) ═══════════════ -->
-    <header class="pedidos-header">
-      <div class="header-kicker-badge">
-        <span class="kicker-line"></span>
-        <span>HISTORIAL DE COMPRAS &bull; PLAXTILINEAS</span>
-      </div>
-
-      <div class="header-main-row">
-        <div class="header-text-group">
-          <div class="page-title-row">
-            <h1 class="page-title">Mis Pedidos</h1>
-            <span class="header-count-pill" *ngIf="!loading() && totalPedidos() > 0">
+    <!-- ═══ 1. CABECERA PRINCIPAL (Estilo dash-card de Editar Datos & Dirección) ═══ -->
+    <div class="dash-card orders-header-card">
+      <div class="card-top-header">
+        <div class="card-icon-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="header-badge-svg">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+        </div>
+        <div class="card-header-titles">
+          <div class="card-title-row">
+            <h2 class="card-main-title">Gestión de Pedidos</h2>
+            <span class="count-pill-green" *ngIf="!loading() && totalPedidos() > 0">
               {{ totalPedidos() }} {{ totalPedidos() === 1 ? 'pedido' : 'pedidos' }}
             </span>
           </div>
-          <p class="page-subtitle">
-            Seguimiento en tiempo real, comprobantes de pago y estado de entrega de tus compras.
-          </p>
+          <p class="card-sub-title">Monitorea el flujo en tiempo real, guías de despacho, transportadora y comprobantes de pago.</p>
         </div>
-
-        <div class="header-actions" *ngIf="!loading() && pedidos().length > 0">
-          <button class="btn-refresh-pedidos" (click)="cargarPedidos()" title="Actualizar pedidos">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="card-header-actions" *ngIf="!loading()">
+          <button class="btn-dash-sync" (click)="cargarPedidos()" title="Actualizar pedidos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="sync-icon">
               <polyline points="23 4 23 10 17 10"></polyline>
               <polyline points="1 20 1 14 7 14"></polyline>
               <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
             </svg>
-            <span>Actualizar</span>
+            <span>Sincronizar Pedidos</span>
           </button>
         </div>
       </div>
-    </header>
 
-    <!-- ═══ STATS CARDS (KPIs) (Estilo Cart Panel Summary) ══════════════════ -->
-    <section class="stats-section" *ngIf="!loading() && pedidos().length > 0">
-      <!-- Card 1: Pedidos Totales -->
-      <div class="stat-card">
-        <div class="stat-card-top">
-          <span class="stat-kicker">Pedidos Registrados</span>
-          <div class="stat-icon-wrapper">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="9" cy="21" r="1"></circle>
-              <circle cx="20" cy="21" r="1"></circle>
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-            </svg>
+      <!-- ═══ 2. BENTO STAT CARDS (4 KPIs Idénticos al Dashboard con Acentos Verdes) ═══ -->
+      <div class="dash-bento-grid" *ngIf="!loading() && pedidos().length > 0">
+        <!-- Card 1: Total Pedidos -->
+        <div class="bento-stat-card">
+          <div class="bento-card-top">
+            <span class="bento-kicker">TOTAL PEDIDOS</span>
+            <div class="bento-icon-wrapper">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="bento-val-row">
+            <span class="bento-number">{{ totalPedidos() }}</span>
+            <span class="bento-sublabel">órdenes</span>
           </div>
         </div>
-        <div class="stat-value-row">
-          <span class="stat-number">{{ totalPedidos() }}</span>
-          <span class="stat-pill-label">órdenes</span>
+
+        <!-- Card 2: Inversión Total -->
+        <div class="bento-stat-card">
+          <div class="bento-card-top">
+            <span class="bento-kicker">INVERSIÓN TOTAL</span>
+            <div class="bento-icon-wrapper bento-icon-green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="1" x2="12" y2="23"></line>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="bento-val-row">
+            <span class="bento-number green-highlight">{{ formatPrice(totalInvertido()) }}</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Pedidos Activos (Acento Verde) -->
+        <div class="bento-stat-card">
+          <div class="bento-card-top">
+            <span class="bento-kicker">PEDIDOS ACTIVOS</span>
+            <div class="bento-icon-wrapper bento-icon-active">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="1" y="3" width="15" height="13"></rect>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+              </svg>
+            </div>
+          </div>
+          <div class="bento-val-row">
+            <span class="bento-number">{{ pedidosActivos() }}</span>
+            <span class="bento-status-pill green-pill" *ngIf="pedidosActivos() > 0">
+              <span class="live-dot-green"></span>
+              En Proceso
+            </span>
+            <span class="bento-sublabel" *ngIf="pedidosActivos() === 0">Al día</span>
+          </div>
+        </div>
+
+        <!-- Card 4: Entregas Completadas -->
+        <div class="bento-stat-card">
+          <div class="bento-card-top">
+            <span class="bento-kicker">ENTREGAS COMPLETADAS</span>
+            <div class="bento-icon-wrapper bento-icon-done">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+          </div>
+          <div class="bento-val-row">
+            <span class="bento-number">{{ entregasCompletadas() }}</span>
+            <span class="bento-status-pill done-pill" *ngIf="entregasCompletadas() > 0">
+              ✓ Entregados
+            </span>
+            <span class="bento-sublabel" *ngIf="entregasCompletadas() === 0">Ninguna aún</span>
+          </div>
         </div>
       </div>
 
-      <!-- Card 2: Total Invertido -->
-      <div class="stat-card">
-        <div class="stat-card-top">
-          <span class="stat-kicker">Inversión Total</span>
-          <div class="stat-icon-wrapper stat-icon-emerald">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="1" x2="12" y2="23"></line>
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-            </svg>
+      <!-- ═══ 3. BANNER OSCURO DE LOGÍSTICA (Inspirado en el Dashboard #0a0a0a) ═══ -->
+      <div class="dash-dark-banner" *ngIf="!loading() && pedidos().length > 0">
+        <div class="banner-content">
+          <div class="banner-kicker">
+            <span class="live-dot-green"></span>
+            <span>LOGÍSTICA &amp; DESPACHOS EN VIVO</span>
           </div>
+          <h3 class="banner-title">Trazabilidad y Envíos de Compras</h3>
+          <p class="banner-desc">Rastreo punto a punto desde la confirmación de pago con Wompi hasta la entrega efectiva en tu domicilio.</p>
         </div>
-        <div class="stat-value-row">
-          <span class="stat-number emerald-highlight">{{ formatPrice(totalInvertido()) }}</span>
-        </div>
-      </div>
-
-      <!-- Card 3: Pedidos Activos -->
-      <div class="stat-card">
-        <div class="stat-card-top">
-          <span class="stat-kicker">En Preparación o Ruta</span>
-          <div class="stat-icon-wrapper stat-icon-active">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="1" y="3" width="15" height="13"></rect>
-              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-              <circle cx="5.5" cy="18.5" r="2.5"></circle>
-              <circle cx="18.5" cy="18.5" r="2.5"></circle>
+        <div class="banner-badge-box">
+          <span class="secure-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tag-svg">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
             </svg>
-          </div>
-        </div>
-        <div class="stat-value-row">
-          <span class="stat-number">{{ pedidosActivos() }}</span>
-          <span class="live-pulse-badge" *ngIf="pedidosActivos() > 0">
-            <span class="live-dot"></span>
-            En Proceso
+            Compras Protegidas
           </span>
-          <span class="stat-pill-label" *ngIf="pedidosActivos() === 0">al día</span>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- ═══ TOOLBAR: SEARCH + COMBOBOX ESTADO (Fila Unificada) ══════════════ -->
-    <section class="toolbar-section" *ngIf="!loading() && pedidos().length > 0">
-      <!-- 1. Buscador de Pedidos -->
-      <div class="search-box-wrapper">
-        <svg class="search-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input
-          type="text"
-          class="search-input"
-          placeholder="Buscar por código #PX, producto o dirección..."
-          [ngModel]="searchQuery()"
-          (ngModelChange)="searchQuery.set($event)"
-        />
-        <button
-          *ngIf="searchQuery()"
-          class="search-clear-btn"
-          (click)="searchQuery.set('')"
-          title="Limpiar búsqueda">
-          ✕
-        </button>
-      </div>
-
-      <!-- 2. Combobox de Estados (a la derecha del buscador de pedidos) -->
-      <div class="filter-select-wrapper">
-        <div class="custom-select-box">
-          <svg class="select-leading-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+    <!-- ═══ 4. TOOLBAR DE BÚSQUEDA Y FILTRADO (Estilo Form Inputs de Perfil) ═══ -->
+    <div class="dash-card toolbar-card" *ngIf="!loading() && pedidos().length > 0">
+      <div class="toolbar-flex-row">
+        <!-- Buscador -->
+        <div class="search-input-group">
+          <svg class="search-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
+          <input
+            type="text"
+            class="form-input search-input"
+            placeholder="Buscar por código #PX, producto o dirección..."
+            [ngModel]="searchQuery()"
+            (ngModelChange)="searchQuery.set($event)"
+          />
+          <button
+            *ngIf="searchQuery()"
+            class="search-clear-btn"
+            (click)="searchQuery.set('')"
+            title="Limpiar búsqueda">
+            ✕
+          </button>
+        </div>
+
+        <!-- Selector de Estado -->
+        <div class="filter-select-group">
           <select
-            class="status-combobox"
+            class="form-select filter-select"
             [ngModel]="filtroEstado()"
             (ngModelChange)="setFiltro($event)"
             aria-label="Filtrar pedidos por estado">
@@ -139,46 +176,43 @@
               {{ estado.label }} ({{ getCountByEstado(estado.key) }})
             </option>
           </select>
-          <svg class="select-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="6 9 12 15 18 9"></polyline>
-          </svg>
         </div>
       </div>
-    </section>
-
-    <!-- ═══ LOADING STATE ══════════════════════════════════════════════════ -->
-    <div class="loading-state-card" *ngIf="loading()">
-      <div class="modern-dual-ring"></div>
-      <h3 class="loading-state-title">Cargando tus pedidos</h3>
-      <p class="loading-state-desc">Estamos sincronizando el historial de tus compras...</p>
     </div>
 
-    <!-- ═══ ERROR STATE ════════════════════════════════════════════════════ -->
-    <div class="error-state-card" *ngIf="error()">
-      <div class="error-state-icon">
+    <!-- ═══ LOADING STATE ═══ -->
+    <div class="dash-card status-box-card" *ngIf="loading()">
+      <div class="modern-dual-ring"></div>
+      <h3 class="status-box-title">Cargando tus pedidos</h3>
+      <p class="status-box-desc">Estamos sincronizando el historial de tus compras...</p>
+    </div>
+
+    <!-- ═══ ERROR STATE ═══ -->
+    <div class="dash-card status-box-card error" *ngIf="error()">
+      <div class="status-box-icon error-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"></circle>
           <line x1="12" y1="8" x2="12" y2="12"></line>
           <line x1="12" y1="16" x2="12.01" y2="16"></line>
         </svg>
       </div>
-      <h3 class="error-state-title">Error al consultar los pedidos</h3>
-      <p class="error-state-desc">{{ error() }}</p>
-      <button class="btn-retry-action" (click)="cargarPedidos()">Reintentar</button>
+      <h3 class="status-box-title">Error al consultar los pedidos</h3>
+      <p class="status-box-desc">{{ error() }}</p>
+      <button class="btn-dash-primary" (click)="cargarPedidos()">Reintentar</button>
     </div>
 
-    <!-- ═══ EMPTY STATE GLOBAL ═════════════════════════════════════════════ -->
-    <div class="empty-state-card" *ngIf="!loading() && !error() && pedidos().length === 0">
-      <div class="empty-state-icon-box">
+    <!-- ═══ EMPTY STATE GLOBAL ═══ -->
+    <div class="dash-card status-box-card empty" *ngIf="!loading() && !error() && pedidos().length === 0">
+      <div class="status-box-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
           <line x1="3" y1="6" x2="21" y2="6"></line>
           <path d="M16 10a4 4 0 0 1-8 0"></path>
         </svg>
       </div>
-      <h2 class="empty-state-title">Aún no has realizado pedidos</h2>
-      <p class="empty-state-desc">Explora nuestro catálogo de plásticos técnicos, lonas, tuberías y empaques de alta resistencia.</p>
-      <a routerLink="/productos" class="btn-primary-catalog">
+      <h2 class="status-box-title">Aún no has realizado pedidos</h2>
+      <p class="status-box-desc">Explora nuestro catálogo de plásticos técnicos, lonas, tuberías y empaques de alta resistencia.</p>
+      <a routerLink="/productos" class="btn-dash-primary catalog-link">
         <span>Explorar Catálogo</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -187,29 +221,27 @@
       </a>
     </div>
 
-    <!-- ═══ PEDIDOS LIST ═══════════════════════════════════════════════════ -->
-    <div class="pedidos-list-wrapper" *ngIf="!loading() && !error() && pedidosFiltrados().length > 0">
+    <!-- ═══ LISTADO DE PEDIDOS (Cada uno en formato dash-card) ═══ -->
+    <div class="pedidos-stack" *ngIf="!loading() && !error() && pedidosFiltrados().length > 0">
       <article
         *ngFor="let pedido of pedidosFiltrados(); trackBy: trackByPedidoId"
-        class="pedido-card-item"
+        class="dash-card pedido-card-item"
         [class.is-expanded]="isPedidoExpanded(pedido)"
         [class.is-cancelado]="pedido.estado === 'cancelado'">
 
-        <!-- Resplandor superior en la tarjeta expandida (idéntico al footer y carrito) -->
+        <!-- Resplandor superior en la tarjeta expandida -->
         <div class="card-accent-glow" *ngIf="isPedidoExpanded(pedido)"></div>
 
         <!-- Card Header (Visible siempre) -->
         <div class="pedido-card-header" (click)="togglePedido(pedido)">
-          <!-- Columna Izquierda: Kicker + Código y Meta -->
+          <!-- Columna Izquierda: Código e Info -->
           <div class="header-left-col">
-            <div class="order-kicker-tag">
-              <span class="kicker-line"></span>
-              <span class="order-code-text">PEDIDO #{{ pedido.codigo_pedido }}</span>
+            <div class="order-code-row">
+              <span class="order-code-badge">PEDIDO #{{ pedido.codigo_pedido }}</span>
             </div>
-
             <div class="order-meta-row">
               <span class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                   <line x1="16" y1="2" x2="16" y2="6"></line>
                   <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -217,11 +249,9 @@
                 </svg>
                 {{ formatShortDate(pedido.fecha) }}
               </span>
-
               <span class="meta-separator">&bull;</span>
-
               <span class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                 </svg>
                 {{ pedido.total_items }} {{ pedido.total_items === 1 ? 'producto' : 'productos' }}
@@ -229,21 +259,24 @@
             </div>
           </div>
 
-          <!-- Columna Derecha: Monto, Badge de Estado y Flecha -->
+          <!-- Columna Derecha: Monto, Badge y Chevron -->
           <div class="header-right-col">
             <div class="order-price-box">
               <span class="order-price-label">Total</span>
               <span class="order-total-amount">{{ formatPrice(pedido.total) }}</span>
             </div>
 
+            <!-- Status Pill con Verde para estados positivos/activos -->
             <div
               class="status-pill-badge"
-              [style.--badge-color]="getEstadoInfo(pedido.estado).color">
-              <span class="status-pulse-dot" [style.background-color]="getEstadoInfo(pedido.estado).color"></span>
+              [class.badge-green]="pedido.estado === 'entregado' || pedido.estado === 'pagado' || pedido.estado === 'confirmado' || pedido.estado === 'en_camino' || pedido.estado === 'en_preparacion'"
+              [class.badge-cancel]="pedido.estado === 'cancelado'"
+              [class.badge-pending]="pedido.estado === 'pendiente_pago' || pedido.estado === 'pendiente'">
+              <span class="status-pulse-dot"></span>
               <span class="status-pill-text">{{ getEstadoInfo(pedido.estado).label }}</span>
             </div>
 
-            <button class="btn-expand-circle" [class.is-rotated]="isPedidoExpanded(pedido)" aria-label="Desplegar detalles del pedido">
+            <button class="btn-expand-circle" [class.is-rotated]="isPedidoExpanded(pedido)" aria-label="Desplegar detalles">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
@@ -251,15 +284,21 @@
           </div>
         </div>
 
-        <!-- Card Body (Desplegable) -->
+        <!-- Card Body Desplegable -->
         <div class="pedido-card-body" *ngIf="isPedidoExpanded(pedido)">
 
           <!-- 1. TIMELINE TRACKER -->
-          <section class="section-card timeline-card">
-            <div class="section-card-header">
-              <div class="section-kicker-badge">
-                <span class="kicker-line"></span>
-                <span>SEGUIMIENTO DE TU COMPRA</span>
+          <section class="nested-dash-card timeline-card">
+            <div class="nested-card-top-header">
+              <div class="nested-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </div>
+              <div class="nested-header-titles">
+                <h4 class="nested-main-title">Seguimiento de la Compra</h4>
+                <p class="nested-sub-title">Progreso cronológico del despacho de tu paquete.</p>
               </div>
             </div>
 
@@ -269,7 +308,7 @@
                 class="stepper-step"
                 [class.is-completed]="isStepCompleted(pedido.estado, i)"
                 [class.is-active]="isStepActive(pedido.estado, i)">
-                
+
                 <div class="connector-line" *ngIf="i > 0"
                   [class.is-completed]="isStepCompleted(pedido.estado, i)">
                 </div>
@@ -292,19 +331,24 @@
             </div>
           </section>
 
-          <!-- 2. PRODUCTOS COMPRADOS (Estilo idéntico a .cart-item del Carrito Flotante) -->
-          <section class="section-card products-card">
-            <div class="section-card-header">
-              <div class="section-kicker-badge">
-                <span class="kicker-line"></span>
-                <span>ARTÍCULOS INCLUIDOS ({{ pedido.total_items }})</span>
+          <!-- 2. PRODUCTOS COMPRADOS -->
+          <section class="nested-dash-card products-card">
+            <div class="nested-card-top-header">
+              <div class="nested-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                </svg>
+              </div>
+              <div class="nested-header-titles">
+                <h4 class="nested-main-title">Artículos en este Pedido ({{ pedido.total_items }})</h4>
+                <p class="nested-sub-title">Detalle de especificaciones, cantidades y subtotales.</p>
               </div>
             </div>
 
-            <div class="cart-items-stack">
-              <div *ngFor="let detalle of pedido.detalles" class="cart-style-item">
-                <!-- Miniatura con marco suave idéntico a cart-item-img -->
-                <div class="cart-style-img">
+            <div class="products-table-stack">
+              <div *ngFor="let detalle of pedido.detalles" class="product-item-row">
+                <!-- Miniatura con marco elegante -->
+                <div class="product-thumbnail">
                   <img *ngIf="detalle.imagen_url" [src]="detalle.imagen_url" [alt]="detalle.nombre_producto">
                   <div *ngIf="!detalle.imagen_url" class="img-fallback">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -316,24 +360,24 @@
                 </div>
 
                 <!-- Info del Producto -->
-                <div class="cart-style-info">
-                  <h4 class="cart-style-name">{{ detalle.nombre_producto }}</h4>
-                  <div class="cart-style-meta">
-                    <span class="cart-style-variant-pill">
+                <div class="product-info-col">
+                  <h4 class="product-name">{{ detalle.nombre_producto }}</h4>
+                  <div class="product-meta-row">
+                    <span class="variant-pill">
                       {{ detalle.variante_id ? 'Variante #' + detalle.variante_id : 'Estándar' }}
                     </span>
-                    <span class="cart-style-unit-text">
-                      Unitario: <strong>{{ formatPrice(detalle.precio_unitario) }}</strong>
+                    <span class="unit-price-text">
+                      Precio Unitario: <strong>{{ formatPrice(detalle.precio_unitario) }}</strong>
                     </span>
                   </div>
                 </div>
 
                 <!-- Cantidad y Subtotal -->
-                <div class="cart-style-pricing">
-                  <span class="cart-style-qty-capsule">
+                <div class="product-pricing-col">
+                  <span class="qty-pill">
                     Cant: <strong>{{ detalle.cantidad }}</strong>
                   </span>
-                  <span class="cart-style-subtotal">
+                  <span class="item-subtotal-text">
                     {{ formatPrice(detalle.subtotal || (detalle.precio_unitario * detalle.cantidad)) }}
                   </span>
                 </div>
@@ -344,11 +388,17 @@
           <!-- 3. INFO GRID: ENVÍO, PAGO Y RESUMEN FINANCIERO -->
           <div class="details-split-grid">
             <!-- Bloque de Envío -->
-            <div class="section-card info-card">
-              <div class="info-card-header">
-                <div class="section-kicker-badge">
-                  <span class="kicker-line"></span>
-                  <span>LUGAR DE ENTREGA</span>
+            <div class="nested-dash-card info-card">
+              <div class="nested-card-top-header">
+                <div class="nested-icon-badge">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                </div>
+                <div class="nested-header-titles">
+                  <h4 class="nested-main-title">Dirección de Entrega</h4>
+                  <p class="nested-sub-title">Destino asignado</p>
                 </div>
               </div>
               <div class="info-card-content">
@@ -357,7 +407,7 @@
                   {{ pedido.ciudad }}<span *ngIf="pedido.ciudad && pedido.departamento">, </span>{{ pedido.departamento }}
                 </p>
                 <p class="info-phone-text" *ngIf="pedido.telefono_contacto">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                   </svg>
                   <span>{{ pedido.telefono_contacto }}</span>
@@ -365,16 +415,48 @@
               </div>
             </div>
 
-            <!-- Bloque de Pago -->
-            <div class="section-card info-card">
-              <div class="info-card-header">
-                <div class="section-kicker-badge">
-                  <span class="kicker-line"></span>
-                  <span>MÉTODO DE PAGO</span>
+            <!-- Bloque de Transportadora y Guía (si existe) -->
+            <div class="nested-dash-card info-card" *ngIf="pedido.transportadora || pedido.guia_numero">
+              <div class="nested-card-top-header">
+                <div class="nested-icon-badge">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="1" y="3" width="15" height="13"></rect>
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                  </svg>
+                </div>
+                <div class="nested-header-titles">
+                  <h4 class="nested-main-title">Transportadora &amp; Guía</h4>
+                  <p class="nested-sub-title">Datos de logística</p>
                 </div>
               </div>
               <div class="info-card-content">
-                <div class="payment-method-badge">
+                <div class="carrier-badge" *ngIf="pedido.transportadora">
+                  <span class="carrier-name">{{ pedido.transportadora }}</span>
+                </div>
+                <p class="guide-number-text" *ngIf="pedido.guia_numero">
+                  No. de Guía: <strong class="mono-guide">{{ pedido.guia_numero }}</strong>
+                </p>
+              </div>
+            </div>
+
+            <!-- Bloque de Método de Pago -->
+            <div class="nested-dash-card info-card">
+              <div class="nested-card-top-header">
+                <div class="nested-icon-badge">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                  </svg>
+                </div>
+                <div class="nested-header-titles">
+                  <h4 class="nested-main-title">Método de Pago</h4>
+                  <p class="nested-sub-title">Transacción</p>
+                </div>
+              </div>
+              <div class="info-card-content">
+                <div class="payment-badge">
                   <span class="payment-brand-indicator"></span>
                   <span class="payment-brand-text">{{ pedido.metodo_pago }}</span>
                 </div>
@@ -387,8 +469,8 @@
               </div>
             </div>
 
-            <!-- Bloque de Resumen Financiero estilo Cart Panel Footer -->
-            <div class="section-card summary-card">
+            <!-- Bloque de Resumen Financiero -->
+            <div class="nested-dash-card summary-card">
               <div class="cart-summary-breakdown">
                 <div class="summary-line">
                   <span class="summary-line-label">Subtotal</span>
@@ -400,7 +482,7 @@
                 </div>
               </div>
 
-              <!-- Caja de Total estilo cart-total-box -->
+              <!-- Caja de Total -->
               <div class="cart-total-box">
                 <div class="total-text-col">
                   <span class="total-kicker">TOTAL PAGADO</span>
@@ -414,7 +496,7 @@
           <!-- 4. BARRA INFERIOR DE ACCIONES -->
           <footer class="pedido-card-footer">
             <div class="footer-actions-left">
-              <button class="btn-action-primary-invoice" (click)="openInvoice(pedido); $event.stopPropagation()">
+              <button class="btn-dash-primary invoice-btn" (click)="openInvoice(pedido); $event.stopPropagation()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                   <polyline points="14 2 14 8 20 8"></polyline>
@@ -424,7 +506,7 @@
                 <span>Ver Comprobante</span>
               </button>
 
-              <button *ngIf="isCancelable(pedido)" class="btn-action-cancel" (click)="cancelarPedido(pedido, $event)">
+              <button *ngIf="isCancelable(pedido)" class="btn-outline-danger" (click)="cancelarPedido(pedido, $event)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10"></circle>
                   <line x1="15" y1="9" x2="9" y2="15"></line>
@@ -433,7 +515,7 @@
                 <span>Cancelar Pedido</span>
               </button>
 
-              <button *ngIf="isDeletable(pedido)" class="btn-action-delete" (click)="eliminarPedido(pedido, $event)" title="Eliminar registro">
+              <button *ngIf="isDeletable(pedido)" class="btn-outline-muted" (click)="eliminarPedido(pedido, $event)" title="Eliminar registro">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="3 6 5 6 21 6"></polyline>
                   <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -457,23 +539,23 @@
       </article>
     </div>
 
-    <!-- ═══ EMPTY FILTER STATE ═════════════════════════════════════════════ -->
-    <div class="empty-filter-card" *ngIf="!loading() && !error() && pedidos().length > 0 && pedidosFiltrados().length === 0">
-      <div class="empty-filter-icon">
+    <!-- ═══ EMPTY FILTER STATE ═══ -->
+    <div class="dash-card status-box-card empty" *ngIf="!loading() && !error() && pedidos().length > 0 && pedidosFiltrados().length === 0">
+      <div class="status-box-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           <line x1="8" y1="11" x2="14" y2="11"></line>
         </svg>
       </div>
-      <h3 class="empty-filter-title">No hay pedidos que coincidan</h3>
-      <p class="empty-filter-desc">No encontramos pedidos con el estado o filtro de búsqueda seleccionado.</p>
-      <button class="btn-reset-filter" (click)="setFiltro('todos'); searchQuery.set('')">Restablecer Filtros</button>
+      <h3 class="status-box-title">No hay pedidos que coincidan</h3>
+      <p class="status-box-desc">No encontramos pedidos con el estado o filtro de búsqueda seleccionado.</p>
+      <button class="btn-dash-primary" (click)="setFiltro('todos'); searchQuery.set('')">Restablecer Filtros</button>
     </div>
 
   </div>
 
-  <!-- ═══ INVOICE MODAL (COMPROBANTE PREMIUM) ═════════════════════════════ -->
+  <!-- ═══ INVOICE MODAL (COMPROBANTE PREMIUM) ═══ -->
   <div class="invoice-modal-overlay" *ngIf="showInvoiceModal()" (click)="closeInvoice()">
     <div class="invoice-modal-dialog" (click)="$event.stopPropagation()">
       <div class="modal-top-accent"></div>
@@ -560,7 +642,7 @@
 
       <!-- Modal Bottom Actions (Non-print) -->
       <div class="modal-dialog-actions no-print">
-        <button class="btn-modal-print" (click)="printInvoice()">
+        <button class="btn-dash-primary btn-modal-print" (click)="printInvoice()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="6 9 6 2 18 2 18 9"></polyline>
             <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
@@ -579,4 +661,4 @@
 
 </div>
 
-<app-footer></app-footer>
+<app-footer *ngIf="!isEmbedded"></app-footer>

@@ -1,0 +1,506 @@
+/* ═══════════════════════════════════════════════════════════════════
+   PÁGINA DEDICADA: GRUPO ESPUMAS Y PLÁSTICOS
+   CARRUSEL HORIZONTAL PANORÁMICO ELEGANTE
+   ═══════════════════════════════════════════════════════════════════ */
+
+:host {
+  display: block;
+  background-color: #ffffff;
+  color: #000000;
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.grupo-page-wrapper {
+  width: 100%;
+  position: relative;
+  overflow-x: clip;
+  background: radial-gradient(circle at 50% 12%, #ffffff 0%, #f8fafc 100%);
+  padding-top: 100px; /* Despeje para Topbar + Navbar */
+  padding-bottom: 70px;
+}
+
+@media (max-width: 768px) {
+  .grupo-page-wrapper {
+    padding-top: 76px;
+    padding-bottom: 50px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CABECERA INSTITUCIONAL
+   ═══════════════════════════════════════════════════════════════════ */
+.grupo-header-section {
+  width: 100%;
+  padding: 36px 24px 26px;
+  text-align: center;
+}
+
+.grupo-header-container {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.grupo-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #475569;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+
+  .kicker-line {
+    width: 24px;
+    height: 2px;
+    background: #000000;
+    display: inline-block;
+    border-radius: 2px;
+  }
+}
+
+.grupo-main-title {
+  margin: 0 0 14px 0;
+
+  .title-primary {
+    display: block;
+    font-size: clamp(2.1rem, 4vw, 3.2rem);
+    font-weight: 900;
+    color: #000000;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+
+  .title-secondary {
+    display: block;
+    font-size: clamp(1.1rem, 1.8vw, 1.45rem);
+    font-weight: 600;
+    line-height: 1.35;
+    margin-top: 6px;
+    color: #6b7280; /* Gris elegante y neutro */
+    letter-spacing: -0.015em;
+  }
+}
+
+.grupo-subtitle-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #4b5563;
+  font-weight: 400;
+  max-width: 720px;
+  margin: 0 0 24px 0;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+    margin-bottom: 18px;
+  }
+}
+
+/* Píldoras de Selección Superior de Marcas: Minimalista en Negro Puro */
+.grupo-brand-tabs {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 50px;
+  margin-top: 6px;
+}
+
+.brand-tab-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 24px;
+  border-radius: 50px;
+  background: transparent;
+  border: none;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+
+  &:hover {
+    color: #000000;
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  &.active {
+    background: #000000; /* Negro puro sin tonalidad azul */
+    color: #ffffff;
+    font-weight: 750;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  }
+
+  @media (max-width: 640px) {
+    padding: 7px 16px;
+    font-size: 0.8rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SECCIÓN DEL CARRUSEL PANORÁMICO EXPANDIDO
+   ═══════════════════════════════════════════════════════════════════ */
+.grupo-carousel-section {
+  width: 100%;
+  position: relative;
+  margin-top: 14px;
+}
+
+.carousel-viewport-container {
+  position: relative;
+  max-width: 1420px;
+  width: calc(100% - 44px);
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    width: calc(100% - 24px);
+  }
+}
+
+/* Pista Desplazable con Scroll Horizontal Nativo y de Mouse */
+.carousel-track {
+  display: flex;
+  width: 100%;
+  aspect-ratio: 16 / 8.6;
+  min-height: 490px;
+  max-height: 640px;
+  border-radius: 28px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE / Edge */
+  background: #0b1120;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.10), 0 4px 16px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+
+  @media (max-width: 900px) {
+    aspect-ratio: 16 / 10;
+    min-height: 420px;
+  }
+
+  @media (max-width: 640px) {
+    aspect-ratio: 4 / 3;
+    min-height: 380px;
+    border-radius: 20px;
+  }
+}
+
+/* Slide Individual de Marca (Panorámico, 100% de Ancho con Snap, Clickeable) */
+.brand-slide-item {
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 100%;
+  height: 100%;
+  position: relative;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Contenedor de la Imagen Escénica Limpia */
+.slide-media-box {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+
+  .slide-hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+    will-change: transform, filter;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   OVERLAY DE HOVER: SUAVE (NO OSCURECE TANTO, SIN CONTENEDOR BLANCO)
+   ═══════════════════════════════════════════════════════════════════ */
+.slide-hover-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* Oscurecimiento suave y translúcido que mantiene la escena y el laptop visibles */
+  background: linear-gradient(180deg, 
+    rgba(10, 16, 22, 0.38) 0%, 
+    rgba(10, 16, 22, 0.62) 100%
+  );
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 32px;
+  box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s;
+
+  @media (max-width: 768px) {
+    padding: 24px 18px;
+  }
+}
+
+/* Tarjeta de Contenido Flotante */
+.hover-glass-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 620px;
+  width: 100%;
+  background: transparent;
+  padding: 0;
+}
+
+/* Wrapper del Logo PNG PURO (SIN CAJA NI FONDO BLANCO) */
+.hover-logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  border: none;
+
+  .hover-png-logo {
+    max-height: 110px;
+    max-width: 320px;
+    width: auto;
+    object-fit: contain;
+    /* Sombra refinada para garantizar contraste sin importar el fondo */
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.60)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.40));
+    transform: translateY(16px) scale(0.96);
+    opacity: 0;
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease;
+  }
+
+  @media (max-width: 768px) {
+    margin-bottom: 12px;
+    .hover-png-logo {
+      max-height: 80px;
+      max-width: 220px;
+    }
+  }
+}
+
+.hover-tag {
+  display: inline-block;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  color: #cbd5e1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  transform: translateY(14px);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.05s, opacity 0.45s ease 0.05s;
+}
+
+.hover-brand-name {
+  margin: 0 0 10px 0;
+  font-size: clamp(1.7rem, 2.6vw, 2.3rem);
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.85);
+  transform: translateY(14px);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.08s, opacity 0.45s ease 0.08s;
+}
+
+.hover-brand-description {
+  font-size: clamp(0.94rem, 1.25vw, 1.08rem);
+  line-height: 1.55;
+  color: #ffffff;
+  font-weight: 500;
+  margin: 0 0 22px 0;
+  max-width: 540px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+  transform: translateY(14px);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.12s, opacity 0.45s ease 0.12s;
+
+  @media (max-width: 768px) {
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+    line-height: 1.45;
+  }
+}
+
+.hover-btn-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(14px);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.16s, opacity 0.45s ease 0.16s;
+}
+
+/* Botón "Ver sitio" */
+.btn-visit-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #ffffff;
+  color: #000000;
+  text-decoration: none;
+  font-size: 0.94rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 13px 36px;
+  border-radius: 50px;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+
+  .visit-arrow-icon {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  &:hover {
+    background: #16a34a;
+    border-color: #16a34a;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(22, 163, 74, 0.5);
+
+    .visit-arrow-icon {
+      transform: translate(3px, -3px);
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 11px 26px;
+    font-size: 0.84rem;
+  }
+}
+
+/* ── DISPARO DE HOVER: RETARDO DE 1 SEGUNDO ANTES DE OSCURECER ── */
+.brand-slide-item:hover {
+  .slide-hero-image {
+    transform: scale(1.03);
+    filter: brightness(0.85); /* Solo tenue oscurecimiento, no opaca la imagen */
+    transition-delay: 1s; /* Espera 1 segundo antes de oscurecer */
+  }
+
+  .slide-hover-overlay {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 1s; /* Espera 1 segundo antes de mostrar el overlay */
+  }
+
+  .hover-png-logo {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    transition-delay: 1.04s;
+  }
+
+  .hover-tag {
+    transform: translateY(0);
+    opacity: 1;
+    transition-delay: 1.07s;
+  }
+
+  .hover-brand-name {
+    transform: translateY(0);
+    opacity: 1;
+    transition-delay: 1.10s;
+  }
+
+  .hover-brand-description {
+    transform: translateY(0);
+    opacity: 1;
+    transition-delay: 1.13s;
+  }
+
+  .hover-btn-wrapper {
+    transform: translateY(0);
+    opacity: 1;
+    transition-delay: 1.16s;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FLECHAS DE NAVEGACIÓN FLOTANTES
+   ═══════════════════════════════════════════════════════════════════ */
+.carousel-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &.prev-btn {
+    left: -26px;
+  }
+
+  &.next-btn {
+    right: -26px;
+  }
+
+  &:hover {
+    background: #000000;
+    border-color: #000000;
+    color: #ffffff;
+    transform: translateY(-50%) scale(1.08);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.22);
+  }
+
+  @media (max-width: 1460px) {
+    &.prev-btn { left: 14px; }
+    &.next-btn { right: 14px; }
+  }
+
+  @media (max-width: 640px) {
+    width: 42px;
+    height: 42px;
+    &.prev-btn { left: 8px; }
+    &.next-btn { right: 8px; }
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+

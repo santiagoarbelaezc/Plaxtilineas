@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faTrash, faExclamationTriangle, faKey } from '@fortawesome/free-solid-svg-icons';
@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./configuracion.component.css']
 })
 export class ConfiguracionComponent {
+  @Input() isEmbedded = false;
   private authService = inject(AuthService);
   private router = inject(Router);
 

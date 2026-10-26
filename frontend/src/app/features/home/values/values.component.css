@@ -1,10 +1,10 @@
 /* ═══════════════════════════════════════════════════════════════════
-   SOBRE NOSOTROS — CINEMATIC MINIMALIST & SHOWCASE DE PRODUCTOS
-   - Espaciado amplio para respirar con el Navbar fijo
-   - Línea de tiempo BLANCA continua (espina, conectores y nodos)
-   - Tarjetas GRANDES con fondo VERDE bosque (#05241b glass)
-   - Minimalista: Solo Imagen, Fecha, Título y Texto
-   - Sección editorial de Mateo Moreno (Fundador & Dueño)
+   SOBRE NOSOTROS — LÍNEA DE TIEMPO VERDE BOSQUE (#05241b) & SHOWCASE
+   - Fondo: #05241b (verde petróleo profundo, coherente con "¿Qué Vendemos?")
+   - Línea de tiempo esmeralda y blanca continua con glow ambiental
+   - Efecto Scroll Reveal elegante: los hitos aparecen progresivamente
+   - Imágenes del hero, íconos y logo oficial de Plaxtilineas
+   - Sección inferior de Mateo Moreno (Fundador) con fondo blanco limpio
    ═══════════════════════════════════════════════════════════════════ */
 
 :host {
@@ -19,11 +19,11 @@
   font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: #ffffff;
   overflow: hidden;
-  background-color: #000000;
+  background-color: #05241b;
 }
 
 /* ═══════════════════════════════════════════════════════════
-   BLOQUES CINEMATOGRÁFICOS FULLWIDTH
+   1. BLOQUE LÍNEA DE TIEMPO (VERDE PETRÓLEO PROFUNDO)
    ═══════════════════════════════════════════════════════════ */
 .cinematic-block {
   position: relative;
@@ -37,52 +37,28 @@
 }
 
 .timeline-block {
-  padding: 210px 24px 120px 24px;
+  padding: 180px 24px 130px 24px;
+  background-color: #05241b;
+  background: radial-gradient(circle at 50% 15%, rgba(22, 163, 74, 0.16) 0%, transparent 65%),
+              radial-gradient(circle at 90% 80%, rgba(34, 197, 94, 0.08) 0%, transparent 50%),
+              #05241b;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.timeline-ambient-glow {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 40%, rgba(74, 222, 128, 0.04) 0%, transparent 75%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .banner-block {
   padding: 120px 24px;
   background-color: #ffffff;
   border-top: 1px solid #e4e4e7;
-}
-
-/* ── Capas de Fondo Estáticas (Fixed) ── */
-.static-bg-layer {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.hero-bg {
-  background-image: url('/assets/images/hero/hero-chatgpt.png');
-  filter: brightness(0.35) contrast(1.18) saturate(1.05);
-}
-
-.banner-bg {
-  background-image: url('/assets/images/hero/home-chatgpt.png');
-  filter: brightness(0.32) contrast(1.2) saturate(1.05);
-}
-
-/* ── Capa de Oscurecimiento ── */
-.dark-overlay-layer {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 50% 25%, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.94) 100%);
-  z-index: 2;
-  pointer-events: none;
-}
-
-.dark-overlay-layer.subtle-dark {
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.96) 100%);
 }
 
 /* ── Contenedor de Contenido ── */
@@ -95,38 +71,46 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
-   1. INTRODUCCIÓN HERO
+   INTRODUCCIÓN HERO MINIMALISTA
    ═══════════════════════════════════════════════════════════ */
 .minimal-intro {
   text-align: center;
   max-width: 980px;
-  margin: 0 auto 60px auto;
+  margin: 0 auto 65px auto;
+}
+
+.timeline-kicker {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #4ade80;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
 }
 
 .cinematic-title {
-  font-size: clamp(2.3rem, 4.6vw, 3.9rem);
+  font-size: clamp(2.2rem, 4.4vw, 3.8rem);
   font-weight: 900;
   color: #ffffff;
   text-transform: uppercase;
   letter-spacing: -0.025em;
   line-height: 1.12;
   margin: 0 0 16px 0;
-  text-shadow: 0 4px 25px rgba(0, 0, 0, 0.95);
 }
 
 .cinematic-lead {
-  font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+  font-size: clamp(1.05rem, 1.6vw, 1.28rem);
   font-weight: 350;
-  color: rgba(255, 255, 255, 0.86);
+  color: #cbd5e1;
   line-height: 1.6;
   max-width: 820px;
   margin: 0 auto;
   letter-spacing: 0.01em;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
 }
 
 /* ═══════════════════════════════════════════════════════════
-   2. LÍNEA DE TIEMPO BLANCA & TARJETAS MINIMALISTAS
+   LÍNEA DE TIEMPO CON SCROLL REVEAL ELEGANTE
    ═══════════════════════════════════════════════════════════ */
 .timeline-interactive-container {
   position: relative;
@@ -140,64 +124,89 @@
   box-sizing: border-box;
 }
 
-/* ── Espina Vertical BLANCA Continua ── */
+/* ── Espina Vertical Continua con Brillo Esmeralda ── */
 .timeline-spine-glow {
   position: absolute;
   top: 15px;
   bottom: 15px;
   left: 50%;
   width: 2px;
-  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.65) 50%, rgba(255, 255, 255, 0.18) 100%);
+  background: linear-gradient(180deg, 
+    rgba(74, 222, 128, 0.9) 0%, 
+    #ffffff 35%, 
+    rgba(255, 255, 255, 0.75) 70%, 
+    rgba(74, 222, 128, 0.2) 100%
+  );
   transform: translateX(-50%);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.35);
   z-index: 2;
 }
 
-/* Item de la Línea de Tiempo */
+/* ── Item de la Línea de Tiempo (Scroll Reveal) ── */
 .timeline-glass-item {
   position: relative;
   width: 50%;
   box-sizing: border-box;
   cursor: default;
   user-select: text;
-  margin-bottom: 44px;
+  margin-bottom: 54px;
+  opacity: 0;
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
 }
 
 .timeline-glass-item:last-child {
   margin-bottom: 0;
 }
 
+/* Estado oculto inicial según el lado */
 .timeline-glass-item.item-left {
   left: 0;
   padding-right: 60px;
+  transform: translateX(-45px) scale(0.97);
 }
 
 .timeline-glass-item.item-right {
   left: 50%;
   padding-left: 60px;
+  transform: translateX(45px) scale(0.97);
 }
 
-/* ── Conectores Horizontales BLANCOS ── */
+/* Estado visible al entrar en pantalla por scroll */
+.timeline-glass-item.is-visible {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
+/* ── Conectores Horizontales ── */
 .timeline-connector {
   position: absolute;
   top: 54px;
   height: 1.5px;
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(74, 222, 128, 0.45);
   pointer-events: none;
   z-index: 3;
+  transform: scaleX(0);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
 }
 
 .timeline-glass-item.item-left .timeline-connector {
   right: 0;
   width: 60px;
+  transform-origin: right center;
 }
 
 .timeline-glass-item.item-right .timeline-connector {
   left: 0;
   width: 60px;
+  transform-origin: left center;
 }
 
-/* ── Fecha al Otro Lado de la Línea de Tiempo (Delgada y Más Pequeña) ── */
+.timeline-glass-item.is-visible .timeline-connector {
+  transform: scaleX(1);
+}
+
+/* ── Fecha al Otro Lado de la Línea de Tiempo ── */
 .timeline-opposite-date {
   position: absolute;
   top: 44px;
@@ -221,15 +230,15 @@
 
 .opposite-year-text {
   display: block;
-  font-size: clamp(1.1rem, 1.6vw, 1.45rem);
-  font-weight: 200;
-  color: rgba(255, 255, 255, 0.9);
-  letter-spacing: 0.12em;
+  font-size: clamp(1.25rem, 1.8vw, 1.65rem);
+  font-weight: 800;
+  color: #4ade80;
+  letter-spacing: 0.08em;
   line-height: 1;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
 }
 
-/* ── Nodos Centrales BLANCOS ── */
+/* ── Nodos Centrales ── */
 .timeline-center-node {
   position: absolute;
   top: 46px;
@@ -240,28 +249,37 @@
   justify-content: center;
   z-index: 5;
   pointer-events: none;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s;
 }
 
 .timeline-glass-item.item-left .timeline-center-node {
   right: 0;
-  transform: translateX(50%);
+  transform: translateX(50%) scale(0.6);
 }
 
 .timeline-glass-item.item-right .timeline-center-node {
   left: 0;
-  transform: translateX(-50%);
+  transform: translateX(-50%) scale(0.6);
+}
+
+.timeline-glass-item.is-visible.item-left .timeline-center-node {
+  transform: translateX(50%) scale(1);
+}
+
+.timeline-glass-item.is-visible.item-right .timeline-center-node {
+  transform: translateX(-50%) scale(1);
 }
 
 .node-glow-outer {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #000000;
-  border: 2px solid #ffffff;
+  background: #031a13;
+  border: 2px solid #4ade80;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.5);
 }
 
 .node-glow-inner {
@@ -271,37 +289,37 @@
   background: #ffffff;
 }
 
-/* ── Tarjetas Transparentes Minimalistas ── */
+/* ── Tarjetas Glassmorphism en Fondo Verde Bosque ── */
 .glass-milestone-card {
-  background: rgba(255, 255, 255, 0.025);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(3, 26, 19, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   padding: 18px;
   box-shadow: 0 16px 45px rgba(0, 0, 0, 0.45);
   position: relative;
   overflow: hidden;
   text-align: left;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, background 0.3s ease;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-milestone-card:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.6);
-  transform: translateY(-2px);
+  background: rgba(3, 26, 19, 0.92);
+  border-color: rgba(74, 222, 128, 0.35);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(22, 163, 74, 0.15);
+  transform: translateY(-4px);
 }
 
-/* ── Marco Visual del Producto con Badge Flotante ── */
+/* ── Marco Visual del Producto / Logo / Ícono ── */
 .milestone-media-container {
   position: relative;
   width: 100%;
   height: 200px;
   border-radius: 14px;
   overflow: hidden;
-  background-color: #000000;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #02120d;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
@@ -317,14 +335,31 @@
   transform: scale(1.03);
 }
 
-/* ── Cuerpo: Título y Texto Minimalistas ── */
+/* Tarjeta especial para Logos e Íconos */
+.milestone-media-container.is-logo-media {
+  background: radial-gradient(circle at center, rgba(34, 197, 94, 0.14) 0%, #02120d 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.milestone-media-container.is-logo-media .milestone-product-image {
+  object-fit: contain;
+  max-width: 82%;
+  max-height: 82%;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.5));
+}
+
+/* ── Cuerpo: Título y Texto ── */
 .milestone-body {
   padding: 14px 4px 2px 4px;
 }
 
 .milestone-title {
-  font-size: 1.12rem;
-  font-weight: 600;
+  font-size: 1.15rem;
+  font-weight: 700;
   letter-spacing: -0.01em;
   color: #ffffff;
   margin: 0 0 6px 0;
@@ -332,16 +367,16 @@
 }
 
 .milestone-text {
-  font-size: 0.88rem;
-  font-weight: 300;
+  font-size: 0.9rem;
+  font-weight: 350;
   letter-spacing: 0.01em;
-  color: rgba(255, 255, 255, 0.7);
+  color: #cbd5e1;
   line-height: 1.55;
   margin: 0;
 }
 
 /* ═══════════════════════════════════════════════════════════
-   3. SEGUNDO CANVAS: MATEO MORENO & PLAXTILINEAS
+   2. SEGUNDO CANVAS: MATEO MORENO & PLAXTILINEAS (BLANCO)
    ═══════════════════════════════════════════════════════════ */
 .banner-minimal-wrap {
   display: grid;
@@ -350,52 +385,42 @@
   align-items: center;
 }
 
-/* ── Retrato Editorial de Mateo ── */
+/* Marco de Foto de Mateo */
 .bottom-visual-col {
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
 .bottom-image-frame.mateo-frame {
   position: relative;
   width: 100%;
   max-width: 440px;
-  height: 540px;
+  height: 520px;
   border-radius: 20px;
   overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
   border: 1px solid #e4e4e7;
-  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.12);
-  background: #f4f4f5;
 }
 
 .bottom-featured-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 15%;
   display: block;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.bottom-image-frame:hover .bottom-featured-img {
-  transform: scale(1.03);
 }
 
 .bottom-frame-badge {
   position: absolute;
-  bottom: 18px;
-  left: 18px;
-  right: auto;
-  background: rgba(0, 0, 0, 0.78);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 14px;
-  padding: 12px 20px;
-  display: inline-flex;
-  align-items: center;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  padding: 12px 18px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 .badge-text-group {
@@ -404,50 +429,43 @@
 }
 
 .badge-title {
-  font-size: 1.05rem;
+  font-size: 0.92rem;
   font-weight: 800;
+  color: #09090b;
   letter-spacing: 0.05em;
-  color: #ffffff;
-  text-transform: uppercase;
-  line-height: 1.2;
 }
 
 .badge-subtitle {
-  font-size: 0.88rem;
-  font-weight: 400;
-  letter-spacing: 0.015em;
-  color: rgba(255, 255, 255, 0.75);
-  margin-top: 3px;
-  line-height: 1.25;
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 500;
 }
 
-/* ── Contenido Editorial de la Sección ── */
+/* Editorial Minimalista */
 .banner-editorial {
-  display: flex;
-  flex-direction: column;
+  text-align: left;
 }
 
 .banner-minimal-title {
-  font-size: clamp(2.3rem, 4.4vw, 3.8rem);
+  font-size: clamp(2.2rem, 3.8vw, 3.2rem);
   font-weight: 900;
   color: #09090b;
   text-transform: uppercase;
   letter-spacing: -0.025em;
   line-height: 1.12;
   margin: 0 0 16px 0;
-  text-shadow: none;
 }
 
 .banner-minimal-desc {
-  font-size: clamp(1.05rem, 1.7vw, 1.25rem);
-  font-weight: 450;
-  color: #52525b;
-  line-height: 1.6;
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
+  font-weight: 400;
+  color: #475569;
+  line-height: 1.65;
   margin: 0 0 28px 0;
-  text-shadow: none;
+  max-width: 600px;
 }
 
-/* ── 3 Puntos Clave Minimalistas (Sin Iconos) ── */
+/* 3 Puntos Clave Minimalistas */
 .founder-pills-row {
   display: flex;
   align-items: center;
@@ -476,7 +494,7 @@
   transform: translateY(-1px);
 }
 
-/* ── Botones de Acción ── */
+/* Botones de Acción */
 .banner-action-wrap {
   display: flex;
   align-items: center;
@@ -552,7 +570,7 @@
 
 @media (max-width: 768px) {
   .timeline-block {
-    padding: 165px 18px 70px 18px;
+    padding: 150px 18px 70px 18px;
   }
   .banner-block {
     padding: 70px 18px;
@@ -571,7 +589,7 @@
   }
   .opposite-year-text {
     font-size: 1.15rem !important;
-    font-weight: 200 !important;
+    font-weight: 800 !important;
   }
   .timeline-glass-item {
     width: 100% !important;
@@ -579,12 +597,17 @@
     padding-left: 54px !important;
     padding-right: 0 !important;
     text-align: left !important;
-    margin-bottom: 26px;
+    margin-bottom: 30px;
+    transform: translateY(30px) scale(0.97) !important;
+  }
+  .timeline-glass-item.is-visible {
+    transform: translateY(0) scale(1) !important;
   }
   .timeline-connector {
     left: 20px !important;
     right: auto !important;
     width: 34px !important;
+    transform-origin: left center !important;
   }
   .timeline-center-node {
     left: 20px !important;

@@ -59,8 +59,6 @@ import { CarSeatComponent } from '../../components/car-seat/car-seat.component';
 })
 export class Inicio implements OnInit {
 
-
-
   // Datos para el componente Trio Presentation - Servicios
   serviciosCards: ContentCard[] = [
     {

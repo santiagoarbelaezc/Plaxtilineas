@@ -1,18 +1,18 @@
 <section id="nosotros" class="nosotros-cinematic-section" aria-label="Sobre Nosotros - Plaxtilineas">
 
   <!-- ═══════════════════════════════════════════════════════════
-       CANVAS 1: HERO & LÍNEA DE TIEMPO MINIMALISTA
+       CANVAS 1: LÍNEA DE TIEMPO CON FONDO VERDE PETRÓLEO (#05241b)
        ═══════════════════════════════════════════════════════════ -->
   <div class="cinematic-block timeline-block">
     
-    <!-- Imagen de Fondo Estática Oscurecida a Pantalla Completa -->
-    <div class="static-bg-layer hero-bg" aria-hidden="true"></div>
-    <div class="dark-overlay-layer"></div>
+    <!-- Resplandor ambiental esmeralda decorativo (sin imagen pesada) -->
+    <div class="timeline-ambient-glow" aria-hidden="true"></div>
 
     <div class="cinematic-content">
       
       <!-- Contexto Minimalista Directo -->
       <div class="minimal-intro">
+        <span class="timeline-kicker">Trayectoria &bull; Más de una década</span>
         <h1 class="cinematic-title">
           MÁS DE 10 AÑOS IMPULSANDO EL EJE CAFETERO
         </h1>
@@ -22,14 +22,14 @@
         </p>
       </div>
 
-      <!-- Línea de Tiempo Delgada, Sutil y Perfectamente Alineada -->
+      <!-- Línea de Tiempo Interactiva con Scroll Reveal -->
       <div class="timeline-interactive-container">
 
         <div class="timeline-track-wrapper">
-          <!-- Espina Vertical Fina Blanca -->
+          <!-- Espina Vertical Fina con Acento Esmeralda -->
           <div class="timeline-spine-glow"></div>
 
-          <!-- Items de la Línea de Tiempo (Solo Lectura, No Seleccionables) -->
+          <!-- Items de la Línea de Tiempo Animados por Scroll -->
           <div 
             *ngFor="let hito of hitos; let isEven = even" 
             class="timeline-glass-item"
@@ -41,20 +41,20 @@
               <span class="opposite-year-text">{{ hito.year }}</span>
             </div>
 
-            <!-- Conector Horizontal Blanco -->
+            <!-- Conector Horizontal -->
             <div class="timeline-connector"></div>
 
-            <!-- Nodo Central Blanco -->
+            <!-- Nodo Central Esmeralda & Blanco -->
             <div class="timeline-center-node">
               <div class="node-glow-outer">
                 <span class="node-glow-inner"></span>
               </div>
             </div>
 
-            <!-- Tarjeta Glassmorphism Transparente -->
+            <!-- Tarjeta Glassmorphism en Verde Bosque (#05241b) -->
             <div class="glass-milestone-card">
-              <!-- Visual de Producto Real del Catálogo -->
-              <div class="milestone-media-container">
+              <!-- Visual de Producto / Logo / Ícono -->
+              <div class="milestone-media-container" [class.is-logo-media]="hito.isLogo">
                 <img 
                   [src]="hito.image" 
                   [alt]="hito.title"
@@ -63,7 +63,7 @@
                 />
               </div>
 
-              <!-- Contenido Minimalista: Título y Texto -->
+              <!-- Contenido: Título y Texto -->
               <div class="milestone-body">
                 <h3 class="milestone-title">{{ hito.title }}</h3>
                 <p class="milestone-text">{{ hito.subtitle }}</p>
@@ -79,7 +79,7 @@
 
 
   <!-- ═══════════════════════════════════════════════════════════
-       CANVAS 2: SEGUNDO BANNER — MATEO MORENO & PLAXTILINEAS
+       CANVAS 2: SEGUNDO BANNER — MATEO MORENO & PLAXTILINEAS (BLANCO)
        ═══════════════════════════════════════════════════════════ -->
   <div class="cinematic-block banner-block">
     <div class="cinematic-content">
@@ -114,7 +114,7 @@
             Atención personalizada, corte exacto y despacho inmediato para fincas, obras y talleres de todo el Eje Cafetero.
           </p>
 
-          <!-- 3 Puntos Clave Minimalistas (Sin Iconos) -->
+          <!-- 3 Puntos Clave Minimalistas -->
           <div class="founder-pills-row">
             <span class="founder-pill">Corte exacto</span>
             <span class="founder-pill">Despacho inmediato</span>

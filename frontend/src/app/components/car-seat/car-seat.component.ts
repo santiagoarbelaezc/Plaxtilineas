@@ -151,7 +151,7 @@ export class CarSeatComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.isDestroyed = true;
-    this.navbarVisibilityService.setHidden(false);
+    this.navbarVisibilityService.registerHidden('car-seat', false);
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
@@ -181,7 +181,7 @@ export class CarSeatComponent implements AfterViewInit, OnDestroy {
 
     // Ocultar navbar al llegar al nivel del componente Car Seat
     const isAtCarSeatLevel = rect.top <= 100 && rect.bottom >= 60;
-    this.navbarVisibilityService.setHidden(isAtCarSeatLevel);
+    this.navbarVisibilityService.registerHidden('car-seat', isAtCarSeatLevel);
   }
 
   private onKeyDown(e: KeyboardEvent): void {
