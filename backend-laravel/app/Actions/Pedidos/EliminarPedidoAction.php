@@ -35,6 +35,31 @@ final class EliminarPedidoAction
             throw new AccesoNoPermitidoException('No autorizado.');
         }
 
+        return $this->deleteUnpaidPedido($pedido);
+    }
+
+    /**
+     * Elimina un pedido no pagado desde la administración.
+     *
+     * @return array<string, string>
+     */
+    public function executeForAdmin(int $pedidoId): array
+    {
+        /** @var Pedido|null $pedido */
+        $pedido = Pedido::find($pedidoId);
+
+        if (! $pedido) {
+            throw new NotFoundHttpException('Pedido no encontrado.');
+        }
+
+        return $this->deleteUnpaidPedido($pedido);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function deleteUnpaidPedido(Pedido $pedido): array
+    {
         $noEliminables = [
             EstadoPedido::PAGADO,
             EstadoPedido::CONFIRMADO,

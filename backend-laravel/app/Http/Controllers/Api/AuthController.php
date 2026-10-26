@@ -278,7 +278,13 @@ class AuthController extends Controller
         }
 
         if ($usuario->email_verificado) {
-            return ApiResponse::success(['mensaje' => 'El correo ya ha sido verificado previamente.']);
+            $token = $usuario->createToken('auth-token')->plainTextToken;
+
+            return ApiResponse::success([
+                'mensaje' => 'El correo ya ha sido verificado previamente.',
+                'token' => $token,
+                'usuario' => $this->usuarioResponse($usuario),
+            ]);
         }
 
         if ($usuario->token_verificacion !== $token) {
@@ -295,9 +301,27 @@ class AuthController extends Controller
             'token_expira_en' => null,
         ]);
 
+        $token = $usuario->createToken('auth-token')->plainTextToken;
+
         return ApiResponse::success([
             'mensaje' => 'Correo electrónico verificado exitosamente. Ya puedes iniciar sesión.',
+            'token' => $token,
+            'usuario' => $this->usuarioResponse($usuario),
         ]);
+    }
+
+    /**
+     * @return array{id: mixed, correo: mixed, nombre: mixed, telefono: mixed, rol: mixed}
+     */
+    private function usuarioResponse(Usuario $usuario): array
+    {
+        return [
+            'id' => $usuario->id,
+            'correo' => $usuario->correo,
+            'nombre' => $usuario->nombre,
+            'telefono' => $usuario->telefono ?? '',
+            'rol' => $usuario->rol,
+        ];
     }
 
     /**

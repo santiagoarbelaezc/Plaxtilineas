@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('token_verificacion', 50)->nullable();
             $table->dateTime('token_expira_en')->nullable();
             $table->boolean('requiere_cambio_password')->default(false);
+            $table->timestamp('fecha_creacion')->nullable()->useCurrent();
             $table->timestamps();
 
             $table->index('correo');

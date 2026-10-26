@@ -144,12 +144,16 @@ Route::middleware('auth:sanctum')->prefix('pedidos')->group(function () {
         Route::get('/todos', [PedidoController::class, 'adminObtenerTodos']);
         Route::put('/actualizar-estado/{id}', [PedidoController::class, 'adminActualizarEstado']);
     });
+
 });
+
+Route::middleware('auth:sanctum')->post('/productos/verificar-stock', [PedidoController::class, 'verificarStock']);
 
 // Rutas admin estándar
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
     Route::get('/pedidos', [PedidoController::class, 'adminObtenerTodos']);
     Route::put('/pedidos/{id}/estado', [PedidoController::class, 'adminActualizarEstado']);
+    Route::delete('/pedidos/{id}', [PedidoController::class, 'adminEliminar']);
 });
 
 // ═════════════════════════════════════════════════════════════════════════════

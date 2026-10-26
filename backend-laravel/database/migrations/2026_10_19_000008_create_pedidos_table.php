@@ -36,6 +36,8 @@ return new class extends Migration
             $table->string('transportadora', 100)->nullable();
             $table->dateTime('fecha_envio')->nullable();
             $table->string('estado', 50)->default('draft');
+            $table->timestamp('fecha')->nullable()->useCurrent();
+            $table->timestamp('fecha_actualizacion')->nullable()->useCurrent();
             $table->timestamps();
 
             $table->index('estado');

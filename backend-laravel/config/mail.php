@@ -74,6 +74,10 @@ return [
             'transport' => 'array',
         ],
 
+        'hostinger' => [
+            'transport' => 'hostinger',
+        ],
+
         'failover' => [
             'transport' => 'failover',
             'mailers' => [

@@ -10,4 +10,5 @@ Artisan::command('inspire', function () {
 
 Schedule::command('carrito:limpiar-expirados')->hourly();
 Schedule::command('stock:liberar-expirados')->everyFiveMinutes();
+Schedule::command('wompi:reconciliar-pendientes')->everyTenMinutes();
 

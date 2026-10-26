@@ -7,6 +7,7 @@ namespace App\Services\Catalogo;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 /**
  * Cliente HTTP hacia la API externa de catálogo de Plaxtilineas.
@@ -83,6 +84,48 @@ final class CatalogoApiService
             ]);
 
             return null;
+        } catch (Throwable $e) {
+            Log::warning('CatalogoApiService::getProducto — error inesperado', [
+                'producto_id' => $productoId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
+    }
+
+    /**
+     * Obtiene el catálogo de la marca configurada para búsquedas y recomendaciones.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function getProductos(): array
+    {
+        try {
+            $http = Http::timeout(10)->acceptJson();
+            if (! app()->isProduction()) {
+                $http = $http->withoutVerifying();
+            }
+
+            $marca = rawurlencode((string) config('services.catalogo.marca', 'Plaxtilineas'));
+            $response = $http->get("{$this->baseUrl}/productos/categoria/{$marca}");
+            if (! $response->successful()) {
+                Log::warning('CatalogoApiService::getProductos — respuesta no exitosa', [
+                    'status' => $response->status(),
+                ]);
+                return [];
+            }
+
+            /** @var array{success?: bool, data?: list<array<string, mixed>>} $json */
+            $json = $response->json();
+            return ! empty($json['success']) && is_array($json['data'] ?? null)
+                ? $json['data']
+                : [];
+        } catch (Throwable $e) {
+            Log::error('CatalogoApiService::getProductos — error de conexión', [
+                'error' => $e->getMessage(),
+            ]);
+            return [];
         }
     }
 

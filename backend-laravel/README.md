@@ -7,6 +7,29 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Correo mediante Hostinger Mail API
+
+El proyecto incluye el SDK oficial `hostinger/mail-api-php-sdk` y un transporte
+Laravel compatible con los mailables existentes para:
+
+- Verificación de cuentas nuevas.
+- Recuperación de contraseña.
+- Confirmación de pagos aprobados.
+
+Configura estas variables en el `.env` del servidor:
+
+```dotenv
+MAIL_MAILER=hostinger
+HOSTINGER_API_TOKEN=token_generado_en_hostinger
+HOSTINGER_MAILBOX_RESOURCE_ID=resource_id_del_buzon
+MAIL_FROM_ADDRESS=info@plaxtilineas.com
+MAIL_FROM_NAME="Plaxtilineas"
+```
+
+El `HOSTINGER_MAILBOX_RESOURCE_ID` se obtiene consultando los buzones
+autorizados por el token en `GET /api/v1/me`. Nunca guardes el token en el
+repositorio ni lo incluyas en logs.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

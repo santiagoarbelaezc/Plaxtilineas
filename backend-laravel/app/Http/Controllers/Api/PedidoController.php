@@ -19,6 +19,7 @@ use App\Models\Pedido;
 use App\Models\StockReserva;
 use App\Models\Usuario;
 use App\Services\CaptchaService;
+use App\Services\Catalogo\CatalogoApiService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -35,8 +36,59 @@ class PedidoController extends Controller
         protected EliminarPedidoAction $eliminarPedidoAction,
         protected AdminActualizarEstadoPedidoAction $adminActualizarEstadoAction,
         protected WompiClientInterface $wompiService,
-        protected LiberarStockReservaAction $liberarStockReservaAction
+        protected LiberarStockReservaAction $liberarStockReservaAction,
+        protected CatalogoApiService $catalogo
     ) {}
+
+    /**
+     * POST /api/productos/verificar-stock
+     * Comprueba disponibilidad actual antes de crear el draft del pedido.
+     */
+    public function verificarStock(Request $request): JsonResponse
+    {
+        $items = $request->input('items');
+        if (! is_array($items) || $items === []) {
+            return ApiResponse::validationError([
+                'items' => ['Debes enviar al menos un producto.'],
+            ]);
+        }
+
+        $errores = [];
+        foreach ($items as $item) {
+            if (! is_array($item)) {
+                $errores[] = ['nombre' => 'Producto', 'error' => 'Formato de producto inválido.'];
+                continue;
+            }
+
+            $productoId = (int) ($item['producto_id'] ?? 0);
+            $varianteId = isset($item['variante_id']) && $item['variante_id'] !== null
+                ? (int) $item['variante_id']
+                : null;
+            $cantidad = (int) ($item['cantidad'] ?? 0);
+
+            if ($productoId <= 0 || $cantidad < 1) {
+                $errores[] = ['nombre' => 'Producto', 'error' => 'Producto o cantidad inválidos.'];
+                continue;
+            }
+
+            $resultado = $this->catalogo->verificarStockYPrecio($productoId, $varianteId, $cantidad);
+            if (! $resultado['disponible']) {
+                $errores[] = [
+                    'nombre' => $resultado['nombre'],
+                    'stock_disponible' => $resultado['stock'],
+                    'cantidad_solicitada' => $cantidad,
+                    'error' => $resultado['stock'] > 0
+                        ? "Solo hay {$resultado['stock']} unidades disponibles."
+                        : 'Producto agotado o no disponible.',
+                ];
+            }
+        }
+
+        return ApiResponse::success([
+            'valido' => $errores === [],
+            'items_con_error' => $errores,
+        ]);
+    }
 
 
     /**
@@ -45,13 +97,6 @@ class PedidoController extends Controller
      */
     public function crearDraft(CrearDraftPedidoRequest $request): JsonResponse
     {
-        $captchaId = $request->getCaptchaId();
-        $captchaCode = $request->getCaptchaCode();
-
-        if (! $this->captchaService->verifyAndConsume($captchaId, $captchaCode)) {
-            return ApiResponse::error('El código captcha ha expirado o es incorrecto. Intenta nuevamente.', 400);
-        }
-
         /** @var Usuario $user */
         $user = $request->user();
 
@@ -305,6 +350,21 @@ class PedidoController extends Controller
             $transportadora,
             $solicitudCliente
         );
+
+        return ApiResponse::success($resultado);
+    }
+
+    /**
+     * DELETE /api/admin/pedidos/{id}
+     * Admin: elimina pedidos que aún no tienen el pago confirmado.
+     */
+    public function adminEliminar(int $id, Request $request): JsonResponse
+    {
+        if (strtolower(trim((string) $request->input('confirmacion'))) !== 'eliminar') {
+            return ApiResponse::error('Debes escribir la palabra "eliminar" para confirmar.', 422);
+        }
+
+        $resultado = $this->eliminarPedidoAction->executeForAdmin($id);
 
         return ApiResponse::success($resultado);
     }

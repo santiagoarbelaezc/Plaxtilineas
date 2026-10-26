@@ -8,6 +8,7 @@ use App\Models\ChatHistorial;
 use App\Models\ChatSessionBan;
 use App\Models\Producto;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
 
 test('rechaza mensajes vacios con 400', function () {
     $response = $this->postJson('/api/chat', [
@@ -143,6 +144,108 @@ test('capa 1: responde con redireccion al catalogo', function () {
         ->assertJson([
             'redirect' => '/productos',
         ]);
+});
+
+test('clasifica una consulta de zapatos como pegante y no recomienda categorias ajenas', function () {
+    Http::fake([
+        '*' => Http::response([
+            'success' => true,
+            'data' => [
+                [
+                    'id' => 201,
+                    'name' => 'Malla Gallinero Metalica',
+                    'category_name' => 'Mallas',
+                    'variants' => [],
+                ],
+                [
+                    'id' => 202,
+                    'name' => 'Pegante PL285 Adhesivo de Contacto',
+                    'category_name' => 'Pegantes',
+                    'variants' => [['price' => 3900]],
+                ],
+            ],
+        ], 200),
+    ]);
+
+    $response = $this->postJson('/api/chat', [
+        'mensaje' => 'Se me despego un zapato y quiero pegarlo',
+        'session_id' => 'session_shoe_glue',
+    ]);
+
+    $response->assertOk()
+        ->assertJsonPath('redirect', '/busqueda?q=pegante')
+        ->assertJsonPath('productos.0.id', 202);
+
+    expect($response->json('productos'))->toHaveCount(1);
+});
+
+test('clasifica una consulta de gallinas como malla', function () {
+    Http::fake([
+        '*' => Http::response([
+            'success' => true,
+            'data' => [
+                [
+                    'id' => 301,
+                    'name' => 'Malla Gallinero Metalica',
+                    'category_name' => 'Mallas',
+                    'variants' => [['price' => 12000]],
+                ],
+                [
+                    'id' => 302,
+                    'name' => 'Pegante PL285',
+                    'category_name' => 'Pegantes',
+                    'variants' => [['price' => 3900]],
+                ],
+            ],
+        ], 200),
+    ]);
+
+    $response = $this->postJson('/api/chat', [
+        'mensaje' => 'Tengo gallinas en la finca, ¿qué recomiendas para encerrarlas?',
+        'session_id' => 'session_hens_fence',
+    ]);
+
+    $response->assertOk()
+        ->assertJsonPath('redirect', '/busqueda?q=malla')
+        ->assertJsonPath('productos.0.id', 301);
+
+    expect($response->json('productos'))->toHaveCount(1);
+});
+
+test('clasifica necesidades de cultivo y obra con la familia correcta', function () {
+    Http::fake([
+        '*' => Http::response([
+            'success' => true,
+            'data' => [
+                [
+                    'id' => 401,
+                    'name' => 'Polisombra Verde y Blanca',
+                    'category_name' => 'Polisombra',
+                    'variants' => [['price' => 25000]],
+                ],
+                [
+                    'id' => 402,
+                    'name' => 'Geotextil NT 1600',
+                    'category_name' => 'Geotextil',
+                    'variants' => [['price' => 50000]],
+                ],
+            ],
+        ], 200),
+    ]);
+
+    $polisombra = $this->postJson('/api/chat', [
+        'mensaje' => 'Necesito sombra para proteger un cultivo del sol',
+        'session_id' => 'session_crop_shade',
+    ]);
+    $polisombra->assertOk()->assertJsonPath('redirect', '/busqueda?q=polisombra');
+    $polisombra->assertJsonPath('productos.0.id', 401);
+
+    $geotextil = $this->postJson('/api/chat', [
+        'mensaje' => 'Busco una tela para separar tierra y controlar la erosión',
+        'session_id' => 'session_soil_filter',
+    ]);
+    $geotextil->assertOk()->assertJsonPath('redirect', '/busqueda?q=geotextil');
+    $geotextil->assertJsonPath('productos.0.id', 402);
 });
 
 test('capa 2: llama al cliente de IA y parsea productos y redirecciones', function () {

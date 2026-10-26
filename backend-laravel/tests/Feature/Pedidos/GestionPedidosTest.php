@@ -11,6 +11,7 @@ use App\Models\Producto;
 use App\Models\StockReserva;
 use App\Models\Usuario;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Http;
 use Laravel\Sanctum\Sanctum;
 
 beforeEach(function () {
@@ -23,6 +24,58 @@ beforeEach(function () {
         'correo' => 'admin@test.com',
         'rol' => RolUsuario::ADMIN->value,
     ]);
+});
+
+test('verifica stock disponible antes de iniciar checkout', function () {
+    Http::fake([
+        '*' => Http::response([
+            'success' => true,
+            'data' => [
+                'id' => 501,
+                'name' => 'Producto de prueba',
+                'stock' => 13,
+                'variants' => [],
+            ],
+        ], 200),
+    ]);
+    Sanctum::actingAs($this->usuario);
+
+    $response = $this->postJson('/api/productos/verificar-stock', [
+        'items' => [
+            ['producto_id' => 501, 'cantidad' => 13],
+        ],
+    ]);
+
+    $response->assertOk()->assertJson([
+        'valido' => true,
+        'items_con_error' => [],
+    ]);
+});
+
+test('reporta stock insuficiente sin fallar la petición', function () {
+    Http::fake([
+        '*' => Http::response([
+            'success' => true,
+            'data' => [
+                'id' => 502,
+                'name' => 'Producto agotado',
+                'stock' => 13,
+                'variants' => [],
+            ],
+        ], 200),
+    ]);
+    Sanctum::actingAs($this->usuario);
+
+    $response = $this->postJson('/api/productos/verificar-stock', [
+        'items' => [
+            ['producto_id' => 502, 'cantidad' => 14],
+        ],
+    ]);
+
+    $response->assertOk()
+        ->assertJsonPath('valido', false)
+        ->assertJsonPath('items_con_error.0.stock_disponible', 13)
+        ->assertJsonPath('items_con_error.0.cantidad_solicitada', 14);
 });
 
 test('obtener mis pedidos devuelve lista sin incluir borradores draft', function () {
@@ -226,4 +279,52 @@ test('admin no puede cambiar pedido pagado a estado pendiente', function () {
         ->assertJson([
             'error' => 'No puedes cambiar un pedido pagado a estado pendiente.',
         ]);
+});
+
+test('admin elimina un pedido pendiente con confirmacion textual', function () {
+    Sanctum::actingAs($this->admin);
+
+    $pedido = Pedido::factory()->create([
+        'usuario_id' => $this->usuario->id,
+        'estado' => EstadoPedido::PENDIENTE,
+    ]);
+
+    $response = $this->deleteJson("/api/admin/pedidos/{$pedido->id}", [
+        'confirmacion' => 'eliminar',
+    ]);
+
+    $response->assertOk()->assertJson([
+        'mensaje' => 'Pedido eliminado correctamente.',
+    ]);
+    $this->assertDatabaseMissing('pedidos', ['id' => $pedido->id]);
+});
+
+test('admin no elimina pedido pendiente sin confirmacion exacta', function () {
+    Sanctum::actingAs($this->admin);
+
+    $pedido = Pedido::factory()->create([
+        'usuario_id' => $this->usuario->id,
+        'estado' => EstadoPedido::PENDIENTE,
+    ]);
+
+    $this->deleteJson("/api/admin/pedidos/{$pedido->id}", [
+        'confirmacion' => 'borrar',
+    ])->assertStatus(422);
+
+    $this->assertDatabaseHas('pedidos', ['id' => $pedido->id]);
+});
+
+test('admin no elimina pedido con pago confirmado', function () {
+    Sanctum::actingAs($this->admin);
+
+    $pedido = Pedido::factory()->create([
+        'usuario_id' => $this->usuario->id,
+        'estado' => EstadoPedido::PAGADO,
+    ]);
+
+    $this->deleteJson("/api/admin/pedidos/{$pedido->id}", [
+        'confirmacion' => 'eliminar',
+    ])->assertStatus(400);
+
+    $this->assertDatabaseHas('pedidos', ['id' => $pedido->id]);
 });

@@ -10,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('pedido_items', function (Blueprint $table) {
+        Schema::create('pedido_detalles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pedido_id')->constrained('pedidos')->cascadeOnDelete();
             $table->unsignedBigInteger('producto_id');
@@ -19,13 +19,13 @@ return new class extends Migration
             $table->string('imagen_url', 500)->nullable();
             $table->integer('cantidad');
             $table->decimal('precio_unitario', 12, 2);
-            $table->decimal('subtotal', 12, 2);
+            $table->decimal('subtotal', 12, 2)->default(0);
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('pedido_items');
+        Schema::dropIfExists('pedido_detalles');
     }
 };

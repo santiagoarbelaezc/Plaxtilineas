@@ -30,8 +30,8 @@ return [
     'wompi' => [
         'public_key' => env('WOMPI_PUBLIC_KEY', ''),
         'private_key' => env('WOMPI_PRIVATE_KEY', ''),
-        'integrity_key' => env('WOMPI_INTEGRITY_KEY', ''),
-        'events_key' => env('WOMPI_EVENTS_KEY', ''),
+        'integrity_key' => env('WOMPI_INTEGRITY_SECRET', env('WOMPI_INTEGRITY_KEY', '')),
+        'events_key' => env('WOMPI_EVENTS_SECRET', env('WOMPI_EVENTS_KEY', '')),
         'base_url' => env('WOMPI_BASE_URL', 'https://production.wompi.co/v1'),
     ],
 
@@ -48,6 +48,11 @@ return [
 
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID', ''),
+    ],
+
+    'hostinger_mail' => [
+        'api_token' => env('HOSTINGER_API_TOKEN', ''),
+        'mailbox_resource_id' => env('HOSTINGER_MAILBOX_RESOURCE_ID', ''),
     ],
 
     'groq' => [

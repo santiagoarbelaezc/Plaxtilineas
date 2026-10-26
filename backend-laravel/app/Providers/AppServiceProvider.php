@@ -8,13 +8,17 @@ use App\Contracts\AiChatClientInterface;
 use App\Contracts\GoogleAuthClientInterface;
 use App\Contracts\MediaStorageInterface;
 use App\Contracts\WompiClientInterface;
+use App\Mail\Transport\HostingerMailTransport;
 use App\Models\PersonalAccessToken;
 use App\Services\CloudinaryStorageService;
 use App\Services\GoogleAuthService;
 use App\Services\GroqAiChatService;
 use App\Services\WompiService;
+use Hostinger\Api\SendApi;
+use Hostinger\Configuration;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Mail\MailManager;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
@@ -53,6 +57,28 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->app->resolving(MailManager::class, function (MailManager $mailManager): void {
+            $mailManager->extend('hostinger', function (array $config) {
+                $token = (string) config('services.hostinger_mail.api_token', '');
+                $mailboxResourceId = (string) config('services.hostinger_mail.mailbox_resource_id', '');
+
+                if ($token === '' || $mailboxResourceId === '') {
+                    throw new \RuntimeException(
+                        'Hostinger Mail requiere HOSTINGER_API_TOKEN y HOSTINGER_MAILBOX_RESOURCE_ID.'
+                    );
+                }
+
+                $sdkConfig = Configuration::getDefaultConfiguration()
+                    ->setAccessToken($token);
+
+                return new HostingerMailTransport(
+                    new SendApi(config: $sdkConfig),
+                    $mailboxResourceId,
+                    (string) config('mail.from.name', config('app.name')),
+                );
+            });
+        });
+
         // Tokens de Sanctum con conexión configurable (ver config/database.php).
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
 

@@ -106,3 +106,25 @@ test('registro con correo duplicado retorna 409', function () {
     $response->assertStatus(409)
         ->assertJson(['error' => 'El correo electrónico ya está registrado']);
 });
+
+test('verificar correo inicia sesion automaticamente', function () {
+    $usuario = Usuario::factory()->create([
+        'correo' => 'verificar@test.com',
+        'email_verificado' => false,
+        'token_verificacion' => '772233',
+        'token_expira_en' => now()->addHour(),
+    ]);
+
+    $response = $this->getJson('/api/auth/verificar-email?token=772233&correo=verificar%40test.com');
+
+    $response->assertOk()
+        ->assertJsonStructure([
+            'mensaje',
+            'token',
+            'usuario' => ['id', 'correo', 'nombre', 'telefono', 'rol'],
+        ]);
+
+    expect($response->json('token'))->not->toBeEmpty()
+        ->and($usuario->fresh()->email_verificado)->toBeTrue()
+        ->and($usuario->fresh()->token_verificacion)->toBeNull();
+});

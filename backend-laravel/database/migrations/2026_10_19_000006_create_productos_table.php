@@ -18,6 +18,8 @@ return new class extends Migration
             $table->boolean('controlar_stock')->default(true);
             $table->string('imagen_url', 500)->nullable();
             $table->boolean('activo')->default(true);
+            $table->timestamp('creado_en')->nullable()->useCurrent();
+            $table->timestamp('actualizado_en')->nullable()->useCurrent();
             $table->timestamps();
 
             $table->index('stock');
