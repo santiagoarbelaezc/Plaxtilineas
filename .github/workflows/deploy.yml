@@ -1,6 +1,15 @@
 name: Deploy Continuo a Hostinger
 
 on:
+  push:
+    branches:
+      - v2-laravel-nico
+      - main
+      - master
+    paths:
+      - 'frontend/**'
+      - 'backend-laravel/**'
+      - '.github/workflows/deploy.yml'
   workflow_dispatch:
     inputs:
       deploy_target:
@@ -18,9 +27,8 @@ concurrency:
 
 jobs:
   ssh-check:
-    name: Prueba SSH sin desplegar (Dry-Run)
+    name: Prueba SSH previa (Dry-Run)
     environment: production
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.deploy_target == 'ssh-check' }}
     runs-on: ubuntu-latest
     steps:
       - name: Verificar conexion SSH, known_hosts y rutas en Hostinger
@@ -78,6 +86,7 @@ jobs:
 
   changes:
     name: Detectar cambios
+    needs: ssh-check
     if: ${{ inputs.deploy_target != 'ssh-check' }}
     runs-on: ubuntu-latest
     outputs:
@@ -102,7 +111,7 @@ jobs:
   deploy-frontend:
     name: Build y deploy frontend
     environment: production
-    needs: changes
+    needs: [ssh-check, changes]
     if: ${{ inputs.deploy_target != 'ssh-check' && (needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch') }}
     runs-on: ubuntu-latest
     steps:
@@ -183,7 +192,7 @@ jobs:
   deploy-backend:
     name: Build y deploy Laravel API
     environment: production
-    needs: changes
+    needs: [ssh-check, changes]
     if: ${{ inputs.deploy_target != 'ssh-check' && (needs.changes.outputs.backend == 'true' || github.event_name == 'workflow_dispatch') }}
     runs-on: ubuntu-latest
     steps:
