@@ -28,7 +28,6 @@ concurrency:
 jobs:
   ssh-check:
     name: Prueba SSH previa (Dry-Run)
-    environment: production
     runs-on: ubuntu-latest
     steps:
       - name: Verificar conexion SSH, known_hosts y rutas en Hostinger
@@ -78,8 +77,9 @@ jobs:
             SSH_CMD="ssh $SSH_OPTS -i $HOME/.ssh/id_hostinger"
             SSH_EXEC="$SSH_CMD $SSH_USER@$SSH_HOST"
           else
+            export SSHPASS="$SSH_PASSWORD"
             SSH_CMD="ssh $SSH_OPTS"
-            SSH_EXEC="sshpass -p '$SSH_PASSWORD' $SSH_CMD $SSH_USER@$SSH_HOST"
+            SSH_EXEC="sshpass -e $SSH_CMD $SSH_USER@$SSH_HOST"
           fi
 
           $SSH_EXEC "echo 'SSH OK' && php -v | head -n 1 && ( [ -d domains/plaxtilineas.com/public_html ] && echo 'PUBLIC_HTML=domains/plaxtilineas.com/public_html' || echo 'PUBLIC_HTML=public_html' )"
@@ -110,7 +110,6 @@ jobs:
 
   deploy-frontend:
     name: Build y deploy frontend
-    environment: production
     needs: [ssh-check, changes]
     if: ${{ inputs.deploy_target != 'ssh-check' && (needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch') }}
     runs-on: ubuntu-latest
@@ -169,9 +168,10 @@ jobs:
             SSH_EXEC="$SSH_CMD $SSH_USER@$SSH_HOST"
             RSYNC_PREFIX=""
           else
+            export SSHPASS="$SSH_PASSWORD"
             SSH_CMD="ssh $SSH_OPTS"
-            SSH_EXEC="sshpass -p '$SSH_PASSWORD' $SSH_CMD $SSH_USER@$SSH_HOST"
-            RSYNC_PREFIX="sshpass -p '$SSH_PASSWORD'"
+            SSH_EXEC="sshpass -e $SSH_CMD $SSH_USER@$SSH_HOST"
+            RSYNC_PREFIX="sshpass -e"
           fi
 
           if $SSH_EXEC "[ -d domains/plaxtilineas.com/public_html ]"; then
@@ -191,7 +191,6 @@ jobs:
 
   deploy-backend:
     name: Build y deploy Laravel API
-    environment: production
     needs: [ssh-check, changes]
     if: ${{ inputs.deploy_target != 'ssh-check' && (needs.changes.outputs.backend == 'true' || github.event_name == 'workflow_dispatch') }}
     runs-on: ubuntu-latest
@@ -265,9 +264,10 @@ jobs:
             SSH_EXEC="$SSH_CMD $SSH_USER@$SSH_HOST"
             RSYNC_PREFIX=""
           else
+            export SSHPASS="$SSH_PASSWORD"
             SSH_CMD="ssh $SSH_OPTS"
-            SSH_EXEC="sshpass -p '$SSH_PASSWORD' $SSH_CMD $SSH_USER@$SSH_HOST"
-            RSYNC_PREFIX="sshpass -p '$SSH_PASSWORD'"
+            SSH_EXEC="sshpass -e $SSH_CMD $SSH_USER@$SSH_HOST"
+            RSYNC_PREFIX="sshpass -e"
           fi
 
           BACKEND_ROOT="${HOSTINGER_BACKEND_PATH%/}"
