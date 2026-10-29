@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ProductosService } from '../../../services/productos.service';
@@ -17,6 +17,10 @@ import { PrecioOfertaService } from '../../../services/precio-oferta.service';
   styleUrls: ['./feature-new-products.css']
 })
 export class FeatureNewProducts implements OnInit {
+  @Input() title: string = 'EXPLORA MÁS';
+  @Input() titleHighlight: string = 'PRODUCTOS';
+  @Input() subtitle: string = 'Descubre nuestras últimas incorporaciones y soluciones destacadas en peletería, espumas y empaques.';
+
   @ViewChild('productosGrid') productosGrid!: ElementRef;
 
   productos: ProductoEditable[] = [];

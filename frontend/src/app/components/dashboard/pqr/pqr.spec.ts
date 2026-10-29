@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Pqr } from './pqr';
+import { PqrAdminComponent } from './pqr';
 
-describe('Pqr', () => {
-  let component: Pqr;
-  let fixture: ComponentFixture<Pqr>;
+describe('PqrAdminComponent', () => {
+  let component: PqrAdminComponent;
+  let fixture: ComponentFixture<PqrAdminComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Pqr]
+      imports: [PqrAdminComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Pqr);
+    fixture = TestBed.createComponent(PqrAdminComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

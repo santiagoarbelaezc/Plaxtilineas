@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProductoBackground } from './producto-background';
+import { ProductoBackgroundComponent } from './producto-background';
 
-describe('ProductoBackground', () => {
-  let component: ProductoBackground;
-  let fixture: ComponentFixture<ProductoBackground>;
+describe('ProductoBackgroundComponent', () => {
+  let component: ProductoBackgroundComponent;
+  let fixture: ComponentFixture<ProductoBackgroundComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProductoBackground]
+      imports: [ProductoBackgroundComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ProductoBackground);
+    fixture = TestBed.createComponent(ProductoBackgroundComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

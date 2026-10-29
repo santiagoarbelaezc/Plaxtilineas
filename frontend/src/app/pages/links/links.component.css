@@ -3,7 +3,7 @@
    Estética: Columna Izquierda Ancha con Imagen HD + Logo Grande,
    Ajuste Superior Compacto (Sin espacios vacíos arriba),
    Tarjeta Superior Blanca y Botones Inferiores Negros con Letra Blanca
-   e Iconos/Logos Grandes de Alto Contraste.
+   e Iconos/Logos de Alto Contraste.
    ═══════════════════════════════════════════════════════════════════ */
 
 :host {
@@ -13,15 +13,19 @@
   color: #000000;
   font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
 }
 
 .links-page-root {
   min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
   display: flex;
   flex-direction: column;
   background-color: #ffffff;
   position: relative;
   overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 /* ── Barra Superior Fija / Discreta y Compacta ── */
@@ -29,15 +33,18 @@
   position: sticky;
   top: 0;
   z-index: 50;
+  width: 100%;
   background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid #f1f5f9;
   padding: 10px 24px;
+  box-sizing: border-box;
 }
 
 .top-bar-inner {
   max-width: 1540px;
+  width: 100%;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -140,43 +147,56 @@
    SECCIÓN HERO — ALINEADA ARRIBA (SIN ESPACIO EXCESIVO SUPERIOR)
    ═══════════════════════════════════════════════════════════════════ */
 .linktree-hero-section {
+  width: 100%;
   padding: 16px 32px 48px 32px;
   background: radial-gradient(circle at 85% 10%, #f8fafc 0%, #ffffff 70%);
   flex: 1;
   display: flex;
   align-items: flex-start;
+  box-sizing: border-box;
 }
 
 .linktree-container {
   max-width: 1540px;
   margin: 0 auto;
   width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
-/* Grilla de 2 Columnas Principal (Alineación 'start' arriba) */
+/* Grilla de 2 Columnas Principal (Alineación Stretch para igualar alturas) */
 .links-showcase-grid {
   display: grid;
-  grid-template-columns: minmax(520px, 640px) 1fr;
+  grid-template-columns: minmax(500px, 620px) minmax(0, 1fr);
   gap: 48px;
-  align-items: start;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
-/* ── Columna Izquierda: Marco Visual Curvo con Imagen HD + Logo Grande ── */
+/* ── Columna Izquierda: Marco Visual Curvo con Imagen HD + Logo Grande (Misma Altura) ── */
 .showcase-visual-col {
   display: flex;
   flex-direction: column;
+  height: 100%;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .showcase-visual-card {
   width: 100%;
   height: 100%;
-  min-height: 570px;
-  max-height: 640px;
+  flex: 1;
+  min-height: 0;
+  max-height: none;
   border-radius: 30px;
   overflow: hidden;
   position: relative;
   box-shadow: 0 24px 50px -15px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.08);
   background: #0a0a0a;
+  box-sizing: border-box;
 }
 
 .showcase-visual-img {
@@ -185,7 +205,7 @@
   object-fit: cover;
   object-position: center;
   display: block;
-  filter: brightness(0.78) contrast(1.08) saturate(1.04);
+  filter: brightness(0.62) contrast(1.1) saturate(1.02);
   transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -196,7 +216,7 @@
 .showcase-visual-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(10, 10, 10, 0.65) 0%, rgba(10, 10, 10, 0.52) 50%, rgba(10, 10, 10, 0.85) 100%);
+  background: linear-gradient(180deg, rgba(10, 10, 10, 0.75) 0%, rgba(10, 10, 10, 0.58) 50%, rgba(10, 10, 10, 0.88) 100%);
   pointer-events: none;
   z-index: 1;
 }
@@ -211,6 +231,7 @@
   padding: 36px;
   z-index: 2;
   pointer-events: none;
+  box-sizing: border-box;
 }
 
 .showcase-hero-logo {
@@ -227,96 +248,27 @@
   transform: scale(1.035);
 }
 
-.showcase-floating-badge {
-  position: absolute;
-  bottom: 22px;
-  left: 22px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(15, 23, 42, 0.88);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 999px;
-  padding: 8px 18px;
-  color: #ffffff;
-  font-size: 0.84rem;
-  font-weight: 700;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
-  z-index: 3;
-}
-
-.live-pulse-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
-  animation: pulseGreenGlow 2s infinite;
-}
-
-@keyframes pulseGreenGlow {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
-  }
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
-  }
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
-  }
-}
-
 /* ── Columna Derecha: Contenido & Enlaces ── */
 .showcase-content-col {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
-}
-
-/* Kicker Pill Minimalista Superior */
-.kicker-pill-wrapper {
-  margin-bottom: 8px;
-}
-
-.kicker-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  border-radius: 999px;
-  padding: 6px 14px;
-  font-size: 0.76rem;
-  font-weight: 750;
-  color: #334155;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.kicker-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #16a34a;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 /* Titular Principal */
 .profile-main-title {
-  margin: 0 0 8px 0;
+  margin: 0 0 10px 0;
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  font-size: clamp(2.2rem, 3.8vw, 3.2rem);
-  font-weight: 850;
-  color: #000000;
-  letter-spacing: -0.035em;
-  line-height: 1.1;
+  font-size: clamp(2.1rem, 3.6vw, 3rem);
+  font-weight: 600;
+  color: #09090b;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
   flex-wrap: wrap;
 }
 
@@ -332,6 +284,8 @@
   margin: 0 0 18px 0;
   font-weight: 400;
   max-width: 700px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* ── Tarjeta Destacada Superior (BLANCA con Letra Negra) ── */
@@ -341,6 +295,7 @@
   justify-content: space-between;
   gap: 18px;
   width: 100%;
+  min-width: 0;
   padding: 18px 24px;
   border-radius: 22px;
   background: #ffffff;
@@ -378,6 +333,7 @@
   justify-content: center;
   flex-shrink: 0;
   color: #09090b;
+  box-sizing: border-box;
   transition: all 0.25s ease;
 }
 
@@ -391,12 +347,13 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  flex: 1;
   min-width: 0;
 }
 
 .featured-title {
   font-size: 1.2rem;
-  font-weight: 850;
+  font-weight: 650;
   color: #09090b;
   letter-spacing: -0.015em;
   white-space: nowrap;
@@ -439,18 +396,22 @@
   transform: translateX(4px);
 }
 
-/* ── Grilla Minimalista de Enlaces (2 Columnas — BOTONES NEGROS CON LETRA BLANCA E ICONOS GRANDES) ── */
+/* ── Grilla Minimalista de Enlaces (2 Columnas en Desktop — BOTONES NEGROS CON LETRA BLANCA) ── */
 .links-minimal-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .minimal-link-card {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 100%;
+  min-width: 0;
   padding: 20px 22px;
   border-radius: 20px;
   background: #09090b;
@@ -496,7 +457,7 @@
   transition: all 0.25s ease;
 }
 
-/* Caja amplia para Logos de Marcas sobre Fondo Oscuro */
+/* Caja amplia para Logos de Marcas sobre Fondo Oscuro en Desktop */
 .card-icon-box.has-logo {
   width: auto;
   min-width: 72px;
@@ -546,11 +507,12 @@
   display: flex;
   flex-direction: column;
   gap: 3px;
+  min-width: 0;
 }
 
 .card-main-title {
   font-size: 1.12rem;
-  font-weight: 800;
+  font-weight: 650;
   color: #ffffff;
   letter-spacing: -0.015em;
   transition: color 0.2s ease;
@@ -573,13 +535,31 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   SECCIÓN CARRUSEL DE PRODUCTOS RECIENTES PLAXTILÍNEAS (20 ÚLTIMOS)
+   ═══════════════════════════════════════════════════════════════════ */
+.links-products-carousel-section {
+  width: 100%;
+  background-color: #ffffff;
+  border-top: 1px solid #f1f5f9;
+  padding: 12px 0 24px 0;
+  box-sizing: border-box;
+}
+
+.links-products-carousel-section .feature-new-products-section {
+  padding-top: 16px;
+  padding-bottom: 24px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    FOOTER LIMPIO Y ELEGANTE
    ═══════════════════════════════════════════════════════════════════ */
 .links-footer {
+  width: 100%;
   background-color: #fafafa;
   border-top: 1px solid #f1f5f9;
   padding: 32px 24px;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .footer-container {
@@ -638,54 +618,373 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   RESPONSIVIDAD DE LA PÁGINA
+   RESPONSIVIDAD DE LA PÁGINA — REDISEÑO MÓVIL ALINEADO Y PROPORCIONADO
    ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Tablet / Pantallas Medianas (<= 1200px) ── */
 @media (max-width: 1200px) {
   .links-showcase-grid {
-    grid-template-columns: 1fr;
-    gap: 36px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .showcase-visual-col {
+    height: auto;
   }
 
   .showcase-visual-card {
-    min-height: 380px;
-    height: 420px;
-    border-radius: 26px;
+    min-height: 300px;
+    height: 320px;
+    flex: none;
+    border-radius: 24px;
   }
 
   .showcase-hero-logo {
-    max-width: 360px;
+    max-width: 280px;
   }
 }
 
-@media (max-width: 680px) {
-  .linktree-hero-section {
-    padding: 16px 16px 40px 16px;
+/* ── Móviles y Tablets Verticales (<= 768px): Botón Catálogo Grande + Grilla 2x3 ── */
+@media (max-width: 768px) {
+  .links-top-bar {
+    padding: 8px 16px;
   }
 
+  .back-home-chip {
+    padding: 5px 12px;
+    font-size: 0.78rem;
+    gap: 6px;
+  }
+
+  .action-circle-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  /* Contenedor principal con márgenes simétricos 16px izquierda y 16px derecha */
+  .linktree-hero-section {
+    padding: 12px 16px 28px 16px;
+  }
+
+  .links-showcase-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  /* Tarjeta Hero proporcionada con amplio aire alrededor del logo */
   .showcase-visual-card {
-    height: 300px;
-    min-height: 280px;
-    border-radius: 22px;
+    width: 100%;
+    height: 225px;
+    min-height: 225px;
+    max-height: 225px;
+    border-radius: 20px;
+  }
+
+  .showcase-center-logo-wrapper {
+    padding: 28px;
   }
 
   .showcase-hero-logo {
-    max-width: 270px;
+    width: 55%;
+    max-width: 160px;
+    max-height: 125px;
+    height: auto;
+    object-fit: contain;
   }
 
-  .links-minimal-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
+  /* Identidad y Biografía */
+  .profile-main-title {
+    font-size: 1.65rem;
+    font-weight: 600;
+    gap: 8px;
+    margin: 0 0 6px 0;
+    line-height: 1.2;
   }
 
+  .verified-check {
+    width: 21px;
+    height: 21px;
+  }
+
+  .profile-main-bio {
+    font-size: 0.88rem;
+    line-height: 1.48;
+    margin: 0 0 16px 0;
+    color: #64748b;
+  }
+
+  /* ── Botón Destacado Blanco ("Descubre Nuestro Catálogo") MÁS GRANDE y Prominente en Móvil ── */
   .featured-hero-card {
-    padding: 16px 18px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-width: 0;
+    min-height: 92px;
+    padding: 18px 18px;
+    border-radius: 22px;
+    gap: 14px;
+    margin-bottom: 14px;
+    border: 2px solid #e4e4e7;
+    box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.09);
+    box-sizing: border-box;
+  }
+
+  .featured-card-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .featured-icon-box {
+    width: 56px;
+    min-width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    flex-shrink: 0;
+  }
+
+  .featured-icon-box svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .featured-text-group {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
   }
 
   .featured-title {
-    font-size: 1.08rem;
+    font-size: 1.12rem;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  .featured-subtitle {
+    font-size: 0.83rem;
+    line-height: 1.3;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .featured-action-circle {
+    width: 42px;
+    min-width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+  }
+
+  .featured-action-circle svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  /* ── Grilla de 6 Botones Negros: Organizados DE DOS EN DOS (2 Columnas) ── */
+  .links-minimal-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .minimal-link-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    width: 100%;
+    min-width: 0;
+    min-height: 126px;
+    padding: 14px;
+    border-radius: 18px;
+    gap: 10px;
+    box-sizing: border-box;
+  }
+
+  .card-top-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 0;
+    width: 100%;
+  }
+
+  .card-icon-box {
+    width: 46px;
+    min-width: 46px;
+    height: 46px;
+    padding: 6px;
+    border-radius: 13px;
+    flex-shrink: 0;
+  }
+
+  .card-icon-box svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .card-icon-box.has-logo {
+    width: auto;
+    min-width: 54px;
+    max-width: calc(100% - 38px);
+    height: 46px;
+    padding: 6px 10px;
+    border-radius: 13px;
+  }
+
+  .brand-square-logo {
+    height: 28px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+  }
+
+  .card-arrow-circle {
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .card-arrow-circle svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .card-bottom-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .card-main-title {
+    font-size: 0.96rem;
+    font-weight: 650;
+    line-height: 1.22;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
+  .card-sub-title {
+    font-size: 0.76rem;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
+  /* Carrusel de Productos Recientes en Móvil */
+  .links-products-carousel-section {
+    padding: 8px 0 20px 0;
+  }
+
+  .links-products-carousel-section .feature-new-products-section {
+    padding-top: 10px;
+    padding-bottom: 16px;
+  }
+
+  /* Footer en Móvil (con margen inferior para barra flotante PWA) */
+  .links-footer {
+    padding: 24px 16px 84px 16px;
+  }
+
+  .footer-logo-img {
+    height: 28px;
+  }
+
+  .footer-copy {
+    font-size: 0.76rem;
+  }
+
+  .footer-bottom-links {
+    gap: 10px;
+    font-size: 0.78rem;
+  }
+}
+
+/* ── Móviles Ultra-Compactos (<= 380px) ── */
+@media (max-width: 380px) {
+  .linktree-hero-section {
+    padding: 10px 12px 24px 12px;
+  }
+
+  .showcase-visual-card {
+    height: 195px;
+    min-height: 195px;
+    max-height: 195px;
+  }
+
+  .showcase-hero-logo {
+    max-width: 135px;
+    max-height: 110px;
   }
 
   .profile-main-title {
-    font-size: 2rem;
+    font-size: 1.48rem;
+  }
+
+  .featured-hero-card {
+    padding: 15px 14px;
+    min-height: 84px;
+    gap: 12px;
+  }
+
+  .featured-icon-box {
+    width: 50px;
+    min-width: 50px;
+    height: 50px;
+  }
+
+  .featured-title {
+    font-size: 1.02rem;
+  }
+
+  .featured-subtitle {
+    font-size: 0.78rem;
+  }
+
+  .links-minimal-grid {
+    gap: 10px;
+  }
+
+  .minimal-link-card {
+    padding: 12px;
+    min-height: 116px;
+  }
+
+  .card-icon-box,
+  .card-icon-box.has-logo {
+    height: 40px;
+  }
+
+  .card-main-title {
+    font-size: 0.88rem;
+  }
+
+  .card-sub-title {
+    font-size: 0.72rem;
   }
 }

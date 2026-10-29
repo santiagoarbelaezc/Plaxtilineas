@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { Title, Meta } from '@angular/platform-browser';
+import { FeatureNewProducts } from '../../features/home/feature-new-products/feature-new-products';
 
 export interface QuickLinkItem {
   id: string;
@@ -18,7 +19,7 @@ export interface QuickLinkItem {
 @Component({
   selector: 'app-links',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FeatureNewProducts],
   templateUrl: './links.component.html',
   styleUrls: ['./links.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -33,11 +34,9 @@ export class LinksComponent implements OnInit {
 
   // Imagen HD de plásticos industriales para Plaxtilíneas + Logo Grande
   showcaseVisual = {
-    imageUrl: 'assets/images/hero/hero-plasticos-hd.jpg',
+    imageUrl: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1793246685/plaxti-links_am0zvu.jpg',
     logoUrl: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1770388940/logo-invert_ghucfi.png',
-    alt: 'Plaxtilíneas Expertos en Plásticos Industriales y Empaques',
-    tag: 'Sede Principal · Armenia',
-    badge: 'Atención Inmediata'
+    alt: 'Plaxtilíneas Expertos en Plásticos Industriales y Empaques'
   };
 
   // Tarjeta Destacada Superior (Ancho Completo - Fondo Blanco)

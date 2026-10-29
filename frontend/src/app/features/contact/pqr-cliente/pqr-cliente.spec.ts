@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PqrCliente } from './pqr-cliente';
+import { PqrClienteComponent } from './pqr-cliente';
 
-describe('PqrCliente', () => {
-  let component: PqrCliente;
-  let fixture: ComponentFixture<PqrCliente>;
+describe('PqrClienteComponent', () => {
+  let component: PqrClienteComponent;
+  let fixture: ComponentFixture<PqrClienteComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PqrCliente]
+      imports: [PqrClienteComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PqrCliente);
+    fixture = TestBed.createComponent(PqrClienteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

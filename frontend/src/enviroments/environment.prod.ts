@@ -1,4 +1,4 @@
-// PRODUCCIÓN - Rutas relativas (proxy en Hostinger)
+// PRODUCCIÓN - API Laravel bajo el dominio principal
 export const environment = {
   production: true,
   apiUrl: 'https://plaxtilineas.com/api',
