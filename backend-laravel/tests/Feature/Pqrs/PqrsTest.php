@@ -78,7 +78,7 @@ test('un usuario puede subir archivos adjuntos al crear una PQR', function () {
         ]);
     $this->app->instance(MediaStorageInterface::class, $mockStorage);
 
-    $file = UploadedFile::fake()->image('factura.jpg');
+    $file = UploadedFile::fake()->create('factura.jpg', 10, 'image/jpeg');
 
     $response = $this->post('/api/pqrs', [
         'nombre_completo' => 'Maria Lopez',

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Contracts\WompiClientInterface;
-use App\Services\Wompi\SignatureService;
 use App\Services\Wompi\WompiClient;
 use Illuminate\Support\Facades\Log;
 
@@ -20,7 +19,6 @@ final class WompiService implements WompiClientInterface
 {
     public function __construct(
         private readonly WompiClient $client,
-        private readonly SignatureService $signatureService,
     ) {}
 
     /**
@@ -62,7 +60,7 @@ final class WompiService implements WompiClientInterface
             return false;
         }
 
-        $cadena = $eventoId . $createdAt . $status . $montoCentavos . $eventsKey;
+        $cadena = $eventoId.$createdAt.$status.$montoCentavos.$eventsKey;
         $esperada = hash('sha256', $cadena);
 
         return hash_equals($esperada, $checksumHeader);

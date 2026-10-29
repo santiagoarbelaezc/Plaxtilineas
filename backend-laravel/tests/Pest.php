@@ -27,6 +27,7 @@ uses(TestCase::class)->in('Unit');
 | lanzara una excepcion para detectar integraciones no mockeadas.
 */
 uses()->beforeEach(function () {
+    Http::fake([]);
     Http::preventStrayRequests();
 })->in('Feature');
 

@@ -1,6 +1,14 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  OnDestroy,
+  ChangeDetectionStrategy,
+  ElementRef,
+  inject
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { Title, Meta } from '@angular/platform-browser';
 import { FeatureNewProducts } from '../../features/home/feature-new-products/feature-new-products';
 
@@ -9,8 +17,10 @@ export interface QuickLinkItem {
   title: string;
   subtitle: string;
   badge?: string;
-  iconType: 'plaxtilineas' | 'camascotas' | 'espumas' | 'districol' | 'whatsapp' | 'catalog' | 'location' | 'instagram';
+  iconType: 'instagram' | 'facebook' | 'location' | 'espumas' | 'catalog';
+  themeClass?: string;
   logoUrl?: string;
+  invertLogo?: boolean;
   targetUrl: string;
   isExternal: boolean;
   highlight?: boolean;
@@ -24,13 +34,18 @@ export interface QuickLinkItem {
   styleUrls: ['./links.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LinksComponent implements OnInit {
+export class LinksComponent implements OnInit, AfterViewInit, OnDestroy {
   private titleService = inject(Title);
   private metaService = inject(Meta);
-  private router = inject(Router);
+  private hostEl = inject(ElementRef);
 
   copiedToast = false;
   private copyTimeout: any = null;
+  private scrollObserver: IntersectionObserver | null = null;
+
+  // Coordenadas sutiles para efecto parallax en la imagen hero (Desktop)
+  parallaxX = 0;
+  parallaxY = 0;
 
   // Imagen HD de plásticos industriales para Plaxtilíneas + Logo Grande
   showcaseVisual = {
@@ -39,11 +54,11 @@ export class LinksComponent implements OnInit {
     alt: 'Plaxtilíneas Expertos en Plásticos Industriales y Empaques'
   };
 
-  // Tarjeta Destacada Superior (Ancho Completo - Fondo Blanco)
+  // Tarjeta Destacada Superior (Ancho Completo - Fondo Blanco Minimalista)
   readonly featuredLink: QuickLinkItem = {
     id: 'catalogo',
     title: 'Descubre Nuestro Catálogo',
-    subtitle: 'Plásticos, Espumas, Empaques y Aislantes',
+    subtitle: 'Plásticos, Espumas & Empaques',
     badge: 'Oficial',
     iconType: 'catalog',
     targetUrl: '/productos',
@@ -51,40 +66,33 @@ export class LinksComponent implements OnInit {
     highlight: true
   };
 
-  // Grilla de Enlaces Minimalistas (2 Columnas - Botones Negros con Letra Blanca)
+  // Grilla Minimalista 2x2 con Contorno y Color Distintivo por Botón
   readonly gridLinks: QuickLinkItem[] = [
-    {
-      id: 'whatsapp',
-      title: 'WhatsApp',
-      subtitle: 'Chat & Asesoría',
-      iconType: 'whatsapp',
-      targetUrl: 'https://api.whatsapp.com/send/?phone=573007365939&text=Hola%20Grupo%20Plaxtil%C3%ADneas,%20deseo%20informaci%C3%B3n%20sobre%20sus%20productos%20y%20marcas.',
-      isExternal: true
-    },
     {
       id: 'instagram',
       title: 'Instagram',
       subtitle: '@plaxtilineas',
       iconType: 'instagram',
-      targetUrl: 'https://instagram.com',
+      themeClass: 'theme-instagram',
+      targetUrl: 'https://www.instagram.com/plaxtilineas/',
       isExternal: true
     },
     {
-      id: 'camascotas',
-      title: 'Camascotas',
-      subtitle: 'Camas & Confort Pet',
-      iconType: 'camascotas',
-      logoUrl: 'https://res.cloudinary.com/doxdjiyvi/image/upload/v1792796946/logo2_hrboyb.png',
-      targetUrl: 'https://camascotas.com/',
+      id: 'facebook',
+      title: 'Facebook',
+      subtitle: 'Plaxtilíneas Oficial',
+      iconType: 'facebook',
+      themeClass: 'theme-facebook',
+      targetUrl: 'https://www.facebook.com/p/Plaxtilineas-100080040966300/',
       isExternal: true
     },
     {
-      id: 'districol',
-      title: 'Colchones Districol',
-      subtitle: 'Descanso Ergonómico',
-      iconType: 'districol',
-      logoUrl: 'https://res.cloudinary.com/doxdjiyvi/image/upload/v1792796538/logo-distri_ri8lkq.png',
-      targetUrl: 'https://colchonesdistricol.com/',
+      id: 'ubicacion',
+      title: 'Google Maps',
+      subtitle: 'Sede Armenia, Quindío',
+      iconType: 'location',
+      themeClass: 'theme-maps',
+      targetUrl: 'https://www.google.com/maps/dir/4.5696779,-75.6521222/PLAXTILINEAS,+630001,+Armenia,+Quind%C3%ADo/@4.553645,-75.6819289,14z/data=!3m1!4b1!4m9!4m8!1m1!4e1!1m5!1m1!1s0x8e38f5bd543fc99f:0x2bd98af1d04068f8!2m2!1d-75.6749092!2d4.5355891?entry=ttu',
       isExternal: true
     },
     {
@@ -92,16 +100,10 @@ export class LinksComponent implements OnInit {
       title: 'Espumas & Plásticos',
       subtitle: 'Corte Industrial',
       iconType: 'espumas',
+      themeClass: 'theme-espumas',
       logoUrl: 'https://res.cloudinary.com/doxdjiyvi/image/upload/v1792788733/logo-grande_qauprn.png',
+      invertLogo: true,
       targetUrl: 'https://espumasyplasticos.com/',
-      isExternal: true
-    },
-    {
-      id: 'ubicacion',
-      title: 'Sede Principal',
-      subtitle: 'Armenia, Quindío',
-      iconType: 'location',
-      targetUrl: 'https://www.google.com/maps/dir/4.5696779,-75.6521222/PLAXTILINEAS,+630001,+Armenia,+Quind%C3%ADo/@4.553645,-75.6819289,14z/data=!3m1!4b1!4m9!4m8!1m1!4e1!1m5!1m1!1s0x8e38f5bd543fc99f:0x2bd98af1d04068f8!2m2!1d-75.6749092!2d4.5355891?entry=ttu',
       isExternal: true
     }
   ];
@@ -115,13 +117,67 @@ export class LinksComponent implements OnInit {
     this.titleService.setTitle('Enlaces Oficiales — Grupo Plaxtilíneas');
     this.metaService.updateTag({
       name: 'description',
-      content: 'Portal oficial de enlaces del Grupo Empresarial Plaxtilíneas. Accede a Plaxtilíneas, Camascotas, Colchones Districol, Espumas y Plásticos y canales de atención.'
+      content: 'Portal oficial de enlaces del Grupo Empresarial Plaxtilíneas. Accede a nuestro catálogo, redes sociales, ubicación y Espumas y Plásticos.'
     });
 
     if (typeof document !== 'undefined') {
       document.body.style.backgroundColor = '#ffffff';
       document.documentElement.style.backgroundColor = '#ffffff';
     }
+  }
+
+  ngAfterViewInit(): void {
+    this.initScrollReveal();
+  }
+
+  ngOnDestroy(): void {
+    if (this.scrollObserver) {
+      this.scrollObserver.disconnect();
+    }
+    if (this.copyTimeout) {
+      clearTimeout(this.copyTimeout);
+    }
+  }
+
+  private initScrollReveal(): void {
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+      const allEls = this.hostEl.nativeElement.querySelectorAll('[data-reveal]');
+      allEls.forEach((el: HTMLElement) => el.classList.add('is-visible'));
+      return;
+    }
+
+    this.scrollObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            this.scrollObserver?.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.08,
+        rootMargin: '0px 0px -24px 0px'
+      }
+    );
+
+    const targets = this.hostEl.nativeElement.querySelectorAll('[data-reveal]');
+    targets.forEach((el: HTMLElement) => this.scrollObserver?.observe(el));
+  }
+
+  onVisualMouseMove(event: MouseEvent): void {
+    const card = event.currentTarget as HTMLElement;
+    if (!card || window.innerWidth <= 768) return;
+    const rect = card.getBoundingClientRect();
+    const relX = (event.clientX - rect.left) / rect.width - 0.5;
+    const relY = (event.clientY - rect.top) / rect.height - 0.5;
+    this.parallaxX = Math.round(relX * 14);
+    this.parallaxY = Math.round(relY * 14);
+  }
+
+  onVisualMouseLeave(): void {
+    this.parallaxX = 0;
+    this.parallaxY = 0;
   }
 
   copyPageLink(): void {

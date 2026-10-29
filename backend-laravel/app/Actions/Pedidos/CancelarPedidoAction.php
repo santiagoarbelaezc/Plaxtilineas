@@ -7,7 +7,6 @@ namespace App\Actions\Pedidos;
 use App\Enums\EstadoPedido;
 use App\Exceptions\Domain\AccesoNoPermitidoException;
 use App\Models\Pedido;
-use App\Models\StockReserva;
 use App\Models\Usuario;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -58,7 +57,6 @@ final class CancelarPedidoAction
 
             $this->liberarStockReservaAction->execute($pedido);
         });
-
 
         return ['mensaje' => 'Pedido cancelado correctamente.'];
     }

@@ -14,6 +14,7 @@ use Illuminate\Support\Carbon;
  * @property string $pqr_id
  * @property string $mensaje
  * @property string $tipo
+ * @property Carbon|null $fecha_creacion
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */

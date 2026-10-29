@@ -2,11 +2,11 @@ name: Laravel CI — backend-laravel
 
 on:
   push:
-    branches: ["v2-laravel-nico", "main"]
+    branches: ["main", "master"]
     paths:
       - "backend-laravel/**"
   pull_request:
-    branches: ["v2-laravel-nico", "main"]
+    branches: ["main", "master"]
     paths:
       - "backend-laravel/**"
 

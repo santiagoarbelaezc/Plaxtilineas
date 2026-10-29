@@ -221,6 +221,7 @@ class AuthController extends Controller
 
         $usuario->update([
             'password' => Hash::make($tempPassword),
+            'requiere_cambio_password' => true,
         ]);
 
         try {
@@ -251,6 +252,7 @@ class AuthController extends Controller
 
         $usuario->update([
             'password' => Hash::make($nuevaPassword),
+            'requiere_cambio_password' => false,
         ]);
 
         return ApiResponse::success([

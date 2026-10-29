@@ -162,7 +162,7 @@ test('admin puede subir imagenes de componentes', function () {
         ]);
     $this->app->instance(MediaStorageInterface::class, $mockStorage);
 
-    $file = UploadedFile::fake()->image('banner.png');
+    $file = UploadedFile::fake()->create('banner.png', 10, 'image/png');
 
     $response = $this->actingAs($admin)->post('/api/componentes/upload', [
         'imagen' => $file,

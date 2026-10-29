@@ -20,12 +20,13 @@ return new class extends Migration
             $table->text('descripcion');
             $table->string('estado', 50)->default('PENDIENTE');
             $table->string('numero_ticket', 50)->unique();
-            $table->timestamps();
+            $table->timestamp('fecha_creacion')->nullable()->useCurrent();
+            $table->timestamp('fecha_actualizacion')->nullable()->useCurrent();
 
             $table->index('tipo');
             $table->index('estado');
             $table->index('numero_ticket');
-            $table->index('created_at');
+            $table->index('fecha_creacion');
         });
     }
 

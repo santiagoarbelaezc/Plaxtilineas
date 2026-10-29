@@ -119,9 +119,9 @@ final class CrearDraftPedidoAction
             $pedido = Pedido::create([
                 'usuario_id' => $user->id,
                 'codigo_pedido' => $codigoPedido,
-                'telefono_contacto' => $input['telefono_contacto'] ?? $user->telefono,
+                'telefono_cliente' => $input['telefono_contacto'] ?? $user->telefono,
                 'direccion_envio' => (string) ($input['direccion_envio'] ?? ''),
-                'ciudad' => $input['ciudad'] ?? null,
+                'ciudad_envio' => $input['ciudad'] ?? null,
                 'departamento' => $input['departamento'] ?? null,
                 'notas' => $input['notas'] ?? null,
                 'subtotal' => $subtotal,
@@ -137,7 +137,7 @@ final class CrearDraftPedidoAction
                 $pedido->items()->create($det);
             }
 
-            $minutos = (int) config('business.reserva_stock_expiracion_minutos', 180);
+            $minutos = (int) config('business.pedido_expiracion_minutos', 30);
             $expiraAt = now()->addMinutes($minutos);
             $carritoItems = Carrito::where('usuario_id', $user->id)->get();
             $carritoPorProducto = [];
@@ -165,6 +165,10 @@ final class CrearDraftPedidoAction
                 foreach ($allProductIds as $productoId) {
                     $diff = ($pedidoPorProducto[$productoId] ?? 0) - ($carritoPorProducto[$productoId] ?? 0);
                     if ($diff === 0) {
+                        continue;
+                    }
+
+                    if ($estadoInicial === EstadoPedido::DRAFT) {
                         continue;
                     }
 

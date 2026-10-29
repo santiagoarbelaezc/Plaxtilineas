@@ -15,7 +15,7 @@ return new class extends Migration
             $table->foreignUuid('pqr_id')->constrained('pqrs')->cascadeOnDelete();
             $table->text('mensaje');
             $table->string('tipo', 50);
-            $table->timestamps();
+            $table->timestamp('fecha_creacion')->nullable()->useCurrent();
 
             $table->index('pqr_id');
         });

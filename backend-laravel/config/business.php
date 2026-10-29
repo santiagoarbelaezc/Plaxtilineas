@@ -15,6 +15,8 @@ return [
 
     'reserva_stock_expiracion_minutos' => (int) env('STOCK_RESERVA_EXPIRA_MINUTOS', 180),
 
+    'pedido_expiracion_minutos' => (int) env('PEDIDO_EXPIRA_MINUTOS', 30),
+
     'carrito_expiracion_horas' => (int) env('CARRITO_EXPIRA_HORAS', 3),
 
     'captcha_expiracion_segundos' => (int) env('CAPTCHA_EXPIRA_SEGUNDOS', 300),

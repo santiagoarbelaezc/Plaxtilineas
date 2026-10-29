@@ -10,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('pedido_detalles', function (Blueprint $table) {
+        Schema::create('pedido_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pedido_id')->constrained('pedidos')->cascadeOnDelete();
             $table->unsignedBigInteger('producto_id');
@@ -26,6 +26,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('pedido_detalles');
+        Schema::dropIfExists('pedido_items');
     }
 };

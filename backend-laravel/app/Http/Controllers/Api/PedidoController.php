@@ -16,7 +16,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Pedidos\AdminActualizarEstadoPedidoRequest;
 use App\Http\Requests\Pedidos\CrearDraftPedidoRequest;
 use App\Models\Pedido;
-use App\Models\StockReserva;
 use App\Models\Usuario;
 use App\Services\CaptchaService;
 use App\Services\Catalogo\CatalogoApiService;
@@ -57,17 +56,19 @@ class PedidoController extends Controller
         foreach ($items as $item) {
             if (! is_array($item)) {
                 $errores[] = ['nombre' => 'Producto', 'error' => 'Formato de producto inválido.'];
+
                 continue;
             }
 
             $productoId = (int) ($item['producto_id'] ?? 0);
-            $varianteId = isset($item['variante_id']) && $item['variante_id'] !== null
+            $varianteId = isset($item['variante_id'])
                 ? (int) $item['variante_id']
                 : null;
             $cantidad = (int) ($item['cantidad'] ?? 0);
 
             if ($productoId <= 0 || $cantidad < 1) {
                 $errores[] = ['nombre' => 'Producto', 'error' => 'Producto o cantidad inválidos.'];
+
                 continue;
             }
 
@@ -90,13 +91,22 @@ class PedidoController extends Controller
         ]);
     }
 
-
     /**
      * POST /api/pedidos/draft
      * Crea un pedido en estado draft y reserva stock temporal.
      */
     public function crearDraft(CrearDraftPedidoRequest $request): JsonResponse
     {
+        if (! $this->captchaService->verifyAndConsume(
+            $request->getCaptchaId(),
+            $request->getCaptchaCode()
+        )) {
+            return ApiResponse::error(
+                'El código captcha ha expirado o es incorrecto. Intenta nuevamente.',
+                400
+            );
+        }
+
         /** @var Usuario $user */
         $user = $request->user();
 

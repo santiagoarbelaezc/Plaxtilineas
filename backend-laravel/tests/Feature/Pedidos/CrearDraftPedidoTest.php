@@ -10,6 +10,7 @@ use App\Models\Producto;
 use App\Models\StockReserva;
 use App\Models\Usuario;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
@@ -225,4 +226,71 @@ test('intento de reservar mas stock del disponible considerando reservas activas
         ->assertJson([
             'error' => 'Stock insuficiente para "Tarro Hermético 5L". Disponible: 2, solicitado: 4.',
         ]);
+});
+
+test('limpia pedidos no confirmados después de 30 minutos y libera sus reservas', function () {
+    $pedido = Pedido::factory()->create([
+        'usuario_id' => $this->usuario->id,
+        'estado' => EstadoPedido::DRAFT,
+        'fecha' => now()->subMinutes(31),
+    ]);
+    $pedido->items()->create([
+        'producto_id' => 999,
+        'nombre_producto' => 'Producto reservado',
+        'cantidad' => 2,
+        'precio_unitario' => 100,
+        'subtotal' => 200,
+    ]);
+    StockReserva::create([
+        'pedido_id' => $pedido->id,
+        'producto_id' => 999,
+        'cantidad' => 2,
+        'creado_at' => now()->subMinutes(31),
+        'expira_at' => now()->addMinutes(10),
+    ]);
+
+    Http::fake([
+        '*' => Http::response(['success' => true], 200),
+    ]);
+
+    $this->artisan('pedidos:limpiar-expirados')
+        ->expectsOutput('Limpieza completada: 1 pedidos eliminados y 1 reservas liberadas.')
+        ->assertSuccessful();
+
+    $this->assertDatabaseMissing('pedidos', ['id' => $pedido->id]);
+    $this->assertDatabaseMissing('pedido_items', ['pedido_id' => $pedido->id]);
+    $this->assertDatabaseMissing('stock_reservas', ['pedido_id' => $pedido->id]);
+});
+
+test('conserva pedidos pagados y confirmados aunque tengan más de 30 minutos', function () {
+    $pagado = Pedido::factory()->create([
+        'usuario_id' => $this->usuario->id,
+        'estado' => EstadoPedido::PAGADO,
+        'fecha' => now()->subMinutes(31),
+    ]);
+    $confirmado = Pedido::factory()->create([
+        'usuario_id' => $this->usuario->id,
+        'estado' => EstadoPedido::CONFIRMADO,
+        'fecha' => now()->subMinutes(31),
+    ]);
+
+    $this->artisan('pedidos:limpiar-expirados')->assertSuccessful();
+
+    $this->assertDatabaseHas('pedidos', ['id' => $pagado->id, 'estado' => 'pagado']);
+    $this->assertDatabaseHas('pedidos', ['id' => $confirmado->id, 'estado' => 'confirmado']);
+});
+
+test('conserva pedidos pendientes que todavía tienen menos de 30 minutos', function () {
+    $pedido = Pedido::factory()->create([
+        'usuario_id' => $this->usuario->id,
+        'estado' => EstadoPedido::PENDIENTE_PAGO,
+        'fecha' => now()->subMinutes(29),
+    ]);
+
+    $this->artisan('pedidos:limpiar-expirados')->assertSuccessful();
+
+    $this->assertDatabaseHas('pedidos', [
+        'id' => $pedido->id,
+        'estado' => 'pendiente_pago',
+    ]);
 });

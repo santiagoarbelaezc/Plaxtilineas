@@ -104,12 +104,14 @@ class Pedido extends Model
     public function getCreatedAtAttribute(): ?Carbon
     {
         $val = $this->attributes['fecha'] ?? null;
+
         return $val ? Carbon::parse($val) : null;
     }
 
     public function getUpdatedAtAttribute(): ?Carbon
     {
         $val = $this->attributes['fecha_actualizacion'] ?? null;
+
         return $val ? Carbon::parse($val) : null;
     }
 

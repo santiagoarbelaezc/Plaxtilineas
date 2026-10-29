@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api;
 use App\Contracts\AiChatClientInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Chat\DashboardAssistantRequest;
+use App\Services\Catalogo\CatalogoApiService;
 use App\Services\ChatModerationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Carbon;
@@ -18,6 +19,7 @@ class DashboardAssistantController extends Controller
     public function __construct(
         private readonly AiChatClientInterface $aiChatClient,
         private readonly ChatModerationService $moderation,
+        private readonly CatalogoApiService $catalogo,
     ) {}
 
     /**
@@ -109,9 +111,20 @@ class DashboardAssistantController extends Controller
 
     private function generarResumenProductos(): string
     {
-        return 'El inventario y catálogo de productos se sincroniza en tiempo real desde la plataforma externa del Catálogo.';
-    }
+        $productosBajoStock = array_filter(
+            $this->catalogo->getProductos(),
+            static fn (array $producto): bool => (int) ($producto['stock'] ?? 0) <= 5
+        );
 
+        if ($productosBajoStock === []) {
+            return 'No hay productos con stock bajo.';
+        }
+
+        return implode(', ', array_map(
+            static fn (array $producto): string => (string) ($producto['name'] ?? 'Producto'),
+            $productosBajoStock
+        ));
+    }
 
     private function getSystemPrompt(): string
     {

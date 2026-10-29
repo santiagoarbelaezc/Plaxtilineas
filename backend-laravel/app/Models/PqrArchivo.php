@@ -15,6 +15,7 @@ use Illuminate\Support\Carbon;
  * @property string $nombre_archivo
  * @property string $url_archivo
  * @property string $tipo_archivo
+ * @property Carbon|null $fecha_creacion
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */

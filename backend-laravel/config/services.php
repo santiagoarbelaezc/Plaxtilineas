@@ -69,5 +69,4 @@ return [
         'origin' => env('FRONTEND_URL', 'http://localhost:4200'),
     ],
 
-
 ];

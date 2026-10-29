@@ -25,7 +25,7 @@ final class LiberarReservasExpiradasCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Libera reservas de stock vencidas (3 horas sin compra), devuelve el inventario al catálogo externo y cancela pedidos draft no pagados.';
+    protected $description = 'Limpia reservas vencidas que no pertenecen a pedidos pendientes de eliminación.';
 
     public function handle(LiberarStockReservaAction $liberarAction): int
     {
@@ -50,28 +50,27 @@ final class LiberarReservasExpiradasCommand extends Command
             if (! $pedido) {
                 // Si el pedido ya no existe en la BD, limpiar las reservas huérfanas
                 StockReserva::where('pedido_id', $pedidoId)->delete();
+
                 continue;
             }
 
-            // Solo liberar si el pedido sigue pendiente de pago o en draft
-            if (in_array($pedido->estado, [EstadoPedido::DRAFT, EstadoPedido::PENDIENTE_PAGO], true)) {
-                $liberadas = $liberarAction->execute($pedido);
-                $totalReservas += $liberadas;
-
-                $pedido->update([
-                    'estado' => EstadoPedido::CANCELADO,
-                    'notas' => trim(($pedido->notas ?? '') . ' [Cancelado automáticamente por expiración del tiempo de reserva de 3 horas]'),
-                ]);
-
-                $totalPedidos++;
-                $this->line("Pedido #{$pedido->codigo_pedido} cancelado y stock restituido al catálogo.");
-            } else {
-                // Si el pedido ya estaba pagado, confirmado o cancelado, solo limpiar la fila de reserva
-                StockReserva::where('pedido_id', $pedido->id)->delete();
+            // La eliminación de pedidos pendientes la realiza el proceso de 30
+            // minutos. Así se evita que esta tarea los cancele y deje registros
+            // pendientes en la base de datos.
+            if (in_array($pedido->estado, [
+                EstadoPedido::DRAFT,
+                EstadoPedido::PENDIENTE_PAGO,
+                EstadoPedido::PENDIENTE,
+            ], true)) {
+                continue;
             }
+
+            // Un pedido pagado, confirmado o cancelado no debe ser alterado;
+            // únicamente se eliminan reservas que ya no deberían existir.
+            StockReserva::where('pedido_id', $pedido->id)->delete();
         }
 
-        $this->info("Proceso completado: {$totalPedidos} pedidos cancelados, {$totalReservas} reservas liberadas.");
+        $this->info("Proceso completado: {$totalPedidos} pedidos procesados, {$totalReservas} reservas liberadas.");
         Log::info('LiberarReservasExpiradasCommand — Proceso completado', [
             'pedidos_cancelados' => $totalPedidos,
             'reservas_liberadas' => $totalReservas,

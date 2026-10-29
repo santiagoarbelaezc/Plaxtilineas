@@ -262,6 +262,7 @@ test('capa 2: llama al cliente de IA y parsea productos y redirecciones', functi
         ->once()
         ->andReturn('Te recomiendo la excelente espuma D30 para tapicería: [PRODUCTO:101] [REDIRECT:/busqueda?q=espuma]');
     $this->app->instance(AiChatClientInterface::class, $mockAi);
+    config(['chat.catalog_terms' => []]);
 
     $response = $this->postJson('/api/chat', [
         'mensaje' => 'Busco espuma de alta densidad para un mueble',

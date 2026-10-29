@@ -25,9 +25,9 @@ final class SignatureService
     /**
      * Genera la firma de integridad para el Widget/Checkout Web.
      *
-     * @param  string  $reference     Referencia única del pedido (ej. PLX-17000000-ABCD)
-     * @param  int     $amountCents   Monto en centavos (entero, nunca float)
-     * @param  string  $currency      Moneda ISO-4217 (ej. "COP")
+     * @param  string  $reference  Referencia única del pedido (ej. PLX-17000000-ABCD)
+     * @param  int  $amountCents  Monto en centavos (entero, nunca float)
+     * @param  string  $currency  Moneda ISO-4217 (ej. "COP")
      */
     public function buildIntegritySignature(
         string $reference,
@@ -40,7 +40,7 @@ final class SignatureService
             Log::warning('SignatureService::buildIntegritySignature — integrity_secret no configurado');
         }
 
-        return hash('sha256', $reference . $amountCents . $currency . $secret);
+        return hash('sha256', $reference.$amountCents.$currency.$secret);
     }
 
     /**
@@ -50,8 +50,8 @@ final class SignatureService
      * indicadas en signature.properties (en el orden que aparecen), seguido
      * del timestamp del evento y el events_secret.
      *
-     * @param  array<string, mixed>  $evento          Payload decodificado del webhook
-     * @param  string|null           $receivedChecksum Valor del header X-Event-Checksum
+     * @param  array<string, mixed>  $evento  Payload decodificado del webhook
+     * @param  string|null  $receivedChecksum  Valor del header X-Event-Checksum
      */
     public function validateWebhookChecksum(array $evento, ?string $receivedChecksum): bool
     {
@@ -68,17 +68,17 @@ final class SignatureService
         }
 
         /** @var array<string, mixed> $signature */
-        $signature  = $evento['signature'] ?? [];
+        $signature = $evento['signature'] ?? [];
         /** @var list<string> $properties */
         $properties = $signature['properties'] ?? [];
-        $timestamp  = (string) ($signature['checksum'] ?? $evento['timestamp'] ?? '');
+        $timestamp = (string) ($signature['checksum'] ?? $evento['timestamp'] ?? '');
 
         // Extraer los valores de las propiedades indicadas en signature.properties
         $cadena = '';
         foreach ($properties as $prop) {
             $cadena .= $this->extractNestedValue($evento, $prop);
         }
-        $cadena .= $timestamp . $eventsSecret;
+        $cadena .= $timestamp.$eventsSecret;
 
         $expected = hash('sha256', $cadena);
 
@@ -94,7 +94,7 @@ final class SignatureService
     private function extractNestedValue(array $data, string $dotPath): string
     {
         $segments = explode('.', $dotPath);
-        $current  = $data;
+        $current = $data;
 
         foreach ($segments as $segment) {
             if (! is_array($current) || ! array_key_exists($segment, $current)) {

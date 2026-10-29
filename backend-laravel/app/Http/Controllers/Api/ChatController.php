@@ -9,11 +9,12 @@ use App\Enums\RolChat;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Chat\ChatRequest;
 use App\Models\ChatHistorial;
+use App\Models\Producto;
+use App\Services\Catalogo\CatalogoApiService;
 use App\Services\ChatModerationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Throwable;
@@ -359,7 +360,7 @@ class ChatController extends Controller
      */
     private function obtenerProductosContexto(int $limite): array
     {
-        $productos = app(\App\Services\Catalogo\CatalogoApiService::class)->getProductos();
+        $productos = app(CatalogoApiService::class)->getProductos();
 
         return array_slice(array_map(static function (array $producto): array {
             return [
@@ -376,7 +377,7 @@ class ChatController extends Controller
     }
 
     /**
-     * @param array<string, mixed> $producto
+     * @param  array<string, mixed>  $producto
      */
     private static function precioMinimo(array $producto): float
     {
@@ -405,19 +406,19 @@ class ChatController extends Controller
         $intencion = null;
         $mejorPuntaje = 0;
         foreach ($intenciones as $nombre => $terminos) {
-        foreach ($terminos as $termino) {
-            $terminoNormalizado = mb_strtolower(
-                iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $termino) ?: $termino,
-                'UTF-8'
-            );
-            if (str_contains($texto, $terminoNormalizado)) {
-                $puntaje = max(1, count(preg_split('/\s+/', trim($terminoNormalizado))) * 5);
-                if ($nombre === 'pegante' && in_array($termino, [
-                    'zapato', 'zapatos', 'cuero', 'caucho', 'pegamento', 'pegante', 'pegar',
-                ], true)) {
-                    $puntaje += 10;
-                }
-                if ($puntaje > $mejorPuntaje) {
+            foreach ($terminos as $termino) {
+                $terminoNormalizado = mb_strtolower(
+                    iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $termino) ?: $termino,
+                    'UTF-8'
+                );
+                if (str_contains($texto, $terminoNormalizado)) {
+                    $puntaje = max(1, count(preg_split('/\s+/', trim($terminoNormalizado))) * 5);
+                    if ($nombre === 'pegante' && in_array($termino, [
+                        'zapato', 'zapatos', 'cuero', 'caucho', 'pegamento', 'pegante', 'pegar',
+                    ], true)) {
+                        $puntaje += 10;
+                    }
+                    if ($puntaje > $mejorPuntaje) {
                         $intencion = $nombre;
                         $mejorPuntaje = $puntaje;
                     }
@@ -429,7 +430,7 @@ class ChatController extends Controller
             return null;
         }
 
-        $catalogo = app(\App\Services\Catalogo\CatalogoApiService::class)->getProductos();
+        $catalogo = app(CatalogoApiService::class)->getProductos();
         if ($catalogo === []) {
             if ($intencion !== 'malla' || ! preg_match('/gallin|corral|ave|encerr/', $texto)) {
                 return null;
@@ -514,41 +515,47 @@ class ChatController extends Controller
 
         if (! empty($matches[1])) {
             $uniqueIds = array_unique(array_map('intval', $matches[1]));
-            $catalogo = app(\App\Services\Catalogo\CatalogoApiService::class);
+            $catalogo = app(CatalogoApiService::class);
 
             foreach ($uniqueIds as $pId) {
-                $p = $catalogo->getProducto($pId);
-                if (! $p) {
-                    $pLocal = \App\Models\Producto::find($pId);
-                    if ($pLocal) {
-                        $productos[] = [
-                            'id' => (int) $pLocal->id,
-                            'nombre' => (string) $pLocal->nombre,
-                            'precio' => (float) $pLocal->precio,
-                            'imagen' => $pLocal->imagen_url,
-                            'url' => '/producto/'.$pLocal->id,
-                        ];
-                    }
+                $pLocal = Producto::find($pId);
+                if ($pLocal) {
+                    $productos[] = [
+                        'id' => (int) $pLocal->id,
+                        'nombre' => (string) $pLocal->nombre,
+                        'precio' => (float) $pLocal->precio,
+                        'imagen' => $pLocal->imagen_url,
+                        'url' => '/producto/'.$pLocal->id,
+                    ];
+
                     continue;
                 }
-                if ($p) {
-                    $precioMin = 0.0;
-                    if (! empty($p['variants'])) {
-                        $precios = array_filter(array_map(fn ($v) => (float) ($v['price'] ?? 0), $p['variants']), fn ($pr) => $pr > 0);
-                        $precioMin = $precios ? min($precios) : 0.0;
-                    }
-                    $imagen = ! empty($p['images'][0]['url']) ? $p['images'][0]['url'] : null;
-                    $productos[] = [
-                        'id' => (int) $p['id'],
-                        'nombre' => (string) ($p['name'] ?? ''),
-                        'precio' => $precioMin,
-                        'imagen' => $imagen,
-                        'url' => '/producto/'.$p['id'],
-                    ];
+
+                $p = $catalogo->getProducto($pId);
+                if (! $p) {
+                    continue;
                 }
+
+                $precioMin = 0.0;
+                if (! empty($p['variants']) && is_array($p['variants'])) {
+                    $precios = array_filter(
+                        array_map(fn ($v) => is_array($v) ? (float) ($v['price'] ?? 0) : 0.0, $p['variants']),
+                        fn ($pr) => $pr > 0
+                    );
+                    $precioMin = $precios ? min($precios) : 0.0;
+                }
+                $images = is_array($p['images'] ?? null) ? $p['images'] : [];
+                $firstImage = is_array($images[0] ?? null) ? $images[0] : [];
+                $imagen = ! empty($firstImage['url']) ? (string) $firstImage['url'] : null;
+                $productos[] = [
+                    'id' => (int) ($p['id'] ?? $pId),
+                    'nombre' => (string) ($p['name'] ?? ''),
+                    'precio' => $precioMin,
+                    'imagen' => $imagen,
+                    'url' => '/producto/'.($p['id'] ?? $pId),
+                ];
             }
         }
-
 
         $respuestaLimpia = preg_replace('/\[PRODUCTO:\d+\]/', '', $respuesta) ?? $respuesta;
 

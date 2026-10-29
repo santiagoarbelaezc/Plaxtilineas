@@ -10,6 +10,7 @@ use App\Http\Requests\Carrito\SyncCarritoRequest;
 use App\Models\Usuario;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class CarritoController extends Controller
 {
@@ -26,7 +27,7 @@ class CarritoController extends Controller
         /** @var Usuario $usuario */
         $usuario = $request->user();
 
-        \Illuminate\Support\Facades\Log::info('[CARRITO_CONTROLLER] Petición /api/carrito/sync recibida', [
+        Log::info('[CARRITO_CONTROLLER] Petición /api/carrito/sync recibida', [
             'usuario_id' => $usuario->id,
             'usuario_email' => $usuario->correo,
             'items_count' => count($request->getItems()),
@@ -38,5 +39,4 @@ class CarritoController extends Controller
             'mensaje' => 'Carrito sincronizado exitosamente.',
         ]);
     }
-
 }

@@ -32,36 +32,35 @@ use Throwable;
 final class ProcessWompiEventAction
 {
     public function __construct(
-        private readonly SignatureService       $signatureService,
-        private readonly WompiClient            $wompiClient,
-        private readonly ConfirmarPedidoAction  $confirmarAction,
+        private readonly SignatureService $signatureService,
+        private readonly WompiClient $wompiClient,
+        private readonly ConfirmarPedidoAction $confirmarAction,
         private readonly LiberarStockReservaAction $liberarAction,
     ) {}
 
     /**
      * @param  array<string, mixed>  $evento
-     *
      * @return array{status: string, message: string, http_code: int}
      */
     public function execute(array $evento, ?string $receivedChecksum): array
     {
         // ── 1. Extraer campos del payload ──────────────────────────────────────
-        $eventoId  = (string) ($evento['id'] ?? '');
+        $eventoId = (string) ($evento['id'] ?? '');
         $eventType = (string) ($evento['event'] ?? '');
 
         /** @var array<string, mixed> $dataTx */
-        $dataTx     = $evento['data']['transaction'] ?? [];
-        $txStatus   = (string) ($dataTx['status'] ?? '');
-        $reference  = (string) ($dataTx['reference'] ?? '');
-        $transId    = (string) ($dataTx['id'] ?? '');
+        $dataTx = $evento['data']['transaction'] ?? [];
+        $txStatus = (string) ($dataTx['status'] ?? '');
+        $reference = (string) ($dataTx['reference'] ?? '');
+        $transId = (string) ($dataTx['id'] ?? '');
         $montoCents = (int) ($dataTx['amount_in_cents'] ?? 0);
-        $linkId     = (string) ($dataTx['payment_link_id'] ?? '');
+        $linkId = (string) ($dataTx['payment_link_id'] ?? '');
 
         // ── 2. Validar checksum HMAC-SHA256 ────────────────────────────────────
         if (! $this->signatureService->validateWebhookChecksum($evento, $receivedChecksum)) {
             Log::warning('ProcessWompiEventAction — Firma inválida', [
-                'evento_id'          => $eventoId,
-                'checksum_recibido'  => $receivedChecksum ? substr($receivedChecksum, 0, 8).'...' : null,
+                'evento_id' => $eventoId,
+                'checksum_recibido' => $receivedChecksum ? substr($receivedChecksum, 0, 8).'...' : null,
             ]);
 
             $this->audit($eventoId, $eventType, $txStatus, $reference, $transId, $evento, 'rejected_invalid_signature');
@@ -93,7 +92,7 @@ final class ProcessWompiEventAction
         if (! $pedido) {
             Log::warning('ProcessWompiEventAction — Pedido no encontrado', [
                 'referencia' => $reference,
-                'link_id'    => $linkId,
+                'link_id' => $linkId,
             ]);
 
             $this->audit($eventoId, $eventType, $txStatus, $reference, $transId, $evento, 'rejected_order_not_found');
@@ -105,9 +104,9 @@ final class ProcessWompiEventAction
         $montoEsperado = (int) round((float) $pedido->total * 100);
         if ($montoCents !== $montoEsperado) {
             Log::error('ProcessWompiEventAction — Monto no coincide', [
-                'pedido_id'       => $pedido->id,
-                'monto_esperado'  => $montoEsperado,
-                'monto_recibido'  => $montoCents,
+                'pedido_id' => $pedido->id,
+                'monto_esperado' => $montoEsperado,
+                'monto_recibido' => $montoCents,
             ]);
 
             $this->audit($eventoId, $eventType, $txStatus, $reference, $transId, $evento, 'rejected_amount_mismatch');
@@ -118,9 +117,9 @@ final class ProcessWompiEventAction
         // ── 7. Consultar la API de Wompi para confirmar el estado real ──────────
         // (nunca confiar solo en el webhook; se confirma contra la fuente de verdad)
         try {
-            $txData  = $this->wompiClient->getTransaction($transId);
+            $txData = $this->wompiClient->getTransaction($transId);
             /** @var array<string, mixed> $confirmedTx */
-            $confirmedTx     = $txData['data'] ?? [];
+            $confirmedTx = $txData['data'] ?? [];
             $confirmedStatus = (string) ($confirmedTx['status'] ?? $txStatus);
         } catch (Throwable $e) {
             Log::warning('ProcessWompiEventAction — No se pudo confirmar con API Wompi, usando estado del webhook', [
@@ -157,15 +156,15 @@ final class ProcessWompiEventAction
                         if ($pedidoLocked->estado === EstadoPedido::PAGADO) {
                             Log::warning('ProcessWompiEventAction — Evento tardío rechazado: no se puede revertir un PAGADO', [
                                 'pedido_id' => $pedidoLocked->id,
-                                'status'    => $confirmedStatus,
+                                'status' => $confirmedStatus,
                             ]);
 
                             return;
                         }
                         $pedidoLocked->update([
-                            'estado'               => EstadoPedido::CANCELADO,
+                            'estado' => EstadoPedido::CANCELADO,
                             'wompi_transaction_id' => $transId,
-                            'wompi_evento_id'      => $eventoId,
+                            'wompi_evento_id' => $eventoId,
                         ]);
                         $this->liberarAction->execute($pedidoLocked);
                         break;
@@ -178,7 +177,7 @@ final class ProcessWompiEventAction
         } catch (Throwable $e) {
             Log::error('ProcessWompiEventAction — Error procesando evento', [
                 'evento_id' => $eventoId,
-                'error'     => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
 
             $this->audit($eventoId, $eventType, $txStatus, $reference, $transId, $evento, 'error');
@@ -211,13 +210,13 @@ final class ProcessWompiEventAction
                 WompiWebhookEvent::updateOrCreate(
                     ['wompi_event_id' => $eventoId],
                     [
-                        'event_type'          => $eventType,
-                        'transaction_status'  => $txStatus,
-                        'reference'           => $reference,
-                        'wompi_transaction_id'=> $transId,
-                        'payload'             => $payload,
-                        'result'              => $result,
-                        'processed_at'        => now(),
+                        'event_type' => $eventType,
+                        'transaction_status' => $txStatus,
+                        'reference' => $reference,
+                        'wompi_transaction_id' => $transId,
+                        'payload' => $payload,
+                        'result' => $result,
+                        'processed_at' => now(),
                     ]
                 );
             }

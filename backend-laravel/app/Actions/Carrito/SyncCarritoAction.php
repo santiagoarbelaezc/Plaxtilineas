@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Carrito;
 
+use App\Exceptions\Domain\StockInsuficienteException;
 use App\Models\Carrito;
 use App\Models\Usuario;
 use App\Services\Catalogo\CatalogoApiService;
@@ -63,6 +64,20 @@ final class SyncCarritoAction
                     $diff = ($newItems[$productoId] ?? 0) - ($oldItems[$productoId] ?? 0);
                     if ($diff === 0) {
                         continue;
+                    }
+
+                    if ($diff > 0) {
+                        $catalogoProducto = $this->catalogo->getProducto($productoId);
+                        $disponible = (int) ($catalogoProducto['stock'] ?? 0);
+                        if (
+                            $catalogoProducto === null
+                            || ((bool) ($catalogoProducto['controlar_stock'] ?? true) && $disponible < $diff)
+                        ) {
+                            throw StockInsuficienteException::paraReserva(
+                                (string) ($catalogoProducto['name'] ?? "Producto #{$productoId}"),
+                                $disponible
+                            );
+                        }
                     }
 
                     $deltaCatalogo = -$diff;

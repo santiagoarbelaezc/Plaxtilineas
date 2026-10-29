@@ -7,7 +7,6 @@ namespace App\Actions\Pedidos;
 use App\Enums\EstadoPedido;
 use App\Exceptions\Domain\AccesoNoPermitidoException;
 use App\Models\Pedido;
-use App\Models\StockReserva;
 use App\Models\Usuario;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -77,7 +76,6 @@ final class EliminarPedidoAction
             $pedido->items()->delete();
             $pedido->delete();
         });
-
 
         return ['mensaje' => 'Pedido eliminado correctamente.'];
     }

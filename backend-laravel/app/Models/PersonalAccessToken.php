@@ -9,7 +9,4 @@ use Laravel\Sanctum\PersonalAccessToken as SanctumPersonalAccessToken;
 /**
  * Token de acceso de Sanctum para autenticación en la BD de producción.
  */
-class PersonalAccessToken extends SanctumPersonalAccessToken
-{
-}
-
+class PersonalAccessToken extends SanctumPersonalAccessToken {}

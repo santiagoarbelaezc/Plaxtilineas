@@ -1,18 +1,22 @@
 /* ═══════════════════════════════════════════════════════════════════
-   PÁGINA DE ENLACES OFICIALES — GRUPO PLAXTILÍNEAS (LINKTREE PREMIUM)
-   Estética: Columna Izquierda Ancha con Imagen HD + Logo Grande,
-   Ajuste Superior Compacto (Sin espacios vacíos arriba),
-   Tarjeta Superior Blanca y Botones Inferiores Negros con Letra Blanca
-   e Iconos/Logos de Alto Contraste.
+   PÁGINA DE ENLACES OFICIALES — GRUPO PLAXTILÍNEAS (REDISEÑO MINIMALISTA)
+   Ingeniería UI/UX:
+   - Grilla 2x2 minimalista: Instagram, Facebook, Google Maps y Espumas & Plásticos
+   - Contorno, acento cromático y halo luminoso distintivo por cada botón
+   - Animaciones escalonadas al hacer scroll (IntersectionObserver)
+   - Efecto parallax e iluminación ambiental en la tarjeta Hero
+   - En móvil: "Grupo Plaxtilíneas" centrado, botón Catálogo prominente
+     y grilla 2x2 simétrica
    ═══════════════════════════════════════════════════════════════════ */
 
 :host {
   display: block;
   width: 100%;
   background-color: #ffffff;
-  color: #000000;
+  color: #09090b;
   font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
 }
 
@@ -28,22 +32,38 @@
   box-sizing: border-box;
 }
 
-/* ── Barra Superior Fija / Discreta y Compacta ── */
+/* ── Transiciones Fluidas de Entrada al Hacer Scroll (Scroll Reveal) ── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(20px) scale(0.985);
+  transition:
+    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--stagger, 0) * 65ms);
+  will-change: opacity, transform;
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ── Barra Superior Fija Minimalista ── */
 .links-top-bar {
   position: sticky;
   top: 0;
   z-index: 50;
   width: 100%;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid #f1f5f9;
-  padding: 10px 24px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(228, 228, 231, 0.6);
+  padding: 10px 28px;
   box-sizing: border-box;
 }
 
 .top-bar-inner {
-  max-width: 1540px;
+  max-width: 1480px;
   width: 100%;
   margin: 0 auto;
   display: flex;
@@ -56,26 +76,27 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  color: #1e293b;
+  background: #fafafa;
+  border: 1px solid #e4e4e7;
+  color: #09090b;
   text-decoration: none;
-  font-size: 0.84rem;
-  font-weight: 700;
-  padding: 6px 16px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 6px 15px;
   border-radius: 999px;
-  transition: all 0.22s ease;
+  transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .back-home-chip:hover {
-  background: #000000;
+  background: #09090b;
   color: #ffffff;
-  border-color: #000000;
+  border-color: #09090b;
   transform: translateX(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
 .chip-icon {
-  transition: transform 0.22s ease;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .back-home-chip:hover .chip-icon {
@@ -85,29 +106,29 @@
 .top-bar-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .action-circle-btn {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #e4e4e7;
   background: #ffffff;
-  color: #475569;
+  color: #52525b;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.22s ease;
+  transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .action-circle-btn:hover {
-  background: #000000;
+  background: #09090b;
   color: #ffffff;
-  border-color: #000000;
+  border-color: #09090b;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
 }
 
 /* ── Toast de Copiado ── */
@@ -118,19 +139,19 @@
   transform: translateX(-50%) translateY(40px);
   opacity: 0;
   visibility: hidden;
-  background: #000000;
+  background: #09090b;
   color: #ffffff;
-  font-size: 0.88rem;
-  font-weight: 700;
+  font-size: 0.86rem;
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 24px;
+  padding: 12px 22px;
   border-radius: 999px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
   z-index: 100;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .copy-toast-notification svg {
@@ -144,12 +165,12 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   SECCIÓN HERO — ALINEADA ARRIBA (SIN ESPACIO EXCESIVO SUPERIOR)
+   SECCIÓN HERO — MINIMALISTA Y FLUIDA
    ═══════════════════════════════════════════════════════════════════ */
 .linktree-hero-section {
   width: 100%;
-  padding: 16px 32px 48px 32px;
-  background: radial-gradient(circle at 85% 10%, #f8fafc 0%, #ffffff 70%);
+  padding: 20px 32px 52px 32px;
+  background: #ffffff;
   flex: 1;
   display: flex;
   align-items: flex-start;
@@ -157,17 +178,17 @@
 }
 
 .linktree-container {
-  max-width: 1540px;
+  max-width: 1480px;
   margin: 0 auto;
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
 }
 
-/* Grilla de 2 Columnas Principal (Alineación Stretch para igualar alturas) */
+/* Grilla de 2 Columnas Principal (Misma Altura Exacta en Desktop) */
 .links-showcase-grid {
   display: grid;
-  grid-template-columns: minmax(500px, 620px) minmax(0, 1fr);
+  grid-template-columns: minmax(480px, 580px) minmax(0, 1fr);
   gap: 48px;
   align-items: stretch;
   width: 100%;
@@ -175,7 +196,7 @@
   box-sizing: border-box;
 }
 
-/* ── Columna Izquierda: Marco Visual Curvo con Imagen HD + Logo Grande (Misma Altura) ── */
+/* ── Columna Izquierda: Marco Visual con Efectos en Imagen + Logo ── */
 .showcase-visual-col {
   display: flex;
   flex-direction: column;
@@ -191,12 +212,15 @@
   flex: 1;
   min-height: 0;
   max-height: none;
-  border-radius: 30px;
+  border-radius: 28px;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 24px 50px -15px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.08);
-  background: #0a0a0a;
+  box-shadow:
+    0 24px 48px -12px rgba(9, 9, 11, 0.18),
+    0 0 0 1px rgba(9, 9, 11, 0.08);
+  background: #09090b;
   box-sizing: border-box;
+  cursor: default;
 }
 
 .showcase-visual-img {
@@ -205,20 +229,48 @@
   object-fit: cover;
   object-position: center;
   display: block;
-  filter: brightness(0.62) contrast(1.1) saturate(1.02);
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: brightness(0.58) contrast(1.12) saturate(1.04);
+  transform: scale(1.06);
+  transition:
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 .showcase-visual-card:hover .showcase-visual-img {
-  transform: scale(1.04);
+  filter: brightness(0.64) contrast(1.14) saturate(1.08);
 }
 
 .showcase-visual-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(10, 10, 10, 0.75) 0%, rgba(10, 10, 10, 0.58) 50%, rgba(10, 10, 10, 0.88) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(9, 9, 11, 0.72) 0%,
+    rgba(9, 9, 11, 0.50) 50%,
+    rgba(9, 9, 11, 0.86) 100%
+  );
   pointer-events: none;
   z-index: 1;
+}
+
+.showcase-ambient-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(34, 197, 94, 0.16) 0%,
+    rgba(22, 163, 74, 0.04) 45%,
+    transparent 70%
+  );
+  opacity: 0.75;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.showcase-visual-card:hover .showcase-ambient-glow {
+  opacity: 1;
 }
 
 /* Contenedor del Logo Grande de Plaxtilíneas Centrado */
@@ -228,67 +280,81 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 36px;
+  padding: 40px;
   z-index: 2;
   pointer-events: none;
   box-sizing: border-box;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .showcase-hero-logo {
-  width: 88%;
-  max-width: 450px;
+  width: 80%;
+  max-width: 390px;
   height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.6));
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.65));
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
   user-select: none;
 }
 
 .showcase-visual-card:hover .showcase-hero-logo {
-  transform: scale(1.035);
+  transform: scale(1.03);
 }
 
-/* ── Columna Derecha: Contenido & Enlaces ── */
+/* ── Columna Derecha: Identidad Minimalista & Grilla 2x2 ── */
 .showcase-content-col {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-between;
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
 }
 
+.profile-header-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 18px;
+}
+
 /* Titular Principal */
 .profile-main-title {
-  margin: 0 0 10px 0;
+  margin: 0 0 6px 0;
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  font-size: clamp(2.1rem, 3.6vw, 3rem);
+  gap: 10px;
+  font-size: clamp(2.1rem, 3.4vw, 2.85rem);
   font-weight: 600;
   color: #09090b;
-  letter-spacing: -0.025em;
-  line-height: 1.15;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
   flex-wrap: wrap;
 }
 
 .verified-check {
   flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Biografía / Descripción */
+.profile-main-title:hover .verified-check {
+  transform: scale(1.1) rotate(6deg);
+}
+
+/* Biografía Minimalista (1 línea limpia) */
 .profile-main-bio {
-  font-size: 1.02rem;
-  line-height: 1.58;
-  color: #64748b;
-  margin: 0 0 18px 0;
-  font-weight: 400;
-  max-width: 700px;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: #71717a;
+  margin: 0;
+  font-weight: 450;
+  max-width: 580px;
   width: 100%;
   box-sizing: border-box;
 }
 
-/* ── Tarjeta Destacada Superior (BLANCA con Letra Negra) ── */
+/* ── Tarjeta Destacada Superior (BLANCA CON CONTORNO VERDE PLAXTILÍNEAS) ── */
 .featured-hero-card {
   display: flex;
   align-items: center;
@@ -296,22 +362,35 @@
   gap: 18px;
   width: 100%;
   min-width: 0;
-  padding: 18px 24px;
+  padding: 20px 24px;
   border-radius: 22px;
-  background: #ffffff;
-  border: 2px solid #e4e4e7;
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.035) 0%, #ffffff 60%);
+  border: 1.5px solid rgba(22, 163, 74, 0.35);
   text-decoration: none;
   color: #09090b;
-  box-shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.07);
+  box-shadow:
+    0 10px 28px -10px rgba(22, 163, 74, 0.12),
+    0 2px 6px rgba(9, 9, 11, 0.02);
   box-sizing: border-box;
   margin-bottom: 16px;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.32s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .featured-hero-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   border-color: #16a34a;
-  box-shadow: 0 16px 36px -10px rgba(22, 163, 74, 0.18);
+  box-shadow:
+    0 20px 38px -12px rgba(22, 163, 74, 0.22),
+    0 4px 12px rgba(22, 163, 74, 0.08);
+}
+
+.featured-hero-card:active {
+  transform: translateY(-1px) scale(0.995);
 }
 
 .featured-card-left {
@@ -325,22 +404,23 @@
 .featured-icon-box {
   width: 54px;
   height: 54px;
-  border-radius: 15px;
-  background: #f4f4f5;
-  border: 1px solid #e4e4e7;
+  border-radius: 16px;
+  background: #16a34a;
+  border: 1px solid #16a34a;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #09090b;
+  color: #ffffff;
   box-sizing: border-box;
-  transition: all 0.25s ease;
+  box-shadow: 0 8px 18px -4px rgba(22, 163, 74, 0.4);
+  transition: all 0.32s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .featured-hero-card:hover .featured-icon-box {
-  background: #16a34a;
-  border-color: #16a34a;
-  color: #ffffff;
+  background: #15803d;
+  border-color: #15803d;
+  transform: scale(1.06);
 }
 
 .featured-text-group {
@@ -352,14 +432,14 @@
 }
 
 .featured-title {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 650;
   color: #09090b;
   letter-spacing: -0.015em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: color 0.2s ease;
+  transition: color 0.25s ease;
 }
 
 .featured-hero-card:hover .featured-title {
@@ -367,26 +447,26 @@
 }
 
 .featured-subtitle {
-  font-size: 0.88rem;
-  color: #64748b;
-  font-weight: 500;
+  font-size: 0.86rem;
+  color: #71717a;
+  font-weight: 450;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .featured-action-circle {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  background: #f4f4f5;
-  border: 1px solid #e4e4e7;
+  background: rgba(22, 163, 74, 0.1);
+  border: 1px solid rgba(22, 163, 74, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #09090b;
+  color: #16a34a;
   flex-shrink: 0;
-  transition: all 0.25s ease;
+  transition: all 0.32s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .featured-hero-card:hover .featured-action-circle {
@@ -396,7 +476,9 @@
   transform: translateX(4px);
 }
 
-/* ── Grilla Minimalista de Enlaces (2 Columnas en Desktop — BOTONES NEGROS CON LETRA BLANCA) ── */
+/* ═══════════════════════════════════════════════════════════════════
+   GRILLA 2x2 CON COLOR Y CONTORNO DISTINTIVO POR BOTÓN
+   ═══════════════════════════════════════════════════════════════════ */
 .links-minimal-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -407,28 +489,96 @@
 }
 
 .minimal-link-card {
+  --card-accent: #09090b;
+  --card-border: #e4e4e7;
+  --card-border-hover: #09090b;
+  --card-bg: #ffffff;
+  --card-shadow: rgba(9, 9, 11, 0.06);
+  --card-shadow-hover: rgba(9, 9, 11, 0.14);
+  --icon-bg: #f4f4f5;
+  --icon-border: #e4e4e7;
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   width: 100%;
   min-width: 0;
   padding: 20px 22px;
-  border-radius: 20px;
-  background: #09090b;
-  border: 1.5px solid #27272a;
+  border-radius: 22px;
+  background: var(--card-bg);
+  border: 1.5px solid var(--card-border);
   text-decoration: none;
-  color: #ffffff;
-  min-height: 138px;
+  color: #09090b;
+  min-height: 148px;
   box-sizing: border-box;
-  box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.26);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow:
+    0 10px 24px -10px var(--card-shadow),
+    0 2px 6px rgba(9, 9, 11, 0.02);
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.32s ease;
+}
+
+/* 1. Tema Instagram (Rosa / Magenta Vibrante) */
+.minimal-link-card.theme-instagram {
+  --card-accent: #e1306c;
+  --card-border: rgba(225, 48, 108, 0.32);
+  --card-border-hover: #e1306c;
+  --card-bg: linear-gradient(135deg, rgba(225, 48, 108, 0.035) 0%, #ffffff 65%);
+  --card-shadow: rgba(225, 48, 108, 0.1);
+  --card-shadow-hover: rgba(225, 48, 108, 0.24);
+  --icon-bg: rgba(225, 48, 108, 0.09);
+  --icon-border: rgba(225, 48, 108, 0.24);
+}
+
+/* 2. Tema Facebook (Azul Real Oficial) */
+.minimal-link-card.theme-facebook {
+  --card-accent: #1877f2;
+  --card-border: rgba(24, 119, 242, 0.32);
+  --card-border-hover: #1877f2;
+  --card-bg: linear-gradient(135deg, rgba(24, 119, 242, 0.035) 0%, #ffffff 65%);
+  --card-shadow: rgba(24, 119, 242, 0.1);
+  --card-shadow-hover: rgba(24, 119, 242, 0.24);
+  --icon-bg: rgba(24, 119, 242, 0.09);
+  --icon-border: rgba(24, 119, 242, 0.24);
+}
+
+/* 3. Tema Google Maps (Coral / Naranja Ubicación) */
+.minimal-link-card.theme-maps {
+  --card-accent: #ea4335;
+  --card-border: rgba(234, 67, 53, 0.32);
+  --card-border-hover: #ea4335;
+  --card-bg: linear-gradient(135deg, rgba(234, 67, 53, 0.035) 0%, #ffffff 65%);
+  --card-shadow: rgba(234, 67, 53, 0.1);
+  --card-shadow-hover: rgba(234, 67, 53, 0.24);
+  --icon-bg: rgba(234, 67, 53, 0.09);
+  --icon-border: rgba(234, 67, 53, 0.24);
+}
+
+/* 4. Tema Espumas & Plásticos (Teal / Cian Industrial) */
+.minimal-link-card.theme-espumas {
+  --card-accent: #0d9488;
+  --card-border: rgba(13, 148, 136, 0.35);
+  --card-border-hover: #0d9488;
+  --card-bg: linear-gradient(135deg, rgba(13, 148, 136, 0.04) 0%, #ffffff 65%);
+  --card-shadow: rgba(13, 148, 136, 0.1);
+  --card-shadow-hover: rgba(13, 148, 136, 0.24);
+  --icon-bg: rgba(13, 148, 136, 0.09);
+  --icon-border: rgba(13, 148, 136, 0.26);
 }
 
 .minimal-link-card:hover {
-  transform: translateY(-3px);
-  background: #121216;
-  border-color: #22c55e;
-  box-shadow: 0 18px 38px -10px rgba(22, 163, 74, 0.28);
+  transform: translateY(-4px);
+  border-color: var(--card-border-hover);
+  box-shadow:
+    0 20px 36px -12px var(--card-shadow-hover),
+    0 4px 12px rgba(9, 9, 11, 0.04);
+}
+
+.minimal-link-card:active {
+  transform: translateY(-1px) scale(0.992);
 }
 
 .card-top-row {
@@ -437,70 +587,76 @@
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 14px;
+  width: 100%;
 }
 
-/* Caja de Icono SVG Grande en Superficie Oscura */
+/* Caja de Icono con Tinte de Red Social */
 .card-icon-box {
-  width: 54px;
-  height: 54px;
+  width: 50px;
+  height: 50px;
   border-radius: 15px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--icon-bg);
+  border: 1px solid var(--icon-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: var(--card-accent);
   flex-shrink: 0;
   overflow: hidden;
-  padding: 7px;
+  padding: 6px;
   box-sizing: border-box;
-  transition: all 0.25s ease;
+  transition: all 0.32s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Caja amplia para Logos de Marcas sobre Fondo Oscuro en Desktop */
+/* Caja amplia para el Logo de Espumas & Plásticos */
 .card-icon-box.has-logo {
   width: auto;
   min-width: 72px;
-  max-width: 180px;
-  height: 56px;
-  padding: 7px 12px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  max-width: 170px;
+  height: 50px;
+  padding: 6px 12px;
+  background: var(--icon-bg);
+  border: 1px solid var(--icon-border);
 }
 
 .brand-square-logo {
-  height: 40px;
+  height: 34px;
   width: auto;
-  max-width: 155px;
+  max-width: 145px;
   object-fit: contain;
   display: block;
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Invierte el texto blanco del logo manteniendo su color cian/verde */
+.brand-square-logo.invert-brand-logo {
+  filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(1.25);
 }
 
 .minimal-link-card:hover .card-icon-box {
-  background: rgba(34, 197, 94, 0.15);
-  border-color: rgba(34, 197, 94, 0.45);
-  transform: scale(1.03);
+  transform: scale(1.06);
+  border-color: var(--card-border-hover);
 }
 
 .card-arrow-circle {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--icon-bg);
+  border: 1px solid var(--icon-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #a1a1aa;
+  color: var(--card-accent);
   flex-shrink: 0;
-  transition: all 0.25s ease;
+  transition: all 0.32s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .minimal-link-card:hover .card-arrow-circle {
-  background: #16a34a;
-  border-color: #16a34a;
+  background: var(--card-accent);
+  border-color: var(--card-accent);
   color: #ffffff;
-  transform: translateX(3px);
+  transform: translate(2px, -2px);
 }
 
 .card-bottom-info {
@@ -508,26 +664,27 @@
   flex-direction: column;
   gap: 3px;
   min-width: 0;
+  width: 100%;
 }
 
 .card-main-title {
-  font-size: 1.12rem;
-  font-weight: 650;
-  color: #ffffff;
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: #09090b;
   letter-spacing: -0.015em;
-  transition: color 0.2s ease;
+  transition: color 0.22s ease;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .minimal-link-card:hover .card-main-title {
-  color: #4ade80;
+  color: var(--card-accent);
 }
 
 .card-sub-title {
-  font-size: 0.85rem;
-  color: #a1a1aa;
+  font-size: 0.83rem;
+  color: #71717a;
   font-weight: 450;
   white-space: nowrap;
   overflow: hidden;
@@ -563,21 +720,21 @@
 }
 
 .footer-container {
-  max-width: 1540px;
+  max-width: 1480px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .footer-logo-img {
-  height: 36px;
+  height: 34px;
   width: auto;
   object-fit: contain;
   filter: grayscale(1);
-  opacity: 0.7;
-  transition: all 0.25s ease;
+  opacity: 0.65;
+  transition: all 0.28s ease;
 }
 
 .footer-logo-img:hover {
@@ -586,7 +743,7 @@
 }
 
 .footer-copy {
-  font-size: 0.82rem;
+  font-size: 0.80rem;
   color: #94a3b8;
   margin: 0;
   line-height: 1.5;
@@ -596,21 +753,21 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 0.82rem;
+  font-size: 0.80rem;
   color: #64748b;
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .footer-bottom-links a {
-  color: #475569;
+  color: #52525b;
   text-decoration: none;
   font-weight: 600;
   transition: color 0.2s ease;
 }
 
 .footer-bottom-links a:hover {
-  color: #000000;
+  color: #09090b;
 }
 
 .footer-bottom-links .sep {
@@ -618,7 +775,7 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   RESPONSIVIDAD DE LA PÁGINA — REDISEÑO MÓVIL ALINEADO Y PROPORCIONADO
+   RESPONSIVIDAD DE LA PÁGINA — MÓVIL MINIMALISTA Y CENTRADO
    ═══════════════════════════════════════════════════════════════════ */
 
 /* ── Tablet / Pantallas Medianas (<= 1200px) ── */
@@ -644,7 +801,7 @@
   }
 }
 
-/* ── Móviles y Tablets Verticales (<= 768px): Botón Catálogo Grande + Grilla 2x3 ── */
+/* ── Móviles y Tablets Verticales (<= 768px) ── */
 @media (max-width: 768px) {
   .links-top-bar {
     padding: 8px 16px;
@@ -661,7 +818,6 @@
     height: 34px;
   }
 
-  /* Contenedor principal con márgenes simétricos 16px izquierda y 16px derecha */
   .linktree-hero-section {
     padding: 12px 16px 28px 16px;
   }
@@ -674,10 +830,10 @@
   /* Tarjeta Hero proporcionada con amplio aire alrededor del logo */
   .showcase-visual-card {
     width: 100%;
-    height: 225px;
-    min-height: 225px;
-    max-height: 225px;
-    border-radius: 20px;
+    height: 220px;
+    min-height: 220px;
+    max-height: 220px;
+    border-radius: 22px;
   }
 
   .showcase-center-logo-wrapper {
@@ -685,19 +841,28 @@
   }
 
   .showcase-hero-logo {
-    width: 55%;
-    max-width: 160px;
-    max-height: 125px;
+    width: 54%;
+    max-width: 155px;
+    max-height: 120px;
     height: auto;
     object-fit: contain;
   }
 
-  /* Identidad y Biografía */
+  /* ── Identidad CENTRADA en Móvil ("Grupo Plaxtilíneas") ── */
+  .profile-header-block {
+    align-items: center;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
   .profile-main-title {
+    justify-content: center;
+    text-align: center;
+    width: 100%;
     font-size: 1.65rem;
     font-weight: 600;
     gap: 8px;
-    margin: 0 0 6px 0;
+    margin: 0 0 4px 0;
     line-height: 1.2;
   }
 
@@ -707,13 +872,15 @@
   }
 
   .profile-main-bio {
-    font-size: 0.88rem;
-    line-height: 1.48;
-    margin: 0 0 16px 0;
-    color: #64748b;
+    text-align: center;
+    font-size: 0.86rem;
+    line-height: 1.45;
+    margin: 0 auto;
+    max-width: 320px;
+    color: #71717a;
   }
 
-  /* ── Botón Destacado Blanco ("Descubre Nuestro Catálogo") MÁS GRANDE y Prominente en Móvil ── */
+  /* ── Botón Destacado Blanco ("Descubre Nuestro Catálogo") MÁS GRANDE en Móvil ── */
   .featured-hero-card {
     display: flex;
     flex-direction: row;
@@ -721,13 +888,11 @@
     justify-content: space-between;
     width: 100%;
     min-width: 0;
-    min-height: 92px;
+    min-height: 90px;
     padding: 18px 18px;
     border-radius: 22px;
     gap: 14px;
-    margin-bottom: 14px;
-    border: 2px solid #e4e4e7;
-    box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.09);
+    margin-bottom: 12px;
     box-sizing: border-box;
   }
 
@@ -740,16 +905,16 @@
   }
 
   .featured-icon-box {
-    width: 56px;
-    min-width: 56px;
-    height: 56px;
+    width: 54px;
+    min-width: 54px;
+    height: 54px;
     border-radius: 16px;
     flex-shrink: 0;
   }
 
   .featured-icon-box svg {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
   }
 
   .featured-text-group {
@@ -758,41 +923,30 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 3px;
+    gap: 2px;
   }
 
   .featured-title {
-    font-size: 1.12rem;
-    font-weight: 700;
-    line-height: 1.2;
+    font-size: 1.08rem;
+    font-weight: 650;
+    line-height: 1.22;
     white-space: normal;
-    overflow: visible;
-    text-overflow: clip;
   }
 
   .featured-subtitle {
-    font-size: 0.83rem;
+    font-size: 0.81rem;
     line-height: 1.3;
     white-space: normal;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 
   .featured-action-circle {
-    width: 42px;
-    min-width: 42px;
-    height: 42px;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
     flex-shrink: 0;
   }
 
-  .featured-action-circle svg {
-    width: 19px;
-    height: 19px;
-  }
-
-  /* ── Grilla de 6 Botones Negros: Organizados DE DOS EN DOS (2 Columnas) ── */
+  /* ── Grilla 2x2 en Móvil: Organizados DE DOS EN DOS ── */
   .links-minimal-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -826,30 +980,30 @@
   }
 
   .card-icon-box {
-    width: 46px;
-    min-width: 46px;
-    height: 46px;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
     padding: 6px;
-    border-radius: 13px;
+    border-radius: 12px;
     flex-shrink: 0;
   }
 
   .card-icon-box svg {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
   }
 
   .card-icon-box.has-logo {
     width: auto;
-    min-width: 54px;
-    max-width: calc(100% - 38px);
-    height: 46px;
+    min-width: 52px;
+    max-width: calc(100% - 36px);
+    height: 44px;
     padding: 6px 10px;
-    border-radius: 13px;
+    border-radius: 12px;
   }
 
   .brand-square-logo {
-    height: 28px;
+    height: 26px;
     width: auto;
     max-width: 100%;
     object-fit: contain;
@@ -878,8 +1032,8 @@
   }
 
   .card-main-title {
-    font-size: 0.96rem;
-    font-weight: 650;
+    font-size: 0.94rem;
+    font-weight: 600;
     line-height: 1.22;
     white-space: nowrap;
     overflow: hidden;
@@ -888,7 +1042,7 @@
   }
 
   .card-sub-title {
-    font-size: 0.76rem;
+    font-size: 0.75rem;
     line-height: 1.25;
     white-space: nowrap;
     overflow: hidden;
@@ -939,7 +1093,7 @@
 
   .showcase-hero-logo {
     max-width: 135px;
-    max-height: 110px;
+    max-height: 105px;
   }
 
   .profile-main-title {
@@ -948,22 +1102,22 @@
 
   .featured-hero-card {
     padding: 15px 14px;
-    min-height: 84px;
+    min-height: 82px;
     gap: 12px;
   }
 
   .featured-icon-box {
-    width: 50px;
-    min-width: 50px;
-    height: 50px;
+    width: 48px;
+    min-width: 48px;
+    height: 48px;
   }
 
   .featured-title {
-    font-size: 1.02rem;
+    font-size: 1rem;
   }
 
   .featured-subtitle {
-    font-size: 0.78rem;
+    font-size: 0.76rem;
   }
 
   .links-minimal-grid {
@@ -985,6 +1139,6 @@
   }
 
   .card-sub-title {
-    font-size: 0.72rem;
+    font-size: 0.71rem;
   }
 }

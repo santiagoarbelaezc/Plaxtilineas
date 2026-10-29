@@ -10,8 +10,8 @@ use App\Models\PedidoItem;
 use App\Models\Producto;
 use App\Models\StockReserva;
 use App\Models\Usuario;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\Sanctum;
 
 beforeEach(function () {

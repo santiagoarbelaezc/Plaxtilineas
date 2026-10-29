@@ -31,6 +31,7 @@ class ReconcilePendingPaymentsJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 3;
+
     public int $backoff = 60; // segundos entre reintentos
 
     /**
@@ -68,7 +69,7 @@ class ReconcilePendingPaymentsJob implements ShouldQueue
             } catch (Throwable $e) {
                 Log::error('ReconcilePendingPaymentsJob — Error reconciliando pedido', [
                     'pedido_id' => $pedido->id,
-                    'error'     => $e->getMessage(),
+                    'error' => $e->getMessage(),
                 ]);
                 // Continuar con el siguiente pedido; no detener el job
             }
@@ -105,24 +106,24 @@ class ReconcilePendingPaymentsJob implements ShouldQueue
 
         Log::info('ReconcilePendingPaymentsJob — Estado encontrado en Wompi', [
             'pedido_id' => $pedido->id,
-            'status'    => $status,
-            'trans_id'  => $transId,
+            'status' => $status,
+            'trans_id' => $transId,
         ]);
 
         if ($status === 'APPROVED' && $pedido->estado !== EstadoPedido::PAGADO) {
             $confirmarAction->execute(
                 $pedido->id,
                 $transId,
-                'reconcile-' . $transId,
+                'reconcile-'.$transId,
                 $amountCents
             );
         } elseif (in_array($status, ['DECLINED', 'VOIDED', 'ERROR'], true)
             && $pedido->estado !== EstadoPedido::CANCELADO
         ) {
             $pedido->update([
-                'estado'               => EstadoPedido::CANCELADO,
+                'estado' => EstadoPedido::CANCELADO,
                 'wompi_transaction_id' => $transId,
-                'wompi_evento_id'      => 'reconcile-' . $transId,
+                'wompi_evento_id' => 'reconcile-'.$transId,
             ]);
             $liberarAction->execute($pedido);
         }

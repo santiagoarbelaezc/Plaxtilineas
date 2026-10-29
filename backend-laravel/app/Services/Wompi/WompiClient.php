@@ -20,16 +20,20 @@ use Throwable;
 final class WompiClient
 {
     private string $baseUrl;
+
     private string $privateKey;
+
     private int $timeout;
+
     private int $retryTimes;
+
     private int $retrySleep;
 
     public function __construct()
     {
-        $this->baseUrl    = (string) config('wompi.base_url', 'https://sandbox.wompi.co/v1');
+        $this->baseUrl = (string) config('wompi.base_url', 'https://sandbox.wompi.co/v1');
         $this->privateKey = (string) config('wompi.private_key', '');
-        $this->timeout    = (int) config('wompi.timeout', 15);
+        $this->timeout = (int) config('wompi.timeout', 15);
         $this->retryTimes = (int) config('wompi.retry_times', 2);
         $this->retrySleep = (int) config('wompi.retry_sleep', 500);
     }
@@ -89,17 +93,17 @@ final class WompiClient
             $response = Http::withToken($this->privateKey)
                 ->timeout($this->timeout)
                 ->retry($this->retryTimes, $this->retrySleep)
-                ->post($this->baseUrl . $path, $body);
+                ->post($this->baseUrl.$path, $body);
 
             return $this->handleResponse($response, 'POST', $path);
         } catch (ServicioExternoException $e) {
             throw $e;
         } catch (Throwable $e) {
             Log::error('WompiClient::post — Network error', [
-                'path'  => $path,
+                'path' => $path,
                 'error' => $e->getMessage(),
             ]);
-            throw new ServicioExternoException('Wompi', "No se pudo conectar con Wompi [{$path}]: " . $e->getMessage(), [], $e);
+            throw new ServicioExternoException('Wompi', "No se pudo conectar con Wompi [{$path}]: ".$e->getMessage(), [], $e);
         }
     }
 
@@ -116,17 +120,17 @@ final class WompiClient
             $response = Http::withToken($this->privateKey)
                 ->timeout($this->timeout)
                 ->retry($this->retryTimes, $this->retrySleep)
-                ->get($this->baseUrl . $path);
+                ->get($this->baseUrl.$path);
 
             return $this->handleResponse($response, 'GET', $path);
         } catch (ServicioExternoException $e) {
             throw $e;
         } catch (Throwable $e) {
             Log::error('WompiClient::get — Network error', [
-                'path'  => $path,
+                'path' => $path,
                 'error' => $e->getMessage(),
             ]);
-            throw new ServicioExternoException('Wompi', "No se pudo conectar con Wompi [{$path}]: " . $e->getMessage(), [], $e);
+            throw new ServicioExternoException('Wompi', "No se pudo conectar con Wompi [{$path}]: ".$e->getMessage(), [], $e);
         }
     }
 
@@ -140,7 +144,7 @@ final class WompiClient
         if ($response->failed()) {
             Log::error('WompiClient — HTTP error', [
                 'method' => $method,
-                'path'   => $path,
+                'path' => $path,
                 'status' => $response->status(),
                 // NO loguear el body completo si pudiera contener datos de tarjeta
                 'error_type' => $response->json('error.type') ?? 'unknown',

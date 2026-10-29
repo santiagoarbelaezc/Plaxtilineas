@@ -38,7 +38,7 @@ return [
     | Llaves de autenticación
     |--------------------------------------------------------------------------
     */
-    'public_key'  => env('WOMPI_PUBLIC_KEY', ''),
+    'public_key' => env('WOMPI_PUBLIC_KEY', ''),
     'private_key' => env('WOMPI_PRIVATE_KEY', ''),
 
     /*
@@ -47,16 +47,16 @@ return [
     |--------------------------------------------------------------------------
     */
     'integrity_secret' => env('WOMPI_INTEGRITY_SECRET', ''),
-    'events_secret'    => env('WOMPI_EVENTS_SECRET', ''),
+    'events_secret' => env('WOMPI_EVENTS_SECRET', ''),
 
     /*
     |--------------------------------------------------------------------------
     | Configuración de HTTP
     |--------------------------------------------------------------------------
     */
-    'timeout'       => (int) env('WOMPI_TIMEOUT', 15),
-    'retry_times'   => (int) env('WOMPI_RETRY_TIMES', 2),
-    'retry_sleep'   => (int) env('WOMPI_RETRY_SLEEP', 500), // ms
+    'timeout' => (int) env('WOMPI_TIMEOUT', 15),
+    'retry_times' => (int) env('WOMPI_RETRY_TIMES', 2),
+    'retry_sleep' => (int) env('WOMPI_RETRY_SLEEP', 500), // ms
 
     /*
     |--------------------------------------------------------------------------

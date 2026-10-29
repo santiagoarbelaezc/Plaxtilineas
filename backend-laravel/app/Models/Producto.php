@@ -37,6 +37,7 @@ class Producto extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'id',
         'nombre',
         'precio',
         'stock',
@@ -71,8 +72,7 @@ class Producto extends Model
      */
     public function scopeActivo(Builder $query): Builder
     {
-        // La columna `activo` no existe en producción: todos los productos se consideran activos.
-        return $query;
+        return $query->where('activo', true);
     }
 
     /**

@@ -28,7 +28,7 @@ use Throwable;
 class WompiController extends Controller
 {
     public function __construct(
-        private readonly CreateCheckoutAction    $createCheckoutAction,
+        private readonly CreateCheckoutAction $createCheckoutAction,
         private readonly ProcessWompiEventAction $processEventAction,
     ) {}
 
@@ -43,7 +43,7 @@ class WompiController extends Controller
     public function datosPago(DatosPagoRequest $request): JsonResponse
     {
         // Verificar que las llaves están configuradas
-        $publicKey  = (string) config('wompi.public_key', '');
+        $publicKey = (string) config('wompi.public_key', '');
         $privateKey = (string) config('wompi.private_key', '');
 
         if ($publicKey === '' || $privateKey === '') {
@@ -74,7 +74,7 @@ class WompiController extends Controller
         } catch (Throwable $e) {
             Log::error('WompiController::datosPago — Error generando checkout', [
                 'pedido_id' => $pedidoId,
-                'error'     => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
 
             $httpCode = method_exists($e, 'httpStatus') ? (int) $e->httpStatus() : 502;

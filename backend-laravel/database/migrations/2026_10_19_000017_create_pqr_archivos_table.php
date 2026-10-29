@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nombre_archivo');
             $table->string('url_archivo', 500);
             $table->string('tipo_archivo', 50);
-            $table->timestamps();
+            $table->timestamp('fecha_creacion')->nullable()->useCurrent();
 
             $table->index('pqr_id');
         });

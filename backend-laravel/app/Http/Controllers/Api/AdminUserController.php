@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api;
 use App\Enums\RolUsuario;
 use App\Http\Controllers\Controller;
 use App\Models\Usuario;
+use App\Services\Catalogo\CatalogoApiService;
 use App\Support\ApiResponse;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
@@ -16,7 +17,7 @@ class AdminUserController extends Controller
     /**
      * GET /api/admin/usuarios-detalle
      */
-    public function obtenerUsuariosDetalle(\App\Services\Catalogo\CatalogoApiService $catalogo): JsonResponse
+    public function obtenerUsuariosDetalle(CatalogoApiService $catalogo): JsonResponse
     {
         /** @var Collection<int, Usuario> $usuarios */
         $usuarios = Usuario::query()
@@ -43,6 +44,7 @@ class AdminUserController extends Controller
 
             $carrito = $u->carritos->map(function ($c) use ($catalogo) {
                 $p = $catalogo->getProducto((int) $c->producto_id);
+
                 return [
                     'id' => $c->id,
                     'producto_id' => $c->producto_id,

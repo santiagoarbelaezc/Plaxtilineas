@@ -23,6 +23,8 @@ use Illuminate\Support\Carbon;
  * @property string $descripcion
  * @property EstadoPqr $estado
  * @property string $numero_ticket
+ * @property Carbon|null $fecha_creacion
+ * @property Carbon|null $fecha_actualizacion
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
