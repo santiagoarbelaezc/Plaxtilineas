@@ -207,7 +207,9 @@ jobs:
 
       - name: Instalar dependencias de producción
         working-directory: backend-laravel
-        run: composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+        run: |
+          mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache resources/views
+          composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
 
       - name: Validar que no se empaqueten secretos
         run: |
@@ -275,13 +277,18 @@ jobs:
           case "$BACKEND_ROOT" in
             */public) echo "::error::HOSTINGER_BACKEND_PATH debe ser la raíz del proyecto Laravel, no su carpeta public"; exit 1 ;;
           esac
-          $SSH_EXEC "mkdir -p '$TARGET_BACKEND/storage/framework/cache' '$TARGET_BACKEND/storage/framework/sessions' '$TARGET_BACKEND/storage/framework/views' '$TARGET_BACKEND/storage/logs' '$TARGET_BACKEND/bootstrap/cache'"
+
+          $SSH_EXEC "mkdir -p '$BACKEND_ROOT/storage/app/public' '$BACKEND_ROOT/storage/framework/cache/data' '$BACKEND_ROOT/storage/framework/sessions' '$BACKEND_ROOT/storage/framework/views' '$BACKEND_ROOT/storage/logs' '$BACKEND_ROOT/bootstrap/cache' '$BACKEND_ROOT/resources/views'"
 
           $RSYNC_PREFIX rsync -avz --delete \
+            --filter='protect .env' \
+            --filter='protect storage/**' \
             --exclude=".env" \
             --exclude=".env.*" \
             --exclude="storage/**" \
-            --exclude="bootstrap/cache/**" \
+            --exclude="bootstrap/cache/config.php" \
+            --exclude="bootstrap/cache/routes*.php" \
+            --exclude="bootstrap/cache/events.php" \
             --exclude=".git*" \
             --exclude="tests/**" \
             --exclude="phpunit.xml" \
@@ -326,5 +333,30 @@ jobs:
             /tmp/api-bridge/ \
             "$SSH_USER@$SSH_HOST:$TARGET_PUBLIC_HTML/api/"
 
-          $SSH_EXEC "php -l '$TARGET_PUBLIC_HTML/api/index.php' && cd '$TARGET_BACKEND' && php artisan optimize:clear && php artisan config:cache --no-interaction"
-          $SSH_EXEC "chmod -R u=rwX,g=rX,o=rX '$TARGET_BACKEND' '$TARGET_PUBLIC_HTML/api' && chmod -R u=rwX,g=rwX '$TARGET_BACKEND/storage' '$TARGET_BACKEND/bootstrap/cache'"
+          $SSH_EXEC "
+            set -e
+            if [ -x /opt/alt/php83/usr/bin/php ]; then
+              PHP_BIN=/opt/alt/php83/usr/bin/php
+            elif [ -x /opt/alt/php82/usr/bin/php ]; then
+              PHP_BIN=/opt/alt/php82/usr/bin/php
+            else
+              PHP_BIN=php
+            fi
+            echo \"Usando PHP: \$(\$PHP_BIN -v | head -n 1)\"
+            \$PHP_BIN -l '$TARGET_PUBLIC_HTML/api/index.php'
+            chmod -R u=rwX,g=rX,o=rX '$BACKEND_ROOT' '$TARGET_PUBLIC_HTML/api'
+            chmod -R u=rwX,g=rwX '$BACKEND_ROOT/storage' '$BACKEND_ROOT/bootstrap/cache'
+            cd '$BACKEND_ROOT'
+            if ! \$PHP_BIN -d display_errors=1 -d display_startup_errors=1 artisan config:clear --no-interaction; then
+              [ -f storage/logs/laravel.log ] && tail -n 50 storage/logs/laravel.log || true
+              exit 1
+            fi
+            if ! \$PHP_BIN -d display_errors=1 -d display_startup_errors=1 artisan route:clear --no-interaction; then
+              [ -f storage/logs/laravel.log ] && tail -n 50 storage/logs/laravel.log || true
+              exit 1
+            fi
+            if ! \$PHP_BIN -d display_errors=1 -d display_startup_errors=1 artisan config:cache --no-interaction; then
+              [ -f storage/logs/laravel.log ] && tail -n 50 storage/logs/laravel.log || true
+              exit 1
+            fi
+          "
