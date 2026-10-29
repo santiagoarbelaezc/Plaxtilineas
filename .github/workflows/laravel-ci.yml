@@ -2,13 +2,16 @@ name: Laravel CI — backend-laravel
 
 on:
   push:
-    branches: ["main", "master"]
+    branches: ["v2-laravel-nico", "main", "master"]
     paths:
       - "backend-laravel/**"
+      - ".github/workflows/laravel-ci.yml"
   pull_request:
-    branches: ["main", "master"]
+    branches: ["v2-laravel-nico", "main", "master"]
     paths:
       - "backend-laravel/**"
+      - ".github/workflows/laravel-ci.yml"
+  workflow_dispatch:
 
 defaults:
   run:
@@ -78,11 +81,11 @@ jobs:
           DB_CONNECTION: sqlite
           DB_DATABASE: ":memory:"
 
-  # Job separado para tests con MySQL real (opcional, solo en push a main)
+  # Job separado para tests con MySQL real
   laravel-mysql-tests:
     name: Tests con MySQL
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/v2-laravel-nico')
 
     services:
       mysql:

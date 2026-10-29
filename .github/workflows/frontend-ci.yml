@@ -2,15 +2,16 @@ name: Frontend CI - Angular
 
 on:
   push:
-    branches: ["main", "master"]
+    branches: ["v2-laravel-nico", "main", "master"]
     paths:
       - "frontend/**"
       - ".github/workflows/frontend-ci.yml"
   pull_request:
-    branches: ["main", "master"]
+    branches: ["v2-laravel-nico", "main", "master"]
     paths:
       - "frontend/**"
       - ".github/workflows/frontend-ci.yml"
+  workflow_dispatch:
 
 defaults:
   run:
