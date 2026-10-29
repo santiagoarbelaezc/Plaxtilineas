@@ -44,4 +44,3 @@ class ProductoNuevoRequest extends FormRequest
         return $producto;
     }
 }
-

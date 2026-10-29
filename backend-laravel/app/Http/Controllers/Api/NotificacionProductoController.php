@@ -83,4 +83,3 @@ class NotificacionProductoController extends Controller
             ."<p style='color:#64748b;line-height:1.6;margin:0;'>{$mensaje}</p></div></body></html>";
     }
 }
-

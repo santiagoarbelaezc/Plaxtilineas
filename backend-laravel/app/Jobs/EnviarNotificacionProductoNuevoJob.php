@@ -8,6 +8,7 @@ use App\Enums\RolUsuario;
 use App\Models\NotificacionProducto;
 use App\Models\Usuario;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Queue\Queueable;
 
 /**
@@ -25,9 +26,9 @@ class EnviarNotificacionProductoNuevoJob implements ShouldQueue
     /**
      * Clientes con rol cliente, correo verificado y opt-in a novedades.
      *
-     * @return \Illuminate\Database\Eloquent\Builder<Usuario>
+     * @return Builder<Usuario>
      */
-    public static function destinatarios(): \Illuminate\Database\Eloquent\Builder
+    public static function destinatarios(): Builder
     {
         return Usuario::query()
             ->where('rol', RolUsuario::CLIENTE->value)
@@ -69,4 +70,3 @@ class EnviarNotificacionProductoNuevoJob implements ShouldQueue
         });
     }
 }
-

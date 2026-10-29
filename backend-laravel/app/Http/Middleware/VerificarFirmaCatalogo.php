@@ -52,4 +52,3 @@ class VerificarFirmaCatalogo
         return $next($request);
     }
 }
-

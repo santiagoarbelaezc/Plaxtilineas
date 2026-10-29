@@ -146,4 +146,3 @@ test('el enlace de baja desactiva las novedades', function () {
 test('el enlace de baja con token invalido responde 404', function () {
     $this->get('/api/notificaciones/baja/'.str_repeat('z', 48))->assertStatus(404);
 });
-

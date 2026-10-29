@@ -88,4 +88,3 @@ class EnviarCorreoProductoNuevoJob implements ShouldQueue
         }
     }
 }
-

@@ -53,4 +53,3 @@ class NotificacionProducto extends Model
         ];
     }
 }
-

@@ -93,4 +93,3 @@ class ProductoNuevoMailable extends Mailable
         return new Content(htmlString: $html);
     }
 }
-

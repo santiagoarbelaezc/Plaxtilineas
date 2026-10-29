@@ -35,4 +35,3 @@ final class NotificarProductoNuevoAction
         return ['notificacion' => $notificacion, 'duplicada' => false];
     }
 }
-
