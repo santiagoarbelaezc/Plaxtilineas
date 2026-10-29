@@ -1,3 +1,6 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SquareMap } from './square-map.component';
@@ -8,7 +11,8 @@ describe('SquareMap', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SquareMap]
+      imports: [SquareMap],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])]
     })
     .compileComponents();
 
