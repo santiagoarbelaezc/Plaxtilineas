@@ -63,7 +63,7 @@ return [
     ],
 
     'catalogo' => [
-        'url' => env('CATALOGO_API_URL', 'https://catalogoplaxtilineas.sembradoresdevida.org/api'),
+        'url' => env('CATALOGO_API_URL', 'https://catalogoplaxtilineas.com/api'),
         'marca' => env('CATALOGO_MARCA', 'Plaxtilineas'),
         'token' => env('INVENTORY_SYNC_TOKEN', ''),
         'origin' => env('FRONTEND_URL', 'http://localhost:4200'),

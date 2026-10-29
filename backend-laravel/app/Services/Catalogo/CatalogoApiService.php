@@ -32,7 +32,7 @@ final class CatalogoApiService
     public function __construct()
     {
         $this->baseUrl = rtrim(
-            (string) config('services.catalogo.url', 'https://catalogoplaxtilineas.sembradoresdevida.org/api'),
+            (string) config('services.catalogo.url', 'https://catalogoplaxtilineas.com/api'),
             '/'
         );
         $this->token = (string) config('services.catalogo.token', '');
