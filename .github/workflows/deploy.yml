@@ -290,26 +290,26 @@ jobs:
           mkdir -p /tmp/api-bridge
           cp backend-laravel/public/.htaccess /tmp/api-bridge/.htaccess
           cat <<EOF > /tmp/api-bridge/index.php
-<?php
+          <?php
 
-use Illuminate\Http\Request;
+          use Illuminate\Http\Request;
 
-define('LARAVEL_START', microtime(true));
+          define('LARAVEL_START', microtime(true));
 
-\$backendRoot = '${BACKEND_ROOT}';
+          \$backendRoot = '${BACKEND_ROOT}';
 
-if (file_exists(\$maintenance = \$backendRoot.'/storage/framework/maintenance.php')) {
-    require \$maintenance;
-}
+          if (file_exists(\$maintenance = \$backendRoot.'/storage/framework/maintenance.php')) {
+              require \$maintenance;
+          }
 
-require \$backendRoot.'/vendor/autoload.php';
+          require \$backendRoot.'/vendor/autoload.php';
 
-\$_SERVER['SCRIPT_NAME'] = '/index.php';
-\$_SERVER['PHP_SELF'] = '/index.php';
+          \$_SERVER['SCRIPT_NAME'] = '/index.php';
+          \$_SERVER['PHP_SELF'] = '/index.php';
 
-(require_once \$backendRoot.'/bootstrap/app.php')
-    ->handleRequest(Request::capture());
-EOF
+          (require_once \$backendRoot.'/bootstrap/app.php')
+              ->handleRequest(Request::capture());
+          EOF
 
           $SSH_EXEC "mkdir -p '$TARGET_PUBLIC_HTML/api'"
           $RSYNC_PREFIX rsync -avz --delete \
