@@ -40,9 +40,10 @@
 
 /* ── Contenedor General (Espacioso y Alto) ── */
 .footer-container {
-  max-width: 1460px;
+  max-width: var(--home-max-width, 1480px);
+  width: 100%;
   margin: 0 auto;
-  padding: 80px 32px 40px;
+  padding: 80px var(--home-side-padding, 32px) 40px;
   box-sizing: border-box;
   position: relative;
   z-index: 1;

@@ -836,3 +836,19 @@ app-menu-categorias-component {
   color: #ffffff !important;
   border-color: #09090b !important;
 }
+
+
+/* ==========================================================================
+   SISTEMA UNIFICADO DE CONTENEDOR Y MÁRGENES LATERALES (HOME)
+   ========================================================================== */
+:root {
+  --home-max-width: 1480px;
+  --home-side-padding: clamp(24px, 3.5vw, 48px);
+  --home-side-padding-mobile: 16px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --home-side-padding: var(--home-side-padding-mobile);
+  }
+}

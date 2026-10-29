@@ -114,7 +114,9 @@
   display: flex;
   align-items: center;
   box-sizing: border-box;
-  padding: 40px 60px 40px;
+  max-width: var(--home-max-width, 1480px);
+  margin: 0 auto;
+  padding: 40px var(--home-side-padding, 32px);
 
   @media (max-width: 768px) {
     padding: 30px 20px 20px;
@@ -163,7 +165,7 @@
    ETAPA 0: HERO ASIENTO
    ═══════════════════════════════════════════════════════════════════ */
 .stage-card-0 {
-  left: 80px;
+  left: var(--home-side-padding, 32px);
   top: 50%;
   transform: translateY(-50%) translateY(24px);
 
@@ -268,7 +270,7 @@
 .stage-card-1,
 .stage-card-2,
 .stage-card-3 {
-  left: 80px;
+  left: var(--home-side-padding, 32px);
   bottom: 80px;
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(24px);
@@ -629,7 +631,7 @@
    ═══════════════════════════════════════════════════════════════════ */
 .apple-side-arrows {
   position: absolute;
-  right: 40px;
+  right: max(var(--home-side-padding, 32px), calc((100% - var(--home-max-width, 1480px)) / 2 + var(--home-side-padding, 32px)));
   bottom: 40px;
   z-index: 60;
   display: flex;

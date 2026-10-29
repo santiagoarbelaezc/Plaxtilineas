@@ -1,4 +1,4 @@
-<section class="feature-new-products-section dynamic-carousel-section" *ngIf="!loading && productos.length > 0">
+<section class="feature-new-products-section dynamic-carousel-section" *ngIf="loading || productos.length > 0">
   <div class="container">
     
     <!-- Header de Sección con Design Tokens -->
@@ -16,8 +16,50 @@
       </p>
     </div>
 
-    <!-- Carrusel de Productos -->
-    <div class="carrusel-wrapper">
+    <!-- Skeleton Loader para Carrusel Dinámico -->
+    <div class="carrusel-wrapper carrusel-skeleton-wrapper" *ngIf="loading" aria-busy="true" aria-label="Cargando productos">
+      <div class="carrusel-btn prev-btn skeleton-nav-btn" aria-hidden="true">
+        <div class="skeleton-shimmer"></div>
+      </div>
+
+      <div class="carousel-viewport">
+        <div class="productos-grid skeleton-grid">
+          <div *ngFor="let item of skeletonItems" class="producto-card skeleton-card">
+            <div class="producto-imagen-wrapper skeleton-img-box">
+              <div class="skeleton-shimmer"></div>
+            </div>
+            <div class="producto-info skeleton-info-box">
+              <div class="skeleton-line skeleton-pill">
+                <div class="skeleton-shimmer"></div>
+              </div>
+              <div class="skeleton-line skeleton-title-line">
+                <div class="skeleton-shimmer"></div>
+              </div>
+              <div class="skeleton-line skeleton-title-line short">
+                <div class="skeleton-shimmer"></div>
+              </div>
+              <div class="skeleton-line skeleton-price-line">
+                <div class="skeleton-shimmer"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="carrusel-btn next-btn skeleton-nav-btn" aria-hidden="true">
+        <div class="skeleton-shimmer"></div>
+      </div>
+    </div>
+
+    <!-- Indicadores Skeleton -->
+    <div class="carrusel-indicators skeleton-indicators" *ngIf="loading" aria-hidden="true">
+      <div class="indicator-dot skeleton-dot active"><div class="skeleton-shimmer"></div></div>
+      <div class="indicator-dot skeleton-dot"><div class="skeleton-shimmer"></div></div>
+      <div class="indicator-dot skeleton-dot"><div class="skeleton-shimmer"></div></div>
+    </div>
+
+    <!-- Carrusel Real de Productos -->
+    <div class="carrusel-wrapper" *ngIf="!loading && productos.length > 0">
       
       <!-- Botón Anterior -->
       <button 
@@ -85,7 +127,7 @@
     </div>
 
     <!-- Indicadores -->
-    <div class="carrusel-indicators" *ngIf="pagesArray.length > 1">
+    <div class="carrusel-indicators" *ngIf="!loading && pagesArray.length > 1">
       <button 
         *ngFor="let page of pagesArray" 
         class="indicator-dot" 
@@ -96,7 +138,7 @@
     </div>
 
     <!-- Botón para ver todos los productos de esta categoría -->
-    <div class="view-all-container">
+    <div class="view-all-container" *ngIf="!loading && productos.length > 0">
       <button class="view-all-btn" (click)="verTodos()">
         <span>Ver Todos en {{ categoriaNombre || 'Catálogo' }}</span>
         <svg class="arrow-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">

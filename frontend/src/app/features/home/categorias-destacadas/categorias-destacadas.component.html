@@ -11,8 +11,46 @@
       </p>
     </div>
 
-    <!-- Carousel Container -->
-    <div class="carousel-wrapper" *ngIf="categorias.length > 0">
+    <!-- Skeleton Loader para Categorías -->
+    <div class="carousel-wrapper skeleton-cat-wrapper" *ngIf="loading" aria-busy="true" aria-label="Cargando categorías">
+      <div class="nav-btn prev skeleton-nav-btn" aria-hidden="true">
+        <div class="skeleton-shimmer"></div>
+      </div>
+      
+      <div class="carousel-viewport">
+        <div class="categories-grid skeleton-cat-grid">
+          <div class="category-item" *ngFor="let item of skeletonCategories">
+            <div class="category-card skeleton-cat-card">
+              <div class="card-visual skeleton-cat-visual">
+                <div class="skeleton-shimmer"></div>
+              </div>
+              <div class="card-content skeleton-cat-content">
+                <div class="skeleton-line skeleton-cat-name-line">
+                  <div class="skeleton-shimmer"></div>
+                </div>
+                <div class="skeleton-line skeleton-cat-pill-line">
+                  <div class="skeleton-shimmer"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-btn next skeleton-nav-btn" aria-hidden="true">
+        <div class="skeleton-shimmer"></div>
+      </div>
+    </div>
+
+    <!-- Indicators Skeleton -->
+    <div class="carousel-indicators skeleton-indicators" *ngIf="loading" aria-hidden="true">
+      <div class="indicator-dot skeleton-dot active"><div class="skeleton-shimmer"></div></div>
+      <div class="indicator-dot skeleton-dot"><div class="skeleton-shimmer"></div></div>
+      <div class="indicator-dot skeleton-dot"><div class="skeleton-shimmer"></div></div>
+    </div>
+
+    <!-- Carousel Container Real -->
+    <div class="carousel-wrapper" *ngIf="!loading && categorias.length > 0">
       
       <!-- Prev Button -->
       <button 
@@ -75,7 +113,7 @@
     </div>
     
     <!-- Indicators -->
-    <div class="carousel-indicators" *ngIf="pagesArray.length > 1">
+    <div class="carousel-indicators" *ngIf="!loading && pagesArray.length > 1">
       <button class="indicator-dot" 
               *ngFor="let page of pagesArray"
               [class.active]="currentPage === page"
@@ -84,7 +122,7 @@
     </div>
     
     <!-- Empty State -->
-    <div class="empty-state" *ngIf="categorias.length === 0">
+    <div class="empty-state" *ngIf="!loading && categorias.length === 0">
       <div class="empty-icon">
         <fa-icon [icon]="['fas', 'folder-open']"></fa-icon>
       </div>

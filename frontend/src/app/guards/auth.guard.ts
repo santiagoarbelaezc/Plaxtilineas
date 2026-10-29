@@ -18,7 +18,9 @@ export class AuthGuard implements CanActivate {
     const token = localStorage.getItem('token');
 
     if (!token) {
-      return this.router.parseUrl('/login');
+      return this.router.createUrlTree(['/login'], {
+        queryParams: { returnUrl: state.url }
+      });
     }
 
     // Verificar expiración decodificando el payload (sin librerías)
@@ -26,7 +28,10 @@ export class AuthGuard implements CanActivate {
       console.warn('[AuthGuard] Token expirado. Limpiando sesión...');
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      return this.router.parseUrl('/login?expired=true');
+      localStorage.removeItem('plaxtilineas_cart');
+      return this.router.createUrlTree(['/login'], {
+        queryParams: { expired: 'true', returnUrl: state.url }
+      });
     }
 
     return true;

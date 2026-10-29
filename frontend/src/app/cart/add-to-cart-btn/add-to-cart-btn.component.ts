@@ -133,7 +133,6 @@ export class AddToCartBtnComponent {
         'color': '#ffffff'
       };
     }
-    // Ya no aplicamos color aquí porque sobreescribe el hover de Tailwind para los demás
     return {};
   }
 
@@ -160,6 +159,10 @@ export class AddToCartBtnComponent {
     const success = this.cartService.addToCart(this.producto, this.cantidad, this.variante);
     
     if (!success) {
+      if (this.cartService.lastRejectReason === 'auth_required') {
+        // El modal de autenticación requerida se muestra automáticamente desde CartService
+        return;
+      }
       this.showStockError = true;
       setTimeout(() => {
         this.showStockError = false;
@@ -173,4 +176,3 @@ export class AddToCartBtnComponent {
     }, 2000);
   }
 }
-

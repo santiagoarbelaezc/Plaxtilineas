@@ -58,10 +58,11 @@
 }
 
 .topbar-container {
-  max-width: 1400px;
+  max-width: var(--home-max-width, 1480px);
   width: 100%;
   margin: 0 auto;
-  padding: 0 2.5rem;
+  padding: 0 var(--home-side-padding, 32px);
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -178,10 +179,11 @@
 }
 
 .navbar-container-tw {
-  max-width: 1400px;
+  max-width: var(--home-max-width, 1480px);
   width: 100%;
   margin: 0 auto;
-  padding: 0 2.5rem;
+  padding: 0 var(--home-side-padding, 32px);
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   gap: 2.5rem;
@@ -192,7 +194,7 @@
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  margin-left: 1.25rem;
+  margin-left: 0;
 }
 
 .logo-link-tw {
@@ -1326,10 +1328,8 @@ button.action-icon-btn.search-toggle {
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
-  .topbar-container {
-    padding: 0 1.5rem;
-  }
+  .topbar-container,
   .navbar-container-tw {
-    padding: 0 1.5rem;
+    padding: 0 var(--home-side-padding, 32px);
   }
 }

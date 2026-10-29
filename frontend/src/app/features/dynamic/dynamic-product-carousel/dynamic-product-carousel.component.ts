@@ -28,6 +28,7 @@ export class DynamicProductCarouselComponent implements OnInit {
   categoriaNombre = '';
   loading = true;
   error: string | null = null;
+  readonly skeletonItems: number[] = [1, 2, 3, 4, 5];
 
   currentPage = 0;
   itemsPerPage = 5;

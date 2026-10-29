@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, HostListener, Input, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ProductosService } from '../../../services/productos.service';
@@ -16,7 +16,7 @@ import { PrecioOfertaService } from '../../../services/precio-oferta.service';
   templateUrl: './feature-new-products.html',
   styleUrls: ['./feature-new-products.css']
 })
-export class FeatureNewProducts implements OnInit {
+export class FeatureNewProducts implements OnInit, OnDestroy {
   @Input() title: string = 'EXPLORA MÁS';
   @Input() titleHighlight: string = 'PRODUCTOS';
   @Input() subtitle: string = 'Descubre nuestras últimas incorporaciones y soluciones destacadas en peletería, espumas y empaques.';
@@ -26,17 +26,22 @@ export class FeatureNewProducts implements OnInit {
   productos: ProductoEditable[] = [];
   loading: boolean = true;
   error: string | null = null;
+  readonly skeletonItems: number[] = [1, 2, 3, 4, 5];
 
   currentPage = 0;
   itemsPerPage = 5;
   pagesArray: number[] = [];
   isMobile = false;
 
+  private isProgrammaticScroll = false;
+  private scrollUnlockTimeout: any = null;
+
   constructor(
     private productosService: ProductosService,
     private router: Router,
     private menuStateService: MenuStateService,
     public precioOfertaService: PrecioOfertaService,
+    private cdr: ChangeDetectorRef,
     library: FaIconLibrary
   ) {
     library.addIcons(faChevronLeft, faChevronRight, faBoxOpen);
@@ -46,6 +51,12 @@ export class FeatureNewProducts implements OnInit {
     this.checkIfMobile();
     this.cargarUltimosProductos();
     this.inicializarAOS();
+  }
+
+  ngOnDestroy(): void {
+    if (this.scrollUnlockTimeout) {
+      clearTimeout(this.scrollUnlockTimeout);
+    }
   }
 
   @HostListener('window:resize')
@@ -60,11 +71,11 @@ export class FeatureNewProducts implements OnInit {
 
   private updateItemsPerPage(): void {
     const width = window.innerWidth;
-    if (width < 640) {
+    if (width < 576) {
       this.itemsPerPage = 1;
     } else if (width < 768) {
       this.itemsPerPage = 2;
-    } else if (width < 1024) {
+    } else if (width < 1050) {
       this.itemsPerPage = 3;
     } else if (width < 1400) {
       this.itemsPerPage = 4;
@@ -77,6 +88,13 @@ export class FeatureNewProducts implements OnInit {
   private updatePagesArray(): void {
     const totalPages = Math.ceil(this.productos.length / this.itemsPerPage);
     this.pagesArray = Array.from({ length: totalPages }, (_, i) => i);
+    if (this.currentPage >= totalPages && totalPages > 0) {
+      this.currentPage = totalPages - 1;
+    }
+  }
+
+  trackByProductoId(index: number, item: ProductoEditable): number {
+    return item.id ?? index;
   }
 
   cargarUltimosProductos(): void {
@@ -91,47 +109,61 @@ export class FeatureNewProducts implements OnInit {
         }));
         this.loading = false;
         this.updateItemsPerPage();
-        console.log('Productos cargados:', this.productos);
+        this.cdr.markForCheck();
       },
       error: (error) => {
         console.error('Error al cargar productos:', error);
         this.error = 'No se pudieron cargar los productos. Por favor, intenta más tarde.';
         this.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }
 
   scrollCarrusel(direction: 'prev' | 'next'): void {
     if (!this.productosGrid) return;
-    const grid = this.productosGrid.nativeElement;
-    const scrollAmount = grid.clientWidth * 0.85;
+    const totalPages = this.pagesArray.length;
+    if (totalPages <= 1) return;
 
-    if (direction === 'prev') {
-      grid.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-    } else {
-      grid.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
+    const targetPage = direction === 'next'
+      ? Math.min(totalPages - 1, this.currentPage + 1)
+      : Math.max(0, this.currentPage - 1);
+
+    this.goToPage(targetPage);
   }
 
   goToPage(page: number): void {
     if (!this.productosGrid) return;
-    const grid = this.productosGrid.nativeElement;
+    const grid = this.productosGrid.nativeElement as HTMLElement;
     const maxScroll = grid.scrollWidth - grid.clientWidth;
+    if (maxScroll <= 0) return;
+
     const scrollAmount = this.pagesArray.length > 1
       ? (maxScroll / (this.pagesArray.length - 1)) * page
       : 0;
+
+    this.currentPage = page;
+    this.isProgrammaticScroll = true;
+
+    if (this.scrollUnlockTimeout) {
+      clearTimeout(this.scrollUnlockTimeout);
+    }
+    this.scrollUnlockTimeout = setTimeout(() => {
+      this.isProgrammaticScroll = false;
+    }, 480);
 
     grid.scrollTo({
       left: scrollAmount,
       behavior: 'smooth'
     });
 
-    this.currentPage = page;
+    this.cdr.markForCheck();
   }
 
   onScroll(event: Event): void {
+    if (this.isProgrammaticScroll) return;
     if (!this.productosGrid || this.productos.length === 0 || this.pagesArray.length <= 1) return;
-    const grid = this.productosGrid.nativeElement;
+    const grid = this.productosGrid.nativeElement as HTMLElement;
     const maxScroll = grid.scrollWidth - grid.clientWidth;
     if (maxScroll <= 0) return;
 
@@ -143,6 +175,7 @@ export class FeatureNewProducts implements OnInit {
 
     if (calculatedPage !== this.currentPage) {
       this.currentPage = calculatedPage;
+      this.cdr.markForCheck();
     }
   }
 

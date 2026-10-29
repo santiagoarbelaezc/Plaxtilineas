@@ -33,7 +33,7 @@
       </div>
     </header>
 
-    <!-- ── Estado 1: Carrito Vacío ── -->
+    <!-- ── Estado 1: Carrito Vacío o Sin Sesión ── -->
     @if (items().length === 0) {
       <div class="cart-empty-state">
         <div class="empty-icon-circle">
@@ -43,19 +43,39 @@
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
           </svg>
         </div>
-        <h2 class="empty-title">Tu carrito está vacío</h2>
-        <p class="empty-desc">
-          Aún no has añadido productos a tu orden. Descubre nuestra amplia selección de plásticos técnicos, mallas, cuerinas, espumas y empaques industriales.
-        </p>
-        <div class="empty-actions">
-          <a routerLink="/productos" class="btn-checkout-primary">
-            Explorar Catálogo
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </a>
-        </div>
+
+        @if (!isLoggedIn()) {
+          <h2 class="empty-title">Inicia sesión para usar tu carrito</h2>
+          <p class="empty-desc">
+            Para agregar productos al carrito, reservar inventario en tiempo real y gestionar tus pedidos en Plaxtilíneas, ingresa con tu cuenta o regístrate gratis.
+          </p>
+          <div class="empty-actions" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;">
+            <a routerLink="/login" [queryParams]="{ returnUrl: '/productos' }" class="btn-checkout-primary" style="min-width: 190px;">
+              Iniciar Sesión
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+            <a routerLink="/login" [queryParams]="{ mode: 'register', returnUrl: '/productos' }" class="btn-continue-shopping" style="min-width: 190px; margin: 0;">
+              Crear una Cuenta
+            </a>
+          </div>
+        } @else {
+          <h2 class="empty-title">Tu carrito está vacío</h2>
+          <p class="empty-desc">
+            Aún no has añadido productos a tu orden. Descubre nuestra amplia selección de plásticos técnicos, mallas, cuerinas, espumas y empaques industriales.
+          </p>
+          <div class="empty-actions">
+            <a routerLink="/productos" class="btn-checkout-primary">
+              Explorar Catálogo
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+        }
       </div>
     }
 
@@ -115,8 +135,6 @@
                     <span>{{ getDisponible(item)! > 0 ? getDisponible(item) + ' disponibles' : 'Máximo alcanzado' }}</span>
                   </div>
                 }
-
-
 
                 <div class="item-unit-price">
                   Precio unitario: <strong>{{ formatearPrecio(item.precioUnitario) }}</strong>
@@ -278,8 +296,6 @@
 
   </div>
 </main>
-
-
 
 <!-- ════════════ MODAL 3: ACCESO REQUERIDO ════════════ -->
 <div *ngIf="showAuthModal()" class="modal-overlay" (click)="closeAuthModal()">

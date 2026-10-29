@@ -93,7 +93,7 @@
   <!-- Lista de productos con scroll customizado -->
   <div class="cart-panel-items">
 
-    <!-- Carrito vacío -->
+    <!-- Carrito vacío o sin sesión -->
     <div class="cart-panel-empty" *ngIf="items().length === 0">
       <div class="empty-icon-bubble">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -102,15 +102,35 @@
           <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
         </svg>
       </div>
-      <h4 class="empty-title">Tu carrito está vacío</h4>
-      <p class="empty-sub">Explora nuestro catálogo de plásticos técnicos, espumas, cuerinas y empaques.</p>
-      <a routerLink="/productos" class="empty-catalog-btn" (click)="closeCartPanel()">
-        <span>Explorar Catálogo</span>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
-        </svg>
-      </a>
+
+      <ng-container *ngIf="!isLoggedIn()">
+        <h4 class="empty-title">Inicia sesión para comprar</h4>
+        <p class="empty-sub">Ingresa con tu cuenta o regístrate para añadir productos al carrito y reservar stock en tiempo real.</p>
+        <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 220px;">
+          <button type="button" class="empty-catalog-btn" style="width: 100%; justify-content: center; border: none; cursor: pointer;" (click)="goToLogin()">
+            <span>Iniciar Sesión</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+          <button type="button" class="cart-continue-btn" style="width: 100%;" (click)="goToRegister()">
+            Crear una Cuenta
+          </button>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="isLoggedIn()">
+        <h4 class="empty-title">Tu carrito está vacío</h4>
+        <p class="empty-sub">Explora nuestro catálogo de plásticos técnicos, espumas, cuerinas y empaques.</p>
+        <a routerLink="/productos" class="empty-catalog-btn" (click)="closeCartPanel()">
+          <span>Explorar Catálogo</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </ng-container>
     </div>
 
     <!-- Items reactivos (Estilo description-producto-select) -->
@@ -137,8 +157,6 @@
             </span>
           }
         </div>
-
-
 
         <div class="cart-item-unit-row">
           <span class="unit-price-label">Unitario:</span>

@@ -29,7 +29,7 @@
         <div class="productos-grid" #productosGrid (scroll)="onScroll($event)">
           
           <!-- Tarjeta de Producto -->
-          <div *ngFor="let producto of productos; let i = index" class="producto-card">
+          <div *ngFor="let producto of productos; let i = index; trackBy: trackByProductoId" class="producto-card">
             
             <div class="producto-imagen-wrapper" (click)="verDetalles(producto.id, producto.nombre)">
               <img [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/placeholder.jpg'" 
@@ -81,10 +81,56 @@
       </button>
     </div>
 
-    <!-- Loading State -->
-    <div class="loading-state" *ngIf="loading">
-      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Plaxtilineas Logo" class="loading-logo">
-      <p>Cargando productos...</p>
+    <!-- Skeleton Loader State (Carrusel Placeholder con Shimmer) -->
+    <div class="carrusel-wrapper carrusel-skeleton-wrapper" *ngIf="loading" aria-busy="true" aria-label="Cargando productos">
+      
+      <!-- Botón Anterior Skeleton -->
+      <div class="carrusel-btn prev-btn skeleton-nav-btn" aria-hidden="true">
+        <div class="skeleton-shimmer"></div>
+      </div>
+
+      <div class="carousel-viewport">
+        <div class="productos-grid skeleton-grid">
+          
+          <div *ngFor="let item of skeletonItems" class="producto-card skeleton-card">
+            
+            <div class="producto-imagen-wrapper skeleton-img-box">
+              <div class="skeleton-shimmer"></div>
+            </div>
+
+            <div class="producto-info skeleton-info-box">
+              <div class="skeleton-line skeleton-pill">
+                <div class="skeleton-shimmer"></div>
+              </div>
+              <div class="skeleton-line skeleton-title-line">
+                <div class="skeleton-shimmer"></div>
+              </div>
+              <div class="skeleton-line skeleton-title-line short">
+                <div class="skeleton-shimmer"></div>
+              </div>
+              <div class="skeleton-line skeleton-price-line">
+                <div class="skeleton-shimmer"></div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Botón Siguiente Skeleton -->
+      <div class="carrusel-btn next-btn skeleton-nav-btn" aria-hidden="true">
+        <div class="skeleton-shimmer"></div>
+      </div>
+
+    </div>
+
+    <!-- Indicadores Skeleton -->
+    <div class="carrusel-indicators skeleton-indicators" *ngIf="loading" aria-hidden="true">
+      <div class="indicator-dot skeleton-dot active"><div class="skeleton-shimmer"></div></div>
+      <div class="indicator-dot skeleton-dot"><div class="skeleton-shimmer"></div></div>
+      <div class="indicator-dot skeleton-dot"><div class="skeleton-shimmer"></div></div>
+      <div class="indicator-dot skeleton-dot"><div class="skeleton-shimmer"></div></div>
     </div>
 
     <!-- Empty State -->

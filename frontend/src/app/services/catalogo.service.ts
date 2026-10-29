@@ -43,6 +43,9 @@ interface CatalogoProductoApi {
   variants?: CatalogoVarianteApi[];
 }
 
+const STORAGE_KEY_PRODUCTOS = 'plaxti_catalogo_cache_v2';
+const STORAGE_KEY_CATEGORIAS = 'plaxti_categorias_cache_v2';
+
 export interface CatalogoCategoria {
   id: number;
   nombre: string;
@@ -57,6 +60,7 @@ export interface CatalogoCategoria {
  * Única puerta de entrada al catálogo externo.
  * - Soporta actualización reactiva de stock en tiempo real (sin recargar la página).
  * - Sincroniza en memoria y mediante peticiones silenciosas en segundo plano.
+ * - Implementa Stale-While-Revalidate con caché persistente para despliegue instantáneo.
  */
 @Injectable({ providedIn: 'root' })
 export class CatalogoService {
@@ -71,6 +75,8 @@ export class CatalogoService {
   private categorias$?: Observable<CatalogoCategoria[]>;
 
   constructor(private http: HttpClient) {
+    this.hidratarDesdeCache();
+
     if (typeof window !== 'undefined') {
       window.addEventListener('focus', () => {
         if (this.productosCargados) {
@@ -78,6 +84,25 @@ export class CatalogoService {
           this.refrescar();
         }
       });
+    }
+  }
+
+  /**
+   * Hidratación instantánea desde almacenamiento local.
+   */
+  private hidratarDesdeCache(): void {
+    if (typeof window === 'undefined') return;
+    try {
+      const raw = sessionStorage.getItem(STORAGE_KEY_PRODUCTOS) || localStorage.getItem(STORAGE_KEY_PRODUCTOS);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          this.productosSubject.next(parsed);
+          this.productosCargados = true;
+        }
+      }
+    } catch {
+      // Ignorar fallos de parseo
     }
   }
 
@@ -104,8 +129,21 @@ export class CatalogoService {
       })
     ).subscribe(productos => {
       this.cargando = false;
-      this.productosCargados = true;
-      this.productosSubject.next(productos);
+      if (productos.length > 0) {
+        this.productosCargados = true;
+        this.productosSubject.next(productos);
+        try {
+          if (typeof window !== 'undefined') {
+            sessionStorage.setItem(STORAGE_KEY_PRODUCTOS, JSON.stringify(productos));
+            localStorage.setItem(STORAGE_KEY_PRODUCTOS, JSON.stringify(productos));
+          }
+        } catch {
+          // Si quotaExceeded, continuar sin romper
+        }
+      } else if (!this.productosCargados) {
+        this.productosCargados = true;
+        this.productosSubject.next([]);
+      }
     });
   }
 
@@ -147,8 +185,8 @@ export class CatalogoService {
       this.categorias$ = this.http
         .get<CatalogoRespuesta<any[]>>(`${this.baseUrl}/categorias`)
         .pipe(
-          map(res =>
-            (res?.data ?? [])
+          map(res => {
+            const list = (res?.data ?? [])
               .filter(c => this.mismaMarca(c.brand))
               .map(c => ({
                 id: Number(c.id),
@@ -164,10 +202,23 @@ export class CatalogoService {
                   created_at: s.created_at,
                   updated_at: s.updated_at
                 }))
-              }))
-          ),
+              }));
+            try {
+              if (typeof window !== 'undefined' && list.length > 0) {
+                sessionStorage.setItem(STORAGE_KEY_CATEGORIAS, JSON.stringify(list));
+                localStorage.setItem(STORAGE_KEY_CATEGORIAS, JSON.stringify(list));
+              }
+            } catch {}
+            return list;
+          }),
           catchError(err => {
             console.error('Error al cargar categorías del catálogo externo:', err);
+            try {
+              if (typeof window !== 'undefined') {
+                const cached = sessionStorage.getItem(STORAGE_KEY_CATEGORIAS) || localStorage.getItem(STORAGE_KEY_CATEGORIAS);
+                if (cached) return of(JSON.parse(cached) as CatalogoCategoria[]);
+              }
+            } catch {}
             this.categorias$ = undefined;
             return of([] as CatalogoCategoria[]);
           }),

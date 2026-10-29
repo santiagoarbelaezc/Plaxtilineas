@@ -114,6 +114,7 @@ export const routes: Routes = [
   },
   {
     path: 'pago',
+    canActivate: [AuthGuard],
     loadComponent: () => import('./pages/pago/pago.component').then(m => m.PagoComponent)
   },
   {

@@ -1,23 +1,19 @@
 import {
   Component,
   OnInit,
-  AfterViewInit,
   OnDestroy,
-  ChangeDetectionStrategy,
-  ElementRef,
   inject
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Title, Meta } from '@angular/platform-browser';
-import { FeatureNewProducts } from '../../features/home/feature-new-products/feature-new-products';
+import { LinksCarouselComponent } from './links-carousel/links-carousel.component';
 
 export interface QuickLinkItem {
   id: string;
   title: string;
   subtitle: string;
-  badge?: string;
-  iconType: 'instagram' | 'facebook' | 'location' | 'espumas' | 'catalog';
+  iconType: 'instagram' | 'facebook' | 'location' | 'espumas' | 'catalog' | 'review';
   themeClass?: string;
   logoUrl?: string;
   invertLogo?: boolean;
@@ -29,44 +25,36 @@ export interface QuickLinkItem {
 @Component({
   selector: 'app-links',
   standalone: true,
-  imports: [CommonModule, RouterModule, FeatureNewProducts],
+  imports: [CommonModule, RouterModule, LinksCarouselComponent],
   templateUrl: './links.component.html',
-  styleUrls: ['./links.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./links.component.css']
 })
-export class LinksComponent implements OnInit, AfterViewInit, OnDestroy {
+export class LinksComponent implements OnInit, OnDestroy {
   private titleService = inject(Title);
   private metaService = inject(Meta);
-  private hostEl = inject(ElementRef);
 
   copiedToast = false;
   private copyTimeout: any = null;
-  private scrollObserver: IntersectionObserver | null = null;
 
-  // Coordenadas sutiles para efecto parallax en la imagen hero (Desktop)
-  parallaxX = 0;
-  parallaxY = 0;
-
-  // Imagen HD de plásticos industriales para Plaxtilíneas + Logo Grande
+  // Imagen HD de fondo oscurecida + Logo Blanco
   showcaseVisual = {
     imageUrl: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1793246685/plaxti-links_am0zvu.jpg',
     logoUrl: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1770388940/logo-invert_ghucfi.png',
-    alt: 'Plaxtilíneas Expertos en Plásticos Industriales y Empaques'
+    alt: 'Plaxtilíneas Plásticos Industriales'
   };
 
-  // Tarjeta Destacada Superior (Ancho Completo - Fondo Blanco Minimalista)
+  // Botón Principal Destacado: Catálogo
   readonly featuredLink: QuickLinkItem = {
     id: 'catalogo',
-    title: 'Descubre Nuestro Catálogo',
+    title: 'Catálogo de Productos',
     subtitle: 'Plásticos, Espumas & Empaques',
-    badge: 'Oficial',
     iconType: 'catalog',
     targetUrl: '/productos',
     isExternal: false,
     highlight: true
   };
 
-  // Grilla Minimalista 2x2 con Contorno y Color Distintivo por Botón
+  // Enlaces Minimalistas
   readonly gridLinks: QuickLinkItem[] = [
     {
       id: 'instagram',
@@ -87,12 +75,12 @@ export class LinksComponent implements OnInit, AfterViewInit, OnDestroy {
       isExternal: true
     },
     {
-      id: 'ubicacion',
-      title: 'Google Maps',
-      subtitle: 'Sede Armenia, Quindío',
-      iconType: 'location',
-      themeClass: 'theme-maps',
-      targetUrl: 'https://www.google.com/maps/dir/4.5696779,-75.6521222/PLAXTILINEAS,+630001,+Armenia,+Quind%C3%ADo/@4.553645,-75.6819289,14z/data=!3m1!4b1!4m9!4m8!1m1!4e1!1m5!1m1!1s0x8e38f5bd543fc99f:0x2bd98af1d04068f8!2m2!1d-75.6749092!2d4.5355891?entry=ttu',
+      id: 'resena',
+      title: 'Dejar una Reseña',
+      subtitle: 'Tu opinión en Google nos ayuda a crecer',
+      iconType: 'review',
+      themeClass: 'theme-review',
+      targetUrl: '#',
       isExternal: true
     },
     {
@@ -101,83 +89,33 @@ export class LinksComponent implements OnInit, AfterViewInit, OnDestroy {
       subtitle: 'Corte Industrial',
       iconType: 'espumas',
       themeClass: 'theme-espumas',
-      logoUrl: 'https://res.cloudinary.com/doxdjiyvi/image/upload/v1792788733/logo-grande_qauprn.png',
-      invertLogo: true,
+      logoUrl: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1793293522/espumas-iconos_jfqu9u.png',
       targetUrl: 'https://espumasyplasticos.com/',
       isExternal: true
     }
   ];
 
-  // Compatibilidad con lista completa
-  get quickLinks(): QuickLinkItem[] {
-    return [this.featuredLink, ...this.gridLinks];
-  }
-
   ngOnInit(): void {
     this.titleService.setTitle('Enlaces Oficiales — Grupo Plaxtilíneas');
     this.metaService.updateTag({
       name: 'description',
-      content: 'Portal oficial de enlaces del Grupo Empresarial Plaxtilíneas. Accede a nuestro catálogo, redes sociales, ubicación y Espumas y Plásticos.'
+      content: 'Portal oficial de enlaces del Grupo Plaxtilíneas. Catálogo oficial, redes sociales, ubicación y atención directa.'
     });
 
     if (typeof document !== 'undefined') {
-      document.body.style.backgroundColor = '#ffffff';
-      document.documentElement.style.backgroundColor = '#ffffff';
+      document.body.style.backgroundColor = '#000000';
+      document.documentElement.style.backgroundColor = '#000000';
     }
   }
 
-  ngAfterViewInit(): void {
-    this.initScrollReveal();
-  }
-
   ngOnDestroy(): void {
-    if (this.scrollObserver) {
-      this.scrollObserver.disconnect();
+    if (typeof document !== 'undefined') {
+      document.body.style.backgroundColor = '';
+      document.documentElement.style.backgroundColor = '';
     }
     if (this.copyTimeout) {
       clearTimeout(this.copyTimeout);
     }
-  }
-
-  private initScrollReveal(): void {
-    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
-      const allEls = this.hostEl.nativeElement.querySelectorAll('[data-reveal]');
-      allEls.forEach((el: HTMLElement) => el.classList.add('is-visible'));
-      return;
-    }
-
-    this.scrollObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            this.scrollObserver?.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        threshold: 0.08,
-        rootMargin: '0px 0px -24px 0px'
-      }
-    );
-
-    const targets = this.hostEl.nativeElement.querySelectorAll('[data-reveal]');
-    targets.forEach((el: HTMLElement) => this.scrollObserver?.observe(el));
-  }
-
-  onVisualMouseMove(event: MouseEvent): void {
-    const card = event.currentTarget as HTMLElement;
-    if (!card || window.innerWidth <= 768) return;
-    const rect = card.getBoundingClientRect();
-    const relX = (event.clientX - rect.left) / rect.width - 0.5;
-    const relY = (event.clientY - rect.top) / rect.height - 0.5;
-    this.parallaxX = Math.round(relX * 14);
-    this.parallaxY = Math.round(relY * 14);
-  }
-
-  onVisualMouseLeave(): void {
-    this.parallaxX = 0;
-    this.parallaxY = 0;
   }
 
   copyPageLink(): void {
