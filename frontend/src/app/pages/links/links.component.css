@@ -1,0 +1,905 @@
+/* ═══════════════════════════════════════════════════════════════════
+   PÁGINA DE ENLACES OFICIALES — GRUPO PLAXTILÍNEAS (LINKTREE PREMIUM)
+   Estética: Fondo Blanco Puro, Tipografía Negro Sólido y Gris Claro Elegante,
+   Acentos Esmeralda #16a34a en kickers, badges y hovers.
+   ═══════════════════════════════════════════════════════════════════ */
+
+:host {
+  display: block;
+  width: 100%;
+  background-color: #ffffff;
+  color: #000000;
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.links-page-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ── Barra Superior Fija / Discreta ── */
+.links-top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid #f1f5f9;
+  padding: 12px 24px;
+}
+
+.top-bar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.back-home-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #1e293b;
+  text-decoration: none;
+  font-size: 0.84rem;
+  font-weight: 700;
+  padding: 7px 16px;
+  border-radius: 999px;
+  transition: all 0.22s ease;
+}
+
+.back-home-chip:hover {
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
+  transform: translateX(-2px);
+}
+
+.chip-icon {
+  transition: transform 0.22s ease;
+}
+
+.back-home-chip:hover .chip-icon {
+  transform: translateX(-2px);
+}
+
+.top-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.action-circle-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #475569;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.22s ease;
+}
+
+.action-circle-btn:hover {
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* ── Toast de Copiado ── */
+.copy-toast-notification {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(40px);
+  opacity: 0;
+  visibility: hidden;
+  background: #000000;
+  color: #ffffff;
+  font-size: 0.88rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
+  z-index: 100;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.copy-toast-notification svg {
+  color: #22c55e;
+}
+
+.copy-toast-notification.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SECCIÓN 1: LINKTREE HERO & STACK DE ENLACES
+   ═══════════════════════════════════════════════════════════════════ */
+.linktree-hero-section {
+  padding: 48px 20px 64px 20px;
+  background: radial-gradient(circle at 50% 0%, #f8fafc 0%, #ffffff 75%);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.linktree-container {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Perfil & Avatar */
+.profile-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 36px;
+  width: 100%;
+}
+
+.avatar-ring-wrapper {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+.avatar-box {
+  width: 108px;
+  height: 108px;
+  border-radius: 28px;
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  box-shadow: 0 14px 34px -8px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.avatar-box:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 20px 40px -8px rgba(22, 163, 74, 0.18);
+  border-color: #16a34a;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.live-status-dot {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 16px;
+  height: 16px;
+  background: #16a34a;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.4);
+}
+
+.profile-badge-row {
+  margin-bottom: 10px;
+}
+
+.profile-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #16a34a;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.kicker-line {
+  width: 20px;
+  height: 2px;
+  background: #16a34a;
+  display: inline-block;
+  border-radius: 2px;
+}
+
+.profile-title {
+  margin: 0 0 14px 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: clamp(1.45rem, 3.8vw, 2rem);
+  font-weight: 900;
+  color: #000000;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+.verified-check {
+  flex-shrink: 0;
+}
+
+.profile-bio {
+  font-size: 0.98rem;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0 0 22px 0;
+  max-width: 560px;
+  font-weight: 400;
+}
+
+/* Píldoras de Contacto Directo */
+.direct-contact-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.contact-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+  transition: all 0.22s ease;
+}
+
+.contact-pill:hover {
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
+  transform: translateY(-2px);
+}
+
+.contact-pill.whatsapp:hover {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #ffffff;
+}
+
+/* ── Pila de Tarjetas Linktree ── */
+.links-tree-stack {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.linktree-card-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 18px 22px;
+  border-radius: 20px;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.linktree-card-btn:hover {
+  transform: translateY(-3px);
+  border-color: #000000;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.09);
+  background: #ffffff;
+}
+
+.linktree-card-btn.highlight-card {
+  border-color: #16a34a;
+  background: linear-gradient(to right, #fafffc, #ffffff);
+}
+
+.linktree-card-btn.highlight-card:hover {
+  border-color: #16a34a;
+  box-shadow: 0 16px 34px rgba(22, 163, 74, 0.16);
+}
+
+.card-btn-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+}
+
+.card-icon-container {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #1e293b;
+  transition: all 0.25s ease;
+}
+
+.card-icon-container.has-logo {
+  padding: 6px;
+  background: #ffffff;
+}
+
+.brand-mini-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.text-whatsapp {
+  color: #16a34a;
+}
+
+.linktree-card-btn:hover .card-icon-container {
+  transform: scale(1.06);
+  border-color: #cbd5e1;
+}
+
+.card-text-block {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.card-main-title {
+  font-size: 1.05rem;
+  font-weight: 850;
+  color: #000000;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-tag-pill {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.card-tag-pill.badge-whatsapp {
+  background: #dcfce7;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.linktree-card-btn.highlight-card .card-tag-pill {
+  background: #16a34a;
+  color: #ffffff;
+  border-color: #16a34a;
+}
+
+.card-sub-title {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-arrow-container {
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 12px;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+
+.linktree-card-btn:hover .card-arrow-container {
+  color: #000000;
+  transform: translateX(4px);
+}
+
+.linktree-card-btn.highlight-card:hover .card-arrow-container {
+  color: #16a34a;
+}
+
+/* Indicador de Desplazamiento */
+.scroll-down-hint {
+  margin-top: 36px;
+}
+
+.scroll-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #64748b;
+  text-decoration: none;
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.scroll-link:hover {
+  color: #000000;
+  border-color: #000000;
+  background: #ffffff;
+  transform: translateY(2px);
+}
+
+.scroll-link svg {
+  animation: bounceDown 1.8s infinite ease-in-out;
+}
+
+@keyframes bounceDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SECCIÓN 2: SHOWCASE EDITORIAL SPLIT (DISEÑO EXACTO DEL HOME)
+   ═══════════════════════════════════════════════════════════════════ */
+.product-features-showcase {
+  background-color: #ffffff;
+  padding: 84px 0 96px 0;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid #e4e4e7;
+}
+
+.features-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 92px;
+}
+
+/* Encabezado General del Showcase */
+.showcase-header {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.showcase-title {
+  margin: 8px 0 14px 0;
+  font-size: clamp(2rem, 3.8vw, 2.85rem);
+  font-weight: 950;
+  color: #000000;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.showcase-desc {
+  font-size: 1.05rem;
+  color: #64748b;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ── Bloque Individual Split ── */
+.feature-split-block {
+  width: 100%;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.feature-grid.reverse-layout {
+  grid-template-columns: 1.15fr 1fr;
+}
+
+.feature-grid.reverse-layout .feature-visual-wrapper {
+  order: 2;
+}
+
+.feature-grid.reverse-layout .feature-content-wrapper {
+  order: 1;
+}
+
+/* ── Columna Visual: Marco Curvo de Imagen ── */
+.feature-visual-wrapper {
+  width: 100%;
+}
+
+.feature-frame {
+  position: relative;
+  width: 100%;
+  height: 440px;
+  border-radius: 24px;
+  overflow: hidden;
+  background-color: #f8fafc;
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.feature-frame:hover {
+  box-shadow: 0 24px 50px -10px rgba(0, 0, 0, 0.14);
+  border-color: #cbd5e1;
+}
+
+.frame-tag-badge {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.feature-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.feature-frame:hover .feature-img {
+  transform: scale(1.03);
+}
+
+/* ── Columna Contenido Editorial ── */
+.feature-content-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.kicker-badge-row {
+  margin-bottom: 14px;
+}
+
+.feature-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.74rem;
+  font-weight: 750;
+  color: #16a34a;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* Título: Lead en Negro Sólido, Highlight en Gris Claro Elegante */
+.feature-title {
+  margin: 0 0 18px 0;
+}
+
+.title-lead {
+  display: block;
+  font-size: clamp(2rem, 3.4vw, 2.75rem);
+  font-weight: 900;
+  color: #000000;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.title-highlight {
+  display: block;
+  font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.24;
+  margin-top: 6px;
+  color: #71717a; /* Gris claro elegante */
+  letter-spacing: -0.015em;
+}
+
+/* Párrafo Descriptivo */
+.feature-desc {
+  font-size: 1.05rem;
+  color: #64748b;
+  line-height: 1.7;
+  font-weight: 400;
+  margin: 0 0 28px 0;
+  max-width: 680px;
+}
+
+/* Checklist con Checks Esmeralda */
+.feature-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.check-icon {
+  color: #16a34a;
+  flex-shrink: 0;
+  stroke-width: 2.5;
+  margin-top: 3px;
+}
+
+.bullet-text-group {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  flex-wrap: wrap;
+}
+
+.bullet-name {
+  color: #000000;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.bullet-detail {
+  color: #71717a;
+  font-weight: 400;
+}
+
+/* Botón CTA Pill Negro con Hover Esmeralda */
+.feature-action-row {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.feature-cta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #000000;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  padding: 14px 34px;
+  border-radius: 50px;
+  border: 1.5px solid #000000;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  transition: all 0.25s ease;
+}
+
+.feature-cta-pill:hover {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(22, 163, 74, 0.28);
+}
+
+.cta-arrow {
+  transition: transform 0.25s ease;
+}
+
+.feature-cta-pill:hover .cta-arrow {
+  transform: translateX(3px);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FOOTER LIMPIO Y ELEGANTE
+   ═══════════════════════════════════════════════════════════════════ */
+.links-footer {
+  background-color: #fafafa;
+  border-top: 1px solid #f1f5f9;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.footer-container {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.footer-logo-img {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+  filter: grayscale(1);
+  opacity: 0.7;
+  transition: all 0.25s ease;
+}
+
+.footer-logo-img:hover {
+  filter: grayscale(0);
+  opacity: 1;
+}
+
+.footer-copy {
+  font-size: 0.84rem;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.footer-bottom-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.82rem;
+  color: #64748b;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer-bottom-links a {
+  color: #475569;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.footer-bottom-links a:hover {
+  color: #000000;
+}
+
+.footer-bottom-links .sep {
+  color: #cbd5e1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE DESIGN
+   ═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .features-container {
+    gap: 72px;
+  }
+
+  .feature-grid,
+  .feature-grid.reverse-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .feature-grid.reverse-layout .feature-visual-wrapper {
+    order: 0;
+  }
+
+  .feature-grid.reverse-layout .feature-content-wrapper {
+    order: 1;
+  }
+
+  .feature-frame {
+    height: 340px;
+  }
+}
+
+@media (max-width: 640px) {
+  .linktree-hero-section {
+    padding: 32px 16px 48px 16px;
+  }
+
+  .avatar-box {
+    width: 90px;
+    height: 90px;
+    border-radius: 22px;
+  }
+
+  .linktree-card-btn {
+    padding: 15px 16px;
+  }
+
+  .card-icon-container {
+    width: 42px;
+    height: 42px;
+  }
+
+  .card-main-title {
+    font-size: 0.98rem;
+  }
+
+  .card-sub-title {
+    font-size: 0.8rem;
+  }
+
+  .product-features-showcase {
+    padding: 56px 0 68px 0;
+  }
+
+  .features-container {
+    padding: 0 18px;
+    gap: 56px;
+  }
+
+  .feature-frame {
+    height: 260px;
+    border-radius: 18px;
+  }
+
+  .title-lead {
+    font-size: 1.85rem;
+  }
+
+  .title-highlight {
+    font-size: 1.45rem;
+  }
+
+  .feature-desc {
+    font-size: 0.94rem;
+  }
+
+  .bullet-text-group {
+    font-size: 0.9rem;
+  }
+
+  .feature-cta-pill {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}

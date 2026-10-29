@@ -1,0 +1,342 @@
+<main class="links-page-root" role="main">
+
+  <!-- ── Barra de Navegación Rápida Superior ── -->
+  <header class="links-top-bar">
+    <div class="top-bar-inner">
+      <a routerLink="/" class="back-home-chip" title="Regresar al inicio de Plaxtilíneas">
+        <svg class="chip-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span>Plaxtilíneas Home</span>
+      </a>
+
+      <div class="top-bar-actions">
+        <button type="button" class="action-circle-btn" (click)="sharePage()" aria-label="Compartir enlace de la página" title="Compartir o copiar enlace">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+        </button>
+
+        <button type="button" class="action-circle-btn" (click)="copyPageLink()" aria-label="Copiar enlace" title="Copiar URL">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Toast de Copiado ── -->
+  <aside class="copy-toast-notification" [class.show]="copiedToast" role="status" aria-live="polite">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span>¡Enlace copiado al portapapeles!</span>
+  </aside>
+
+  <!-- ── SECCIÓN LINKTREE: Perfil & Botones Rápidos ── -->
+  <section class="linktree-hero-section">
+    <div class="linktree-container">
+
+      <!-- Avatar & Identidad -->
+      <div class="profile-header">
+        <div class="avatar-ring-wrapper">
+          <div class="avatar-box">
+            <img 
+              src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" 
+              alt="Logo Grupo Plaxtilíneas"
+              class="avatar-img"
+            />
+          </div>
+          <span class="live-status-dot" title="Marcas y atención activa"></span>
+        </div>
+
+        <div class="profile-badge-row">
+          <span class="profile-kicker">
+            <span class="kicker-line"></span>
+            GRUPO EMPRESARIAL PLAXTILÍNEAS
+          </span>
+        </div>
+
+        <h1 class="profile-title">
+          <span>PORTAL DE ENLACES OFICIALES</span>
+          <svg class="verified-check" width="22" height="22" viewBox="0 0 24 24" fill="none" title="Canal Verificado">
+            <path d="M12 2L15.09 5.26L19.5 5.75L20.35 10.15L23.5 13.5L20.89 17.15L20.9 21.65L16.45 22.45L13.5 25.4L9.95 23.45L5.75 24.25L4.85 19.85L1.5 16.75L3.85 13L3.15 8.55L7.45 7.45L10.05 4.3L12 2Z" fill="#16a34a" />
+            <polyline points="9 12 11.5 14.5 16 9.5" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </h1>
+
+        <p class="profile-bio">
+          Conectamos el sector agropecuario, la construcción, la manufactura y el descanso con materiales técnicos de primera categoría y marcas especializadas en Colombia.
+        </p>
+
+        <!-- Píldoras de contacto directo instantáneo -->
+        <div class="direct-contact-pills">
+          <a href="https://api.whatsapp.com/send/?phone=573007365939" target="_blank" rel="noopener noreferrer" class="contact-pill whatsapp">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+            <span>WhatsApp Asesoría</span>
+          </a>
+
+          <a href="https://www.google.com/maps/dir/4.5696779,-75.6521222/PLAXTILINEAS,+630001,+Armenia,+Quind%C3%ADo/@4.553645,-75.6819289,14z/data=!3m1!4b1!4m9!4m8!1m1!4e1!1m5!1m1!1s0x8e38f5bd543fc99f:0x2bd98af1d04068f8!2m2!1d-75.6749092!2d4.5355891?entry=ttu" target="_blank" rel="noopener noreferrer" class="contact-pill location">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <span>Sede Armenia</span>
+          </a>
+
+          <a href="tel:+573007365939" class="contact-pill phone">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+            <span>+57 300 736 5939</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Pila de Enlaces Estilo Linktree con Diseño Premium -->
+      <div class="links-tree-stack">
+
+        <ng-container *ngFor="let link of quickLinks">
+          
+          <!-- Enlace Interno -->
+          <a 
+            *ngIf="!link.isExternal" 
+            [routerLink]="link.targetUrl" 
+            class="linktree-card-btn"
+            [class.highlight-card]="link.highlight"
+          >
+            <div class="card-btn-left">
+              <div class="card-icon-container" [class.has-logo]="!!link.logoUrl">
+                <img *ngIf="link.logoUrl" [src]="link.logoUrl" [alt]="link.title" class="brand-mini-logo" />
+                
+                <!-- Iconos SVG si no hay logoUrl -->
+                <svg *ngIf="!link.logoUrl && link.iconType === 'catalog'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+              </div>
+
+              <div class="card-text-block">
+                <div class="card-title-row">
+                  <span class="card-main-title">{{ link.title }}</span>
+                  <span *ngIf="link.badge" class="card-tag-pill">{{ link.badge }}</span>
+                </div>
+                <span class="card-sub-title">{{ link.subtitle }}</span>
+              </div>
+            </div>
+
+            <div class="card-arrow-container">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </div>
+          </a>
+
+          <!-- Enlace Externo -->
+          <a 
+            *ngIf="link.isExternal" 
+            [href]="link.targetUrl" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="linktree-card-btn"
+            [class.highlight-card]="link.highlight"
+          >
+            <div class="card-btn-left">
+              <div class="card-icon-container" [class.has-logo]="!!link.logoUrl">
+                <img *ngIf="link.logoUrl" [src]="link.logoUrl" [alt]="link.title" class="brand-mini-logo" />
+
+                <!-- Icono WhatsApp -->
+                <svg *ngIf="!link.logoUrl && link.iconType === 'whatsapp'" class="text-whatsapp" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                </svg>
+
+                <!-- Icono Ubicación -->
+                <svg *ngIf="!link.logoUrl && link.iconType === 'location'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+              </div>
+
+              <div class="card-text-block">
+                <div class="card-title-row">
+                  <span class="card-main-title">{{ link.title }}</span>
+                  <span *ngIf="link.badge" class="card-tag-pill" [class.badge-whatsapp]="link.iconType === 'whatsapp'">{{ link.badge }}</span>
+                </div>
+                <span class="card-sub-title">{{ link.subtitle }}</span>
+              </div>
+            </div>
+
+            <div class="card-arrow-container">
+              <!-- Flecha de salida externa -->
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="7" y1="17" x2="17" y2="7"></line>
+                <polyline points="7 7 17 7 17 17"></polyline>
+              </svg>
+            </div>
+          </a>
+
+        </ng-container>
+
+      </div>
+
+      <!-- Acceso Directo al desglose de marcas -->
+      <div class="scroll-down-hint">
+        <a href="#bloques-marcas" class="scroll-link">
+          <span>Conoce cada marca a detalle</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <polyline points="19 12 12 19 5 12"></polyline>
+          </svg>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── SECCIÓN EDITORIAL DIVIDIDA: Con el diseño exacto del Home ── -->
+  <section id="bloques-marcas" class="product-features-showcase" aria-label="Ecosistema de Marcas del Grupo Plaxtilíneas">
+    <div class="features-container">
+
+      <!-- Encabezado de la Sección de Marcas -->
+      <div class="showcase-header">
+        <div class="kicker-badge-row">
+          <span class="feature-kicker">
+            <span class="kicker-line"></span>
+            ECOSISTEMA EMPRESARIAL
+          </span>
+        </div>
+        <h2 class="showcase-title">NUESTRAS MARCAS & DIVISIONES</h2>
+        <p class="showcase-desc">
+          Materiales plásticos, descanso ergonómico, insumos ortopédicos y transformación industrial. Todo bajo el respaldo y trayectoria de nuestro grupo.
+        </p>
+      </div>
+
+      <!-- Lista de Bloques Alternados con el Estilo Exacto de Feature Split -->
+      <div 
+        *ngFor="let item of brandBlocks; let i = index" 
+        class="feature-split-block"
+        [id]="item.id"
+      >
+        <div 
+          class="feature-grid"
+          [class.reverse-layout]="item.imagePosition === 'right'"
+        >
+          
+          <!-- Columna Visual: Imagen en Marco Curvo -->
+          <div class="feature-visual-wrapper">
+            <div class="feature-frame">
+              <span class="frame-tag-badge">{{ item.badgeTag }}</span>
+              <img 
+                [src]="item.imageUrl" 
+                [alt]="item.imageAlt"
+                class="feature-img"
+                loading="lazy"
+              />
+            </div>
+          </div>
+
+          <!-- Columna Contenido: Kicker, Título, Párrafo y Puntos Clave -->
+          <div class="feature-content-wrapper">
+            
+            <!-- Kicker Minimalista con Línea Esmeralda -->
+            <div class="kicker-badge-row">
+              <span class="feature-kicker">
+                <span class="kicker-line"></span>
+                {{ item.kicker }}
+              </span>
+            </div>
+
+            <!-- Titular Principal con Lead en Negro y Highlight en Gris Claro -->
+            <h3 class="feature-title">
+              <span class="title-lead">{{ item.titleLead }}</span>
+              <span class="title-highlight">{{ item.titleHighlight }}</span>
+            </h3>
+
+            <!-- Descripción Corta y Esencial -->
+            <p class="feature-desc">
+              {{ item.description }}
+            </p>
+
+            <!-- Lista de Usos y Beneficios con Checks Esmeralda -->
+            <ul class="feature-checklist">
+              <li *ngFor="let bullet of item.bullets" class="checklist-item">
+                <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="bullet-text-group">
+                  <strong class="bullet-name">{{ bullet.title }}:</strong>
+                  <span class="bullet-detail">{{ bullet.desc }}</span>
+                </span>
+              </li>
+            </ul>
+
+            <!-- Botón de Acción Principal Pill Negro con Hover Esmeralda -->
+            <div class="feature-action-row">
+              <!-- Enlace Interno -->
+              <a 
+                *ngIf="!item.isExternal" 
+                [routerLink]="item.linkUrl" 
+                class="feature-cta-pill"
+              >
+                <span>{{ item.linkText }}</span>
+                <svg class="cta-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+
+              <!-- Enlace Externo -->
+              <a 
+                *ngIf="item.isExternal" 
+                [href]="item.linkUrl" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="feature-cta-pill"
+              >
+                <span>{{ item.linkText }}</span>
+                <svg class="cta-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </a>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Pie de Página Oficial del Portal ── -->
+  <footer class="links-footer">
+    <div class="footer-container">
+      <div class="footer-brand-logo">
+        <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Plaxtilíneas" class="footer-logo-img">
+      </div>
+      <p class="footer-copy">
+        © 2026 Grupo Empresarial Plaxtilíneas · Armenia, Quindío, Colombia. Todos los derechos reservados.
+      </p>
+      <div class="footer-bottom-links">
+        <a routerLink="/">Inicio</a>
+        <span class="sep">•</span>
+        <a routerLink="/productos">Catálogo</a>
+        <span class="sep">•</span>
+        <a routerLink="/nosotros">Nosotros</a>
+        <span class="sep">•</span>
+        <a href="https://api.whatsapp.com/send/?phone=573007365939" target="_blank" rel="noopener noreferrer">WhatsApp Directo</a>
+      </div>
+    </div>
+  </footer>
+
+</main>

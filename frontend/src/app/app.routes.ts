@@ -134,6 +134,15 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/verificar-email/verificar-email').then(m => m.VerificarEmail)
   },
   {
+    path: 'links',
+    loadComponent: () => import('./pages/links/links.component').then(m => m.LinksComponent)
+  },
+  {
+    path: 'home',
+    redirectTo: '',
+    pathMatch: 'full'
+  },
+  {
     path: '**',
     redirectTo: ''
   }
