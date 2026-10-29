@@ -12,3 +12,8 @@ Schedule::command('carrito:limpiar-expirados')->hourly();
 Schedule::command('stock:liberar-expirados')->everyFiveMinutes();
 Schedule::command('pedidos:limpiar-expirados')->everyThirtyMinutes();
 Schedule::command('wompi:reconciliar-pendientes')->everyTenMinutes();
+
+// Worker de cola para Hostinger: basta con el cron de `schedule:run` cada minuto.
+Schedule::command('queue:work --stop-when-empty --max-time=55 --tries=3')
+    ->everyMinute()
+    ->withoutOverlapping(5);

@@ -10,6 +10,7 @@ use App\Http\Requests\Carrito\SyncCarritoRequest;
 use App\Models\Usuario;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class CarritoController extends Controller
@@ -17,6 +18,29 @@ class CarritoController extends Controller
     public function __construct(
         protected SyncCarritoAction $syncCarritoAction
     ) {}
+
+    /**
+     * GET /api/carrito
+     * Obtiene los ítems actuales reservados en el carrito del cliente autenticado.
+     */
+    public function index(Request $request): JsonResponse
+    {
+        /** @var Usuario $usuario */
+        $usuario = $request->user();
+
+        $items = $usuario->carritos()->get()->map(fn ($c) => [
+            'id' => $c->id,
+            'producto_id' => (int) $c->producto_id,
+            'variante_id' => $c->variante_id !== null ? (int) $c->variante_id : null,
+            'cantidad' => (int) $c->cantidad,
+            'precio_unitario' => (float) $c->precio_unitario,
+            'agregado_en' => $c->created_at?->toIso8601String(),
+        ])->values();
+
+        return ApiResponse::success([
+            'items' => $items,
+        ]);
+    }
 
     /**
      * POST /api/carrito/sync

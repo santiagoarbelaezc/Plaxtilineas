@@ -67,6 +67,8 @@ return [
         'marca' => env('CATALOGO_MARCA', 'Plaxtilineas'),
         'token' => env('INVENTORY_SYNC_TOKEN', ''),
         'origin' => env('FRONTEND_URL', 'http://localhost:4200'),
+        'webhook_secret' => env('CATALOGO_WEBHOOK_SECRET', ''),
+        'notificaciones_activas' => (bool) env('NOTIFICACIONES_PRODUCTOS_ACTIVAS', true),
     ],
 
 ];

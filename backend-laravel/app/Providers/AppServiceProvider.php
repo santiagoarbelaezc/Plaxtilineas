@@ -99,6 +99,10 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(30)->by($key);
         });
 
+        RateLimiter::for('catalogo-notificaciones', function (Request $request) {
+            return Limit::perMinute(30)->by($request->ip() ?: '127.0.0.1');
+        });
+
         RateLimiter::for('wompi-webhook', function (Request $request) {
             return Limit::perMinute(60)->by($request->ip() ?: '127.0.0.1');
         });

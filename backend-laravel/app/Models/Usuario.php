@@ -30,6 +30,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string|null $token_verificacion
  * @property Carbon|null $token_expira_en
  * @property bool $requiere_cambio_password
+ * @property bool $acepta_novedades
+ * @property string|null $token_baja
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -62,6 +64,8 @@ class Usuario extends Authenticatable
         'token_verificacion',
         'token_expira_en',
         'requiere_cambio_password',
+        'acepta_novedades',
+        'token_baja',
     ];
 
     /**
@@ -70,6 +74,7 @@ class Usuario extends Authenticatable
     protected $hidden = [
         'password',
         'token_verificacion',
+        'token_baja',
     ];
 
     /**
@@ -81,6 +86,7 @@ class Usuario extends Authenticatable
             'edad' => 'integer',
             'email_verificado' => 'boolean',
             'requiere_cambio_password' => 'boolean',
+            'acepta_novedades' => 'boolean',
             'token_expira_en' => 'datetime',
             'password' => 'hashed',
         ];

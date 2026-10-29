@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ComponentesController;
 use App\Http\Controllers\Api\ConfiguracionController;
 use App\Http\Controllers\Api\DashboardAssistantController;
 use App\Http\Controllers\Api\LeadsController;
+use App\Http\Controllers\Api\NotificacionProductoController;
 use App\Http\Controllers\Api\PedidoController;
 use App\Http\Controllers\Api\PqrsController;
 use App\Http\Controllers\Api\StatsController;
@@ -125,6 +126,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 // ═════════════════════════════════════════════════════════════════════════════
 
 Route::middleware('auth:sanctum')->prefix('carrito')->group(function () {
+    Route::get('/', [CarritoController::class, 'index']);
     Route::post('/sync', [CarritoController::class, 'sync']);
 });
 
@@ -159,6 +161,16 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 // ═════════════════════════════════════════════════════════════════════════════
 // WOMPI  /api/wompi/*
 // ═════════════════════════════════════════════════════════════════════════════
+
+// Notificaciones de productos nuevos (origen: catalogoplaxtilineas.com, firma HMAC)
+Route::prefix('notificaciones')->group(function () {
+    Route::post('/producto-nuevo', [NotificacionProductoController::class, 'productoNuevo'])
+        ->middleware(['throttle:catalogo-notificaciones', 'catalogo.firma']);
+
+    // Baja de novedades en un clic desde el correo
+    Route::get('/baja/{token}', [NotificacionProductoController::class, 'baja'])
+        ->middleware('throttle:api');
+});
 
 Route::prefix('wompi')->group(function () {
     // Generación de link de pago (requiere autenticación)

@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Exceptions\Domain\DomainException;
 use App\Http\Middleware\AssignRequestId;
 use App\Http\Middleware\EnsureUserIsAdmin;
+use App\Http\Middleware\VerificarFirmaCatalogo;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -33,6 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'admin' => EnsureUserIsAdmin::class,
+            'catalogo.firma' => VerificarFirmaCatalogo::class,
             'request.id' => AssignRequestId::class,
         ]);
     })
