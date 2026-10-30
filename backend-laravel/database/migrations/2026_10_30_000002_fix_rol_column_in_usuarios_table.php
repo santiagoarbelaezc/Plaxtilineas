@@ -38,4 +38,3 @@ return new class extends Migration
         // No revertimos rol a enum para no truncar registros con rol 'cliente'.
     }
 };
-

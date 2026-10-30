@@ -6,6 +6,7 @@ namespace App\Services\Catalogo;
 
 use App\Models\Producto;
 use App\Models\StockReserva;
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -591,7 +592,7 @@ final class CatalogoApiService
         }
     }
 
-    private function registrarEventoStockEnCatalogo(\Illuminate\Database\ConnectionInterface $conn, int $productoId, int $stockNuevo, string $origen): void
+    private function registrarEventoStockEnCatalogo(ConnectionInterface $conn, int $productoId, int $stockNuevo, string $origen): void
     {
         try {
             $conn->insert(
