@@ -11,18 +11,18 @@ class ApiTest extends TestCase
         $response = $this->getJson('/api/test');
 
         $response->assertStatus(200)
-                 ->assertJsonStructure([
-                     'status',
-                     'message',
-                     'framework',
-                     'php_version',
-                     'environment',
-                     'server_time',
-                     'client_ip',
-                 ])
-                 ->assertJson([
-                     'status' => 'success',
-                 ]);
+            ->assertJsonStructure([
+                'status',
+                'message',
+                'framework',
+                'php_version',
+                'environment',
+                'server_time',
+                'client_ip',
+            ])
+            ->assertJson([
+                'status' => 'success',
+            ]);
     }
 
     public function test_api_test_post_endpoint_echoes_payload(): void
@@ -31,10 +31,10 @@ class ApiTest extends TestCase
         $response = $this->postJson('/api/test', $payload);
 
         $response->assertStatus(200)
-                 ->assertJson([
-                     'status' => 'success',
-                     'payload' => $payload,
-                 ]);
+            ->assertJson([
+                'status' => 'success',
+                'payload' => $payload,
+            ]);
     }
 
     public function test_api_health_endpoint_returns_healthy(): void
@@ -42,9 +42,9 @@ class ApiTest extends TestCase
         $response = $this->getJson('/api/health');
 
         $response->assertStatus(200)
-                 ->assertJson([
-                     'status' => 'healthy',
-                 ]);
+            ->assertJson([
+                'status' => 'healthy',
+            ]);
     }
 
     public function test_api_db_check_endpoint_returns_status(): void
@@ -52,6 +52,6 @@ class ApiTest extends TestCase
         $response = $this->getJson('/api/db-check');
 
         $response->assertStatus(200)
-                 ->assertJsonStructure(['status', 'message']);
+            ->assertJsonStructure(['status', 'message']);
     }
 }

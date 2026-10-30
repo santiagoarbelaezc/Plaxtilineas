@@ -9,13 +9,15 @@
   background-color: #ffffff;
   font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   position: relative;
-  overflow: hidden;
+  overflow-x: clip;
 }
 
 .container {
-  max-width: 1550px;
+  max-width: var(--home-max-width, 1480px) !important;
+  width: 100%;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 var(--home-side-padding, 32px);
+  box-sizing: border-box;
 }
 
 /* ── Section Header ── */
@@ -62,7 +64,7 @@
 .carousel-viewport {
   flex: 1;
   overflow: hidden;
-  padding: 8px 4px 2px 4px;
+  padding: 8px 0 2px 0;
 }
 
 .productos-grid {
@@ -73,7 +75,7 @@
   overflow-x: auto;
   scroll-behavior: smooth;
   scrollbar-width: none;
-  padding: 8px 4px 10px 4px;
+  padding: 8px 0 10px 0;
 }
 
 .productos-grid::-webkit-scrollbar {
@@ -244,6 +246,9 @@
 
 /* ── Botones de Navegación ── */
 .carrusel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   width: 46px;
   height: 46px;
   border-radius: 50%;
@@ -260,12 +265,20 @@
   z-index: 10;
 }
 
+.carrusel-btn.prev-btn {
+  left: -18px;
+}
+
+.carrusel-btn.next-btn {
+  right: -18px;
+}
+
 .carrusel-btn:hover:not([disabled]) {
   background: #16a34a;
   color: #ffffff;
   border-color: #16a34a;
   box-shadow: 0 8px 24px rgba(22, 163, 74, 0.35);
-  transform: scale(1.08);
+  transform: translateY(-50%) scale(1.08);
 }
 
 .carrusel-btn[disabled] {
@@ -341,6 +354,126 @@
 
 .view-all-btn:hover .arrow-icon {
   transform: translateX(4px);
+}
+
+/* ── Skeleton Loader para Carrusel Dinámico ── */
+.carrusel-skeleton-wrapper {
+  pointer-events: none;
+  user-select: none;
+}
+
+.skeleton-card {
+  border-color: #f1f5f9;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-card:hover {
+  transform: none !important;
+  border-color: #f1f5f9 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02) !important;
+}
+
+.skeleton-img-box {
+  background: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-info-box {
+  padding-top: 12px;
+}
+
+.skeleton-line {
+  position: relative;
+  overflow: hidden;
+  background: #f1f5f9;
+  border-radius: 6px;
+}
+
+.skeleton-pill {
+  width: 42%;
+  height: 12px;
+  border-radius: 9999px;
+  margin-bottom: 8px;
+}
+
+.skeleton-title-line {
+  width: 92%;
+  height: 14px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.skeleton-title-line.short {
+  width: 62%;
+  margin-bottom: 12px;
+}
+
+.skeleton-price-line {
+  width: 50%;
+  height: 18px;
+  border-radius: 6px;
+  margin-top: 4px;
+}
+
+.skeleton-nav-btn {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: transparent !important;
+  cursor: default !important;
+  overflow: hidden;
+}
+
+.skeleton-nav-btn:hover {
+  transform: translateY(-50%) !important;
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+.skeleton-indicators {
+  margin-top: 16px;
+}
+
+.skeleton-dot {
+  background: #e2e8f0 !important;
+  cursor: default !important;
+  overflow: hidden;
+  position: relative;
+}
+
+.skeleton-dot.active {
+  background: #cbd5e1 !important;
+  width: 22px;
+}
+
+/* Efecto Shimmer */
+.skeleton-shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.72) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: skeleton-shimmer 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  transform: translateZ(0);
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 /* ── Responsividad ── */

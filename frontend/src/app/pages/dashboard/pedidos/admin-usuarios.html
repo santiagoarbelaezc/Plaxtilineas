@@ -200,6 +200,11 @@
                     <span style="display: block; font-size: 0.76rem; color: #71717a; font-weight: 600; margin-top: 1px;">
                       {{ u.correo }}
                     </span>
+                    <span
+                      [style.color]="u.email_verificado ? '#15803d' : '#b45309'"
+                      style="display:inline-block;margin-top:6px;font-size:0.7rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;">
+                      {{ u.email_verificado ? 'Verificado' : 'Pendiente por verificación' }}
+                    </span>
                   </div>
                 </div>
               </td>

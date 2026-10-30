@@ -67,6 +67,7 @@ export class ContactoAsistente implements OnInit, AfterViewChecked, OnDestroy {
 
   private previousMessagesLength = 0;
   private previousIsTyping = false;
+  private readonly localHistoryKey = 'mateo_chat_history';
 
   constructor(
     private http: HttpClient,
@@ -104,6 +105,7 @@ export class ContactoAsistente implements OnInit, AfterViewChecked, OnDestroy {
   ngAfterViewChecked() {
     if (this.messages.length !== this.previousMessagesLength || this.isTyping !== this.previousIsTyping) {
       this.scrollToBottom();
+      this.guardarHistorialLocal();
       this.previousMessagesLength = this.messages.length;
       this.previousIsTyping = this.isTyping;
     }
@@ -132,11 +134,17 @@ export class ContactoAsistente implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   cargarHistorial() {
+    const historialLocal = this.leerHistorialLocal();
+    if (historialLocal.length > 0) {
+      this.messages = historialLocal;
+      this.showQuickReplies = false;
+    }
+
     this.http.get<any>(`${environment.apiUrl}/chat/historial?session_id=${this.sessionId}`).subscribe({
       next: (res) => {
         const mensajes = res?.mensajes || res?.data?.mensajes;
         if (mensajes && Array.isArray(mensajes)) {
-          this.messages = mensajes.map((m: any) => {
+          const historialServidor: Message[] = mensajes.map((m: any): Message => {
             const sender = (m.rol === 'user' || m.sender === 'user') ? 'user' : 'assistant';
             return {
               text: m.mensaje || m.text || '',
@@ -147,13 +155,44 @@ export class ContactoAsistente implements OnInit, AfterViewChecked, OnDestroy {
               type: 'normal'
             };
           });
-          if (this.messages.length > 0) {
+          if (historialServidor.length > 0) {
+            this.messages = historialServidor;
+            this.guardarHistorialLocal();
             this.showQuickReplies = false;
           }
         }
       },
       error: (err) => console.error('Error al cargar historial', err)
     });
+  }
+
+  private leerHistorialLocal(): Message[] {
+    try {
+      const raw = localStorage.getItem(`${this.localHistoryKey}:${this.sessionId}`);
+      const parsed = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(parsed)) return [];
+      return parsed.filter((message: any) =>
+        message && (message.sender === 'user' || message.sender === 'assistant') &&
+        typeof message.text === 'string'
+      ).map((message: any) => ({
+        ...message,
+        timestamp: new Date(message.timestamp)
+      }));
+    } catch {
+      return [];
+    }
+  }
+
+  private guardarHistorialLocal(): void {
+    if (!this.sessionId || typeof localStorage === 'undefined') return;
+    try {
+      localStorage.setItem(
+        `${this.localHistoryKey}:${this.sessionId}`,
+        JSON.stringify(this.messages.slice(-50))
+      );
+    } catch (error) {
+      console.warn('No se pudo guardar el historial local del chat.', error);
+    }
   }
 
   get charCount(): number {
@@ -384,8 +423,10 @@ export class ContactoAsistente implements OnInit, AfterViewChecked, OnDestroy {
     this.http.delete<any>(`${environment.apiUrl}/chat/limpiar?session_id=${this.sessionId}`).subscribe({
       next: () => {
         this.isTyping = false;
+        const previousSessionId = this.sessionId;
         this.sessionId = this.generateUUID();
         localStorage.setItem('mateo_session_id', this.sessionId);
+        localStorage.removeItem(`${this.localHistoryKey}:${previousSessionId}`);
         this.messages = [];
         this.showQuickReplies = true;
         this.moderation = { infractions: 0, isBlocked: false, blockCountdown: 0 };
@@ -394,8 +435,10 @@ export class ContactoAsistente implements OnInit, AfterViewChecked, OnDestroy {
       error: (err) => {
         this.isTyping = false;
         console.error('Error al reiniciar chat:', err);
+        const previousSessionId = this.sessionId;
         this.sessionId = this.generateUUID();
         localStorage.setItem('mateo_session_id', this.sessionId);
+        localStorage.removeItem(`${this.localHistoryKey}:${previousSessionId}`);
         this.messages = [];
         this.showQuickReplies = true;
         this.moderation = { infractions: 0, isBlocked: false, blockCountdown: 0 };

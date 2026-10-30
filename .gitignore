@@ -21,6 +21,17 @@ backend/uploads/
 backend/.env
 backend/coverage/
 
+# === Laravel backend ===
+backend-laravel/.env
+backend-laravel/.env.*
+!backend-laravel/.env.example
+backend-laravel/vendor/
+backend-laravel/storage/*.key
+backend-laravel/storage/logs/*.log
+*.sqlite
+*.sqlite-journal
+
+
 # === VS Code ===
 .vscode/*
 !.vscode/settings.json

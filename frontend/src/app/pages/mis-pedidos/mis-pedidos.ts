@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -17,6 +17,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./mis-pedidos.css'],
 })
 export class MisPedidos implements OnInit {
+  @Input() isEmbedded: boolean = false;
   private pedidoService = inject(PedidoService);
   public authService = inject(AuthService);
 
@@ -29,20 +30,42 @@ export class MisPedidos implements OnInit {
   invoicePedido = signal<Pedido | null>(null);
 
   filtroEstado = signal<string>('todos');
+  searchQuery = signal<string>('');
 
   readonly estadosList = ESTADOS_PEDIDO;
 
   pedidosFiltrados = computed(() => {
     const filtro = this.filtroEstado();
-    const all = this.pedidos();
-    if (filtro === 'todos') return all;
-    return all.filter(p => p.estado === filtro);
+    const query = this.searchQuery().trim().toLowerCase();
+    let list = this.pedidos();
+
+    if (filtro !== 'todos') {
+      list = list.filter(p => p.estado === filtro);
+    }
+
+    if (query) {
+      list = list.filter(p =>
+        (p.codigo_pedido && p.codigo_pedido.toLowerCase().includes(query)) ||
+        (p.direccion_envio && p.direccion_envio.toLowerCase().includes(query)) ||
+        (p.detalles && p.detalles.some(d => d.nombre_producto.toLowerCase().includes(query)))
+      );
+    }
+
+    return list;
   });
+
+  getCountByEstado(estado: string): number {
+    if (estado === 'todos') return this.pedidos().length;
+    return this.pedidos().filter(p => p.estado === estado).length;
+  }
 
   totalPedidos = computed(() => this.pedidos().length);
   totalInvertido = computed(() => this.pedidos().reduce((s, p) => s + Number(p.total), 0));
   pedidosActivos = computed(() =>
     this.pedidos().filter(p => !['entregado', 'cancelado'].includes(p.estado)).length
+  );
+  entregasCompletadas = computed(() =>
+    this.pedidos().filter(p => p.estado === 'entregado').length
   );
 
   ngOnInit(): void {

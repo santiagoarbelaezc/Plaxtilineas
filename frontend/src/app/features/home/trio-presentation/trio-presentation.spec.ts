@@ -1,18 +1,22 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TrioPresentation } from './trio-presentation';
+import { PlaxtiTrioPresentationComponent } from './trio-presentation';
 
-describe('TrioPresentation', () => {
-  let component: TrioPresentation;
-  let fixture: ComponentFixture<TrioPresentation>;
+describe('PlaxtiTrioPresentationComponent', () => {
+  let component: PlaxtiTrioPresentationComponent;
+  let fixture: ComponentFixture<PlaxtiTrioPresentationComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TrioPresentation]
+      imports: [PlaxtiTrioPresentationComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(TrioPresentation);
+    fixture = TestBed.createComponent(PlaxtiTrioPresentationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

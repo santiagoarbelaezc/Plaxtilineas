@@ -1,5 +1,5 @@
-<div class="configuracion-container pt-20">
-  <div class="configuracion-header">
+<div class="configuracion-container" [class.embedded]="isEmbedded" [class.pt-20]="!isEmbedded">
+  <div class="configuracion-header" *ngIf="!isEmbedded">
     <div class="header-icon">
       <fa-icon [icon]="['fas', 'key']"></fa-icon>
     </div>

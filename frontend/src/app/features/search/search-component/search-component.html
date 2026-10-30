@@ -160,22 +160,6 @@
         </div>
       </div>
 
-      <!-- Frecuentes -->
-      <div class="chips-block">
-        <div class="chips-block-header">
-          <span class="chips-title">BÚSQUEDAS FRECUENTES</span>
-        </div>
-        <div class="chips-grid">
-          <button
-            *ngFor="let tag of busquedasFrecuentes"
-            class="chip-pill frequent-chip"
-            [class.active-chip]="terminoBusqueda.toLowerCase() === tag.toLowerCase()"
-            (click)="ejecutarBusquedaDirecta(tag)"
-            type="button">
-            {{ tag }}
-          </button>
-        </div>
-      </div>
     </div>
 
     <!-- Barra de Estado / Filtro Activo (Estilo Product List) -->

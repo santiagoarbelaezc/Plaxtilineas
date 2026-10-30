@@ -244,6 +244,13 @@
       stroke: currentColor;
       stroke-width: 2;
     }
+
+    /* Ocultar modal flotante PWA en desktop (pantallas >= 768px) */
+    @media (min-width: 768px) {
+      .pwa-banner {
+        display: none !important;
+      }
+    }
   </style>
 
   <!-- Banner Android -->
@@ -275,6 +282,13 @@
     // Detectar si ya está instalada o en modo standalone
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
     
+    // Detectar si es dispositivo móvil
+    const isMobileDevice = () => {
+      const userAgent = (navigator.userAgent || navigator.vendor || window.opera).toLowerCase();
+      const isMobileUA = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/i.test(userAgent);
+      return isMobileUA || (window.innerWidth < 768);
+    };
+
     // Detectar iOS
     const isIos = () => {
       const userAgent = window.navigator.userAgent.toLowerCase();
@@ -284,45 +298,59 @@
     // Detectar si ya se mostró (session storage para no molestar tanto)
     const hasSeenPrompt = sessionStorage.getItem('pwa_prompt_seen');
 
-    if (!isStandalone && !hasSeenPrompt) {
+    // Solo activar en dispositivos móviles
+    if (!isStandalone && !hasSeenPrompt && isMobileDevice()) {
       if (isIos()) {
         // En iOS mostramos el aviso personalizado (retraso de 2s)
         setTimeout(() => {
-          document.getElementById('ios-pwa-banner').classList.add('show');
+          const iosBanner = document.getElementById('ios-pwa-banner');
+          if (iosBanner && isMobileDevice()) {
+            iosBanner.classList.add('show');
+          }
         }, 2000);
       } else {
-        // En Android, esperamos el evento oficial del navegador
+        // En Android / Móvil, esperamos el evento oficial del navegador
         window.addEventListener('beforeinstallprompt', (e) => {
           e.preventDefault();
           deferredPrompt = e;
           
-          setTimeout(() => {
-            document.getElementById('android-pwa-banner').classList.add('show');
-          }, 1000);
+          if (isMobileDevice()) {
+            setTimeout(() => {
+              const androidBanner = document.getElementById('android-pwa-banner');
+              if (androidBanner && isMobileDevice()) {
+                androidBanner.classList.add('show');
+              }
+            }, 1000);
+          }
         });
       }
     }
 
     // Acción Instalar Android
-    document.getElementById('btn-install-pwa').addEventListener('click', async () => {
-      closeAndroidPwa();
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          console.log('App instalada con éxito');
+    const btnInstallPwa = document.getElementById('btn-install-pwa');
+    if (btnInstallPwa) {
+      btnInstallPwa.addEventListener('click', async () => {
+        closeAndroidPwa();
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          if (outcome === 'accepted') {
+            console.log('App instalada con éxito');
+          }
+          deferredPrompt = null;
         }
-        deferredPrompt = null;
-      }
-    });
+      });
+    }
 
     function closeAndroidPwa() {
-      document.getElementById('android-pwa-banner').classList.remove('show');
+      const banner = document.getElementById('android-pwa-banner');
+      if (banner) banner.classList.remove('show');
       sessionStorage.setItem('pwa_prompt_seen', 'true');
     }
 
     function closeIosPwa() {
-      document.getElementById('ios-pwa-banner').classList.remove('show');
+      const banner = document.getElementById('ios-pwa-banner');
+      if (banner) banner.classList.remove('show');
       sessionStorage.setItem('pwa_prompt_seen', 'true');
     }
   </script>

@@ -10,6 +10,7 @@ import { MobileCartComponent } from './cart/mobile-cart/mobile-cart.component';
 import { PwaService } from './services/pwa.service';
 import { LoadingScreenComponent } from './shared/ui/loading-screen/loading-screen';
 import { AuthService } from './services/auth.service';
+import { CartService } from './services/cart.service';
 import { ThemeService } from './services/theme.service';
 import { ToastNotificationComponent } from './shared/ui/toast-notification/toast-notification.component';
 import { CookieConsentComponent } from './shared/ui/cookies/cookies';
@@ -47,6 +48,7 @@ export class AppComponent implements OnInit {
     private pwaService: PwaService,
     private keyboardService: KeyboardService,
     public authService: AuthService,
+    public cartService: CartService,
     public themeService: ThemeService
   ) {
     this.canInstall$ = this.pwaService.canInstall$;
@@ -74,6 +76,12 @@ export class AppComponent implements OnInit {
     });
   }
 
+  formatearPrecioModal(precio: number | undefined): string {
+    if (!precio) return '$ 0';
+    const entero = Math.round(Number(precio));
+    return '$ ' + entero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
   installPwa(): void {
     this.pwaService.installPwa();
   }
@@ -93,4 +101,4 @@ export class AppComponent implements OnInit {
   dismissIosPrompt(): void {
     this.pwaService.dismissIosPrompt();
   }
-}
+}

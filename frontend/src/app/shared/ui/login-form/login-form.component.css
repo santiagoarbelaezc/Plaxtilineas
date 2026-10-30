@@ -110,6 +110,40 @@
   object-fit: contain;
 }
 
+/* Botón Regresar al Inicio Bento Header */
+.bento-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  color: #e4e4e7;
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bento-back-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  transform: translateX(-2px);
+}
+
+.bento-back-btn .material-symbols-rounded {
+  font-size: 16px;
+  transition: transform 0.2s ease;
+}
+
+.bento-back-btn:hover .material-symbols-rounded {
+  transform: translateX(-3px);
+}
+
 /* Status Pill */
 .bento-status-pill {
   display: inline-flex;
@@ -319,6 +353,10 @@
   white-space: nowrap;
   box-sizing: border-box;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bento-action-pill.full-col-pill {
+  grid-column: 1 / -1;
 }
 
 .bento-action-pill:hover {
@@ -1594,6 +1632,7 @@
   .login-left-panel.bento-welcome {
     padding: 24px 20px;
   }
+
 
   .bento-stat-cards-row {
     grid-template-columns: 1fr;

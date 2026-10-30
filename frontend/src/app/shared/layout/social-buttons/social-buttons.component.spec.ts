@@ -1,3 +1,6 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SocialButtonsComponent } from './social-buttons.component';
@@ -7,7 +10,8 @@ describe('SocialButtonsComponent', () => {
   let fixture: ComponentFixture<SocialButtonsComponent>;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SocialButtonsComponent]
+      imports: [SocialButtonsComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])]
     })
     .compileComponents();
 

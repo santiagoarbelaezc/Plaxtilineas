@@ -361,6 +361,50 @@ export class AdminPedidos implements OnInit {
     });
   }
 
+  eliminarPedidoComoAdmin(pedido: Pedido): void {
+    if (!['pendiente_pago', 'pendiente'].includes(pedido.estado)) {
+      Swal.fire('Acción no permitida', 'Solo puedes eliminar pedidos pendientes de confirmación de pago.', 'warning');
+      return;
+    }
+
+    Swal.fire({
+      title: 'Eliminar pedido',
+      html: `Escribe <strong>eliminar</strong> para borrar permanentemente el pedido <strong>${pedido.codigo_pedido}</strong>.<br><span style="font-size: 0.84rem; color: #71717a; margin-top: 8px; display: inline-block;">Esta acción es irreversible y no se puede deshacer.</span>`,
+      input: 'text',
+      inputPlaceholder: 'eliminar',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar pedido',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#dc2626',
+      customClass: {
+        popup: 'swal-danger-modal',
+        confirmButton: 'swal-danger-btn',
+        cancelButton: 'swal-cancel-btn',
+        input: 'swal-danger-input'
+      },
+      inputValidator: (value) => value.trim().toLowerCase() !== 'eliminar'
+        ? 'Debes escribir exactamente "eliminar".'
+        : undefined,
+    }).then((result) => {
+      if (!result.isConfirmed) return;
+
+      this.updatingId.set(pedido.id);
+      this.pedidoService.adminEliminarPedido(pedido.id, result.value).subscribe({
+        next: () => {
+          this.selectedPedido.set(null);
+          this.updatingId.set(null);
+          Swal.fire('Pedido eliminado', 'El pedido pendiente fue eliminado correctamente.', 'success');
+          this.cargarPedidos();
+        },
+        error: (err) => {
+          this.updatingId.set(null);
+          Swal.fire('No se pudo eliminar', err.error?.error || 'El pedido no puede ser eliminado.', 'error');
+        }
+      });
+    });
+  }
+
   editarDatosEnvio(pedido: Pedido): void {
     Swal.fire({
       title: 'Editar Detalles de Envío',

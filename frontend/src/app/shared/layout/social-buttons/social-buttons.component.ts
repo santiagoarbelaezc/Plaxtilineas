@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, inject, computed } from '@angular/core';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { ContactoAsistente } from '../../../features/contact/contacto-asistente/contacto-asistente.component';
 import { ChatService } from '../../../services/chat.service';
 import { CartService } from '../../../services/cart.service';
+import { AuthService } from '../../../services/auth.service';
 import { Subscription } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -20,6 +21,8 @@ export class SocialButtonsComponent implements OnInit, OnDestroy {
   private chatSubscription?: Subscription;
   private drawerSubscription?: Subscription;
   private cartService = inject(CartService);
+  public authService = inject(AuthService);
+  private router = inject(Router);
 
   // Estado para mostrar/ocultar mensajes
   showHelpMessage = false;
@@ -28,8 +31,9 @@ export class SocialButtonsComponent implements OnInit, OnDestroy {
   isCartOpen = false;
   showFloatingWhileCartOpen = false;
 
-  // Señales reactivas del carrito
+  // Señales reactivas del carrito y autenticación
   items = toSignal(this.cartService.items$, { initialValue: [] });
+  isLoggedIn = toSignal(this.authService.isLoggedIn, { initialValue: false });
 
   totalCount = computed(() => {
     this.items();
@@ -105,6 +109,18 @@ export class SocialButtonsComponent implements OnInit, OnDestroy {
     }
   }
 
+  goToLogin(): void {
+    const returnUrl = this.router.url || '/productos';
+    this.closeCartPanel();
+    this.router.navigate(['/login'], { queryParams: { returnUrl } });
+  }
+
+  goToRegister(): void {
+    const returnUrl = this.router.url || '/productos';
+    this.closeCartPanel();
+    this.router.navigate(['/login'], { queryParams: { mode: 'register', returnUrl } });
+  }
+
   toggleFloatingButtonsWhileCartOpen(): void {
     this.showFloatingWhileCartOpen = !this.showFloatingWhileCartOpen;
   }
@@ -127,6 +143,10 @@ export class SocialButtonsComponent implements OnInit, OnDestroy {
 
   isAtMaxStock(item: any): boolean {
     return this.cartService.isAtMaxStock(item);
+  }
+
+  getDisponible(item: any): number | null {
+    return this.cartService.getDisponible(item);
   }
 
   decreaseQuantity(id: string, current: number) {

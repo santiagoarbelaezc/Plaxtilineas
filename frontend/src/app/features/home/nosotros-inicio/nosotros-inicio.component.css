@@ -21,9 +21,11 @@
 }
 
 .identity-container {
-  max-width: 1480px;
+  max-width: var(--home-max-width, 1480px);
+  width: 100%;
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 0 var(--home-side-padding, 32px);
+  box-sizing: border-box;
 }
 
 .identity-grid {

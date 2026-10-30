@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, forkJoin, of } from 'rxjs';
+import { Observable, combineLatest, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { CategoriaConSubcategorias } from '../models/categoriaMenu.model';
 import { CatalogoService } from './catalogo.service';
+import { ProductosService } from './productos.service';
 import { environment } from '../../enviroments/environment';
 
 @Injectable({
@@ -14,30 +15,41 @@ export class CategoriaMenuService {
 
   constructor(
     private http: HttpClient,
-    private catalogoService: CatalogoService
+    private catalogoService: CatalogoService,
+    private productosService: ProductosService
   ) {}
 
+  private normalizar(texto: string): string {
+    return (texto ?? '')
+      .toString()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
+  }
+
   obtenerCategorias(): Observable<CategoriaConSubcategorias[]> {
-    return forkJoin({
-      cats: this.catalogoService.getCategorias(),
-      prods: this.catalogoService.getProductos()
-    }).pipe(
-      map(({ cats, prods }) => {
-        // Filtrar exclusivamente categorías oficiales de Plaxtilineas
+    return combineLatest([
+      this.catalogoService.getCategorias(),
+      this.productosService.obtenerProductos()
+    ]).pipe(
+      map(([cats, prods]) => {
+        // Filtrar estrictamente solo marca Plaxtilineas (igual que en admin-categorias)
         const plaxtiCats = (cats ?? []).filter(c =>
           (c.marca ?? 'Plaxtilineas').trim().toLowerCase() === 'plaxtilineas'
         );
 
         return plaxtiCats.map(c => {
+          // Cruzar productos por ID o por nombre normalizado (igual que en admin-categorias)
           const prodsCat = (prods ?? []).filter(p =>
-            p.categoria_id === c.id ||
-            (p.categoria && p.categoria.trim().toLowerCase() === c.nombre.trim().toLowerCase())
+            (p.categoria_id && p.categoria_id === c.id) ||
+            (p.categoria && this.normalizar(p.categoria) === this.normalizar(c.nombre))
           );
 
           const subcategorias = (c.subcategorias || []).map(s => {
             const count = prodsCat.filter(p =>
-              p.subcategoria_id === s.id ||
-              (p.subcategoria && p.subcategoria.trim().toLowerCase() === s.nombre.trim().toLowerCase())
+              (p.subcategoria_id && p.subcategoria_id === s.id) ||
+              (p.subcategoria && this.normalizar(p.subcategoria) === this.normalizar(s.nombre))
             ).length;
 
             return {

@@ -581,14 +581,18 @@ export class PersonalizarWeb implements OnInit {
   eliminarComponente(id: number, event: Event): void {
     event.stopPropagation();
     Swal.fire({
-      title: '¿Estás seguro?',
-      text: 'Esta acción eliminará este componente dinámico permanentemente.',
+      title: '¿Eliminar componente?',
+      html: 'Esta acción eliminará este componente dinámico <strong>permanentemente</strong> de la página web.',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#e74c3c',
-      cancelButtonColor: '#aaa',
       confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#dc2626',
+      customClass: {
+        popup: 'swal-danger-modal',
+        confirmButton: 'swal-danger-btn',
+        cancelButton: 'swal-cancel-btn'
+      }
     }).then((result) => {
       if (result.isConfirmed) {
         this.componentesService.eliminarComponente(id).subscribe({

@@ -13,6 +13,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/nosotros/nosotros').then(m => m.Nosotros)
   },
   {
+    path: 'grupo',
+    loadComponent: () => import('./pages/grupo/grupo').then(m => m.Grupo)
+  },
+  {
     path: 'privacidad',
     loadComponent: () => import('./pages/privacidad/privacidad').then(m => m.Privacidad)
   },
@@ -110,6 +114,7 @@ export const routes: Routes = [
   },
   {
     path: 'pago',
+    canActivate: [AuthGuard],
     loadComponent: () => import('./pages/pago/pago.component').then(m => m.PagoComponent)
   },
   {
@@ -128,6 +133,15 @@ export const routes: Routes = [
   {
     path: 'verificar-email',
     loadComponent: () => import('./pages/verificar-email/verificar-email').then(m => m.VerificarEmail)
+  },
+  {
+    path: 'links',
+    loadComponent: () => import('./pages/links/links.component').then(m => m.LinksComponent)
+  },
+  {
+    path: 'home',
+    redirectTo: '',
+    pathMatch: 'full'
   },
   {
     path: '**',

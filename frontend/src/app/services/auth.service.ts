@@ -1,7 +1,7 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, tap, map } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../enviroments/environment';
 
 @Injectable({
@@ -21,7 +21,60 @@ export class AuthService {
   }
 
   public hasToken(): boolean {
-    return !!localStorage.getItem('token');
+    if (typeof localStorage === 'undefined') return false;
+    const token = localStorage.getItem('token');
+    return !!token && !this.isTokenExpired(token);
+  }
+
+  /**
+   * Verifica de forma síncrona si el usuario cuenta con una sesión activa y vigente.
+   */
+  public isAuthenticated(): boolean {
+    return this.hasToken() && this.isLoggedIn.getValue();
+  }
+
+  public isTokenExpired(token: string): boolean {
+    try {
+      const parts = token.split('.');
+      // Token opaco de Laravel Sanctum (formato "id|hash") no tiene exp local
+      if (parts.length !== 3) return false;
+
+      const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=');
+      const payload = JSON.parse(atob(padded));
+
+      if (!payload.exp) return false;
+      const nowSeconds = Math.floor(Date.now() / 1000);
+      return payload.exp < nowSeconds;
+    } catch {
+      return true;
+    }
+  }
+
+  public decodeTokenPayload(token: string): any {
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) return null;
+      let base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      while (base64.length % 4) {
+        base64 += '=';
+      }
+      return JSON.parse(decodeURIComponent(escape(atob(base64))));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  public isAdmin(): boolean {
+    const user = this.currentUser.value;
+    if (user && user.rol === 'admin') return true;
+    if (typeof localStorage === 'undefined') return false;
+    const token = localStorage.getItem('token');
+    if (token) {
+      const payload = this.decodeTokenPayload(token);
+      if (payload && payload.rol === 'admin') return true;
+    }
+    return false;
   }
 
   public decodeTokenPayload(token: string): any {
@@ -50,8 +103,9 @@ export class AuthService {
   }
 
   checkToken(): void {
+    if (typeof localStorage === 'undefined') return;
     const token = localStorage.getItem('token');
-    if (token) {
+    if (token && !this.isTokenExpired(token)) {
       this.isLoggedIn.next(true);
       const payload = this.decodeTokenPayload(token);
       if (payload && !this.currentUser.value) {
@@ -59,9 +113,13 @@ export class AuthService {
       }
       this.http.get(`${environment.apiUrl}/auth/perfil`).subscribe({
         next: (user) => this.currentUser.next(user),
-        error: () => this.logout()
+        error: () => this.logout(false)
       });
     } else {
+      if (token) {
+        localStorage.removeItem('token');
+      }
+      localStorage.removeItem('plaxtilineas_cart');
       this.isLoggedIn.next(false);
       this.currentUser.next(null);
     }
@@ -88,19 +146,17 @@ export class AuthService {
     });
   }
 
-  login(correo: string, password: string, captchaData?: { captchaId: string; captchaCode: string }): Observable<any> {
+  login(correo: string, password: string): Observable<any> {
     const payload = { 
       correo, 
-      password, 
-      captchaId: captchaData?.captchaId,
-      captchaCode: captchaData?.captchaCode
+      password
     };
     return this.http.post<{ token: string, usuario: any }>(`${environment.apiUrl}/auth/login`, payload).pipe(
       tap(res => {
         if (res.token) {
           localStorage.setItem('token', res.token);
-          this.isLoggedIn.next(true);
           this.currentUser.next(res.usuario);
+          this.isLoggedIn.next(true);
           this.checkToken();
         }
       })
@@ -117,25 +173,32 @@ export class AuthService {
       tap(res => {
         if (res.token && !res.pendiente_verificacion) {
           localStorage.setItem('token', res.token);
-          this.isLoggedIn.next(true);
           this.currentUser.next(res.usuario);
+          this.isLoggedIn.next(true);
           this.checkToken();
         }
       })
     );
   }
 
-  verificarEmail(token: string): Observable<any> {
+  verificarEmail(token: string, correo?: string): Observable<any> {
+    const params: Record<string, string> = { token };
+    const correoPendiente = correo?.trim() || localStorage.getItem('plaxtilineas_pending_verification_email') || '';
+    if (correoPendiente) {
+      params['correo'] = correoPendiente;
+    }
+
     return this.http.get<{ token: string, usuario: any }>(`${environment.apiUrl}/auth/verificar-email`, {
-      params: { token }
+      params
     }).pipe(
       tap(res => {
         if (res.token) {
           localStorage.setItem('token', res.token);
-          this.isLoggedIn.next(true);
           this.currentUser.next(res.usuario);
+          this.isLoggedIn.next(true);
           this.checkToken();
         }
+        localStorage.removeItem('plaxtilineas_pending_verification_email');
       })
     );
   }
@@ -145,8 +208,8 @@ export class AuthService {
       tap(res => {
         if (res.token) {
           localStorage.setItem('token', res.token);
-          this.isLoggedIn.next(true);
           this.currentUser.next(res.usuario);
+          this.isLoggedIn.next(true);
           this.checkToken();
         }
       })
@@ -165,7 +228,13 @@ export class AuthService {
   }
 
   private performLogout(): void {
-    localStorage.removeItem('token');
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('token');
+      localStorage.removeItem('plaxtilineas_cart');
+    }
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.removeItem('plaxtilineas_pending_cart_action');
+    }
     this.isLoggedIn.next(false);
     this.currentUser.next(null);
     this.isLoggingOut.next(false);

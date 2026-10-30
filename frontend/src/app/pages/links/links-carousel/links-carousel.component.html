@@ -1,0 +1,184 @@
+<section class="links-dark-carousel-root" aria-label="Catálogo de productos destacados">
+  <div class="carousel-dark-card">
+
+    <!-- ── Cabecera del Carrusel Dark ── -->
+    <div class="carousel-dark-header">
+      <div class="header-texts">
+        <h2 class="carousel-title">
+          <span>{{ title }}</span>
+          <span class="title-highlight">{{ titleHighlight }}</span>
+        </h2>
+        <p class="carousel-subtitle">{{ subtitle }}</p>
+      </div>
+
+      <!-- Controles de Navegación Superiores (Desktop) -->
+      <div class="header-nav-controls" *ngIf="!loading && pagesArray.length > 1">
+        <button
+          type="button"
+          class="nav-circle-btn"
+          (click)="scrollCarrusel('prev')"
+          [disabled]="currentPage === 0"
+          aria-label="Productos anteriores"
+          title="Anterior"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <button
+          type="button"
+          class="nav-circle-btn"
+          (click)="scrollCarrusel('next')"
+          [disabled]="currentPage >= pagesArray.length - 1"
+          aria-label="Productos siguientes"
+          title="Siguiente"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Contenedor del Carrusel (Productos Cargados) ── -->
+    <div class="carousel-body" *ngIf="!loading && productos.length > 0">
+      
+      <!-- Botón Flotante Lateral Izquierdo -->
+      <button 
+        type="button" 
+        class="floating-arrow-btn prev-arrow" 
+        (click)="scrollCarrusel('prev')" 
+        [disabled]="currentPage === 0"
+        aria-label="Anterior"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
+      <!-- Viewport de Productos con Scroll Suave -->
+      <div class="carousel-viewport" #productosGrid (scroll)="onScroll($event)">
+        <div class="products-track">
+
+          <article 
+            *ngFor="let producto of productos; trackBy: trackByProductoId" 
+            class="dark-product-card"
+            (click)="verDetalles(producto.id, producto.nombre)"
+          >
+            <!-- Contenedor Imagen con Marco Limpio Blanco -->
+            <div class="product-image-box">
+              <img 
+                [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/placeholder.jpg'" 
+                [alt]="producto.nombre" 
+                class="product-image"
+                loading="lazy"
+                (error)="producto.imagen_url = 'assets/images/default-product.png'"
+              />
+              <span class="badge-quick-view">
+                Ver detalle
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </span>
+            </div>
+
+            <!-- Información del Producto -->
+            <div class="product-meta">
+              <span class="product-category" *ngIf="producto.categoria">
+                {{ producto.categoria }}
+              </span>
+
+              <h3 class="product-name" [title]="producto.nombre">
+                {{ formatearNombre(producto.nombre) }}
+              </h3>
+
+              <div class="product-pricing">
+                <span class="price-strikethrough" *ngIf="producto.precio">
+                  {{ obtenerPrecioReferencia(producto.precio) }}
+                </span>
+                <div class="price-current-row">
+                  <span class="price-value">{{ formatearPrecio(producto.precio) }}</span>
+                  <span class="price-unit">und</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- Botón Flotante Lateral Derecho -->
+      <button 
+        type="button" 
+        class="floating-arrow-btn next-arrow" 
+        (click)="scrollCarrusel('next')" 
+        [disabled]="currentPage >= pagesArray.length - 1"
+        aria-label="Siguiente"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+
+    </div>
+
+    <!-- ── Skeleton Loader Dark (Carga Inicial Elegante) ── -->
+    <div class="carousel-body skeleton-mode" *ngIf="loading" aria-busy="true" aria-label="Cargando productos">
+      <div class="carousel-viewport">
+        <div class="products-track">
+          <div *ngFor="let item of skeletonItems" class="dark-product-card skeleton-card">
+            <div class="product-image-box skeleton-box">
+              <div class="skeleton-shimmer"></div>
+            </div>
+            <div class="product-meta">
+              <div class="skeleton-line skeleton-cat">
+                <div class="skeleton-shimmer"></div>
+              </div>
+              <div class="skeleton-line skeleton-title">
+                <div class="skeleton-shimmer"></div>
+              </div>
+              <div class="skeleton-line skeleton-title-short">
+                <div class="skeleton-shimmer"></div>
+              </div>
+              <div class="skeleton-line skeleton-price">
+                <div class="skeleton-shimmer"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Pie del Carrusel: Indicadores y Botón a Catálogo Completo ── -->
+    <div class="carousel-dark-footer">
+      
+      <!-- Paginación de Puntos Minimalistas -->
+      <div class="dots-pagination" *ngIf="!loading && pagesArray.length > 1">
+        <button 
+          *ngFor="let page of pagesArray" 
+          type="button"
+          class="dot-pill" 
+          [class.active]="currentPage === page"
+          (click)="goToPage(page)"
+          [attr.aria-label]="'Página ' + (page + 1)"
+        >
+        </button>
+      </div>
+
+      <!-- Enlace directo al catálogo -->
+      <div class="footer-action-wrap">
+        <button type="button" class="btn-catalog-cta" (click)="verTodosProductos()">
+          <span>Explorar Catálogo Completo</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+

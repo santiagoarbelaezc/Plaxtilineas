@@ -1,330 +1,665 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { NavbarComponent } from '../../shared/layout/navbar/navbar.component';
+import { PedidoService } from '../../services/pedido.service';
+import { MisPedidos } from '../mis-pedidos/mis-pedidos';
+import { ConfiguracionComponent } from '../configuracion/configuracion.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faUser, faMapMarkerAlt, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faUser, faMapMarkerAlt, faShoppingBag, faKey, 
+  faSignOutAlt, faStore, faShieldAlt, faCheckCircle
+} from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
+import { Subject, takeUntil } from 'rxjs';
+import { Footer } from '../../shared/layout/footer/footer.component';
+import { SocialButtonsComponent } from '../../shared/layout/social-buttons/social-buttons.component';
+
+export type ProfileTab = 'datos' | 'direccion' | 'pedidos' | 'configuracion';
 
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, NavbarComponent, FontAwesomeModule],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    RouterModule, 
+    MisPedidos,
+    ConfiguracionComponent,
+    FontAwesomeModule,
+    Footer,
+    SocialButtonsComponent
+  ],
   template: `
-    <app-navbar></app-navbar>
-
-    <div class="profile-page">
-      <div class="profile-container">
+    <div class="dash-shell">
+      
+      <!-- ══════════════════════════════════════════════════════════════
+           PANEL DE CONTROL SUPERIOR (TIPO DASHBOARD TABS)
+           ══════════════════════════════════════════════════════════════ -->
+      <header class="top-dashboard-panel">
         
-        <!-- Header -->
-        <header class="profile-header">
-          <h1 class="profile-title">Mi Cuenta</h1>
-          <p class="profile-subtitle">Gestiona tu información personal y libreta de direcciones de envío</p>
-        </header>
+        <!-- Fila 1: Marca, Estado y Acciones Rápidas -->
+        <div class="panel-top-bar">
+          <div class="panel-brand-box">
+            <a routerLink="/" class="brand-link" title="Volver al inicio">
+              <div class="brand-icon-box">
+                <fa-icon [icon]="faShieldAlt"></fa-icon>
+              </div>
+              <div class="brand-text-col">
+                <span class="brand-name">Plaxtilineas</span>
+                <span class="brand-role">PANEL CLIENTE</span>
+              </div>
+            </a>
+            <div class="status-pill">
+              <span class="status-dot"></span>
+              <span class="status-pill-text">Cuenta Activa</span>
+            </div>
+          </div>
 
-        <!-- Layout de Columnas -->
-        <div class="profile-layout">
-          
-          <!-- Columna Izquierda: Tarjeta de Resumen -->
-          <aside class="profile-sidebar fade-in">
-            <div class="user-avatar-card">
-              <div class="avatar-circle">
+          <div class="panel-actions-box">
+            <!-- Volver a la Tienda -->
+            <a routerLink="/" class="btn-panel-action ghost" title="Ir a la tienda">
+              <fa-icon [icon]="faStore"></fa-icon>
+              <span>Volver a la tienda</span>
+            </a>
+
+            <!-- Chip de Usuario -->
+            <div class="user-chip">
+              <div class="user-avatar-circle">
                 <span>{{ getInitials() }}</span>
               </div>
-              <h2 class="user-fullname">{{ getFullName() }}</h2>
-              <span class="user-role-badge">{{ getRole() }}</span>
-              <span class="user-email-text">{{ getEmail() }}</span>
+              <div class="user-meta-text">
+                <span class="user-name">{{ getFullName() }}</span>
+                <span class="user-sub">{{ getEmail() || 'Cliente' }}</span>
+              </div>
             </div>
 
-            <nav class="sidebar-nav">
-              <button class="sidebar-nav-btn" [class.active]="activeTab() === 'personal'" (click)="activeTab.set('personal')">
-                <fa-icon [icon]="faUser" class="nav-icon"></fa-icon> Datos Personales
-              </button>
-              <button class="sidebar-nav-btn" [class.active]="activeTab() === 'direccion'" (click)="activeTab.set('direccion')">
-                <fa-icon [icon]="faMapMarkerAlt" class="nav-icon"></fa-icon> Dirección de Envío
-              </button>
-              <button class="sidebar-nav-btn danger-btn" (click)="logout()">
-                <fa-icon [icon]="faSignOutAlt" class="nav-icon"></fa-icon> Cerrar Sesión
-              </button>
-            </nav>
-          </aside>
-
-          <!-- Columna Derecha: Formularios de Edición -->
-          <main class="profile-main-content fade-in">
-            
-            <form #profileForm="ngForm" (ngSubmit)="guardarCambios()" class="form-card">
-              
-              <!-- Pestaña 1: Datos Personales -->
-              @if (activeTab() === 'personal') {
-                <div class="tab-content fade-in">
-                  <h3 class="tab-title">Información de Contacto</h3>
-                  
-                  <div class="form-grid">
-                    <div class="field">
-                      <label for="nombre">Nombre *</label>
-                      <input id="nombre" type="text" [(ngModel)]="form.nombre" name="nombre" required minlength="2" placeholder="Ingresa tu nombre">
-                    </div>
-
-                    <div class="field">
-                      <label for="apellidos">Apellidos *</label>
-                      <input id="apellidos" type="text" [(ngModel)]="form.apellidos" name="apellidos" required minlength="2" placeholder="Ingresa tus apellidos">
-                    </div>
-
-                    <div class="field">
-                      <label for="telefono">Teléfono de contacto *</label>
-                      <input id="telefono" type="tel" [(ngModel)]="form.telefono" name="telefono" required pattern="[0-9]{7,15}" placeholder="Ej: 3001234567">
-                      <span class="field-hint">Solo números, entre 7 y 15 dígitos.</span>
-                    </div>
-
-                    <div class="field">
-                      <label for="edad">Edad *</label>
-                      <input id="edad" type="number" [(ngModel)]="form.edad" name="edad" required min="0" max="120" placeholder="Ingresa tu edad">
-                    </div>
-                  </div>
-                </div>
-              }
-
-              <!-- Pestaña 2: Dirección de Envío -->
-              @if (activeTab() === 'direccion') {
-                <div class="tab-content fade-in">
-                  <h3 class="tab-title">Libreta de Direcciones</h3>
-                  
-                  <div class="form-grid">
-                    <div class="field full-width">
-                      <label for="direccion">Dirección completa *</label>
-                      <input id="direccion" type="text" [(ngModel)]="form.direccion" name="direccion" required minlength="5" placeholder="Ej: Calle 37 N #20-85 Inter Plaza">
-                    </div>
-
-                    <div class="field">
-                      <label for="departamento">Departamento *</label>
-                      <select id="departamento" [(ngModel)]="form.departamento" name="departamento" required (change)="onDepartamentoChange()">
-                        <option value="">Selecciona un departamento</option>
-                        @for (dept of departamentosList; track dept) {
-                          <option [value]="dept">{{ dept }}</option>
-                        }
-                      </select>
-                    </div>
-
-                    <div class="field">
-                      <label for="ciudad">Ciudad *</label>
-                      <select id="ciudad" [(ngModel)]="form.ciudad" name="ciudad" required [disabled]="!form.departamento">
-                        <option value="">Selecciona una ciudad</option>
-                        @for (ciudad of ciudadesDisponibles; track ciudad) {
-                          <option [value]="ciudad">{{ ciudad }}</option>
-                        }
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              }
-
-              <!-- Footer de la Tarjeta con Botón de Guardado -->
-              <div class="form-actions">
-                <button type="submit" class="btn-submit" [disabled]="profileForm.invalid || isSaving() || !hasChanges()">
-                  @if (isSaving()) {
-                    <span class="spinner"></span> Guardando...
-                  } @else {
-                    Guardar Cambios
-                  }
-                </button>
-              </div>
-
-            </form>
-          </main>
-
+            <!-- Botón Cerrar Sesión -->
+            <button type="button" class="btn-panel-action logout" (click)="logout()" title="Cerrar sesión">
+              <fa-icon [icon]="faSignOutAlt"></fa-icon>
+              <span>Salir</span>
+            </button>
+          </div>
         </div>
 
-      </div>
+        <!-- Fila 2: Pestañas de Navegación Horizontales -->
+        <div class="panel-tabs-bar">
+          <nav class="panel-nav-track">
+            <!-- 1. Editar datos -->
+            <button 
+              type="button" 
+              class="panel-tab-btn" 
+              [class.active]="activeTab() === 'datos'" 
+              (click)="setTab('datos')"
+              title="Editar datos personales">
+              <fa-icon [icon]="faUser" class="tab-icon"></fa-icon>
+              <span>Editar datos</span>
+            </button>
+
+            <!-- 2. Actualizar dirección -->
+            <button 
+              type="button" 
+              class="panel-tab-btn" 
+              [class.active]="activeTab() === 'direccion'" 
+              (click)="setTab('direccion')"
+              title="Actualizar dirección de envío">
+              <fa-icon [icon]="faMapMarkerAlt" class="tab-icon"></fa-icon>
+              <span>Dirección de Entrega</span>
+            </button>
+
+            <!-- 3. Mis Pedidos -->
+            <button 
+              type="button" 
+              class="panel-tab-btn" 
+              [class.active]="activeTab() === 'pedidos'" 
+              (click)="setTab('pedidos')"
+              title="Historial de compras y pedidos">
+              <fa-icon [icon]="faShoppingBag" class="tab-icon"></fa-icon>
+              <span>Mis Pedidos</span>
+              <span class="tab-badge-pill" *ngIf="pedidosCount() > 0">
+                {{ pedidosCount() }}
+              </span>
+            </button>
+
+            <!-- 4. Configuración -->
+            <button 
+              type="button" 
+              class="panel-tab-btn" 
+              [class.active]="activeTab() === 'configuracion'" 
+              (click)="setTab('configuracion')"
+              title="Seguridad y configuración de cuenta">
+              <fa-icon [icon]="faKey" class="tab-icon"></fa-icon>
+              <span>Seguridad y Cuenta</span>
+            </button>
+          </nav>
+        </div>
+
+      </header>
+
+      <!-- CANVAS PRINCIPAL (#f4f5f7) -->
+      <main class="dash-canvas">
+          
+          <!-- 1. Editar Datos Personales -->
+          <div *ngIf="activeTab() === 'datos'" class="pane-wrapper fade-in">
+            <div class="dash-card">
+              <div class="card-top-header">
+                <div class="card-icon-badge">
+                  <fa-icon [icon]="faUser"></fa-icon>
+                </div>
+                <div class="card-header-titles">
+                  <h2 class="card-main-title">Información Personal</h2>
+                  <p class="card-sub-title">Actualiza tus nombres, datos de contacto y número de teléfono.</p>
+                </div>
+              </div>
+
+              <form #profileForm="ngForm" (ngSubmit)="guardarCambios()" class="dash-form">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="nombre">Nombre <span class="required">*</span></label>
+                    <input id="nombre" type="text" [(ngModel)]="form.nombre" name="nombre" required minlength="2" placeholder="Tu nombre" class="form-input">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="apellidos">Apellidos <span class="required">*</span></label>
+                    <input id="apellidos" type="text" [(ngModel)]="form.apellidos" name="apellidos" required minlength="2" placeholder="Tus apellidos" class="form-input">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="telefono">Teléfono de contacto <span class="required">*</span></label>
+                    <input id="telefono" type="tel" [(ngModel)]="form.telefono" name="telefono" required pattern="[0-9]{7,15}" placeholder="Ej: 3001234567" class="form-input">
+                    <span class="field-hint">Solo números, entre 7 y 15 dígitos.</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="edad">Edad <span class="required">*</span></label>
+                    <input id="edad" type="number" [(ngModel)]="form.edad" name="edad" required min="0" max="120" placeholder="Tu edad" class="form-input">
+                  </div>
+                </div>
+
+                <div class="form-actions-row">
+                  <button type="submit" class="btn-dash-primary" [disabled]="profileForm.invalid || isSaving() || !hasChanges()">
+                    <span *ngIf="isSaving()" class="spinner"></span>
+                    <span>{{ isSaving() ? 'Guardando...' : 'Guardar Cambios' }}</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- 2. Actualizar Dirección -->
+          <div *ngIf="activeTab() === 'direccion'" class="pane-wrapper fade-in">
+            <div class="dash-card">
+              <div class="card-top-header">
+                <div class="card-icon-badge">
+                  <fa-icon [icon]="faMapMarkerAlt"></fa-icon>
+                </div>
+                <div class="card-header-titles">
+                  <h2 class="card-main-title">Dirección de Entrega</h2>
+                  <p class="card-sub-title">Configura tu domicilio principal para el despacho de tus compras.</p>
+                </div>
+              </div>
+
+              <form #addressForm="ngForm" (ngSubmit)="guardarCambios()" class="dash-form">
+                <div class="form-grid">
+                  <div class="form-group full-width">
+                    <label for="direccion">Dirección completa <span class="required">*</span></label>
+                    <input id="direccion" type="text" [(ngModel)]="form.direccion" name="direccion" required minlength="5" placeholder="Ej: Calle 37 N #20-85" class="form-input">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="departamento">Departamento <span class="required">*</span></label>
+                    <select id="departamento" [(ngModel)]="form.departamento" name="departamento" required (change)="onDepartamentoChange()" class="form-select">
+                      <option value="">Selecciona departamento</option>
+                      <option *ngFor="let dept of departamentosList" [value]="dept">{{ dept }}</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="ciudad">Ciudad <span class="required">*</span></label>
+                    <select id="ciudad" [(ngModel)]="form.ciudad" name="ciudad" required [disabled]="!form.departamento" class="form-select">
+                      <option value="">Selecciona ciudad</option>
+                      <option *ngFor="let ciudad of ciudadesDisponibles" [value]="ciudad">{{ ciudad }}</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-actions-row">
+                  <button type="submit" class="btn-dash-primary" [disabled]="addressForm.invalid || isSaving() || !hasChanges()">
+                    <span *ngIf="isSaving()" class="spinner"></span>
+                    <span>{{ isSaving() ? 'Guardando...' : 'Guardar Dirección' }}</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- 3. Mis Pedidos (Historial y Tracking idéntico al Dashboard) -->
+          <div *ngIf="activeTab() === 'pedidos'" class="fade-in">
+            <app-mis-pedidos [isEmbedded]="true"></app-mis-pedidos>
+          </div>
+
+          <!-- 4. Configuración (Seguridad y Cuenta) -->
+          <div *ngIf="activeTab() === 'configuracion'" class="pane-wrapper fade-in">
+            <div class="dash-card">
+              <div class="card-top-header">
+                <div class="card-icon-badge">
+                  <fa-icon [icon]="faKey"></fa-icon>
+                </div>
+                <div class="card-header-titles">
+                  <h2 class="card-main-title">Seguridad y Cuenta</h2>
+                  <p class="card-sub-title">Gestiona la privacidad y opciones de tu cuenta de usuario.</p>
+                </div>
+              </div>
+
+              <app-configuracion [isEmbedded]="true"></app-configuracion>
+            </div>
+          </div>
+
+        </main>
     </div>
 
+    <app-footer></app-footer>
+    <app-social-buttons></app-social-buttons>
+
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
-
-      * { box-sizing: border-box; }
-
-      .profile-page {
+      /* ==========================================================================
+         SISTEMA DE DISEÑO DEL DASHBOARD DEL CLIENTE — PLAXTILINEAS
+         Fiel reproducción del Dashboard Admin (#0a0a0a, blanco y acentos verdes)
+         ========================================================================== */
+      :host {
+        --dash-dark-surface: #0a0a0a;
+        --dash-dark-surface-2: #141416;
+        --dash-dark-border: #1a1a1a;
+        --dash-dark-border-subtle: #27272a;
+        --dash-bg-canvas: #f4f5f7;
+        --dash-card-bg: #ffffff;
+        --dash-card-border: #e4e4e7;
+        --dash-text-dark: #09090b;
+        --dash-text-muted: #71717a;
+        --dash-accent-green: #16a34a;
+        --dash-accent-green-light: #22c55e;
+        --dash-accent-green-glow: rgba(22, 163, 74, 0.45);
+        
+        --header-h: 74px;
+        --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        --font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        
+        display: block;
         min-height: 100vh;
-        background: var(--dash-bg-main, #0f1420);
-        font-family: var(--font-primary, 'Montserrat', sans-serif);
-        padding-top: 150px;
-        padding-bottom: 80px;
-        color: var(--dash-text-main, #f8fafc);
+        background: var(--dash-bg-canvas);
+        font-family: var(--font-family);
+        color: var(--dash-text-dark);
+        -webkit-font-smoothing: antialiased;
       }
 
-      .profile-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 24px;
+      * {
+        box-sizing: border-box;
       }
 
-      .profile-header {
-        margin-bottom: 32px;
-        text-align: left;
-      }
-
-      .profile-title {
-        font-size: 28px;
-        font-weight: 800;
-        color: var(--dash-text-main, #fff);
-        margin: 0 0 8px 0;
-        letter-spacing: -0.02em;
-      }
-
-      .profile-subtitle {
-        color: var(--dash-text-muted, #94a3b8);
-        font-size: 14px;
-        margin: 0;
-      }
-
-      /* LAYOUT */
-      .profile-layout {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 32px;
-      }
-
-      @media (min-width: 768px) {
-        .profile-layout {
-          grid-template-columns: 280px 1fr;
-        }
-      }
-
-      /* SIDEBAR CARD */
-      .profile-sidebar {
-        background: var(--dash-bg-card, #1e293b);
-        border: 1px solid var(--dash-border, rgba(255, 255, 255, 0.05));
-        border-radius: 12px;
-        padding: 24px;
-        height: fit-content;
-      }
-
-      .user-avatar-card {
+      /* ── Layout Shell ── */
+      .dash-shell {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        text-align: center;
-        margin-bottom: 24px;
-        padding-bottom: 24px;
-        border-bottom: 1px solid var(--dash-border, rgba(255, 255, 255, 0.05));
-      }
-
-      .avatar-circle {
-        width: 80px;
-        height: 80px;
-        background: linear-gradient(135deg, #368c44, #25d366);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        font-size: 28px;
-        font-weight: 700;
-        margin-bottom: 16px;
-        box-shadow: 0 8px 24px rgba(54, 140, 68, 0.25);
-      }
-
-      .user-fullname {
-        font-size: 16px;
-        font-weight: 700;
-        color: var(--dash-text-main, #fff);
-        margin: 0 0 6px 0;
-      }
-
-      .user-role-badge {
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--dash-text-accent, #4ade80);
-        background: rgba(54, 140, 68, 0.12);
-        padding: 4px 10px;
-        border-radius: 20px;
-        text-transform: uppercase;
-        margin-bottom: 8px;
-      }
-
-      .user-email-text {
-        font-size: 12px;
-        color: var(--dash-text-muted, #94a3b8);
-        word-break: break-all;
-      }
-
-      /* SIDEBAR NAVIGATION */
-      .sidebar-nav {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .sidebar-nav-btn {
+        min-height: 100vh;
+        background: var(--dash-bg-canvas);
+        position: relative;
         width: 100%;
-        text-align: left;
-        background: transparent;
-        border: none;
-        color: var(--dash-text-muted, #94a3b8);
-        font-size: 14px;
-        font-weight: 600;
-        padding: 12px 16px;
-        border-radius: 8px;
-        cursor: pointer;
+      }
+
+      /* ══════════════════════════════════════════════════════════════
+         PANEL DE CONTROL SUPERIOR HORIZONTAL (#0a0a0a)
+         ══════════════════════════════════════════════════════════════ */
+      .top-dashboard-panel {
+        width: 100%;
+        background: var(--dash-dark-surface);
+        border-bottom: 1px solid var(--dash-dark-border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      }
+
+      /* Fila 1: Marca, Estado y Acciones Rápidas */
+      .panel-top-bar {
+        max-width: 1360px;
+        margin: 0 auto;
+        padding: 14px 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      .panel-brand-box {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .brand-link {
         display: flex;
         align-items: center;
         gap: 12px;
-        transition: all 0.2s;
+        text-decoration: none;
+        color: #ffffff;
+      }
+
+      .brand-icon-box {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: #18181b;
+        border: 1px solid #27272a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dash-accent-green-light);
+        font-size: 17px;
+        flex-shrink: 0;
+      }
+
+      .brand-text-col {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .brand-name {
+        font-weight: 800;
+        font-size: 1.1rem;
+        letter-spacing: -0.02em;
+        color: #ffffff;
+        line-height: 1.15;
+      }
+
+      .brand-role {
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        color: #a1a1aa;
+      }
+
+      /* Status Pill con Verde */
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        padding: 4px 10px;
+        border-radius: 9999px;
+      }
+
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--dash-accent-green-light);
+        box-shadow: 0 0 8px var(--dash-accent-green-light);
+      }
+
+      .status-pill-text {
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--dash-accent-green-light);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      /* Acciones Rápidas (Derecha) */
+      .panel-actions-box {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .btn-panel-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 9999px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s ease;
         font-family: inherit;
+        border: 1px solid transparent;
       }
 
-      .sidebar-nav-btn:hover {
-        background: var(--dash-bg-hover, rgba(255, 255, 255, 0.04));
-        color: var(--dash-text-main, #fff);
+      .btn-panel-action.ghost {
+        background: #18181b;
+        border-color: #27272a;
+        color: #e4e4e7;
       }
 
-      .sidebar-nav-btn.active {
-        background: rgba(54, 140, 68, 0.15);
-        color: var(--dash-text-accent, #4ade80);
+      .btn-panel-action.ghost:hover {
+        background: #27272a;
+        color: #ffffff;
+        border-color: #3f3f46;
       }
 
-      .danger-btn {
-        margin-top: 16px;
-        color: #ef4444;
-      }
-
-      .danger-btn:hover {
-        background: rgba(239, 68, 68, 0.08);
+      .btn-panel-action.logout {
+        background: rgba(239, 68, 68, 0.12);
+        border-color: rgba(239, 68, 68, 0.25);
         color: #f87171;
       }
 
-      /* MAIN FORM CARD */
-      .form-card {
-        background: var(--dash-bg-card, #1e293b);
-        border: 1px solid var(--dash-border, rgba(255, 255, 255, 0.05));
-        border-radius: 12px;
-        padding: 32px;
-        display: flex;
-        flex-direction: column;
-        min-height: 380px;
+      .btn-panel-action.logout:hover {
+        background: rgba(239, 68, 68, 0.22);
+        border-color: rgba(239, 68, 68, 0.4);
+        color: #ffffff;
       }
 
-      .tab-title {
-        font-size: 18px;
+      /* Chip de Usuario */
+      .user-chip {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 4px 12px 4px 6px;
+        background: #18181b;
+        border: 1px solid #27272a;
+        border-radius: 9999px;
+      }
+
+      .user-avatar-circle {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #09090b;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 800;
+        border: 1.5px solid var(--dash-accent-green-light);
+      }
+
+      .user-meta-text {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        line-height: 1.2;
+      }
+
+      .user-name {
+        font-size: 0.78rem;
         font-weight: 700;
-        color: var(--dash-text-main, #fff);
-        margin: 0 0 24px 0;
+        color: #ffffff;
+      }
+
+      .user-sub {
+        font-size: 0.65rem;
+        color: #a1a1aa;
+        max-width: 140px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      /* ══════════════════════════════════════════════════════════════
+         FILA 2: PESTAÑAS HORIZONTALES (TIPO DASHBOARD TABS)
+         ══════════════════════════════════════════════════════════════ */
+      .panel-tabs-bar {
+        background: #111113;
+        border-top: 1px solid #1f1f23;
+        padding: 0 28px;
+      }
+
+      .panel-nav-track {
+        max-width: 1360px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding: 8px 0;
+      }
+
+      .panel-nav-track::-webkit-scrollbar {
+        display: none;
+      }
+
+      .panel-tab-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 9px 18px;
+        border-radius: 10px;
+        font-size: 0.86rem;
+        font-weight: 600;
+        color: #9ca3af;
+        background: transparent;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        white-space: nowrap;
+        font-family: inherit;
+      }
+
+      .panel-tab-btn:hover {
+        color: #ffffff;
+        background: #18181b;
+      }
+
+      .panel-tab-btn.active {
+        background: #222226;
+        color: #ffffff;
+        border: 1px solid #333338;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+      }
+
+      .tab-icon {
+        font-size: 14px;
+        color: #71717a;
+        transition: color 0.2s ease;
+      }
+
+      .panel-tab-btn:hover .tab-icon {
+        color: #d1d5db;
+      }
+
+      .panel-tab-btn.active .tab-icon {
+        color: var(--dash-accent-green-light);
+      }
+
+      .tab-badge-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--dash-accent-green);
+        color: #ffffff;
+        font-size: 0.68rem;
+        font-weight: 800;
+        padding: 2px 7px;
+        border-radius: 9999px;
+        margin-left: 4px;
+        box-shadow: 0 0 8px var(--dash-accent-green-glow);
+      }
+
+      /* ══════════════════════════════════════════════════════════════
+         CANVAS INTERNO (#f4f5f7) & TARJETAS
+         ══════════════════════════════════════════════════════════════ */
+      .dash-canvas {
+        width: 94%;
+        max-width: 1280px;
+        margin: 32px auto 70px;
+        flex: 1;
+        padding: 0;
+      }
+
+      .pane-wrapper {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .dash-card {
+        background: #ffffff;
+        border: 1.5px solid var(--dash-card-border);
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      }
+
+      .card-top-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding-bottom: 22px;
+        margin-bottom: 28px;
+        border-bottom: 1px solid #f1f5f9;
+      }
+
+      .card-icon-badge {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: #0a0a0a;
+        color: var(--dash-accent-green-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+      }
+
+      .card-header-titles {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        gap: 2px;
+      }
+
+      .card-main-title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--dash-text-dark);
+        margin: 0;
+        letter-spacing: -0.015em;
+      }
+
+      .card-sub-title {
+        font-size: 0.85rem;
+        color: var(--dash-text-muted);
+        margin: 0;
+      }
+
+      /* Formularios */
+      .dash-form {
+        width: 100%;
       }
 
       .form-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 20px;
+        gap: 22px;
       }
 
-      @media (max-width: 600px) {
-        .form-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      .field {
+      .form-group {
         display: flex;
         flex-direction: column;
         gap: 8px;
@@ -336,115 +671,185 @@ import Swal from 'sweetalert2';
       }
 
       label {
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--dash-text-muted, #94a3b8);
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #334155;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
+        letter-spacing: 0.05em;
       }
 
-      input, select {
-        background: var(--dash-bg-input, rgba(15, 20, 32, 0.6));
-        border: 1px solid var(--dash-border, rgba(255, 255, 255, 0.1));
-        border-radius: 8px;
+      .required {
+        color: #ef4444;
+      }
+
+      .form-input, .form-select {
+        background: #ffffff;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 10px;
         padding: 12px 14px;
-        color: var(--dash-text-main, #e2e8f0);
-        font-size: 14px;
+        color: #0f172a;
+        font-size: 0.92rem;
         font-family: inherit;
         outline: none;
-        transition: border-color 0.2s;
+        transition: all 0.2s ease;
         width: 100%;
       }
 
-      select {
-        background-color: var(--dash-bg-input, #1e293b);
+      .form-select {
         cursor: pointer;
       }
 
-      input:focus, select:focus {
-        border-color: var(--dash-text-accent, #368c44);
+      .form-input:focus, .form-select:focus {
+        border-color: var(--dash-accent-green);
+        box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
       }
 
       .field-hint {
-        font-size: 11px;
-        color: var(--dash-text-muted, #64748b);
-        margin-top: 2px;
+        font-size: 0.76rem;
+        color: #94a3b8;
       }
 
-      /* ACTIONS */
-      .form-actions {
-        margin-top: auto;
-        padding-top: 32px;
-        border-top: 1px solid var(--dash-border, rgba(255, 255, 255, 0.07));
+      .form-actions-row {
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 1px solid #f1f5f9;
         display: flex;
         justify-content: flex-end;
       }
 
-      .btn-submit {
-        background: var(--dash-text-accent, #368c44);
-        color: #fff;
-        font-size: 14px;
+      .btn-dash-primary {
+        background: #09090b;
+        color: #ffffff;
+        font-size: 0.88rem;
         font-weight: 700;
-        padding: 14px 28px;
-        border-radius: 8px;
+        padding: 13px 28px;
+        border-radius: 10px;
         border: none;
         cursor: pointer;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        transition: all 0.2s;
+        transition: all 0.2s ease;
         display: inline-flex;
         align-items: center;
         gap: 10px;
+        letter-spacing: -0.01em;
       }
 
-      .btn-submit:hover:not(:disabled) {
+      .btn-dash-primary:hover:not(:disabled) {
+        background: var(--dash-accent-green);
         transform: translateY(-1px);
-        box-shadow: 0 8px 24px rgba(54, 140, 68, 0.35);
-        background: #25d366;
+        box-shadow: 0 8px 24px var(--dash-accent-green-glow);
       }
 
-      .btn-submit:disabled {
-        opacity: 0.5;
+      .btn-dash-primary:disabled {
+        opacity: 0.45;
         cursor: not-allowed;
       }
 
-      /* SPINNER */
       .spinner {
-        width: 16px;
-        height: 16px;
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        border-top-color: #fff;
+        width: 15px;
+        height: 15px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #ffffff;
         border-radius: 50%;
-        animation: spin 0.75s linear infinite;
-        display: inline-block;
+        animation: spin 0.7s linear infinite;
       }
 
       @keyframes spin {
         to { transform: rotate(360deg); }
       }
 
-      /* FADE IN */
       .fade-in {
-        animation: fadeIn 0.35s ease;
+        animation: fadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
       }
 
       @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(8px); }
-        to { opacity: 1; transform: none; }
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Responsivo */
+      @media (max-width: 900px) {
+        .panel-top-bar {
+          flex-direction: column;
+          align-items: stretch;
+          padding: 14px 16px;
+          gap: 12px;
+        }
+
+        .panel-brand-box {
+          justify-content: space-between;
+          width: 100%;
+        }
+
+        .panel-actions-box {
+          justify-content: space-between;
+          width: 100%;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .user-chip {
+          order: -1;
+          width: 100%;
+          justify-content: flex-start;
+        }
+
+        .user-sub {
+          max-width: none;
+        }
+
+        .panel-tabs-bar {
+          padding: 0 12px;
+        }
+
+        .panel-nav-track {
+          gap: 6px;
+          padding: 6px 0;
+        }
+
+        .panel-tab-btn {
+          padding: 8px 14px;
+          font-size: 0.8rem;
+        }
+
+        .dash-canvas {
+          width: 100%;
+          padding: 16px 12px 50px;
+          margin: 16px auto 40px;
+        }
+
+        .dash-card {
+          padding: 20px 16px;
+          border-radius: 12px;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
       }
     </style>
   `
 })
-export class PerfilComponent implements OnInit {
+export class PerfilComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
+  private pedidoService = inject(PedidoService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
+  private destroy$ = new Subject<void>();
+
+  // Íconos FontAwesome
   faUser = faUser;
   faMapMarkerAlt = faMapMarkerAlt;
+  faShoppingBag = faShoppingBag;
+  faKey = faKey;
   faSignOutAlt = faSignOutAlt;
+  faStore = faStore;
+  faShieldAlt = faShieldAlt;
+  faCheckCircle = faCheckCircle;
 
-  activeTab = signal<'personal' | 'direccion'>('personal');
-  isSaving = signal(false);
+  activeTab = signal<ProfileTab>('datos');
+  isSaving = signal<boolean>(false);
+  pedidosCount = signal<number>(0);
 
   form = {
     nombre: '',
@@ -506,18 +911,73 @@ export class PerfilComponent implements OnInit {
   ciudadesDisponibles: string[] = [];
 
   ngOnInit() {
-    // Escuchar cambios de perfil del usuario actual
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      const tabParam = params['tab'];
+      if (tabParam && ['datos', 'direccion', 'pedidos', 'configuracion'].includes(tabParam)) {
+        this.activeTab.set(tabParam as ProfileTab);
+      }
+    });
+
     const user = this.authService.currentUser.getValue();
     if (user) {
       this.cargarDatosUsuario(user);
     } else {
-      // Re-verificar token si por alguna razón no se ha cargado el BehaviorSubject
       this.authService.checkToken();
-      this.authService.currentUser.subscribe(u => {
+      this.authService.currentUser.pipe(takeUntil(this.destroy$)).subscribe(u => {
         if (u) {
           this.cargarDatosUsuario(u);
         }
       });
+    }
+
+    // Cargar conteo de pedidos para el badge verde
+    this.cargarConteoPedidos();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  cargarConteoPedidos() {
+    this.pedidoService.obtenerMisPedidos().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res: any) => {
+        const data = res?.data ?? res;
+        const list = data?.pedidos || [];
+        this.pedidosCount.set(list.length);
+      },
+      error: () => {
+        // En caso de error silencioso
+      }
+    });
+  }
+
+  setTab(tab: ProfileTab) {
+    this.activeTab.set(tab);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  getHeaderTitle(): string {
+    switch (this.activeTab()) {
+      case 'datos': return 'Editar Datos Personales';
+      case 'direccion': return 'Dirección de Entrega';
+      case 'pedidos': return 'Gestión de Pedidos';
+      case 'configuracion': return 'Configuración de Cuenta';
+      default: return 'Mi Cuenta';
+    }
+  }
+
+  getHeaderSubtitle(): string {
+    switch (this.activeTab()) {
+      case 'datos': return 'Visualiza, gestiona y actualiza tu información de contacto';
+      case 'direccion': return 'Administra tu ubicación registrada para despachos y envíos';
+      case 'pedidos': return 'Visualiza, rastrea y descarga los comprobantes de tus compras';
+      case 'configuracion': return 'Ajustes de privacidad, acceso y estado de tu cuenta';
+      default: return 'Portal del Cliente Plaxtilineas';
     }
   }
 
@@ -528,7 +988,6 @@ export class PerfilComponent implements OnInit {
     this.form.edad = user.edad || 0;
     this.form.direccion = user.direccion || '';
 
-    // Manejar el mapeo de Ciudad y Departamento guardados en formato "Ciudad, Departamento"
     if (user.ciudad) {
       const parts = user.ciudad.split(',');
       if (parts.length > 1) {
@@ -540,7 +999,6 @@ export class PerfilComponent implements OnInit {
       }
     }
 
-    // Copiar al estado inicial para detectar cambios
     this.initialForm = { ...this.form };
   }
 
@@ -574,10 +1032,6 @@ export class PerfilComponent implements OnInit {
     return `${this.form.nombre} ${this.form.apellidos}`.trim() || 'Usuario';
   }
 
-  getRole(): string {
-    return this.authService.currentUser.getValue()?.rol || 'Cliente';
-  }
-
   getEmail(): string {
     return this.authService.currentUser.getValue()?.correo || '';
   }
@@ -590,10 +1044,8 @@ export class PerfilComponent implements OnInit {
       showCancelButton: true,
       confirmButtonText: 'Sí, salir',
       cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#368c44',
-      cancelButtonColor: '#64748b',
-      background: '#1e293b',
-      color: '#e2e8f0'
+      confirmButtonColor: '#16a34a',
+      cancelButtonColor: '#71717a'
     }).then(result => {
       if (result.isConfirmed) {
         this.authService.logout();
@@ -617,16 +1069,14 @@ export class PerfilComponent implements OnInit {
     };
 
     this.authService.actualizarPerfil(payload).subscribe({
-      next: (res) => {
+      next: () => {
         this.isSaving.set(false);
-        this.initialForm = { ...this.form }; // Sincronizar el estado inicial tras guardar
+        this.initialForm = { ...this.form };
         Swal.fire({
           icon: 'success',
           title: '¡Actualizado!',
-          text: 'Tus datos personales han sido actualizados con éxito.',
-          background: '#1e293b',
-          color: '#e2e8f0',
-          confirmButtonColor: '#368c44'
+          text: 'Tus datos han sido actualizados con éxito.',
+          confirmButtonColor: '#16a34a'
         });
       },
       error: (err) => {
@@ -636,8 +1086,6 @@ export class PerfilComponent implements OnInit {
           icon: 'error',
           title: 'Error',
           text: msg,
-          background: '#1e293b',
-          color: '#e2e8f0',
           confirmButtonColor: '#ef4444'
         });
       }

@@ -100,11 +100,41 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
       )
     );
 
+    // Escuchar actualizaciones reactivas del catálogo en tiempo real (sin F5)
+    this.subscriptions.push(
+      this.productosService.obtenerProductos().subscribe(prods => {
+        if (this.producto && prods && prods.length > 0) {
+          const fresh = prods.find(p => p.id === this.producto!.id);
+          if (fresh) {
+            this.producto.stock = fresh.stock;
+            if (fresh.variantes && this.variantes) {
+              this.variantes.forEach(v => {
+                const fv = fresh.variantes?.find(x => x.id === v.id);
+                if (fv && fv.stock !== undefined) v.stock = fv.stock;
+              });
+            }
+          }
+        }
+      })
+    );
+
+    // Escuchar cambios en el carrito para revalidar la cantidad disponible en tiempo real
+    this.subscriptions.push(
+      this.cartService.items$.subscribe(() => {
+        const disponible = this.getStockRealDisponible();
+        if (this.controlaStock() && this.cantidadSeleccionada > disponible) {
+          this.cantidadSeleccionada = Math.max(this.producto?.minimo_compra || 1, disponible > 0 ? disponible : 1);
+          this.actualizarPrecioConCantidad();
+        }
+      })
+    );
+
     // Restaurar historial
     this.productSelectService.restaurarHistorial();
 
     // Iniciar el ciclo de avisos periódicos
     this.iniciarCicloAvisos();
+
   }
 
   ngOnDestroy() {
@@ -225,6 +255,11 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
    */
   seleccionarVariante(variante: Variante) {
     this.varianteSeleccionada = variante;
+    // Si la cantidad seleccionada supera el stock disponible de la variante elegida, ajustarla
+    const stockDisponible = this.getStockRealDisponible();
+    if (this.controlaStock() && this.cantidadSeleccionada > stockDisponible) {
+      this.cantidadSeleccionada = Math.max(this.producto?.minimo_compra || 1, stockDisponible);
+    }
     this.actualizarPrecioConCantidad();
   }
 
@@ -255,21 +290,37 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   // --- MÉTODOS DE MANEJO DE STOCK Y SEGURIDAD --- //
   
   controlaStock(): boolean {
-    return this.producto?.controlar_stock === true || this.producto?.controlar_stock === 1;
+    if (!this.producto) return false;
+    if (this.producto.controlar_stock === false) return false;
+    return this.producto.controlar_stock === true || 
+           this.producto.controlar_stock === 1 || 
+           this.getStockTotal() !== undefined;
+  }
+
+  getStockTotal(): number | undefined {
+    if (this.varianteSeleccionada && this.varianteSeleccionada.stock !== undefined && this.varianteSeleccionada.stock !== null) {
+      return Number(this.varianteSeleccionada.stock);
+    }
+    if (this.producto && this.producto.stock !== undefined && this.producto.stock !== null) {
+      return Number(this.producto.stock);
+    }
+    return undefined;
   }
 
   getStockRealDisponible(): number {
-    if (!this.producto || !this.controlaStock() || this.producto.stock === undefined) {
-      return 999; // Límite arbitrario alto si no hay control
+    if (!this.producto) return 0;
+    const stockTotal = this.getStockTotal();
+    if (stockTotal === undefined || !this.controlaStock()) {
+      return 999; // Solo si no hay stock definido ni control
     }
     
-    // El stock real es el stock en base de datos MENOS lo que ya tiene en el carrito de este producto
+    // El stock real es el stock de catálogo MENOS lo que ya tiene en el carrito para esta variante/producto
     const id = this.cartService.generateItemId(this.producto.id, this.varianteSeleccionada?.id);
     const cartItems = (this.cartService as any).itemsSubject?.getValue() || [];
     const itemInCart = cartItems.find((i: any) => i.id === id);
     const cantidadEnCarrito = itemInCart ? itemInCart.cantidad : 0;
     
-    const disponible = this.producto.stock - cantidadEnCarrito;
+    const disponible = stockTotal - cantidadEnCarrito;
     return disponible > 0 ? disponible : 0;
   }
   
@@ -277,6 +328,7 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     if (!this.controlaStock()) return true;
     return this.getStockRealDisponible() > 0 && this.cantidadSeleccionada <= this.getStockRealDisponible();
   }
+
 
   /**
    * Actualiza el precio basado en cantidad y variante
@@ -589,5 +641,7 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
       minimo_compra: productoEditable.minimo_compra,
       controlar_stock: productoEditable.controlar_stock
     };
+
+
   }
 }

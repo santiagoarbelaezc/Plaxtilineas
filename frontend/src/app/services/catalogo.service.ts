@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { catchError, map, shareReplay } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, filter, map, shareReplay } from 'rxjs/operators';
 import { environment } from '../../enviroments/environment';
 import { ProductoEditable } from '../models/producto.model';
 import { Variante } from '../models/variante.model';
@@ -43,6 +43,9 @@ interface CatalogoProductoApi {
   variants?: CatalogoVarianteApi[];
 }
 
+const STORAGE_KEY_PRODUCTOS = 'plaxti_catalogo_cache_v2';
+const STORAGE_KEY_CATEGORIAS = 'plaxti_categorias_cache_v2';
+
 export interface CatalogoCategoria {
   id: number;
   nombre: string;
@@ -55,35 +58,126 @@ export interface CatalogoCategoria {
 
 /**
  * Única puerta de entrada al catálogo externo.
- * - Solo GET público (sin token). No existe ninguna operación de escritura.
- * - Una sola petición HTTP cacheada (shareReplay) para toda la app.
+ * - Soporta actualización reactiva de stock en tiempo real (sin recargar la página).
+ * - Sincroniza en memoria y mediante peticiones silenciosas en segundo plano.
+ * - Implementa Stale-While-Revalidate con caché persistente para despliegue instantáneo.
  */
 @Injectable({ providedIn: 'root' })
 export class CatalogoService {
   private readonly baseUrl = environment.apiCatalogoUrl;
   private readonly marca = environment.catalogoMarca;
 
-  private productos$?: Observable<ProductoEditable[]>;
+  private productosSubject = new BehaviorSubject<ProductoEditable[]>([]);
+  public productos$ = this.productosSubject.asObservable();
+  private productosCargados = false;
+  private cargando = false;
+
   private categorias$?: Observable<CatalogoCategoria[]>;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.hidratarDesdeCache();
 
-  /** Todos los productos de la marca configurada. */
-  getProductos(): Observable<ProductoEditable[]> {
-    if (!this.productos$) {
-      const url = `${this.baseUrl}/productos/categoria/${encodeURIComponent(this.marca)}`;
-      this.productos$ = this.http.get<CatalogoRespuesta<CatalogoProductoApi[]>>(url).pipe(
-        map(res => (res?.data ?? []).map(p => this.mapProducto(p))),
-        catchError(err => {
-          console.error('Error al cargar el catálogo externo:', err);
-          this.productos$ = undefined; // permitir reintento en la próxima llamada
-          return of([] as ProductoEditable[]);
-        }),
-        shareReplay({ bufferSize: 1, refCount: false })
-      );
+    if (typeof window !== 'undefined') {
+      window.addEventListener('focus', () => {
+        if (this.productosCargados) {
+          console.log('[CatalogoService] Ventana re-enfocada: refrescando stock silenciosamente...');
+          this.refrescar();
+        }
+      });
     }
-    return this.productos$;
   }
+
+  /**
+   * Hidratación instantánea desde almacenamiento local.
+   */
+  private hidratarDesdeCache(): void {
+    if (typeof window === 'undefined') return;
+    try {
+      const raw = sessionStorage.getItem(STORAGE_KEY_PRODUCTOS) || localStorage.getItem(STORAGE_KEY_PRODUCTOS);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          this.productosSubject.next(parsed);
+          this.productosCargados = true;
+        }
+      }
+    } catch {
+      // Ignorar fallos de parseo
+    }
+  }
+
+  /** Todos los productos de la marca configurada con emisión reactiva. */
+  getProductos(forzar = false): Observable<ProductoEditable[]> {
+    if (!this.productosCargados || forzar) {
+      this.cargarProductos();
+    }
+    return this.productosSubject.asObservable().pipe(
+      filter(() => this.productosCargados)
+    );
+  }
+
+  private cargarProductos(): void {
+    if (this.cargando) return;
+    this.cargando = true;
+
+    const url = `${this.baseUrl}/productos/categoria/${encodeURIComponent(this.marca)}`;
+    this.http.get<CatalogoRespuesta<CatalogoProductoApi[]>>(url).pipe(
+      map(res => (res?.data ?? []).map(p => this.mapProducto(p))),
+      catchError(err => {
+        console.error('Error al cargar el catálogo externo:', err);
+        return of([] as ProductoEditable[]);
+      })
+    ).subscribe(productos => {
+      this.cargando = false;
+      if (productos.length > 0) {
+        this.productosCargados = true;
+        this.productosSubject.next(productos);
+        try {
+          if (typeof window !== 'undefined') {
+            sessionStorage.setItem(STORAGE_KEY_PRODUCTOS, JSON.stringify(productos));
+            localStorage.setItem(STORAGE_KEY_PRODUCTOS, JSON.stringify(productos));
+          }
+        } catch {
+          // Si quotaExceeded, continuar sin romper
+        }
+      } else if (!this.productosCargados) {
+        this.productosCargados = true;
+        this.productosSubject.next([]);
+      }
+    });
+  }
+
+  /** Actualiza inmediatamente el stock de un producto en memoria sin F5 */
+  actualizarStockLocal(productoId: number, nuevoStock: number): void {
+    const actuales = this.productosSubject.value;
+    const p = actuales.find(item => item.id === productoId);
+    if (p) {
+      p.stock = nuevoStock;
+      p.cantidad = nuevoStock;
+      if (p.variantes) {
+        p.variantes.forEach(v => v.stock = nuevoStock);
+      }
+      this.productosSubject.next([...actuales]);
+      console.log(`[CatalogoService] Stock local actualizado para producto #${productoId}: ${nuevoStock}`);
+    }
+  }
+
+  /** Ajusta el stock sumando o restando unidades en memoria */
+  ajustarStockLocal(productoId: number, delta: number): void {
+    const actuales = this.productosSubject.value;
+    const p = actuales.find(item => item.id === productoId);
+    if (p) {
+      const nuevo = Math.max(0, (p.stock ?? 0) + delta);
+      p.stock = nuevo;
+      p.cantidad = nuevo;
+      if (p.variantes) {
+        p.variantes.forEach(v => v.stock = nuevo);
+      }
+      this.productosSubject.next([...actuales]);
+      console.log(`[CatalogoService] Stock local ajustado (delta ${delta}) para producto #${productoId}: ${nuevo}`);
+    }
+  }
+
 
   /** Categorías (y subcategorías) de la marca configurada. */
   getCategorias(): Observable<CatalogoCategoria[]> {
@@ -91,8 +185,8 @@ export class CatalogoService {
       this.categorias$ = this.http
         .get<CatalogoRespuesta<any[]>>(`${this.baseUrl}/categorias`)
         .pipe(
-          map(res =>
-            (res?.data ?? [])
+          map(res => {
+            const list = (res?.data ?? [])
               .filter(c => this.mismaMarca(c.brand))
               .map(c => ({
                 id: Number(c.id),
@@ -108,10 +202,23 @@ export class CatalogoService {
                   created_at: s.created_at,
                   updated_at: s.updated_at
                 }))
-              }))
-          ),
+              }));
+            try {
+              if (typeof window !== 'undefined' && list.length > 0) {
+                sessionStorage.setItem(STORAGE_KEY_CATEGORIAS, JSON.stringify(list));
+                localStorage.setItem(STORAGE_KEY_CATEGORIAS, JSON.stringify(list));
+              }
+            } catch {}
+            return list;
+          }),
           catchError(err => {
             console.error('Error al cargar categorías del catálogo externo:', err);
+            try {
+              if (typeof window !== 'undefined') {
+                const cached = sessionStorage.getItem(STORAGE_KEY_CATEGORIAS) || localStorage.getItem(STORAGE_KEY_CATEGORIAS);
+                if (cached) return of(JSON.parse(cached) as CatalogoCategoria[]);
+              }
+            } catch {}
             this.categorias$ = undefined;
             return of([] as CatalogoCategoria[]);
           }),
@@ -150,11 +257,13 @@ export class CatalogoService {
       );
   }
 
-  /** Fuerza una nueva lectura del catálogo en la próxima consulta. */
+  /** Fuerza una nueva lectura del catálogo en segundo plano sin recargar página. */
   refrescar(): void {
-    this.productos$ = undefined;
     this.categorias$ = undefined;
+    this.cargando = false;
+    this.cargarProductos();
   }
+
 
   private mismaMarca(brand?: string | null): boolean {
     return (brand ?? '').trim().toLowerCase() === this.marca.trim().toLowerCase();
@@ -170,7 +279,7 @@ export class CatalogoService {
         producto_id: p.id,
         creado_en: v.created_at ?? '',
         sku: v.sku,
-        stock: v.stock !== undefined ? Number(v.stock) : undefined
+        stock: v.stock !== undefined && v.stock !== null ? Number(v.stock) : (p.stock !== undefined && p.stock !== null ? Number(p.stock) : undefined)
       }));
 
     const preciosValidos = variantes.map(v => v.precio).filter(n => n > 0);
@@ -193,9 +302,8 @@ export class CatalogoService {
       subcategoria_id: Number(p.subcategory_id) || 0,
       subcategoria: p.subcategory_name ?? '',
       categoria: p.category_name ?? '',
-      stock: Number(p.stock) || 0,
-      // El catálogo externo no controla inventario en la tienda.
-      controlar_stock: 0,
+      stock: p.stock !== undefined && p.stock !== null ? Number(p.stock) : 0,
+      controlar_stock: 1,
       slug: p.slug,
       material: p.material && p.material !== 'null' ? p.material : undefined,
       marca: p.marca ?? undefined,
@@ -206,5 +314,6 @@ export class CatalogoService {
       variantes,
       editando: false
     };
+
   }
 }

@@ -7,6 +7,29 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Correo mediante Hostinger Mail API
+
+El proyecto incluye el SDK oficial `hostinger/mail-api-php-sdk` y un transporte
+Laravel compatible con los mailables existentes para:
+
+- Verificación de cuentas nuevas.
+- Recuperación de contraseña.
+- Confirmación de pagos aprobados.
+
+Configura estas variables en el `.env` del servidor:
+
+```dotenv
+MAIL_MAILER=hostinger
+HOSTINGER_API_TOKEN=token_generado_en_hostinger
+HOSTINGER_MAILBOX_RESOURCE_ID=resource_id_del_buzon
+MAIL_FROM_ADDRESS=info@plaxtilineas.com
+MAIL_FROM_NAME="Plaxtilineas"
+```
+
+El `HOSTINGER_MAILBOX_RESOURCE_ID` se obtiene consultando los buzones
+autorizados por el token en `GET /api/v1/me`. Nunca guardes el token en el
+repositorio ni lo incluyas en logs.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
@@ -64,3 +87,14 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Inventario y carritos
+
+El endpoint de sincronización del carrito (`POST /api/carrito/sync`) reserva o
+libera inmediatamente la diferencia de stock en el catálogo externo. Esto
+evita que dos clientes puedan reservar las mismas unidades.
+
+La reserva del carrito dura `CARRITO_EXPIRA_HORAS` (por defecto, 3 horas). Se
+libera automáticamente cuando el carrito queda inactivo, mediante el comando
+programado `carrito:limpiar-expirados`. Al crear el pedido, la reserva del
+carrito se transfiere al pedido sin descontar nuevamente el stock y la reserva
+del pedido usa `STOCK_RESERVA_EXPIRA_MINUTOS` como límite de pago.

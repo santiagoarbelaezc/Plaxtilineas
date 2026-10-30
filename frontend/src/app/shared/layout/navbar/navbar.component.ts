@@ -5,7 +5,7 @@ import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontaweso
 import { 
   faKey, faSearch, faTimes, faHome, faUsers, faMapMarkerAlt, 
   faShoppingBag, faClock, faUser, faEnvelope, faLock, faArrowLeft, faRobot, faPhoneAlt,
-  faShoppingCart, faLayerGroup, faCity
+  faShoppingCart, faLayerGroup, faCity, faSignOutAlt, faChevronDown, faChevronRight, faCheckCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { faFacebook, faInstagram, faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import { FormsModule } from '@angular/forms';
@@ -82,22 +82,17 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     library.addIcons(
       faKey, faSearch, faTimes, faHome, faUsers, faMapMarkerAlt,
       faShoppingBag, faClock, faUser, faEnvelope, faLock, faArrowLeft, faRobot, faPhoneAlt,
-      faShoppingCart, faLayerGroup, faCity,
+      faShoppingCart, faLayerGroup, faCity, faSignOutAlt, faChevronDown, faChevronRight, faCheckCircle,
       faFacebook, faInstagram, faWhatsapp
     );
   }
 
-  scrollToGrupo(event?: Event): void {
-    if (this.router.url === '/' || this.router.url.startsWith('/#') || this.router.url.includes('#grupo')) {
-      if (event) {
-        event.preventDefault();
-      }
-      const el = document.getElementById('grupo');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
+  getUserInitial(name?: string): string {
+    if (!name || name.trim().length === 0) return 'U';
+    return name.trim().charAt(0).toUpperCase();
   }
+
+
 
   ngOnInit(): void {
     this.setupRouterListener();
@@ -226,25 +221,22 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onUserAction(action: string): void {
     this.userDropdownOpen = false;
-    let message = '';
     switch (action) {
       case 'editar-perfil':
+        this.router.navigate(['/perfil'], { queryParams: { tab: 'datos' } });
+        return;
       case 'actualizar-direccion':
-        this.router.navigate(['/perfil']);
+        this.router.navigate(['/perfil'], { queryParams: { tab: 'direccion' } });
         return;
       case 'pedidos':
-        this.router.navigate(['/pedidos']);
-        break;
+        this.router.navigate(['/perfil'], { queryParams: { tab: 'pedidos' } });
+        return;
       case 'configuracion':
-        this.router.navigate(['/configuracion']);
-        break;
+        this.router.navigate(['/perfil'], { queryParams: { tab: 'configuracion' } });
+        return;
       default:
-        message = 'Sección no encontrada.';
+        this.router.navigate(['/perfil']);
         break;
-    }
-
-    if (message) {
-      this.showToastMessage(message);
     }
   }
 

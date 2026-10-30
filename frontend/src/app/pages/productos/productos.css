@@ -40,15 +40,15 @@
 @media (min-width: 1024px) {
   .productos-layout {
     flex-direction: row;
-    gap: 40px;
-    padding: 118px 40px 24px 40px;
-    width: 100%; /* 100% en escritorio también */
+    gap: 32px;
+    padding: 118px 36px 24px 36px;
+    width: 100%;
     max-width: 100%;
   }
   
   app-menu-categorias-component {
     display: block;
-    flex: 0 0 300px;
+    flex: 0 0 280px;
     position: sticky;
     top: 124px;
     align-self: flex-start;
@@ -58,10 +58,8 @@
   
   app-product-list-component {
     flex: 1;
-    margin-left: 20px;
     min-width: 0;
-    width: calc(100% - 340px); /* Ancho dinámico basado en el restante */
-    max-width: 100%; /* Elimina el max-width fijo */
+    max-width: 100%;
   }
 }
 

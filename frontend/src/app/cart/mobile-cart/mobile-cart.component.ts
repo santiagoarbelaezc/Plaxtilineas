@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, inject, computed } from '@angular/core';
 import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../services/cart.service';
+import { AuthService } from '../../services/auth.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -61,11 +62,24 @@ import { toSignal } from '@angular/core/rxjs-interop';
                   <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                 </svg>
               </div>
-              <h3 class="text-lg font-bold text-gray-900 mb-2">Tu carrito está vacío</h3>
-              <p class="text-sm text-gray-500 max-w-xs mb-6">Agrega los mejores productos plásticos, espumas y empaques de nuestro catálogo.</p>
-              <button (click)="closeCart()" class="w-full max-w-xs py-3.5 rounded-full bg-[#16a34a] text-white font-extrabold text-sm uppercase tracking-wider shadow-md hover:bg-[#15803d] active:scale-[0.98] transition-all">
-                Ver Catálogo
-              </button>
+              @if (!isLoggedIn()) {
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Inicia sesión para comprar</h3>
+                <p class="text-sm text-gray-500 max-w-xs mb-6">Ingresa con tu cuenta o regístrate para agregar productos al carrito y reservar stock.</p>
+                <div class="flex flex-col gap-3 w-full max-w-xs">
+                  <button (click)="goToLogin()" class="w-full py-3.5 rounded-full bg-[#16a34a] text-white font-extrabold text-sm uppercase tracking-wider shadow-md hover:bg-[#15803d] active:scale-[0.98] transition-all">
+                    Iniciar Sesión
+                  </button>
+                  <button (click)="goToRegister()" class="w-full py-3.5 rounded-full bg-white text-gray-900 border border-gray-200 font-bold text-sm uppercase tracking-wider shadow-sm active:scale-[0.98] transition-all">
+                    Crear una Cuenta
+                  </button>
+                </div>
+              } @else {
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Tu carrito está vacío</h3>
+                <p class="text-sm text-gray-500 max-w-xs mb-6">Agrega los mejores productos plásticos, espumas y empaques de nuestro catálogo.</p>
+                <button (click)="closeCart()" class="w-full max-w-xs py-3.5 rounded-full bg-[#16a34a] text-white font-extrabold text-sm uppercase tracking-wider shadow-md hover:bg-[#15803d] active:scale-[0.98] transition-all">
+                  Ver Catálogo
+                </button>
+              }
             </div>
           } @else {
             @for (item of items(); track item.id) {
@@ -88,8 +102,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
                   <div>
                     <h4 class="font-bold text-sm text-gray-900 leading-snug truncate pr-6">{{ item.producto.nombre }}</h4>
                     <p class="text-xs text-gray-400 font-medium mt-0.5">{{ item.variante?.nombre || item.producto.subcategoria || 'Genérico' }}</p>
-                    @if (item.producto.controlar_stock && item.producto.stock !== undefined) {
-                      <p class="text-[10px] text-amber-700 font-semibold mt-0.5">{{ item.producto.stock - item.cantidad }} disponibles</p>
+                    @if (getDisponible(item) !== null) {
+                      <p class="text-[10px] font-semibold mt-0.5" [class.text-amber-700]="getDisponible(item)! > 0" [class.text-red-600]="getDisponible(item)! <= 0">
+                        {{ getDisponible(item)! > 0 ? getDisponible(item) + ' disponibles' : 'Máximo alcanzado' }}
+                      </p>
                     }
                   </div>
 
@@ -172,10 +188,12 @@ export class MobileCartComponent implements OnInit, OnDestroy {
   
   private router = inject(Router);
   private cartService = inject(CartService);
+  private authService = inject(AuthService);
   private routerSub: any;
   private drawerSub: any;
 
   items = toSignal(this.cartService.items$, { initialValue: [] });
+  isLoggedIn = toSignal(this.authService.isLoggedIn, { initialValue: false });
   
   totalCount = computed(() => {
     return this.items().reduce((acc, item) => acc + item.cantidad, 0);
@@ -216,12 +234,28 @@ export class MobileCartComponent implements OnInit, OnDestroy {
     this.cartService.closeDrawer();
   }
 
+  goToLogin() {
+    const returnUrl = this.router.url || '/productos';
+    this.closeCart();
+    this.router.navigate(['/login'], { queryParams: { returnUrl } });
+  }
+
+  goToRegister() {
+    const returnUrl = this.router.url || '/productos';
+    this.closeCart();
+    this.router.navigate(['/login'], { queryParams: { mode: 'register', returnUrl } });
+  }
+
   increaseQuantity(id: string, current: number) {
     this.cartService.updateQuantity(id, current + 1);
   }
 
   isAtMaxStock(item: any): boolean {
     return this.cartService.isAtMaxStock(item);
+  }
+
+  getDisponible(item: any): number | null {
+    return this.cartService.getDisponible(item);
   }
 
   decreaseQuantity(id: string, current: number) {

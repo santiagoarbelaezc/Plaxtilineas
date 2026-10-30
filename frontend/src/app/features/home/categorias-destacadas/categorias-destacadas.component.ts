@@ -20,6 +20,8 @@ export class CategoriasDestacadasComponent implements OnInit {
 
   categorias: CategoriaIndex[] = [];
   categoriasConSubcategorias: any[] = [];
+  loading = true;
+  readonly skeletonCategories = [1, 2, 3, 4, 5, 6];
   currentPage = 0;
   itemsPerPage = 6;
   pagesArray: number[] = [];
@@ -87,15 +89,18 @@ export class CategoriasDestacadasComponent implements OnInit {
    * Cargar categorías
    */
   private loadCategorias(): void {
+    this.loading = true;
     this.categoriasService.getCategorias().subscribe({
       next: (data: any) => {
         this.categorias = this.combineCategoriasWithFixedImages(data);
         this.updateItemsPerPage();
+        this.loading = false;
         this.cargarCategoriasConSubcategorias();
       },
       error: (err: any) => {
         console.error('❌ Error al cargar categorías:', err);
         this.cargarCategoriasFijas();
+        this.loading = false;
       }
     });
   }

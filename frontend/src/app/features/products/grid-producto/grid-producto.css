@@ -7,9 +7,11 @@
 }
 
 .grid-container {
-  max-width: 1550px; /* Aumentado de 1400px para aprovechar el ancho */
+  max-width: var(--home-max-width, 1480px);
+  width: 100%;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 0 var(--home-side-padding, 32px);
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-auto-rows: 60px;
@@ -239,4 +241,4 @@
     transform: translate(-50%, -50%) scale(1);
   }
   .producto-item:hover { transform: none; }
-}
+}

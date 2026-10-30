@@ -19,9 +19,13 @@ export class VerificarEmail implements OnInit {
   status: 'formulario' | 'cargando' | 'exito' | 'error' = 'formulario';
   codigo = '';
   errorMessage = '';
+  correo = '';
 
   ngOnInit(): void {
     window.scrollTo(0, 0);
+    this.correo = this.route.snapshot.queryParamMap.get('correo')
+      || localStorage.getItem('plaxtilineas_pending_verification_email')
+      || '';
     
     // Si viene un token/código en la URL, auto-procesar
     const token = this.route.snapshot.queryParamMap.get('token') || this.route.snapshot.queryParamMap.get('codigo');
@@ -44,7 +48,7 @@ export class VerificarEmail implements OnInit {
 
   verificar(code: string): void {
     this.status = 'cargando';
-    this.authService.verificarEmail(code).subscribe({
+    this.authService.verificarEmail(code, this.correo).subscribe({
       next: (res) => {
         this.status = 'exito';
         setTimeout(() => {

@@ -1,43 +1,482 @@
 <app-navbar></app-navbar>
 
-<div class="seccion-nosotros">
-  <div class="nosotros-container">
-    <div class="badge-new">Legal</div>
-    <h1 class="title">Términos y <span>Condiciones</span></h1>
-    <p class="description">Información legal aplicable al uso de nuestro sitio web y servicios.</p>
-    
-    <div class="layout-grid">
-      <div class="valor-card">
-        <div class="valor-icono-container">1</div>
-        <div class="valor-texto">
-          <h3 class="valor-titulo">Aceptación de los Términos</h3>
-          <p class="valor-descripcion">
-            Al acceder y utilizar este sitio web, aceptas estar sujeto a estos términos y condiciones. Si no estás de acuerdo con alguna parte, por favor no utilices nuestros servicios.
-          </p>
-        </div>
-      </div>
+<main class="legal-page-root">
+  <!-- Línea Superior de Acento Esmeralda (Heredada del Footer) -->
+  <div class="legal-accent-glow" aria-hidden="true"></div>
 
-      <div class="valor-card">
-        <div class="valor-icono-container">2</div>
-        <div class="valor-texto">
-          <h3 class="valor-titulo">Uso del Sitio</h3>
-          <p class="valor-descripcion">
-            Todo el contenido, diseños y productos mostrados en esta plataforma están protegidos por derechos de propiedad intelectual. No está permitido su uso comercial sin autorización.
-          </p>
-        </div>
-      </div>
+  <div class="legal-container">
 
-      <div class="valor-card">
-        <div class="valor-icono-container">3</div>
-        <div class="valor-texto">
-          <h3 class="valor-titulo">Compras y Devoluciones</h3>
-          <p class="valor-descripcion">
-            Para políticas de envíos, garantías y devoluciones, por favor contacta a nuestro equipo de soporte, quienes estarán encantados de guiarte paso a paso en el proceso.
-          </p>
+    <!-- Breadcrumb de Navegación -->
+    <nav class="legal-breadcrumb" aria-label="Ruta de navegación">
+      <a routerLink="/" class="breadcrumb-link">Inicio</a>
+      <span class="breadcrumb-separator">›</span>
+      <span class="breadcrumb-link-muted">Legal</span>
+      <span class="breadcrumb-separator">›</span>
+      <span class="breadcrumb-current">Términos y Condiciones</span>
+    </nav>
+
+    <!-- Encabezado Principal / Hero Legal -->
+    <header class="legal-header">
+      <div class="col-title kicker-container">
+        <span class="kicker-line"></span>
+        <span>INFORMACIÓN LEGAL &bull; VIGENCIA 2026</span>
+      </div>
+      <h1 class="legal-title">Términos y <span class="highlight">Condiciones de Servicio</span></h1>
+      <p class="legal-subtitle">
+        Conoce las normas, condiciones comerciales, políticas de cortes a la medida, derecho de retracto y garantías que regulan tus compras en <strong>Plaxtilineas</strong>. Haz clic en cada sección para desplegar su contenido.
+      </p>
+
+      <div class="legal-meta-bar">
+        <div class="meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="meta-icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>Última actualización: <strong>Octubre 2026</strong></span>
+        </div>
+        <div class="meta-divider">•</div>
+        <div class="meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="meta-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>Conforme a la <strong>Ley 1480 de 2011</strong> (Estatuto del Consumidor)</span>
+        </div>
+        <div class="meta-divider">•</div>
+        <div class="meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="meta-icon"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          <span>Armenia, Quindío &bull; Cobertura Nacional</span>
         </div>
       </div>
+    </header>
+
+    <!-- Layout en 2 Columnas: Índice Sticky + Contenido -->
+    <div class="legal-layout-grid">
+
+      <!-- Columna Izquierda: Índice Lateral Sticky con Scroll Interno -->
+      <aside class="legal-sidebar">
+        <div class="sidebar-sticky-wrapper">
+          
+          <div class="toc-card">
+            <h3 class="toc-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="toc-icon"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              Índice de Cláusulas
+            </h3>
+            <nav class="toc-nav">
+              <button type="button" class="toc-link" [class.active-item]="estaAbierta('identificacion')" (click)="irASeccion('identificacion')">
+                <span class="toc-num">01</span>
+                <span class="toc-text">Identificación y Aceptación</span>
+                <span class="toc-indicator" *ngIf="estaAbierta('identificacion')">●</span>
+              </button>
+              <button type="button" class="toc-link" [class.active-item]="estaAbierta('precios')" (click)="irASeccion('precios')">
+                <span class="toc-num">02</span>
+                <span class="toc-text">Precios, Pagos y Facturación</span>
+                <span class="toc-indicator" *ngIf="estaAbierta('precios')">●</span>
+              </button>
+              <button type="button" class="toc-link" [class.active-item]="estaAbierta('cortes')" (click)="irASeccion('cortes')">
+                <span class="toc-num">03</span>
+                <span class="toc-text">Cortes a Medida y Personalizados</span>
+                <span class="toc-indicator" *ngIf="estaAbierta('cortes')">●</span>
+              </button>
+              <button type="button" class="toc-link" [class.active-item]="estaAbierta('retracto')" (click)="irASeccion('retracto')">
+                <span class="toc-num">04</span>
+                <span class="toc-text">Derecho de Retracto (Ley 1480)</span>
+                <span class="toc-indicator" *ngIf="estaAbierta('retracto')">●</span>
+              </button>
+              <button type="button" class="toc-link" [class.active-item]="estaAbierta('garantias')" (click)="irASeccion('garantias')">
+                <span class="toc-num">05</span>
+                <span class="toc-text">Garantías y Cobertura de Calidad</span>
+                <span class="toc-indicator" *ngIf="estaAbierta('garantias')">●</span>
+              </button>
+              <button type="button" class="toc-link" [class.active-item]="estaAbierta('envios')" (click)="irASeccion('envios')">
+                <span class="toc-num">06</span>
+                <span class="toc-text">Despachos, Fletes y Envíos</span>
+                <span class="toc-indicator" *ngIf="estaAbierta('envios')">●</span>
+              </button>
+              <button type="button" class="toc-link" [class.active-item]="estaAbierta('pqrs')" (click)="irASeccion('pqrs')">
+                <span class="toc-num">07</span>
+                <span class="toc-text">Canales de PQRS y Jurisdicción</span>
+                <span class="toc-indicator" *ngIf="estaAbierta('pqrs')">●</span>
+              </button>
+            </nav>
+          </div>
+
+          <!-- Tarjeta de Asistencia Directa -->
+          <div class="sidebar-help-card">
+            <div class="help-badge">Atención Directa</div>
+            <h4 class="help-title">¿Dudas con medidas o materiales?</h4>
+            <p class="help-desc">
+              Comunícate directamente con Mateo Moreno para validar pedidos por metro lineal, rollos completos o solicitudes institucionales.
+            </p>
+            <a href="https://wa.me/573105423854?text=Hola%20Mateo,%20tengo%20preguntas%20sobre%20los%20T%C3%A9rminos%20y%20Condiciones%20de%20Plaxtilineas" target="_blank" rel="noopener noreferrer" class="asesor-whatsapp-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="asesor-wa-icon"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+              <span>Consultar con Mateo</span>
+            </a>
+            <div class="help-phone-sub">
+              Línea Fija: <a href="tel:+576067390968">(606) 739 0968</a>
+            </div>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- Columna Derecha: Contenido de Cláusulas en Acordeón -->
+      <section class="legal-content">
+
+        <!-- Barra Global de Acordeón -->
+        <div class="accordion-global-bar">
+          <div class="global-bar-info">
+            <span class="global-status-dot" [class.has-open]="contarAbiertas() > 0"></span>
+            <span>Mostrando <strong>{{ contarAbiertas() }}</strong> de 7 cláusulas desplegadas</span>
+          </div>
+          <div class="global-bar-actions">
+            <button type="button" class="global-action-btn" (click)="abrirTodas()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7 13 12 18 17 13"></polyline><polyline points="7 6 12 11 17 6"></polyline></svg>
+              <span>Desplegar todas</span>
+            </button>
+            <button type="button" class="global-action-btn" (click)="cerrarTodas()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 11 12 6 7 11"></polyline><polyline points="17 18 12 13 7 18"></polyline></svg>
+              <span>Ocultar todas</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 01. Identificación y Aceptación -->
+        <article id="identificacion" class="legal-card-section" [class.is-expanded]="estaAbierta('identificacion')">
+          <div 
+            class="clause-header interactive-trigger" 
+            (click)="toggleSeccion('identificacion')"
+            (keyup.enter)="toggleSeccion('identificacion')"
+            tabindex="0"
+            role="button"
+            [attr.aria-expanded]="estaAbierta('identificacion')">
+            <div class="clause-header-left">
+              <span class="clause-badge">01</span>
+              <h2 class="clause-title">Identificación de la Empresa y Aceptación</h2>
+            </div>
+            <div class="clause-toggle-action">
+              <span class="toggle-state-text">{{ estaAbierta('identificacion') ? 'Ocultar' : 'Ver detalle' }}</span>
+              <div class="toggle-chevron" [class.rotated]="estaAbierta('identificacion')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="clause-body accordion-panel" *ngIf="estaAbierta('identificacion')">
+            <p>
+              El presente documento contiene los Términos y Condiciones que rigen el acceso, navegación y adquisición de productos a través del sitio web oficial de <strong>PLAXTILINEAS S.A.S.</strong> (en adelante "Plaxtilineas"), sociedad legalmente constituida bajo las leyes de la República de Colombia, con domicilio principal en la ciudad de <strong>Armenia, Quindío</strong> (Cra. 19 # 19 - 35).
+            </p>
+            <p>
+              Al navegar en este sitio web, crear una cuenta o formalizar una orden de compra, el usuario declara haber leído, comprendido y aceptado en su totalidad las cláusulas aquí estipuladas. Si no estás de acuerdo con alguna parte de estos términos, te solicitamos abstenerte de realizar transacciones en nuestra plataforma.
+            </p>
+            
+            <div class="legal-callout info-callout">
+              <div class="callout-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              </div>
+              <div class="callout-text">
+                <strong>Punto de Atención Físico:</strong> Si prefieres realizar compras o inspeccionar materiales en persona, puedes visitarnos en nuestro almacén principal en la Cra. 19 # 19 - 35, Armenia, Quindío.
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 02. Precios, Pagos y Facturación -->
+        <article id="precios" class="legal-card-section" [class.is-expanded]="estaAbierta('precios')">
+          <div 
+            class="clause-header interactive-trigger" 
+            (click)="toggleSeccion('precios')"
+            (keyup.enter)="toggleSeccion('precios')"
+            tabindex="0"
+            role="button"
+            [attr.aria-expanded]="estaAbierta('precios')">
+            <div class="clause-header-left">
+              <span class="clause-badge">02</span>
+              <h2 class="clause-title">Precios, Moneda, Impuestos y Facturación</h2>
+            </div>
+            <div class="clause-toggle-action">
+              <span class="toggle-state-text">{{ estaAbierta('precios') ? 'Ocultar' : 'Ver detalle' }}</span>
+              <div class="toggle-chevron" [class.rotated]="estaAbierta('precios')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="clause-body accordion-panel" *ngIf="estaAbierta('precios')">
+            <p>
+              En Plaxtilineas velamos por la claridad y transparencia en cada transacción comercial:
+            </p>
+            <ul class="custom-bullet-list">
+              <li>
+                <span class="bullet-dot"></span>
+                <span><strong>Moneda oficial:</strong> Todos los precios publicados en el catálogo están expresados en <strong>Pesos Colombianos (COP)</strong>.</span>
+              </li>
+              <li>
+                <span class="bullet-dot"></span>
+                <span><strong>Impuesto al Valor Agregado:</strong> Los precios exhibidos incluyen el <strong>IVA aplicable</strong> según el régimen tributario vigente en Colombia.</span>
+              </li>
+              <li>
+                <span class="bullet-dot"></span>
+                <span><strong>Pasarelas de Pago Seguras:</strong> Los pagos electrónicos se procesan a través de integraciones certificadas (Wompi Bancolombia, transferencias electrónicas y PSE), con altos estándares de cifrado SSL y PCI-DSS. Plaxtilineas no almacena datos confidenciales de tarjetas de crédito.</span>
+              </li>
+              <li>
+                <span class="bullet-dot"></span>
+                <span><strong>Facturación Electrónica:</strong> Plaxtilineas expide Factura Electrónica legal para todas las órdenes. La factura será remitida al correo electrónico suministrado durante el proceso de compra.</span>
+              </li>
+            </ul>
+
+            <div class="legal-callout dark-callout">
+              <h4 class="callout-title">Precios por Metro Lineal vs. Rollo Completo</h4>
+              <p class="callout-desc">
+                En productos que se comercializan por fracción o metro lineal (como espumas, lonas, pisos y mimbres), el precio calculado corresponde a la cantidad exacta seleccionada. Para compras mayoristas de rollos cerrados aplicarán tarifas preferenciales previa cotización con nuestros asesores.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <!-- 03. Cortes a Medida y Personalizados -->
+        <article id="cortes" class="legal-card-section" [class.is-expanded]="estaAbierta('cortes')">
+          <div 
+            class="clause-header interactive-trigger" 
+            (click)="toggleSeccion('cortes')"
+            (keyup.enter)="toggleSeccion('cortes')"
+            tabindex="0"
+            role="button"
+            [attr.aria-expanded]="estaAbierta('cortes')">
+            <div class="clause-header-left">
+              <span class="clause-badge">03</span>
+              <h2 class="clause-title">Políticas de Corte a la Medida y Materiales Fraccionados</h2>
+            </div>
+            <div class="clause-toggle-action">
+              <span class="toggle-state-text">{{ estaAbierta('cortes') ? 'Ocultar' : 'Ver detalle' }}</span>
+              <div class="toggle-chevron" [class.rotated]="estaAbierta('cortes')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="clause-body accordion-panel" *ngIf="estaAbierta('cortes')">
+            <p>
+              Gran parte de nuestra propuesta de valor es el <strong>corte exacto de materiales</strong> para marroquinería, tapicería, construcción y agricultura. Por la naturaleza técnica del corte:
+            </p>
+            <ul class="custom-bullet-list">
+              <li>
+                <span class="bullet-dot"></span>
+                <span><strong>Verificación previa del cliente:</strong> Es responsabilidad exclusiva del comprador verificar las medidas (largo, ancho, calibre o densidad) antes de ordenar el corte. Una vez ejecutado el corte del material sobre el rollo matriz, la orden entra en fase irreversible de producción.</span>
+              </li>
+              <li>
+                <span class="bullet-dot"></span>
+                <span><strong>Tolerancia técnica de corte:</strong> En cortes manuales o con sierra circular de banco en espumas y plásticos, existe una tolerancia técnica admisible de hasta <strong>&plusmn;1 a 2 cm</strong> derivada de la elasticidad y tensión propia de los materiales poliméricos y textiles.</span>
+              </li>
+              <li>
+                <span class="bullet-dot"></span>
+                <span><strong>Tono y tintada:</strong> Los tonos de cueros sintéticos, telas y plásticos pueden tener variaciones leves entre distintos lotes de fabricación industrial.</span>
+              </li>
+            </ul>
+
+            <div class="legal-callout warning-callout">
+              <div class="callout-icon warning-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              </div>
+              <div class="callout-text">
+                <strong>Excepción de Devolución por Medida:</strong> Al ser productos confeccionados o fraccionados según especificaciones individuales del cliente, no procederán cancelaciones una vez efectuado el corte, salvo que exista defecto comprobable de fabricación.
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 04. Derecho de Retracto -->
+        <article id="retracto" class="legal-card-section" [class.is-expanded]="estaAbierta('retracto')">
+          <div 
+            class="clause-header interactive-trigger" 
+            (click)="toggleSeccion('retracto')"
+            (keyup.enter)="toggleSeccion('retracto')"
+            tabindex="0"
+            role="button"
+            [attr.aria-expanded]="estaAbierta('retracto')">
+            <div class="clause-header-left">
+              <span class="clause-badge">04</span>
+              <h2 class="clause-title">Derecho de Retracto (Ley 1480 de 2011)</h2>
+            </div>
+            <div class="clause-toggle-action">
+              <span class="toggle-state-text">{{ estaAbierta('retracto') ? 'Ocultar' : 'Ver detalle' }}</span>
+              <div class="toggle-chevron" [class.rotated]="estaAbierta('retracto')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="clause-body accordion-panel" *ngIf="estaAbierta('retracto')">
+            <p>
+              Conforme al <strong>Artículo 47 de la Ley 1480 de 2011</strong> (Estatuto del Consumidor de Colombia), en las ventas realizadas mediante métodos a distancia o por comercio electrónico, el consumidor podrá ejercer su derecho de retracto bajo los siguientes lineamientos:
+            </p>
+            <ul class="custom-bullet-list">
+              <li>
+                <span class="bullet-dot"></span>
+                <span><strong>Término de ejercicio:</strong> Cuentas con un plazo máximo de <strong>cinco (5) días hábiles</strong> contados a partir de la fecha de entrega del producto.</span>
+              </li>
+              <li>
+                <span class="bullet-dot"></span>
+                <span><strong>Estado del bien:</strong> El producto debe ser devuelto en las mismas condiciones en que fue recibido: completamente nuevo, sin indicios de uso ni instalación, en su empaque original sellado, y con sus etiquetas y accesorios completos.</span>
+              </li>
+              <li>
+                <span class="bullet-dot"></span>
+                <span><strong>Costos logísticos:</strong> Conforme al marco legal, los costos de transporte y demás fletes que conlleve la devolución del bien serán asumidos por el consumidor.</span>
+              </li>
+            </ul>
+
+            <div class="legal-callout emerald-callout">
+              <h4 class="callout-title">Exclusiones Expresas del Retracto (Art. 47 Numeral 3):</h4>
+              <p class="callout-desc">
+                El derecho de retracto <strong>no aplica</strong> en contratos de suministro de bienes confeccionados conforme a las especificaciones del consumidor o claramente personalizados (por ejemplo: espumas cortadas a dimensiones personalizadas, telas o lonas cortadas por metro lineal), ni en productos de uso personal e higiénico cuyo sello de protección haya sido abierto.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <!-- 05. Garantías y Reclamaciones -->
+        <article id="garantias" class="legal-card-section" [class.is-expanded]="estaAbierta('garantias')">
+          <div 
+            class="clause-header interactive-trigger" 
+            (click)="toggleSeccion('garantias')"
+            (keyup.enter)="toggleSeccion('garantias')"
+            tabindex="0"
+            role="button"
+            [attr.aria-expanded]="estaAbierta('garantias')">
+            <div class="clause-header-left">
+              <span class="clause-badge">05</span>
+              <h2 class="clause-title">Garantía Legal y Cobertura de Calidad</h2>
+            </div>
+            <div class="clause-toggle-action">
+              <span class="toggle-state-text">{{ estaAbierta('garantias') ? 'Ocultar' : 'Ver detalle' }}</span>
+              <div class="toggle-chevron" [class.rotated]="estaAbierta('garantias')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="clause-body accordion-panel" *ngIf="estaAbierta('garantias')">
+            <p>
+              En Plaxtilineas respaldamos la calidad e idoneidad de los materiales comercializados:
+            </p>
+            <ul class="custom-bullet-list">
+              <li>
+                <span class="bullet-dot"></span>
+                <span><strong>Alcance:</strong> Cubre defectos comprobables de fabricación, despegues prematuros en materiales vulcanizados o roturas anormales bajo condiciones de uso e instalación técnica recomendada.</span>
+              </li>
+              <li>
+                <span class="bullet-dot"></span>
+                <span><strong>Exclusiones de Garantía:</strong> No existirá cobertura por deterioro debido a intemperie prolongada (a menos que el producto especifique filtro UV), punzonamiento, exposición a químicos corrosivos, mala instalación o cortes erróneos efectuados por el cliente o terceros.</span>
+              </li>
+              <li>
+                <span class="bullet-dot"></span>
+                <span><strong>Trámite:</strong> Para radicar una solicitud de garantía formal, el cliente puede ingresar al módulo de <a routerLink="/pqrs-crear" class="inline-legal-link">Radicación de PQRS</a> aportando número de orden, descripción y evidencia fotográfica o en video.</span>
+              </li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- 06. Despachos y Envíos -->
+        <article id="envios" class="legal-card-section" [class.is-expanded]="estaAbierta('envios')">
+          <div 
+            class="clause-header interactive-trigger" 
+            (click)="toggleSeccion('envios')"
+            (keyup.enter)="toggleSeccion('envios')"
+            tabindex="0"
+            role="button"
+            [attr.aria-expanded]="estaAbierta('envios')">
+            <div class="clause-header-left">
+              <span class="clause-badge">06</span>
+              <h2 class="clause-title">Despachos, Fletes y Tiempos de Entrega</h2>
+            </div>
+            <div class="clause-toggle-action">
+              <span class="toggle-state-text">{{ estaAbierta('envios') ? 'Ocultar' : 'Ver detalle' }}</span>
+              <div class="toggle-chevron" [class.rotated]="estaAbierta('envios')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="clause-body accordion-panel" *ngIf="estaAbierta('envios')">
+            <p>
+              Ofrecemos alternativas de despacho ágiles y confiables:
+            </p>
+            <ul class="custom-bullet-list">
+              <li>
+                <span class="bullet-dot"></span>
+                <span><strong>Despacho Local (Armenia & Eje Cafetero):</strong> Para pedidos dentro de la zona metropolitana de Armenia y municipios aledaños del Quindío, los despachos se coordinan con mensajería rápida o retiro directo en almacén sin costo.</span>
+              </li>
+              <li>
+                <span class="bullet-dot"></span>
+                <span><strong>Envíos Nacionales:</strong> Los despachos a otras ciudades de Colombia se realizan a través de empresas transportadoras legalmente autorizadas (Interrapidísimo, Envía, Servientrega, Coordinadora). Una vez despachado, se proveerá número de guía para rastreo.</span>
+              </li>
+              <li>
+                <span class="bullet-dot"></span>
+                <span><strong>Inspección al recibir:</strong> Recomendamos verificar el estado del paquete ante el transportador. En caso de empaques rasgados o abiertos, debe dejarse constancia escrita en la guía de entrega.</span>
+              </li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- 07. PQRS y Jurisdicción -->
+        <article id="pqrs" class="legal-card-section" [class.is-expanded]="estaAbierta('pqrs')">
+          <div 
+            class="clause-header interactive-trigger" 
+            (click)="toggleSeccion('pqrs')"
+            (keyup.enter)="toggleSeccion('pqrs')"
+            tabindex="0"
+            role="button"
+            [attr.aria-expanded]="estaAbierta('pqrs')">
+            <div class="clause-header-left">
+              <span class="clause-badge">07</span>
+              <h2 class="clause-title">Canales de PQRS y Legislación Aplicable</h2>
+            </div>
+            <div class="clause-toggle-action">
+              <span class="toggle-state-text">{{ estaAbierta('pqrs') ? 'Ocultar' : 'Ver detalle' }}</span>
+              <div class="toggle-chevron" [class.rotated]="estaAbierta('pqrs')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="clause-body accordion-panel" *ngIf="estaAbierta('pqrs')">
+            <p>
+              Plaxtilineas dispone de un sistema centralizado de Peticiones, Quejas, Reclamos y Sugerencias:
+            </p>
+            <p>
+              Toda solicitud será atendida en un plazo máximo de <strong>quince (15) días hábiles</strong> conforme al artículo 14 de la Ley 1755 de 2015. El usuario puede radicar y consultar el avance de su ticket en tiempo real a través de nuestro portal web.
+            </p>
+
+            <div class="pqrs-cta-banner">
+              <div class="pqrs-cta-content">
+                <h4 class="pqrs-cta-title">¿Tienes una Petición, Queja o Reclamo?</h4>
+                <p class="pqrs-cta-desc">Radica tu solicitud con evidencias y te responderemos formalmente con número de radicado único.</p>
+              </div>
+              <a routerLink="/pqrs-crear" class="pqrs-cta-btn">
+                <span>Radicar Solicitud PQRS</span>
+                <span class="btn-arrow">&rsaquo;</span>
+              </a>
+            </div>
+
+            <p style="margin-top: 24px; font-size: 0.9rem; color: #64748b;">
+              <strong>Superintendencia de Industria y Comercio:</strong> En caso de requerir orientación adicional sobre derechos del consumidor, puedes consultar el portal oficial de la <a href="https://www.sic.gov.co" target="_blank" rel="noopener noreferrer" class="inline-legal-link">Superintendencia de Industria y Comercio (SIC)</a>.
+            </p>
+          </div>
+        </article>
+
+        <!-- Barra Inferior de Enlaces Legales Cruzados -->
+        <footer class="legal-bottom-crosslinks">
+          <div class="crosslinks-title">Documentos y Canales Relacionados:</div>
+          <div class="crosslinks-tags">
+            <a routerLink="/terminos" class="crosslink-chip active">Términos y Condiciones</a>
+            <span class="crosslink-separator">•</span>
+            <a routerLink="/privacidad" class="crosslink-chip">Política de Privacidad</a>
+            <span class="crosslink-separator">•</span>
+            <a routerLink="/pqrs-crear" class="crosslink-chip">Radicar Solicitud PQRS</a>
+            <span class="crosslink-separator">•</span>
+            <a routerLink="/nosotros" class="crosslink-chip">Conoce Plaxtilineas</a>
+          </div>
+        </footer>
+
+      </section>
+
     </div>
+
   </div>
-</div>
+</main>
 
 <app-footer></app-footer>

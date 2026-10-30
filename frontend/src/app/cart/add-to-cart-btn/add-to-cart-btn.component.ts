@@ -20,8 +20,8 @@ import { Variante } from '../../models/variante.model';
         ¡Agregado!
       </button>
     } @else {
-      <button (click)="addToCart()" [disabled]="disabled || (producto.controlar_stock && producto.stock === 0)" [class]="getButtonClasses((disabled || (producto.controlar_stock && producto.stock === 0)) ? 'disabled' : 'normal')" [ngStyle]="getButtonStyle()">
-        @if (disabled || (producto.controlar_stock && producto.stock === 0)) {
+      <button (click)="addToCart()" [disabled]="disabled || isSinStock" [class]="getButtonClasses((disabled || isSinStock) ? 'disabled' : 'normal')" [ngStyle]="getButtonStyle()">
+        @if (disabled || isSinStock) {
           <svg xmlns="http://www.w3.org/2000/svg" [attr.width]="getIconSize()" [attr.height]="getIconSize()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
           Sin Stock
         } @else {
@@ -30,6 +30,7 @@ import { Variante } from '../../models/variante.model';
         }
       </button>
     }
+
   `
 })
 export class AddToCartBtnComponent {
@@ -132,7 +133,6 @@ export class AddToCartBtnComponent {
         'color': '#ffffff'
       };
     }
-    // Ya no aplicamos color aquí porque sobreescribe el hover de Tailwind para los demás
     return {};
   }
 
@@ -142,15 +142,27 @@ export class AddToCartBtnComponent {
     return 16;
   }
 
+  get isSinStock(): boolean {
+    const stock = this.variante?.stock !== undefined && this.variante?.stock !== null
+      ? this.variante.stock
+      : this.producto?.stock;
+    const controla = this.producto?.controlar_stock === true || this.producto?.controlar_stock === 1 || stock !== undefined;
+    return controla && stock !== undefined && stock <= 0;
+  }
+
   addToCart() {
-    if (!this.producto || this.disabled || (this.producto.controlar_stock && this.producto.stock === 0)) {
-      console.warn('[Seguridad] Intento de agregar al carrito bloqueado (botón deshabilitado o sin producto).');
+    if (!this.producto || this.disabled || this.isSinStock) {
+      console.warn('[Seguridad] Intento de agregar al carrito bloqueado (botón deshabilitado o sin producto/stock).');
       return;
     }
     
     const success = this.cartService.addToCart(this.producto, this.cantidad, this.variante);
     
     if (!success) {
+      if (this.cartService.lastRejectReason === 'auth_required') {
+        // El modal de autenticación requerida se muestra automáticamente desde CartService
+        return;
+      }
       this.showStockError = true;
       setTimeout(() => {
         this.showStockError = false;

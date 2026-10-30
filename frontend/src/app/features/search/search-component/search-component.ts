@@ -32,8 +32,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   showSuggestions: boolean = false;
   isSearchInProgress: boolean = false;
 
-  // Búsquedas frecuentes y recientes (términos en singular)
-  busquedasFrecuentes: string[] = ['Espuma', 'Plástico', 'Empaque', 'Malla', 'Colchón', 'Tela', 'Lona', 'Cinta'];
+  // Historial de búsquedas recientes
   busquedasRecientes: string[] = [];
 
   // Información de resultados
@@ -372,12 +371,32 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   private performRealTimeSearch(termino: string): void {
     const termNorm = this.normalizarTexto(termino);
+    const equivalencias: Record<string, string> = {
+      pegamento: 'pegante',
+      pegar: 'pegante',
+      adhesivo: 'pegante',
+      plasticos: 'plastico',
+      plastic: 'plastico',
+      mallas: 'malla',
+      colchones: 'colchon',
+      espumas: 'espuma',
+      empaques: 'empaque',
+      telas: 'tela',
+      lonas: 'lona',
+      cintas: 'cinta',
+    };
+    const tokens = termNorm.split(/\s+/).filter(token => token.length >= 2).map(token =>
+      token.length > 4 && token.endsWith('es') ? token.slice(0, -2) :
+      token.length > 3 && token.endsWith('s') ? token.slice(0, -1) : token
+    ).map(token => equivalencias[token] ?? token);
     // Filtrado local inmediato para respuestas instantáneas
     if (this.todosLosProductos.length > 0) {
-      this.productosSugeridos = this.todosLosProductos.filter(p =>
-        this.normalizarTexto(p.nombre || '').includes(termNorm) ||
-        this.normalizarTexto(p.categoria || '').includes(termNorm)
-      ).slice(0, 5);
+      this.productosSugeridos = this.todosLosProductos.filter(p => {
+        const texto = this.normalizarTexto([
+          p.nombre, p.descripcion, p.categoria, p.subcategoria, p.material, p.marca
+        ].join(' '));
+        return tokens.every(token => texto.includes(token) || texto.includes(`${token}s`) || texto.includes(`${token}es`));
+      }).slice(0, 5);
       this.showSuggestions = this.productosSugeridos.length > 0;
       this.cdr.markForCheck();
     }

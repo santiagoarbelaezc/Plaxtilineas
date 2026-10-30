@@ -1,359 +1,659 @@
-<app-navbar></app-navbar>
+<app-navbar *ngIf="!isEmbedded"></app-navbar>
 
-<div class="mis-pedidos-page">
+<div class="mis-pedidos-page" [class.embedded]="isEmbedded">
+  <!-- Línea Superior de Acento Esmeralda (Marca Plaxtilineas - cuando no está embebido) -->
+  <div class="page-accent-glow" *ngIf="!isEmbedded"></div>
 
-  <!-- ═══ HERO HEADER ════════════════════════════════════════════════════ -->
-  <div class="pedidos-header">
-    <div class="header-content">
-      <div class="header-text">
-        <h1 class="page-title">
-          <svg class="title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-          Mis Pedidos
-        </h1>
-        <p class="page-subtitle">Historial completo de tus compras en Plaxtilineas</p>
-      </div>
-    </div>
-  </div>
+  <div class="pedidos-container">
 
-  <!-- ═══ STATS CARDS ════════════════════════════════════════════════════ -->
-  <div class="stats-section" *ngIf="!loading() && pedidos().length > 0">
-    <div class="stat-card">
-      <div class="stat-icon stat-icon-total">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-      </div>
-      <div class="stat-info">
-        <span class="stat-value">{{ totalPedidos() }}</span>
-        <span class="stat-label">Pedidos Totales</span>
-      </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon stat-icon-money">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-      </div>
-      <div class="stat-info">
-        <span class="stat-value">{{ formatPrice(totalInvertido()) }}</span>
-        <span class="stat-label">Total Invertido</span>
-      </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon stat-icon-active">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-      </div>
-      <div class="stat-info">
-        <span class="stat-value">{{ pedidosActivos() }}</span>
-        <span class="stat-label">Pedidos Activos</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══ FILTERS ════════════════════════════════════════════════════════ -->
-  <div class="filters-section" *ngIf="!loading() && pedidos().length > 0">
-    <button
-      class="filter-chip"
-      [class.active]="filtroEstado() === 'todos'"
-      (click)="setFiltro('todos')">
-      <i class="fa-solid fa-list"></i> Todos
-    </button>
-    <button
-      *ngFor="let estado of estadosList"
-      class="filter-chip"
-      [class.active]="filtroEstado() === estado.key"
-      (click)="setFiltro(estado.key)"
-      [style.--chip-color]="estado.color">
-      <i [class]="estado.icon" [style.color]="filtroEstado() === estado.key ? '#fff' : estado.color"></i> {{ estado.label }}
-    </button>
-  </div>
-
-  <!-- ═══ LOADING STATE ══════════════════════════════════════════════════ -->
-  <div class="loading-state" *ngIf="loading()">
-    <div class="loading-spinner"></div>
-    <p>Cargando tus pedidos...</p>
-  </div>
-
-  <!-- ═══ ERROR STATE ════════════════════════════════════════════════════ -->
-  <div class="error-state" *ngIf="error()">
-    <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 48px; height: 48px; margin: 0 auto 16px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-    <p>{{ error() }}</p>
-    <button class="retry-btn" (click)="cargarPedidos()">Reintentar</button>
-  </div>
-
-  <!-- ═══ EMPTY STATE ════════════════════════════════════════════════════ -->
-  <div class="empty-state" *ngIf="!loading() && !error() && pedidos().length === 0">
-    <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 64px; height: 64px; margin: 0 auto 24px; color: #111;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-    <h2>Aún no tienes pedidos</h2>
-    <p>Cuando realices tu primera compra, podrás ver todo el historial aquí.</p>
-    <a routerLink="/productos" class="shop-btn">Ir a la tienda</a>
-  </div>
-
-  <!-- ═══ PEDIDOS LIST ═══════════════════════════════════════════════════ -->
-  <div class="pedidos-list" *ngIf="!loading() && !error() && pedidosFiltrados().length > 0">
-    <div
-      *ngFor="let pedido of pedidosFiltrados(); trackBy: trackByPedidoId"
-      class="pedido-card"
-      [class.expanded]="isPedidoExpanded(pedido)"
-      [class.cancelado]="pedido.estado === 'cancelado'">
-
-      <!-- Card Header (siempre visible) -->
-      <div class="pedido-card-header" (click)="togglePedido(pedido)">
-        <div class="pedido-main-info">
-          <div class="pedido-code-badge">
-            <span class="code-label">Pedido</span>
-            <span class="code-value">#{{ pedido.codigo_pedido }}</span>
-          </div>
-          <div class="pedido-meta">
-            <span class="pedido-date">{{ formatShortDate(pedido.fecha) }}</span>
-            <span class="pedido-items-count">{{ pedido.total_items }} {{ pedido.total_items === 1 ? 'producto' : 'productos' }}</span>
-          </div>
-        </div>
-
-        <div class="pedido-right-info">
-          <span class="pedido-total">{{ formatPrice(pedido.total) }}</span>
-          <span
-            class="estado-badge"
-            [style.--estado-color]="getEstadoInfo(pedido.estado).color">
-            <i [class]="getEstadoInfo(pedido.estado).icon" style="margin-right: 4px;"></i> {{ getEstadoInfo(pedido.estado).label }}
-          </span>
-        </div>
-
-        <div class="expand-arrow" [class.rotated]="isPedidoExpanded(pedido)">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="6 9 12 15 18 9"></polyline>
+    <!-- ═══ 1. CABECERA PRINCIPAL (Estilo dash-card de Editar Datos & Dirección) ═══ -->
+    <div class="dash-card orders-header-card">
+      <div class="card-top-header">
+        <div class="card-icon-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="header-badge-svg">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
           </svg>
         </div>
+        <div class="card-header-titles">
+          <div class="card-title-row">
+            <h2 class="card-main-title">Gestión de Pedidos</h2>
+            <span class="count-pill-green" *ngIf="!loading() && totalPedidos() > 0">
+              {{ totalPedidos() }} {{ totalPedidos() === 1 ? 'pedido' : 'pedidos' }}
+            </span>
+          </div>
+          <p class="card-sub-title">Monitorea el flujo en tiempo real, guías de despacho, transportadora y comprobantes de pago.</p>
+        </div>
+        <div class="card-header-actions" *ngIf="!loading()">
+          <button class="btn-dash-sync" (click)="cargarPedidos()" title="Actualizar pedidos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="sync-icon">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            <span>Sincronizar Pedidos</span>
+          </button>
+        </div>
       </div>
 
-      <!-- Card Body (expandible) -->
-      <div class="pedido-card-body" *ngIf="isPedidoExpanded(pedido)">
-
-        <!-- Timeline Stepper -->
-        <div class="timeline-section">
-          <h3 class="section-title">Estado del Pedido</h3>
-          <div class="timeline-stepper" [class.cancelled]="pedido.estado === 'cancelado'">
-            <div
-              *ngFor="let step of timelineSteps; let i = index"
-              class="timeline-step"
-              [class.completed]="isStepCompleted(pedido.estado, i)"
-              [class.active]="isStepActive(pedido.estado, i)">
-              <div class="step-connector" *ngIf="i > 0"
-                [class.completed]="isStepCompleted(pedido.estado, i)">
-              </div>
-              <div class="step-dot">
-                <span class="step-emoji"><i [class]="step.icon"></i></span>
-              </div>
-              <span class="step-label">{{ step.label }}</span>
-            </div>
-          </div>
-          <div class="cancelled-badge" *ngIf="pedido.estado === 'cancelado'">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-            Este pedido fue cancelado
-          </div>
-        </div>
-
-        <!-- Productos -->
-        <div class="productos-section">
-          <h3 class="section-title">Productos del Pedido</h3>
-          <div class="productos-grid">
-            <div *ngFor="let detalle of pedido.detalles" class="producto-item">
-              <!-- Imagen -->
-              <div class="producto-img-wrapper">
-                <img *ngIf="detalle.imagen_url" [src]="detalle.imagen_url" [alt]="detalle.nombre_producto" class="producto-img">
-                <div *ngIf="!detalle.imagen_url" class="producto-img-placeholder">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 32px; height: 32px; color: #ccc;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                </div>
-              </div>
-              
-              <!-- Info -->
-              <div class="producto-details">
-                <h4 class="producto-nombre">{{ detalle.nombre_producto }}</h4>
-                <p class="producto-subtitle">
-                  {{ detalle.variante_id ? 'Variante #' + detalle.variante_id : 'Genérico' }}
-                </p>
-                <div class="producto-cu">
-                  <span>C/U: {{ formatPrice(detalle.precio_unitario) }}</span>
-                </div>
-              </div>
-              
-              <!-- Valores y Cantidad -->
-              <div class="producto-pricing-block">
-                <div class="producto-subtotal">{{ formatPrice(detalle.subtotal || (detalle.precio_unitario * detalle.cantidad)) }}</div>
-                
-                <!-- Cantidad Selector Estilo Ikea (Estático) -->
-                <div class="static-quantity-selector">
-                  <span class="qty-btn-disabled">-</span>
-                  <span class="qty-val">{{ detalle.cantidad }}</span>
-                  <span class="qty-btn-disabled">+</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Detalles de Envío y Pago -->
-        <div class="info-grid">
-          <div class="info-block">
-            <h3 class="section-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-              Dirección de Envío
-            </h3>
-            <p class="info-text">{{ pedido.direccion_envio }}</p>
-            <p class="info-text" *ngIf="pedido.ciudad || pedido.departamento">
-              {{ pedido.ciudad }}<span *ngIf="pedido.ciudad && pedido.departamento">, </span>{{ pedido.departamento }}
-            </p>
-            <p class="info-text" *ngIf="pedido.telefono_contacto">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; display: inline-block; margin-right: 4px; vertical-align: middle;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-              {{ pedido.telefono_contacto }}
-            </p>
-          </div>
-          <div class="info-block">
-            <h3 class="section-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-              Método de Pago
-            </h3>
-            <p class="info-text capitalize">{{ pedido.metodo_pago }}</p>
-            <p class="info-text muted" *ngIf="pedido.notas">Notas: {{ pedido.notas }}</p>
-          </div>
-        </div>
-
-        <!-- Resumen financiero -->
-        <div class="financial-summary">
-          <div class="summary-row">
-            <span>Subtotal</span>
-            <span>{{ formatPrice(pedido.subtotal) }}</span>
-          </div>
-          <div class="summary-row">
-            <span>Envío</span>
-            <span class="envio-text">Incluido</span>
-          </div>
-          <div class="summary-row total-row">
-            <span>Total Pagado</span>
-            <span class="total-value">{{ formatPrice(pedido.total) }}</span>
-          </div>
-        </div>
-
-        <!-- Acciones -->
-        <div class="pedido-actions">
-          <div class="actions-left">
-            <button class="action-btn-invoice" (click)="openInvoice(pedido); $event.stopPropagation()">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
+      <!-- ═══ 2. BENTO STAT CARDS (4 KPIs Idénticos al Dashboard con Acentos Verdes) ═══ -->
+      <div class="dash-bento-grid" *ngIf="!loading() && pedidos().length > 0">
+        <!-- Card 1: Total Pedidos -->
+        <div class="bento-stat-card">
+          <div class="bento-card-top">
+            <span class="bento-kicker">TOTAL PEDIDOS</span>
+            <div class="bento-icon-wrapper">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
               </svg>
-              Ver Comprobante
+            </div>
+          </div>
+          <div class="bento-val-row">
+            <span class="bento-number">{{ totalPedidos() }}</span>
+            <span class="bento-sublabel">órdenes</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Inversión Total -->
+        <div class="bento-stat-card">
+          <div class="bento-card-top">
+            <span class="bento-kicker">INVERSIÓN TOTAL</span>
+            <div class="bento-icon-wrapper bento-icon-green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="1" x2="12" y2="23"></line>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="bento-val-row">
+            <span class="bento-number green-highlight">{{ formatPrice(totalInvertido()) }}</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Pedidos Activos (Acento Verde) -->
+        <div class="bento-stat-card">
+          <div class="bento-card-top">
+            <span class="bento-kicker">PEDIDOS ACTIVOS</span>
+            <div class="bento-icon-wrapper bento-icon-active">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="1" y="3" width="15" height="13"></rect>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+              </svg>
+            </div>
+          </div>
+          <div class="bento-val-row">
+            <span class="bento-number">{{ pedidosActivos() }}</span>
+            <span class="bento-status-pill green-pill" *ngIf="pedidosActivos() > 0">
+              <span class="live-dot-green"></span>
+              En Proceso
+            </span>
+            <span class="bento-sublabel" *ngIf="pedidosActivos() === 0">Al día</span>
+          </div>
+        </div>
+
+        <!-- Card 4: Entregas Completadas -->
+        <div class="bento-stat-card">
+          <div class="bento-card-top">
+            <span class="bento-kicker">ENTREGAS COMPLETADAS</span>
+            <div class="bento-icon-wrapper bento-icon-done">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+          </div>
+          <div class="bento-val-row">
+            <span class="bento-number">{{ entregasCompletadas() }}</span>
+            <span class="bento-status-pill done-pill" *ngIf="entregasCompletadas() > 0">
+              ✓ Entregados
+            </span>
+            <span class="bento-sublabel" *ngIf="entregasCompletadas() === 0">Ninguna aún</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ 3. BANNER OSCURO DE LOGÍSTICA (Inspirado en el Dashboard #0a0a0a) ═══ -->
+      <div class="dash-dark-banner" *ngIf="!loading() && pedidos().length > 0">
+        <div class="banner-content">
+          <div class="banner-kicker">
+            <span class="live-dot-green"></span>
+            <span>LOGÍSTICA &amp; DESPACHOS EN VIVO</span>
+          </div>
+          <h3 class="banner-title">Trazabilidad y Envíos de Compras</h3>
+          <p class="banner-desc">Rastreo punto a punto desde la confirmación de pago con Wompi hasta la entrega efectiva en tu domicilio.</p>
+        </div>
+        <div class="banner-badge-box">
+          <span class="secure-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tag-svg">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            Compras Protegidas
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ 4. TOOLBAR DE BÚSQUEDA Y FILTRADO (Estilo Form Inputs de Perfil) ═══ -->
+    <div class="dash-card toolbar-card" *ngIf="!loading() && pedidos().length > 0">
+      <div class="toolbar-flex-row">
+        <!-- Buscador -->
+        <div class="search-input-group">
+          <svg class="search-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input
+            type="text"
+            class="form-input search-input"
+            placeholder="Buscar por código #PX, producto o dirección..."
+            [ngModel]="searchQuery()"
+            (ngModelChange)="searchQuery.set($event)"
+          />
+          <button
+            *ngIf="searchQuery()"
+            class="search-clear-btn"
+            (click)="searchQuery.set('')"
+            title="Limpiar búsqueda">
+            ✕
+          </button>
+        </div>
+
+        <!-- Selector de Estado -->
+        <div class="filter-select-group">
+          <select
+            class="form-select filter-select"
+            [ngModel]="filtroEstado()"
+            (ngModelChange)="setFiltro($event)"
+            aria-label="Filtrar pedidos por estado">
+            <option value="todos">Todos los pedidos ({{ getCountByEstado('todos') }})</option>
+            <option *ngFor="let estado of estadosList" [value]="estado.key">
+              {{ estado.label }} ({{ getCountByEstado(estado.key) }})
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ LOADING STATE ═══ -->
+    <div class="dash-card status-box-card" *ngIf="loading()">
+      <div class="modern-dual-ring"></div>
+      <h3 class="status-box-title">Cargando tus pedidos</h3>
+      <p class="status-box-desc">Estamos sincronizando el historial de tus compras...</p>
+    </div>
+
+    <!-- ═══ ERROR STATE ═══ -->
+    <div class="dash-card status-box-card error" *ngIf="error()">
+      <div class="status-box-icon error-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      <h3 class="status-box-title">Error al consultar los pedidos</h3>
+      <p class="status-box-desc">{{ error() }}</p>
+      <button class="btn-dash-primary" (click)="cargarPedidos()">Reintentar</button>
+    </div>
+
+    <!-- ═══ EMPTY STATE GLOBAL ═══ -->
+    <div class="dash-card status-box-card empty" *ngIf="!loading() && !error() && pedidos().length === 0">
+      <div class="status-box-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+      </div>
+      <h2 class="status-box-title">Aún no has realizado pedidos</h2>
+      <p class="status-box-desc">Explora nuestro catálogo de plásticos técnicos, lonas, tuberías y empaques de alta resistencia.</p>
+      <a routerLink="/productos" class="btn-dash-primary catalog-link">
+        <span>Explorar Catálogo</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+    </div>
+
+    <!-- ═══ LISTADO DE PEDIDOS (Cada uno en formato dash-card) ═══ -->
+    <div class="pedidos-stack" *ngIf="!loading() && !error() && pedidosFiltrados().length > 0">
+      <article
+        *ngFor="let pedido of pedidosFiltrados(); trackBy: trackByPedidoId"
+        class="dash-card pedido-card-item"
+        [class.is-expanded]="isPedidoExpanded(pedido)"
+        [class.is-cancelado]="pedido.estado === 'cancelado'">
+
+        <!-- Resplandor superior en la tarjeta expandida -->
+        <div class="card-accent-glow" *ngIf="isPedidoExpanded(pedido)"></div>
+
+        <!-- Card Header (Visible siempre) -->
+        <div class="pedido-card-header" (click)="togglePedido(pedido)">
+          <!-- Columna Izquierda: Código e Info -->
+          <div class="header-left-col">
+            <div class="order-code-row">
+              <span class="order-code-badge">PEDIDO #{{ pedido.codigo_pedido }}</span>
+            </div>
+            <div class="order-meta-row">
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                {{ formatShortDate(pedido.fecha) }}
+              </span>
+              <span class="meta-separator">&bull;</span>
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                </svg>
+                {{ pedido.total_items }} {{ pedido.total_items === 1 ? 'producto' : 'productos' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Columna Derecha: Monto, Badge y Chevron -->
+          <div class="header-right-col">
+            <div class="order-price-box">
+              <span class="order-price-label">Total</span>
+              <span class="order-total-amount">{{ formatPrice(pedido.total) }}</span>
+            </div>
+
+            <!-- Status Pill con Verde para estados positivos/activos -->
+            <div
+              class="status-pill-badge"
+              [class.badge-green]="pedido.estado === 'entregado' || pedido.estado === 'pagado' || pedido.estado === 'confirmado' || pedido.estado === 'en_camino' || pedido.estado === 'en_preparacion'"
+              [class.badge-cancel]="pedido.estado === 'cancelado'"
+              [class.badge-pending]="pedido.estado === 'pendiente_pago' || pedido.estado === 'pendiente'">
+              <span class="status-pulse-dot"></span>
+              <span class="status-pill-text">{{ getEstadoInfo(pedido.estado).label }}</span>
+            </div>
+
+            <button class="btn-expand-circle" [class.is-rotated]="isPedidoExpanded(pedido)" aria-label="Desplegar detalles">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
             </button>
-            
-            <button *ngIf="isCancelable(pedido)" class="action-btn-cancel" (click)="cancelarPedido(pedido, $event)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          </div>
+        </div>
+
+        <!-- Card Body Desplegable -->
+        <div class="pedido-card-body" *ngIf="isPedidoExpanded(pedido)">
+
+          <!-- 1. TIMELINE TRACKER -->
+          <section class="nested-dash-card timeline-card">
+            <div class="nested-card-top-header">
+              <div class="nested-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </div>
+              <div class="nested-header-titles">
+                <h4 class="nested-main-title">Seguimiento de la Compra</h4>
+                <p class="nested-sub-title">Progreso cronológico del despacho de tu paquete.</p>
+              </div>
+            </div>
+
+            <div class="timeline-stepper-wrapper" [class.is-cancelled-mode]="pedido.estado === 'cancelado'">
+              <div
+                *ngFor="let step of timelineSteps; let i = index"
+                class="stepper-step"
+                [class.is-completed]="isStepCompleted(pedido.estado, i)"
+                [class.is-active]="isStepActive(pedido.estado, i)">
+
+                <div class="connector-line" *ngIf="i > 0"
+                  [class.is-completed]="isStepCompleted(pedido.estado, i)">
+                </div>
+
+                <div class="step-circle-icon">
+                  <i [class]="step.icon"></i>
+                </div>
+
+                <span class="step-title-label">{{ step.label }}</span>
+              </div>
+            </div>
+
+            <div class="cancelled-alert-banner" *ngIf="pedido.estado === 'cancelado'">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="15" y1="9" x2="9" y2="15"></line>
                 <line x1="9" y1="9" x2="15" y2="15"></line>
               </svg>
-              Cancelar Pedido
-            </button>
+              <span>Este pedido fue cancelado. Si el pago fue procesado o tienes dudas, contacta a nuestro equipo de soporte.</span>
+            </div>
+          </section>
 
-            <button *ngIf="isDeletable(pedido)" class="action-btn-delete" (click)="eliminarPedido(pedido, $event)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="3 6 5 6 21 6"></polyline>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                <line x1="10" y1="11" x2="10" y2="17"></line>
-                <line x1="14" y1="11" x2="14" y2="17"></line>
-              </svg>
-              Eliminar
-            </button>
+          <!-- 2. PRODUCTOS COMPRADOS -->
+          <section class="nested-dash-card products-card">
+            <div class="nested-card-top-header">
+              <div class="nested-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                </svg>
+              </div>
+              <div class="nested-header-titles">
+                <h4 class="nested-main-title">Artículos en este Pedido ({{ pedido.total_items }})</h4>
+                <p class="nested-sub-title">Detalle de especificaciones, cantidades y subtotales.</p>
+              </div>
+            </div>
+
+            <div class="products-table-stack">
+              <div *ngFor="let detalle of pedido.detalles" class="product-item-row">
+                <!-- Miniatura con marco elegante -->
+                <div class="product-thumbnail">
+                  <img *ngIf="detalle.imagen_url" [src]="detalle.imagen_url" [alt]="detalle.nombre_producto">
+                  <div *ngIf="!detalle.imagen_url" class="img-fallback">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                      <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                      <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Info del Producto -->
+                <div class="product-info-col">
+                  <h4 class="product-name">{{ detalle.nombre_producto }}</h4>
+                  <div class="product-meta-row">
+                    <span class="variant-pill">
+                      {{ detalle.variante_id ? 'Variante #' + detalle.variante_id : 'Estándar' }}
+                    </span>
+                    <span class="unit-price-text">
+                      Precio Unitario: <strong>{{ formatPrice(detalle.precio_unitario) }}</strong>
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Cantidad y Subtotal -->
+                <div class="product-pricing-col">
+                  <span class="qty-pill">
+                    Cant: <strong>{{ detalle.cantidad }}</strong>
+                  </span>
+                  <span class="item-subtotal-text">
+                    {{ formatPrice(detalle.subtotal || (detalle.precio_unitario * detalle.cantidad)) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3. INFO GRID: ENVÍO, PAGO Y RESUMEN FINANCIERO -->
+          <div class="details-split-grid">
+            <!-- Bloque de Envío -->
+            <div class="nested-dash-card info-card">
+              <div class="nested-card-top-header">
+                <div class="nested-icon-badge">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                </div>
+                <div class="nested-header-titles">
+                  <h4 class="nested-main-title">Dirección de Entrega</h4>
+                  <p class="nested-sub-title">Destino asignado</p>
+                </div>
+              </div>
+              <div class="info-card-content">
+                <p class="info-address-main">{{ pedido.direccion_envio }}</p>
+                <p class="info-address-sub" *ngIf="pedido.ciudad || pedido.departamento">
+                  {{ pedido.ciudad }}<span *ngIf="pedido.ciudad && pedido.departamento">, </span>{{ pedido.departamento }}
+                </p>
+                <p class="info-phone-text" *ngIf="pedido.telefono_contacto">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                  </svg>
+                  <span>{{ pedido.telefono_contacto }}</span>
+                </p>
+              </div>
+            </div>
+
+            <!-- Bloque de Transportadora y Guía (si existe) -->
+            <div class="nested-dash-card info-card" *ngIf="pedido.transportadora || pedido.guia_numero">
+              <div class="nested-card-top-header">
+                <div class="nested-icon-badge">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="1" y="3" width="15" height="13"></rect>
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                  </svg>
+                </div>
+                <div class="nested-header-titles">
+                  <h4 class="nested-main-title">Transportadora &amp; Guía</h4>
+                  <p class="nested-sub-title">Datos de logística</p>
+                </div>
+              </div>
+              <div class="info-card-content">
+                <div class="carrier-badge" *ngIf="pedido.transportadora">
+                  <span class="carrier-name">{{ pedido.transportadora }}</span>
+                </div>
+                <p class="guide-number-text" *ngIf="pedido.guia_numero">
+                  No. de Guía: <strong class="mono-guide">{{ pedido.guia_numero }}</strong>
+                </p>
+              </div>
+            </div>
+
+            <!-- Bloque de Método de Pago -->
+            <div class="nested-dash-card info-card">
+              <div class="nested-card-top-header">
+                <div class="nested-icon-badge">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                  </svg>
+                </div>
+                <div class="nested-header-titles">
+                  <h4 class="nested-main-title">Método de Pago</h4>
+                  <p class="nested-sub-title">Transacción</p>
+                </div>
+              </div>
+              <div class="info-card-content">
+                <div class="payment-badge">
+                  <span class="payment-brand-indicator"></span>
+                  <span class="payment-brand-text">{{ pedido.metodo_pago }}</span>
+                </div>
+                <p class="payment-ref-text" *ngIf="pedido.wompi_referencia">
+                  Ref: <span class="mono-ref">{{ pedido.wompi_referencia }}</span>
+                </p>
+                <p class="payment-notes-text" *ngIf="pedido.notas">
+                  <em>"{{ pedido.notas }}"</em>
+                </p>
+              </div>
+            </div>
+
+            <!-- Bloque de Resumen Financiero -->
+            <div class="nested-dash-card summary-card">
+              <div class="cart-summary-breakdown">
+                <div class="summary-line">
+                  <span class="summary-line-label">Subtotal</span>
+                  <span class="summary-line-value">{{ formatPrice(pedido.subtotal) }}</span>
+                </div>
+                <div class="summary-line muted">
+                  <span class="summary-line-label">Costo de envío</span>
+                  <span class="shipping-included-pill">Incluido</span>
+                </div>
+              </div>
+
+              <!-- Caja de Total -->
+              <div class="cart-total-box">
+                <div class="total-text-col">
+                  <span class="total-kicker">TOTAL PAGADO</span>
+                  <span class="total-iva-note">IVA Incluido</span>
+                </div>
+                <span class="cart-total-amount">{{ formatPrice(pedido.total) }}</span>
+              </div>
+            </div>
           </div>
-          <span class="pedido-updated">Última actualización: {{ formatDate(pedido.fecha_actualizacion) }}</span>
+
+          <!-- 4. BARRA INFERIOR DE ACCIONES -->
+          <footer class="pedido-card-footer">
+            <div class="footer-actions-left">
+              <button class="btn-dash-primary invoice-btn" (click)="openInvoice(pedido); $event.stopPropagation()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                <span>Ver Comprobante</span>
+              </button>
+
+              <button *ngIf="isCancelable(pedido)" class="btn-outline-danger" (click)="cancelarPedido(pedido, $event)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+                <span>Cancelar Pedido</span>
+              </button>
+
+              <button *ngIf="isDeletable(pedido)" class="btn-outline-muted" (click)="eliminarPedido(pedido, $event)" title="Eliminar registro">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                <span>Eliminar</span>
+              </button>
+            </div>
+
+            <div class="footer-actions-right">
+              <span class="timestamp-meta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                Actualizado: {{ formatDate(pedido.fecha_actualizacion) }}
+              </span>
+            </div>
+          </footer>
+
         </div>
-      </div>
+      </article>
     </div>
+
+    <!-- ═══ EMPTY FILTER STATE ═══ -->
+    <div class="dash-card status-box-card empty" *ngIf="!loading() && !error() && pedidos().length > 0 && pedidosFiltrados().length === 0">
+      <div class="status-box-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          <line x1="8" y1="11" x2="14" y2="11"></line>
+        </svg>
+      </div>
+      <h3 class="status-box-title">No hay pedidos que coincidan</h3>
+      <p class="status-box-desc">No encontramos pedidos con el estado o filtro de búsqueda seleccionado.</p>
+      <button class="btn-dash-primary" (click)="setFiltro('todos'); searchQuery.set('')">Restablecer Filtros</button>
+    </div>
+
   </div>
 
-  <!-- No results for filter -->
-  <div class="empty-filter" *ngIf="!loading() && !error() && pedidos().length > 0 && pedidosFiltrados().length === 0">
-    <p>No hay pedidos con el estado seleccionado.</p>
-    <button class="filter-reset-btn" (click)="setFiltro('todos')">Ver todos</button>
-  </div>
+  <!-- ═══ INVOICE MODAL (COMPROBANTE PREMIUM) ═══ -->
+  <div class="invoice-modal-overlay" *ngIf="showInvoiceModal()" (click)="closeInvoice()">
+    <div class="invoice-modal-dialog" (click)="$event.stopPropagation()">
+      <div class="modal-top-accent"></div>
 
-  <!-- ═══ INVOICE MODAL ══════════════════════════════════════════════════ -->
-  <div class="invoice-overlay" *ngIf="showInvoiceModal()" (click)="closeInvoice()">
-    <div class="invoice-modal" (click)="$event.stopPropagation()">
-
-      <!-- Print-only content -->
-      <div class="invoice-content" id="invoice-print-area">
-        <div class="invoice-header-section">
-          <div class="invoice-brand">
-            <h2 class="invoice-brand-name">PLAXTILINEAS</h2>
-            <p class="invoice-brand-sub">Plaxtilineas SAS · NIT: 000.000.000-0</p>
-            <p class="invoice-brand-address">Cra. 19 #19-35, Armenia, Quindío</p>
-            <p class="invoice-brand-phone">Tel: +57 (606) 7390968</p>
+      <!-- Printable Area -->
+      <div class="invoice-printable-sheet" id="invoice-print-area">
+        <header class="sheet-header">
+          <div class="brand-block">
+            <h2 class="brand-title-h2">PLAXTILINEAS</h2>
+            <p class="brand-tagline">Soluciones Plásticas de Alta Resistencia</p>
+            <p class="brand-legal">Plaxtilineas SAS &bull; NIT: 900.123.456-7</p>
+            <p class="brand-location">Cra. 19 #19-35, Armenia, Quindío &bull; Colombia</p>
           </div>
-          <div class="invoice-meta-block">
-            <h3 class="invoice-title-label">COMPROBANTE DE COMPRA</h3>
-            <p class="invoice-code">{{ invoicePedido()?.codigo_pedido }}</p>
-            <p class="invoice-date">{{ formatDate(invoicePedido()?.fecha || '') }}</p>
-            <p class="invoice-estado">
+          <div class="invoice-meta-badge-box">
+            <span class="sheet-kicker">COMPROBANTE DE COMPRA</span>
+            <span class="sheet-order-code">#{{ invoicePedido()?.codigo_pedido }}</span>
+            <span class="sheet-date">{{ formatDate(invoicePedido()?.fecha || '') }}</span>
+            <div class="sheet-status-tag">
               Estado: <strong>{{ getEstadoInfo(invoicePedido()?.estado || 'pendiente').label }}</strong>
-            </p>
+            </div>
           </div>
-        </div>
+        </header>
 
-        <div class="invoice-divider"></div>
+        <div class="sheet-divider-line"></div>
 
-        <div class="invoice-client-info">
-          <h4>Datos del Cliente</h4>
-          <p><strong>Nombre:</strong> {{ (authService.currentUser | async)?.nombre }}</p>
-          <p><strong>Email:</strong> {{ (authService.currentUser | async)?.correo }}</p>
-          <p><strong>Dirección:</strong> {{ invoicePedido()?.direccion_envio }}</p>
-          <p *ngIf="invoicePedido()?.telefono_contacto"><strong>Teléfono:</strong> {{ invoicePedido()?.telefono_contacto }}</p>
-        </div>
+        <section class="sheet-customer-grid">
+          <div class="customer-col">
+            <span class="sheet-sec-title">Cliente</span>
+            <p class="sheet-text-lead">{{ (authService.currentUser | async)?.nombre }}</p>
+            <p class="sheet-text-sub">{{ (authService.currentUser | async)?.correo }}</p>
+            <p class="sheet-text-sub" *ngIf="invoicePedido()?.telefono_contacto">Tel: {{ invoicePedido()?.telefono_contacto }}</p>
+          </div>
+          <div class="customer-col">
+            <span class="sheet-sec-title">Lugar de Entrega</span>
+            <p class="sheet-text-lead">{{ invoicePedido()?.direccion_envio }}</p>
+            <p class="sheet-text-sub" *ngIf="invoicePedido()?.ciudad || invoicePedido()?.departamento">
+              {{ invoicePedido()?.ciudad }}<span *ngIf="invoicePedido()?.ciudad && invoicePedido()?.departamento">, </span>{{ invoicePedido()?.departamento }}
+            </p>
+            <p class="sheet-text-sub">Método: {{ invoicePedido()?.metodo_pago }}</p>
+          </div>
+        </section>
 
-        <table class="invoice-table">
+        <table class="sheet-items-table">
           <thead>
             <tr>
-              <th class="th-producto">Producto</th>
-              <th class="th-cant">Cant.</th>
-              <th class="th-precio">P. Unitario</th>
-              <th class="th-subtotal">Subtotal</th>
+              <th class="col-th-product">Producto</th>
+              <th class="col-th-center">Cant.</th>
+              <th class="col-th-right">Precio Unitario</th>
+              <th class="col-th-right">Subtotal</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let d of invoicePedido()?.detalles">
-              <td>{{ d.nombre_producto }}</td>
-              <td class="center">{{ d.cantidad }}</td>
-              <td class="right">{{ formatPrice(d.precio_unitario) }}</td>
-              <td class="right bold">{{ formatPrice(d.subtotal || (d.precio_unitario * d.cantidad)) }}</td>
+            <tr *ngFor="let item of invoicePedido()?.detalles">
+              <td class="col-td-product">
+                <span class="item-name">{{ item.nombre_producto }}</span>
+                <span class="item-variant" *ngIf="item.variante_id">Variante #{{ item.variante_id }}</span>
+              </td>
+              <td class="col-td-center">{{ item.cantidad }}</td>
+              <td class="col-td-right">{{ formatPrice(item.precio_unitario) }}</td>
+              <td class="col-td-right col-td-bold">{{ formatPrice(item.subtotal || (item.precio_unitario * item.cantidad)) }}</td>
             </tr>
           </tbody>
           <tfoot>
-            <tr class="subtotal-row">
-              <td colspan="3" class="right">Subtotal</td>
-              <td class="right">{{ formatPrice(invoicePedido()?.subtotal || 0) }}</td>
+            <tr class="tfoot-subtotal-row">
+              <td colspan="3" class="col-td-right">Subtotal</td>
+              <td class="col-td-right">{{ formatPrice(invoicePedido()?.subtotal || 0) }}</td>
             </tr>
-            <tr class="total-row-invoice">
-              <td colspan="3" class="right">TOTAL</td>
-              <td class="right total-cell">{{ formatPrice(invoicePedido()?.total || 0) }}</td>
+            <tr class="tfoot-shipping-row">
+              <td colspan="3" class="col-td-right">Envío</td>
+              <td class="col-td-right">Incluido</td>
+            </tr>
+            <tr class="tfoot-total-row">
+              <td colspan="3" class="col-td-right bold-total">TOTAL PAGADO</td>
+              <td class="col-td-right final-total-cell">{{ formatPrice(invoicePedido()?.total || 0) }}</td>
             </tr>
           </tfoot>
         </table>
 
-        <div class="invoice-footer-section">
-          <p class="invoice-thanks">¡Gracias por tu compra!</p>
-          <p class="invoice-legal">Este comprobante es un documento informativo. Plaxtilineas SAS © 2026</p>
-        </div>
+        <footer class="sheet-footer">
+          <p class="sheet-thanks-text">¡Gracias por confiar en Plaxtilineas!</p>
+          <p class="sheet-note-legal">Documento de comprobante emitido electrónicamente &bull; Plaxtilineas SAS &copy; 2026</p>
+        </footer>
       </div>
 
-      <!-- Non-print actions -->
-      <div class="invoice-actions no-print">
-        <button class="btn-print" (click)="printInvoice()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Modal Bottom Actions (Non-print) -->
+      <div class="modal-dialog-actions no-print">
+        <button class="btn-dash-primary btn-modal-print" (click)="printInvoice()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="6 9 6 2 18 2 18 9"></polyline>
             <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
             <rect x="6" y="14" width="12" height="8"></rect>
           </svg>
-          Imprimir / Guardar PDF
+          <span>Imprimir / Guardar PDF</span>
         </button>
-        <button class="btn-close-invoice" (click)="closeInvoice()">Cerrar</button>
+
+        <button class="btn-modal-close" (click)="closeInvoice()">
+          Cerrar
+        </button>
       </div>
 
     </div>
@@ -361,4 +661,4 @@
 
 </div>
 
-<app-footer></app-footer>
+<app-footer *ngIf="!isEmbedded"></app-footer>

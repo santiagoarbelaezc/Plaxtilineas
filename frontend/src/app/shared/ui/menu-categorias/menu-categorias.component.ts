@@ -63,26 +63,35 @@ export class MenuCategoriasComponent implements OnInit {
     });
 
     this.cargandoCategorias = true;
-    this.categoriaService.obtenerCategorias().subscribe(data => {
-      this.cargandoCategorias = false;
-      const expandedIds = this.menuStateService.getExpandedCategories();
-      
-      this.categorias = data.map(c => ({ 
-        ...c, 
-        expanded: expandedIds.includes(c.id),
-        cantidad: this.calcularCantidadTotal(c)
-      }));
+    this.categoriaService.obtenerCategorias().subscribe({
+      next: (data) => {
+        this.cargandoCategorias = false;
+        const expandedIds = this.menuStateService.getExpandedCategories();
+        
+        this.categorias = data.map(c => ({ 
+          ...c, 
+          expanded: expandedIds.includes(c.id),
+          cantidad: this.calcularCantidadTotal(c)
+        }));
 
-      // Si hay un ID desde URL, lo expandimos
-      if (categoriaIdDesdeURL) {
-        const encontrada = this.categorias.find(c => c.id === categoriaIdDesdeURL);
-        if (encontrada && !encontrada.expanded) {
-          encontrada.expanded = true;
-          this.menuStateService.expandCategory(encontrada.id);
+        // Ordenar alfabéticamente (igual que en admin-categorias)
+        this.categorias.sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+        // Si hay un ID desde URL, lo expandimos
+        if (categoriaIdDesdeURL) {
+          const encontrada = this.categorias.find(c => c.id === categoriaIdDesdeURL);
+          if (encontrada && !encontrada.expanded) {
+            encontrada.expanded = true;
+            this.menuStateService.expandCategory(encontrada.id);
+          }
         }
+        
+        this.checkForSavedSubcategory();
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar categorías en menú:', err);
+        this.cargandoCategorias = false;
       }
-      
-      this.checkForSavedSubcategory();
     });
   }
 
@@ -147,15 +156,15 @@ export class MenuCategoriasComponent implements OnInit {
     const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
     this.menuStateService.saveScrollPosition(scrollPosition);
     
-    // Navegar
+    // Navegar asegurando limpiar el parámetro de categoría previa
     this.router.navigate(['/productos'], {
-      queryParams: { subcategoria_id: subcatId },
+      queryParams: { subcategoria_id: subcatId, categoria_id: null },
       queryParamsHandling: 'merge'
     });
   }
 
   /**
-   * ⭐ ACTUALIZADO: Ver todos los productos (sin filtros)
+   * Ver todos los productos (sin filtros)
    */
   verTodosProductos() {
     console.log('🔍 Ver todos los productos');
@@ -175,9 +184,9 @@ export class MenuCategoriasComponent implements OnInit {
     // Limpiar subcategoría guardada
     this.menuStateService.clearLastSelectedSubcategory();
     
-    // Navegar con parámetro de categoría
+    // Navegar con parámetro de categoría asegurando limpiar subcategoría previa
     this.router.navigate(['/productos'], {
-      queryParams: { categoria_id: categoriaId },
+      queryParams: { categoria_id: categoriaId, subcategoria_id: null },
       queryParamsHandling: 'merge'
     });
   }

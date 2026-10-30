@@ -1,8 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
+use App\Contracts\AiChatClientInterface;
+use App\Contracts\GoogleAuthClientInterface;
+use App\Contracts\MediaStorageInterface;
+use App\Contracts\WompiClientInterface;
+use App\Mail\Transport\HostingerMailTransport;
+use App\Models\PersonalAccessToken;
+use App\Services\CloudinaryStorageService;
+use App\Services\GoogleAuthService;
+use App\Services\GroqAiChatService;
+use App\Services\WompiService;
+use Hostinger\Api\SendApi;
+use Hostinger\Configuration;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Mail\MailManager;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -11,7 +31,25 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            GoogleAuthClientInterface::class,
+            GoogleAuthService::class
+        );
+
+        $this->app->bind(
+            WompiClientInterface::class,
+            WompiService::class
+        );
+
+        $this->app->bind(
+            MediaStorageInterface::class,
+            CloudinaryStorageService::class
+        );
+
+        $this->app->bind(
+            AiChatClientInterface::class,
+            GroqAiChatService::class
+        );
     }
 
     /**
@@ -19,6 +57,54 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->app->resolving(MailManager::class, function (MailManager $mailManager): void {
+            $mailManager->extend('hostinger', function (array $config) {
+                $token = (string) config('services.hostinger_mail.api_token', '');
+                $mailboxResourceId = (string) config('services.hostinger_mail.mailbox_resource_id', '');
+
+                if ($token === '' || $mailboxResourceId === '') {
+                    throw new \RuntimeException(
+                        'Hostinger Mail requiere HOSTINGER_API_TOKEN y HOSTINGER_MAILBOX_RESOURCE_ID.'
+                    );
+                }
+
+                $sdkConfig = Configuration::getDefaultConfiguration()
+                    ->setAccessToken($token);
+
+                return new HostingerMailTransport(
+                    new SendApi(config: $sdkConfig),
+                    $mailboxResourceId,
+                    (string) config('mail.from.name', config('app.name')),
+                );
+            });
+        });
+
+        // Tokens de Sanctum con conexión configurable (ver config/database.php).
+        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+
+        // Seguridad: la BD real es la de producción. Bloquea migrate:fresh,
+        // migrate:refresh, migrate:reset, migrate:rollback y db:wipe.
+        DB::prohibitDestructiveCommands(! $this->app->runningUnitTests());
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(120)->by($request->ip() ?: '127.0.0.1');
+        });
+
+        RateLimiter::for('auth', function (Request $request) {
+            return Limit::perMinute(10)->by($request->ip() ?: '127.0.0.1');
+        });
+
+        RateLimiter::for('chat', function (Request $request) {
+            $key = (string) ($request->header('X-Session-ID') ?: $request->ip() ?: '127.0.0.1');
+
+            return Limit::perMinute(30)->by($key);
+        });
+
+        RateLimiter::for('catalogo-notificaciones', function (Request $request) {
+            return Limit::perMinute(30)->by($request->ip() ?: '127.0.0.1');
+        });
+
+        RateLimiter::for('wompi-webhook', function (Request $request) {
+            return Limit::perMinute(60)->by($request->ip() ?: '127.0.0.1');
+        });
     }
 }

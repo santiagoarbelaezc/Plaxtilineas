@@ -1,3 +1,6 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Pqr } from './pqr';
@@ -8,7 +11,8 @@ describe('Pqr', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Pqr]
+      imports: [Pqr],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])]
     })
     .compileComponents();
 

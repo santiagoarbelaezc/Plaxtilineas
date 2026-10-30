@@ -1,0 +1,207 @@
+<main class="links-page-root" role="main">
+
+  <!-- ── Fondo Ambiental Oscurecido (Imagen HD + Vignette Dark) ── -->
+  <div class="links-bg-wrapper" aria-hidden="true">
+    <img 
+      [src]="showcaseVisual.imageUrl" 
+      [alt]="showcaseVisual.alt" 
+      class="links-bg-image" 
+      loading="eager"
+    />
+    <div class="links-bg-overlay"></div>
+    <div class="links-bg-grain"></div>
+  </div>
+
+  <!-- ── Barra de Navegación Rápida Superior Dark ── -->
+  <header class="links-top-bar">
+    <div class="top-bar-inner">
+      <a routerLink="/" class="back-home-chip" title="Regresar al inicio de Plaxtilíneas">
+        <svg class="chip-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span>Inicio</span>
+      </a>
+
+      <!-- Indicador Central Minimalista -->
+      <div class="top-bar-center-badge" aria-hidden="true">
+        <span class="badge-label-official">Canal Oficial</span>
+        <span class="badge-dot-divider" aria-hidden="true">&bull;</span>
+        <span class="badge-label-city">Armenia, Quindío</span>
+      </div>
+
+      <div class="top-bar-actions">
+        <button type="button" class="action-circle-btn" (click)="sharePage()" aria-label="Compartir enlaces" title="Compartir">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+        </button>
+
+        <button type="button" class="action-circle-btn" (click)="copyPageLink()" aria-label="Copiar enlace" title="Copiar URL">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Toast de Copiado ── -->
+  <aside class="copy-toast-notification" [class.show]="copiedToast" role="status" aria-live="polite">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span>Enlace copiado al portapapeles</span>
+  </aside>
+
+  <!-- ── Contenedor Central Minimalista ── -->
+  <section class="links-hub-section">
+    <div class="links-hub-container">
+
+      <!-- ── Encabezado: Logo en la parte superior + Nombre Oficial ── -->
+      <div class="links-profile-header">
+        <div class="links-brand-logo-box">
+          <img 
+            [src]="showcaseVisual.logoUrl" 
+            alt="Grupo Plaxtilíneas" 
+            class="links-brand-logo"
+            loading="eager"
+          />
+        </div>
+
+        <h1 class="links-profile-title">
+          <span>Grupo Plaxtilíneas</span>
+          <svg class="verified-check" width="20" height="20" viewBox="0 0 24 24" fill="none" title="Canal Verificado">
+            <path d="M12 2L15.09 5.26L19.5 5.75L20.35 10.15L23.5 13.5L20.89 17.15L20.9 21.65L16.45 22.45L13.5 25.4L9.95 23.45L5.75 24.25L4.85 19.85L1.5 16.75L3.85 13L3.15 8.55L7.45 7.45L10.05 4.3L12 2Z" fill="#16a34a" />
+            <polyline points="9 12 11.5 14.5 16 9.5" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </h1>
+
+        <p class="links-profile-tagline">
+          Plásticos técnicos &bull; Espumas industriales &bull; Empaques
+        </p>
+      </div>
+
+      <!-- ── Lista de Botones Minimalistas ── -->
+      <div class="links-buttons-stack">
+
+        <!-- Botón Principal: Catálogo Oficial -->
+        <a 
+          [routerLink]="featuredLink.targetUrl" 
+          class="link-card-btn featured-link-btn"
+          [attr.aria-label]="featuredLink.title"
+        >
+          <div class="link-btn-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+          </div>
+
+          <div class="link-btn-texts">
+            <span class="link-btn-title">{{ featuredLink.title }}</span>
+            <span class="link-btn-subtitle">{{ featuredLink.subtitle }}</span>
+          </div>
+
+          <div class="link-btn-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </div>
+        </a>
+
+        <!-- Botones Secundarios Minimalistas -->
+        <a 
+          *ngFor="let link of gridLinks"
+          [href]="link.targetUrl" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="link-card-btn"
+          [ngClass]="link.themeClass || ''"
+          [attr.aria-label]="link.title"
+        >
+          <div class="link-btn-icon-wrap" [class.has-custom-logo]="!!link.logoUrl">
+            <img 
+              *ngIf="link.logoUrl" 
+              [src]="link.logoUrl" 
+              [alt]="link.title" 
+              class="brand-icon-logo"
+            />
+
+            <!-- Icono Instagram -->
+            <svg *ngIf="!link.logoUrl && link.iconType === 'instagram'" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+
+            <!-- Icono Facebook -->
+            <svg *ngIf="!link.logoUrl && link.iconType === 'facebook'" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+            </svg>
+
+            <!-- Icono Dejar una Reseña (Estrella Calificación) -->
+            <svg *ngIf="!link.logoUrl && link.iconType === 'review'" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+
+            <!-- Icono Google Maps -->
+            <svg *ngIf="!link.logoUrl && link.iconType === 'location'" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+          </div>
+
+          <div class="link-btn-texts">
+            <span class="link-btn-title">{{ link.title }}</span>
+            <span class="link-btn-subtitle">{{ link.subtitle }}</span>
+          </div>
+
+          <div class="link-btn-arrow">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="7" y1="17" x2="17" y2="7"></line>
+              <polyline points="7 7 17 7 17 17"></polyline>
+            </svg>
+          </div>
+        </a>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Carrusel Exclusivo Dark Plaxtilíneas ── -->
+  <section class="links-products-carousel-section">
+    <app-links-carousel
+      title="PRODUCTOS"
+      titleHighlight="PLAXTILÍNEAS"
+      subtitle="Nuestras 20 incorporaciones más recientes con entrega inmediata.">
+    </app-links-carousel>
+  </section>
+
+  <!-- ── Pie de Página Minimalista Dark ── -->
+  <footer class="links-footer-dark">
+    <div class="footer-dark-inner">
+      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1770388940/logo-invert_ghucfi.png" alt="Plaxtilíneas" class="footer-brand-logo">
+      <p class="footer-dark-copy">
+        &copy; 2026 Grupo Plaxtilíneas &bull; Armenia, Quindío, Colombia.
+      </p>
+      <div class="footer-dark-nav">
+        <a routerLink="/">Inicio</a>
+        <span class="sep">&bull;</span>
+        <a routerLink="/productos">Catálogo</a>
+        <span class="sep">&bull;</span>
+        <a routerLink="/nosotros">Nosotros</a>
+        <span class="sep">&bull;</span>
+        <a href="https://api.whatsapp.com/send/?phone=573007365939" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+      </div>
+    </div>
+  </footer>
+
+</main>

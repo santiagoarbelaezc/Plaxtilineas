@@ -9,6 +9,8 @@ export class NavbarVisibilityService {
   private isHiddenSubject = new BehaviorSubject<boolean>(false);
   public isHidden$: Observable<boolean> = this.isHiddenSubject.asObservable();
 
+  private activeSources = new Set<string>();
+
   public get isHidden(): boolean {
     return this.isHiddenSubject.value;
   }
@@ -17,6 +19,20 @@ export class NavbarVisibilityService {
     if (this.isHiddenSubject.value !== hidden) {
       this.ngZone.run(() => {
         this.isHiddenSubject.next(hidden);
+      });
+    }
+  }
+
+  public registerHidden(sourceId: string, hidden: boolean): void {
+    if (hidden) {
+      this.activeSources.add(sourceId);
+    } else {
+      this.activeSources.delete(sourceId);
+    }
+    const shouldHide = this.activeSources.size > 0;
+    if (this.isHiddenSubject.value !== shouldHide) {
+      this.ngZone.run(() => {
+        this.isHiddenSubject.next(shouldHide);
       });
     }
   }

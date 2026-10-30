@@ -32,6 +32,38 @@ export class ProductosService {
       .trim();
   }
 
+  private normalizarPalabra(palabra: string): string {
+    let resultado = this.normalizar(palabra);
+    if (resultado.length > 4 && resultado.endsWith('es')) {
+      resultado = resultado.slice(0, -2);
+    } else if (resultado.length > 3 && resultado.endsWith('s')) {
+      resultado = resultado.slice(0, -1);
+    }
+    const equivalencias: Record<string, string> = {
+      pegamento: 'pegante',
+      pegar: 'pegante',
+      adhesivo: 'pegante',
+      adhesiva: 'pegante',
+      plasticos: 'plastico',
+      plastic: 'plastico',
+      mallas: 'malla',
+      colchones: 'colchon',
+      espumas: 'espuma',
+      empaques: 'empaque',
+      telas: 'tela',
+      lonas: 'lona',
+      cintas: 'cinta',
+    };
+    return equivalencias[resultado] ?? resultado;
+  }
+
+  private tokensBusqueda(texto: string): string[] {
+    return this.normalizar(texto)
+      .split(/\s+/)
+      .map(token => this.normalizarPalabra(token))
+      .filter(token => token.length >= 2);
+  }
+
   private mezclar<T>(lista: T[]): T[] {
     const copia = [...lista];
     for (let i = copia.length - 1; i > 0; i--) {
@@ -116,8 +148,7 @@ export class ProductosService {
       });
     }
 
-    const termino = this.normalizar(nombre);
-    const palabras = termino.split(/\s+/).filter(Boolean);
+    const palabras = this.tokensBusqueda(nombre);
 
     return this.catalogo.getProductos().pipe(
       map(lista => {
@@ -125,12 +156,23 @@ export class ProductosService {
           const texto = this.normalizar(
             [p.nombre, p.descripcion, p.categoria, p.subcategoria, p.material, p.marca].join(' ')
           );
+          const textoNormalizado = this.normalizar(texto);
+          const tokensTexto = this.tokensBusqueda(textoNormalizado);
+          const coincideToken = (buscado: string) =>
+            tokensTexto.some(token => token.includes(buscado) || buscado.includes(token));
           return requerirTodas
-            ? palabras.every(w => texto.includes(w))
-            : palabras.some(w => texto.includes(w));
+            ? palabras.every(coincideToken)
+            : palabras.some(coincideToken);
         };
 
-        const resultados = lista.filter(p => coincide(p, true));
+        const resultados = lista
+          .filter(p => coincide(p, true))
+          .sort((a, b) => {
+            const consulta = palabras.join(' ');
+            const aTexto = this.normalizar(`${a.nombre} ${a.categoria} ${a.subcategoria}`);
+            const bTexto = this.normalizar(`${b.nombre} ${b.categoria} ${b.subcategoria}`);
+            return Number(bTexto.includes(consulta)) - Number(aTexto.includes(consulta));
+          });
         if (resultados.length > 0) {
           return { resultados, total: resultados.length, termino_buscado: nombre.trim() };
         }

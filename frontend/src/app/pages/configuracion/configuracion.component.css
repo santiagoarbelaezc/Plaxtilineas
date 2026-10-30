@@ -6,6 +6,20 @@
   min-height: calc(100vh - 300px);
 }
 
+.configuracion-container.embedded {
+  padding: 0 !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  min-height: auto !important;
+}
+
+.configuracion-container.embedded .configuracion-content {
+  margin-bottom: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
 .configuracion-header {
   text-align: center;
   margin-bottom: 3rem;

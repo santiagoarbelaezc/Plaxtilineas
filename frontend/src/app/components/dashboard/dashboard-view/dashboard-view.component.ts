@@ -341,18 +341,78 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
     this.configuracionService.updateWompiStatus(nuevoEstado).subscribe({
       next: () => {
         const modoNombre = nuevoEstado ? 'Modo Producción (En Vivo)' : 'Modo en Desarrollo (Inactiva)';
+        const modoDesc = nuevoEstado
+          ? 'La pasarela Wompi está recibiendo transacciones y pagos reales de los clientes de Plaxtilineas.'
+          : 'La pasarela Wompi ha sido cambiada a entorno de pruebas. No se procesarán cobros reales a tarjetas.';
+
         Swal.fire({
-          icon: 'success',
-          title: 'Pasarela Wompi Actualizada',
-          html: `<p style="color: #cbd5e1; font-size: 0.95rem;">Estado de pagos establecido en <strong>${modoNombre}</strong>.</p>`,
-          background: '#1e293b',
-          color: '#f8fafc',
-          iconColor: '#4ade80',
-          confirmButtonColor: '#368c44',
+          showConfirmButton: true,
           confirmButtonText: 'Entendido',
+          buttonsStyling: false,
+          showCloseButton: true,
           customClass: {
-            popup: 'rounded-xl shadow-2xl border border-slate-700'
-          }
+            popup: 'swal-wompi-modal',
+            confirmButton: 'btn-wompi-confirm',
+            closeButton: 'btn-wompi-close'
+          },
+          html: `
+            <div class="wompi-modal-wrapper">
+              <div class="wompi-top-accent"></div>
+
+              <div class="wompi-icon-badge ${nuevoEstado ? 'is-live' : 'is-dev'}">
+                ${nuevoEstado 
+                  ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="wompi-badge-icon">
+                       <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                       <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                     </svg>`
+                  : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="wompi-badge-icon">
+                       <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                       <line x1="1" y1="10" x2="23" y2="10"></line>
+                     </svg>`
+                }
+              </div>
+
+              <div class="wompi-kicker">
+                <span class="wompi-kicker-dot ${nuevoEstado ? 'live-dot' : 'dev-dot'}"></span>
+                <span>${nuevoEstado ? 'SISTEMA TRANSACCIONAL EN VIVO' : 'ENTORNO DE DESARROLLO'}</span>
+              </div>
+
+              <h3 class="wompi-modal-title">Pasarela Wompi Actualizada</h3>
+              
+              <p class="wompi-modal-desc">${modoDesc}</p>
+
+              <div class="wompi-status-card ${nuevoEstado ? 'card-live' : 'card-dev'}">
+                <div class="status-card-header">
+                  <div class="status-indicator-col">
+                    <span class="status-dot-pulse"></span>
+                    <span class="status-state-title">${modoNombre}</span>
+                  </div>
+                  <span class="status-tag-pill">${nuevoEstado ? 'ACTIVO' : 'PAUSADO'}</span>
+                </div>
+                
+                <div class="status-card-divider"></div>
+
+                <div class="status-meta-grid">
+                  <div class="meta-item-box">
+                    <span class="meta-label">Proveedor</span>
+                    <span class="meta-value">Wompi Bancolombia</span>
+                  </div>
+                  <div class="meta-item-box">
+                    <span class="meta-label">Moneda</span>
+                    <span class="meta-value">COP ($ Pesos)</span>
+                  </div>
+                  <div class="meta-item-box">
+                    <span class="meta-label">Validación</span>
+                    <span class="meta-value">Firma de Integridad</span>
+                  </div>
+                  <div class="meta-item-box">
+                    <span class="meta-label">Sincronización</span>
+                    <span class="meta-value text-green">En Tiempo Real</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `
         });
       },
       error: () => {
@@ -360,14 +420,33 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
           (event.target as HTMLInputElement).checked = !nuevoEstado;
         }
         Swal.fire({
-          icon: 'error',
-          title: 'Error de conexión',
-          html: '<p style="color: #cbd5e1; font-size: 0.95rem;">No se pudo actualizar la configuración de la pasarela Wompi.</p>',
-          background: '#1e293b',
-          color: '#f8fafc',
-          iconColor: '#f87171',
-          confirmButtonColor: '#dc2626',
-          confirmButtonText: 'Cerrar'
+          showConfirmButton: true,
+          confirmButtonText: 'Cerrar',
+          buttonsStyling: false,
+          showCloseButton: true,
+          customClass: {
+            popup: 'swal-wompi-modal',
+            confirmButton: 'btn-wompi-confirm btn-wompi-error',
+            closeButton: 'btn-wompi-close'
+          },
+          html: `
+            <div class="wompi-modal-wrapper">
+              <div class="wompi-top-accent error-accent"></div>
+              <div class="wompi-icon-badge is-error">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="wompi-badge-icon">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+              </div>
+              <div class="wompi-kicker">
+                <span class="wompi-kicker-dot error-dot"></span>
+                <span>ERROR DE CONFIGURACIÓN</span>
+              </div>
+              <h3 class="wompi-modal-title">Error de Conexión</h3>
+              <p class="wompi-modal-desc">No se pudo actualizar la configuración de la pasarela Wompi en el servidor. Por favor verifica tu conexión y vuelve a intentarlo.</p>
+            </div>
+          `
         });
       }
     });
