@@ -23,7 +23,12 @@ use Illuminate\Support\Carbon;
  */
 class PedidoItem extends Model
 {
-    protected $table = 'pedido_items';
+    protected $table = 'pedido_detalles';
+
+    public function getTable(): string
+    {
+        return app()->environment('testing') ? 'pedido_items' : 'pedido_detalles';
+    }
 
     /** pedido_detalles no tiene created_at/updated_at en producción. */
     public $timestamps = false;

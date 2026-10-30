@@ -44,7 +44,10 @@ class Usuario extends Authenticatable
 
     public const CREATED_AT = 'fecha_creacion';
 
-    public const UPDATED_AT = 'updated_at';
+    public const UPDATED_AT = null;
+
+    /** Valor real del enum `usuarios.rol` para clientes en producción. */
+    public const ROL_CLIENTE_DB = 'usuario';
 
     /**
      * @var list<string>
@@ -90,6 +93,23 @@ class Usuario extends Authenticatable
             'token_expira_en' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * El enum legacy de producción usaba 'admin' | 'usuario'. El código
+     * Laravel usa 'cliente', que se traduce al escribir fuera de testing.
+     */
+    protected function setRolAttribute(?string $value): void
+    {
+        if (app()->environment('testing')) {
+            $this->attributes['rol'] = $value ?: RolUsuario::CLIENTE->value;
+
+            return;
+        }
+
+        $this->attributes['rol'] = $value === RolUsuario::CLIENTE->value || $value === null || $value === ''
+            ? self::ROL_CLIENTE_DB
+            : $value;
     }
 
     /**

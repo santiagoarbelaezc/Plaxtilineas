@@ -51,13 +51,15 @@ final class CancelarPedidoAction
         }
 
         DB::transaction(function () use ($pedido) {
+            // 1. Devolver el stock al catálogo antes de marcar como cancelado
+            $this->liberarStockReservaAction->execute($pedido);
+
+            // 2. Actualizar estado a cancelado
             $pedido->update([
                 'estado' => EstadoPedido::CANCELADO,
             ]);
-
-            $this->liberarStockReservaAction->execute($pedido);
         });
 
-        return ['mensaje' => 'Pedido cancelado correctamente.'];
+        return ['mensaje' => 'Pedido cancelado correctamente y stock devuelto al inventario.'];
     }
 }

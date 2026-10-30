@@ -97,16 +97,6 @@ class PedidoController extends Controller
      */
     public function crearDraft(CrearDraftPedidoRequest $request): JsonResponse
     {
-        if (! $this->captchaService->verifyAndConsume(
-            $request->getCaptchaId(),
-            $request->getCaptchaCode()
-        )) {
-            return ApiResponse::error(
-                'El código captcha ha expirado o es incorrecto. Intenta nuevamente.',
-                400
-            );
-        }
-
         /** @var Usuario $user */
         $user = $request->user();
 

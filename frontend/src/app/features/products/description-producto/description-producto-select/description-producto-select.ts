@@ -104,14 +104,22 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.productosService.obtenerProductos().subscribe(prods => {
         if (this.producto && prods && prods.length > 0) {
-          const fresh = prods.find(p => p.id === this.producto!.id);
+          const fresh = prods.find(p => Number(p.id) === Number(this.producto!.id));
           if (fresh) {
             this.producto.stock = fresh.stock;
-            if (fresh.variantes && this.variantes) {
+            this.producto.cantidad = fresh.stock ?? 0;
+            if (this.variantes) {
               this.variantes.forEach(v => {
-                const fv = fresh.variantes?.find(x => x.id === v.id);
-                if (fv && fv.stock !== undefined) v.stock = fv.stock;
+                v.stock = fresh.stock;
               });
+            }
+            if (this.varianteSeleccionada) {
+              this.varianteSeleccionada.stock = fresh.stock;
+            }
+            const disponible = this.getStockRealDisponible();
+            if (this.controlaStock() && this.cantidadSeleccionada > disponible) {
+              this.cantidadSeleccionada = Math.max(this.producto?.minimo_compra || 1, disponible > 0 ? disponible : 1);
+              this.actualizarPrecioConCantidad();
             }
           }
         }
@@ -298,11 +306,11 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   }
 
   getStockTotal(): number | undefined {
-    if (this.varianteSeleccionada && this.varianteSeleccionada.stock !== undefined && this.varianteSeleccionada.stock !== null) {
-      return Number(this.varianteSeleccionada.stock);
-    }
     if (this.producto && this.producto.stock !== undefined && this.producto.stock !== null) {
       return Number(this.producto.stock);
+    }
+    if (this.varianteSeleccionada && this.varianteSeleccionada.stock !== undefined && this.varianteSeleccionada.stock !== null) {
+      return Number(this.varianteSeleccionada.stock);
     }
     return undefined;
   }
@@ -313,15 +321,9 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     if (stockTotal === undefined || !this.controlaStock()) {
       return 999; // Solo si no hay stock definido ni control
     }
-    
-    // El stock real es el stock de catálogo MENOS lo que ya tiene en el carrito para esta variante/producto
-    const id = this.cartService.generateItemId(this.producto.id, this.varianteSeleccionada?.id);
-    const cartItems = (this.cartService as any).itemsSubject?.getValue() || [];
-    const itemInCart = cartItems.find((i: any) => i.id === id);
-    const cantidadEnCarrito = itemInCart ? itemInCart.cantidad : 0;
-    
-    const disponible = stockTotal - cantidadEnCarrito;
-    return disponible > 0 ? disponible : 0;
+
+    // El stock del catálogo ya tiene descontadas en tiempo real las unidades reservadas en el carrito
+    return stockTotal > 0 ? stockTotal : 0;
   }
   
   get puedeComprar(): boolean {
@@ -641,7 +643,5 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
       minimo_compra: productoEditable.minimo_compra,
       controlar_stock: productoEditable.controlar_stock
     };
-
-
   }
 }

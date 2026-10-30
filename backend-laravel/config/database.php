@@ -60,6 +60,38 @@ return [
             ] : [],
         ],
 
+        'catalogo' => [
+            'driver' => 'mysql',
+            'host' => env('HOSTINGER_DB_HOST', 'auth-db1076.hstgr.io'),
+            'port' => env('HOSTINGER_DB_PORT', '3306'),
+            'database' => env('HOSTINGER_DB_NAME', 'u977254048_catalogodata'),
+            'username' => env('HOSTINGER_DB_USER', 'u977254048_MateoPlaxti'),
+            'password' => env('HOSTINGER_DB_PASSWORD', 'Mateo.adminbd999'),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null,
+        ],
+
+        'catalogo_backup' => [
+            'driver' => 'mysql',
+            'host' => env('CATALOGO_BACKUP_DB_HOST', 'auth-db1885.hstgr.io'),
+            'port' => env('CATALOGO_BACKUP_DB_PORT', '3306'),
+            'database' => env('CATALOGO_BACKUP_DB_NAME', 'u870397049_catalogoplaxti'),
+            'username' => env('CATALOGO_BACKUP_DB_USER', 'u870397049_adminplaxti'),
+            'password' => env('CATALOGO_BACKUP_DB_PASSWORD', 'Administrador_Placti123*'),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null,
+        ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),

@@ -143,9 +143,7 @@ export class AddToCartBtnComponent {
   }
 
   get isSinStock(): boolean {
-    const stock = this.variante?.stock !== undefined && this.variante?.stock !== null
-      ? this.variante.stock
-      : this.producto?.stock;
+    const stock = this.producto ? this.cartService.getItemStock(this.producto, this.variante) : undefined;
     const controla = this.producto?.controlar_stock === true || this.producto?.controlar_stock === 1 || stock !== undefined;
     return controla && stock !== undefined && stock <= 0;
   }

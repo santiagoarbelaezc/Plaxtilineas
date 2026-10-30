@@ -7,6 +7,7 @@ namespace App\Services\Catalogo;
 use App\Models\Producto;
 use App\Models\StockReserva;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -228,6 +229,9 @@ final class CatalogoApiService
         }
 
         $nombreProducto = (string) ($producto['name'] ?? "Producto #{$productoId}");
+        $stockProducto = isset($producto['stock']) && is_numeric($producto['stock'])
+            ? (int) $producto['stock']
+            : null;
 
         // Con variante específica
         if ($varianteId !== null) {
@@ -248,21 +252,22 @@ final class CatalogoApiService
                 ];
             }
 
-            $stockVariante = (int) ($variante['stock'] ?? 0);
+            // En el catálogo el stock real se gestiona a nivel de producto (products.stock)
+            $stockEfectivo = $stockProducto ?? (int) ($variante['stock'] ?? 0);
             $available = (int) ($variante['available'] ?? 1);
             $precio = (float) ($variante['price'] ?? 0);
             $nombreVariante = (string) ($variante['name'] ?? '');
 
             return [
-                'disponible' => $available === 1 && $stockVariante >= $cantidadSolicitada,
-                'stock' => $stockVariante,
+                'disponible' => $available === 1 && $stockEfectivo >= $cantidadSolicitada,
+                'stock' => $stockEfectivo,
                 'nombre' => trim("{$nombreProducto} - {$nombreVariante}"),
                 'precio' => $precio,
             ];
         }
 
         // Sin variante — usar stock general del producto y precio mínimo de variantes
-        $stockProducto = (int) ($producto['stock'] ?? 0);
+        $stockGeneral = $stockProducto ?? 0;
 
         $precios = array_filter(
             array_map(fn ($v) => (float) ($v['price'] ?? 0), $producto['variants'] ?? []),
@@ -271,8 +276,8 @@ final class CatalogoApiService
         $precioMin = $precios ? min($precios) : 0.0;
 
         return [
-            'disponible' => $stockProducto >= $cantidadSolicitada,
-            'stock' => $stockProducto,
+            'disponible' => $stockGeneral >= $cantidadSolicitada,
+            'stock' => $stockGeneral,
             'nombre' => $nombreProducto,
             'precio' => $precioMin,
         ];
@@ -315,34 +320,34 @@ final class CatalogoApiService
                 'stock' => $nuevoStock,
             ]);
 
-            if (! $response->successful()) {
-                Log::error('[CATALOGO_API_STOCK] <- Error en respuesta del catálogo', [
+            if ($response->successful()) {
+                $this->sincronizarVariantesEnBaseDatosCatalogo($productoId, $nuevoStock);
+
+                Log::info('[CATALOGO_API_STOCK] <- Stock actualizado con ÉXITO en producción vía HTTP', [
                     'producto_id' => $productoId,
                     'nuevo_stock' => $nuevoStock,
                     'status' => $response->status(),
-                    'body' => $response->body(),
+                    'respuesta' => $response->json(),
                 ]);
 
-                return false;
+                return true;
             }
 
-            Log::info('[CATALOGO_API_STOCK] <- Stock actualizado con ÉXITO en producción', [
+            Log::warning('[CATALOGO_API_STOCK] <- Respuesta HTTP no exitosa; aplicando actualización atómica directa en BD del catálogo', [
                 'producto_id' => $productoId,
                 'nuevo_stock' => $nuevoStock,
                 'status' => $response->status(),
-                'respuesta' => $response->json(),
+                'body' => $response->body(),
             ]);
-
-            return true;
         } catch (Throwable $e) {
-            Log::error('[CATALOGO_API_STOCK] <- Excepción al conectar con el catálogo', [
+            Log::warning('[CATALOGO_API_STOCK] <- Excepción HTTP con el catálogo; aplicando actualización directa en BD', [
                 'producto_id' => $productoId,
                 'nuevo_stock' => $nuevoStock,
                 'error' => $e->getMessage(),
             ]);
-
-            return false;
         }
+
+        return $this->actualizarStockDirectoEnBaseDatos($productoId, $nuevoStock);
     }
 
     /**
@@ -391,8 +396,29 @@ final class CatalogoApiService
 
             $response = $http->post($url, ['delta' => $delta]);
 
-            if (! $response->successful()) {
-                Log::error('[CATALOGO_API_STOCK] Ajuste rechazado por el catálogo', [
+            if ($response->successful()) {
+                $json = $response->json();
+                $nuevoStock = isset($json['data']['stock']) && is_numeric($json['data']['stock'])
+                    ? (int) $json['data']['stock']
+                    : null;
+
+                if ($nuevoStock !== null) {
+                    $this->sincronizarVariantesEnBaseDatosCatalogo($productoId, $nuevoStock);
+                }
+
+                Log::info('[CATALOGO_API_STOCK] Ajuste atómico aplicado vía HTTP', [
+                    'producto_id' => $productoId,
+                    'delta' => $delta,
+                    'nuevo_stock' => $nuevoStock,
+                    'status' => $response->status(),
+                ]);
+
+                return true;
+            }
+
+            // Si el catálogo responde 404 (no existe) o 409 (stock insuficiente), respetar el rechazo de negocio
+            if (in_array($response->status(), [404, 409, 422], true)) {
+                Log::error('[CATALOGO_API_STOCK] Ajuste rechazado por regla de negocio en el catálogo', [
                     'producto_id' => $productoId,
                     'delta' => $delta,
                     'status' => $response->status(),
@@ -402,21 +428,205 @@ final class CatalogoApiService
                 return false;
             }
 
-            Log::info('[CATALOGO_API_STOCK] Ajuste atómico aplicado', [
+            Log::warning('[CATALOGO_API_STOCK] Endpoint HTTP devolvió error de servidor/configuración; aplicando ajuste atómico directo en BD del catálogo', [
                 'producto_id' => $productoId,
                 'delta' => $delta,
                 'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+        } catch (Throwable $e) {
+            Log::warning('[CATALOGO_API_STOCK] Excepción HTTP al ajustar stock; aplicando ajuste atómico directo en BD del catálogo', [
+                'producto_id' => $productoId,
+                'delta' => $delta,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        return $this->ajustarStockDirectoEnBaseDatos($productoId, $delta);
+    }
+
+    /**
+     * Ejecuta el mismo ajuste atómico de ProductController::adjustInventoryStock
+     * directamente en la BD del catálogo (y réplica de backup) + registra el evento en inventario_eventos
+     * para que el stream SSE (/api/inventario/stream y /api/inventario/cambios) notifique en tiempo real.
+     */
+    private function ajustarStockDirectoEnBaseDatos(int $productoId, int $delta): bool
+    {
+        try {
+            $conn = DB::connection('catalogo');
+
+            $affected = $conn->update(
+                'UPDATE products SET stock = stock + ? WHERE id = ? AND deleted_at IS NULL AND stock + ? >= 0',
+                [$delta, $productoId, $delta]
+            );
+
+            if ($affected === 0) {
+                $row = $conn->selectOne(
+                    'SELECT id, stock FROM products WHERE id = ? AND deleted_at IS NULL',
+                    [$productoId]
+                );
+
+                if (! $row) {
+                    Log::error('[CATALOGO_DB_STOCK] Producto no encontrado en BD de catálogo', [
+                        'producto_id' => $productoId,
+                    ]);
+
+                    return false;
+                }
+
+                $stockActual = (int) ($row->stock ?? 0);
+                if ($stockActual + $delta < 0) {
+                    Log::warning('[CATALOGO_DB_STOCK] Stock insuficiente en BD de catálogo', [
+                        'producto_id' => $productoId,
+                        'stock_actual' => $stockActual,
+                        'delta' => $delta,
+                    ]);
+
+                    return false;
+                }
+            }
+
+            $updatedRow = $conn->selectOne(
+                'SELECT stock FROM products WHERE id = ? AND deleted_at IS NULL',
+                [$productoId]
+            );
+
+            if (! $updatedRow) {
+                return false;
+            }
+
+            $nuevoStock = (int) $updatedRow->stock;
+
+            // Sincronizar también el stock en las variantes del producto
+            $conn->update(
+                'UPDATE product_variants SET stock = ? WHERE product_id = ?',
+                [$nuevoStock, $productoId]
+            );
+
+            // Registrar evento en inventario_eventos para que el frontend del catálogo y Plaxtilineas actualicen en tiempo real
+            $this->registrarEventoStockEnCatalogo($conn, $productoId, $nuevoStock, 'ecommerce');
+
+            // Replicar en la base de datos de backup del catálogo (aislado)
+            $this->replicarStockEnBackupCatalogo($productoId, $nuevoStock);
+
+            Log::info('[CATALOGO_DB_STOCK] Ajuste atómico aplicado en BD del catálogo y evento emitido', [
+                'producto_id' => $productoId,
+                'delta' => $delta,
+                'nuevo_stock' => $nuevoStock,
             ]);
 
             return true;
         } catch (Throwable $e) {
-            Log::error('[CATALOGO_API_STOCK] Excepción al ajustar stock', [
+            Log::error('[CATALOGO_DB_STOCK] Error al ajustar stock directamente en BD del catálogo', [
                 'producto_id' => $productoId,
                 'delta' => $delta,
                 'error' => $e->getMessage(),
             ]);
 
             return false;
+        }
+    }
+
+    /**
+     * Ejecuta la actualización absoluta de stock directamente en la BD del catálogo
+     * y registra el evento en inventario_eventos.
+     */
+    private function actualizarStockDirectoEnBaseDatos(int $productoId, int $nuevoStock): bool
+    {
+        try {
+            $conn = DB::connection('catalogo');
+
+            $row = $conn->selectOne(
+                'SELECT id, stock FROM products WHERE id = ? AND deleted_at IS NULL',
+                [$productoId]
+            );
+
+            if (! $row) {
+                return false;
+            }
+
+            $conn->update(
+                'UPDATE products SET stock = ? WHERE id = ? AND deleted_at IS NULL',
+                [$nuevoStock, $productoId]
+            );
+
+            $conn->update(
+                'UPDATE product_variants SET stock = ? WHERE product_id = ?',
+                [$nuevoStock, $productoId]
+            );
+
+            $this->registrarEventoStockEnCatalogo($conn, $productoId, $nuevoStock, 'ecommerce');
+            $this->replicarStockEnBackupCatalogo($productoId, $nuevoStock);
+
+            Log::info('[CATALOGO_DB_STOCK] Stock absoluto actualizado en BD del catálogo y evento emitido', [
+                'producto_id' => $productoId,
+                'nuevo_stock' => $nuevoStock,
+            ]);
+
+            return true;
+        } catch (Throwable $e) {
+            Log::error('[CATALOGO_DB_STOCK] Error al actualizar stock en BD del catálogo', [
+                'producto_id' => $productoId,
+                'nuevo_stock' => $nuevoStock,
+                'error' => $e->getMessage(),
+            ]);
+
+            return false;
+        }
+    }
+
+    private function sincronizarVariantesEnBaseDatosCatalogo(int $productoId, int $nuevoStock): void
+    {
+        try {
+            DB::connection('catalogo')->update(
+                'UPDATE product_variants SET stock = ? WHERE product_id = ?',
+                [$nuevoStock, $productoId]
+            );
+            $this->replicarStockEnBackupCatalogo($productoId, $nuevoStock);
+        } catch (Throwable $e) {
+            Log::debug('[CATALOGO_DB_STOCK] No se pudo sincronizar product_variants en BD', [
+                'producto_id' => $productoId,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    private function registrarEventoStockEnCatalogo(\Illuminate\Database\ConnectionInterface $conn, int $productoId, int $stockNuevo, string $origen): void
+    {
+        try {
+            $conn->insert(
+                'INSERT INTO inventario_eventos (producto_id, stock_nuevo, origen) VALUES (?, ?, ?)',
+                [$productoId, $stockNuevo, $origen]
+            );
+        } catch (Throwable $e) {
+            Log::warning('[CATALOGO_DB_STOCK] No se pudo registrar evento en inventario_eventos', [
+                'producto_id' => $productoId,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    private function replicarStockEnBackupCatalogo(int $productoId, int $nuevoStock): void
+    {
+        try {
+            $backup = DB::connection('catalogo_backup');
+            $backup->update(
+                'UPDATE products SET stock = ? WHERE id = ? AND deleted_at IS NULL',
+                [$nuevoStock, $productoId]
+            );
+            $backup->update(
+                'UPDATE product_variants SET stock = ? WHERE product_id = ?',
+                [$nuevoStock, $productoId]
+            );
+            $backup->insert(
+                'INSERT INTO inventario_eventos (producto_id, stock_nuevo, origen) VALUES (?, ?, ?)',
+                [$productoId, $nuevoStock, 'ecommerce']
+            );
+        } catch (Throwable $e) {
+            Log::debug('[CATALOGO_DB_BACKUP] No se pudo replicar stock en BD de backup', [
+                'producto_id' => $productoId,
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 }

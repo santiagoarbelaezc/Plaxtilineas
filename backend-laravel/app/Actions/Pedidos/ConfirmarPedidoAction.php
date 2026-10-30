@@ -6,6 +6,7 @@ namespace App\Actions\Pedidos;
 
 use App\Enums\EstadoPedido;
 use App\Mail\PagoConfirmadoMailable;
+use App\Models\Carrito;
 use App\Models\Pedido;
 use App\Models\StockReserva;
 use Illuminate\Support\Facades\DB;
@@ -52,8 +53,11 @@ final class ConfirmarPedidoAction
                 return true;
             }
 
-            // Eliminar reservas temporales de stock
+            // Eliminar reservas temporales de stock y vaciar el carrito del usuario (el stock ya fue descontado)
             StockReserva::where('pedido_id', $pedidoId)->delete();
+            if ($pedido->usuario_id) {
+                Carrito::where('usuario_id', $pedido->usuario_id)->delete();
+            }
 
             // Actualizar pedido a PAGADO
             $pedido->update([

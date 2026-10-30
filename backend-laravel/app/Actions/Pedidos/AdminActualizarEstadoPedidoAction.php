@@ -15,6 +15,10 @@ use Throwable;
 
 final class AdminActualizarEstadoPedidoAction
 {
+    public function __construct(
+        private readonly LiberarStockReservaAction $liberarStockReservaAction
+    ) {}
+
     /**
      * @return array<string, string>
      */
@@ -49,6 +53,11 @@ final class AdminActualizarEstadoPedidoAction
             if ($nuevoEstado === 'cancelado' && ! $solicitudCliente) {
                 throw new BadRequestHttpException('Un pedido pagado no se puede cancelar directamente por el administrador, a menos que sea a solicitud expresa del cliente.');
             }
+        }
+
+        // Si se cancela el pedido y no estaba cancelado previamente, liberar y devolver el stock al catálogo
+        if ($nuevoEstado === 'cancelado' && $pedido->estado !== EstadoPedido::CANCELADO) {
+            $this->liberarStockReservaAction->execute($pedido);
         }
 
         $guiaFinal = $guiaNumero ?? $pedido->guia_numero;

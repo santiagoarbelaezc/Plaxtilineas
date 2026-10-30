@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PedidoService } from '../../services/pedido.service';
 import { AuthService } from '../../services/auth.service';
+import { CatalogoService } from '../../services/catalogo.service';
 import { Pedido, PedidoDetalle, ESTADOS_PEDIDO, EstadoPedido } from '../../models/pedido.model';
 import { NavbarComponent } from '../../shared/layout/navbar/navbar.component';
 import { Footer } from '../../shared/layout/footer/footer.component';
@@ -20,6 +21,7 @@ export class MisPedidos implements OnInit {
   @Input() isEmbedded: boolean = false;
   private pedidoService = inject(PedidoService);
   public authService = inject(AuthService);
+  private catalogoService = inject(CatalogoService);
 
   pedidos = signal<Pedido[]>([]);
   loading = signal(true);
@@ -215,7 +217,9 @@ export class MisPedidos implements OnInit {
       if (result.isConfirmed) {
         this.pedidoService.cancelarPedido(pedido.id).subscribe({
           next: () => {
-            Swal.fire('Cancelado', 'Tu pedido ha sido cancelado con éxito.', 'success');
+            Swal.fire('Cancelado', 'Tu pedido ha sido cancelado con éxito y el stock ha sido devuelto al catálogo.', 'success');
+            this.catalogoService.sincronizarCambiosInventario();
+            this.catalogoService.refrescar();
             this.cargarPedidos();
           },
           error: (err) => {
@@ -243,7 +247,9 @@ export class MisPedidos implements OnInit {
       if (result.isConfirmed) {
         this.pedidoService.eliminarPedido(pedido.id).subscribe({
           next: () => {
-            Swal.fire('Eliminado', 'Tu pedido ha sido eliminado con éxito.', 'success');
+            Swal.fire('Eliminado', 'Tu pedido ha sido eliminado con éxito y el stock ha sido devuelto al catálogo.', 'success');
+            this.catalogoService.sincronizarCambiosInventario();
+            this.catalogoService.refrescar();
             this.cargarPedidos();
           },
           error: (err) => {

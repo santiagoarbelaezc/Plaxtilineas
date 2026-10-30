@@ -72,7 +72,11 @@ final class EliminarPedidoAction
         }
 
         DB::transaction(function () use ($pedido) {
-            $this->liberarStockReservaAction->execute($pedido);
+            // Solo liberar stock si el pedido NO estaba ya cancelado
+            // (si ya estaba cancelado, el stock ya fue restituido al cancelarlo)
+            if ($pedido->estado !== EstadoPedido::CANCELADO) {
+                $this->liberarStockReservaAction->execute($pedido);
+            }
             $pedido->items()->delete();
             $pedido->delete();
         });

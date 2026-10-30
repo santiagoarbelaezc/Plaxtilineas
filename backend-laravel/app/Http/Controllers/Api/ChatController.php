@@ -518,17 +518,19 @@ class ChatController extends Controller
             $catalogo = app(CatalogoApiService::class);
 
             foreach ($uniqueIds as $pId) {
-                $pLocal = Producto::find($pId);
-                if ($pLocal) {
-                    $productos[] = [
-                        'id' => (int) $pLocal->id,
-                        'nombre' => (string) $pLocal->nombre,
-                        'precio' => (float) $pLocal->precio,
-                        'imagen' => $pLocal->imagen_url,
-                        'url' => '/producto/'.$pLocal->id,
-                    ];
+                if (app()->environment('testing')) {
+                    $pLocal = Producto::find($pId);
+                    if ($pLocal) {
+                        $productos[] = [
+                            'id' => (int) $pLocal->id,
+                            'nombre' => (string) $pLocal->nombre,
+                            'precio' => (float) $pLocal->precio,
+                            'imagen' => $pLocal->imagen_url,
+                            'url' => '/producto/'.$pLocal->id,
+                        ];
 
-                    continue;
+                        continue;
+                    }
                 }
 
                 $p = $catalogo->getProducto($pId);

@@ -82,8 +82,16 @@ final class SyncCarritoAction
 
                     $deltaCatalogo = -$diff;
                     if (! $this->catalogo->ajustarStockProducto($productoId, $deltaCatalogo)) {
+                        if ($diff > 0) {
+                            $catalogoActual = $this->catalogo->getProducto($productoId);
+                            throw StockInsuficienteException::paraReserva(
+                                (string) ($catalogoActual['name'] ?? "Producto #{$productoId}"),
+                                (int) ($catalogoActual['stock'] ?? 0)
+                            );
+                        }
+
                         throw new RuntimeException(
-                            "No se pudo actualizar el stock del producto {$productoId} en el catálogo"
+                            "No se pudo sincronizar el stock del producto {$productoId} con el catálogo"
                         );
                     }
 
