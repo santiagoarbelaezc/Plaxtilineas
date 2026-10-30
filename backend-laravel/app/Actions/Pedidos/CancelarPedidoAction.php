@@ -60,6 +60,6 @@ final class CancelarPedidoAction
             ]);
         });
 
-        return ['mensaje' => 'Pedido cancelado correctamente y stock devuelto al inventario.'];
+        return ['mensaje' => 'Pedido cancelado correctamente.'];
     }
 }

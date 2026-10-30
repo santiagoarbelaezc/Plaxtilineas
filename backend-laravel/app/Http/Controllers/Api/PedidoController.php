@@ -12,6 +12,7 @@ use App\Actions\Pedidos\EliminarPedidoAction;
 use App\Actions\Pedidos\LiberarStockReservaAction;
 use App\Contracts\WompiClientInterface;
 use App\Enums\EstadoPedido;
+use App\Exceptions\Domain\CaptchaInvalidoException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pedidos\AdminActualizarEstadoPedidoRequest;
 use App\Http\Requests\Pedidos\CrearDraftPedidoRequest;
@@ -97,6 +98,12 @@ class PedidoController extends Controller
      */
     public function crearDraft(CrearDraftPedidoRequest $request): JsonResponse
     {
+        if ($request->getCaptchaId() !== '' || $request->getCaptchaCode() !== '') {
+            if (! $this->captchaService->verifyAndConsume($request->getCaptchaId(), $request->getCaptchaCode())) {
+                throw new CaptchaInvalidoException;
+            }
+        }
+
         /** @var Usuario $user */
         $user = $request->user();
 

@@ -17,8 +17,10 @@ return new class extends Migration
             $table->string('nombre_cliente', 150)->nullable();
             $table->string('email_cliente', 150)->nullable();
             $table->string('telefono_cliente', 50)->nullable();
+            $table->string('telefono_contacto', 50)->nullable();
             $table->text('direccion_envio');
             $table->string('ciudad_envio', 100)->nullable();
+            $table->string('ciudad', 100)->nullable();
             $table->string('departamento', 100)->nullable();
             $table->text('notas')->nullable();
             $table->decimal('subtotal', 12, 2);

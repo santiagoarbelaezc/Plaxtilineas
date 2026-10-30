@@ -200,18 +200,18 @@ final class CrearDraftPedidoAction
                     throw $e;
                 }
 
-                foreach ($detallesParaInsertar as $det) {
-                    StockReserva::create([
-                        'pedido_id' => $pedido->id,
-                        'producto_id' => $det['producto_id'],
-                        'variante_id' => $det['variante_id'],
-                        'cantidad' => $det['cantidad'],
-                        'creado_at' => now(),
-                        'expira_at' => $expiraAt,
-                    ]);
-                }
-
                 Carrito::where('usuario_id', $user->id)->delete();
+            }
+
+            foreach ($detallesParaInsertar as $det) {
+                StockReserva::create([
+                    'pedido_id' => $pedido->id,
+                    'producto_id' => $det['producto_id'],
+                    'variante_id' => $det['variante_id'],
+                    'cantidad' => $det['cantidad'],
+                    'creado_at' => now(),
+                    'expira_at' => $expiraAt,
+                ]);
             }
 
             if ($estadoInicial !== EstadoPedido::DRAFT) {
