@@ -1,0 +1,65 @@
+<section class="testimonios-section" *ngIf="listTestimonios.length > 0">
+  <div class="container">
+    <div class="section-header" *ngIf="contenido?.titulo || contenido?.subtitulo">
+      <h2 class="section-title" *ngIf="contenido?.titulo">{{ contenido.titulo }}</h2>
+      <p class="section-subtitle" *ngIf="contenido?.subtitulo">{{ contenido.subtitulo }}</p>
+      <div class="title-underline"></div>
+    </div>
+
+    <div class="carousel-container">
+      <!-- Botón Anterior -->
+      <button class="nav-btn prev-btn" (click)="prev()" aria-label="Testimonio anterior">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
+      <!-- Viewport del Carrusel -->
+      <div class="carousel-viewport">
+        <div class="testimonial-track" [style.transform]="'translateX(-' + (currentIndex * 100) + '%)'">
+          <div class="testimonial-card" *ngFor="let item of listTestimonios; let i = index" [class.active]="i === currentIndex">
+            <div class="quote-icon">“</div>
+            
+            <div class="testimonial-content">
+              <p class="comment">{{ item.comentario }}</p>
+            </div>
+
+            <div class="stars-rating">
+              <svg *ngFor="let star of getStarsArray(item.estrellas)" class="star-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+            </div>
+
+            <div class="client-meta">
+              <div class="client-avatar-wrapper" *ngIf="item.avatar">
+                <img [src]="item.avatar" [alt]="item.nombre" class="client-avatar">
+              </div>
+              <div class="client-info">
+                <h4 class="client-name">{{ item.nombre }}</h4>
+                <span class="client-puesto" *ngIf="item.puesto">{{ item.puesto }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón Siguiente -->
+      <button class="nav-btn next-btn" (click)="next()" aria-label="Siguiente testimonio">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Indicadores -->
+    <div class="carousel-indicators" *ngIf="listTestimonios.length > 1">
+      <button 
+        *ngFor="let item of listTestimonios; let idx = index" 
+        class="indicator-dot" 
+        [class.active]="idx === currentIndex"
+        (click)="setIndex(idx)"
+        [attr.aria-label]="'Ir al testimonio ' + (idx + 1)">
+      </button>
+    </div>
+  </div>
+</section>

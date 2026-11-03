@@ -1,0 +1,533 @@
+<div class="admin-content-wrapper-inner pqr-admin-container">
+
+  <!-- =========================================================================
+       1. VISTA DE DETALLE DE PQR (cuando se selecciona una solicitud)
+       ========================================================================= -->
+  <div *ngIf="modoVista === 'detalle' && pqrSeleccionada" class="pqr-detail-view">
+    
+    <!-- Botón de regreso -->
+    <div class="detail-nav-back">
+      <button class="btn-back-link" (click)="volverALista()">
+        <fa-icon icon="arrow-left"></fa-icon> Volver a solicitudes PQRS
+      </button>
+    </div>
+
+    <!-- Cabecera de la Solicitud -->
+    <div class="detail-header-card">
+      <div class="detail-ticket-title-row">
+        <h1 class="detail-ticket-title">PQR #{{ pqrSeleccionada.numero_ticket }}</h1>
+        <span [class]="'tipo-badge ' + obtenerClaseTipo(pqrSeleccionada.tipo)">
+          {{ traducirTipo(pqrSeleccionada.tipo) }}
+        </span>
+        <span [class]="'estado-badge ' + obtenerClaseEstado(pqrSeleccionada.estado)">
+          {{ traducirEstado(pqrSeleccionada.estado) }}
+        </span>
+      </div>
+
+      <div style="font-size: 0.85rem; color: #71717a; font-weight: 600;">
+        Registrada el: <strong style="color: #09090b;">{{ formatearFecha(pqrSeleccionada) }}</strong>
+      </div>
+    </div>
+
+    <!-- Grid Bento de 2 Columnas -->
+    <div class="detail-bento-grid">
+      
+      <!-- Columna 1: Información del Solicitante + Gestión de Estado -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        
+        <!-- Solicitante -->
+        <div class="detail-card">
+          <div class="detail-card-title">
+            <fa-icon icon="user-circle"></fa-icon> Datos del Solicitante
+          </div>
+
+          <div class="info-fields-grid">
+            <div class="info-field-item">
+              <span class="field-label"><fa-icon icon="user"></fa-icon> Nombre</span>
+              <span class="field-value">{{ pqrSeleccionada.nombre_completo }}</span>
+            </div>
+            <div class="info-field-item">
+              <span class="field-label"><fa-icon icon="envelope"></fa-icon> Correo Electrónico</span>
+              <span class="field-value" style="font-size: 0.85rem;">{{ pqrSeleccionada.email }}</span>
+            </div>
+            <div class="info-field-item">
+              <span class="field-label"><fa-icon icon="phone"></fa-icon> Teléfono</span>
+              <span class="field-value">{{ pqrSeleccionada.telefono || 'No registrado' }}</span>
+            </div>
+            <div class="info-field-item">
+              <span class="field-label"><fa-icon icon="box"></fa-icon> Producto Relacionado</span>
+              <span class="field-value">{{ pqrSeleccionada.producto_relacionado || 'No aplica' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gestión de Estado -->
+        <div class="detail-card">
+          <div class="detail-card-title">
+            <fa-icon icon="cogs"></fa-icon> Actualizar Estado Operativo
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="filter-select-wrapper" style="width: 100%;">
+              <select class="input-minimal-select" [(ngModel)]="nuevoEstado.estado">
+                <option value="PENDIENTE">Pendiente</option>
+                <option value="EN_PROCESO">En proceso</option>
+                <option value="RESUELTO">Resuelto</option>
+                <option value="CERRADO">Cerrado</option>
+              </select>
+              <fa-icon icon="chevron-down" class="select-arrow-icon"></fa-icon>
+            </div>
+
+            <textarea 
+              class="textarea-minimal" 
+              rows="3" 
+              placeholder="Mensaje de actualización o nota interna (opcional)..."
+              [(ngModel)]="nuevoEstado.mensaje_respuesta">
+            </textarea>
+
+            <button 
+              class="btn-primary-black" 
+              style="width: 100%; justify-content: center;"
+              (click)="actualizarEstado()"
+              [disabled]="nuevoEstado.estado === pqrSeleccionada.estado">
+              <fa-icon icon="save"></fa-icon> Guardar y Actualizar Estado
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Columna 2: Descripción y Archivos Adjuntos -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        
+        <!-- Descripción del caso -->
+        <div class="detail-card">
+          <div class="detail-card-title">
+            <fa-icon icon="file-alt"></fa-icon> Motivo y Descripción del Caso
+          </div>
+          <div class="case-description-box">
+            {{ pqrSeleccionada.descripcion }}
+          </div>
+        </div>
+
+        <!-- Archivos Adjuntos -->
+        <div class="detail-card" *ngIf="pqrSeleccionada.archivos && pqrSeleccionada.archivos.length > 0">
+          <div class="detail-card-title">
+            <fa-icon icon="paperclip"></fa-icon> Archivos Adjuntos ({{ pqrSeleccionada.archivos.length }})
+          </div>
+
+          <div class="archivos-list">
+            <div *ngFor="let archivo of pqrSeleccionada.archivos" class="archivo-item-card">
+              <div style="display: flex; align-items: center; gap: 12px; overflow: hidden;">
+                <fa-icon icon="file" style="color: #71717a; font-size: 1.1rem;"></fa-icon>
+                <div style="display: flex; flex-direction: column; overflow: hidden;">
+                  <span style="font-weight: 700; font-size: 0.85rem; color: #09090b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    {{ archivo.nombre_archivo }}
+                  </span>
+                  <small style="color: #71717a; font-size: 0.75rem;">{{ archivo.tipo_archivo }}</small>
+                </div>
+              </div>
+              <button 
+                class="page-btn" 
+                style="padding: 6px 12px; font-size: 0.8rem;"
+                (click)="descargarArchivo(archivo.url_archivo, archivo.nombre_archivo)"
+                title="Descargar archivo">
+                <fa-icon icon="download" style="margin-right: 4px;"></fa-icon> Descargar
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Historial de Respuestas & Chat -->
+    <div class="respuestas-panel">
+      <div class="respuestas-header">
+        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 900; color: #09090b; display: flex; align-items: center; gap: 10px;">
+          <fa-icon icon="comments"></fa-icon>
+          Trazabilidad y Conversación
+        </h3>
+        <span class="stat-pill">{{ pqrSeleccionada.respuestas ? pqrSeleccionada.respuestas.length : 0 }} mensajes</span>
+      </div>
+
+      <!-- Timeline de Burbujas -->
+      <div class="respuestas-timeline" *ngIf="pqrSeleccionada.respuestas && pqrSeleccionada.respuestas.length > 0">
+        <div 
+          *ngFor="let r of pqrSeleccionada.respuestas"
+          class="chat-bubble"
+          [class.admin-bubble]="r.tipo === 'ADMINISTRACION'"
+          [class.client-bubble]="r.tipo === 'CLIENTE'">
+          
+          <div class="chat-bubble-header">
+            <span>
+              <fa-icon [icon]="r.tipo === 'ADMINISTRACION' ? 'user-shield' : 'user'" style="margin-right: 6px;"></fa-icon>
+              {{ r.tipo === 'ADMINISTRACION' ? 'Equipo Plaxtilineas' : 'Cliente' }}
+            </span>
+            <span>{{ formatearFecha(r.fecha_creacion || r.fecha_respuesta || '') }}</span>
+          </div>
+
+          <div class="chat-bubble-text">{{ r.mensaje }}</div>
+        </div>
+      </div>
+
+      <!-- Sin Respuestas -->
+      <div *ngIf="!pqrSeleccionada.respuestas || pqrSeleccionada.respuestas.length === 0" style="padding: 32px; text-align: center; color: #71717a;">
+        <fa-icon icon="comment-slash" style="font-size: 1.8rem; margin-bottom: 8px; display: block; color: #a1a1aa;"></fa-icon>
+        <p style="margin: 0; font-size: 0.9rem; font-weight: 600;">No hay mensajes registrados en este caso aún.</p>
+      </div>
+
+      <!-- Formulario para Nueva Respuesta -->
+      <div class="nueva-respuesta-box">
+        <h4 style="margin: 0 0 10px 0; font-size: 0.82rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #09090b;">
+          <fa-icon icon="reply" style="margin-right: 6px;"></fa-icon> Responder al Solicitante
+        </h4>
+        <textarea 
+          class="textarea-minimal"
+          rows="3"
+          placeholder="Escribe la respuesta formal para el cliente..."
+          [(ngModel)]="nuevaRespuesta.mensaje">
+        </textarea>
+        <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+          <button 
+            class="btn-primary-black"
+            (click)="agregarRespuesta()"
+            [disabled]="!nuevaRespuesta.mensaje.trim() || cargando">
+            <fa-icon icon="paper-plane"></fa-icon>
+            {{ cargando ? 'Enviando...' : 'Enviar Respuesta' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================================
+       2. VISTA GENERAL DE BANDEJA PQRS (cuando no hay detalle abierto)
+       ========================================================================= -->
+  <ng-container *ngIf="modoVista === 'lista'">
+
+    <!-- 1. Fila de Stat Cards (4 columnas) -->
+    <div class="stats-row" *ngIf="!cargando || pqrs.length > 0">
+      <!-- Total PQRS -->
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-card-label">Total PQRS</span>
+          <div class="stat-icon-box">
+            <fa-icon icon="inbox"></fa-icon>
+          </div>
+        </div>
+        <div class="stat-number">{{ totalPQRS }}</div>
+        <div class="stat-meta">
+          <span class="stat-pill">{{ paginacion.total }} registradas</span>
+          <span class="stat-subtext">Histórico global</span>
+        </div>
+      </div>
+
+      <!-- Pendientes (Acento Rojo de Alerta si > 0) -->
+      <div class="stat-card stat-alert" [class.has-critical]="pendientesCount > 0">
+        <div class="stat-header">
+          <span class="stat-card-label">Pendientes</span>
+          <div class="stat-icon-box alert-icon">
+            <fa-icon icon="clock"></fa-icon>
+          </div>
+        </div>
+        <div class="stat-number stat-alert-number">{{ pendientesCount }}</div>
+        <div class="stat-meta">
+          <span class="stat-pill-alert" *ngIf="pendientesCount > 0">Requiere atención</span>
+          <span class="stat-pill-ok" *ngIf="pendientesCount === 0">Al día sin demoras</span>
+        </div>
+      </div>
+
+      <!-- En Proceso -->
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-card-label">En Proceso</span>
+          <div class="stat-icon-box">
+            <fa-icon icon="cogs"></fa-icon>
+          </div>
+        </div>
+        <div class="stat-number">{{ enProcesoCount }}</div>
+        <div class="stat-meta">
+          <span class="stat-subtext">En investigación o gestión</span>
+        </div>
+      </div>
+
+      <!-- Resueltas -->
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-card-label">Resueltas</span>
+          <div class="stat-icon-box">
+            <fa-icon icon="check-circle"></fa-icon>
+          </div>
+        </div>
+        <div class="stat-number">{{ resueltasCount }}</div>
+        <div class="stat-meta">
+          <span class="stat-pill-ok">Completadas exitosamente</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Bento Grid (Hero Oscuro + Quick Access 360px) -->
+    <div class="bento-grid">
+      <!-- Tarjeta Hero Estilo Bento (Fondo Negro con Efecto de Profundidad) -->
+      <div class="bento-welcome">
+        <div class="bento-status">
+          <span class="status-dot"></span>
+          <span class="bento-status-text">Atención al Cliente en Vivo</span>
+        </div>
+        <h1 class="bento-title">Gestión de PQRS</h1>
+        <p class="bento-subtitle">
+          Bandeja central de peticiones, quejas, reclamos y sugerencias. Administra la atención y asegura el cumplimiento de tiempos de respuesta en Plaxtilineas.
+        </p>
+        <div class="bento-actions">
+          <button class="btn-primary-white" (click)="cargarPQRS(); cargarEstadisticas()" [disabled]="cargando">
+            <fa-icon icon="sync-alt" [class.fa-spin]="cargando"></fa-icon> Sincronizar PQRS
+          </button>
+          <button class="btn-ghost-white" (click)="filtrarPorEstado('PENDIENTE')">
+            Ver Pendientes ({{ pendientesCount }})
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Access (360px) -->
+      <div class="bento-quick-card">
+        <div class="quick-header">
+          <h3>Atajos de Soporte</h3>
+          <span class="quick-pill">Filtro rápido</span>
+        </div>
+        <div class="quick-actions-list">
+          <button class="quick-action-item" (click)="filtrarPorEstado('PENDIENTE')">
+            <div class="quick-item-icon warning"><fa-icon icon="clock"></fa-icon></div>
+            <div class="quick-item-info">
+              <span class="quick-item-title">Casos Pendientes</span>
+              <span class="quick-item-desc">Esperando primera respuesta</span>
+            </div>
+          </button>
+
+          <button class="quick-action-item" (click)="filtrarPorEstado('EN_PROCESO')">
+            <div class="quick-item-icon info"><fa-icon icon="cogs"></fa-icon></div>
+            <div class="quick-item-info">
+              <span class="quick-item-title">Casos en Gestión</span>
+              <span class="quick-item-desc">En trámite por servicio al cliente</span>
+            </div>
+          </button>
+
+          <button class="quick-action-item" (click)="limpiarFiltros()">
+            <div class="quick-item-icon neutral"><fa-icon icon="broom"></fa-icon></div>
+            <div class="quick-item-info">
+              <span class="quick-item-title">Restablecer Filtros</span>
+              <span class="quick-item-desc">Ver todas las solicitudes</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Contenido Principal / Panel de Tabla -->
+    <div class="panel-card">
+
+      <!-- Barra de herramientas con filtros y buscador al mismo nivel -->
+      <div class="panel-header" style="flex-wrap: wrap; gap: 16px;">
+        <h3>
+          <fa-icon icon="inbox" style="margin-right: 10px;"></fa-icon>
+          Buzón de Solicitudes
+        </h3>
+
+        <div class="panel-header-actions">
+          <!-- Combo Box Filtro Estado -->
+          <div class="filter-select-wrapper">
+            <select
+              class="input-minimal-select"
+              [(ngModel)]="filtros.estado"
+              (ngModelChange)="aplicarFiltros()"
+              title="Filtrar por estado">
+              <option *ngFor="let estado of estados" [value]="estado.valor">{{ estado.texto }}</option>
+            </select>
+            <fa-icon icon="chevron-down" class="select-arrow-icon"></fa-icon>
+          </div>
+
+          <!-- Combo Box Filtro Tipo -->
+          <div class="filter-select-wrapper" style="min-width: 170px;">
+            <select
+              class="input-minimal-select"
+              [(ngModel)]="filtros.tipo"
+              (ngModelChange)="aplicarFiltros()"
+              title="Filtrar por tipo">
+              <option *ngFor="let tipo of tipos" [value]="tipo.valor">{{ tipo.texto }}</option>
+            </select>
+            <fa-icon icon="chevron-down" class="select-arrow-icon"></fa-icon>
+          </div>
+
+          <!-- Buscador Minimalista -->
+          <div class="search-box">
+            <fa-icon icon="search" style="position: absolute; left: 14px; color: #71717a; pointer-events: none;"></fa-icon>
+            <input
+              type="text"
+              class="input-minimal"
+              placeholder="Buscar por ticket, cliente o email..."
+              [(ngModel)]="filtros.terminoBusqueda"
+              (input)="onBuscarChange()"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Carga -->
+      <div class="loading-state" *ngIf="cargando">
+        <div class="spinner-grande"></div>
+        <p>Cargando solicitudes PQRS...</p>
+      </div>
+
+      <!-- Vacío -->
+      <div class="empty-state" *ngIf="!cargando && pqrs.length === 0">
+        <p>No se encontraron solicitudes PQRS registradas con los filtros seleccionados.</p>
+      </div>
+
+      <!-- Tabla de Datos -->
+      <div class="table-responsive" *ngIf="!cargando && pqrs.length > 0">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width: 140px;">Ticket</th>
+              <th style="width: 120px;">Tipo</th>
+              <th>Solicitante</th>
+              <th style="width: 130px;">Estado</th>
+              <th style="width: 160px;">Fecha Registro</th>
+              <th style="width: 180px; text-align: right;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let pqr of pqrs" style="transition: background 0.15s ease;">
+              
+              <!-- Ticket -->
+              <td>
+                <span class="ticket-badge">#{{ pqr.numero_ticket }}</span>
+              </td>
+
+              <!-- Tipo -->
+              <td>
+                <span [class]="'tipo-badge ' + obtenerClaseTipo(pqr.tipo)">
+                  {{ traducirTipo(pqr.tipo) }}
+                </span>
+              </td>
+
+              <!-- Solicitante -->
+              <td>
+                <div class="prod-cell">
+                  <div class="prod-thumb" style="display: flex; align-items: center; justify-content: center; background: #f4f5f7; color: #71717a; border-radius: 12px; width: 42px; height: 42px; flex-shrink: 0; border: 1.5px solid #e4e4e7;">
+                    <fa-icon icon="user" style="font-size: 0.95rem;"></fa-icon>
+                  </div>
+                  <div>
+                    <span class="prod-name" style="font-weight: 800; font-size: 0.92rem; color: #09090b;">{{ pqr.nombre_completo }}</span>
+                    <span style="display: block; font-size: 0.76rem; color: #71717a; font-weight: 600; margin-top: 1px;">
+                      {{ pqr.email }} &bull; {{ pqr.telefono || 'Sin teléfono' }}
+                    </span>
+                  </div>
+                </div>
+              </td>
+
+              <!-- Estado -->
+              <td>
+                <span [class]="'estado-badge ' + obtenerClaseEstado(pqr.estado)">
+                  {{ traducirEstado(pqr.estado) }}
+                </span>
+              </td>
+
+              <!-- Fecha Registro -->
+              <td style="font-size: 0.85rem; color: #52525b; font-weight: 600; white-space: nowrap;">
+                <fa-icon icon="calendar-alt" style="color: #a1a1aa; margin-right: 6px; font-size: 0.8rem;"></fa-icon>
+                {{ formatearFecha(pqr) || 'Reciente' }}
+              </td>
+
+              <!-- Acciones -->
+              <td style="text-align: right; white-space: nowrap;">
+                <div style="display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px;">
+                  <button 
+                    class="btn-ver-caso" 
+                    (click)="verDetallePQR(pqr)"
+                    title="Ver detalle y responder caso">
+                    <fa-icon icon="eye" style="font-size: 0.82rem;"></fa-icon>
+                    <span>Ver Caso</span>
+                  </button>
+                  <button 
+                    class="btn-delete-pqr" 
+                    (click)="eliminarPQR(pqr)" 
+                    title="Eliminar PQR">
+                    <fa-icon icon="trash-alt"></fa-icon>
+                  </button>
+                </div>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer de Tabla con Paginación -->
+      <div class="table-footer-bar" *ngIf="!cargando && pqrs.length > 0">
+        <div class="pagination-summary">
+          Mostrando <strong>{{ pqrs.length }}</strong> de <strong>{{ paginacion.total }}</strong> PQRS
+        </div>
+
+        <!-- Controles de Paginación -->
+        <div class="pagination" *ngIf="paginacion.totalPaginas > 1">
+          <button 
+            class="pagination-btn" 
+            (click)="cambiarPagina(paginacion.paginaActual - 1)"
+            [disabled]="paginacion.paginaActual === 1"
+            title="Página anterior">
+            <fa-icon icon="chevron-left"></fa-icon>
+          </button>
+          
+          <div class="pagination-numbers">
+            <button
+              *ngFor="let pagina of arrayNumerosPaginas"
+              class="pagination-number"
+              [class.active]="pagina === paginacion.paginaActual"
+              (click)="cambiarPagina(pagina)">
+              {{ pagina }}
+            </button>
+          </div>
+          
+          <button 
+            class="pagination-btn" 
+            (click)="cambiarPagina(paginacion.paginaActual + 1)"
+            [disabled]="paginacion.paginaActual === paginacion.totalPaginas"
+            title="Página siguiente">
+            <fa-icon icon="chevron-right"></fa-icon>
+          </button>
+        </div>
+
+        <div style="font-size: 0.82rem; color: #71717a; font-weight: 600; display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+          <span>Página <strong style="color: #09090b;">{{ paginacion.paginaActual }}</strong> de <strong style="color: #09090b;">{{ paginacion.totalPaginas }}</strong></span>
+        </div>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>
+
+<!-- Modal de Confirmación -->
+<div *ngIf="showModalConfirmacion" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-warning-icon">
+      <fa-icon icon="exclamation-triangle"></fa-icon>
+    </div>
+    <h2>Confirmar Acción</h2>
+    <p>{{ mensaje }}</p>
+    
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="cancelarAccionModal()">
+        Cancelar
+      </button>
+      <button class="btn-confirm-danger" (click)="confirmarAccionModal()">
+        Confirmar
+      </button>
+    </div>
+  </div>
+</div>

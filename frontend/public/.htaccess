@@ -1,0 +1,90 @@
+Options -Indexes
+
+# ─── Tipos MIME para formatos modernos ───────────────────────────────────────
+<IfModule mod_mime.c>
+  AddType application/manifest+json .webmanifest
+  AddType video/mp4                 .mp4
+  AddType video/webm                .webm
+  AddType application/javascript    .js .mjs
+  AddType text/css                  .css
+  AddType image/webp                .webp
+  AddType image/avif                .avif
+</IfModule>
+
+# ─── Caché de assets estáticos ───────────────────────────────────────────────
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html                    "access plus 0 seconds"
+  ExpiresByType application/javascript       "access plus 1 year"
+  ExpiresByType text/css                     "access plus 1 year"
+  ExpiresByType image/png                    "access plus 1 year"
+  ExpiresByType image/jpg                    "access plus 1 year"
+  ExpiresByType image/jpeg                   "access plus 1 year"
+  ExpiresByType image/webp                   "access plus 1 year"
+  ExpiresByType image/avif                   "access plus 1 year"
+  ExpiresByType image/svg+xml                "access plus 1 year"
+  ExpiresByType video/mp4                    "access plus 1 month"
+  ExpiresByType application/manifest+json    "access plus 1 week"
+  ExpiresByType application/font-woff2       "access plus 1 year"
+</IfModule>
+
+# ─── Compresión GZIP ─────────────────────────────────────────────────────────
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json application/manifest+json
+</IfModule>
+
+# ─── Redirecciones SEO ──────────────────────────────────────────────────────
+RewriteEngine On
+
+# Forzar HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# Remover www
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+# No redirigir requests a los backends (PHP API y Laravel)
+RewriteRule ^api(/|$) - [L]
+RewriteRule ^backend-laravel(/|$) - [L]
+
+# Servir archivos y directorios que existen físicamente
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Todo lo demás → index.html (Angular SPA)
+RewriteRule ^ /index.html [L]
+
+# ─── Headers SEO y Seguridad ──────────────────────────────────────────────────
+<IfModule mod_headers.c>
+  # Canonical header para SEO
+  Header set Link "</index.html>; rel=\"canonical\""
+  
+  # Prevenir clic jacking
+  Header set X-Frame-Options "SAMEORIGIN"
+  
+  # Prevenir MIME type sniffing
+  Header set X-Content-Type-Options "nosniff"
+  
+  # XSS protection
+  Header set X-XSS-Protection "1; mode=block"
+  
+  # Referrer policy para privacidad
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  
+  # Permitir acceso desde cualquier origen (CORS básico)
+  Header set Access-Control-Allow-Origin "*"
+</IfModule>
+
+# ─── Headers de seguridad ────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Cache-control para index.html (nunca cachear para recibir nuevos deploys)
+  <FilesMatch "^index\.html$">
+    Header set Cache-Control "no-store, no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>

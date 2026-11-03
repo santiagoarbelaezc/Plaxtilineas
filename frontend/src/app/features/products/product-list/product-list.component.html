@@ -1,0 +1,168 @@
+<section id="productos-seccion">
+  
+  <!-- Componente ProductoBackground - Mostrar solo si está configurado para esta categoría -->
+  <app-producto-background 
+    *ngIf="mostrarProductoBackground"
+    [titulo]="tituloProductoBackground"
+    [imagenes]="imagenesProductoBackground">
+  </app-producto-background>
+
+  <!-- Encabezado de Sección con Design Tokens -->
+  <div class="section-header">
+    <div class="header-titles">
+      <h1 class="section-title">
+        CATÁLOGO DE <span class="highlight-green">PRODUCTOS</span>
+      </h1>
+
+      <p class="section-subtitle">
+        Descubre nuestra selección especializada en plásticos industriales, espumas, peletería y empaques en Armenia.
+      </p>
+    </div>
+
+    <!-- Barra de Filtro Activo (Categoría / Subcategoría) -->
+    <div class="filter-status-bar" *ngIf="filtroNombre">
+      <div class="filter-active-pill">
+        <span class="filter-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+          </svg>
+        </span>
+        <span class="filter-text">
+          {{ filtroTipo }}: <strong>{{ filtroNombre }}</strong>
+        </span>
+        <span class="filter-count">({{ productos.length }} {{ productos.length === 1 ? 'referencia' : 'referencias' }})</span>
+      </div>
+
+      <button type="button" class="btn-clear-filter" (click)="verTodosLosProductos()" title="Quitar filtro y ver todos">
+        <span>✕ Ver todos los productos</span>
+      </button>
+    </div>
+
+    <!-- Metadatos de Contador cuando no hay filtro específico -->
+    <div class="catalog-meta-info" *ngIf="!cargando && !filtroNombre && productos.length > 0">
+      <span class="product-count-label">
+        Mostrando <strong>{{ rangoProductos }}</strong> de <strong>{{ productos.length }}</strong> referencias disponibles
+      </span>
+    </div>
+  </div>
+
+  <!-- Estados de Carga (Skeletons con el Diseño Exacto del Home) -->
+  <div *ngIf="cargando" class="products-grid-container">
+    <div class="products-grid">
+      <div class="producto-card skeleton-card" *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8]">
+        <div class="producto-imagen-wrapper skeleton-box"></div>
+        <div class="producto-info">
+          <div class="skeleton-text skeleton-subcat"></div>
+          <div class="skeleton-text skeleton-title"></div>
+          <div class="skeleton-text skeleton-title-short"></div>
+          <div class="skeleton-precio-row">
+            <div class="skeleton-text skeleton-price-old"></div>
+            <div class="skeleton-text skeleton-price-main"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado Sin Productos -->
+  <div *ngIf="!productos.length && !cargando" class="empty-state">
+    <div class="empty-icon-box">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <path d="M16 10a4 4 0 0 1-8 0"></path>
+      </svg>
+    </div>
+    <h3 class="empty-title">No hay productos en esta selección</h3>
+    <p class="empty-subtitle">Prueba explorando otra categoría o restablece el filtro para ver todo el catálogo.</p>
+    <button type="button" class="btn-empty-action" (click)="verTodosLosProductos()">
+      <span>Ver Todos los Productos</span>
+    </button>
+  </div>
+
+  <!-- Grid de Productos (Diseño Idéntico a los Carruseles del Home) -->
+  <div class="products-grid-container" *ngIf="productos.length && !cargando">
+    <div class="products-grid">
+      
+      <div 
+        *ngFor="let producto of productosPaginaActual" 
+        class="producto-card"
+        (click)="verDetalles(producto)"
+        tabindex="0"
+        role="button"
+        [@fadeInUp]>
+        
+        <!-- Contenedor Visual de la Imagen -->
+        <div class="producto-imagen-wrapper">
+          <img 
+            [src]="producto.imagen_url ? optimizarImagen(producto.imagen_url) : 'assets/images/default-product.png'" 
+            [alt]="producto.nombre" 
+            class="producto-imagen"
+            loading="lazy"
+            (error)="producto.imagen_url = 'assets/images/default-product.png'">
+        </div>
+
+        <!-- Información de Producto -->
+        <div class="producto-info">
+          <span class="product-subcategory" *ngIf="producto.subcategoria || producto.categoria">
+            {{ producto.subcategoria || producto.categoria }}
+          </span>
+
+          <h3 class="producto-titulo" title="{{ producto.nombre }}">
+            {{ formatearNombre(producto.nombre) }}
+          </h3>
+
+          <div class="producto-precio-row">
+            <span class="precio-tachado" *ngIf="producto.precio">
+              {{ obtenerPrecioReferencia(producto.precio) }}
+            </span>
+            <span class="producto-precio">
+              {{ formatearPrecio(producto.precio) }}
+              <span class="precio-unidad">und</span>
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Controles de Paginación Elegantes -->
+    <div class="pagination-controls" *ngIf="totalPages > 1 && !cargando">
+      <button 
+        class="pagination-btn pagination-prev" 
+        [disabled]="currentPage === 1"
+        (click)="paginaAnterior()"
+        aria-label="Página anterior">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <span>Anterior</span>
+      </button>
+
+      <div class="pagination-numbers">
+        <button 
+          *ngFor="let page of paginasVisibles"
+          class="pagination-number-btn" 
+          [class.active]="page === currentPage"
+          (click)="cambiarPagina(page)"
+          [attr.aria-label]="'Ir a página ' + page">
+          {{ page }}
+        </button>
+      </div>
+
+      <button 
+        class="pagination-btn pagination-next" 
+        [disabled]="currentPage === totalPages"
+        (click)="paginaSiguiente()"
+        aria-label="Página siguiente">
+        <span>Siguiente</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+
+  </div>
+
+</section>

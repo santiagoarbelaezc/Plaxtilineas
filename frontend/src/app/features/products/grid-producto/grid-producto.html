@@ -1,0 +1,54 @@
+<div class="grid-wrapper">
+  <section class="grid-container">
+    <!-- Primera fila -->
+    <ng-container *ngFor="let producto of primeraFila; let i = index">
+      <a href="javascript:void(0)" (click)="onProductoClick(producto, $event)" class="producto-item" 
+         [class.alta]="producto.altura === 'alta'"
+         [class.baja]="producto.altura === 'baja'">
+        <img [src]="producto.imagen" [alt]="producto.descripcion" loading="lazy">
+        
+        <!-- Punto en la mitad -->
+        <div class="punto-medio" 
+             (mouseenter)="setHoveredIndex(i)" 
+             (mouseleave)="setHoveredIndex(null)">
+          <div class="info-extra" [class.visible]="hoveredIndex === i">
+            <button class="close-modal" (click)="setHoveredIndex(null)">×</button>
+            <ng-container *ngIf="producto.nombre">
+              <h3 class="producto-nombre">{{producto.nombre}}</h3>
+            </ng-container>
+          </div>
+        </div>
+        
+      </a>
+    </ng-container>
+
+    <!-- Segunda fila -->
+    <ng-container *ngFor="let producto of segundaFila; let i = index">
+      <a href="javascript:void(0)" (click)="onProductoClick(producto, $event)" class="producto-item" 
+         [class.alta]="producto.altura === 'alta'"
+         [class.baja]="producto.altura === 'baja'">
+        <img [src]="producto.imagen" [alt]="producto.descripcion" loading="lazy">
+        
+        <!-- Punto en la mitad -->
+        <div class="punto-medio" 
+             (mouseenter)="setHoveredIndex(4 + i)" 
+             (mouseleave)="setHoveredIndex(null)">
+          <div class="info-extra" [class.visible]="hoveredIndex === (4 + i)">
+            <button class="close-modal" (click)="setHoveredIndex(null)">×</button>
+            <ng-container *ngIf="producto.nombre">
+              <h3 class="producto-nombre">{{producto.nombre}}</h3>
+            </ng-container>
+          </div>
+        </div>
+        
+      </a>
+    </ng-container>
+  </section>
+</div>
+
+<!-- Agregar esto en tu componente HTML -->
+<div class="info-backdrop" 
+     [class.visible]="hoveredIndex !== null"
+     (click)="setHoveredIndex(null)">
+</div>
+

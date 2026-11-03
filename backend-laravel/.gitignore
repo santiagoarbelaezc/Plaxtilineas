@@ -1,0 +1,71 @@
+# === Dependencias de PHP y Node ===
+/vendor
+/node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# === Entorno y credenciales confidenciales ===
+.env
+.env.*
+!.env.example
+auth.json
+
+# === Llaves de seguridad y certificados de cifrado ===
+/storage/*.key
+oauth-private.key
+oauth-public.key
+*.key
+*.pem
+*.crt
+*.cert
+
+# === Bases de datos locales y volcados SQL ===
+*.sqlite
+*.sqlite-journal
+*.db
+*.sql
+*.sql.gz
+*.dump
+
+# === Logs del servidor y de Laravel ===
+/storage/logs/*.log
+*.log
+
+# === Caché de arranque y del framework ===
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+/storage/framework/cache/data/*
+!/storage/framework/cache/data/.gitignore
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
+/storage/framework/testing/*
+!/storage/framework/testing/.gitignore
+
+# === Archivos y subidas en almacenamiento local ===
+/storage/app/*
+!/storage/app/.gitignore
+!/storage/app/public/
+!/storage/app/public/.gitignore
+/public/storage
+/public/hot
+/public/build
+
+# === Caché de pruebas ===
+/.phpunit.cache
+.phpunit.result.cache
+
+# === IDEs y archivos del sistema ===
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+/.fleet
+/.idea
+/.vscode
+*.sublime-workspace
+*.sublime-project
+Homestead.json
+Homestead.yaml

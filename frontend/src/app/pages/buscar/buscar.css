@@ -1,0 +1,13 @@
+/* Estilos para la página de búsqueda */
+.buscar-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.buscar-content {
+  flex: 1;
+  padding-top: 110px;
+  background: #ffffff;
+  min-height: calc(100vh - 110px);
+}

@@ -1,0 +1,546 @@
+/* ==========================================================================
+   HOME PAGE (INICIO) - STYLES REFACTOR
+   ========================================================================== */
+
+:host {
+  display: block;
+  background-color: #FFFFFF;
+}
+
+.desktop-only {
+  display: block !important;
+}
+.mobile-only {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+  .mobile-only {
+    display: block !important;
+  }
+}
+
+.home-main {
+  overflow-x: clip;
+  background-color: #f4f5f7;
+  padding-top: 110px; /* Topbar (36px) + Navbar Sticky (74px) */
+}
+
+@media (max-width: 768px) {
+  .home-main {
+    padding-top: 74px;
+  }
+}
+
+/* --- Section Layout --- */
+.home-section {
+  padding: 20px 0;
+  position: relative;
+  width: 100%;
+}
+
+.home-section.no-padding {
+  padding: 0;
+}
+
+.home-section.full-width {
+  padding: 15px 0;
+}
+
+/* --- Containers --- */
+.container {
+  max-width: var(--home-max-width, 1480px) !important;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 var(--home-side-padding, 32px);
+  box-sizing: border-box;
+}
+
+.container-narrow {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 var(--home-side-padding, 32px);
+  box-sizing: border-box;
+}
+
+/* --- Typography & Headers --- */
+.section-title {
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 2.5rem;
+  font-weight: 850;
+  color: #1a202c;
+  text-align: center;
+  margin-bottom: 1rem;
+  letter-spacing: -0.025em;
+}
+
+.section-subtitle {
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1.1rem;
+  color: #4a5568;
+  text-align: center;
+  margin-bottom: 3rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* --- Intro/Nosotros Refinement --- */
+.intro-nosotros {
+  padding-top: 0;
+  background-color: #fdfdfd;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.nosotros-content-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+}
+
+.nosotros-content-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 60px rgba(54, 140, 68, 0.08);
+  border-color: rgba(54, 140, 68, 0.2);
+}
+
+.valor-descripcion {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: #4a5568;
+  margin-bottom: 0;
+}
+
+.valor-descripcion strong {
+  color: #368C44;
+}
+
+/* --- Full Banners --- */
+.full-banner-container {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 15px 0;
+}
+
+/* --- Footer Stack --- */
+.footer-stack {
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+/* AOS Tweaks */
+[data-aos] {
+  pointer-events: none;
+}
+.aos-animate {
+  pointer-events: auto;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .home-section {
+    padding: 35px 0;
+  }
+  .section-title {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-section {
+    padding: 40px 0;
+  }
+  .section-title {
+    font-size: 1.75rem;
+  }
+  .nosotros-content-card {
+    padding: 30px 20px;
+  }
+  .valor-descripcion {
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.5rem;
+  }
+  .section-subtitle {
+    font-size: 0.95rem;
+  }
+}
+
+/* ==========================================================================
+   NUEVOS COMPONENTES DINÁMICOS (Premium & Elegantes)
+   ========================================================================== */
+
+/* ─── Contenedor Anuncio Semanal (Bloque) ────────────────────── */
+.elegant-news-container {
+  max-width: var(--home-max-width, 1480px);
+  width: 100%;
+  margin: 40px auto;
+  padding: 10px var(--home-side-padding, 32px);
+  box-sizing: border-box;
+}
+
+.elegant-news-card {
+  display: flex;
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f3f4f6;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  min-height: 200px;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.elegant-news-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  border-color: #dfdfdf;
+}
+
+.news-image-wrapper {
+  width: 35%;
+  position: relative;
+  overflow: hidden;
+}
+
+.news-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.elegant-news-card:hover .news-img {
+  transform: scale(1.06);
+}
+
+.news-info-content {
+  width: 65%;
+  padding: 20px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  background: #ffffff;
+  position: relative;
+}
+
+.news-badge-weekly {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  color: #4b5563;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.05em;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.news-card-title {
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 10px 0;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.news-card-desc {
+  font-size: 0.9rem;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0 0 12px 0;
+}
+
+.news-features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 15px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.news-features-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #374151;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.feature-check-icon {
+  color: #111827;
+  flex-shrink: 0;
+  background: #f3f4f6;
+  border-radius: 50%;
+  padding: 3px;
+  width: 16px;
+  height: 16px;
+}
+
+.news-card-link-btn {
+  background: #111;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  align-self: flex-start;
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.elegant-news-card:hover .news-card-link-btn {
+  background: #000;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsivo para el anuncio semanal */
+@media (max-width: 992px) {
+  .elegant-news-card {
+    flex-direction: column;
+    min-height: auto;
+  }
+  .news-image-wrapper, .news-info-content {
+    width: 100%;
+  }
+  .news-image-wrapper {
+    height: 300px;
+  }
+  .news-info-content {
+    padding: 40px 30px;
+  }
+  .news-card-title {
+    font-size: 1.9rem;
+  }
+}
+
+/* ─── Bloque de Texto Dinámico ──────────────────────── */
+.text-block-section {
+  background: radial-gradient(circle at 10% 20%, rgba(248, 250, 252, 0.5) 0%, rgba(255, 255, 255, 1) 90%);
+  border-top: 1px solid rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+  padding: 15px 0;
+  margin: 30px 0;
+}
+
+.text-block-container {
+  max-width: var(--home-max-width, 1480px) !important;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 var(--home-side-padding, 32px);
+  box-sizing: border-box;
+}
+
+.text-block-title {
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 2.35rem;
+  font-weight: 850;
+  color: #0f172a;
+  margin-bottom: 24px;
+  letter-spacing: -0.025em;
+  position: relative;
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+/* Decoración premium debajo del título del bloque de texto */
+.text-block-container[style*="text-align: center"] .text-block-title::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.text-block-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: #111;
+  border-radius: 2px;
+}
+
+.text-block-body {
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1.18rem;
+  line-height: 1.85;
+  color: #475569;
+  font-weight: 400;
+  margin: 24px auto 0 auto;
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .text-block-section {
+    padding: 30px 0;
+  }
+  .text-block-title {
+    font-size: 1.85rem;
+  }
+  .text-block-body {
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+}
+
+/* Layout Dual para Anuncios */
+.elegant-news-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  max-width: 100%;
+  margin: 0 auto;
+  width: 100%;
+}
+.elegant-news-grid .elegant-news-card {
+  flex-direction: column;
+  max-width: 100%;
+}
+.elegant-news-grid .news-image-wrapper {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  height: auto;
+  margin: 0;
+  border-radius: 0;
+}
+.elegant-news-grid .news-info-content {
+  width: 100%;
+  padding: 20px;
+  align-items: center;
+  text-align: center;
+}
+.elegant-news-grid .news-card-title {
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 750;
+  color: #0f172a;
+  margin: 10px 0 6px 0;
+  text-align: center;
+  letter-spacing: -0.015em;
+}
+.elegant-news-grid .news-card-desc {
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.88rem;
+  color: #475569;
+  line-height: 1.5;
+  text-align: center;
+  margin: 0 auto 10px auto;
+  max-width: 95%;
+}
+.elegant-news-grid .news-features-list {
+  align-items: center;
+  margin: 0 auto 15px auto;
+}
+.elegant-news-grid .news-card-link-btn {
+  align-self: center;
+}
+@media (max-width: 992px) {
+  .elegant-news-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .elegant-news-grid .elegant-news-card {
+    margin: 0 auto;
+  }
+}
+
+/* Mejoras Específicas para Móvil (< 768px) */
+@media (max-width: 768px) {
+  .elegant-news-container {
+    margin: 30px auto;
+    padding: 10px var(--home-side-padding-mobile, 16px);
+  }
+  .elegant-news-card {
+    border-radius: 8px;
+  }
+  .news-image-wrapper {
+    width: 100%;
+    height: 200px;
+  }
+  .news-info-content {
+    width: 100%;
+    padding: 20px 15px;
+  }
+  .news-card-title, 
+  .elegant-news-grid .news-card-title {
+    font-size: 1.35rem;
+    line-height: 1.3;
+  }
+  .news-card-desc,
+  .elegant-news-grid .news-card-desc {
+    font-size: 0.88rem;
+    margin-bottom: 0.8rem;
+    max-width: 100%;
+  }
+  .news-features-list li {
+    font-size: 0.85rem;
+  }
+  .news-card-link-btn {
+    width: 100%;
+    text-align: center;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+  }
+  .elegant-news-grid .news-image-wrapper {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .news-image-wrapper {
+    height: 160px;
+  }
+  .elegant-news-grid .news-image-wrapper {
+    width: 100%;
+    height: 160px;
+  }
+  .news-info-content {
+    padding: 15px 12px;
+  }
+  .news-card-title,
+  .elegant-news-grid .news-card-title {
+    font-size: 1.2rem;
+  }
+}
+
+/* Grupo Espumas y Plásticos Section */
+.grupo-showcase-section {
+  position: relative;
+  width: 100%;
+  scroll-margin-top: 0px;
+}

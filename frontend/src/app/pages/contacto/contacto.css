@@ -1,0 +1,14 @@
+/* Estilos de la página de contacto */
+.contacto-page-container {
+  padding-top: 130px; /* Offset para el navbar fijo en desktop */
+  min-height: 100vh;
+  background-color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .contacto-page-container {
+    padding-top: 90px; /* Offset para el navbar fijo en móvil */
+  }
+}

@@ -1,0 +1,44 @@
+<section class="aliados-marquee-section" [class.is-visible]="isVisible" aria-label="Nuestros Aliados y Distribuidores">
+  <div class="aliados-marquee-wrapper">
+    
+    <!-- Encabezado con título y texto normal descriptivo -->
+    <div class="aliados-marquee-header">
+      <h2 class="aliados-title">NUESTROS <span class="highlight-green">ALIADOS</span></h2>
+      <p class="aliados-subtitle">
+        Distribución oficial y respaldo de las marcas líderes en plásticos, espumas industriales, telas técnicas y adhesivos de alta resistencia para todo el Eje Cafetero.
+      </p>
+    </div>
+
+    <!-- Carrusel Horizontal Continuo sin contenedor (Logos PNG en blanco) -->
+    <div class="marquee-track-container">
+      <div class="marquee-track">
+        <!-- Bloque 1 de Logos -->
+        <div class="marquee-group">
+          <div *ngFor="let aliado of aliados" class="aliado-item" [title]="aliado.nombre">
+            <img 
+              [src]="aliado.logo" 
+              [alt]="aliado.nombre" 
+              class="aliado-logo" 
+              [style.transform]="'scale(' + (aliado.scale || 1) + ')'"
+              loading="lazy" 
+            />
+          </div>
+        </div>
+
+        <!-- Bloque 2 duplicado para transición infinita perfecta sin cortes -->
+        <div class="marquee-group" aria-hidden="true">
+          <div *ngFor="let aliado of aliados" class="aliado-item" [title]="aliado.nombre">
+            <img 
+              [src]="aliado.logo" 
+              [alt]="aliado.nombre" 
+              class="aliado-logo" 
+              [style.transform]="'scale(' + (aliado.scale || 1) + ')'"
+              loading="lazy" 
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>

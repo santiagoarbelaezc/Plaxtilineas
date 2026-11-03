@@ -1,0 +1,729 @@
+<div class="dash-shell" [class.sidebar-collapsed]="isSidebarCollapsed">
+  
+  <!-- SIDEBAR LATERAL (#0a0a0a) -->
+  <aside class="dash-sidebar" [class.mobile-open]="isMobileSidebarOpen">
+    <!-- Botón Flotante para Colapsar el Sidebar -->
+    <button 
+      type="button"
+      class="sidebar-toggle" 
+      (click)="toggleSidebarCollapse()" 
+      [attr.aria-label]="isSidebarCollapsed ? 'Expandir menú' : 'Colapsar menú'"
+      [title]="isSidebarCollapsed ? 'Expandir menú lateral' : 'Colapsar menú lateral'">
+      <span class="material-symbols-rounded toggle-icon">
+        {{ isSidebarCollapsed ? 'chevron_right' : 'chevron_left' }}
+      </span>
+    </button>
+
+    <!-- Marca / Logo de la Tienda -->
+    <div class="sidebar-brand">
+      <a routerLink="/admin" class="brand-link" (click)="closeMobileSidebar()">
+        <div class="brand-icon-box">
+          <span class="material-symbols-rounded">shield_moon</span>
+        </div>
+        <div class="brand-text-col" *ngIf="!isSidebarCollapsed">
+          <span class="brand-name">Plaxtilineas</span>
+          <span class="brand-role">PANEL ADMIN</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Menú de Navegación Principal -->
+    <nav class="sidebar-nav">
+      <div class="nav-section-label" *ngIf="!isSidebarCollapsed">Gestión Tienda</div>
+      <ul class="nav-list">
+        <!-- 0. Inicio -->
+        <li class="nav-item">
+          <a routerLink="/admin" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Inicio">
+            <span class="material-symbols-rounded nav-icon">home</span>
+            <span class="nav-label" *ngIf="!isSidebarCollapsed">Inicio</span>
+          </a>
+        </li>
+
+        <!-- 1. Inventario -->
+        <li class="nav-item">
+          <a routerLink="/admin/inventario" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Inventario de Productos">
+            <span class="material-symbols-rounded nav-icon">inventory_2</span>
+            <span class="nav-label" *ngIf="!isSidebarCollapsed">Inventario</span>
+            <span class="nav-badge" *ngIf="!isSidebarCollapsed && totalProductosCount > 0">{{ totalProductosCount }}</span>
+          </a>
+        </li>
+
+        <!-- 2. Categorías -->
+        <li class="nav-item">
+          <a routerLink="/admin/categorias" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Categorías del Catálogo">
+            <span class="material-symbols-rounded nav-icon">category</span>
+            <span class="nav-label" *ngIf="!isSidebarCollapsed">Categorías</span>
+          </a>
+        </li>
+
+        <!-- 2. Pedidos -->
+        <li class="nav-item">
+          <a routerLink="/admin/pedidos" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Pedidos">
+            <span class="material-symbols-rounded nav-icon">shopping_bag</span>
+            <span class="nav-label" *ngIf="!isSidebarCollapsed">Pedidos</span>
+            <span class="nav-badge badge-accent-red" *ngIf="!isSidebarCollapsed && pedidosPendientesCount > 0">{{ pedidosPendientesCount }}</span>
+          </a>
+        </li>
+
+        <!-- 3. Personalizar -->
+        <li class="nav-item">
+          <a routerLink="/admin/personalizar-web" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Personalizar">
+            <span class="material-symbols-rounded nav-icon">palette</span>
+            <span class="nav-label" *ngIf="!isSidebarCollapsed">Personalizar</span>
+          </a>
+        </li>
+
+        <!-- 4. Usuarios -->
+        <li class="nav-item">
+          <a routerLink="/admin/usuarios" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Usuarios">
+            <span class="material-symbols-rounded nav-icon">group</span>
+            <span class="nav-label" *ngIf="!isSidebarCollapsed">Usuarios</span>
+          </a>
+        </li>
+
+        <!-- 5. PQRS -->
+        <li class="nav-item">
+          <a routerLink="/admin/pqr-admin" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="PQRS">
+            <span class="material-symbols-rounded nav-icon">contact_support</span>
+            <span class="nav-label" *ngIf="!isSidebarCollapsed">PQRS</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Footer del Sidebar: Volver al Sitio Web & Cerrar Sesión -->
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-actions">
+        <a routerLink="/" class="nav-link btn-sidebar-site" (click)="closeMobileSidebar()" title="Volver al sitio web">
+          <span class="material-symbols-rounded nav-icon">storefront</span>
+          <span class="nav-label" *ngIf="!isSidebarCollapsed">Volver al sitio web</span>
+        </a>
+
+        <button type="button" class="nav-link btn-sidebar-logout" (click)="logout()" title="Cerrar sesión">
+          <span class="material-symbols-rounded nav-icon">logout</span>
+          <span class="nav-label" *ngIf="!isSidebarCollapsed">Cerrar Sesión</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Overlay para Dispositivos Móviles -->
+  <div class="sidebar-backdrop" *ngIf="isMobileSidebarOpen" (click)="closeMobileSidebar()"></div>
+
+  <!-- CONTENIDO PRINCIPAL (HEADER STICKY 74px + CANVAS #f4f5f7) -->
+  <div class="dash-content-area">
+    
+    <!-- HEADER STICKY (74px, Blanco Puro, Borde 1.5px) -->
+    <header class="dash-header">
+      <div class="header-left">
+        <!-- Botón Hamburguesa Móvil -->
+        <button type="button" class="mobile-hamburger-btn" (click)="toggleMobileSidebar()" [class.active]="isMobileSidebarOpen" aria-label="Abrir Menú">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+
+        <!-- Títulos de la Sección -->
+        <div class="header-title-box">
+          <div class="title-with-status">
+            <h1 class="header-title">{{ tituloSeccion }}</h1>
+            <div class="status-pill">
+              <span class="status-dot"></span>
+              <span class="status-pill-text">Sistema Activo</span>
+            </div>
+          </div>
+          <p class="header-subtitle">{{ subtituloSeccion }}</p>
+        </div>
+
+        <!-- Botón Volver al Dashboard cuando está en vista hija -->
+        <button *ngIf="!estaEnInicio" class="btn-return-dashboard" routerLink="/admin">
+          <span class="material-symbols-rounded">arrow_back</span>
+          <span>Volver al Dashboard</span>
+        </button>
+      </div>
+
+      <div class="header-right">
+        <!-- Switch Pasarela Wompi en Header -->
+        <div class="header-wompi-pill" [class.is-live]="wompiEnabled" title="Estado de la Pasarela Wompi">
+          <span class="material-symbols-rounded">credit_card</span>
+          <span class="wompi-pill-label">Wompi: <strong>{{ wompiEnabled ? 'En Vivo' : 'Desarrollo' }}</strong></span>
+          <label class="switch-minimal-sm" title="Activar/Desactivar pasarela Wompi">
+            <input type="checkbox" [checked]="wompiEnabled" (change)="toggleWompi($event)">
+            <span class="slider-minimal-sm"></span>
+          </label>
+        </div>
+
+        <!-- Enlace al Sitio Web (Volver al sitio web) -->
+        <a routerLink="/" class="header-action-pill" title="Volver al sitio web">
+          <span class="material-symbols-rounded">storefront</span>
+          <span class="pill-label">Volver al sitio web</span>
+        </a>
+
+        <!-- Botón Asistente Mateo IA -->
+        <button type="button" class="header-action-pill header-mateo-btn" (click)="abrirMateoIA()" title="Abrir chat con Mateo IA">
+          <span class="material-symbols-rounded">smart_toy</span>
+          <span class="pill-label">Mateo IA</span>
+        </button>
+
+        <!-- Perfil Administrador -->
+        <div class="header-user-profile">
+          <div class="user-avatar-circle">
+            <span class="material-symbols-rounded">shield_person</span>
+          </div>
+          <div class="user-meta-text">
+            <span class="user-name">Administrador</span>
+            <span class="user-sub">Plaxtilineas Pro</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CANVAS DEL DASHBOARD (#f4f5f7) -->
+    <main class="dash-canvas">
+      
+      <!-- CONTENIDO DE INICIO -->
+      <div *ngIf="estaEnInicio" class="dash-home-wrapper">
+        
+        <!-- 1. FILA DE STAT CARDS (4 Columnas) -->
+        <section class="stat-cards-row">
+          
+          <!-- Card 1: Inventario -->
+          <div class="stat-card" routerLink="/admin/inventario" style="cursor: pointer;">
+            <div class="stat-card-top">
+              <span class="stat-card-label">Inventario</span>
+              <div class="stat-card-icon-box">
+                <span class="material-symbols-rounded">inventory_2</span>
+              </div>
+            </div>
+            <div class="stat-number">{{ totalProductosCount || 0 }}</div>
+            <div class="stat-card-footer">
+              <span class="stat-footer-text">Referencias oficiales sincronizadas</span>
+              <span class="stat-footer-arrow">→</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Pedidos Activos (Acento Rojo Carmesí #dc2626) -->
+          <div class="stat-card stat-accent-red" routerLink="/admin/pedidos">
+            <div class="stat-card-top">
+              <span class="stat-card-label">Pedidos Activos</span>
+              <div class="stat-card-icon-box stat-icon-red">
+                <span class="material-symbols-rounded">shopping_bag</span>
+              </div>
+            </div>
+            <div class="stat-number">{{ pedidosPendientesCount }}</div>
+            <div class="stat-card-footer">
+              <span class="stat-footer-text">{{ totalPedidosCount }} pedidos históricos</span>
+              <span class="stat-footer-arrow">→</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Personalizar -->
+          <div class="stat-card" routerLink="/admin/personalizar-web">
+            <div class="stat-card-top">
+              <span class="stat-card-label">Personalización</span>
+              <div class="stat-card-icon-box">
+                <span class="material-symbols-rounded">palette</span>
+              </div>
+            </div>
+            <div class="stat-number">100%</div>
+            <div class="stat-card-footer">
+              <span class="stat-footer-text">Tienda y componentes dinámicos</span>
+              <span class="stat-footer-arrow">→</span>
+            </div>
+          </div>
+
+          <!-- Card 4: Usuarios / PQRS -->
+          <div class="stat-card" routerLink="/admin/usuarios">
+            <div class="stat-card-top">
+              <span class="stat-card-label">Clientes / PQRS</span>
+              <div class="stat-card-icon-box">
+                <span class="material-symbols-rounded">group</span>
+              </div>
+            </div>
+            <div class="stat-number">{{ totalUsuariosCount }}</div>
+            <div class="stat-card-footer">
+              <span class="stat-footer-text">{{ totalPqrsCount }} tickets de PQRS</span>
+              <span class="stat-footer-arrow">→</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. BENTO GRID (Hero Oscuro #0a0a0a + Quick Access 360px) -->
+        <section class="bento-grid">
+          
+          <!-- Hero Oscuro Bento Welcome (Columna 1: 1fr) -->
+          <div class="bento-welcome bento-welcome-compact">
+            <div class="bento-welcome-content">
+              <div class="bento-badge">
+                <span class="status-dot"></span>
+                <span>Asistente IA · Mateo Online</span>
+              </div>
+              <h2 class="bento-title">
+                Gestiona tu tienda con <span class="bento-title-accent">Mateo IA</span>
+              </h2>
+              <p class="bento-desc">
+                Monitorea stock crítico, audita pedidos pagados y consulta métricas operativas al instante.
+              </p>
+
+              <!-- Botón Acción Mateo -->
+              <div class="bento-cta-row">
+                <button type="button" class="btn-primary-white" (click)="abrirMateoIA()">
+                  <span class="material-symbols-rounded">chat</span>
+                  <span>Abrir Asistente Mateo</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel Lateral: Acceso Rápido (Columna 2: 360px) -->
+          <div class="bento-sidebar-panel">
+            
+            <!-- Tarjeta de Acceso Rápido -->
+            <div class="panel-white-card">
+              <div class="panel-card-header">
+                <div class="panel-header-icon-box">
+                  <span class="material-symbols-rounded">bolt</span>
+                </div>
+                <div>
+                  <h3 class="panel-header-title">Acceso Rápido</h3>
+                  <p class="panel-header-sub">Módulos principales del panel</p>
+                </div>
+              </div>
+
+              <div class="quick-nav-list">
+
+                <a routerLink="/admin/inventario" class="quick-nav-item">
+                  <div class="quick-item-icon">
+                    <span class="material-symbols-rounded">inventory_2</span>
+                  </div>
+                  <div class="quick-item-info">
+                    <span class="quick-item-name">Catálogo</span>
+                    <span class="quick-item-sub">Productos oficiales en vivo</span>
+                  </div>
+                  <span class="quick-item-arrow">→</span>
+                </a>
+
+                <a routerLink="/admin/pedidos" class="quick-nav-item">
+                  <div class="quick-item-icon">
+                    <span class="material-symbols-rounded">shopping_bag</span>
+                  </div>
+                  <div class="quick-item-info">
+                    <span class="quick-item-name">Pedidos</span>
+                    <span class="quick-item-sub">Despachos y facturación</span>
+                  </div>
+                  <span class="quick-item-arrow">→</span>
+                </a>
+
+                <a routerLink="/admin/personalizar-web" class="quick-nav-item">
+                  <div class="quick-item-icon">
+                    <span class="material-symbols-rounded">palette</span>
+                  </div>
+                  <div class="quick-item-info">
+                    <span class="quick-item-name">Personalizar</span>
+                    <span class="quick-item-sub">Landing page y componentes</span>
+                  </div>
+                  <span class="quick-item-arrow">→</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. CENTRO DE COMANDO IA (Buscador Minimalista y Analíticas) -->
+        <section class="panel-white-card ai-command-center">
+          <div class="panel-card-header">
+            <div class="panel-header-icon-box">
+              <span class="material-symbols-rounded">search_insights</span>
+            </div>
+            <div>
+              <h2 class="panel-header-title">Centro de Comando IA</h2>
+              <p class="panel-header-sub">Pregúntale al motor analítico para navegar el catálogo y métricas en tiempo real</p>
+            </div>
+          </div>
+
+          <div class="ai-command-body">
+            <form (submit)="$event.preventDefault(); procesarBusquedaIA(searchQueryInput.value)" class="ai-minimal-form">
+              <div class="input-minimal-wrapper">
+                <span class="material-symbols-rounded input-icon">search</span>
+                <input 
+                  #searchQueryInput
+                  type="text" 
+                  [value]="searchQuery" 
+                  placeholder="Ej: productos con menos stock, usuarios registrados, mas vendidos..." 
+                  class="input-minimal"
+                  (keyup.enter)="procesarBusquedaIA(searchQueryInput.value)"
+                />
+                <button 
+                  type="button" 
+                  *ngIf="searchQueryInput.value" 
+                  (click)="searchQueryInput.value = ''; limpiarBusqueda()" 
+                  class="clear-input-btn"
+                  title="Limpiar consulta"
+                >
+                  ✕
+                </button>
+              </div>
+              <button 
+                type="button" 
+                (click)="procesarBusquedaIA(searchQueryInput.value)" 
+                class="btn-primary-black"
+                [disabled]="isSearching || !searchQueryInput.value.trim()"
+              >
+                <span *ngIf="!isSearching">Consultar IA</span>
+                <span *ngIf="isSearching" class="loading-spinner">Analizando...</span>
+              </button>
+            </form>
+
+            <!-- Sugerencias Rápidas (Chips Minimalistas) -->
+            <div class="suggestion-chips-row">
+              <span class="chips-label">Consultas sugeridas:</span>
+              <button type="button" class="chip-item" (click)="searchQueryInput.value = 'productos con menos stock'; procesarBusquedaIA('productos con menos stock')">
+                <span class="material-symbols-rounded">inventory</span>
+                <span>Stock bajo</span>
+              </button>
+              <button type="button" class="chip-item" (click)="searchQueryInput.value = 'productos mas vendidos'; procesarBusquedaIA('productos mas vendidos')">
+                <span class="material-symbols-rounded">trending_up</span>
+                <span>Más vendidos</span>
+              </button>
+              <button type="button" class="chip-item" (click)="searchQueryInput.value = 'usuarios registrados'; procesarBusquedaIA('usuarios registrados')">
+                <span class="material-symbols-rounded">group</span>
+                <span>Usuarios registrados</span>
+              </button>
+              <button type="button" class="chip-item" (click)="searchQueryInput.value = 'pedidos recientes'; procesarBusquedaIA('pedidos recientes')">
+                <span class="material-symbols-rounded">shopping_bag</span>
+                <span>Pedidos recientes</span>
+              </button>
+            </div>
+
+            <!-- Loader de Búsqueda -->
+            <div *ngIf="isSearching" class="ai-search-loading">
+              <div class="ai-loader-bar"></div>
+              <p>Mateo IA está analizando los registros de la base de datos...</p>
+            </div>
+
+            <!-- Panel de Resultados de Búsqueda -->
+            <div *ngIf="searchResults && !isSearching" class="search-results-panel">
+              <div class="results-header">
+                <h3 class="results-title">
+                  Resultados del análisis para: <span>"{{ searchQuery }}"</span>
+                </h3>
+                <button type="button" class="close-results-btn" (click)="searchQueryInput.value = ''; limpiarBusqueda()">
+                  Cerrar resultados
+                </button>
+              </div>
+
+              <!-- Caso 1: Stock Bajo -->
+              <div *ngIf="searchType === 'stock'" class="results-content scrollable-results">
+                <div class="results-table-wrapper">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Producto</th>
+                        <th>Subcategoría</th>
+                        <th>Precio</th>
+                        <th>Stock Actual</th>
+                        <th>Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let prod of searchResults">
+                        <td class="product-cell">
+                          <img [src]="prod.imagen_url || 'assets/images/placeholder.png'" class="prod-thumb" alt="" />
+                          <span class="prod-name">{{ prod.nombre }}</span>
+                        </td>
+                        <td>{{ prod.subcategoria }}</td>
+                        <td>{{ prod.precio | currency:'USD':'symbol':'1.0-0' }}</td>
+                        <td>
+                          <div class="stock-progress-container">
+                            <span class="stock-num">{{ prod.stock }}</span>
+                            <div class="stock-progress-bar">
+                              <div 
+                                class="stock-fill" 
+                                [style.width.%]="(prod.stock / 20) * 100 > 100 ? 100 : (prod.stock / 20) * 100"
+                                [class.critical]="prod.stock <= 5"
+                                [class.warning]="prod.stock > 5 && prod.stock <= 10"
+                                [class.normal]="prod.stock > 10"
+                              ></div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <span class="status-badge" [class.danger]="prod.stock <= 5" [class.warning]="prod.stock > 5 && prod.stock <= 10" [class.success]="prod.stock > 10">
+                            {{ prod.stock <= 5 ? 'Crítico' : (prod.stock <= 10 ? 'Bajo' : 'Óptimo') }}
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+
+              <!-- Caso 2: Más Vendidos -->
+              <div *ngIf="searchType === 'ventas'" class="results-content scrollable-results">
+                <div class="results-table-wrapper">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Posición</th>
+                        <th>Producto</th>
+                        <th>Subcategoría</th>
+                        <th>Precio</th>
+                        <th>Unidades Vendidas</th>
+                        <th>Total Recaudado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of searchResults; let i = index">
+                        <td class="rank-cell">
+                          <span class="rank-badge" [class.top-three]="i < 3">#{{ i + 1 }}</span>
+                        </td>
+                        <td class="product-cell">
+                          <img [src]="item.imagen_url || 'assets/images/placeholder.png'" class="prod-thumb" alt="" />
+                          <span class="prod-name">{{ item.nombre }}</span>
+                        </td>
+                        <td>{{ item.subcategoria }}</td>
+                        <td>{{ item.precio | currency:'USD':'symbol':'1.0-0' }}</td>
+                        <td>
+                          <span class="total-sold-pill">{{ item.total_vendido }} unids</span>
+                        </td>
+                        <td class="revenue-cell">
+                          {{ item.total_recaudado | currency:'USD':'symbol':'1.0-0' }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="action-footer">
+                  <a routerLink="/admin/pedidos" class="footer-action-link">Ver histórico de pedidos completo →</a>
+                </div>
+              </div>
+
+              <!-- Caso 3: Búsqueda por Nombre -->
+              <div *ngIf="searchType === 'nombre'" class="results-content scrollable-results">
+                <div class="results-table-wrapper">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Producto</th>
+                        <th>Subcategoría</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let prod of searchResults">
+                        <td class="product-cell">
+                          <img [src]="prod.imagen_url || 'assets/images/placeholder.png'" class="prod-thumb" alt="" />
+                          <span class="prod-name">{{ prod.nombre }}</span>
+                        </td>
+                        <td>{{ prod.subcategoria }}</td>
+                        <td>{{ prod.precio | currency:'USD':'symbol':'1.0-0' }}</td>
+                        <td>
+                          <span class="stock-badge" [class.danger]="prod.stock <= 5">{{ prod.stock }} unidades</span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. PASARELA DE PAGO WOMPI -->
+        <section class="panel-white-card wompi-full-card">
+          <div class="panel-card-header wompi-card-header" [class.no-border-bottom]="!mostrarDetallesWompi">
+            <div class="wompi-header-left">
+              <div class="panel-header-icon-box wompi-icon-box">
+                <span class="material-symbols-rounded">credit_card</span>
+              </div>
+              <div class="wompi-header-content">
+                <div class="wompi-title-row">
+                  <h2 class="panel-header-title">Pasarela de Pago Wompi</h2>
+                  <span class="wompi-status-badge" [class.is-live]="wompiEnabled">
+                    <span class="status-dot-sm"></span>
+                    {{ wompiEnabled ? 'Modo Producción (En Vivo)' : 'Modo en Desarrollo (Inactiva)' }}
+                  </span>
+                </div>
+                <p class="panel-header-sub">
+                  {{ wompiEnabled ? 'Pagos reales activos en la tienda con tarjetas, PSE, Nequi y Bancolombia.' : 'Aviso de desarrollo activo en tienda. Sin cobros bancarios reales.' }}
+                </p>
+              </div>
+            </div>
+
+            <div class="wompi-header-actions">
+              <!-- Botón desplegable para Ver / Ocultar Guía de Estados -->
+              <button 
+                type="button" 
+                class="btn-wompi-toggle-guide" 
+                (click)="toggleDetallesWompi()"
+                [attr.aria-expanded]="mostrarDetallesWompi"
+                title="Ver o esconder aclaraciones de la pasarela"
+              >
+                <span class="material-symbols-rounded">{{ mostrarDetallesWompi ? 'visibility_off' : 'help_outline' }}</span>
+                <span>{{ mostrarDetallesWompi ? 'Ocultar Guía' : 'Ver Guía de Estados' }}</span>
+              </button>
+
+              <div class="wompi-switch-action">
+                <span class="wompi-switch-label">
+                  {{ wompiEnabled ? 'Pasarela Activa' : 'Pasarela Inactiva' }}
+                </span>
+                <label class="switch-minimal" title="Conmutar estado de la pasarela Wompi">
+                  <input type="checkbox" [checked]="wompiEnabled" (change)="toggleWompi($event)">
+                  <span class="slider-minimal"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección Plegable: Cuándo está Activa vs Cuándo está Inactiva (Oculta por defecto) -->
+          <div *ngIf="mostrarDetallesWompi" class="wompi-collapsible-wrapper">
+            <div class="wompi-states-grid">
+              
+              <!-- Estado 1: Pasarela ACTIVA (Modo Producción) -->
+              <div class="wompi-state-card state-live" [class.is-current]="wompiEnabled">
+                <div class="state-card-top">
+                  <div class="state-indicator-badge live-badge">
+                    <span class="state-dot live"></span>
+                    <span>CUÁNDO ESTÁ ACTIVA (PRODUCCIÓN)</span>
+                  </div>
+                  <div class="state-current-tag" *ngIf="wompiEnabled">
+                    <span class="material-symbols-rounded">check_circle</span>
+                    <span>Estado Actual</span>
+                  </div>
+                  <button 
+                    type="button" 
+                    class="btn-switch-state" 
+                    *ngIf="!wompiEnabled" 
+                    (click)="setWompiMode(true)"
+                    title="Cambiar a Modo Producción"
+                  >
+                    Activar En Vivo
+                  </button>
+                </div>
+
+                <h3 class="state-card-title">Cobros Bancarios Reales</h3>
+                <p class="state-card-summary">
+                  La tienda procesa pagos legítimos en dinero real a través de los servidores de Wompi.
+                </p>
+
+                <ul class="state-feature-list">
+                  <li>
+                    <span class="material-symbols-rounded feature-icon live-icon">check_circle</span>
+                    <div>
+                      <strong>Cobros Reales:</strong>
+                      <span>Débitos en línea con tarjetas débito/crédito, PSE, Nequi y Botón Bancolombia.</span>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="material-symbols-rounded feature-icon live-icon">check_circle</span>
+                    <div>
+                      <strong>Checkout Wompi:</strong>
+                      <span>Abre el widget seguro oficial con validación antifraude y comprobante.</span>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="material-symbols-rounded feature-icon live-icon">check_circle</span>
+                    <div>
+                      <strong>Aprobación Automática:</strong>
+                      <span>El pedido pasa de inmediato a "Pagado", descuenta stock y entra a despacho.</span>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="material-symbols-rounded feature-icon live-icon">check_circle</span>
+                    <div>
+                      <strong>¿Cuándo usarlo?:</strong>
+                      <span>Obligatorio en operación comercial diaria para recibir ventas de clientes reales.</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Estado 2: Pasarela INACTIVA (Modo en Desarrollo) -->
+              <div class="wompi-state-card state-dev" [class.is-current]="!wompiEnabled">
+                <div class="state-card-top">
+                  <div class="state-indicator-badge dev-badge">
+                    <span class="state-dot dev"></span>
+                    <span>CUÁNDO ESTÁ INACTIVA (DESARROLLO)</span>
+                  </div>
+                  <div class="state-current-tag dev-current-tag" *ngIf="!wompiEnabled">
+                    <span class="material-symbols-rounded">info</span>
+                    <span>Estado Actual</span>
+                  </div>
+                  <button 
+                    type="button" 
+                    class="btn-switch-state" 
+                    *ngIf="wompiEnabled" 
+                    (click)="setWompiMode(false)"
+                    title="Cambiar a Modo Desarrollo"
+                  >
+                    Activar Desarrollo
+                  </button>
+                </div>
+
+                <h3 class="state-card-title">Simulación sin Cobros</h3>
+                <p class="state-card-summary">
+                  Entorno de prueba seguro. No se debita dinero ni se generan cargos bancarios.
+                </p>
+
+                <ul class="state-feature-list">
+                  <li>
+                    <span class="material-symbols-rounded feature-icon dev-icon">shield</span>
+                    <div>
+                      <strong>Cero cobros bancarios:</strong>
+                      <span>Ningún cliente ni tarjeta es debitado bajo ninguna circunstancia.</span>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="material-symbols-rounded feature-icon dev-icon">shield</span>
+                    <div>
+                      <strong>Aviso en Tienda:</strong>
+                      <span>Al pulsar "Pagar", muestra la pantalla de cortesía "Modo en Desarrollo".</span>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="material-symbols-rounded feature-icon dev-icon">shield</span>
+                    <div>
+                      <strong>Pruebas de Catálogo:</strong>
+                      <span>Permite simular compras, probar fletes y navegación sin transferir fondos.</span>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="material-symbols-rounded feature-icon dev-icon">shield</span>
+                    <div>
+                      <strong>¿Cuándo usarlo?:</strong>
+                      <span>Mantenimiento técnico, actualización de inventario o pruebas internas.</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+
+            <!-- Banner Informativo Resumido -->
+            <div class="wompi-status-note" [class.is-live-note]="wompiEnabled">
+              <span class="material-symbols-rounded note-icon">{{ wompiEnabled ? 'verified' : 'info' }}</span>
+              <div class="note-text">
+                <strong *ngIf="wompiEnabled">Modo En Vivo:</strong>
+                <strong *ngIf="!wompiEnabled">Modo Desarrollo:</strong>
+                <span *ngIf="wompiEnabled"> Recibiendo pagos reales por Wompi con confirmación automática de pedidos.</span>
+                <span *ngIf="!wompiEnabled"> Pagos reales suspendidos. Los clientes verán aviso de cortesía y no se debitará dinero.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- VISTAS HIJAS DEL DASHBOARD (Pedidos, Personalizar, Usuarios, PQRS) -->
+
+      <div *ngIf="!estaEnInicio" class="dash-child-view-container">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+
+  <!-- Asistente de IA Flotante Mateo -->
+  <app-dashboard-assistant></app-dashboard-assistant>
+</div>

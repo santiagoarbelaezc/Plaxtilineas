@@ -1,0 +1,445 @@
+/* ====== MENU CATEGORÍAS - Estilo Confortable & Scroll Verde Oscuro ====== */
+:host {
+  display: block;
+}
+
+.menu-categorias {
+  width: 100%;
+  max-width: 280px;
+  background-color: #ffffff;
+  position: relative;
+  padding: 16px 14px;
+  border-radius: 12px;
+  margin: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 6px 16px rgba(0, 0, 0, 0.02);
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  border: 1px solid #e4e4e7;
+  height: fit-content;
+  max-height: calc(100vh - 148px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* Scrollbar Verde para Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #16a34a #f0fdf4;
+  box-sizing: border-box;
+}
+
+/* ── Scrollbar Verde Personalizado (Webkit: Chrome, Safari, Edge) ── */
+.menu-categorias::-webkit-scrollbar {
+  width: 6px;
+}
+
+.menu-categorias::-webkit-scrollbar-track {
+  background: #f0fdf4;
+  border-radius: 10px;
+}
+
+.menu-categorias::-webkit-scrollbar-thumb {
+  background: #16a34a;
+  border-radius: 10px;
+  border: 1px solid #15803d;
+}
+
+.menu-categorias::-webkit-scrollbar-thumb:hover {
+  background: #15803d;
+}
+
+/* ── Header ── */
+.menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 4px 10px 4px;
+  border-bottom: 1px solid #f4f4f5;
+}
+
+.menu-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.menu-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #16a34a;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2.5px #dcfce7;
+  flex-shrink: 0;
+}
+
+.menu-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #09090b;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.categorias-total-badge {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #14532d;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 2px 8px;
+  border-radius: 12px;
+  line-height: 1.2;
+}
+
+/* ── Botón "Todos los productos" ── */
+.menu-footer {
+  width: 100%;
+}
+
+.ver-todos-btn {
+  width: 100%;
+  background: #f4f4f5;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 9px 12px;
+  min-height: 40px;
+  color: #18181b;
+  font-size: 0.96rem;
+  font-weight: 650;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 9px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+.ver-todos-btn svg {
+  color: #71717a;
+  transition: color 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.ver-todos-btn:hover {
+  background: #09090b;
+  color: #ffffff;
+  border-color: #09090b;
+}
+
+.ver-todos-btn:hover svg {
+  color: #ffffff;
+  transform: scale(1.08);
+}
+
+.ver-todos-btn.active {
+  background: #09090b;
+  color: #ffffff;
+  border-color: #09090b;
+}
+
+.ver-todos-btn.active svg {
+  color: #4ade80;
+}
+
+/* ── Contenedor de Categorías ── */
+.categorias-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.categoria {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Botón de Categoría (+2px de texto) ── */
+.categoria-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 9px 12px;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.categoria-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.categoria-icon {
+  color: #71717a;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: color 0.18s ease;
+}
+
+.categoria-nombre {
+  font-size: 0.985rem;
+  font-weight: 600;
+  color: #18181b;
+  text-transform: capitalize;
+  text-align: left;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.categoria-count {
+  font-size: 0.82rem;
+  font-weight: 650;
+  color: #71717a;
+  background: #f4f4f5;
+  padding: 2px 8px;
+  border-radius: 12px;
+  min-width: 22px;
+  text-align: center;
+  line-height: 1.2;
+  flex-shrink: 0;
+  transition: all 0.18s ease;
+}
+
+.flecha-indicadora {
+  color: #a1a1aa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.22s ease, color 0.18s ease;
+  margin-left: 6px;
+  flex-shrink: 0;
+}
+
+.flecha-indicadora.abierta {
+  transform: rotate(180deg);
+  color: #09090b;
+}
+
+/* Estados de Hover y Activo en Categoría */
+.categoria-btn:hover {
+  background: #f8fafc;
+  border-color: #e4e4e7;
+}
+
+.categoria-btn:hover .categoria-icon {
+  color: #166534;
+}
+
+.categoria-btn:hover .categoria-nombre {
+  color: #09090b;
+}
+
+.categoria-btn:hover .categoria-count {
+  background: #e4e4e7;
+  color: #09090b;
+}
+
+.categoria.active > .categoria-btn {
+  background: #f4f4f5;
+  border-color: #e4e4e7;
+}
+
+.categoria.active > .categoria-btn .categoria-nombre {
+  font-weight: 700;
+  color: #09090b;
+}
+
+.categoria.active > .categoria-btn .categoria-icon {
+  color: #166534;
+}
+
+.categoria.active > .categoria-btn .categoria-count {
+  background: #09090b;
+  color: #ffffff;
+}
+
+/* ── Subcategorías (+2px de texto) ── */
+.subcategorias-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-left: 16px;
+  padding-left: 10px;
+  border-left: 2px solid #e4e4e7;
+}
+
+.subcategorias-wrapper.abierta {
+  max-height: 480px;
+  margin-top: 3px;
+  margin-bottom: 4px;
+}
+
+.subcategorias {
+  list-style: none;
+  margin: 0;
+  padding: 3px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.subcategoria-item {
+  width: 100%;
+}
+
+.subcategoria-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 6px 10px;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.subcategoria-nombre {
+  font-size: 0.925rem;
+  font-weight: 500;
+  color: #52525b;
+  text-align: left;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.subcategoria-count {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #71717a;
+  background: #f4f4f5;
+  padding: 1px 7px;
+  border-radius: 6px;
+  min-width: 20px;
+  text-align: center;
+  line-height: 1.2;
+  flex-shrink: 0;
+  margin-left: 6px;
+  transition: all 0.15s ease;
+}
+
+.subcategoria-btn:hover {
+  background: #f4f4f5;
+  border-color: #e4e4e7;
+  padding-left: 12px;
+}
+
+.subcategoria-btn:hover .subcategoria-nombre {
+  color: #09090b;
+  font-weight: 600;
+}
+
+.subcategoria-btn:hover .subcategoria-count {
+  background: #e4e4e7;
+  color: #09090b;
+}
+
+/* ── Skeletons ── */
+.categoria-skeleton {
+  width: 100%;
+  padding: 9px 12px;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+.skeleton-cat-icon {
+  width: 16px;
+  height: 16px;
+  background: #f4f4f5;
+  border-radius: 4px;
+  flex-shrink: 0;
+  animation: menu-pulse 1.4s infinite ease-in-out;
+}
+
+.skeleton-cat-name {
+  height: 16px;
+  width: 65%;
+  background: #f4f4f5;
+  border-radius: 4px;
+  animation: menu-pulse 1.4s infinite ease-in-out;
+}
+
+@keyframes menu-pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+/* ── Responsive Design ── */
+@media (max-width: 1023px) {
+  .menu-categorias {
+    max-width: 260px;
+    padding: 14px 12px;
+  }
+}
+
+@media (max-width: 767px) {
+  .menu-categorias {
+    max-width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    padding: 18px 16px;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+  }
+  
+  .menu-header {
+    padding: 8px 6px 14px 6px;
+  }
+  
+  .menu-title {
+    font-size: 1.1rem;
+  }
+  
+  .categoria-btn {
+    min-height: 44px;
+    padding: 10px 14px;
+  }
+  
+  .categoria-nombre {
+    font-size: 1rem;
+  }
+  
+  .subcategoria-btn {
+    min-height: 36px;
+    padding: 8px 12px;
+  }
+  
+  .subcategoria-nombre {
+    font-size: 0.94rem;
+  }
+  
+  .ver-todos-btn {
+    padding: 11px 14px;
+    font-size: 0.98rem;
+  }
+}

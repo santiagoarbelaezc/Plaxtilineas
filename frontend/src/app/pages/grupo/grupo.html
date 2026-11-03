@@ -1,0 +1,148 @@
+<app-navbar></app-navbar>
+
+<main class="grupo-page-wrapper">
+  
+  <!-- Cabecera Institucional del Grupo -->
+  <header class="grupo-header-section">
+    <div class="grupo-header-container">
+      <div class="grupo-kicker">
+        <span class="kicker-line"></span>
+        <span>GRUPO EMPRESARIAL &bull; EJE CAFETERO</span>
+      </div>
+      
+      <h1 class="grupo-main-title">
+        <span class="title-primary">GRUPO ESPUMAS Y PLÁSTICOS</span>
+        <span class="title-secondary">Innovación, Confort y Transformación</span>
+      </h1>
+
+      <p class="grupo-subtitle-text">
+        Explora las tres marcas que componen nuestro grupo empresarial. Pasa el cursor sobre la escena para descubrir su identidad y visitar sus sitios web oficiales.
+      </p>
+
+      <!-- Selector Minimalista de Marcas (Sin color, elegante y sobrio) -->
+      <nav class="grupo-brand-tabs" aria-label="Seleccionar marca">
+        <button 
+          *ngFor="let b of brands; let i = index" 
+          type="button" 
+          class="brand-tab-pill" 
+          [class.active]="activeIndex === i"
+          (click)="selectBrand(i)">
+          <span>{{ b.name }}</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       CARRUSEL PANORÁMICO EXPANDIDO CON SCROLL HORIZONTAL DE MOUSE
+       ══════════════════════════════════════════════════════════════ -->
+  <section class="grupo-carousel-section" aria-label="Carrusel de marcas del grupo">
+    <div 
+      class="carousel-viewport-container"
+      (mouseenter)="onMouseEnter()"
+      (mouseleave)="onMouseLeave()"
+      (touchstart)="onTouchStart($event)"
+      (touchend)="onTouchEnd($event)">
+
+      <!-- Flecha Flotante Anterior -->
+      <button 
+        type="button" 
+        class="carousel-nav-btn prev-btn" 
+        (click)="prevSlide()" 
+        aria-label="Marca anterior"
+        title="Marca anterior">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
+      <!-- Pista Desplazable con Scroll Horizontal Nativo y de Mouse -->
+      <div 
+        class="carousel-track" 
+        #carouselTrack
+        (scroll)="onTrackScroll()">
+        
+        <!-- Slide Panorámico Individual de Cada Marca (Clickeable en cualquier parte) -->
+        <article 
+          *ngFor="let brand of brands; let i = index" 
+          class="brand-slide-item"
+          [class.active-slide]="activeIndex === i"
+          (click)="openBrandSite(brand.websiteUrl, $event)"
+          [title]="'Clic para visitar sitio web oficial de ' + brand.name">
+
+          <!-- Contenedor de la Imagen Escénica de Fondo Limpia -->
+          <div class="slide-media-box">
+            <img 
+              [src]="brand.heroImage" 
+              [alt]="brand.name + ' - Escena oficial'" 
+              class="slide-hero-image"
+              loading="lazy">
+          </div>
+
+          <!-- OVERLAY DE HOVER: SUAVE (NO OSCURECE TANTO), LOGO PNG DIRECTO SIN CAJA BLANCA -->
+          <div class="slide-hover-overlay">
+            <div class="hover-glass-card">
+              
+              <!-- Logo PNG Puro (Sin contenedor blanco de fondo) -->
+              <div class="hover-logo-wrapper">
+                <img 
+                  [src]="brand.logo" 
+                  [alt]="'Logo ' + brand.name" 
+                  class="hover-png-logo">
+              </div>
+
+              <!-- Tag / Categoría -->
+              <span class="hover-tag">
+                {{ brand.tag }}
+              </span>
+
+              <!-- Título -->
+              <h3 class="hover-brand-name">{{ brand.name }}</h3>
+
+              <!-- Descripción Concisa y Elegante -->
+              <p class="hover-brand-description">
+                {{ brand.description }}
+              </p>
+
+              <!-- Botón "Ver sitio" que Redirige al Sitio Web Oficial -->
+              <div class="hover-btn-wrapper">
+                <a 
+                  [href]="brand.websiteUrl" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="btn-visit-brand" 
+                  [title]="'Visitar sitio web oficial de ' + brand.name">
+                  <span>Ver sitio</span>
+                  <svg class="visit-arrow-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+              </div>
+
+            </div>
+          </div>
+
+        </article>
+      </div>
+
+      <!-- Flecha Flotante Siguiente -->
+      <button 
+        type="button" 
+        class="carousel-nav-btn next-btn" 
+        (click)="nextSlide()" 
+        aria-label="Marca siguiente"
+        title="Marca siguiente">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+
+    </div>
+  </section>
+
+</main>
+
+<app-social-buttons></app-social-buttons>
+<app-footer></app-footer>

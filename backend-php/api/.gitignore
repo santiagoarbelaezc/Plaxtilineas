@@ -1,0 +1,29 @@
+# ─── Privado: NUNCA subir al repositorio ─────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ─── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+logs/*
+!logs/.htaccess
+!logs/README.md
+
+# ─── Archivos de Subida (Uploads) ─────────────────────────────────────────────
+uploads/*
+!uploads/.htaccess
+
+# ─── Base de Datos / Backups ──────────────────────────────────────────────────
+*.sql.gz
+*.dump
+
+# ─── Dependencias y Vendor ────────────────────────────────────────────────────
+vendor/
+composer.lock
+
+# ─── Archivos Comprimidos y Temporales ───────────────────────────────────────
+*.zip
+*.rar
+*.tar.gz
+*.tmp
+*.bak

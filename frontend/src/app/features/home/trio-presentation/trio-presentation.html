@@ -1,0 +1,69 @@
+<section 
+  class="seccion-trio-presentation"
+  [style]="getSectionStyles()"
+  [style.background]="backgroundColor"
+>
+  <!-- Contenedor principal -->
+  <div class="trio-container">
+    <!-- Header opcional -->
+    <div *ngIf="showHeader" class="trio-header">
+      <h2 class="trio-title">{{ headerTitle }}</h2>
+      <p *ngIf="headerSubtitle" class="trio-subtitle">{{ headerSubtitle }}</p>
+    </div>
+    
+    <!-- Grid de 3 cards -->
+    <div 
+      class="cards-grid-trio"
+      [style.gap]="gap"
+    >
+      <!-- Card individual -->
+      <div 
+        *ngFor="let card of cards; let i = index"
+        class="trio-card"
+        [style.height]="cardHeight"
+        [class.hover-effect]="hoverEffect"
+        [class.has-link]="card.link"
+        [attr.data-layout]="getCardLayout(i)"
+        (click)="navigateToLink(card.link)"
+      >
+        <!-- Contenido de la card -->
+        <div class="trio-card-content">
+          
+          <!-- Contenedor de imagen -->
+          <div class="trio-image-container">
+            <img 
+              [src]="card.imageUrl" 
+              [alt]="card.altText"
+              class="trio-image"
+              loading="lazy"
+            />
+            <!-- Overlay degradado -->
+            <div class="trio-image-overlay"></div>
+          </div>
+          
+          <!-- Texto superpuesto -->
+          <div 
+            class="trio-text-overlay"
+            [class]="'text-' + getTextPositionClass(card.textPosition)"
+          >
+            <div class="trio-text-content">
+              <h3 class="trio-card-title">{{ card.title }}</h3>
+              <p class="trio-card-description">{{ card.description }}</p>
+              
+              <!-- Botón de acción si hay enlace -->
+              <div *ngIf="card.link" class="trio-card-actions">
+                <button class="trio-action-button">
+                  <span>Ver más</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

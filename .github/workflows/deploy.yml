@@ -1,0 +1,362 @@
+name: Deploy Continuo a Hostinger
+
+on:
+  push:
+    branches:
+      - v2-laravel-nico
+      - main
+      - master
+    paths:
+      - 'frontend/**'
+      - 'backend-laravel/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+    inputs:
+      deploy_target:
+        description: "Destino del despliegue (production o prueba SSH sin desplegar)"
+        required: true
+        type: choice
+        options:
+          - production
+          - ssh-check
+        default: production
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  ssh-check:
+    name: Prueba SSH previa (Dry-Run)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verificar conexion SSH, known_hosts y rutas en Hostinger
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT || '65002' }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+          HOSTINGER_BACKEND_PATH: ${{ secrets.HOSTINGER_BACKEND_PATH }}
+        run: |
+          sudo apt-get update && sudo apt-get install -y sshpass openssh-client
+
+          if [ -z "$HOSTINGER_BACKEND_PATH" ]; then
+            echo "::error::Falta el secreto HOSTINGER_BACKEND_PATH"
+            exit 1
+          fi
+
+          case "$HOSTINGER_BACKEND_PATH" in
+            /*) ;;
+            *) echo "::error::HOSTINGER_BACKEND_PATH debe ser una ruta absoluta fuera de public_html"; exit 1 ;;
+          esac
+
+          case "$HOSTINGER_BACKEND_PATH" in
+            *public_html*|*/www|*/htdocs|*/public)
+              echo "::error::HOSTINGER_BACKEND_PATH debe ser la raiz privada de Laravel fuera de public_html"
+              exit 1
+              ;;
+          esac
+
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          if [ -n "$SSH_KNOWN_HOSTS" ]; then
+            printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          else
+            ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" > ~/.ssh/known_hosts 2>/dev/null
+          fi
+          chmod 600 ~/.ssh/known_hosts
+          test -s ~/.ssh/known_hosts
+
+          SSH_OPTS="-p $SSH_PORT -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts"
+
+          if [ -n "$SSH_KEY" ]; then
+            printf '%s\n' "$SSH_KEY" > ~/.ssh/id_hostinger
+            chmod 600 ~/.ssh/id_hostinger
+            SSH_CMD="ssh $SSH_OPTS -i $HOME/.ssh/id_hostinger"
+            SSH_EXEC="$SSH_CMD $SSH_USER@$SSH_HOST"
+          else
+            export SSHPASS="$SSH_PASSWORD"
+            SSH_CMD="ssh $SSH_OPTS"
+            SSH_EXEC="sshpass -e $SSH_CMD $SSH_USER@$SSH_HOST"
+          fi
+
+          $SSH_EXEC "echo 'SSH OK' && php -v | head -n 1 && ( [ -d domains/plaxtilineas.com/public_html ] && echo 'PUBLIC_HTML=domains/plaxtilineas.com/public_html' || echo 'PUBLIC_HTML=public_html' )"
+
+  changes:
+    name: Detectar cambios
+    needs: ssh-check
+    if: ${{ inputs.deploy_target != 'ssh-check' }}
+    runs-on: ubuntu-latest
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      backend: ${{ steps.filter.outputs.backend }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Filtrar rutas modificadas
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+              - '.github/workflows/deploy.yml'
+            backend:
+              - 'backend-laravel/**'
+              - '.github/workflows/deploy.yml'
+
+  deploy-frontend:
+    name: Build y deploy frontend
+    needs: [ssh-check, changes]
+    if: ${{ inputs.deploy_target != 'ssh-check' && (needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Instalar dependencias
+        working-directory: frontend
+        run: npm ci --legacy-peer-deps
+
+      - name: Compilar Angular
+        working-directory: frontend
+        run: npm run build -- --configuration production
+
+      - name: Desplegar frontend por SSH / rsync
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT || '65002' }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          sudo apt-get update && sudo apt-get install -y sshpass rsync openssh-client
+
+          if [ -d "frontend/dist/frontend/browser" ]; then
+            LOCAL_DIST="frontend/dist/frontend/browser/"
+          else
+            LOCAL_DIST="frontend/dist/frontend/"
+          fi
+
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          if [ -n "$SSH_KNOWN_HOSTS" ]; then
+            printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          else
+            ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" > ~/.ssh/known_hosts 2>/dev/null
+          fi
+          chmod 600 ~/.ssh/known_hosts
+          test -s ~/.ssh/known_hosts
+
+          SSH_OPTS="-p $SSH_PORT -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts"
+
+          if [ -n "$SSH_KEY" ]; then
+            printf '%s\n' "$SSH_KEY" > ~/.ssh/id_hostinger
+            chmod 600 ~/.ssh/id_hostinger
+            SSH_CMD="ssh $SSH_OPTS -i $HOME/.ssh/id_hostinger"
+            SSH_EXEC="$SSH_CMD $SSH_USER@$SSH_HOST"
+            RSYNC_PREFIX=""
+          else
+            export SSHPASS="$SSH_PASSWORD"
+            SSH_CMD="ssh $SSH_OPTS"
+            SSH_EXEC="sshpass -e $SSH_CMD $SSH_USER@$SSH_HOST"
+            RSYNC_PREFIX="sshpass -e"
+          fi
+
+          if $SSH_EXEC "[ -d domains/plaxtilineas.com/public_html ]"; then
+            TARGET_DIR="domains/plaxtilineas.com/public_html/"
+          else
+            TARGET_DIR="public_html/"
+          fi
+
+          $RSYNC_PREFIX rsync -avz --delete \
+            --filter='protect /api' \
+            --filter='protect /api/**' \
+            --exclude="api" \
+            --exclude="api/**" \
+            -e "$SSH_CMD" \
+            "$LOCAL_DIST" \
+            "$SSH_USER@$SSH_HOST:$TARGET_DIR"
+
+  deploy-backend:
+    name: Build y deploy Laravel API
+    needs: [ssh-check, changes]
+    if: ${{ inputs.deploy_target != 'ssh-check' && (needs.changes.outputs.backend == 'true' || github.event_name == 'workflow_dispatch') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar PHP 8.3 y Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, bcmath, pdo, pdo_mysql
+          tools: composer:v2
+
+      - name: Instalar dependencias de producción
+        working-directory: backend-laravel
+        run: |
+          mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache resources/views
+          composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+
+      - name: Validar que no se empaqueten secretos
+        run: |
+          test ! -f backend-laravel/.env
+          test ! -f backend-laravel/.env.production
+          ! find backend-laravel -type f \( -name '.env' -o -name '.env.*' \) \
+            -not -name '.env.example' -print -quit | grep -q .
+
+      - name: Desplegar Laravel fuera de public_html y configurar puente /api
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT || '65002' }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+          HOSTINGER_BACKEND_PATH: ${{ secrets.HOSTINGER_BACKEND_PATH }}
+        run: |
+          sudo apt-get update && sudo apt-get install -y sshpass rsync openssh-client
+
+          if [ -z "$HOSTINGER_BACKEND_PATH" ]; then
+            echo "::error::Falta el secreto HOSTINGER_BACKEND_PATH"
+            exit 1
+          fi
+
+          case "$HOSTINGER_BACKEND_PATH" in
+            /*) ;;
+            *) echo "::error::HOSTINGER_BACKEND_PATH debe ser una ruta absoluta fuera de public_html"; exit 1 ;;
+          esac
+
+          case "$HOSTINGER_BACKEND_PATH" in
+            *public_html*|*/www|*/htdocs)
+              echo "::error::El backend Laravel no puede desplegarse dentro de public_html, www o htdocs"
+              exit 1
+              ;;
+          esac
+
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          if [ -n "$SSH_KNOWN_HOSTS" ]; then
+            printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          else
+            ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" > ~/.ssh/known_hosts 2>/dev/null
+          fi
+          chmod 600 ~/.ssh/known_hosts
+          test -s ~/.ssh/known_hosts
+
+          SSH_OPTS="-p $SSH_PORT -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts"
+
+          if [ -n "$SSH_KEY" ]; then
+            printf '%s\n' "$SSH_KEY" > ~/.ssh/id_hostinger
+            chmod 600 ~/.ssh/id_hostinger
+            SSH_CMD="ssh $SSH_OPTS -i $HOME/.ssh/id_hostinger"
+            SSH_EXEC="$SSH_CMD $SSH_USER@$SSH_HOST"
+            RSYNC_PREFIX=""
+          else
+            export SSHPASS="$SSH_PASSWORD"
+            SSH_CMD="ssh $SSH_OPTS"
+            SSH_EXEC="sshpass -e $SSH_CMD $SSH_USER@$SSH_HOST"
+            RSYNC_PREFIX="sshpass -e"
+          fi
+
+          BACKEND_ROOT="${HOSTINGER_BACKEND_PATH%/}"
+          TARGET_BACKEND="${BACKEND_ROOT}/"
+          case "$BACKEND_ROOT" in
+            */public) echo "::error::HOSTINGER_BACKEND_PATH debe ser la raíz del proyecto Laravel, no su carpeta public"; exit 1 ;;
+          esac
+
+          $SSH_EXEC "mkdir -p '$BACKEND_ROOT/storage/app/public' '$BACKEND_ROOT/storage/framework/cache/data' '$BACKEND_ROOT/storage/framework/sessions' '$BACKEND_ROOT/storage/framework/views' '$BACKEND_ROOT/storage/logs' '$BACKEND_ROOT/bootstrap/cache' '$BACKEND_ROOT/resources/views'"
+
+          $RSYNC_PREFIX rsync -avz --delete \
+            --filter='protect .env' \
+            --filter='protect storage/**' \
+            --exclude=".env" \
+            --exclude=".env.*" \
+            --exclude="storage/**" \
+            --exclude="bootstrap/cache/config.php" \
+            --exclude="bootstrap/cache/routes*.php" \
+            --exclude="bootstrap/cache/events.php" \
+            --exclude=".git*" \
+            --exclude="tests/**" \
+            --exclude="phpunit.xml" \
+            --exclude="phpstan.neon" \
+            -e "$SSH_CMD" \
+            backend-laravel/ \
+            "$SSH_USER@$SSH_HOST:$TARGET_BACKEND"
+
+          if $SSH_EXEC "[ -d domains/plaxtilineas.com/public_html ]"; then
+            TARGET_PUBLIC_HTML="domains/plaxtilineas.com/public_html"
+          else
+            TARGET_PUBLIC_HTML="public_html"
+          fi
+
+          mkdir -p /tmp/api-bridge
+          cp backend-laravel/public/.htaccess /tmp/api-bridge/.htaccess
+          cat <<EOF > /tmp/api-bridge/index.php
+          <?php
+
+          use Illuminate\Http\Request;
+
+          define('LARAVEL_START', microtime(true));
+
+          \$backendRoot = '${BACKEND_ROOT}';
+
+          if (file_exists(\$maintenance = \$backendRoot.'/storage/framework/maintenance.php')) {
+              require \$maintenance;
+          }
+
+          require \$backendRoot.'/vendor/autoload.php';
+
+          \$_SERVER['SCRIPT_NAME'] = '/index.php';
+          \$_SERVER['PHP_SELF'] = '/index.php';
+
+          (require_once \$backendRoot.'/bootstrap/app.php')
+              ->handleRequest(Request::capture());
+          EOF
+
+          $SSH_EXEC "mkdir -p '$TARGET_PUBLIC_HTML/api'"
+          $RSYNC_PREFIX rsync -avz --delete \
+            -e "$SSH_CMD" \
+            /tmp/api-bridge/ \
+            "$SSH_USER@$SSH_HOST:$TARGET_PUBLIC_HTML/api/"
+
+          $SSH_EXEC "
+            set -e
+            if [ -x /opt/alt/php83/usr/bin/php ]; then
+              PHP_BIN=/opt/alt/php83/usr/bin/php
+            elif [ -x /opt/alt/php82/usr/bin/php ]; then
+              PHP_BIN=/opt/alt/php82/usr/bin/php
+            else
+              PHP_BIN=php
+            fi
+            echo \"Usando PHP: \$(\$PHP_BIN -v | head -n 1)\"
+            \$PHP_BIN -l '$TARGET_PUBLIC_HTML/api/index.php'
+            chmod -R u=rwX,g=rX,o=rX '$BACKEND_ROOT' '$TARGET_PUBLIC_HTML/api'
+            chmod -R u=rwX,g=rwX '$BACKEND_ROOT/storage' '$BACKEND_ROOT/bootstrap/cache'
+            cd '$BACKEND_ROOT'
+            if ! \$PHP_BIN -d display_errors=1 -d display_startup_errors=1 artisan config:clear --no-interaction; then
+              [ -f storage/logs/laravel.log ] && tail -n 50 storage/logs/laravel.log || true
+              exit 1
+            fi
+            if ! \$PHP_BIN -d display_errors=1 -d display_startup_errors=1 artisan route:clear --no-interaction; then
+              [ -f storage/logs/laravel.log ] && tail -n 50 storage/logs/laravel.log || true
+              exit 1
+            fi
+            if ! \$PHP_BIN -d display_errors=1 -d display_startup_errors=1 artisan config:cache --no-interaction; then
+              [ -f storage/logs/laravel.log ] && tail -n 50 storage/logs/laravel.log || true
+              exit 1
+            fi
+          "

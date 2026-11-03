@@ -1,0 +1,904 @@
+<div class="admin-content-wrapper-inner">
+
+  <!-- 1. Fila Dividida en Dos Secciones -->
+  <div class="bento-split-row">
+    <!-- Sección Izquierda: Hero Principal -->
+    <div class="bento-welcome bento-welcome-compact">
+      <h1 class="bento-title">Personalización Web</h1>
+      <p class="bento-subtitle">Diseña, organiza y publica los bloques visuales de la página principal en tiempo real.</p>
+      <div class="bento-actions">
+        <button class="btn-primary-white" (click)="togglePreview()">
+          <fa-icon [icon]="vistaPrevia ? faEyeSlash : faEye"></fa-icon>
+          {{ vistaPrevia ? 'Ocultar Simulador' : 'Simulador en Vivo' }}
+        </button>
+        <button class="btn-ghost-white" (click)="abrirEnNuevaPestana()">
+          <fa-icon [icon]="faExternalLinkAlt"></fa-icon> Abrir Web en Nueva Pestaña
+        </button>
+      </div>
+    </div>
+
+    <!-- Sección Derecha: Tarjeta Manual de Uso -->
+    <div class="bento-manual-card">
+      <div class="manual-card-header">
+        <div class="manual-icon-circle">
+          <fa-icon [icon]="faBook"></fa-icon>
+        </div>
+        <div>
+          <span class="manual-card-badge">Documentación</span>
+          <h3 class="manual-card-title">Manual de Uso</h3>
+        </div>
+      </div>
+      <p class="manual-card-desc">
+        Consulta el paso a paso detallado para configurar, ordenar y publicar las secciones de la tienda.
+      </p>
+      <button class="btn-open-manual" (click)="abrirModalManual()">
+        <fa-icon [icon]="faBook"></fa-icon> Ver Manual Completo
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast de éxito flotante -->
+  <div *ngIf="mensajeExito" class="toast-success">
+    <fa-icon [icon]="faCheckCircle"></fa-icon>
+    <span>{{ mensajeExito }}</span>
+  </div>
+
+  <!-- 3. PANEL DE VISTA PREVIA / SIMULADOR RESPONSIVE -->
+  <div class="preview-panel" *ngIf="vistaPrevia">
+    <div class="preview-panel-bar">
+      <div class="preview-url-pill">
+        <fa-icon [icon]="faGlobe"></fa-icon>
+        <span>http://localhost:4200/ (Vista previa en vivo)</span>
+      </div>
+      <div class="preview-bar-actions">
+        <button class="btn-preview-action" (click)="recargarPreview()" title="Recargar vista previa">
+          <fa-icon [icon]="faSync"></fa-icon> Recargar
+        </button>
+        <button class="btn-preview-action" (click)="abrirEnNuevaPestana()" title="Abrir en pestaña completa">
+          <fa-icon [icon]="faExternalLinkAlt"></fa-icon> Abrir
+        </button>
+        <button class="btn-preview-close" (click)="togglePreview()" title="Cerrar vista previa">
+          <fa-icon [icon]="faTimes"></fa-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Selector de Dispositivo -->
+    <div class="preview-device-bar">
+      <div class="device-switcher-group">
+        <button class="btn-device" [class.active]="deviceMode === 'desktop'" (click)="setDevice('desktop')">
+          <fa-icon [icon]="faDesktop"></fa-icon> Desktop (100%)
+        </button>
+        <button class="btn-device" [class.active]="deviceMode === 'tablet'" (click)="setDevice('tablet')">
+          <fa-icon [icon]="faTabletAlt"></fa-icon> Tablet (768px)
+        </button>
+        <button class="btn-device" [class.active]="deviceMode === 'mobile'" (click)="setDevice('mobile')">
+          <fa-icon [icon]="faMobileAlt"></fa-icon> Móvil (390px)
+        </button>
+      </div>
+      <span class="device-hint">
+        <fa-icon [icon]="faClock"></fa-icon> Los cambios guardados se reflejan inmediatamente al recargar
+      </span>
+    </div>
+
+    <!-- Contenedor del Iframe -->
+    <div class="iframe-container" [ngClass]="'device-' + deviceMode">
+      <div class="iframe-chrome">
+        <div class="iframe-chrome-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <span class="chrome-title">Plaxtilineas Landing Page — Modo {{ deviceMode | uppercase }}</span>
+      </div>
+      <div class="iframe-body-wrapper">
+        <iframe
+          #previewFrame
+          id="preview-iframe"
+          [src]="previewSafeUrl"
+          title="Vista previa del inicio"
+          frameborder="0"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. CATÁLOGO DE SECCIONES (Añadir Nueva Sección) -->
+  <div class="catalog-card">
+    <div class="catalog-header">
+      <div class="catalog-header-text">
+        <span class="catalog-badge">Catálogo de Componentes</span>
+        <h2 class="catalog-title">Añadir Nueva Sección a la Página</h2>
+        <p class="catalog-subtitle">Selecciona el tipo de bloque interactivo que deseas diseñar y ubicar en la tienda</p>
+      </div>
+    </div>
+
+    <div class="catalog-grid">
+      <!-- 1. Banner -->
+      <button class="catalog-item-btn" (click)="abrirCreador('banner')">
+        <div class="catalog-icon-wrapper banner-style">
+          <fa-icon [icon]="faImage"></fa-icon>
+        </div>
+        <div class="catalog-item-info">
+          <div class="catalog-title-row">
+            <h4>Banner Hero</h4>
+            <span class="add-plus-badge">+ Añadir</span>
+          </div>
+          <p>Imagen full width con mensaje promocional y enlace de redirección.</p>
+        </div>
+      </button>
+
+      <!-- 2. Texto -->
+      <button class="catalog-item-btn" (click)="abrirCreador('texto')">
+        <div class="catalog-icon-wrapper texto-style">
+          <fa-icon [icon]="faAlignLeft"></fa-icon>
+        </div>
+        <div class="catalog-item-info">
+          <div class="catalog-title-row">
+            <h4>Bloque Informativo</h4>
+            <span class="add-plus-badge">+ Añadir</span>
+          </div>
+          <p>Título editorial con párrafo amplio y alineación personalizada.</p>
+        </div>
+      </button>
+
+      <!-- 6. Galería -->
+      <button class="catalog-item-btn" (click)="abrirCreador('galeria')">
+        <div class="catalog-icon-wrapper galeria-style">
+          <fa-icon [icon]="faImages"></fa-icon>
+        </div>
+        <div class="catalog-item-info">
+          <div class="catalog-title-row">
+            <h4>Galería de Fotos</h4>
+            <span class="add-plus-badge">+ Añadir</span>
+          </div>
+          <p>Mosaico de imágenes de proyectos realizados e insumos instalados.</p>
+        </div>
+      </button>
+
+      <!-- 7. Carrusel Productos -->
+      <button class="catalog-item-btn" (click)="abrirCreador('carrusel_productos')">
+        <div class="catalog-icon-wrapper carrusel-style">
+          <fa-icon [icon]="faShoppingBag"></fa-icon>
+        </div>
+        <div class="catalog-item-info">
+          <div class="catalog-title-row">
+            <h4>Carrusel de Catálogo</h4>
+            <span class="add-plus-badge">+ Añadir</span>
+          </div>
+          <p>Vitrina dinámica de productos filtrados automáticamente por categoría.</p>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- 5. GESTOR DE SECCIONES (Lista Reordenable & Filtros) -->
+  <div class="sections-manager-card">
+
+    <!-- Header y Barra de Filtros Unificada -->
+    <div class="manager-header">
+      <div class="manager-header-info">
+        <div class="manager-title-row">
+          <h3 class="manager-title">Secciones Diseñadas</h3>
+          <span class="manager-count-badge">{{ filteredComponentes.length }} de {{ componentes.length }}</span>
+        </div>
+        <p class="manager-subtitle">
+          Utiliza las flechas para ordenar la posición en la página o el switch para publicar/ocultar en vivo
+        </p>
+      </div>
+
+      <!-- Barra de Filtros y Búsqueda -->
+      <div class="manager-filters-toolbar">
+        <!-- Búsqueda Minimalista -->
+        <div class="filter-search-box">
+          <fa-icon [icon]="faSearch" class="search-icon"></fa-icon>
+          <input
+            type="text"
+            [(ngModel)]="filtroBusqueda"
+            placeholder="Buscar por título, tipo o contenido..."
+            class="filter-search-input">
+          <button *ngIf="filtroBusqueda" (click)="filtroBusqueda = ''" class="btn-clear-search">
+            <fa-icon [icon]="faTimes"></fa-icon>
+          </button>
+        </div>
+
+        <!-- Combo Box Estado -->
+        <div class="filter-select-wrapper">
+          <select [(ngModel)]="filtroEstado" class="filter-select">
+            <option value="todos">Todos los Estados</option>
+            <option value="activos">Solo Visibles</option>
+            <option value="inactivos">Solo Ocultos</option>
+          </select>
+        </div>
+
+        <!-- Combo Box Zona -->
+        <div class="filter-select-wrapper">
+          <select [(ngModel)]="filtroZona" class="filter-select">
+            <option value="todas">Todas las Zonas</option>
+            <option value="superior">Zona Superior</option>
+            <option value="inferior">Zona Inferior</option>
+          </select>
+        </div>
+
+        <!-- Combo Box Tipo -->
+        <div class="filter-select-wrapper">
+          <select [(ngModel)]="filtroTipo" class="filter-select">
+            <option value="todos">Todos los Tipos</option>
+            <option value="banner">Banners</option>
+            <option value="anuncio">Anuncios</option>
+            <option value="texto">Bloques Texto</option>
+            <option value="testimonios">Testimonios</option>
+            <option value="faq">Preguntas Frecuentes</option>
+            <option value="galeria">Galerías</option>
+            <option value="carrusel_productos">Carrusel Productos</option>
+          </select>
+        </div>
+
+        <!-- Botón Limpiar Filtros si alguno activo -->
+        <button
+          *ngIf="filtroBusqueda || filtroEstado !== 'todos' || filtroZona !== 'todas' || filtroTipo !== 'todos'"
+          (click)="limpiarFiltros()"
+          class="btn-reset-filters"
+          title="Restablecer todos los filtros">
+          <fa-icon [icon]="faTimes"></fa-icon> Limpiar
+        </button>
+      </div>
+    </div>
+
+    <!-- Indicador de Reordenamiento -->
+    <div class="reorder-tip-strip" *ngIf="!filtroBusqueda && filtroEstado === 'todos' && filtroZona === 'todas' && filtroTipo === 'todos'">
+      <span class="tip-dot"></span>
+      <span><strong>Secuencia de Renderizado:</strong> El elemento #1 aparece primero en el inicio de la página. Usa las flechas para subir o bajar de puesto.</span>
+    </div>
+
+    <!-- Estado de Carga -->
+    <div *ngIf="cargando" class="loading-state">
+      <div class="spinner-grande"></div>
+      <p>Cargando estructura de la landing page...</p>
+    </div>
+
+    <!-- Estado de Error -->
+    <div *ngIf="error && !cargando" class="error-state">
+      <fa-icon [icon]="faExclamationCircle" class="error-icon"></fa-icon>
+      <p>{{ error }}</p>
+      <button class="btn-primary-white" (click)="cargarComponentes()">Reintentar Carga</button>
+    </div>
+
+    <!-- Lista de Secciones -->
+    <div *ngIf="!cargando && !error">
+
+      <!-- Estado Vacío General -->
+      <div *ngIf="componentes.length === 0" class="empty-sections-box">
+        <div class="empty-icon-circle">
+          <fa-icon [icon]="faLayerGroup"></fa-icon>
+        </div>
+        <h4>No hay secciones creadas</h4>
+        <p>Selecciona un bloque del catálogo superior para comenzar a diseñar tu tienda.</p>
+      </div>
+
+      <!-- Estado Vacío por Filtros -->
+      <div *ngIf="componentes.length > 0 && filteredComponentes.length === 0" class="empty-sections-box">
+        <div class="empty-icon-circle">
+          <fa-icon [icon]="faSearch"></fa-icon>
+        </div>
+        <h4>No se encontraron secciones</h4>
+        <p>No hay componentes que coincidan con los filtros o el término de búsqueda ingresado.</p>
+        <button class="btn-primary-white" (click)="limpiarFiltros()" style="margin-top: 12px;">
+          Limpiar Filtros
+        </button>
+      </div>
+
+      <!-- Grid / Lista de Componentes -->
+      <div class="sections-list-container" *ngIf="filteredComponentes.length > 0">
+        <div
+          class="section-card-row"
+          *ngFor="let comp of filteredComponentes"
+          [class.is-hidden-row]="comp.activo == 0 || comp.activo === false">
+
+          <!-- 1. Controles de Orden & Número -->
+          <div class="order-column">
+            <button
+              class="btn-order-arrow up"
+              [disabled]="isFirstInGlobal(comp)"
+              (click)="moverCompArriba(comp, $event)"
+              title="Mover arriba en la secuencia">
+              <fa-icon [icon]="faArrowUp"></fa-icon>
+            </button>
+            <div class="order-badge">
+              <span class="order-hash">#</span>
+              <span class="order-number">{{ getPosicionOriginal(comp) + 1 }}</span>
+            </div>
+            <button
+              class="btn-order-arrow down"
+              [disabled]="isLastInGlobal(comp)"
+              (click)="moverCompAbajo(comp, $event)"
+              title="Mover abajo en la secuencia">
+              <fa-icon [icon]="faArrowDown"></fa-icon>
+            </button>
+          </div>
+
+          <!-- 2. Tipo y Zona -->
+          <div class="type-badge-column">
+            <span class="type-pill" [ngClass]="'pill-' + comp.tipo">
+              <fa-icon *ngIf="comp.tipo === 'banner'" [icon]="faImage"></fa-icon>
+              <fa-icon *ngIf="comp.tipo === 'anuncio'" [icon]="faBullhorn"></fa-icon>
+              <fa-icon *ngIf="comp.tipo === 'texto'" [icon]="faAlignLeft"></fa-icon>
+              <fa-icon *ngIf="comp.tipo === 'testimonios'" [icon]="faComments"></fa-icon>
+              <fa-icon *ngIf="comp.tipo === 'faq'" [icon]="faQuestionCircle"></fa-icon>
+              <fa-icon *ngIf="comp.tipo === 'galeria'" [icon]="faImages"></fa-icon>
+              <fa-icon *ngIf="comp.tipo === 'carrusel_productos'" [icon]="faShoppingBag"></fa-icon>
+              {{ getTipoLabel(comp.tipo) }}
+            </span>
+            <span class="zone-pill" [class.zone-inf]="comp.contenido?.posicion === 'inferior'">
+              {{ comp.contenido?.posicion === 'inferior' ? 'Zona Inferior' : 'Zona Superior' }}
+            </span>
+          </div>
+
+          <!-- 3. Previsualización de Contenido -->
+          <div class="content-preview-column" (click)="abrirEditor(comp)">
+            <!-- Thumbnail si tiene imagen -->
+            <div class="preview-thumbnail" *ngIf="comp.contenido?.imageUrl || comp.contenido?.imagenes?.[0]?.url">
+              <img [src]="comp.contenido?.imageUrl || comp.contenido?.imagenes?.[0]?.url" alt="Miniatura">
+            </div>
+
+            <!-- Información textual según el tipo -->
+            <div class="preview-text-wrapper">
+              <!-- Banner -->
+              <div *ngIf="comp.tipo === 'banner'">
+                <h5 class="preview-main-title">{{ comp.contenido?.descripcion || 'Banner Publicitario' }}</h5>
+                <span class="preview-meta-text" *ngIf="comp.contenido?.linkUrl">Enlace: {{ comp.contenido?.linkUrl }}</span>
+                <span class="preview-meta-text" *ngIf="!comp.contenido?.linkUrl">Sin enlace directo</span>
+              </div>
+
+              <!-- Anuncio -->
+              <div *ngIf="comp.tipo === 'anuncio'">
+                <div class="preview-badge-row" *ngIf="comp.contenido?.badge">
+                  <span class="item-tag-badge">{{ comp.contenido?.badge }}</span>
+                </div>
+                <h5 class="preview-main-title">{{ comp.contenido?.titulo || 'Anuncio sin título' }}</h5>
+                <p class="preview-meta-text">{{ comp.contenido?.texto || comp.contenido?.caracteristicas || 'Sin descripción' }}</p>
+              </div>
+
+              <!-- Texto -->
+              <div *ngIf="comp.tipo === 'texto'">
+                <h5 class="preview-main-title">{{ comp.contenido?.titulo || 'Bloque informativo' }}</h5>
+                <p class="preview-meta-text">{{ comp.contenido?.cuerpo || 'Sin cuerpo de texto' }}</p>
+              </div>
+
+              <!-- Testimonios -->
+              <div *ngIf="comp.tipo === 'testimonios'">
+                <h5 class="preview-main-title">{{ comp.contenido?.titulo || 'Testimonios y Reseñas' }}</h5>
+                <div class="preview-counts-row">
+                  <span class="count-chip">{{ comp.contenido?.testimonios?.length || 0 }} testimonios</span>
+                  <span class="preview-meta-text">{{ comp.contenido?.subtitulo || 'Opiniones de clientes' }}</span>
+                </div>
+              </div>
+
+              <!-- FAQ -->
+              <div *ngIf="comp.tipo === 'faq'">
+                <h5 class="preview-main-title">{{ comp.contenido?.titulo || 'Preguntas Frecuentes' }}</h5>
+                <div class="preview-counts-row">
+                  <span class="count-chip">{{ comp.contenido?.preguntas?.length || 0 }} preguntas</span>
+                  <span class="preview-meta-text">{{ comp.contenido?.subtitulo || 'Respuestas rápidas' }}</span>
+                </div>
+              </div>
+
+              <!-- Galería -->
+              <div *ngIf="comp.tipo === 'galeria'">
+                <h5 class="preview-main-title">{{ comp.contenido?.titulo || 'Galería de Trabajos' }}</h5>
+                <div class="preview-counts-row">
+                  <span class="count-chip">{{ comp.contenido?.imagenes?.length || 0 }} fotos</span>
+                  <span class="preview-meta-text">{{ comp.contenido?.subtitulo || 'Mosaico visual' }}</span>
+                </div>
+              </div>
+
+              <!-- Carrusel Productos -->
+              <div *ngIf="comp.tipo === 'carrusel_productos'">
+                <h5 class="preview-main-title">{{ comp.contenido?.titulo || 'Carrusel de Productos' }}</h5>
+                <span class="preview-meta-text">Categoría ID: {{ comp.contenido?.categoriaId || 'Todas' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Acciones y Switch de Estado -->
+          <div class="actions-column">
+            <!-- Switch Moderno de Visibilidad -->
+            <label class="switch-toggle" [title]="comp.activo == 1 || comp.activo === true ? 'Desactivar y ocultar' : 'Activar y publicar'">
+              <input
+                type="checkbox"
+                [checked]="comp.activo == 1 || comp.activo === true"
+                (change)="toggleActivo(comp, $event)">
+              <span class="slider"></span>
+              <span class="switch-label">
+                {{ comp.activo == 1 || comp.activo === true ? 'Visible' : 'Oculto' }}
+              </span>
+            </label>
+
+            <!-- Botón Editar -->
+            <button class="btn-action-round edit" (click)="abrirEditor(comp); $event.stopPropagation()" title="Configurar y editar sección">
+              <fa-icon [icon]="faPen"></fa-icon>
+            </button>
+
+            <!-- Botón Eliminar -->
+            <button class="btn-action-round delete" (click)="eliminarComponente(comp.id!, $event)" title="Eliminar permanentemente">
+              <fa-icon [icon]="faTrash"></fa-icon>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ MODAL DE EDICIÓN Y CREACIÓN ════════════ -->
+  <div class="modal-overlay" *ngIf="modalAbierto" (click)="cerrarModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+
+      <!-- Encabezado del Modal -->
+      <div class="modal-header">
+        <div class="modal-header-title">
+          <div class="modal-type-icon" [ngClass]="'icon-' + tempTipo">
+            <fa-icon *ngIf="tempTipo === 'banner'" [icon]="faImage"></fa-icon>
+            <fa-icon *ngIf="tempTipo === 'anuncio'" [icon]="faBullhorn"></fa-icon>
+            <fa-icon *ngIf="tempTipo === 'texto'" [icon]="faAlignLeft"></fa-icon>
+            <fa-icon *ngIf="tempTipo === 'testimonios'" [icon]="faComments"></fa-icon>
+            <fa-icon *ngIf="tempTipo === 'faq'" [icon]="faQuestionCircle"></fa-icon>
+            <fa-icon *ngIf="tempTipo === 'galeria'" [icon]="faImages"></fa-icon>
+            <fa-icon *ngIf="tempTipo === 'carrusel_productos'" [icon]="faShoppingBag"></fa-icon>
+          </div>
+          <div>
+            <h3 class="modal-title">{{ editando ? 'Editar Sección' : 'Configurar Nueva Sección' }}</h3>
+            <span class="modal-subtitle-type">{{ getTipoLabel(tempTipo) }}</span>
+          </div>
+        </div>
+        <button class="btn-modal-close" (click)="cerrarModal()" title="Cerrar ventana">
+          <fa-icon [icon]="faTimes"></fa-icon>
+        </button>
+      </div>
+
+      <!-- Cuerpo del Formulario -->
+      <div class="modal-body">
+
+        <!-- 1. SECCIÓN AJUSTES GENERALES (Ubicación y Visibilidad) -->
+        <div class="modal-settings-grid">
+          <!-- Toggle Visibilidad -->
+          <div class="setting-box">
+            <span class="setting-label">Estado de Publicación</span>
+            <label class="switch-toggle">
+              <input type="checkbox" [(ngModel)]="tempActivo">
+              <span class="slider"></span>
+              <span class="switch-label">{{ tempActivo ? 'Visible en vivo' : 'Oculto (Borrador)' }}</span>
+            </label>
+          </div>
+
+          <!-- Ubicación / Zona -->
+          <div class="setting-box">
+            <span class="setting-label">Ubicación en la Landing Page</span>
+            <select [(ngModel)]="cPosicion" class="modal-select">
+              <option value="superior">Zona Superior (Cabecera y Hero)</option>
+              <option value="inferior">Zona Inferior (Antes del Pie)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-divider"></div>
+
+        <!-- 2. FORMULARIOS ESPECÍFICOS SEGÚN TIPO -->
+
+        <!-- A. BANNER -->
+        <div *ngIf="tempTipo === 'banner'" class="form-section-dynamic">
+          <div class="form-group">
+            <label class="form-label">Imagen Panorámica del Banner</label>
+            <div class="custom-file-upload" [class.is-uploading]="subiendoImagen">
+              <input type="file" (change)="onFileSelected($event)" accept="image/*" class="upload-input" *ngIf="!subiendoImagen">
+              <div class="upload-content" *ngIf="!subiendoImagen">
+                <fa-icon [icon]="faCloudUploadAlt" class="upload-cloud-icon"></fa-icon>
+                <span class="upload-text">Seleccionar o arrastrar imagen</span>
+                <span class="upload-hint">Formatos soportados: WEBP, PNG, JPG (Recomendado 1920x600px)</span>
+              </div>
+              <div class="upload-content" *ngIf="subiendoImagen">
+                <div class="spinner-upload"></div>
+                <span class="upload-loading-text">Subiendo a Cloudinary...</span>
+              </div>
+            </div>
+            <div class="image-preview-card" *ngIf="cImageUrl && !subiendoImagen">
+              <img [src]="cImageUrl" alt="Vista previa banner">
+              <span class="preview-url-tag">{{ cImageUrl }}</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Descripción o Mensaje del Banner</label>
+            <textarea [(ngModel)]="cTexto" rows="3" placeholder="Mensaje visible en el banner..." class="form-control"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Enlace de Redirección (Opcional)</label>
+            <input type="text" [(ngModel)]="cLinkUrl" placeholder="Ej: /productos?subcategoria_id=13" class="form-control">
+          </div>
+        </div>
+
+        <!-- B. ANUNCIO -->
+        <div *ngIf="tempTipo === 'anuncio'" class="form-section-dynamic">
+          <div class="form-group">
+            <label class="form-label">Etiqueta Superior (Badge)</label>
+            <input type="text" [(ngModel)]="cBadge" placeholder="Ej: ⭐️ NOVEDAD DE LA SEMANA" class="form-control">
+          </div>
+
+          <div class="sub-form-card">
+            <div class="sub-form-header">
+              <span class="sub-form-num">1</span>
+              <h4>Elemento Principal (Izquierdo)</h4>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Título del Producto o Novedad</label>
+              <input type="text" [(ngModel)]="cTitulo" placeholder="Ej: YUMBOLON - THERMOLON" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Imagen del Elemento 1</label>
+              <div class="custom-file-upload" [class.is-uploading]="subiendoImagen">
+                <input type="file" (change)="onFileSelected($event, 1)" accept="image/*" class="upload-input" *ngIf="!subiendoImagen">
+                <div class="upload-content" *ngIf="!subiendoImagen">
+                  <fa-icon [icon]="faCloudUploadAlt" class="upload-cloud-icon"></fa-icon>
+                  <span class="upload-text">Seleccionar imagen del producto 1</span>
+                </div>
+                <div class="upload-content" *ngIf="subiendoImagen">
+                  <div class="spinner-upload"></div>
+                  <span class="upload-loading-text">Subiendo a Cloudinary...</span>
+                </div>
+              </div>
+              <div class="image-preview-card" *ngIf="cImageUrl && !subiendoImagen">
+                <img [src]="cImageUrl" alt="Elemento 1">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Descripción del Elemento 1</label>
+              <textarea [(ngModel)]="cTexto" rows="3" placeholder="Describe los detalles de este producto..." class="form-control"></textarea>
+            </div>
+          </div>
+
+          <div class="sub-form-card">
+            <div class="sub-form-header">
+              <span class="sub-form-num">2</span>
+              <h4>Elemento Secundario (Derecho - Opcional)</h4>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Título del Segundo Producto</label>
+              <input type="text" [(ngModel)]="cTitulo2" placeholder="Ej: THERMOLON - AISLANTE" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Imagen del Elemento 2</label>
+              <div class="custom-file-upload" [class.is-uploading]="subiendoImagen2">
+                <input type="file" (change)="onFileSelected($event, 2)" accept="image/*" class="upload-input" *ngIf="!subiendoImagen2">
+                <div class="upload-content" *ngIf="!subiendoImagen2">
+                  <fa-icon [icon]="faCloudUploadAlt" class="upload-cloud-icon"></fa-icon>
+                  <span class="upload-text">Seleccionar imagen del producto 2</span>
+                </div>
+                <div class="upload-content" *ngIf="subiendoImagen2">
+                  <div class="spinner-upload"></div>
+                  <span class="upload-loading-text">Subiendo a Cloudinary...</span>
+                </div>
+              </div>
+              <div class="image-preview-card" *ngIf="cImageUrl2 && !subiendoImagen2">
+                <img [src]="cImageUrl2" alt="Elemento 2">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Descripción del Elemento 2</label>
+              <textarea [(ngModel)]="cTexto2" rows="3" placeholder="Describe las características secundarias..." class="form-control"></textarea>
+            </div>
+          </div>
+
+          <div class="sub-form-card">
+            <h4 style="margin: 0 0 14px 0; font-size: 0.92rem; font-weight: 700;">Configuración de Enlace y Botón</h4>
+            <div class="form-group">
+              <label class="form-label">Beneficios / Características Clave</label>
+              <input type="text" [(ngModel)]="cCaracteristicas" placeholder="Ej: Excelente aislamiento, 100% impermeable, Fácil instalación" class="form-control">
+              <small class="field-hint">Separa cada ventaja con una coma para que aparezcan en viñetas ordenadas.</small>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label">Texto del Botón</label>
+                <input type="text" [(ngModel)]="cBtnText" placeholder="Ej: Descubrir más →" class="form-control">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Enlace URL</label>
+                <input type="text" [(ngModel)]="cLinkUrl" placeholder="/productos" class="form-control">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- C. TEXTO EDITORIAL -->
+        <div *ngIf="tempTipo === 'texto'" class="form-section-dynamic">
+          <div class="form-group">
+            <label class="form-label">Título del Bloque</label>
+            <input type="text" [(ngModel)]="cTitulo" placeholder="Ej: Calidad y Durabilidad Garantizada" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cuerpo del Mensaje</label>
+            <textarea [(ngModel)]="cCuerpo" rows="5" placeholder="Escribe el párrafo informativo..." class="form-control"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Alineación del Texto</label>
+            <select [(ngModel)]="cAlineacion" class="form-control">
+              <option value="left">Alineado a la Izquierda</option>
+              <option value="center">Centrado (Recomendado)</option>
+              <option value="right">Alineado a la Derecha</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- D. TESTIMONIOS -->
+        <div *ngIf="tempTipo === 'testimonios'" class="form-section-dynamic">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Título Principal</label>
+              <input type="text" [(ngModel)]="cTitulo" placeholder="Ej: Lo que dicen nuestros clientes" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subtítulo Descriptivo</label>
+              <input type="text" [(ngModel)]="cSubtitulo" placeholder="Ej: Opiniones reales de compradores y constructores" class="form-control">
+            </div>
+          </div>
+
+          <div class="list-manager-box">
+            <div class="list-manager-header">
+              <div>
+                <h4>Testimonios Añadidos ({{ tempTestimonios.length }})</h4>
+                <p>Configura las opiniones que rotarán en el carrusel de la página</p>
+              </div>
+              <button type="button" class="btn-primary-white small" (click)="addTestimonio()">
+                <fa-icon [icon]="faPlus"></fa-icon> Añadir Testimonio
+              </button>
+            </div>
+
+            <div *ngFor="let item of tempTestimonios; let idx = index" class="list-item-card">
+              <div class="list-item-header">
+                <span class="list-index-tag">Testimonio #{{ idx + 1 }}</span>
+                <button type="button" class="btn-delete-row" (click)="removeTestimonio(idx)" title="Eliminar este testimonio">
+                  <fa-icon [icon]="faTrash"></fa-icon> Eliminar
+                </button>
+              </div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label">Nombre del Cliente</label>
+                  <input type="text" [(ngModel)]="item.nombre" placeholder="Nombre completo" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Puesto o Empresa</label>
+                  <input type="text" [(ngModel)]="item.puesto" placeholder="Ej: Contratista / Arquitecto" class="form-control">
+                </div>
+              </div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label">Calificación (Estrellas)</label>
+                  <select [(ngModel)]="item.estrellas" class="form-control">
+                    <option [value]="5">⭐️⭐️⭐️⭐️⭐️ (5 Estrellas)</option>
+                    <option [value]="4">⭐️⭐️⭐️⭐️ (4 Estrellas)</option>
+                    <option [value]="3">⭐️⭐️⭐️ (3 Estrellas)</option>
+                    <option [value]="2">⭐️⭐️ (2 Estrellas)</option>
+                    <option [value]="1">⭐️ (1 Estrella)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Foto / Avatar del Cliente</label>
+                  <input type="file" (change)="onItemFileSelected($event, item)" accept="image/*" class="form-control file-input">
+                  <span *ngIf="item.subiendo" class="uploading-mini">Subiendo foto...</span>
+                  <div *ngIf="item.avatar" class="avatar-preview-row">
+                    <img [src]="item.avatar" class="avatar-thumb">
+                    <span class="avatar-ok-badge">Foto cargada</span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label">Comentario o Reseña</label>
+                <textarea [(ngModel)]="item.comentario" rows="3" placeholder="Mensaje del testimonio..." class="form-control"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- E. FAQ (PREGUNTAS FRECUENTES) -->
+        <div *ngIf="tempTipo === 'faq'" class="form-section-dynamic">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Título Principal</label>
+              <input type="text" [(ngModel)]="cTitulo" placeholder="Ej: Preguntas Frecuentes" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subtítulo Descriptivo</label>
+              <input type="text" [(ngModel)]="cSubtitulo" placeholder="Ej: Resuelve tus dudas al instante" class="form-control">
+            </div>
+          </div>
+
+          <div class="list-manager-box">
+            <div class="list-manager-header">
+              <div>
+                <h4>Preguntas Añadidas ({{ tempPreguntas.length }})</h4>
+                <p>Preguntas y respuestas del acordeón interactivo</p>
+              </div>
+              <button type="button" class="btn-primary-white small" (click)="addPregunta()">
+                <fa-icon [icon]="faPlus"></fa-icon> Añadir Pregunta
+              </button>
+            </div>
+
+            <div *ngFor="let item of tempPreguntas; let idx = index" class="list-item-card">
+              <div class="list-item-header">
+                <span class="list-index-tag">Pregunta #{{ idx + 1 }}</span>
+                <button type="button" class="btn-delete-row" (click)="removePregunta(idx)" title="Eliminar pregunta">
+                  <fa-icon [icon]="faTrash"></fa-icon> Eliminar
+                </button>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Pregunta</label>
+                <input type="text" [(ngModel)]="item.pregunta" placeholder="Ej: ¿Cuáles son los tiempos de entrega?" class="form-control">
+              </div>
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label">Respuesta Clara y Detallada</label>
+                <textarea [(ngModel)]="item.respuesta" rows="3" placeholder="Escribe la respuesta..." class="form-control"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F. GALERÍA FOTOGRÁFICA -->
+        <div *ngIf="tempTipo === 'galeria'" class="form-section-dynamic">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Título de la Galería</label>
+              <input type="text" [(ngModel)]="cTitulo" placeholder="Ej: Nuestra Galería de Trabajos" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subtítulo</label>
+              <input type="text" [(ngModel)]="cSubtitulo" placeholder="Ej: Aplicaciones reales de nuestros insumos" class="form-control">
+            </div>
+          </div>
+
+          <div class="list-manager-box">
+            <div class="list-manager-header">
+              <div>
+                <h4>Fotografías ({{ tempImagenes.length }})</h4>
+                <p>Mosaico de imágenes de proyectos terminados</p>
+              </div>
+              <button type="button" class="btn-primary-white small" (click)="addImagen()">
+                <fa-icon [icon]="faPlus"></fa-icon> Añadir Foto
+              </button>
+            </div>
+
+            <div *ngFor="let item of tempImagenes; let idx = index" class="list-item-card">
+              <div class="list-item-header">
+                <span class="list-index-tag">Foto #{{ idx + 1 }}</span>
+                <button type="button" class="btn-delete-row" (click)="removeImagen(idx)" title="Eliminar fotografía">
+                  <fa-icon [icon]="faTrash"></fa-icon> Eliminar
+                </button>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Archivo de Fotografía</label>
+                <input type="file" (change)="onItemFileSelected($event, item)" accept="image/*" class="form-control file-input">
+                <span *ngIf="item.subiendo" class="uploading-mini">Subiendo imagen a Cloudinary...</span>
+                <div *ngIf="item.url" class="photo-preview-box">
+                  <img [src]="item.url" alt="Foto">
+                </div>
+              </div>
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label">Pie de Foto / Título Corto (Opcional)</label>
+                <input type="text" [(ngModel)]="item.caption" placeholder="Ej: Techos de PVC instalados en obra" class="form-control">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- G. CARRUSEL PRODUCTOS -->
+        <div *ngIf="tempTipo === 'carrusel_productos'" class="form-section-dynamic">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Título de la Vitrina</label>
+              <input type="text" [(ngModel)]="cTitulo" placeholder="Ej: Nuestros mejores productos" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subtítulo</label>
+              <input type="text" [(ngModel)]="cSubtitulo" placeholder="Ej: Compra con envíos rápidos en el Quindío" class="form-control">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Categoría a Filtrar y Exponer</label>
+            <select [(ngModel)]="tempCategoriaId" class="form-control">
+              <option [value]="null">-- Todas las Categorías (Productos Generales) --</option>
+              <option *ngFor="let cat of categoriasLista" [value]="cat.id">{{ cat.nombre }}</option>
+            </select>
+            <small class="field-hint">Los productos de esta categoría se mostrarán automáticamente en un carrusel dinámico.</small>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Pie del Modal -->
+      <div class="modal-footer">
+        <button class="btn-modal-cancel" (click)="cerrarModal()">Cancelar</button>
+        <button class="btn-primary-white" (click)="guardarComponente()">
+          <fa-icon [icon]="faCheck"></fa-icon>
+          {{ editando ? 'Guardar Cambios' : 'Crear y Publicar Sección' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════ MODAL MANUAL DE USO ════════════ -->
+  <div class="modal-overlay" *ngIf="modalManualAbierto" (click)="cerrarModalManual()">
+    <div class="modal-container modal-manual-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-header-title">
+          <div class="modal-type-icon manual-icon-box">
+            <fa-icon [icon]="faBook"></fa-icon>
+          </div>
+          <div>
+            <h3 class="modal-title">Manual de Uso</h3>
+            <span class="modal-subtitle-type">Guía Rápida de Personalización</span>
+          </div>
+        </div>
+        <button class="btn-modal-close" (click)="cerrarModalManual()" title="Cerrar ventana">
+          <fa-icon [icon]="faTimes"></fa-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="manual-modal-intro">
+          <p>Aprende en 3 simples pasos cómo estructurar, diseñar y publicar secciones dinámicas en la página de inicio de Plaxtilineas.</p>
+        </div>
+
+        <div class="manual-modal-steps">
+          <!-- Paso 1 -->
+          <div class="modal-step-card">
+            <div class="step-card-num">1</div>
+            <div class="step-card-content">
+              <h4>Elegir y Añadir Sección</h4>
+              <p>Haz clic en cualquiera de los bloques del <strong>Catálogo de Componentes</strong>:</p>
+              <ul class="step-bullets">
+                <li><strong>Banner Hero:</strong> Imagen horizontal completa con enlace comercial y texto descriptivo.</li>
+                <li><strong>Bloque Informativo:</strong> Texto editorial con título, cuerpo y alineación.</li>
+                <li><strong>Galería de Fotos:</strong> Mosaico fotográfico de proyectos o insumos instalados.</li>
+                <li><strong>Carrusel de Catálogo:</strong> Muestra productos filtrados dinámicamente por categoría.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Paso 2 -->
+          <div class="modal-step-card">
+            <div class="step-card-num">2</div>
+            <div class="step-card-content">
+              <h4>Configuración y Ubicación</h4>
+              <p>Al editar o crear un bloque podrás definir:</p>
+              <ul class="step-bullets">
+                <li><strong>Zona Superior:</strong> Se mostrará al comienzo de la página (antes de productos principales).</li>
+                <li><strong>Zona Inferior:</strong> Se mostrará en la parte baja (antes del pie de página).</li>
+                <li><strong>Imágenes:</strong> Sube tus archivos directamente a Cloudinary sin necesidad de configuraciones adicionales.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Paso 3 -->
+          <div class="modal-step-card">
+            <div class="step-card-num">3</div>
+            <div class="step-card-content">
+              <h4>Reordenar Secuencia y Publicar en Vivo</h4>
+              <p>En el listado inferior puedes gestionar tus bloques:</p>
+              <ul class="step-bullets">
+                <li><strong>Flechas Arriba/Abajo:</strong> Cambian el orden de aparición. El bloque <strong>#1</strong> es el primero que verán los clientes.</li>
+                <li><strong>Switch Visible / Oculto:</strong> Activa o desactiva la visibilidad en tiempo real sin eliminar el contenido.</li>
+                <li><strong>Simulador en Vivo:</strong> Usa el botón superior para ver exactamente cómo luce la tienda en escritorio, tablet o celular.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-primary-white" (click)="cerrarModalManual()">
+          <fa-icon [icon]="faCheck"></fa-icon> Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

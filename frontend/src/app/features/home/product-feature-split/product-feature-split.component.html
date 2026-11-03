@@ -1,0 +1,78 @@
+<section class="product-features-showcase" aria-label="Destacados de Materiales - Plaxtilineas">
+  <div class="features-container">
+    
+    <div 
+      *ngFor="let item of renderItems; let i = index" 
+      class="feature-split-block"
+      [class.alt-block]="i % 2 !== 0"
+    >
+      <div 
+        class="feature-grid"
+        [class.reverse-layout]="item.imagePosition === 'right'"
+      >
+        
+        <!-- Columna Visual: Imagen en Marco Curvo -->
+        <div class="feature-visual-wrapper">
+          <div class="feature-frame">
+            <img 
+              [src]="item.imageUrl" 
+              [alt]="item.imageAlt"
+              class="feature-img"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        <!-- Columna Contenido: Kicker, Título, Párrafo y Puntos Clave -->
+        <div class="feature-content-wrapper">
+          
+          <!-- Kicker Minimalista con Línea Esmeralda -->
+          <div class="kicker-badge-row">
+            <span class="feature-kicker">
+              <span class="kicker-line"></span>
+              {{ item.kicker }}
+            </span>
+          </div>
+
+          <!-- Titular Principal con Gradiente -->
+          <h2 class="feature-title">
+            <span class="title-lead">{{ item.titleLead }}</span>
+            <span class="title-highlight">{{ item.titleHighlight }}</span>
+          </h2>
+
+          <!-- Descripción Corta y Esencial -->
+          <p class="feature-desc">
+            {{ item.description }}
+          </p>
+
+          <!-- Lista de Usos y Beneficios Concisos -->
+          <ul class="feature-checklist" *ngIf="item.bullets && item.bullets.length > 0">
+            <li *ngFor="let bullet of item.bullets" class="checklist-item">
+              <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span class="bullet-text-group">
+                <strong class="bullet-name">{{ bullet.title }}:</strong>
+                <span class="bullet-detail">{{ bullet.desc }}</span>
+              </span>
+            </li>
+          </ul>
+
+          <!-- Botón de Acción Principal -->
+          <div class="feature-action-row">
+            <a [routerLink]="item.linkUrl" class="feature-cta-pill">
+              <span>{{ item.linkText }}</span>
+              <svg class="cta-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>

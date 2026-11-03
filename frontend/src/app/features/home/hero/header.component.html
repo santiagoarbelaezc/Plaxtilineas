@@ -1,0 +1,56 @@
+<header class="hero-fullscreen-section" *ngIf="mostrarHeader">
+
+  <!-- Hero Minimalist Content Wrapper -->
+  <div class="hero-container">
+
+    <div class="hero-main-content">
+
+      <!-- Logo de Plaxtilineas (Sin contenedor negro, más grande) -->
+      <div class="hero-visual">
+        <img 
+          src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1770388940/logo-invert_ghucfi.png" 
+          alt="Plaxtilineas" 
+          class="hero-logo"
+        />
+      </div>
+
+      <!-- High-Impact Minimalist Headline en Mayúsculas -->
+      <h1 class="hero-headline">
+        EXPERTOS EN <span class="highlight-green">PLÁSTICOS</span><br>
+        &amp; SOLUCIONES DE <span class="highlight-green">EMPAQUE</span>
+      </h1>
+
+      <!-- Minimal Subtitle -->
+      <p class="hero-lead">
+        Distribuidor líder de peletería, espumas y empaques en Armenia. Calidad e innovación adaptadas a tus proyectos más exigentes.
+      </p>
+
+      <!-- Action Buttons Row -->
+      <div class="hero-actions-row">
+        
+        <!-- Explorar Catálogo -->
+        <a 
+          routerLink="/productos" 
+          class="hero-btn-primary group"
+          aria-label="Explorar Catálogo">
+          <span class="material-symbols-rounded btn-icon-svg">shopping_bag</span>
+          <span>Explorar Catálogo</span>
+          <svg class="btn-arrow" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+
+        <!-- Botón Mateo IA (Sin el icono/avatar de mateo) -->
+        <button (click)="abrirAsistente()" class="hero-btn-assistant group" type="button" aria-label="Hablar con Mateo IA">
+          <span class="material-symbols-rounded btn-assistant-icon">chat</span>
+          <span>Hablar con Mateo IA</span>
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</header>

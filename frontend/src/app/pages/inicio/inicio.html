@@ -1,0 +1,299 @@
+<app-navbar></app-navbar>
+
+<main class="home-main">
+  <!-- Hero Section -->
+  <app-header></app-header>
+
+  <!-- Categorías Destacadas -->
+  <section class="home-section" id="categories" style="padding-bottom: 0;">
+    <app-categorias-destacadas></app-categorias-destacadas>
+  </section>
+
+  <!-- Nosotros Inicio: ¿Qué Hacemos? (Ubicado entre Categorías y Explora más Productos) -->
+  <section class="home-section intro-nosotros" style="padding: 0;">
+    <app-nosotros-inicio></app-nosotros-inicio>
+  </section>
+
+  <!-- Nuevos Productos ("Explora más Productos") -->
+  <section class="home-section" style="padding-top: 0; padding-bottom: 0;">
+    <app-feature-new-products></app-feature-new-products>
+  </section>
+
+  <!-- Banner Intermedio: Mallas y Coberturas (Estilo Hero) / Nuestros Aliados -->
+  <app-mesh-banner></app-mesh-banner>
+
+  <!-- Showcase Cinemático: Continental Plus Cyrus (Car Seat) -->
+  <app-car-seat></app-car-seat>
+
+
+
+
+
+  <!-- ════════════ ZONA DE COMPONENTES DINÁMICOS SUPERIORES ════════════ -->
+  <ng-container *ngFor="let comp of componentesDinamicos">
+    <div class="dynamic-wrapper" *ngIf="comp.contenido?.posicion !== 'inferior'">
+
+      <!-- 1. TIPO BANNER DINÁMICO -->
+      <div class="full-banner-container" *ngIf="comp.tipo === 'banner'">
+        <app-full-banner [imageUrl]="comp.contenido?.imageUrl" [description]="comp.contenido?.descripcion"
+          [vPosition]="'top'" [hPosition]="'left'" [linkUrl]="comp.contenido?.linkUrl">
+        </app-full-banner>
+      </div>
+
+      <!-- 2. TIPO ANUNCIO (Novedad Elegante de la Semana) -->
+      <section class="home-section" *ngIf="comp.tipo === 'anuncio'">
+        <div class="elegant-news-container">
+
+          <!-- Si hay 2 imágenes configuradas, mostramos layout dual (grilla) -->
+          <div class="elegant-news-grid" *ngIf="comp.contenido?.imageUrl2">
+
+            <!-- Anuncio 1 -->
+            <a [routerLink]="comp.contenido?.linkUrl" class="elegant-news-card">
+              <div class="news-image-wrapper">
+                <img [src]="comp.contenido?.imageUrl" [alt]="comp.contenido?.titulo" class="news-img">
+              </div>
+              <div class="news-info-content">
+                <h3 class="news-card-title">{{ comp.contenido?.titulo }}</h3>
+                <p class="news-card-desc">{{ comp.contenido?.texto }}</p>
+
+                <!-- Lista de Características / Beneficios -->
+                <ul class="news-features-list" *ngIf="getBullets(comp).length > 0">
+                  <li *ngFor="let item of getBullets(comp)">
+                    <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="3">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>{{ item }}</span>
+                  </li>
+                </ul>
+
+                <div class="news-card-link-btn">
+                  {{ comp.contenido?.btnText || 'Descubrir más →' }}
+                </div>
+              </div>
+            </a>
+
+            <!-- Anuncio 2 -->
+            <a [routerLink]="comp.contenido?.linkUrl" class="elegant-news-card">
+              <div class="news-image-wrapper">
+                <img [src]="comp.contenido?.imageUrl2" [alt]="comp.contenido?.titulo2" class="news-img">
+              </div>
+              <div class="news-info-content">
+                <h3 class="news-card-title">{{ comp.contenido?.titulo2 }}</h3>
+                <p class="news-card-desc">{{ comp.contenido?.texto2 }}</p>
+
+                <!-- Lista de Características / Beneficios -->
+                <ul class="news-features-list" *ngIf="getBullets(comp).length > 0">
+                  <li *ngFor="let item of getBullets(comp)">
+                    <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="3">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>{{ item }}</span>
+                  </li>
+                </ul>
+
+                <div class="news-card-link-btn">
+                  {{ comp.contenido?.btnText || 'Descubrir más →' }}
+                </div>
+              </div>
+            </a>
+
+          </div>
+
+          <!-- Si solo hay 1 imagen configurada, mostramos el layout de ancho completo tradicional -->
+          <a [routerLink]="comp.contenido?.linkUrl" class="elegant-news-card" *ngIf="!comp.contenido?.imageUrl2">
+            <div class="news-image-wrapper">
+              <img [src]="comp.contenido?.imageUrl" [alt]="comp.contenido?.titulo" class="news-img">
+            </div>
+            <div class="news-info-content">
+              <h3 class="news-card-title">{{ comp.contenido?.titulo }}</h3>
+              <p class="news-card-desc">{{ comp.contenido?.texto }}</p>
+
+              <!-- Lista de Características -->
+              <ul class="news-features-list" *ngIf="getBullets(comp).length > 0">
+                <li *ngFor="let item of getBullets(comp)">
+                  <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span>{{ item }}</span>
+                </li>
+              </ul>
+
+              <div class="news-card-link-btn">
+                {{ comp.contenido?.btnText || 'Descubrir más →' }}
+              </div>
+            </div>
+          </a>
+
+        </div>
+      </section>
+
+      <!-- 3. TIPO TEXTO (Bloque de Texto Centrado o Lateral) -->
+      <section class="home-section text-block-section" *ngIf="comp.tipo === 'texto'">
+        <div class="container text-block-container" [style.text-align]="comp.contenido?.alineacion || 'center'">
+          <h2 class="text-block-title">{{ comp.contenido?.titulo }}</h2>
+          <p class="text-block-body">{{ comp.contenido?.cuerpo }}</p>
+        </div>
+      </section>
+
+
+
+      <!-- 6. TIPO GALERIA -->
+      <app-dynamic-galeria *ngIf="comp.tipo === 'galeria'" [contenido]="comp.contenido">
+      </app-dynamic-galeria>
+
+      <!-- 7. TIPO CARRUSEL PRODUCTOS -->
+      <app-dynamic-product-carousel *ngIf="comp.tipo === 'carrusel_productos'" [contenido]="comp.contenido">
+      </app-dynamic-product-carousel>
+
+    </div>
+  </ng-container>
+  <!-- ════════════════════════════════════════════════════════════════════════ -->
+
+  <!-- Ubicación y Mapa Sede Física (Diseño Dividido 2 Columnas) -->
+  <app-long-map></app-long-map>
+
+  <!-- Sección Independiente: Nuestras Soluciones -->
+  <app-soluciones-banner></app-soluciones-banner>
+
+
+  <!-- ════════════ ZONA DE COMPONENTES DINÁMICOS INFERIORES ════════════ -->
+  <ng-container *ngFor="let comp of componentesDinamicos">
+    <div class="dynamic-wrapper" *ngIf="comp.contenido?.posicion === 'inferior'">
+
+      <!-- 1. TIPO BANNER DINÁMICO -->
+      <div class="full-banner-container" *ngIf="comp.tipo === 'banner'">
+        <app-full-banner [imageUrl]="comp.contenido?.imageUrl" [description]="comp.contenido?.descripcion"
+          [vPosition]="'top'" [hPosition]="'left'" [linkUrl]="comp.contenido?.linkUrl">
+        </app-full-banner>
+      </div>
+
+      <!-- 2. TIPO ANUNCIO (Novedad Elegante de la Semana) -->
+      <section class="home-section" *ngIf="comp.tipo === 'anuncio'">
+        <div class="elegant-news-container">
+
+          <!-- Si hay 2 imágenes configuradas, mostramos layout dual (grilla) -->
+          <div class="elegant-news-grid" *ngIf="comp.contenido?.imageUrl2">
+
+            <!-- Anuncio 1 -->
+            <a [routerLink]="comp.contenido?.linkUrl" class="elegant-news-card">
+              <div class="news-image-wrapper">
+                <img [src]="comp.contenido?.imageUrl" [alt]="comp.contenido?.titulo" class="news-img">
+              </div>
+              <div class="news-info-content">
+                <h3 class="news-card-title">{{ comp.contenido?.titulo }}</h3>
+                <p class="news-card-desc">{{ comp.contenido?.texto }}</p>
+
+                <!-- Lista de Características / Beneficios -->
+                <ul class="news-features-list" *ngIf="getBullets(comp).length > 0">
+                  <li *ngFor="let item of getBullets(comp)">
+                    <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="3">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>{{ item }}</span>
+                  </li>
+                </ul>
+
+                <div class="news-card-link-btn">
+                  {{ comp.contenido?.btnText || 'Descubrir más →' }}
+                </div>
+              </div>
+            </a>
+
+            <!-- Anuncio 2 -->
+            <a [routerLink]="comp.contenido?.linkUrl" class="elegant-news-card">
+              <div class="news-image-wrapper">
+                <img [src]="comp.contenido?.imageUrl2" [alt]="comp.contenido?.titulo2" class="news-img">
+              </div>
+              <div class="news-info-content">
+                <h3 class="news-card-title">{{ comp.contenido?.titulo2 }}</h3>
+                <p class="news-card-desc">{{ comp.contenido?.texto2 }}</p>
+
+                <!-- Lista de Características / Beneficios -->
+                <ul class="news-features-list" *ngIf="getBullets(comp).length > 0">
+                  <li *ngFor="let item of getBullets(comp)">
+                    <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="3">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>{{ item }}</span>
+                  </li>
+                </ul>
+
+                <div class="news-card-link-btn">
+                  {{ comp.contenido?.btnText || 'Descubrir más →' }}
+                </div>
+              </div>
+            </a>
+
+          </div>
+
+          <!-- Si solo hay 1 imagen configurada, mostramos el layout de ancho completo tradicional -->
+          <a [routerLink]="comp.contenido?.linkUrl" class="elegant-news-card" *ngIf="!comp.contenido?.imageUrl2">
+            <div class="news-image-wrapper">
+              <img [src]="comp.contenido?.imageUrl" [alt]="comp.contenido?.titulo" class="news-img">
+            </div>
+            <div class="news-info-content">
+              <h3 class="news-card-title">{{ comp.contenido?.titulo }}</h3>
+              <p class="news-card-desc">{{ comp.contenido?.texto }}</p>
+
+              <!-- Lista de Características -->
+              <ul class="news-features-list" *ngIf="getBullets(comp).length > 0">
+                <li *ngFor="let item of getBullets(comp)">
+                  <svg class="feature-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span>{{ item }}</span>
+                </li>
+              </ul>
+
+              <div class="news-card-link-btn">
+                {{ comp.contenido?.btnText || 'Descubrir más →' }}
+              </div>
+            </div>
+          </a>
+
+        </div>
+      </section>
+
+      <!-- 3. TIPO TEXTO (Bloque de Texto Centrado o Lateral) -->
+      <section class="home-section text-block-section" *ngIf="comp.tipo === 'texto'">
+        <div class="container text-block-container" [style.text-align]="comp.contenido?.alineacion || 'center'">
+          <h2 class="text-block-title">{{ comp.contenido?.titulo }}</h2>
+          <p class="text-block-body">{{ comp.contenido?.cuerpo }}</p>
+        </div>
+      </section>
+
+
+
+      <!-- 6. TIPO GALERIA -->
+      <app-dynamic-galeria *ngIf="comp.tipo === 'galeria'" [contenido]="comp.contenido">
+      </app-dynamic-galeria>
+
+      <!-- 7. TIPO CARRUSEL PRODUCTOS -->
+      <app-dynamic-product-carousel *ngIf="comp.tipo === 'carrusel_productos'" [contenido]="comp.contenido">
+      </app-dynamic-product-carousel>
+
+    </div>
+  </ng-container>
+
+  <!-- Grilla de Productos 2 -->
+  <section class="home-section">
+    <app-util-grid-producto-other></app-util-grid-producto-other>
+  </section>
+
+  <!-- Destacados Editoriales de Materiales (Malla & Polisombra / Yumbolón) -->
+  <app-product-feature-split></app-product-feature-split>
+
+
+
+  <!-- Enlaces y Footer -->
+  <div class="footer-stack">
+    <app-social-buttons></app-social-buttons>
+    <app-footer></app-footer>
+  </div>
+</main>

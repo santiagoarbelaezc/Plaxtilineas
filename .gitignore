@@ -1,0 +1,105 @@
+# === General ===
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# === Node (backend & frontend) ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# === Angular frontend ===
+frontend/dist/
+frontend/.angular/cache/
+frontend/tmp/
+frontend/out-tsc/
+
+# === Express backend ===
+backend/uploads/
+backend/.env
+backend/coverage/
+
+# === Laravel backend ===
+backend-laravel/.env
+backend-laravel/.env.*
+!backend-laravel/.env.example
+backend-laravel/vendor/
+backend-laravel/storage/*.key
+backend-laravel/storage/logs/*.log
+*.sqlite
+*.sqlite-journal
+
+
+# === VS Code ===
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# === IDEs ===
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.code-workspace
+
+# === Build artifacts ===
+dist/
+out/
+build/
+bazel-out/
+
+# === Misc ===
+*.tgz
+*.bak
+*.swp
+.history/
+coverage/
+connect.lock
+libpeerconnection.log
+testem.log
+typings/
+
+# === Windows ===
+ehthumbs.db
+Desktop.ini
+
+# === Mac ===
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+# Evitar subir imágenes
+frontend/src/assets/img/
+
+# === Archivos Comprimidos ===
+*.zip
+*.rar
+*.7z
+*.tar.gz
+backend-php/api.zip
+backend-laravel.zip
+
+# === Laravel backend ===
+backend-laravel/.env
+backend-laravel/.env.*
+!backend-laravel/.env.example
+backend-laravel/auth.json
+backend-laravel/vendor/
+backend-laravel/storage/*.key
+backend-laravel/storage/logs/*.log
+backend-laravel/storage/framework/cache/data/*
+backend-laravel/storage/framework/sessions/*
+backend-laravel/storage/framework/views/*
+backend-laravel/storage/framework/testing/*
+backend-laravel/storage/app/*
+!backend-laravel/storage/app/.gitignore
+!backend-laravel/storage/app/public/
+!backend-laravel/storage/app/public/.gitignore
+backend-laravel/bootstrap/cache/*
+!backend-laravel/bootstrap/cache/.gitignore
+backend-laravel/*.sqlite*
+backend-laravel/*.sql
+backend-laravel/*.sql.gz
