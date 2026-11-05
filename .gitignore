@@ -79,7 +79,6 @@ frontend/src/assets/img/
 *.rar
 *.7z
 *.tar.gz
-backend-php/api.zip
 backend-laravel.zip
 
 # === Laravel backend ===
