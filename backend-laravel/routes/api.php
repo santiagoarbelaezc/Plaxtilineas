@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\PqrsController;
 use App\Http\Controllers\Api\StatsController;
 use App\Http\Controllers\Api\WompiController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
@@ -110,12 +111,12 @@ Route::get('/db-check', function () {
 Route::get('/clear-cache', function () {
     $results = [];
     try {
-        \Illuminate\Support\Facades\Artisan::call('config:clear');
-        $results['config:clear'] = trim(\Illuminate\Support\Facades\Artisan::output());
-        \Illuminate\Support\Facades\Artisan::call('cache:clear');
-        $results['cache:clear'] = trim(\Illuminate\Support\Facades\Artisan::output());
-        \Illuminate\Support\Facades\Artisan::call('route:clear');
-        $results['route:clear'] = trim(\Illuminate\Support\Facades\Artisan::output());
+        Artisan::call('config:clear');
+        $results['config:clear'] = trim(Artisan::output());
+        Artisan::call('cache:clear');
+        $results['cache:clear'] = trim(Artisan::output());
+        Artisan::call('route:clear');
+        $results['route:clear'] = trim(Artisan::output());
 
         $cachedConfig = base_path('bootstrap/cache/config.php');
         if (file_exists($cachedConfig)) {
