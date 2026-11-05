@@ -4,10 +4,7 @@
   <div class="apple-scroll-track" #scrollTrack>
 
     <!-- Viewport Fijo / Sticky: SE QUEDA INMÓVIL EN PANTALLA durante todo el recorrido -->
-    <div 
-      class="apple-sticky-viewport"
-      (touchstart)="onTouchStart($event)"
-      (touchend)="onTouchEnd($event)">
+    <div class="apple-sticky-viewport">
 
       <!-- Línea Superior de Acento Esmeralda Sutil (Estilo Footer) -->
       <div class="apple-accent-glow"></div>
@@ -21,9 +18,10 @@
           [style.opacity]="heroOpacity"
           [style.transform]="'scale(' + heroScale + ')'">
           <img 
-            [src]="heroImage" 
+            src="assets/images/cuerina/cyrus-hero.jpg" 
             alt="Asiento deportivo tapizado en Continental Plus Cyrus microperforado" 
-            class="stage-img">
+            class="stage-img"
+            [style.filter]="selectedReference.filterStyle">
         </div>
 
         <!-- Capa 1: Muestrario Oficial con los 3 Tonos de Material (Negro, Gris Claro, Gris Oscuro Charcoat) -->
@@ -42,9 +40,9 @@
           class="stage-layer layer-macro"
           [style.opacity]="macroOpacity"
           [style.transform]="'scale(' + macroScale + ')'"
-          [style.filter]="'blur(' + macroBlur + 'px)'">
+          [style.filter]="selectedReference.filterStyle + ' blur(' + macroBlur + 'px)'">
           <img 
-            [src]="macroImage" 
+            src="assets/images/cuerina/cyrus-macro.jpg" 
             alt="Detalle macro del cuero sintético microperforado con huequitos de ventilación" 
             class="stage-img">
         </div>
