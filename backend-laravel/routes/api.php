@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | API Routes - Plaxtilineas (Laravel 11)
 |--------------------------------------------------------------------------
+| Production deployment trigger.
 */
 
 // Endpoint de prueba GET
