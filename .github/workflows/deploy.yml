@@ -335,6 +335,7 @@ jobs:
 
           $SSH_EXEC "
             set -e
+            # El entorno de producción debe existir previamente en el servidor.
             if [ ! -f '$BACKEND_ROOT/.env' ]; then
               echo 'ERROR: falta el archivo .env de producción en $BACKEND_ROOT/.env'
               echo 'Créalo en el servidor antes de desplegar; el workflow nunca lo sube desde GitHub.'
