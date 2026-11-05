@@ -1,11 +1,31 @@
-<header class="hero-fullscreen-section" *ngIf="mostrarHeader">
+<header 
+  class="hero-fullscreen-section" 
+  *ngIf="mostrarHeader"
+  (mouseenter)="pauseAutoplay()"
+  (mouseleave)="resumeAutoplay()">
 
-  <!-- Hero Minimalist Content Wrapper -->
+  <!-- Background Image Carousel Layers -->
+  <div class="hero-bg-carousel">
+    @for (slide of slides; track slide.id; let i = $index) {
+      <div 
+        class="hero-bg-layer" 
+        [class.active]="i === currentSlideIndex"
+        [style.background-image]="'url(' + slide.image + ')'"
+        [attr.aria-hidden]="i !== currentSlideIndex">
+      </div>
+    }
+    
+    <!-- Multi-Layer Cinematic Contrast Gradient (Tonos oscuros elegantes y legibles) -->
+    <div class="hero-bg-overlay"></div>
+    <div class="hero-radial-vignette"></div>
+    <div class="hero-subtle-mesh"></div>
+  </div>
+
+  <!-- Hero Content Container -->
   <div class="hero-container">
 
-    <div class="hero-main-content">
-
-      <!-- Logo de Plaxtilineas (Sin contenedor negro, más grande) -->
+    <!-- Top Logo Branding -->
+    <div class="hero-top-bar">
       <div class="hero-visual">
         <img 
           src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1770388940/logo-invert_ghucfi.png" 
@@ -13,19 +33,23 @@
           class="hero-logo"
         />
       </div>
+    </div>
 
-      <!-- High-Impact Minimalist Headline en Mayúsculas -->
-      <h1 class="hero-headline">
-        EXPERTOS EN <span class="highlight-green">PLÁSTICOS</span><br>
-        &amp; SOLUCIONES DE <span class="highlight-green">EMPAQUE</span>
+    <!-- Main Content Area -->
+    <div class="hero-main-content">
+
+      <!-- High-Impact Headline -->
+      <h1 class="hero-headline" [class.slide-transitioning]="slideTransitioning">
+        <span class="title-lead-text">{{ currentSlide.titleLead }}</span><br>
+        <span class="highlight-green">{{ currentSlide.titleHighlight }}</span>
       </h1>
 
-      <!-- Minimal Subtitle -->
-      <p class="hero-lead">
-        Distribuidor líder de peletería, espumas y empaques en Armenia. Calidad e innovación adaptadas a tus proyectos más exigentes.
+      <!-- Minimal Subtitle Lead -->
+      <p class="hero-lead" [class.slide-transitioning]="slideTransitioning">
+        {{ currentSlide.description }}
       </p>
 
-      <!-- Action Buttons Row -->
+      <!-- Action Buttons Row (Preservados con estilos e iconos intactos) -->
       <div class="hero-actions-row">
         
         <!-- Explorar Catálogo -->
@@ -41,13 +65,59 @@
           </svg>
         </a>
 
-        <!-- Botón Mateo IA (Sin el icono/avatar de mateo) -->
+        <!-- Botón Mateo IA -->
         <button (click)="abrirAsistente()" class="hero-btn-assistant group" type="button" aria-label="Hablar con Mateo IA">
           <span class="material-symbols-rounded btn-assistant-icon">chat</span>
           <span>Hablar con Mateo IA</span>
         </button>
 
       </div>
+
+    </div>
+
+    <!-- Bottom Carousel Controls & Indicator Pills -->
+    <div class="hero-carousel-controls">
+      
+      <!-- Prev Button -->
+      <button 
+        type="button" 
+        class="carousel-nav-btn prev-btn" 
+        (click)="prevSlide()" 
+        aria-label="Diapositiva anterior">
+        <fa-icon [icon]="['fas', 'chevron-left']"></fa-icon>
+      </button>
+
+      <!-- Indicator Pills with Animated Progress Bar -->
+      <div class="carousel-indicators" role="tablist">
+        @for (slide of slides; track slide.id; let i = $index) {
+          <button 
+            type="button" 
+            class="indicator-pill" 
+            [class.active]="i === currentSlideIndex"
+            (click)="goToSlide(i)"
+            role="tab"
+            [attr.aria-selected]="i === currentSlideIndex"
+            [attr.aria-label]="'Ir a ' + slide.titleHighlight">
+            <span class="pill-track">
+              <span 
+                class="pill-progress" 
+                [class.paused]="isPaused"
+                *ngIf="i === currentSlideIndex">
+              </span>
+            </span>
+            <span class="pill-label">{{ slide.titleHighlight }}</span>
+          </button>
+        }
+      </div>
+
+      <!-- Next Button -->
+      <button 
+        type="button" 
+        class="carousel-nav-btn next-btn" 
+        (click)="nextSlide()" 
+        aria-label="Siguiente diapositiva">
+        <fa-icon [icon]="['fas', 'chevron-right']"></fa-icon>
+      </button>
 
     </div>
 

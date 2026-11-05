@@ -1,73 +1,113 @@
 /* ═══════════════════════════════════════════════════════════════════
-   HERO ULTRA HD FULLWIDTH & MINIMALISTA — PLAXTILINEAS
-   Design Tokens: #0a0a0a, #f4f5f7, #ffffff, #e4e4e7, #16a34a, #22c55e
+   HERO ULTRA HD CARRUSEL ESCÉNICO — PLAXTILINEAS
+   Escenas Reales en Entorno (Construcción, Invernadero, Tapicería, Espumas)
+   Contraste Elegante y Color Verde Sólido Original
+   Design Tokens: #0a0a0a, #16a34a, #22c55e, #ffffff, #e4e4e7
    ═══════════════════════════════════════════════════════════════════ */
 
 :host {
   display: block;
   width: 100%;
-  font-family: 'Inter Tight', sans-serif;
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .hero-fullscreen-section {
   position: relative;
   width: 100%;
-  min-height: 84vh;
+  min-height: 86vh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   background-color: #0a0a0a;
-  padding: 60px 24px;
+  padding: 44px 24px 34px 24px;
 }
 
 @media (min-width: 1440px) {
   .hero-fullscreen-section {
     min-height: 88vh;
-    padding: 70px 32px;
+    padding: 56px 36px 40px 36px;
   }
 }
 
 @media (max-width: 768px) {
   .hero-fullscreen-section {
-    min-height: 75vh;
-    padding: 40px 16px;
+    min-height: 78vh;
+    padding: 34px 16px 28px 16px;
   }
 }
 
-/* ── Fullscreen Ultra HD Image Background Fijo (Efecto Ventana / Fijo a la Vista) ── */
-.hero-fullscreen-section::before {
-  content: '';
+/* ── Background Carousel Layers ── */
+.hero-bg-carousel {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  background-image: url('/assets/images/hero/hero-chatgpt.png');
-  background-attachment: fixed;
-  background-position: center center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  filter: brightness(0.76) contrast(1.08) saturate(1.02);
   z-index: 1;
   pointer-events: none;
+  overflow: hidden;
 }
 
-/* ── Overlay Más Oscuro (Garantiza contraste óptimo y nitidez sin sombras en el texto) ── */
-.hero-fullscreen-section::after {
-  content: '';
+.hero-bg-layer {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(180deg, rgba(10, 10, 10, 0.74) 0%, rgba(10, 10, 10, 0.62) 50%, rgba(10, 10, 10, 0.84) 100%);
-  z-index: 2;
-  pointer-events: none;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transform: scale(1.05);
+  /* Brillo y contraste calibrados para mantener la elegancia oscura de Plaxtilineas */
+  filter: brightness(0.78) contrast(1.08) saturate(1.04);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 7s ease-out;
 }
 
-@media (max-width: 768px) {
-  .hero-fullscreen-section::before {
-    background-attachment: scroll;
-  }
+.hero-bg-layer.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Capa de contraste oscura elegante (Fondo oscuro distintivo de la marca) */
+.hero-bg-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    180deg, 
+    rgba(10, 10, 10, 0.78) 0%, 
+    rgba(10, 10, 10, 0.54) 40%, 
+    rgba(10, 10, 10, 0.64) 70%, 
+    rgba(10, 10, 10, 0.90) 100%
+  );
+  z-index: 2;
+}
+
+.hero-radial-vignette {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at center, 
+    rgba(10, 10, 10, 0.15) 0%, 
+    rgba(10, 10, 10, 0.74) 85%
+  );
+  z-index: 3;
+}
+
+.hero-subtle-mesh {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: 4;
+  opacity: 0.45;
 }
 
 /* ── Hero Container ── */
@@ -75,54 +115,33 @@
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
 }
 
-/* ── Minimalist Content ── */
-/* ── Minimalist Content ── */
-.hero-main-content {
+/* ── Top Bar Branding ── */
+.hero-top-bar {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
-  max-width: 940px;
-  animation: heroFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  position: relative;
-  background: transparent;
-  padding: 0;
+  justify-content: center;
+  margin-bottom: 26px;
 }
 
-@keyframes heroFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ── Hero Visual & Logo Invert (Sin contenedor negro, más grande y nítido) ── */
 .hero-visual {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 22px;
 }
 
 .hero-logo {
-  height: 165px;
-  max-width: 650px;
+  height: 90px;
+  max-width: 420px;
   width: auto;
   object-fit: contain;
-  filter: none;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
 }
@@ -131,73 +150,77 @@
   transform: scale(1.02);
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
   .hero-logo {
-    height: 125px;
-    max-width: 480px;
+    height: 64px;
+    max-width: 280px;
   }
 }
 
-@media (max-width: 640px) {
-  .hero-visual {
-    margin-bottom: 16px;
-  }
-
-  .hero-logo {
-    height: 88px;
-    max-width: 320px;
-  }
+/* ── Main Content Area ── */
+.hero-main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 900px;
+  margin-bottom: 34px;
 }
 
-/* Headline con Estilo Inter Tight y Tamaño Refinado */
+/* High-Impact Headline */
 .hero-headline {
-  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 2.65rem;
+  font-size: 3.1rem;
   font-weight: 850;
   text-transform: uppercase;
   letter-spacing: -0.025em;
-  line-height: 1.16;
+  line-height: 1.15;
   color: #ffffff;
-  margin: 0 0 16px 0;
-  text-shadow: none !important;
+  margin: 0 0 18px 0;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.95), 0 2px 6px rgba(0, 0, 0, 0.9);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.title-lead-text {
+  color: #ffffff;
+  display: inline-block;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.95), 0 2px 8px rgba(0, 0, 0, 0.9);
+}
+
+/* Verde Sólido Original Luminoso y Nítido (Sin transparencia que lo oscurezca) */
+.highlight-green {
+  color: #22c55e !important;
+  font-weight: 850;
+  display: inline-block;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.9);
   filter: none !important;
+  -webkit-text-fill-color: initial !important;
+  background: none !important;
 }
 
 @media (max-width: 1024px) {
   .hero-headline {
-    font-size: 2.15rem;
-    letter-spacing: -0.02em;
+    font-size: 2.45rem;
   }
 }
 
 @media (max-width: 640px) {
   .hero-headline {
-    font-size: 1.7rem;
+    font-size: 1.85rem;
     line-height: 1.2;
-    letter-spacing: -0.015em;
   }
 }
 
-.highlight-green {
-  color: #22c55e;
-  font-weight: 850;
-  text-shadow: none !important;
-  filter: none !important;
-  display: inline-block;
-}
-
-/* Minimalist Lead */
+/* Minimal Subtitle Lead */
 .hero-lead {
-  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 1.12rem;
+  font-size: 1.15rem;
   font-weight: 400;
   color: #e4e4e7;
-  line-height: 1.6;
-  max-width: 700px;
+  line-height: 1.62;
+  max-width: 680px;
   margin: 0 0 34px 0;
   letter-spacing: -0.01em;
-  text-shadow: none !important;
-  filter: none !important;
+  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.95), 0 1px 4px rgba(0, 0, 0, 0.85);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (max-width: 640px) {
@@ -207,12 +230,18 @@
   }
 }
 
-/* Actions Row */
+/* Smooth Transition State */
+.slide-transitioning {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+/* Action Buttons Row */
 .hero-actions-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 18px;
   flex-wrap: wrap;
 }
 
@@ -220,27 +249,24 @@
 .hero-btn-primary {
   background: #16a34a;
   color: #ffffff;
-  padding: 13px 28px;
+  padding: 14px 30px;
   border-radius: 9999px;
   font-weight: 600;
-  font-size: 0.94rem;
-  text-transform: none;
-  letter-spacing: -0.01em;
+  font-size: 0.96rem;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 22px rgba(22, 163, 74, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 4px 24px rgba(22, 163, 74, 0.5), 0 2px 10px rgba(0, 0, 0, 0.5);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .hero-btn-primary:hover {
   background: #15803d;
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(22, 163, 74, 0.6);
+  box-shadow: 0 8px 32px rgba(22, 163, 74, 0.7), 0 4px 14px rgba(0, 0, 0, 0.6);
   color: #ffffff;
 }
 
@@ -248,9 +274,6 @@
   font-family: 'Material Symbols Rounded' !important;
   font-size: 20px;
   line-height: 1;
-  text-transform: none !important;
-  letter-spacing: normal !important;
-  font-style: normal;
 }
 
 .btn-arrow {
@@ -261,33 +284,30 @@
   transform: translateX(4px);
 }
 
-/* Assistant Button (Sin avatar, limpio y estilizado) */
+/* Assistant Button (Mateo IA) */
 .hero-btn-assistant {
-  background: rgba(18, 18, 20, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(18, 18, 20, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1.5px solid rgba(255, 255, 255, 0.22);
   color: #ffffff;
-  padding: 13px 28px;
+  padding: 14px 30px;
   border-radius: 9999px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-weight: 600;
-  font-size: 0.94rem;
-  text-transform: none;
-  letter-spacing: -0.01em;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  font-size: 0.96rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .hero-btn-assistant:hover {
-  background: rgba(28, 28, 32, 0.95);
+  background: rgba(28, 28, 32, 0.98);
   border-color: #22c55e;
   transform: translateY(-2px);
-  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.65);
   color: #22c55e;
 }
 
@@ -295,13 +315,140 @@
   font-family: 'Material Symbols Rounded' !important;
   font-size: 20px;
   line-height: 1;
-  text-transform: none !important;
-  letter-spacing: normal !important;
-  font-style: normal;
   color: #22c55e;
   transition: transform 0.2s ease;
 }
 
 .hero-btn-assistant:hover .btn-assistant-icon {
-  transform: scale(1.1);
+  transform: scale(1.15);
+}
+
+/* ── Bottom Carousel Controls & Indicators ── */
+.hero-carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Prev / Next Buttons */
+.carousel-nav-btn {
+  background: rgba(10, 10, 10, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #e4e4e7;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 14px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+.carousel-nav-btn:hover {
+  background: rgba(34, 197, 94, 0.25);
+  border-color: #22c55e;
+  color: #22c55e;
+  transform: scale(1.08);
+}
+
+/* Indicator Pills */
+.carousel-indicators {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.indicator-pill {
+  background: rgba(10, 10, 10, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #d1d5db;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+.indicator-pill:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.indicator-pill.active {
+  background: rgba(22, 163, 74, 0.28);
+  border-color: #22c55e;
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.45), 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Progress bar inside active pill */
+.pill-track {
+  width: 24px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.indicator-pill.active .pill-track {
+  background: rgba(34, 197, 94, 0.45);
+}
+
+.pill-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: #22c55e;
+  border-radius: 9999px;
+  animation: slideProgressBar 6.5s linear forwards;
+}
+
+.pill-progress.paused {
+  animation-play-state: paused;
+}
+
+@keyframes slideProgressBar {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.pill-label {
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .indicator-pill {
+    padding: 6px 12px;
+    font-size: 0.76rem;
+  }
+  .pill-track {
+    width: 18px;
+  }
 }
