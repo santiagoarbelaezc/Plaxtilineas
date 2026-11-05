@@ -355,8 +355,7 @@ jobs:
               [ -f storage/logs/laravel.log ] && tail -n 50 storage/logs/laravel.log || true
               exit 1
             fi
-            if ! \$PHP_BIN -d display_errors=1 -d display_startup_errors=1 artisan config:cache --no-interaction; then
-              [ -f storage/logs/laravel.log ] && tail -n 50 storage/logs/laravel.log || true
-              exit 1
-            fi
+            # Eliminar config.php compilado para que cambios en .env se reflejen de inmediato
+            rm -f bootstrap/cache/config.php
+            rm -f bootstrap/cache/routes*.php
           "

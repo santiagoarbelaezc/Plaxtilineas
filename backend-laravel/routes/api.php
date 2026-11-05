@@ -64,8 +64,13 @@ Route::get('/health', function () {
     ]);
 });
 
-// Endpoint para probar conexión a base de datos
+// Endpoint para probar conexión a base de datos y diagnosticar configuración
 Route::get('/db-check', function () {
+    $envPath = base_path('.env');
+    $envExists = file_exists($envPath);
+    $configCached = app()->configurationIsCached();
+    $dbConfig = config('database.connections.mysql', []);
+
     try {
         DB::connection()->getPdo();
         $dbName = DB::connection()->getDatabaseName();
@@ -76,13 +81,58 @@ Route::get('/db-check', function () {
             'message' => 'Conexión a la base de datos establecida exitosamente.',
             'driver' => $driver,
             'database' => $dbName,
+            'diagnostics' => [
+                'env_file_exists' => $envExists,
+                'config_cached' => $configCached,
+                'resolved_host' => $dbConfig['host'] ?? null,
+                'resolved_user' => $dbConfig['username'] ?? null,
+                'resolved_database' => $dbConfig['database'] ?? null,
+            ],
         ]);
     } catch (Throwable $e) {
         return response()->json([
             'status' => 'warning',
             'message' => 'No hay conexión a la base de datos aún.',
             'error' => $e->getMessage(),
+            'diagnostics' => [
+                'env_file_exists' => $envExists,
+                'env_path' => $envPath,
+                'config_cached' => $configCached,
+                'resolved_host' => $dbConfig['host'] ?? null,
+                'resolved_user' => $dbConfig['username'] ?? null,
+                'resolved_database' => $dbConfig['database'] ?? null,
+            ],
         ], 200);
+    }
+});
+
+// Endpoint para limpiar caché de Laravel bajo demanda
+Route::get('/clear-cache', function () {
+    $results = [];
+    try {
+        \Illuminate\Support\Facades\Artisan::call('config:clear');
+        $results['config:clear'] = trim(\Illuminate\Support\Facades\Artisan::output());
+        \Illuminate\Support\Facades\Artisan::call('cache:clear');
+        $results['cache:clear'] = trim(\Illuminate\Support\Facades\Artisan::output());
+        \Illuminate\Support\Facades\Artisan::call('route:clear');
+        $results['route:clear'] = trim(\Illuminate\Support\Facades\Artisan::output());
+
+        $cachedConfig = base_path('bootstrap/cache/config.php');
+        if (file_exists($cachedConfig)) {
+            @unlink($cachedConfig);
+            $results['bootstrap_cache_config_deleted'] = true;
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Caché de Laravel limpiada exitosamente.',
+            'results' => $results,
+        ]);
+    } catch (Throwable $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Error al limpiar la caché: '.$e->getMessage(),
+        ], 500);
     }
 });
 
