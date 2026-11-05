@@ -98,3 +98,6 @@ libera automáticamente cuando el carrito queda inactivo, mediante el comando
 programado `carrito:limpiar-expirados`. Al crear el pedido, la reserva del
 carrito se transfiere al pedido sin descontar nuevamente el stock y la reserva
 del pedido usa `STOCK_RESERVA_EXPIRA_MINUTOS` como límite de pago.
+
+
+<!-- last-deploy-sync: 2026-11-04T23:35:00 -->
