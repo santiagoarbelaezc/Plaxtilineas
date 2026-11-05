@@ -338,6 +338,9 @@ jobs:
             # El entorno de producción debe existir previamente en el servidor.
             if [ ! -f '$BACKEND_ROOT/.env' ]; then
               echo 'ERROR: falta el archivo .env de producción en $BACKEND_ROOT/.env'
+              echo "Ruta efectiva del backend: $BACKEND_ROOT"
+              echo 'Archivos .env encontrados cerca de la ruta configurada:'
+              find "$(dirname '$BACKEND_ROOT')" -maxdepth 3 -type f -name '.env' -print 2>/dev/null || true
               echo 'Créalo en el servidor antes de desplegar; el workflow nunca lo sube desde GitHub.'
               exit 1
             fi
