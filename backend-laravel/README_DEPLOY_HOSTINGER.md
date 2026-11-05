@@ -18,15 +18,17 @@ Contiene todo el proyecto listo para funcionar directamente en Hostinger sin nec
 ### 1. Subir y extraer en Hostinger
 1. Entra a tu panel de **Hostinger (hPanel)** y abre el **Administrador de Archivos (File Manager)**.
 2. Sube y extrae el proyecto en una carpeta privada fuera de `public_html/`,
-   por ejemplo `/home/uXXXXXX/plaxtilineas-backend/`.
+   por ejemplo `/home/u977254048/plaxtilineas-backend/`.
 3. No extraigas el proyecto completo en `public_html/`, `www/` ni `htdocs/`.
-4. Configura el subdominio `api.plaxtilineas.com` con Document Root en:
-   `/home/uXXXXXX/plaxtilineas-backend/public`.
+4. Para este despliegue no es necesario crear un subdominio API. El dominio
+   principal sirve Angular y el workflow publica el puente `/api` en
+   `domains/plaxtilineas.com/public_html/api/`.
 
 ---
 
 ### 2. Configurar el archivo `.env`
-1. Dentro de la carpeta extraída, crea el archivo `.env` a partir de `.env.example` y verifica que exista.
+1. Dentro de la carpeta extraída, crea el archivo `.env` a partir de `.env.example` y verifica que exista en
+   `/home/u977254048/plaxtilineas-backend/.env`.
    - Si no lo ves (porque empieza con un punto), activa la opción de **"Mostrar archivos ocultos"** en la configuración del Administrador de Archivos.
    - No copies ni subas archivos `.env.production`. Ese archivo no forma parte del proyecto desplegable.
    - Genera una `APP_KEY` nueva directamente en el servidor, preferiblemente mediante SSH:
@@ -35,15 +37,17 @@ Contiene todo el proyecto listo para funcionar directamente en Hostinger sin nec
      php artisan key:generate --force
      ```
    - Si no tienes SSH, genera una clave segura con una instalación local confiable y pega únicamente la nueva `APP_KEY` en el `.env` del servidor. No la guardes en el repositorio ni en el ZIP.
-2. Si deseas probar de una vez la conexión a la base de datos MySQL de Hostinger, edita el `.env`:
+2. Configura la conexión a la base de datos MySQL de Hostinger en ese `.env`:
    ```env
    DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
+   DB_HOST=auth-db1076.hstgr.io
    DB_PORT=3306
-   DB_DATABASE=nombre_de_tu_bd_en_hostinger
-   DB_USERNAME=usuario_de_tu_bd_en_hostinger
-   DB_PASSWORD=contraseña_de_tu_bd
+   DB_DATABASE=u977254048_plaxtilineasDB
+   DB_USERNAME=u977254048_adminplaxti
+   DB_PASSWORD=tu_contraseña_de_produccion
    ```
+   Si estas variables faltan, Laravel usa por defecto `root` en `127.0.0.1` y
+   los endpoints que consultan la base de datos responden 500.
 
 ---
 
@@ -58,13 +62,42 @@ En el Administrador de Archivos:
 
 ---
 
-### 4. Probar los Endpoints desde el Navegador o Postman
+### 4. Puente público `/api` (API gateway)
 
-Una vez configurado el Document Root del subdominio, abre en tu navegador:
+El frontend se publica en:
+
+```
+/home/u977254048/domains/plaxtilineas.com/public_html
+```
+
+El núcleo Laravel permanece fuera del document root:
+
+```
+/home/u977254048/plaxtilineas-backend
+```
+
+El workflow crea automáticamente
+`/home/u977254048/domains/plaxtilineas.com/public_html/api/index.php` y su
+`.htaccess`. Ese puente carga el `vendor/` y `bootstrap/app.php` del núcleo
+privado, por lo que Angular debe usar `https://plaxtilineas.com/api/...`.
+No se debe copiar el proyecto completo a `public_html`.
+
+Configura el secreto de GitHub Actions así:
+
+```text
+HOSTINGER_BACKEND_PATH=/home/u977254048/plaxtilineas-backend
+```
+
+El workflow protege el `.env` y nunca lo sincroniza desde GitHub. Si falta,
+el despliegue se detiene antes de publicar archivos incompletos.
+
+### 5. Probar los Endpoints desde el Navegador o Postman
+
+Una vez configurado el dominio principal, abre en tu navegador:
 
 #### 🧪 1. Prueba de Vida / Ping:
 ```
-https://api.plaxtilineas.com/api/test
+https://plaxtilineas.com/api/test
 ```
 **Respuesta esperada (JSON):**
 ```json
@@ -81,19 +114,19 @@ https://api.plaxtilineas.com/api/test
 
 #### 🩺 2. Prueba de Salud y Permisos de Escritura:
 ```
-https://api.plaxtilineas.com/api/health
+https://plaxtilineas.com/api/health
 ```
 Te confirmará si `storage` y `bootstrap/cache` tienen permisos de escritura correctos (`"storage_writable": true`).
 
 #### 🗄️ 3. Prueba de Conexión a Base de Datos MySQL:
 ```
-https://api.plaxtilineas.com/api/db-check
+https://plaxtilineas.com/api/db-check
 ```
 Te dirá si Laravel logró conectarse a tu MySQL de Hostinger con los datos del `.env`.
 
 #### 🏠 4. Pantalla de Bienvenida JSON:
 ```
-https://api.plaxtilineas.com/
+https://plaxtilineas.com/api/test
 ```
 Muestra un índice con los enlaces directos a las pruebas.
 
@@ -125,12 +158,12 @@ En los secretos del repositorio configura:
 - `SSH_USER`
 - `SSH_KEY` (preferido) o `SSH_PASSWORD`
 - `SSH_KNOWN_HOSTS` (opcional; si no se define, el workflow obtiene y verifica la huella con `ssh-keyscan` usando `StrictHostKeyChecking=yes`)
-- `HOSTINGER_BACKEND_PATH`: ruta absoluta del proyecto Laravel, por ejemplo `/home/uXXXXXX/plaxtilineas-backend`
+- `HOSTINGER_BACKEND_PATH`: `/home/u977254048/plaxtilineas-backend`
 
 El workflow nunca sube `.env` ni `.env.production`. Crea y configura `.env` directamente en el servidor antes del primer despliegue:
 
 ```bash
-cd /home/uXXXXXX/plaxtilineas-backend
+cd /home/u977254048/plaxtilineas-backend
 cp .env.example .env
 php artisan key:generate --force
 ```

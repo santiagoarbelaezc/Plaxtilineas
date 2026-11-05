@@ -335,6 +335,17 @@ jobs:
 
           $SSH_EXEC "
             set -e
+            if [ ! -f '$BACKEND_ROOT/.env' ]; then
+              echo 'ERROR: falta el archivo .env de producción en $BACKEND_ROOT/.env'
+              echo 'Créalo en el servidor antes de desplegar; el workflow nunca lo sube desde GitHub.'
+              exit 1
+            fi
+            for REQUIRED_ENV in DB_HOST DB_DATABASE DB_USERNAME DB_PASSWORD; do
+              if ! grep -Eq \"^\\\${REQUIRED_ENV}=[^#[:space:]].*\" '$BACKEND_ROOT/.env'; then
+                echo \"ERROR: falta o está vacío \${REQUIRED_ENV} en $BACKEND_ROOT/.env\"
+                exit 1
+              fi
+            done
             if [ -x /opt/alt/php83/usr/bin/php ]; then
               PHP_BIN=/opt/alt/php83/usr/bin/php
             elif [ -x /opt/alt/php82/usr/bin/php ]; then
