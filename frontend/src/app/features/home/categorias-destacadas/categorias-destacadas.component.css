@@ -235,10 +235,12 @@
   flex-shrink: 0;
 }
 
+.nav-btn.prev,
 .nav-btn.prev-btn {
   left: -18px;
 }
 
+.nav-btn.next,
 .nav-btn.next-btn {
   right: -18px;
 }

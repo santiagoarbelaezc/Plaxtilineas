@@ -426,10 +426,6 @@
   animation: slideProgressBar 6.5s linear forwards;
 }
 
-.pill-progress.paused {
-  animation-play-state: paused;
-}
-
 @keyframes slideProgressBar {
   from {
     width: 0%;

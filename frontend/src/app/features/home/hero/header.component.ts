@@ -105,7 +105,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   public currentSlideIndex = 0;
   public slideTransitioning = false;
-  public isPaused = false;
   private autoplayTimer: ReturnType<typeof setInterval> | null = null;
   private readonly SLIDE_DURATION_MS = 6500;
 
@@ -170,24 +169,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }, 450);
   }
 
-  public pauseAutoplay(): void {
-    this.isPaused = true;
-    this.stopAutoplay();
-  }
-
-  public resumeAutoplay(): void {
-    this.isPaused = false;
-    if (isPlatformBrowser(this.platformId)) {
-      this.startAutoplay();
-    }
-  }
-
   private startAutoplay(): void {
     this.stopAutoplay();
     this.autoplayTimer = setInterval(() => {
-      if (!this.isPaused) {
-        this.nextSlide();
-      }
+      this.nextSlide();
     }, this.SLIDE_DURATION_MS);
   }
 

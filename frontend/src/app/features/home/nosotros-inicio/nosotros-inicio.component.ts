@@ -37,10 +37,12 @@ export class NosotrosInicioComponent implements OnInit, AfterViewInit, OnDestroy
 
   // Frases dinámicas con efecto máquina de escribir
   phrases: string[] = [
-    'con altos niveles de calidad',
-    'para fincas y agroindustria',
-    'para obras de construcción',
-    'para tapicería y empaque'
+    'todas las industrias',
+    'obras de construcción',
+    'el sector agrícola',
+    'tapicería hogar y automotriz',
+    'soluciones en espumas',
+    'plásticos y empaque'
   ];
   currentPhraseIndex = 0;
   displayedText = '';
@@ -48,10 +50,12 @@ export class NosotrosInicioComponent implements OnInit, AfterViewInit, OnDestroy
   private typewriterTimer: any;
 
   ejesPrincipales: string[] = [
-    'Peletería & Tapicería',
-    'Plásticos & Mallas',
-    'Empaques & Embalaje',
-    'Logística Regional'
+    'Construcción & Obra',
+    'Agricultura & Tecnificación',
+    'Tapicería Hogar & Automotriz',
+    'Espumas de Poliuretano',
+    'Plásticos & Empaque',
+    'Logística & Distribución'
   ];
 
   ngOnInit(): void {
