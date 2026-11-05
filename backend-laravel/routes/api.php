@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Route;
 | API Routes - Plaxtilineas (Laravel 11)
 |--------------------------------------------------------------------------
 | Production deployment trigger.
+| Backend environment path verified on Hostinger.
 */
 
 // Endpoint de prueba GET
