@@ -226,19 +226,30 @@
 }
 
 @media (max-width: 600px) {
-  .grid-wrapper { padding: 20px 0; }
+  .grid-wrapper { padding: 16px 0; }
   .grid-container {
-    grid-template-columns: 1fr;
-    padding: 0 20px;
-    grid-auto-rows: minmax(300px, auto);
-    gap: 20px;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0 16px;
+    grid-auto-rows: minmax(175px, auto);
+    gap: 12px;
   }
-  /* 1 Columna */
-  .producto-item { grid-row: span 1 !important; }
+  /* Grilla mvil de 2 columnas equilibrada */
+  .producto-item { 
+    grid-row: span 1 !important; 
+    border-radius: 12px;
+  }
   
   .punto-medio {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
   .producto-item:hover { transform: none; }
+}
+
+@media (max-width: 380px) {
+  .grid-container {
+    gap: 8px;
+    padding: 0 12px;
+    grid-auto-rows: minmax(150px, auto);
+  }
 }

@@ -141,14 +141,16 @@
   font-weight: 700;
   line-height: 1.22;
   margin-top: 6px;
-  color: #71717a; /* Gris claro evidente y elegante */
+  color: #71717a;
+  /* Gris claro evidente y elegante */
   letter-spacing: -0.015em;
 }
 
 /* Párrafo Descriptivo en Gris Claro Suave */
 .feature-desc {
   font-size: 1.05rem;
-  color: #64748b; /* Gris claro suave */
+  color: #64748b;
+  /* Gris claro suave */
   line-height: 1.7;
   font-weight: 400;
   margin: 0 0 28px 0;
@@ -188,13 +190,15 @@
 }
 
 .bullet-name {
-  color: #000000; /* Negro sólido */
+  color: #000000;
+  /* Negro sólido */
   font-weight: 800;
   letter-spacing: 0.01em;
 }
 
 .bullet-detail {
-  color: #71717a; /* Gris claro */
+  color: #71717a;
+  /* Gris claro */
   font-weight: 400;
 }
 
@@ -267,38 +271,48 @@
 
 @media (max-width: 640px) {
   .product-features-showcase {
-    padding: 52px 0 60px 0;
+    padding: 38px 0 44px 0;
   }
 
   .features-container {
-    padding: 0 18px;
-    gap: 52px;
+    padding: 0 16px;
+    gap: 42px;
   }
 
   .feature-frame {
-    height: 270px;
-    border-radius: 18px;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    min-height: 220px;
+    max-height: 260px;
+    border-radius: 16px;
   }
 
   .title-lead {
-    font-size: 1.85rem;
+    font-size: clamp(1.55rem, 5.2vw, 1.85rem);
+    line-height: 1.15;
   }
 
   .title-highlight {
-    font-size: 1.55rem;
+    font-size: clamp(1.35rem, 4.6vw, 1.55rem);
+    line-height: 1.2;
   }
 
   .feature-desc {
-    font-size: 0.94rem;
+    font-size: 0.92rem;
+    line-height: 1.55;
   }
 
   .bullet-text-group {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
   }
 
   .feature-cta-pill {
     width: 100%;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
     text-align: center;
+    box-sizing: border-box;
   }
 }

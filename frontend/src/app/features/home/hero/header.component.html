@@ -1,6 +1,8 @@
 <header 
   class="hero-fullscreen-section" 
-  *ngIf="mostrarHeader">
+  *ngIf="mostrarHeader"
+  (touchstart)="onTouchStart($event)"
+  (touchend)="onTouchEnd($event)">
 
   <!-- Background Image Carousel Layers -->
   <div class="hero-bg-carousel">
@@ -70,51 +72,6 @@
         </button>
 
       </div>
-
-    </div>
-
-    <!-- Bottom Carousel Controls & Indicator Pills -->
-    <div class="hero-carousel-controls">
-      
-      <!-- Prev Button -->
-      <button 
-        type="button" 
-        class="carousel-nav-btn prev-btn" 
-        (click)="prevSlide()" 
-        aria-label="Diapositiva anterior">
-        <fa-icon [icon]="['fas', 'chevron-left']"></fa-icon>
-      </button>
-
-      <!-- Indicator Pills with Animated Progress Bar -->
-      <div class="carousel-indicators" role="tablist">
-        @for (slide of slides; track slide.id; let i = $index) {
-          <button 
-            type="button" 
-            class="indicator-pill" 
-            [class.active]="i === currentSlideIndex"
-            (click)="goToSlide(i)"
-            role="tab"
-            [attr.aria-selected]="i === currentSlideIndex"
-            [attr.aria-label]="'Ir a ' + slide.titleHighlight">
-            <span class="pill-track">
-              <span 
-                class="pill-progress" 
-                *ngIf="i === currentSlideIndex">
-              </span>
-            </span>
-            <span class="pill-label">{{ slide.titleHighlight }}</span>
-          </button>
-        }
-      </div>
-
-      <!-- Next Button -->
-      <button 
-        type="button" 
-        class="carousel-nav-btn next-btn" 
-        (click)="nextSlide()" 
-        aria-label="Siguiente diapositiva">
-        <fa-icon [icon]="['fas', 'chevron-right']"></fa-icon>
-      </button>
 
     </div>
 

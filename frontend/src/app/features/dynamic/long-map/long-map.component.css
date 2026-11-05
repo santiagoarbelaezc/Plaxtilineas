@@ -136,6 +136,20 @@
   display: inline;
 }
 
+/* Control de versiones de texto y contenido */
+.desktop-text {
+  display: block;
+}
+
+.desktop-info-grid {
+  display: grid;
+}
+
+.mobile-text,
+.mobile-info-grid {
+  display: none !important;
+}
+
 /* Párrafo Descriptivo Lead */
 .map-lead {
   font-size: 0.98rem;
@@ -274,38 +288,77 @@
 
 @media (max-width: 640px) {
   .map-showcase-section {
-    padding: 50px 0 55px 0;
+    padding: 38px 0 42px 0;
   }
 
   .map-container-inner {
-    padding: 0 20px;
+    padding: 0 16px;
   }
 
   .map-frame {
-    height: 300px;
+    height: 240px;
     border-radius: 16px;
   }
 
+  /* Evita que el iframe del mapa secuestre el scroll vertical en móviles */
+  .map-frame iframe {
+    pointer-events: none;
+  }
+
   .title-lead-line {
-    font-size: 1.95rem;
+    font-size: clamp(1.6rem, 5.2vw, 1.95rem);
+    line-height: 1.15;
   }
 
   .title-dynamic-line {
-    font-size: 1.65rem;
+    font-size: clamp(1.35rem, 4.8vw, 1.65rem);
+    line-height: 1.2;
   }
 
-  .map-lead {
-    font-size: 0.9rem;
+  .desktop-text,
+  .desktop-info-grid {
+    display: none !important;
   }
 
-  .map-info-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    margin-bottom: 26px;
+  .mobile-text {
+    display: block !important;
+    font-size: 0.90rem;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.78);
+    margin: 0 0 16px 0;
+  }
+
+  .mobile-info-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px 12px !important;
+    margin: 0 0 20px 0 !important;
+  }
+
+  .mobile-info-grid .map-info-card {
+    padding: 6px 0 8px 0;
+  }
+
+  .mobile-info-grid .info-card-header {
+    gap: 6px;
+  }
+
+  .mobile-info-grid .info-card-title {
+    font-size: 0.86rem;
+  }
+
+  .mobile-info-grid .info-card-detail {
+    font-size: 0.78rem;
+    padding-left: 18px;
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.72);
   }
 
   .map-cta-pill {
     width: 100%;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
     text-align: center;
     box-sizing: border-box;

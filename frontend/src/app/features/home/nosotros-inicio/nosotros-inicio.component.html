@@ -34,14 +34,25 @@
           </h2>
         </div>
 
-        <!-- Párrafo Descriptivo Conciso y Directo -->
-        <p class="identity-lead">
+        <!-- Párrafo Descriptivo: Versión Desktop y Versión Móvil Simplificada -->
+        <p class="identity-lead desktop-text">
           En <strong>Plaxtilineas</strong> somos especialistas en el suministro y distribución integral de materiales para construcción, agricultura, tapicería hogar y automotriz, espumas técnicas y plásticos industriales.
         </p>
+        <p class="identity-lead mobile-text">
+          Suministro y distribución integral de materiales para construcción, agro, tapicería e industria.
+        </p>
 
-        <!-- Ejes Principales (Grid Moderno de Títulos) -->
-        <div class="identity-ejes-grid">
+        <!-- Ejes Principales Desktop -->
+        <div class="identity-ejes-grid desktop-ejes">
           <div *ngFor="let eje of ejesPrincipales; let i = index" class="eje-pill-card">
+            <span class="eje-pill-index">0{{ i + 1 }}</span>
+            <span class="eje-pill-name">{{ eje }}</span>
+          </div>
+        </div>
+
+        <!-- Ejes Principales Móvil Simplificado (Chips 2x2 compactos) -->
+        <div class="identity-ejes-grid mobile-ejes">
+          <div *ngFor="let eje of ejesPrincipalesMobile; let i = index" class="eje-pill-card">
             <span class="eje-pill-index">0{{ i + 1 }}</span>
             <span class="eje-pill-name">{{ eje }}</span>
           </div>

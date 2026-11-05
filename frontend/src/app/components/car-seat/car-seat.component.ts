@@ -130,6 +130,30 @@ export class CarSeatComponent implements AfterViewInit, OnDestroy {
   private animationFrameId: number | null = null;
   private isDestroyed: boolean = false;
 
+  // Navegación táctil y programática
+  private isProgrammaticNavigating: boolean = false;
+  private navTimeout: any = null;
+  private lastHiddenState: boolean = false;
+  private touchStartY: number = 0;
+  private touchStartX: number = 0;
+
+  public get heroImage(): string {
+    if (this.selectedReference.colorKey === 'gris') {
+      return 'assets/images/cuerina/seat-gris.jpg';
+    }
+    return 'assets/images/cuerina/cyrus-hero.jpg';
+  }
+
+  public get macroImage(): string {
+    if (this.selectedReference.colorKey === 'gris') {
+      return 'assets/images/cuerina/cyrus-close-gris.jpg';
+    }
+    if (this.selectedReference.colorKey === 'charcoat') {
+      return 'assets/images/cuerina/cyrus-close-charcoat.jpg';
+    }
+    return 'assets/images/cuerina/cyrus-macro.jpg';
+  }
+
   private boundScroll = () => this.onNativeScroll();
   private boundKeyDown = (e: KeyboardEvent) => this.onKeyDown(e);
 
@@ -151,6 +175,9 @@ export class CarSeatComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.isDestroyed = true;
+    if (this.navTimeout) {
+      clearTimeout(this.navTimeout);
+    }
     this.navbarVisibilityService.registerHidden('car-seat', false);
     if (!isPlatformBrowser(this.platformId)) {
       return;
@@ -175,13 +202,19 @@ export class CarSeatComponent implements AfterViewInit, OnDestroy {
     const maxScroll = el.offsetHeight - window.innerHeight;
     if (maxScroll <= 0) return;
 
-    const scrolled = -rect.top;
-    const raw = scrolled / maxScroll;
-    this.targetProgress = Math.max(0, Math.min(1, raw));
+    // Solo actualizar con el scroll si no estamos en medio de un salto por flechas
+    if (!this.isProgrammaticNavigating) {
+      const scrolled = -rect.top;
+      const raw = scrolled / maxScroll;
+      this.targetProgress = Math.max(0, Math.min(1, raw));
+    }
 
-    // Ocultar navbar al llegar al nivel del componente Car Seat
-    const isAtCarSeatLevel = rect.top <= 100 && rect.bottom >= 60;
-    this.navbarVisibilityService.registerHidden('car-seat', isAtCarSeatLevel);
+    // Histéresis para evitar toggle constante y jitter
+    const isAtCarSeatLevel = rect.top <= 60 && rect.bottom >= 120;
+    if (isAtCarSeatLevel !== this.lastHiddenState) {
+      this.lastHiddenState = isAtCarSeatLevel;
+      this.navbarVisibilityService.registerHidden('car-seat', isAtCarSeatLevel);
+    }
   }
 
   private onKeyDown(e: KeyboardEvent): void {
@@ -351,22 +384,62 @@ export class CarSeatComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  // ── Navegación Táctil Móvil ──
+  public onTouchStart(e: TouchEvent): void {
+    if (e.touches && e.touches.length === 1) {
+      this.touchStartY = e.touches[0].clientY;
+      this.touchStartX = e.touches[0].clientX;
+    }
+  }
+
+  public onTouchEnd(e: TouchEvent): void {
+    if (e.changedTouches && e.changedTouches.length === 1) {
+      const deltaY = this.touchStartY - e.changedTouches[0].clientY;
+      const deltaX = this.touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(deltaY) > 45 || Math.abs(deltaX) > 45) {
+        if (deltaY > 45 || deltaX > 45) {
+          this.nextStage();
+        } else if (deltaY < -45 || deltaX < -45) {
+          this.prevStage();
+        }
+      }
+    }
+  }
+
   // ── Navegación Directa por Etapas ──
   public goToStage(stageIndex: number): void {
     const el = this.scrollTrack?.nativeElement;
-    if (!el) return;
+    const clampedIndex = Math.max(0, Math.min(4, stageIndex));
+    this.activeStage = clampedIndex;
 
     const targets = [0.0, 0.28, 0.52, 0.74, 1.0];
-    const target = targets[stageIndex] ?? 0;
+    const target = targets[clampedIndex] ?? 0;
+
+    // Actualización inmediata del render visual para que las imágenes cambien al instante
+    this.targetProgress = target;
+    this.smoothProgress = target;
+    this.calculateInterpolations(target);
+    this.cdr.markForCheck();
+    this.cdr.detectChanges();
+
+    // Bloquear temporalmente que el listener de scroll sobrescriba targetProgress mientras viaja
+    this.isProgrammaticNavigating = true;
+    if (this.navTimeout) clearTimeout(this.navTimeout);
+    this.navTimeout = setTimeout(() => {
+      this.isProgrammaticNavigating = false;
+    }, 850);
+
+    if (!el) return;
     const maxScroll = el.offsetHeight - window.innerHeight;
+    if (maxScroll > 0) {
+      const trackTop = window.scrollY + el.getBoundingClientRect().top;
+      const targetScrollY = trackTop + (target * maxScroll);
 
-    const trackTop = window.scrollY + el.getBoundingClientRect().top;
-    const targetScrollY = trackTop + (target * maxScroll);
-
-    window.scrollTo({
-      top: targetScrollY,
-      behavior: 'smooth'
-    });
+      window.scrollTo({
+        top: targetScrollY,
+        behavior: 'smooth'
+      });
+    }
   }
 
   public nextStage(): void {
@@ -384,7 +457,9 @@ export class CarSeatComponent implements AfterViewInit, OnDestroy {
   // ── Métodos de Pedido & Cotización ──
   public selectReference(ref: ProductReference): void {
     this.selectedReference = ref;
+    this.calculateInterpolations(this.smoothProgress);
     this.cdr.markForCheck();
+    this.cdr.detectChanges();
   }
 
   public incrementQuantity(): void {

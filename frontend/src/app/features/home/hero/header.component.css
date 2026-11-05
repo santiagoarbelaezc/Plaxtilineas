@@ -203,13 +203,6 @@
   }
 }
 
-@media (max-width: 640px) {
-  .hero-headline {
-    font-size: 1.85rem;
-    line-height: 1.2;
-  }
-}
-
 /* Minimal Subtitle Lead */
 .hero-lead {
   font-size: 1.15rem;
@@ -224,9 +217,32 @@
 }
 
 @media (max-width: 640px) {
+  .hero-headline {
+    font-size: clamp(1.65rem, 5.8vw, 1.95rem);
+    line-height: 1.18;
+    margin-bottom: 14px;
+  }
   .hero-lead {
-    font-size: 0.98rem;
-    margin-bottom: 26px;
+    font-size: 0.94rem;
+    line-height: 1.55;
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-actions-row {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+  }
+  .hero-btn-primary,
+  .hero-btn-assistant {
+    width: 100%;
+    max-width: 320px;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 13px 20px;
+    font-size: 0.92rem;
   }
 }
 
@@ -321,130 +337,4 @@
 
 .hero-btn-assistant:hover .btn-assistant-icon {
   transform: scale(1.15);
-}
-
-/* ── Bottom Carousel Controls & Indicators ── */
-.hero-carousel-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  width: 100%;
-  padding-top: 18px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-/* Prev / Next Buttons */
-.carousel-nav-btn {
-  background: rgba(10, 10, 10, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #e4e4e7;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 14px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
-}
-
-.carousel-nav-btn:hover {
-  background: rgba(34, 197, 94, 0.25);
-  border-color: #22c55e;
-  color: #22c55e;
-  transform: scale(1.08);
-}
-
-/* Indicator Pills */
-.carousel-indicators {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.indicator-pill {
-  background: rgba(10, 10, 10, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: #d1d5db;
-  padding: 8px 18px;
-  border-radius: 9999px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  font-size: 0.84rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  transition: all 0.25s ease;
-  position: relative;
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
-}
-
-.indicator-pill:hover {
-  background: rgba(255, 255, 255, 0.18);
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-.indicator-pill.active {
-  background: rgba(22, 163, 74, 0.28);
-  border-color: #22c55e;
-  color: #ffffff;
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.45), 0 4px 16px rgba(0, 0, 0, 0.5);
-}
-
-/* Progress bar inside active pill */
-.pill-track {
-  width: 24px;
-  height: 3px;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 9999px;
-  overflow: hidden;
-  position: relative;
-}
-
-.indicator-pill.active .pill-track {
-  background: rgba(34, 197, 94, 0.45);
-}
-
-.pill-progress {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 0%;
-  background: #22c55e;
-  border-radius: 9999px;
-  animation: slideProgressBar 6.5s linear forwards;
-}
-
-@keyframes slideProgressBar {
-  from {
-    width: 0%;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-.pill-label {
-  white-space: nowrap;
-}
-
-@media (max-width: 640px) {
-  .indicator-pill {
-    padding: 6px 12px;
-    font-size: 0.76rem;
-  }
-  .pill-track {
-    width: 18px;
-  }
 }

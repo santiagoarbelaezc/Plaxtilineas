@@ -161,6 +161,20 @@
   }
 }
 
+/* Control de versiones de texto y contenido */
+.desktop-text {
+  display: block;
+}
+
+.desktop-ejes {
+  display: grid;
+}
+
+.mobile-text,
+.mobile-ejes {
+  display: none !important;
+}
+
 /* Párrafo Descriptivo Lead */
 .identity-lead {
   font-size: 0.98rem;
@@ -281,34 +295,65 @@
 
 @media (max-width: 640px) {
   .identity-showcase-section {
-    padding: 50px 0 55px 0;
+    padding: 38px 0 42px 0;
   }
 
   .identity-container {
-    padding: 0 20px;
+    padding: 0 16px;
   }
 
   .showcase-frame {
-    height: 300px;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    min-height: 220px;
+    max-height: 280px;
     border-radius: 16px;
   }
 
   .title-lead-line {
-    font-size: 1.95rem;
+    font-size: clamp(1.6rem, 5.2vw, 1.95rem);
+    line-height: 1.15;
   }
 
   .title-dynamic-line {
-    font-size: 1.65rem;
+    font-size: clamp(1.35rem, 4.8vw, 1.65rem);
+    line-height: 1.2;
   }
 
-  .identity-ejes-grid {
-    grid-template-columns: 1fr;
+  .desktop-text,
+  .desktop-ejes {
+    display: none !important;
+  }
+
+  .mobile-text {
+    display: block !important;
+    font-size: 0.90rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.78);
+    margin: 0 0 18px 0;
+  }
+
+  .mobile-ejes {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px 12px !important;
+    margin: 0 0 20px 0 !important;
+  }
+
+  .mobile-ejes .eje-pill-card {
+    padding: 6px 0;
     gap: 8px;
-    margin-bottom: 26px;
+  }
+
+  .mobile-ejes .eje-pill-name {
+    font-size: 0.84rem;
   }
 
   .identity-cta-pill {
     width: 100%;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
     box-sizing: border-box;
   }

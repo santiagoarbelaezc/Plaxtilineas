@@ -58,6 +58,15 @@ export class NosotrosInicioComponent implements OnInit, AfterViewInit, OnDestroy
     'Logística & Distribución'
   ];
 
+  ejesPrincipalesMobile: string[] = [
+    'Construcción',
+    'Agricultura',
+    'Tapicería',
+    'Espumas',
+    'Plásticos',
+    'Distribución'
+  ];
+
   ngOnInit(): void {
     if (!this.isBrowser) {
       this.displayedText = this.phrases[0];

@@ -452,6 +452,12 @@
     grid-auto-columns: calc((100% - 2 * 0.85rem) / 3); /* 3 tarjetas completas */
     gap: 0.85rem;
     padding: 10px 4px 18px 4px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .category-card {
+    scroll-snap-align: start;
+    -webkit-tap-highlight-color: transparent;
   }
   .card-visual {
     height: 115px;
@@ -477,10 +483,12 @@
   .categories-grid {
     grid-auto-columns: calc((100% - 0.75rem) / 2.2); /* 2.2 tarjetas grandes para visualizar el swipe */
     gap: 0.75rem;
+    scroll-padding: 0 16px;
   }
   .category-card {
     padding: 14px 10px 16px 10px;
     border-radius: 18px;
+    scroll-snap-align: start;
   }
   .card-visual {
     height: 105px;
@@ -490,7 +498,7 @@
     font-size: 0.85rem;
   }
   .explore-pill {
-    padding: 4px 10px;
-    font-size: 0.65rem;
+    padding: 5px 12px;
+    font-size: 0.68rem;
   }
 }

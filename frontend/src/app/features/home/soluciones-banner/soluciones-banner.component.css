@@ -374,7 +374,7 @@
 
 @media (max-width: 768px) {
   .soluciones-section {
-    padding: 16px 0 28px 0;
+    padding: 24px 0 32px 0;
   }
 
   .section-title {
@@ -382,37 +382,71 @@
   }
 
   .section-subtitle {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
   }
 
-  /* En móviles se transforma en tarjetas apiladas fluidas */
+  /* Tarjetas más altas en móvil, con espaciado amplio y elegante */
   .soluciones-grid {
     flex-direction: column;
     height: auto;
-    gap: 16px;
+    gap: 18px;
+    padding: 0 16px;
   }
 
   .solucion-card {
-    height: 260px;
+    height: 290px;
     width: 100% !important;
     flex: none !important;
     opacity: 1 !important;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .card-top-bar {
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    z-index: 5;
   }
 
   .card-img {
-    filter: brightness(0.65) contrast(1.1);
+    filter: brightness(0.72) contrast(1.06);
   }
 
+  .card-content {
+    padding: 24px 20px;
+    z-index: 5;
+  }
+
+  .card-title {
+    font-size: 1.38rem !important;
+    line-height: 1.22;
+    margin: 0 0 16px 0 !important;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.95);
+  }
+
+  /* Desactivar descripción en móvil: sólo dejar título y botón */
   .card-desc {
-    opacity: 1 !important;
-    max-height: 70px !important;
-    transform: none !important;
-    font-size: 0.86rem;
-    margin-bottom: 10px;
+    display: none !important;
   }
 
   .card-action {
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  .action-btn {
+    padding: 11px 24px;
+    font-size: 0.84rem;
+    font-weight: 700;
+  }
+}
+
+@media (max-width: 480px) {
+  .solucion-card {
+    height: 275px;
+  }
+  .card-title {
+    font-size: 1.28rem !important;
   }
 }

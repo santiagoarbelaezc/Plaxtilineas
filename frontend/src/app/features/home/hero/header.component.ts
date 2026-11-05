@@ -108,6 +108,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private autoplayTimer: ReturnType<typeof setInterval> | null = null;
   private readonly SLIDE_DURATION_MS = 6500;
 
+  // Touch swipe support para móviles
+  private touchStartX = 0;
+  private touchStartY = 0;
+
   constructor(library: FaIconLibrary) {
     library.addIcons(
       faShoppingCart,
@@ -185,6 +189,29 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   public abrirAsistente(): void {
     this.chatService.toggleChat();
+  }
+
+  public onTouchStart(event: TouchEvent): void {
+    if (event.touches.length > 0) {
+      this.touchStartX = event.touches[0].clientX;
+      this.touchStartY = event.touches[0].clientY;
+    }
+  }
+
+  public onTouchEnd(event: TouchEvent): void {
+    if (event.changedTouches.length > 0) {
+      const deltaX = event.changedTouches[0].clientX - this.touchStartX;
+      const deltaY = event.changedTouches[0].clientY - this.touchStartY;
+
+      // Deslizar sólo si el movimiento horizontal supera 45px y predomina sobre el vertical
+      if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.3) {
+        if (deltaX < 0) {
+          this.nextSlide();
+        } else {
+          this.prevSlide();
+        }
+      }
+    }
   }
 
   public goToRegister(): void {
