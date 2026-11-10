@@ -13,7 +13,7 @@ export interface QuickLinkItem {
   id: string;
   title: string;
   subtitle: string;
-  iconType: 'instagram' | 'facebook' | 'location' | 'espumas' | 'catalog' | 'review';
+  iconType: 'instagram' | 'facebook' | 'location' | 'espumas' | 'catalog' | 'review' | 'districol';
   themeClass?: string;
   logoUrl?: string;
   invertLogo?: boolean;
@@ -80,7 +80,17 @@ export class LinksComponent implements OnInit, OnDestroy {
       subtitle: 'Tu opinión en Google nos ayuda a crecer',
       iconType: 'review',
       themeClass: 'theme-review',
-      targetUrl: '#',
+      targetUrl: 'https://search.google.com/local/writereview?placeid=ChIJn8k_VL31OI4R-GhA0PGK2Ss',
+      isExternal: true
+    },
+    {
+      id: 'districol',
+      title: 'Colchones Districol',
+      subtitle: 'Línea de Descanso & Confort',
+      iconType: 'districol',
+      themeClass: 'theme-districol',
+      logoUrl: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1794328475/logo-distri3_akh038.png',
+      targetUrl: 'https://colchonesdistricol.com/',
       isExternal: true
     },
     {

@@ -369,8 +369,10 @@
 }
 
 .brand-icon-logo {
-  width: 24px;
-  height: 24px;
+  max-width: 28px;
+  max-height: 28px;
+  width: auto;
+  height: auto;
   object-fit: contain;
   transition: transform 0.22s ease;
 }
@@ -398,6 +400,12 @@
   background: rgba(52, 168, 83, 0.16);
   color: #22c55e;
   border-color: rgba(52, 168, 83, 0.35);
+}
+
+.theme-districol:hover .link-btn-icon-wrap {
+  background: rgba(22, 163, 74, 0.16);
+  color: #22c55e;
+  border-color: rgba(34, 197, 94, 0.35);
 }
 
 .theme-espumas:hover .link-btn-icon-wrap {

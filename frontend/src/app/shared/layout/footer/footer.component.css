@@ -127,6 +127,63 @@
   transform: translateY(-2px);
 }
 
+/* ── Botón Destacado: Portal de Enlaces Rápidos ── */
+.footer-links-action {
+  margin-top: 18px;
+}
+
+.footer-links-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  color: #1e293b;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: all 0.22s ease-in-out;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.links-btn-icon {
+  color: #16a34a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.22s ease;
+  flex-shrink: 0;
+}
+
+.links-btn-arrow {
+  color: #94a3b8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.22s ease, color 0.22s ease;
+  flex-shrink: 0;
+}
+
+.footer-links-btn:hover {
+  background-color: #f0fdf4;
+  border-color: #16a34a;
+  color: #15803d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.12);
+}
+
+.footer-links-btn:hover .links-btn-icon {
+  transform: rotate(-12deg);
+}
+
+.footer-links-btn:hover .links-btn-arrow {
+  color: #16a34a;
+  transform: translateX(3px);
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    TÍTULOS DE COLUMNA (ESTILO KICKER MINIMALISTA)
    ═══════════════════════════════════════════════════════════════════ */
