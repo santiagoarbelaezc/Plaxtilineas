@@ -1,0 +1,627 @@
+<div class="admin-content-wrapper-inner">
+
+  <!-- 1. Fila de Stat Cards (4 Columnas) -->
+  <div class="stats-row">
+    <!-- Tiempo en Sesión Actual -->
+    <div class="stat-card stat-session-live">
+      <div class="stat-header">
+        <span class="stat-card-label">Sesión Actual</span>
+        <div class="stat-icon-box ok-icon">
+          <fa-icon [icon]="faClock"></fa-icon>
+        </div>
+      </div>
+      <div class="stat-number" style="font-size: 1.95rem;">{{ cronometroFormateado() }}</div>
+      <div class="stat-meta">
+        <span class="stat-pill-ok">
+          <span class="live-dot-inline"></span> Administrador en línea
+        </span>
+      </div>
+    </div>
+
+    <!-- Total Operaciones Registradas -->
+    <div class="stat-card">
+      <div class="stat-header">
+        <span class="stat-card-label">Operaciones Registradas</span>
+        <div class="stat-icon-box">
+          <fa-icon [icon]="faClipboardList"></fa-icon>
+        </div>
+      </div>
+      <div class="stat-number">{{ estadisticas().total_operaciones }}</div>
+      <div class="stat-meta">
+        <span class="stat-subtext">{{ estadisticas().operaciones_hoy }} realizadas hoy</span>
+      </div>
+    </div>
+
+    <!-- Eliminaciones Auditadas -->
+    <div class="stat-card stat-alert" [class.has-critical]="estadisticas().eliminaciones_totales > 0">
+      <div class="stat-header">
+        <span class="stat-card-label">Registros Eliminados</span>
+        <div class="stat-icon-box alert-icon">
+          <fa-icon [icon]="faTrash"></fa-icon>
+        </div>
+      </div>
+      <div class="stat-number stat-alert-number">{{ estadisticas().eliminaciones_totales }}</div>
+      <div class="stat-meta">
+        <span class="stat-subtext">Usuarios, pedidos o PQRS</span>
+      </div>
+    </div>
+
+    <!-- Total Sesiones -->
+    <div class="stat-card">
+      <div class="stat-header">
+        <span class="stat-card-label">Total de Sesiones</span>
+        <div class="stat-icon-box">
+          <fa-icon [icon]="faUserShield"></fa-icon>
+        </div>
+      </div>
+      <div class="stat-number">{{ estadisticas().total_sesiones }}</div>
+      <div class="stat-meta">
+        <span class="stat-subtext">Ingresos al panel de control</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Bento Grid (Hero Oscuro + Atajos de Auditoría 360px) -->
+  <div class="bento-grid">
+    <!-- Hero Oscuro -->
+    <div class="bento-welcome">
+      <div class="bento-status">
+        <span class="status-dot"></span>
+        <span class="bento-status-text">Control de Trazabilidad &amp; Seguridad en Tiempo Real</span>
+      </div>
+      <h1 class="bento-title">Auditoría de Administrador</h1>
+      <p class="bento-subtitle">
+        Consulta el tiempo exacto que permaneciste logueado en cada sesión y el historial cronológico detallado de todas las operaciones realizadas (eliminación de usuarios, gestión de pedidos, respuestas a PQRS y configuraciones).
+      </p>
+
+      <div class="bento-session-meta" *ngIf="estadisticas().sesion_actual as sesion">
+        <div class="session-meta-chip">
+          <span class="meta-label">Inicio de sesión actual:</span>
+          <strong class="meta-val">{{ sesion.inicio_formateado }}</strong>
+        </div>
+        <div class="session-meta-chip" *ngIf="sesion.ip_address">
+          <span class="meta-label">IP Conectada:</span>
+          <strong class="meta-val">{{ sesion.ip_address }}</strong>
+        </div>
+      </div>
+
+      <div class="bento-actions">
+        <button type="button" class="btn-primary-white" (click)="cargarTodo()" [disabled]="loading()">
+          <fa-icon [icon]="faSync" [class.fa-spin]="loading()"></fa-icon>
+          <span>Sincronizar Registro</span>
+        </button>
+        <button
+          type="button"
+          class="btn-ghost-white"
+          [class.active-view-btn]="vistaActiva() === 'operaciones'"
+          (click)="cambiarVista('operaciones')"
+        >
+          <fa-icon [icon]="faClipboardList"></fa-icon>
+          <span>Operaciones ({{ estadisticas().total_operaciones }})</span>
+        </button>
+        <button
+          type="button"
+          class="btn-ghost-white"
+          [class.active-view-btn]="vistaActiva() === 'sesiones'"
+          (click)="cambiarVista('sesiones')"
+        >
+          <fa-icon [icon]="faHistory"></fa-icon>
+          <span>Sesiones &amp; Tiempo ({{ estadisticas().total_sesiones }})</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Access (360px) -->
+    <div class="bento-quick-card">
+      <div class="quick-header">
+        <h3>Filtros Rápidos</h3>
+        <span class="quick-pill">Trazabilidad</span>
+      </div>
+      <div class="quick-actions-list">
+        <button type="button" class="quick-action-item" (click)="filtrarPorModulo('USUARIOS')">
+          <div class="quick-item-icon danger"><fa-icon [icon]="faUsers"></fa-icon></div>
+          <div class="quick-item-info">
+            <span class="quick-item-title">Auditoría de Usuarios</span>
+            <span class="quick-item-desc">Eliminación de cuentas de clientes</span>
+          </div>
+        </button>
+
+        <button type="button" class="quick-action-item" (click)="filtrarPorModulo('PEDIDOS')">
+          <div class="quick-item-icon info"><fa-icon [icon]="faShoppingBag"></fa-icon></div>
+          <div class="quick-item-info">
+            <span class="quick-item-title">Auditoría de Pedidos</span>
+            <span class="quick-item-desc">Cambios de estado y eliminaciones</span>
+          </div>
+        </button>
+
+        <button type="button" class="quick-action-item" (click)="filtrarPorModulo('PQRS')">
+          <div class="quick-item-icon success"><fa-icon [icon]="faComments"></fa-icon></div>
+          <div class="quick-item-info">
+            <span class="quick-item-title">Auditoría de PQRS</span>
+            <span class="quick-item-desc">Respuestas enviadas y cierres de tickets</span>
+          </div>
+        </button>
+
+        <button type="button" class="quick-action-item" (click)="cambiarVista('sesiones')">
+          <div class="quick-item-icon neutral"><fa-icon [icon]="faClock"></fa-icon></div>
+          <div class="quick-item-info">
+            <span class="quick-item-title">Tiempo Logueado por Sesión</span>
+            <span class="quick-item-desc">Ver duración de entradas y salidas</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       VISTA 1: REGISTRO CRONOLÓGICO DE OPERACIONES
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div class="panel-card" *ngIf="vistaActiva() === 'operaciones'">
+    <div class="panel-header audit-panel-header">
+      <div class="toolbar-title-col">
+        <h3>
+          <fa-icon [icon]="faClipboardList" style="margin-right: 10px;"></fa-icon>
+          Historial de Operaciones Administrativas
+        </h3>
+        <span class="results-counter">{{ paginacion().total }} registros encontrados</span>
+      </div>
+
+      <div class="panel-header-actions">
+        <!-- Chip de filtro por sesión activa -->
+        <button
+          *ngIf="filtroSesionId()"
+          type="button"
+          class="session-filter-active-chip"
+          (click)="limpiarFiltroSesion()"
+          title="Quitar filtro de sesión"
+        >
+          <span>Sesión #{{ filtroSesionId() }}</span>
+          <fa-icon [icon]="faTimes"></fa-icon>
+        </button>
+
+        <!-- Selector de Módulo -->
+        <div class="filter-select-wrapper">
+          <select
+            class="input-minimal-select"
+            [ngModel]="filtroModulo()"
+            (ngModelChange)="filtrarPorModulo($event)"
+          >
+            <option value="TODOS">Todos los Módulos</option>
+            <option value="USUARIOS">Usuarios (Eliminaciones)</option>
+            <option value="PEDIDOS">Pedidos (Estados y Eliminaciones)</option>
+            <option value="PQRS">PQRS (Respuestas y Tickets)</option>
+            <option value="AUTH">Accesos (Login y Logout)</option>
+            <option value="COMPONENTES">Personalización Web</option>
+            <option value="CONFIGURACION">Configuración &amp; Wompi</option>
+          </select>
+          <fa-icon [icon]="faChevronDown" class="select-arrow-icon"></fa-icon>
+        </div>
+
+        <!-- Filtro por Fecha -->
+        <input
+          type="date"
+          class="input-date-minimal"
+          [ngModel]="filtroFechaInicio()"
+          (ngModelChange)="filtroFechaInicio.set($event); aplicarBusqueda()"
+          title="Filtrar desde fecha"
+        />
+
+        <!-- Buscador -->
+        <div class="search-box">
+          <fa-icon [icon]="faSearch" class="search-icon-inline"></fa-icon>
+          <input
+            type="text"
+            class="input-minimal"
+            placeholder="Buscar operación, ticket, pedido, correo..."
+            [ngModel]="searchTerm()"
+            (ngModelChange)="searchTerm.set($event)"
+            (keyup.enter)="aplicarBusqueda()"
+          />
+          <button
+            *ngIf="searchTerm()"
+            type="button"
+            class="btn-clear-search"
+            (click)="searchTerm.set(''); aplicarBusqueda()"
+            title="Limpiar búsqueda"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chips de Filtro por Módulo -->
+    <div class="audit-module-chips">
+      <button
+        type="button"
+        class="audit-chip"
+        [class.active]="filtroModulo() === 'TODOS' && filtroAccion() === 'TODAS' && !filtroSesionId()"
+        (click)="limpiarFiltros()"
+      >
+        Todas las Operaciones
+      </button>
+      <button
+        type="button"
+        class="audit-chip"
+        [class.active]="filtroModulo() === 'USUARIOS'"
+        (click)="filtrarPorModulo('USUARIOS')"
+      >
+        <fa-icon [icon]="faUsers"></fa-icon>
+        <span>Usuarios Eliminados</span>
+      </button>
+      <button
+        type="button"
+        class="audit-chip"
+        [class.active]="filtroModulo() === 'PEDIDOS'"
+        (click)="filtrarPorModulo('PEDIDOS')"
+      >
+        <fa-icon [icon]="faShoppingBag"></fa-icon>
+        <span>Pedidos</span>
+      </button>
+      <button
+        type="button"
+        class="audit-chip"
+        [class.active]="filtroModulo() === 'PQRS'"
+        (click)="filtrarPorModulo('PQRS')"
+      >
+        <fa-icon [icon]="faComments"></fa-icon>
+        <span>Respuestas &amp; PQRS</span>
+      </button>
+      <button
+        type="button"
+        class="audit-chip"
+        [class.active]="filtroModulo() === 'AUTH'"
+        (click)="filtrarPorModulo('AUTH')"
+      >
+        <fa-icon [icon]="faClock"></fa-icon>
+        <span>Entradas &amp; Salidas (Sesiones)</span>
+      </button>
+    </div>
+
+    <!-- Estado de Carga -->
+    <div class="loading-state" *ngIf="loading()">
+      <div class="spinner-grande"></div>
+      <p>Consultando trazabilidad de auditoría...</p>
+    </div>
+
+    <!-- Estado Vacío -->
+    <div class="empty-state" *ngIf="!loading() && logs().length === 0">
+      <div class="empty-icon-circle">
+        <fa-icon [icon]="faClipboardList"></fa-icon>
+      </div>
+      <h3 class="empty-title">No se encontraron registros de auditoría</h3>
+      <p class="empty-desc">No hay operaciones que coincidan con los filtros seleccionados.</p>
+      <button type="button" class="btn-action-dark" (click)="limpiarFiltros()">
+        <fa-icon [icon]="faSync"></fa-icon>
+        <span>Ver todos los registros</span>
+      </button>
+    </div>
+
+    <!-- Tabla de Operaciones -->
+    <div class="table-responsive" *ngIf="!loading() && logs().length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Fecha &amp; Hora Exacta</th>
+            <th>Administrador</th>
+            <th>Módulo</th>
+            <th>Operación</th>
+            <th>Descripción de lo Realizado</th>
+            <th>Tiempo Logueado</th>
+            <th style="text-align: right; width: 150px;">Trazabilidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let log of logs()">
+            <tr [class.row-expanded]="expandedLogId() === log.id" [class.row-critical]="esAccionCritica(log.accion)">
+              <!-- Fecha y Hora -->
+              <td>
+                <div class="audit-time-cell">
+                  <span class="audit-hour-exact">{{ log.hora_formateada }}</span>
+                  <span class="audit-date-sub">{{ log.fecha_formateada.split(' ')[0] }}</span>
+                </div>
+              </td>
+
+              <!-- Administrador -->
+              <td>
+                <div class="client-info">
+                  <span class="client-name">{{ log.admin_nombre }}</span>
+                  <span class="client-email">{{ log.admin_correo }}</span>
+                </div>
+              </td>
+
+              <!-- Módulo -->
+              <td>
+                <span class="module-badge" [ngClass]="obtenerClaseModulo(log.modulo)">
+                  {{ log.modulo }}
+                </span>
+              </td>
+
+              <!-- Operación -->
+              <td>
+                <div class="action-cell">
+                  <span class="action-badge" [class.is-critical]="esAccionCritica(log.accion)">
+                    {{ obtenerEtiquetaAccion(log.accion) }}
+                  </span>
+                  <span class="entity-ref" *ngIf="log.entidad_id">
+                    Ref: {{ log.entidad_id }}
+                  </span>
+                </div>
+              </td>
+
+              <!-- Descripción -->
+              <td class="desc-col">
+                <p class="audit-desc-text">{{ log.descripcion }}</p>
+              </td>
+
+              <!-- Tiempo Logueado en esa Sesión -->
+              <td>
+                <div class="session-duration-cell" *ngIf="log.sesion_id">
+                  <span class="duration-pill" [class.is-live]="log.sesion_activa">
+                    <fa-icon [icon]="faClock"></fa-icon>
+                    {{ log.sesion_duracion_formateada }}
+                  </span>
+                  <button
+                    type="button"
+                    class="btn-session-tag"
+                    (click)="verOperacionesDeSesion(log.sesion_id!)"
+                    title="Filtrar todas las operaciones de esta sesión"
+                  >
+                    <span>Sesión #{{ log.sesion_id }}</span>
+                  </button>
+                </div>
+                <span class="text-muted" *ngIf="!log.sesion_id">—</span>
+              </td>
+
+              <!-- Botón Expandir Detalle -->
+              <td style="text-align: right;">
+                <button
+                  type="button"
+                  class="btn-detail-toggle"
+                  [class.is-open]="expandedLogId() === log.id"
+                  (click)="toggleExpandLog(log.id)"
+                  [title]="expandedLogId() === log.id ? 'Ocultar detalle' : 'Ver trazabilidad completa'"
+                >
+                  <fa-icon [icon]="expandedLogId() === log.id ? faChevronUp : faEye"></fa-icon>
+                  <span>{{ expandedLogId() === log.id ? 'Ocultar' : 'Detalles' }}</span>
+                </button>
+              </td>
+            </tr>
+
+            <!-- Fila Expandida con Snapshot de Datos Anteriores y Nuevos -->
+            <tr class="detail-row" *ngIf="expandedLogId() === log.id">
+              <td colspan="7">
+                <div class="detail-content">
+                  <!-- Metadatos Técnicos de la Operación -->
+                  <div class="detail-section">
+                    <h4>Metadatos de Trazabilidad</h4>
+                    <div class="snapshot-kv-list">
+                      <div class="snapshot-kv-item">
+                        <span class="kv-label">ID de Registro:</span>
+                        <span class="kv-val font-mono">#{{ log.id }}</span>
+                      </div>
+                      <div class="snapshot-kv-item">
+                        <span class="kv-label">Fecha y Hora Exacta:</span>
+                        <span class="kv-val font-mono">{{ log.fecha_formateada }}</span>
+                      </div>
+                      <div class="snapshot-kv-item">
+                        <span class="kv-label">Dirección IP:</span>
+                        <span class="kv-val font-mono">{{ log.ip_address || 'Local / No registrada' }}</span>
+                      </div>
+                      <div class="snapshot-kv-item" *ngIf="log.entidad_tipo">
+                        <span class="kv-label">Recurso Afectado:</span>
+                        <span class="kv-val">{{ log.entidad_tipo }} ({{ log.entidad_id || 'N/A' }})</span>
+                      </div>
+                      <div class="snapshot-kv-item" *ngIf="log.sesion_id">
+                        <span class="kv-label">Sesión Asociada:</span>
+                        <span class="kv-val">Sesión #{{ log.sesion_id }} (Tiempo conectado: {{ log.sesion_duracion_formateada }})</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Datos Anteriores y Nuevos -->
+                  <div class="detail-section">
+                    <h4>Registro de Datos (Antes / Después)</h4>
+
+                    <div *ngIf="!tieneDatosSnapshot(log)" class="empty-detail-text">
+                      Esta operación no registró atributos adicionales de cambio de estado.
+                    </div>
+
+                    <div class="snapshots-columns" *ngIf="tieneDatosSnapshot(log)">
+                      <!-- Estado Anterior / Recurso Eliminado -->
+                      <div class="snapshot-box before-box" *ngIf="log.datos_anteriores">
+                        <span class="snapshot-box-title">Datos Anteriores / Eliminados</span>
+                        <div class="snapshot-kv-list">
+                          <div class="snapshot-kv-item" *ngFor="let item of obtenerEntradasObjeto(log.datos_anteriores)">
+                            <span class="kv-label">{{ item.clave }}:</span>
+                            <span class="kv-val">{{ item.valor }}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Estado Nuevo / Aplicado -->
+                      <div class="snapshot-box after-box" *ngIf="log.datos_nuevos">
+                        <span class="snapshot-box-title">Datos Nuevos / Aplicados</span>
+                        <div class="snapshot-kv-list">
+                          <div class="snapshot-kv-item" *ngFor="let item of obtenerEntradasObjeto(log.datos_nuevos)">
+                            <span class="kv-label">{{ item.clave }}:</span>
+                            <span class="kv-val">{{ item.valor }}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginación -->
+    <div class="table-footer-bar" *ngIf="!loading() && paginacion().total > 0">
+      <div class="pagination-summary">
+        Página <strong>{{ paginacion().pagina_actual }}</strong> de <strong>{{ paginacion().total_paginas }}</strong>
+        ({{ paginacion().total }} registros de auditoría)
+      </div>
+      <div class="pagination" *ngIf="paginacion().total_paginas > 1">
+        <button
+          type="button"
+          class="page-btn"
+          [disabled]="paginacion().pagina_actual <= 1"
+          (click)="cambiarPagina(paginacion().pagina_actual - 1)"
+        >
+          <fa-icon [icon]="faChevronLeft" style="margin-right: 6px;"></fa-icon>
+          <span>Anterior</span>
+        </button>
+        <button
+          type="button"
+          class="page-btn"
+          [disabled]="paginacion().pagina_actual >= paginacion().total_paginas"
+          (click)="cambiarPagina(paginacion().pagina_actual + 1)"
+        >
+          <span>Siguiente</span>
+          <fa-icon [icon]="faChevronRight" style="margin-left: 6px;"></fa-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       VISTA 2: HISTORIAL DE SESIONES Y TIEMPO LOGUEADO
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div class="panel-card" *ngIf="vistaActiva() === 'sesiones'">
+    <div class="panel-header audit-panel-header">
+      <div class="toolbar-title-col">
+        <h3>
+          <fa-icon [icon]="faHistory" style="margin-right: 10px;"></fa-icon>
+          Historial de Sesiones y Tiempo Permanecido Logueado
+        </h3>
+        <span class="results-counter">{{ sesiones().length }} sesiones registradas</span>
+      </div>
+
+      <div class="panel-header-actions">
+        <button type="button" class="btn-action-dark" (click)="cargarSesiones()" [disabled]="loadingSesiones()">
+          <fa-icon [icon]="faSync" [class.fa-spin]="loadingSesiones()"></fa-icon>
+          <span>Actualizar Sesiones</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="loading-state" *ngIf="loadingSesiones()">
+      <div class="spinner-grande"></div>
+      <p>Cargando sesiones de administrador...</p>
+    </div>
+
+    <div class="table-responsive" *ngIf="!loadingSesiones() && sesiones().length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Sesión</th>
+            <th>Administrador</th>
+            <th>Hora de Ingreso</th>
+            <th>Última Actividad / Salida</th>
+            <th>Tiempo Permanecido Logueado</th>
+            <th>Operaciones Realizadas</th>
+            <th style="text-align: right; width: 220px;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let s of sesiones()">
+            <tr [class.row-expanded]="expandedSesionId() === s.id">
+              <td>
+                <div class="session-id-cell">
+                  <span class="font-mono">#{{ s.id }}</span>
+                  <span class="session-status-badge" [class.active]="s.activa">
+                    {{ s.activa ? 'En línea' : 'Finalizada' }}
+                  </span>
+                </div>
+              </td>
+
+              <td>
+                <div class="client-info">
+                  <span class="client-name">{{ s.admin_nombre }}</span>
+                  <span class="client-email">{{ s.admin_correo }} · IP: {{ s.ip_address || 'Local' }}</span>
+                </div>
+              </td>
+
+              <td>
+                <span class="font-mono">{{ s.inicio_formateado }}</span>
+              </td>
+
+              <td>
+                <span class="font-mono">
+                  {{ s.fin_formateado || s.ultima_actividad_formateada || '—' }}
+                </span>
+              </td>
+
+              <td>
+                <span class="duration-pill highlight-duration" [class.is-live]="s.activa">
+                  <fa-icon [icon]="faClock"></fa-icon>
+                  {{ s.duracion_formateada }}
+                </span>
+              </td>
+
+              <td>
+                <span class="user-badge-pill">{{ s.total_operaciones }} operaciones</span>
+              </td>
+
+              <td style="text-align: right;">
+                <div class="action-buttons-group">
+                  <button
+                    type="button"
+                    class="btn-detail-toggle"
+                    [class.is-open]="expandedSesionId() === s.id"
+                    (click)="toggleExpandSesion(s.id)"
+                    title="Ver línea de tiempo de esta sesión"
+                  >
+                    <fa-icon [icon]="expandedSesionId() === s.id ? faChevronUp : faChevronDown"></fa-icon>
+                    <span>{{ expandedSesionId() === s.id ? 'Cerrar' : 'Resumen' }}</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-icon-action"
+                    (click)="verOperacionesDeSesion(s.id)"
+                    title="Filtrar operaciones de esta sesión en la tabla principal"
+                  >
+                    <fa-icon [icon]="faEye"></fa-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Operaciones realizadas dentro de esta sesión -->
+            <tr class="detail-row" *ngIf="expandedSesionId() === s.id">
+              <td colspan="7">
+                <div class="session-timeline-wrapper">
+                  <div class="session-timeline-header">
+                    <h4>Operaciones realizadas durante la Sesión #{{ s.id }} (Tiempo conectado: {{ s.duracion_formateada }})</h4>
+                    <button type="button" class="btn-action-dark btn-sm" (click)="verOperacionesDeSesion(s.id)">
+                      <fa-icon [icon]="faEye"></fa-icon>
+                      <span>Ver detalle completo de esta sesión</span>
+                    </button>
+                  </div>
+
+                  <div *ngIf="!s.operaciones || s.operaciones.length === 0" class="empty-detail-text">
+                    No se registraron operaciones adicionales en esta sesión.
+                  </div>
+
+                  <div class="timeline-items" *ngIf="s.operaciones && s.operaciones.length > 0">
+                    <div class="timeline-item" *ngFor="let op of s.operaciones">
+                      <span class="timeline-hour font-mono">{{ op.hora }}</span>
+                      <span class="module-badge" [ngClass]="obtenerClaseModulo(op.modulo)">{{ op.modulo }}</span>
+                      <span class="timeline-action">{{ obtenerEtiquetaAccion(op.accion) }}:</span>
+                      <span class="timeline-desc">{{ op.descripcion }}</span>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

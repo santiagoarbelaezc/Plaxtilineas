@@ -88,6 +88,14 @@
             <span class="nav-label" *ngIf="!isSidebarCollapsed">PQRS</span>
           </a>
         </li>
+
+        <!-- 6. Auditoría -->
+        <li class="nav-item">
+          <a routerLink="/admin/auditoria" routerLinkActive="active" class="nav-link" (click)="closeMobileSidebar()" title="Auditoría y Trazabilidad">
+            <span class="material-symbols-rounded nav-icon">policy</span>
+            <span class="nav-label" *ngIf="!isSidebarCollapsed">Auditoría</span>
+          </a>
+        </li>
       </ul>
     </nav>
 
@@ -321,6 +329,17 @@
                   <div class="quick-item-info">
                     <span class="quick-item-name">Personalizar</span>
                     <span class="quick-item-sub">Landing page y componentes</span>
+                  </div>
+                  <span class="quick-item-arrow">→</span>
+                </a>
+
+                <a routerLink="/admin/auditoria" class="quick-nav-item">
+                  <div class="quick-item-icon">
+                    <span class="material-symbols-rounded">policy</span>
+                  </div>
+                  <div class="quick-item-info">
+                    <span class="quick-item-name">Auditoría</span>
+                    <span class="quick-item-sub">Trazabilidad y sesiones</span>
                   </div>
                   <span class="quick-item-arrow">→</span>
                 </a>

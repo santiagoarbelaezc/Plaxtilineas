@@ -464,6 +464,7 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
     if (url.includes('/personalizar-web')) return 'Personalizar';
     if (url.includes('/usuarios')) return 'Usuarios Registrados';
     if (url.includes('/pqr-admin')) return 'PQRS - Peticiones, Quejas y Reclamos';
+    if (url.includes('/auditoria')) return 'Auditoría & Trazabilidad';
     return 'Panel de Administración';
   }
 
@@ -475,6 +476,7 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
     if (url.includes('/personalizar-web')) return 'Configura y edita elementos visuales y textos de la tienda';
     if (url.includes('/usuarios')) return 'Visualiza clientes registrados, carritos y actividad';
     if (url.includes('/pqr-admin')) return 'Atiende peticiones, quejas, reclamos y solicitudes de clientes';
+    if (url.includes('/auditoria')) return 'Supervisa tiempos de sesión logueado y el registro cronológico de operaciones';
     return 'Administra pedidos, inventario, categorías, usuarios y PQRS de Plaxtilineas';
   }
 

@@ -85,6 +85,10 @@ export const routes: Routes = [
         path: 'categorias',
         loadComponent: () => import('./pages/dashboard/categorias/admin-categorias').then(m => m.AdminCategorias)
       },
+      {
+        path: 'auditoria',
+        loadComponent: () => import('./pages/dashboard/auditoria/admin-auditoria').then(m => m.AdminAuditoria)
+      },
       { path: 'catalogo', redirectTo: 'inventario' },
       { path: 'subcategorias', redirectTo: 'categorias' },
       { path: 'productos', redirectTo: 'inventario' },
