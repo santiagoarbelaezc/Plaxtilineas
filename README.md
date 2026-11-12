@@ -1,169 +1,165 @@
 <div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=120&section=header&animation=fadeIn" />
+  <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png" alt="Plaxtilineas" width="220" />
+  <h1>Plaxtilineas — Plataforma E-commerce & Panel Administrativo</h1>
+  <p><strong>Soluciones integrales en plásticos técnicos, espumas industriales, mallas agrícolas y empaques en el Eje Cafetero y Colombia.</strong></p>
+
+  <p>
+    <img src="https://img.shields.io/badge/Angular-20-DD0031?style=for-the-badge&logo=angular&logoColor=white" alt="Angular 20" />
+    <img src="https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel 12" />
+    <img src="https://img.shields.io/badge/PHP-8.5-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP 8.5" />
+    <img src="https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL 8" />
+    <img src="https://img.shields.io/badge/Wompi-Bancolombia-000000?style=for-the-badge&logo=visa&logoColor=white" alt="Wompi" />
+    <img src="https://img.shields.io/badge/Pest-3.0_Tests_Passing-brightgreen?style=for-the-badge" alt="Pest Tests" />
+  </p>
 </div>
 
-<h1 align="center">� Plaxtilineas - E-commerce</h1>
+---
 
-<h3 align="center">🚀 Plataforma en desarrollo para venta de productos plásticos y líneas industriales</h3>
+## 📋 Descripción del Proyecto
 
-<p align="center">
-  Aplicación web full‑stack para e‑commerce especializado en soluciones plásticas y de líneas industriales.<br>
-  Frontend en Angular, Backend en Express.js, con despliegue progresivo en la nube.
-</p>
+**Plaxtilineas** es una solución web de comercio electrónico y gestión empresarial de última generación, desarrollada bajo una arquitectura desacoplada de alto rendimiento:
+
+* **Backend REST API**: Desarrollado en **Laravel 12 (PHP 8.5)** con autenticación segura por tokens mediante **Laravel Sanctum**, pasarela de pagos integrada **Wompi**, almacenamiento en **Cloudinary**, envío de correos transaccionales y un sistema integral de **Auditoría y Trazabilidad**.
+* **Frontend SPA**: Desarrollado en **Angular 20** (Standalone Components, Signals, Router reactivo), con diseño responsive optimizado para dispositivos móviles y escritorio, micro-animaciones interactivas y un **Dashboard Administrativo** completo con estilo Bento Grid.
 
 ---
 
-### **PENDIENTE PARA MIGRACIÓN DE HOSTINGER ANTIGUO A NUEVO HOSTINGER**
+## 🚀 Módulos y Funcionalidades Principales
 
+### 🛒 Tienda Online & Catálogo
+* Catálogo dinámico con filtros por categorías (Peletería & Espumas, Plásticos Técnicos, Mallas & Polisombras, Soluciones de Embalaje).
+* Detalle de producto con cálculo dinámico de medidas y variantes de inventario.
+* Carrito de compras reactivo con sincronización local y de servidor.
+* Pasarela de pagos **Wompi** con soporte para PSE, Tarjetas de Crédito, Nequi y Bancolombia, además de reconciliación proactiva de transacciones.
+* Canal de radicación y consulta de **PQRS** en tiempo real con generación de tickets (`PQR-XXXXXX-XXX`).
+* Hub central de canales y redes oficiales (`/links`).
 
-## 📋 **Descripción del Proyecto**
-
-**Plaxtilineas** es una plataforma de comercio electrónico especializada en productos plásticos, lonas y líneas para aplicaciones industriales y comerciales. La empresa, ubicada en Colombia, ofrece una variada gama de artículos para protección, construcción de cerramientos, señalización y soluciones a la medida.
-
-> ⚠️ **Estado del Proyecto:** En desarrollo activo
-
----
-
-## 🏗️ **Dashboard**
-
-**Plaxtilineas Dashboard Admin**: se implementará una nueva funcionalidad cuando el admin se loguee, para automatizar la creación de productos. Básicamente traerá productos desde otra base de datos y los colocará en la página, organizándolos de una vez sólo importándolos.
-
----
-
-## 🔧 **Stack Tecnológico**
-
-### **Frontend (Desplegado en Firebase)**
-<div align="center">
-  <img src="https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white" />
-  <img width="8" />
-  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
-  <img width="8" />
-  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" />
-  <img width="8" />
-  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" />
-</div>
-
-### **Backend (Express.js)**
-<div align="center">
-  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
-  <img width="8" />
-  <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" />
-  <img width="8" />
-  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white" />
-</div>
-
-### **Base de Datos**
-<div align="center">
-  <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" />
-  <img width="8" />
-  <img src="https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=sequelize&logoColor=white" />
-</div>
-
-> 💾 **Ubicación de la BD:** MySQL en Hostinger
-
-### **Infraestructura & Hosting**
-<div align="center">
-  
-  <img width="8" />
-  <img src="https://img.shields.io/badge/Hostinger-673DE6?style=for-the-badge&logo=hostinger&logoColor=white" />
-</div>
-
-
-
+### 🛡️ Panel de Administración (`/admin`)
+* **Inventario & Catálogo**: Sincronización oficial de productos, stock en tiempo real y precios.
+* **Gestión de Pedidos**: Control de órdenes, actualización de guías y transportadoras con notificación por correo al cliente.
+* **Directorio de Clientes**: Monitoreo de usuarios registrados, carritos activos e historial de compras.
+* **PQRS Administrativo**: Atención, cambio de estados y respuestas con adjuntos y notificación por correo.
+* **Personalización Web**: Editor visual de componentes dinámicos de la página de inicio.
+* **Asistente Inteligente Mateo**: Módulo asistencial para consultas operativas rápidas.
+* **Auditoría & Trazabilidad**:
+  - Cronómetro en vivo de sesión activa de administrador.
+  - Registro inmutable de cada operación con fecha, hora exacta (`HH:mm:ss`), IP y snapshots de datos anteriores vs. datos nuevos.
+  - Trazabilidad de eliminación de usuarios, gestión de pedidos, respuestas a PQRS y cambios de configuración.
+  - Historial de conexiones de administradores con tiempo total permanecido logueado.
 
 ---
 
-## 🚀 **Estado Actual de Despliegue**
+## 🏗️ Stack Tecnológico
 
-| Componente      | Plataforma        | Estado          | URL/Detalles                        |
-|-----------------|-------------------|-----------------|-------------------------------------|
-| **Frontend**    | Firebase Hosting  | ✅ Desplegado   | Aplicación Angular activa           |
-| **Backend API** | En desarrollo     | 🚧 Próximamente | AWS / Hostinger                     |
-| **Base de Datos** | En desarrollo   | 🚧 Próximamente | MySQL en Hostinger                  |
-| **Dominio**     | Personalizado     | 📝 Planificado | `espumasyplasticos.com`             |
-
----
-
-## 🏪 **Características del E-commerce**
-
-### **🔍 Catálogo Inteligente**
-- Búsqueda por categorías (Lonas, Plásticos, Señalización, etc.)
-- Filtros por tipo de material, dimensiones y resistencia
-- Productos destacados y ofertas especiales
-- Vista detallada de cada producto
-
-### **🛒 Carrito de Compras**
-Próxima funcionalidad: se piensa añadir un carrito para que los usuarios puedan seleccionar productos y completar compras en el front.
+| Capa | Tecnología | Versión / Detalle |
+| :--- | :--- | :--- |
+| **Frontend** | Angular | 20.3 (Standalone, Signals, Reactive) |
+| **Estilos & UI** | TailwindCSS + CSS Modules | Diseño Dark & Minimal Bento System |
+| **Iconos** | FontAwesome + Material Symbols | SVG Core 6.7 |
+| **Backend** | Laravel Framework | 12.70.1 |
+| **Lenguaje Backend** | PHP | 8.5.1 |
+| **Autenticación** | Laravel Sanctum | Tokens personales Bearer |
+| **Base de Datos** | MySQL | Producción Hostinger (SQLite en memoria para testing) |
+| **Testing** | Pest / PHPUnit | Pest 3.0 / PHPUnit 11.5 (Suite automatizada) |
+| **Pasarela** | Wompi Bancolombia | Webhook + Checksum + Polling proactivo |
+| **Multimedia** | Cloudinary API | Almacenamiento y optimización de medios |
 
 ---
 
-## 📦 **Backend**
+## 📂 Estructura del Repositorio
 
-- API REST construida con Node.js y Express.
-- Autenticación mediante JWT.
-- Controladores para productos, categorías, subcategorías, variantes y PQRS.
-- Middleware para autenticación y subida de imágenes.
-- Scripts disponibles para crear administrador, esquema completo e importar productos desde Hostinger.
-
----
-
-## 🖥️ **Frontend**
-
-- Single‑page application con Angular 20.
-- Estructura modular: componentes, servicios, modelos y guards.
-- Rutas configuradas para navegación entre páginas de producto, categorías, login, etc.
-- Integración con Firebase para hosting y otras utilidades.
-- Diseño responsive y orientado a UX de e‑commerce.
-
----
-
-## **Rama Santiago se utiliza para convertir en el front en PWA**
-
----
-## 🚀 **Cómo ejecutar el proyecto**
-
-### Backend
-```bash
-cd backend
-npm install
-# configurar variables de entorno en config/
-node server.js
+```
+Plaxtilineas/
+├── backend-laravel/          # Servidor de API REST en Laravel 12
+│   ├── app/
+│   │   ├── Actions/          # Lógica de dominio encapsulada (Pedidos, Pagos, Carrito)
+│   │   ├── Http/Controllers/ # Controladores REST API
+│   │   ├── Http/Middleware/  # Middlewares de seguridad y auditoría
+│   │   ├── Models/           # Modelos Eloquent
+│   │   └── Services/         # Servicios (Auditoría, Captcha, Catálogo, Wompi)
+│   ├── database/migrations/  # Migraciones de base de datos
+│   ├── routes/api.php        # Endpoints de la API
+│   └── tests/                # Pruebas automatizadas (Pest)
+├── frontend/                 # Aplicación cliente en Angular 20
+│   ├── src/app/
+│   │   ├── pages/            # Páginas principales y del Dashboard
+│   │   ├── services/         # Servicios HTTP
+│   │   └── shared/           # Componentes y layouts compartidos
+├── documentacion/            # Documentación técnica detallada
+│   ├── auditoria_y_trazabilidad.md
+│   ├── arquitectura_general.md
+│   └── manual_administrador.md
+└── README.md
 ```
 
-### Frontend
+---
+
+## ⚙️ Instalación y Ejecución Local
+
+### Prerrequisitos
+* PHP >= 8.2 (Recomendado PHP 8.5)
+* Composer >= 2.6
+* Node.js >= 18 y npm / pnpm
+* MySQL o SQLite
+
+### 1. Backend (Laravel)
+```bash
+cd backend-laravel
+
+# Instalar dependencias
+composer install
+
+# Configurar variables de entorno
+cp .env.example .env
+php artisan key:generate
+
+# Ejecutar migraciones
+php artisan migrate
+
+# Iniciar servidor local
+php artisan serve
+```
+El servidor backend se ejecutará en `http://localhost:8000`.
+
+### 2. Frontend (Angular)
 ```bash
 cd frontend
+
+# Instalar dependencias
 npm install
-ng serve
+
+# Iniciar servidor de desarrollo
+npm start
+```
+La aplicación web estará disponible en `http://localhost:4200`.
+
+---
+
+## 🧪 Pruebas Automatizadas
+
+Para ejecutar las pruebas del backend con Pest:
+
+```bash
+cd backend-laravel
+php artisan test
+```
+
+Para ejecutar pruebas de auditoría y sesiones en particular:
+```bash
+php vendor/pestphp/pest/bin/pest tests/Feature/Admin/AdminAuditoriaTest.php
 ```
 
 ---
 
+## 📖 Documentación Detallada
 
+En la carpeta [`documentacion/`](./documentacion/) encontrarás guías exhaustivas:
+* [`auditoria_y_trazabilidad.md`](./documentacion/auditoria_y_trazabilidad.md): Arquitectura de sesiones, modelos y logs de auditoría.
+* [`arquitectura_general.md`](./documentacion/arquitectura_general.md): Arquitectura técnica, RBAC y flujos de integración.
+* [`manual_administrador.md`](./documentacion/manual_administrador.md): Manual de uso del panel administrativo para auditoría y trazabilidad.
 
 ---
 
-## 👨‍💻 **Desarrollador**
+## 📄 Licencia y Derechos
 
-<div align="center">
-Santiago Arbelaez Contreras  
-Junior Full Stack Developer  
-Estudiante de Ingeniería de Sistemas – Universidad del Quindío
-
-<br>
-<a href="https://github.com/santiagoarbelaezc">
-  <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
-</a>
-<img width="10" />
-<a href="https://www.linkedin.com/in/santiago-arbelaez-contreras-9830b5290/">
-  <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" />
-</a>
-<img width="10" />
-<a href="https://portfolio-santiagoa.web.app/portfolio">
-  <img src="https://img.shields.io/badge/Portfolio-6C63FF?style=for-the-badge&logo=sparkles&logoColor=white" />
-</a>
-</div>
-
-<div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=90&section=footer&animation=fadeIn" />
-</div>
+© 2026 **Plaxtilineas S.A.S.** — Armenia, Quindío, Colombia. Todos los derechos reservados.
