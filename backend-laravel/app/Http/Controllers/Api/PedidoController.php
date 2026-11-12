@@ -18,6 +18,7 @@ use App\Http\Requests\Pedidos\AdminActualizarEstadoPedidoRequest;
 use App\Http\Requests\Pedidos\CrearDraftPedidoRequest;
 use App\Models\Pedido;
 use App\Models\Usuario;
+use App\Services\AdminAuditService;
 use App\Services\CaptchaService;
 use App\Services\Catalogo\CatalogoApiService;
 use App\Support\ApiResponse;
@@ -37,7 +38,8 @@ class PedidoController extends Controller
         protected AdminActualizarEstadoPedidoAction $adminActualizarEstadoAction,
         protected WompiClientInterface $wompiService,
         protected LiberarStockReservaAction $liberarStockReservaAction,
-        protected CatalogoApiService $catalogo
+        protected CatalogoApiService $catalogo,
+        protected AdminAuditService $auditService
     ) {}
 
     /**
@@ -350,12 +352,40 @@ class PedidoController extends Controller
         $transportadora = $request->input('transportadora') ? (string) $request->input('transportadora') : null;
         $solicitudCliente = (bool) $request->input('solicitud_cliente', false);
 
+        /** @var Pedido|null $pedidoAntes */
+        $pedidoAntes = Pedido::with('usuario')->find($id);
+        $estadoAnterior = $pedidoAntes?->estado->value ?? '';
+        $codigo = $pedidoAntes?->codigo_pedido ?? "#{$id}";
+
         $resultado = $this->adminActualizarEstadoAction->execute(
             $id,
             $nuevoEstado,
             $guiaNumero,
             $transportadora,
             $solicitudCliente
+        );
+
+        $this->auditService->registrarOperacion(
+            modulo: 'PEDIDOS',
+            accion: 'ACTUALIZAR_ESTADO_PEDIDO',
+            descripcion: "Actualizó el estado del pedido {$codigo} de '{$estadoAnterior}' a '{$nuevoEstado}'",
+            entidadTipo: 'Pedido',
+            entidadId: $codigo,
+            datosAnteriores: [
+                'id' => $id,
+                'codigo_pedido' => $codigo,
+                'estado' => $estadoAnterior,
+                'guia_numero' => $pedidoAntes?->guia_numero,
+                'transportadora' => $pedidoAntes?->transportadora,
+            ],
+            datosNuevos: [
+                'estado' => $nuevoEstado,
+                'guia_numero' => $guiaNumero,
+                'transportadora' => $transportadora,
+                'solicitud_cliente' => $solicitudCliente,
+            ],
+            admin: $request->user(),
+            request: $request
         );
 
         return ApiResponse::success($resultado);
@@ -371,7 +401,31 @@ class PedidoController extends Controller
             return ApiResponse::error('Debes escribir la palabra "eliminar" para confirmar.', 422);
         }
 
+        /** @var Pedido|null $pedidoAntes */
+        $pedidoAntes = Pedido::with('usuario')->find($id);
+        $codigo = $pedidoAntes?->codigo_pedido ?? "#{$id}";
+        $clienteNombre = $pedidoAntes?->nombre_cliente ?: ($pedidoAntes?->usuario?->nombre ?? 'Cliente');
+        $datosAnteriores = $pedidoAntes ? [
+            'id' => $pedidoAntes->id,
+            'codigo_pedido' => $pedidoAntes->codigo_pedido,
+            'cliente' => $clienteNombre,
+            'total' => (float) $pedidoAntes->total,
+            'estado' => $pedidoAntes->estado->value,
+        ] : ['id' => $id];
+
         $resultado = $this->eliminarPedidoAction->executeForAdmin($id);
+
+        $this->auditService->registrarOperacion(
+            modulo: 'PEDIDOS',
+            accion: 'ELIMINAR_PEDIDO',
+            descripcion: "Eliminó el pedido {$codigo} del cliente {$clienteNombre}",
+            entidadTipo: 'Pedido',
+            entidadId: $codigo,
+            datosAnteriores: $datosAnteriores,
+            datosNuevos: null,
+            admin: $request->user(),
+            request: $request
+        );
 
         return ApiResponse::success($resultado);
     }

@@ -10,6 +10,7 @@ use App\Http\Requests\Componentes\ActualizarComponenteRequest;
 use App\Http\Requests\Componentes\CrearComponenteRequest;
 use App\Http\Requests\Componentes\ReordenarComponentesRequest;
 use App\Models\ComponenteDinamico;
+use App\Services\AdminAuditService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -20,7 +21,8 @@ use Throwable;
 class ComponentesController extends Controller
 {
     public function __construct(
-        private readonly MediaStorageInterface $mediaStorage
+        private readonly MediaStorageInterface $mediaStorage,
+        private readonly AdminAuditService $auditService
     ) {}
 
     /**
@@ -71,6 +73,18 @@ class ComponentesController extends Controller
                 'contenido' => $contenido,
             ]);
 
+            $this->auditService->registrarOperacion(
+                modulo: 'COMPONENTES',
+                accion: 'CREAR_COMPONENTE',
+                descripcion: "Creó un componente dinámico de tipo '{$tipo}' (#{$componente->id})",
+                entidadTipo: 'ComponenteDinamico',
+                entidadId: $componente->id,
+                datosAnteriores: null,
+                datosNuevos: ['id' => $componente->id, 'tipo' => $tipo, 'orden' => $nuevoOrden, 'activo' => $activo],
+                admin: $request->user(),
+                request: $request
+            );
+
             return response()->json([
                 'id' => $componente->id,
                 'tipo' => $componente->tipo,
@@ -113,7 +127,24 @@ class ComponentesController extends Controller
                 return response()->json(['error' => 'No se enviaron datos para actualizar'], 400);
             }
 
+            $datosAnteriores = [
+                'tipo' => $componente->tipo,
+                'activo' => $componente->activo,
+            ];
+
             $componente->update($datos);
+
+            $this->auditService->registrarOperacion(
+                modulo: 'COMPONENTES',
+                accion: 'ACTUALIZAR_COMPONENTE',
+                descripcion: "Actualizó el componente dinámico #{$id} ({$componente->tipo})",
+                entidadTipo: 'ComponenteDinamico',
+                entidadId: $id,
+                datosAnteriores: $datosAnteriores,
+                datosNuevos: ['tipo' => $componente->tipo, 'activo' => $componente->activo],
+                admin: $request->user(),
+                request: $request
+            );
 
             return response()->json(['actualizado' => true]);
         } catch (Throwable $e) {
@@ -139,6 +170,18 @@ class ComponentesController extends Controller
                 }
             });
 
+            $this->auditService->registrarOperacion(
+                modulo: 'COMPONENTES',
+                accion: 'REORDENAR_COMPONENTES',
+                descripcion: 'Reordenó los componentes dinámicos de la página principal',
+                entidadTipo: 'ComponenteDinamico',
+                entidadId: null,
+                datosAnteriores: null,
+                datosNuevos: ['orden_ids' => $ordenIds],
+                admin: $request->user(),
+                request: $request
+            );
+
             return response()->json(['reordenado' => true]);
         } catch (Throwable $e) {
             Log::error('ComponentesController::reordenar', ['exception' => $e->getMessage()]);
@@ -151,7 +194,7 @@ class ComponentesController extends Controller
      * DELETE /api/componentes/{id}
      * Eliminar un componente dinámico (Solo Admin)
      */
-    public function delete(int $id): JsonResponse
+    public function delete(int $id, Request $request): JsonResponse
     {
         try {
             /** @var ComponenteDinamico|null $componente */
@@ -160,7 +203,20 @@ class ComponentesController extends Controller
                 return response()->json(['error' => 'Componente no encontrado'], 404);
             }
 
+            $tipo = $componente->tipo;
             $componente->delete();
+
+            $this->auditService->registrarOperacion(
+                modulo: 'COMPONENTES',
+                accion: 'ELIMINAR_COMPONENTE',
+                descripcion: "Eliminó el componente dinámico #{$id} ({$tipo})",
+                entidadTipo: 'ComponenteDinamico',
+                entidadId: $id,
+                datosAnteriores: ['id' => $id, 'tipo' => $tipo],
+                datosNuevos: null,
+                admin: $request->user(),
+                request: $request
+            );
 
             return response()->json(['eliminado' => true]);
         } catch (Throwable $e) {

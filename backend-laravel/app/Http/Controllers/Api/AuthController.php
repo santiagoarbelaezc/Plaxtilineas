@@ -16,6 +16,7 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Mail\PasswordTemporalMailable;
 use App\Mail\VerificacionEmailMailable;
 use App\Models\Usuario;
+use App\Services\AdminAuditService;
 use App\Services\CaptchaService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -30,7 +31,8 @@ class AuthController extends Controller
 {
     public function __construct(
         protected CaptchaService $captchaService,
-        protected GoogleAuthClientInterface $googleAuthService
+        protected GoogleAuthClientInterface $googleAuthService,
+        protected AdminAuditService $auditService
     ) {}
 
     /**
@@ -69,7 +71,12 @@ class AuthController extends Controller
             return ApiResponse::error('Debes confirmar tu correo electrónico antes de iniciar sesión. Por favor, revisa tu bandeja de entrada.', 403);
         }
 
-        $token = $usuario->createToken('auth-token')->plainTextToken;
+        $newAccessToken = $usuario->createToken('auth-token');
+        $token = $newAccessToken->plainTextToken;
+
+        if ($usuario->isAdmin()) {
+            $this->auditService->iniciarSesion($usuario, (int) $newAccessToken->accessToken->id, $request);
+        }
 
         return ApiResponse::success([
             'mensaje' => 'Login exitoso',
@@ -175,7 +182,12 @@ class AuthController extends Controller
             ]);
         }
 
-        $token = $usuario->createToken('auth-token')->plainTextToken;
+        $newAccessToken = $usuario->createToken('auth-token');
+        $token = $newAccessToken->plainTextToken;
+
+        if ($usuario->isAdmin()) {
+            $this->auditService->iniciarSesion($usuario, (int) $newAccessToken->accessToken->id, $request);
+        }
 
         return ApiResponse::success([
             'mensaje' => 'Login con Google exitoso',
@@ -398,6 +410,34 @@ class AuthController extends Controller
 
         return ApiResponse::success([
             'mensaje' => 'Cuenta eliminada exitosamente',
+        ]);
+    }
+
+    /**
+     * POST /api/auth/logout
+     */
+    public function logout(Request $request): JsonResponse
+    {
+        /** @var Usuario|null $usuario */
+        $usuario = $request->user();
+
+        if ($usuario) {
+            if ($usuario->isAdmin()) {
+                $this->auditService->cerrarSesion($usuario, $request);
+            }
+
+            try {
+                $token = $usuario->currentAccessToken();
+                if ($token && method_exists($token, 'delete')) {
+                    $token->delete();
+                }
+            } catch (Throwable) {
+                // Ignorar en entornos de prueba con TransientToken
+            }
+        }
+
+        return ApiResponse::success([
+            'mensaje' => 'Sesión cerrada exitosamente.',
         ]);
     }
 }

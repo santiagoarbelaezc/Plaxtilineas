@@ -6,12 +6,18 @@ namespace App\Http\Middleware;
 
 use App\Enums\RolUsuario;
 use App\Exceptions\Domain\AccesoNoPermitidoException;
+use App\Models\Usuario;
+use App\Services\AdminAuditService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureUserIsAdmin
 {
+    public function __construct(
+        private readonly AdminAuditService $auditService
+    ) {}
+
     /**
      * Handle an incoming request.
      *
@@ -29,6 +35,10 @@ class EnsureUserIsAdmin
 
         if ($rol !== RolUsuario::ADMIN->value) {
             throw new AccesoNoPermitidoException('Acceso no permitido. Se requieren permisos de administrador.');
+        }
+
+        if ($user instanceof Usuario) {
+            $this->auditService->actualizarActividad($user, $request);
         }
 
         return $next($request);

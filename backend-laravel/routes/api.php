@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Api\AdminAuditoriaController;
 use App\Http\Controllers\Api\AdminUserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CarritoController;
@@ -158,6 +159,7 @@ Route::prefix('auth')->group(function () {
 
     // Rutas protegidas
     Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/cambiar-password-temporal', [AuthController::class, 'cambiarPasswordTemporal']);
         Route::get('/perfil', [AuthController::class, 'perfil']);
         Route::put('/actualizar', [AuthController::class, 'actualizar']);
@@ -166,12 +168,15 @@ Route::prefix('auth')->group(function () {
 });
 
 // ═════════════════════════════════════════════════════════════════════════════
-// ADMIN USUARIOS  /api/admin/*
+// ADMIN USUARIOS & AUDITORÍA  /api/admin/*
 // ═════════════════════════════════════════════════════════════════════════════
 
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
     Route::get('/usuarios-detalle', [AdminUserController::class, 'obtenerUsuariosDetalle']);
     Route::delete('/usuarios/{id}', [AdminUserController::class, 'eliminarUsuario']);
+
+    Route::get('/auditoria', [AdminAuditoriaController::class, 'index']);
+    Route::get('/auditoria/sesiones', [AdminAuditoriaController::class, 'sesiones']);
 });
 
 // ═════════════════════════════════════════════════════════════════════════════

@@ -7,13 +7,18 @@ namespace App\Http\Controllers\Api;
 use App\Enums\RolUsuario;
 use App\Http\Controllers\Controller;
 use App\Models\Usuario;
+use App\Services\AdminAuditService;
 use App\Services\Catalogo\CatalogoApiService;
 use App\Support\ApiResponse;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class AdminUserController extends Controller
 {
+    public function __construct(
+        private readonly AdminAuditService $auditService
+    ) {}
     /**
      * GET /api/admin/usuarios-detalle
      */
@@ -79,7 +84,7 @@ class AdminUserController extends Controller
     /**
      * DELETE /api/admin/usuarios/:id
      */
-    public function eliminarUsuario(int $id): JsonResponse
+    public function eliminarUsuario(int $id, Request $request): JsonResponse
     {
         /** @var Usuario|null $usuario */
         $usuario = Usuario::query()->find($id);
@@ -101,8 +106,31 @@ class AdminUserController extends Controller
             return ApiResponse::error('No se puede eliminar el usuario porque tiene pedidos activos en proceso.', 400);
         }
 
+        $datosAnteriores = [
+            'id' => $usuario->id,
+            'nombre' => $usuario->nombre,
+            'apellidos' => $usuario->apellidos,
+            'correo' => $usuario->correo,
+            'ciudad' => $usuario->ciudad,
+            'telefono' => $usuario->telefono,
+        ];
+        $nombreCompleto = trim($usuario->nombre.' '.($usuario->apellidos ?? ''));
+        $correoEliminado = $usuario->correo;
+
         $usuario->tokens()->delete();
         $usuario->delete();
+
+        $this->auditService->registrarOperacion(
+            modulo: 'USUARIOS',
+            accion: 'ELIMINAR_USUARIO',
+            descripcion: "Eliminó al usuario {$nombreCompleto} ({$correoEliminado})",
+            entidadTipo: 'Usuario',
+            entidadId: $id,
+            datosAnteriores: $datosAnteriores,
+            datosNuevos: null,
+            admin: $request->user(),
+            request: $request
+        );
 
         return ApiResponse::success([
             'mensaje' => 'Usuario eliminado correctamente.',

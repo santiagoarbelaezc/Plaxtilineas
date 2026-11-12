@@ -16,6 +16,7 @@ use App\Mail\NotificacionRespuestaPQRMailable;
 use App\Models\Pqr;
 use App\Models\PqrArchivo;
 use App\Models\PqrRespuesta;
+use App\Services\AdminAuditService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -29,7 +30,8 @@ use Throwable;
 class PqrsController extends Controller
 {
     public function __construct(
-        protected MediaStorageInterface $mediaStorage
+        protected MediaStorageInterface $mediaStorage,
+        protected AdminAuditService $auditService
     ) {}
 
     /**
@@ -351,6 +353,25 @@ class PqrsController extends Controller
             }
         });
 
+        $this->auditService->registrarOperacion(
+            modulo: 'PQRS',
+            accion: 'CAMBIAR_ESTADO_PQR',
+            descripcion: "Cambió el estado de la PQR #{$pqr->numero_ticket} ({$pqr->nombre_completo}) de '{$estadoAnterior}' a '{$nuevoEstado}'",
+            entidadTipo: 'Pqr',
+            entidadId: $pqr->numero_ticket,
+            datosAnteriores: [
+                'id' => $pqr->id,
+                'numero_ticket' => $pqr->numero_ticket,
+                'estado' => $estadoAnterior,
+            ],
+            datosNuevos: [
+                'estado' => $nuevoEstado,
+                'mensaje_respuesta' => $mensaje !== '' ? $mensaje : null,
+            ],
+            admin: $request->user(),
+            request: $request
+        );
+
         return ApiResponse::success([
             'success' => true,
             'mensaje' => 'Estado de PQR actualizado correctamente',
@@ -384,7 +405,8 @@ class PqrsController extends Controller
                 'tipo' => $tipo,
             ]);
 
-            $nuevoEstado = $pqr->estado->value;
+            $estadoOriginal = $pqr->estado->value;
+            $nuevoEstado = $estadoOriginal;
             if ($tipo === 'ADMINISTRACION' && $pqr->estado === EstadoPqr::PENDIENTE) {
                 $nuevoEstado = EstadoPqr::EN_PROCESO->value;
                 $pqr->update(['estado' => EstadoPqr::EN_PROCESO]);
@@ -425,6 +447,26 @@ class PqrsController extends Controller
                 }
             }
 
+            $this->auditService->registrarOperacion(
+                modulo: 'PQRS',
+                accion: 'RESPONDER_PQR',
+                descripcion: "Respondió la PQR #{$pqr->numero_ticket} de {$pqr->nombre_completo}",
+                entidadTipo: 'Pqr',
+                entidadId: $pqr->numero_ticket,
+                datosAnteriores: [
+                    'id' => $pqr->id,
+                    'numero_ticket' => $pqr->numero_ticket,
+                    'estado' => $estadoOriginal,
+                ],
+                datosNuevos: [
+                    'estado' => $nuevoEstado,
+                    'mensaje' => $mensaje,
+                    'adjunto' => $archivoAdjunto['url'] ?? null,
+                ],
+                admin: $request->user(),
+                request: $request
+            );
+
             return ApiResponse::success([
                 'success' => true,
                 'mensaje' => 'Respuesta agregada correctamente',
@@ -442,13 +484,25 @@ class PqrsController extends Controller
     /**
      * DELETE /api/pqrs/{id} (admin)
      */
-    public function eliminarPQR(string $id): JsonResponse
+    public function eliminarPQR(string $id, Request $request): JsonResponse
     {
         /** @var Pqr|null $pqr */
         $pqr = Pqr::with('archivos')->find($id);
         if (! $pqr) {
             return ApiResponse::error('PQR no encontrada', 404);
         }
+
+        $ticket = $pqr->numero_ticket;
+        $nombreCliente = $pqr->nombre_completo;
+        $tipoPqr = $pqr->tipo->value;
+        $datosAnteriores = [
+            'id' => $pqr->id,
+            'numero_ticket' => $ticket,
+            'tipo' => $tipoPqr,
+            'nombre_completo' => $nombreCliente,
+            'email' => $pqr->email,
+            'estado' => $pqr->estado->value,
+        ];
 
         foreach ($pqr->archivos as $archivo) {
             $this->mediaStorage->delete($archivo->url_archivo);
@@ -460,12 +514,24 @@ class PqrsController extends Controller
             $pqr->delete();
         });
 
+        $this->auditService->registrarOperacion(
+            modulo: 'PQRS',
+            accion: 'ELIMINAR_PQR',
+            descripcion: "Eliminó la PQR #{$ticket} ({$tipoPqr}) de {$nombreCliente}",
+            entidadTipo: 'Pqr',
+            entidadId: $ticket,
+            datosAnteriores: $datosAnteriores,
+            datosNuevos: null,
+            admin: $request->user(),
+            request: $request
+        );
+
         return ApiResponse::success([
             'success' => true,
             'mensaje' => 'PQR eliminada correctamente',
             'eliminado' => [
                 'pqr_id' => $id,
-                'numero_ticket' => $pqr->numero_ticket,
+                'numero_ticket' => $ticket,
             ],
         ]);
     }
