@@ -118,3 +118,4 @@ El archivo [`backend-laravel/tests/Feature/Admin/AdminAuditoriaTest.php`](file:/
 * `actualizar estado y eliminar un pedido como admin quedan registrados en auditoria`: APROBADO.
 * `responder, cambiar estado y eliminar una PQR como admin quedan registrados en auditoria`: APROBADO.
 * `endpoints de consulta de auditoria y sesiones retornan trazabilidad completa y bloquean clientes`: APROBADO.
+

@@ -86,3 +86,4 @@ Plaxtilineas/
    - Middleware `admin` (`EnsureUserIsAdmin`) restringe el acceso exclusivamente a usuarios con rol administrativo y actualiza su sesión activa.
 3. **Módulo de Auditoría**:
    - Registro automático e inmutable de operaciones sensibles (eliminaciones, modificaciones de pedidos, respuestas y configuraciones).
+

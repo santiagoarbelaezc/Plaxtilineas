@@ -59,3 +59,4 @@ Puedes alternar entre dos pestañas principales mediante los botones del encabez
 * **Chips Rápidos**: Haz clic en los botones superiores redondeados (*Usuarios Eliminados*, *Pedidos*, *Respuestas & PQRS*, *Entradas & Salidas*) para alternar rápidamente entre los tipos de eventos más frecuentes.
 * **Filtro por Fecha**: Selecciona una fecha en el campo calendario para auditar eventos a partir de un día específico.
 * **Limpiar Filtros**: Al hacer clic en el botón de cerrar en la barra de búsqueda o en el chip de sesión, volverás a ver el registro completo.
+
