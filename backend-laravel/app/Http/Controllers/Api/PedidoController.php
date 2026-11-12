@@ -355,7 +355,7 @@ class PedidoController extends Controller
         /** @var Pedido|null $pedidoAntes */
         $pedidoAntes = Pedido::with('usuario')->find($id);
         $estadoAnterior = $pedidoAntes?->estado->value ?? '';
-        $codigo = $pedidoAntes?->codigo_pedido ?? "#{$id}";
+        $codigo = $pedidoAntes->codigo_pedido ?? "#{$id}";
 
         $resultado = $this->adminActualizarEstadoAction->execute(
             $id,
@@ -403,8 +403,8 @@ class PedidoController extends Controller
 
         /** @var Pedido|null $pedidoAntes */
         $pedidoAntes = Pedido::with('usuario')->find($id);
-        $codigo = $pedidoAntes?->codigo_pedido ?? "#{$id}";
-        $clienteNombre = $pedidoAntes?->nombre_cliente ?: ($pedidoAntes?->usuario?->nombre ?? 'Cliente');
+        $codigo = $pedidoAntes->codigo_pedido ?? "#{$id}";
+        $clienteNombre = $pedidoAntes?->nombre_cliente ?: ($pedidoAntes?->usuario->nombre ?? 'Cliente');
         $datosAnteriores = $pedidoAntes ? [
             'id' => $pedidoAntes->id,
             'codigo_pedido' => $pedidoAntes->codigo_pedido,

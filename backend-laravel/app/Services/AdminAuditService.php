@@ -29,8 +29,8 @@ class AdminAuditService
             $sesion = AdminSesion::create([
                 'admin_id' => $admin->id,
                 'token_id' => $tokenId,
-                'ip_address' => $req?->ip(),
-                'user_agent' => $req?->userAgent(),
+                'ip_address' => $req->ip(),
+                'user_agent' => $req->userAgent(),
                 'inicio_sesion_at' => $ahora,
                 'ultima_actividad_at' => $ahora,
                 'duracion_segundos' => 0,
@@ -47,10 +47,10 @@ class AdminAuditService
                 'entidad_id' => (string) $admin->id,
                 'datos_nuevos' => [
                     'correo' => $admin->correo,
-                    'ip' => $req?->ip(),
-                    'user_agent' => $req?->userAgent(),
+                    'ip' => $req->ip(),
+                    'user_agent' => $req->userAgent(),
                 ],
-                'ip_address' => $req?->ip(),
+                'ip_address' => $req->ip(),
                 'created_at' => $ahora,
             ]);
 
@@ -91,8 +91,8 @@ class AdminAuditService
                 $sesion = AdminSesion::create([
                     'admin_id' => $admin->id,
                     'token_id' => $tokenId,
-                    'ip_address' => $req?->ip(),
-                    'user_agent' => $req?->userAgent(),
+                    'ip_address' => $req->ip(),
+                    'user_agent' => $req->userAgent(),
                     'inicio_sesion_at' => $ahora,
                     'ultima_actividad_at' => $ahora,
                     'duracion_segundos' => 0,
@@ -107,7 +107,7 @@ class AdminAuditService
             $sesion->update([
                 'ultima_actividad_at' => $ahora,
                 'duracion_segundos' => max((int) $sesion->duracion_segundos, $segundos),
-                'ip_address' => $sesion->ip_address ?: $req?->ip(),
+                'ip_address' => $sesion->ip_address ?: $req->ip(),
             ]);
 
             return $sesion;
@@ -171,7 +171,7 @@ class AdminAuditService
                     'duracion_formateada' => $duracionTexto,
                     'fin_sesion_at' => $ahora->toIso8601String(),
                 ],
-                'ip_address' => $req?->ip(),
+                'ip_address' => $req->ip(),
                 'created_at' => $ahora,
             ]);
 
@@ -203,7 +203,7 @@ class AdminAuditService
         try {
             $req = $request ?? request();
             /** @var Usuario|null $user */
-            $user = $admin ?? $req?->user();
+            $user = $admin ?? $req->user();
 
             if (! $user || ! $user->isAdmin()) {
                 return null;
@@ -221,7 +221,7 @@ class AdminAuditService
                 'entidad_id' => $entidadId !== null ? (string) $entidadId : null,
                 'datos_anteriores' => $datosAnteriores,
                 'datos_nuevos' => $datosNuevos,
-                'ip_address' => $req?->ip(),
+                'ip_address' => $req->ip(),
                 'created_at' => now(),
             ]);
         } catch (Throwable $e) {
@@ -239,8 +239,9 @@ class AdminAuditService
     {
         try {
             $accessToken = $admin->currentAccessToken();
-            if ($accessToken && isset($accessToken->id) && is_numeric($accessToken->id)) {
-                return (int) $accessToken->id;
+            $id = $accessToken->id ?? null;
+            if (is_numeric($id)) {
+                return (int) $id;
             }
         } catch (Throwable) {
             // Ignorar si es TransientToken en pruebas

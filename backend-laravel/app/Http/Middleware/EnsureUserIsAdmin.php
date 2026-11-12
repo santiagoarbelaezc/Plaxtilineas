@@ -6,7 +6,6 @@ namespace App\Http\Middleware;
 
 use App\Enums\RolUsuario;
 use App\Exceptions\Domain\AccesoNoPermitidoException;
-use App\Models\Usuario;
 use App\Services\AdminAuditService;
 use Closure;
 use Illuminate\Http\Request;
@@ -37,9 +36,7 @@ class EnsureUserIsAdmin
             throw new AccesoNoPermitidoException('Acceso no permitido. Se requieren permisos de administrador.');
         }
 
-        if ($user instanceof Usuario) {
-            $this->auditService->actualizarActividad($user, $request);
-        }
+        $this->auditService->actualizarActividad($user, $request);
 
         return $next($request);
     }

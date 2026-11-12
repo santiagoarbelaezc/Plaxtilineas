@@ -427,10 +427,7 @@ class AuthController extends Controller
             }
 
             try {
-                $token = $usuario->currentAccessToken();
-                if ($token && method_exists($token, 'delete')) {
-                    $token->delete();
-                }
+                $usuario->currentAccessToken()->delete();
             } catch (Throwable) {
                 // Ignorar en entornos de prueba con TransientToken
             }

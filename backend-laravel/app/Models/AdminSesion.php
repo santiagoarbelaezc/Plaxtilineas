@@ -85,10 +85,6 @@ class AdminSesion extends Model
         }
 
         $inicio = $this->inicio_sesion_at;
-        if (! $inicio) {
-            return (int) $this->duracion_segundos;
-        }
-
         $fin = $this->fin_sesion_at ?? $this->ultima_actividad_at ?? now();
         $diff = (int) abs($fin->diffInSeconds($inicio));
 
