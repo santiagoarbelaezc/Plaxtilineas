@@ -19,6 +19,7 @@ class AdminUserController extends Controller
     public function __construct(
         private readonly AdminAuditService $auditService
     ) {}
+
     /**
      * GET /api/admin/usuarios-detalle
      */

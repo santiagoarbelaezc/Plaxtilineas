@@ -223,4 +223,3 @@ class AdminAuditoriaController extends Controller
         ]);
     }
 }
-

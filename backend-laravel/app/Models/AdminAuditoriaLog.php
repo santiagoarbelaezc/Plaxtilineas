@@ -77,4 +77,3 @@ class AdminAuditoriaLog extends Model
         return $this->belongsTo(AdminSesion::class, 'sesion_id');
     }
 }
-

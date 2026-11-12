@@ -120,4 +120,3 @@ class AdminSesion extends Model
         return implode(' ', $partes);
     }
 }
-

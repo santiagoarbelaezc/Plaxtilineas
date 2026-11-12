@@ -279,4 +279,3 @@ test('endpoints de consulta de auditoria y sesiones retornan trazabilidad comple
             ],
         ]);
 });
-

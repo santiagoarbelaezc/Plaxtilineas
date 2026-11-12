@@ -17,6 +17,7 @@ class ConfiguracionController extends Controller
     public function __construct(
         private readonly AdminAuditService $auditService
     ) {}
+
     /**
      * GET /api/configuraciones
      * Obtener todas las configuraciones como mapa clave => valor (Público)
