@@ -107,24 +107,43 @@ class AdminAuditoriaController extends Controller
             ];
         })->all();
 
-        // Estadísticas globales
-        $totalOperaciones = AdminAuditoriaLog::count();
-        $operacionesHoy = AdminAuditoriaLog::whereDate('created_at', now()->toDateString())->count();
-        $totalSesiones = AdminSesion::count();
-        $sesionesActivas = AdminSesion::where('activa', true)->count();
-
-        $todasSesiones = AdminSesion::all();
-        $tiempoTotalSegundos = $todasSesiones->sum(fn (AdminSesion $s) => $s->calcularSegundosEfectivos());
-        $tiempoPromedioSegundos = $totalSesiones > 0 ? intdiv((int) $tiempoTotalSegundos, $totalSesiones) : 0;
-
-        $eliminacionesTotales = AdminAuditoriaLog::where('accion', 'like', 'ELIMINAR_%')->count();
-        $respuestasPqr = AdminAuditoriaLog::where('accion', 'RESPONDER_PQR')->count();
-        $gestionesPedidos = AdminAuditoriaLog::where('modulo', 'PEDIDOS')->count();
-
+        // Estadísticas globales consolidadas para minimizar round-trips a la base de datos
         $porModulo = AdminAuditoriaLog::select('modulo', DB::raw('count(*) as total'))
             ->groupBy('modulo')
             ->pluck('total', 'modulo')
+            ->map(fn ($v) => (int) $v)
             ->all();
+
+        $totalOperaciones = (int) array_sum($porModulo);
+        $gestionesPedidos = (int) ($porModulo['PEDIDOS'] ?? 0);
+
+        $hoyInicio = now()->startOfDay()->toDateTimeString();
+        $hoyFin = now()->endOfDay()->toDateTimeString();
+
+        /** @var array<string, mixed> $conteosLogs */
+        $conteosLogs = (array) DB::table('admin_auditoria_logs')
+            ->selectRaw('SUM(CASE WHEN created_at BETWEEN ? AND ? THEN 1 ELSE 0 END) as operaciones_hoy', [$hoyInicio, $hoyFin])
+            ->selectRaw("SUM(CASE WHEN accion LIKE 'ELIMINAR_%' THEN 1 ELSE 0 END) as eliminaciones_totales")
+            ->selectRaw("SUM(CASE WHEN accion = 'RESPONDER_PQR' THEN 1 ELSE 0 END) as respuestas_pqr")
+            ->first();
+
+        $operacionesHoy = (int) ($conteosLogs['operaciones_hoy'] ?? 0);
+        $eliminacionesTotales = (int) ($conteosLogs['eliminaciones_totales'] ?? 0);
+        $respuestasPqr = (int) ($conteosLogs['respuestas_pqr'] ?? 0);
+
+        $todasSesiones = AdminSesion::select([
+            'id',
+            'inicio_sesion_at',
+            'ultima_actividad_at',
+            'fin_sesion_at',
+            'duracion_segundos',
+            'activa',
+        ])->get();
+
+        $totalSesiones = $todasSesiones->count();
+        $sesionesActivas = $todasSesiones->where('activa', true)->count();
+        $tiempoTotalSegundos = $todasSesiones->sum(fn (AdminSesion $s) => $s->calcularSegundosEfectivos());
+        $tiempoPromedioSegundos = $totalSesiones > 0 ? intdiv((int) $tiempoTotalSegundos, $totalSesiones) : 0;
 
         $sesionActualSegundos = $sesionActual ? $sesionActual->calcularSegundosEfectivos() : 0;
 
@@ -154,6 +173,7 @@ class AdminAuditoriaController extends Controller
                 ] : null,
             ],
             'logs' => $logsData,
+            'sesiones' => $this->obtenerSesionesFormateadas(25),
             'paginacion' => [
                 'total' => $totalFiltrados,
                 'pagina_actual' => $page,
@@ -175,6 +195,16 @@ class AdminAuditoriaController extends Controller
 
         $limit = min(100, max(1, (int) $request->query('limit', 25)));
 
+        return ApiResponse::success([
+            'sesiones' => $this->obtenerSesionesFormateadas($limit),
+        ]);
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function obtenerSesionesFormateadas(int $limit = 25): array
+    {
         $sesiones = AdminSesion::with([
             'admin',
             'logs' => fn ($q) => $q->orderByDesc('created_at'),
@@ -185,7 +215,7 @@ class AdminAuditoriaController extends Controller
             ->take($limit)
             ->get();
 
-        $data = $sesiones->map(function (AdminSesion $s) {
+        return $sesiones->map(function (AdminSesion $s) {
             $segundos = $s->calcularSegundosEfectivos();
 
             $operaciones = $s->logs->take(15)->map(fn (AdminAuditoriaLog $l) => [
@@ -216,10 +246,6 @@ class AdminAuditoriaController extends Controller
                 'total_operaciones' => (int) $s->logs_count,
                 'operaciones' => $operaciones,
             ];
-        })->all();
-
-        return ApiResponse::success([
-            'sesiones' => $data,
-        ]);
+        })->values()->all();
     }
 }

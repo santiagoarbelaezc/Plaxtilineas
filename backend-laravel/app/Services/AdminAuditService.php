@@ -26,6 +26,21 @@ class AdminAuditService
             $req = $request ?? request();
             $ahora = now();
 
+            // Cerrar sesiones previas del mismo administrador que hayan quedado abiertas
+            $sesionesPrevias = AdminSesion::where('admin_id', $admin->id)
+                ->where('activa', true)
+                ->get();
+
+            foreach ($sesionesPrevias as $previa) {
+                $finPrevia = $previa->ultima_actividad_at ?? $ahora;
+                $segundosPrevia = (int) abs($finPrevia->diffInSeconds($previa->inicio_sesion_at));
+                $previa->update([
+                    'fin_sesion_at' => $finPrevia,
+                    'duracion_segundos' => max((int) $previa->duracion_segundos, $segundosPrevia),
+                    'activa' => false,
+                ]);
+            }
+
             $sesion = AdminSesion::create([
                 'admin_id' => $admin->id,
                 'token_id' => $tokenId,
@@ -73,6 +88,11 @@ class AdminAuditService
 
         try {
             $req = $request ?? request();
+            $cached = $req->attributes->get('_admin_sesion_actual');
+            if ($cached instanceof AdminSesion) {
+                return $cached;
+            }
+
             $tokenId = $this->resolveCurrentTokenId($admin);
             $ahora = now();
 
@@ -99,16 +119,45 @@ class AdminAuditService
                     'activa' => true,
                 ]);
 
+                AdminAuditoriaLog::create([
+                    'sesion_id' => $sesion->id,
+                    'admin_id' => $admin->id,
+                    'modulo' => 'AUTH',
+                    'accion' => 'LOGIN',
+                    'descripcion' => "Inicio de sesión de administrador ({$admin->nombre} - {$admin->correo})",
+                    'entidad_tipo' => 'Usuario',
+                    'entidad_id' => (string) $admin->id,
+                    'datos_nuevos' => [
+                        'correo' => $admin->correo,
+                        'ip' => $req->ip(),
+                        'user_agent' => $req->userAgent(),
+                    ],
+                    'ip_address' => $req->ip(),
+                    'created_at' => $ahora,
+                ]);
+
+                $req->attributes->set('_admin_sesion_actual', $sesion);
+
                 return $sesion;
             }
 
             $segundos = (int) abs($ahora->diffInSeconds($sesion->inicio_sesion_at));
+            $nuevaDuracion = max((int) $sesion->duracion_segundos, $segundos);
+            $ultimaActividad = $sesion->ultima_actividad_at;
+            $segundosDesdeUltima = $ultimaActividad ? (int) abs($ahora->diffInSeconds($ultimaActividad)) : 999;
 
-            $sesion->update([
-                'ultima_actividad_at' => $ahora,
-                'duracion_segundos' => max((int) $sesion->duracion_segundos, $segundos),
-                'ip_address' => $sesion->ip_address ?: $req->ip(),
-            ]);
+            if ($segundosDesdeUltima >= 15) {
+                $sesion->update([
+                    'ultima_actividad_at' => $ahora,
+                    'duracion_segundos' => $nuevaDuracion,
+                    'ip_address' => $sesion->ip_address ?: $req->ip(),
+                ]);
+            } else {
+                $sesion->ultima_actividad_at = $ahora;
+                $sesion->duracion_segundos = $nuevaDuracion;
+            }
+
+            $req->attributes->set('_admin_sesion_actual', $sesion);
 
             return $sesion;
         } catch (Throwable $e) {

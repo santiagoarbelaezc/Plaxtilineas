@@ -36,7 +36,9 @@ class EnsureUserIsAdmin
             throw new AccesoNoPermitidoException('Acceso no permitido. Se requieren permisos de administrador.');
         }
 
-        $this->auditService->actualizarActividad($user, $request);
+        if (! $request->is('api/admin/auditoria*') && ! $request->is('api/admin/notificaciones-resumen')) {
+            $this->auditService->actualizarActividad($user, $request);
+        }
 
         return $next($request);
     }

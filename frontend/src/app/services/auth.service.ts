@@ -132,7 +132,6 @@ export class AuthService {
           localStorage.setItem('token', res.token);
           this.currentUser.next(res.usuario);
           this.isLoggedIn.next(true);
-          this.checkToken();
         }
       })
     );
@@ -150,7 +149,6 @@ export class AuthService {
           localStorage.setItem('token', res.token);
           this.currentUser.next(res.usuario);
           this.isLoggedIn.next(true);
-          this.checkToken();
         }
       })
     );
@@ -171,7 +169,6 @@ export class AuthService {
           localStorage.setItem('token', res.token);
           this.currentUser.next(res.usuario);
           this.isLoggedIn.next(true);
-          this.checkToken();
         }
         localStorage.removeItem('plaxtilineas_pending_verification_email');
       })
@@ -185,7 +182,6 @@ export class AuthService {
           localStorage.setItem('token', res.token);
           this.currentUser.next(res.usuario);
           this.isLoggedIn.next(true);
-          this.checkToken();
         }
       })
     );
@@ -193,7 +189,7 @@ export class AuthService {
 
   logout(showAnimation = true): void {
     const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
-    if (token) {
+    if (token && showAnimation) {
       this.http.post(`${environment.apiUrl}/auth/logout`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       }).subscribe({

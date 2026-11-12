@@ -10,9 +10,12 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::dropIfExists('admin_auditoria_logs');
+        Schema::dropIfExists('admin_sesiones');
+
         Schema::create('admin_sesiones', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('admin_id')->constrained('usuarios')->cascadeOnDelete();
+            $table->unsignedBigInteger('admin_id')->index();
             $table->unsignedBigInteger('token_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
@@ -30,7 +33,7 @@ return new class extends Migration
         Schema::create('admin_auditoria_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sesion_id')->nullable()->constrained('admin_sesiones')->nullOnDelete();
-            $table->foreignId('admin_id')->constrained('usuarios')->cascadeOnDelete();
+            $table->unsignedBigInteger('admin_id')->index();
             $table->string('modulo', 50);
             $table->string('accion', 80);
             $table->text('descripcion');

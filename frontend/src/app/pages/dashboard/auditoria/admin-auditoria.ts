@@ -143,7 +143,6 @@ export class AdminAuditoria implements OnInit, OnDestroy {
 
   cargarTodo(): void {
     this.cargarAuditoria();
-    this.cargarSesiones();
   }
 
   cargarAuditoria(): void {
@@ -160,6 +159,9 @@ export class AdminAuditoria implements OnInit, OnDestroy {
     }).subscribe({
       next: (res) => {
         this.logs.set(res.logs || []);
+        if (res.sesiones) {
+          this.sesiones.set(res.sesiones);
+        }
         if (res.estadisticas) {
           this.estadisticas.set(res.estadisticas);
           if (res.estadisticas.sesion_actual) {

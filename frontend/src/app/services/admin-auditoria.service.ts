@@ -62,6 +62,7 @@ export interface AuditoriaPaginacion {
 export interface AuditoriaResponse {
   estadisticas: AuditoriaEstadisticas;
   logs: AuditoriaLogItem[];
+  sesiones?: AdminSesionItem[];
   paginacion: AuditoriaPaginacion;
 }
 
