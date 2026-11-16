@@ -30,3 +30,22 @@ Originalmente, el dashboard administrativo contaba con controles interactivos pa
 - **`frontend/src/app/components/dashboard/dashboard-view/dashboard-view.component.css`**:
   - Eliminación de todas las reglas de estilo asociadas a Wompi (`.wompi-pill`, `.wompi-status`, `.wompi-controls`, animaciones pulse).
   - Corrección de sintaxis CSS eliminando comentarios duplicados que causaban warnings en el compilador de Angular.
+
+---
+
+## 3. Frontend: Rediseño Visual de la Sección "¿Dónde Encontrarnos?" (`long-map`)
+
+### Contexto y Ajuste Comercial:
+La sección de ubicación y sede física en la página de inicio requería una simplificación visual profunda para eliminar sobrecarga cognitiva y reflejar los nuevos horarios de atención en la sede Armenia.
+
+### Intervenciones Técnicas:
+- **`frontend/src/app/features/dynamic/long-map/long-map.component.html`**:
+  - Retiro de tarjetas secundarias de baja relevancia (*03 Muestrarios* y *04 Despachos*).
+  - Eliminación completa de la enumeración numérica (`01` y `02`).
+  - Actualización precisa del horario:
+    - *Lunes a Viernes*: `8:00 AM – 12:00 PM y 2:00 PM – 6:00 PM`
+    - *Sábados*: `8:00 AM – 4:00 PM` con insignia `.badge-continua` (*Jornada continua*).
+  - Estructuración en dos bloques jerárquicos con iconos SVG en línea (Dirección física y Horario de Atención).
+- **`frontend/src/app/features/dynamic/long-map/long-map.component.css`**:
+  - Implementación del contenedor `.location-cards-stack` con tarjetas estilo glassmorphism minimalista.
+  - Media queries optimizados para visualización móvil (`@media (max-width: 640px)`) con apilamiento vertical y prevención de secuestro de scroll por el iframe del mapa.
