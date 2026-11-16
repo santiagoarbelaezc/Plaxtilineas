@@ -29,3 +29,32 @@ Uno de los principales problemas del patrón MVC clásico en proyectos de comerc
   - Un controlador HTTP (`PedidoController`).
   - Un Job en segundo plano (`ReconcilePendingPaymentsJob`).
   - Un comando programado de consola de Artisan (`LiberarReservasExpiradasCommand`).
+
+---
+
+## 3. Inversión de Dependencias y Capa de Contratos (*Contracts & Adapters*)
+
+Para evitar acoplamiento directo a proveedores externos de infraestructura, el sistema implementa el **Principio de Inversión de Dependencias (DIP)** mediante interfaces ubicadas en `App\Contracts\`.
+
+### Mapeo de Abstracciones e Implementaciones:
+1. **Pasarela de Pagos**: `WompiClientInterface` implementada por `WompiService`.
+2. **Almacenamiento Multimedia**: `MediaStorageInterface` implementada por `CloudinaryStorageService`.
+3. **Asistente Virtual IA**: `AiChatClientInterface` implementada por `GroqAiChatService`.
+4. **Autenticación Federada**: `GoogleAuthClientInterface` implementada por `GoogleAuthService`.
+5. **Transporte de Correos Transaccionales**: `HostingerMailTransport` integrado dinámicamente sobre el `MailManager` de Laravel en `AppServiceProvider`.
+
+```
+┌─────────────────────────────────┐
+│     Controladores y Acciones    │
+└────────────────┬────────────────┘
+                 │ depende de
+┌────────────────▼────────────────┐
+│   App\Contracts\*Interface      │  <-- Inversión de Dependencias (IoC)
+└────────────────▲────────────────┘
+                 │ implementado por
+┌────────────────┴────────────────┐
+│     App\Services\*Service       │  <-- Wompi, Cloudinary, Groq, Hostinger
+└─────────────────────────────────┘
+```
+
+Esta arquitectura permite que las pruebas automatizadas con Pest y PHPUnit se ejecuten en milisegundos mediante *mocks* o *fakes* sin realizar llamadas reales a APIs de pago o almacenamiento.
