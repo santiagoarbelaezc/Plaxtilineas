@@ -119,3 +119,13 @@ El archivo [`backend-laravel/tests/Feature/Admin/AdminAuditoriaTest.php`](file:/
 * `responder, cambiar estado y eliminar una PQR como admin quedan registrados en auditoria`: APROBADO.
 * `endpoints de consulta de auditoria y sesiones retornan trazabilidad completa y bloquean clientes`: APROBADO.
 
+
+---
+
+## 7. Mecanismos de Latido (*Heartbeat*) y Resiliencia Forense
+
+Para asegurar que los registros de auditoría y las métricas de tiempo de sesión no dependan exclusivamente del evento explícito de `logout`:
+
+1. **Latido Continuo en Middleware**: Cada interacción autenticada en el panel de administración pasa por `EnsureUserIsAdmin`, el cual actualiza el campo `ultima_actividad` de la sesión en curso.
+2. **Registro de Eliminaciones Críticas**: La acción de borrado en `AdminUserController` ejecuta una transacción que extrae el snapshot completo del usuario antes de la destrucción del registro, almacenándolo en `admin_auditoria_logs` para fines de trazabilidad contable y legal.
+3. **Paginación Defensiva**: Las peticiones a `/api/admin/auditoria` aplican límites de paginación estricta (`limit=20`) con indexación sobre `creado_en`, evitando bloqueos de memoria y tiempos de espera excedidos (timeouts 504) en bases de datos con cientos de miles de eventos registrados.
