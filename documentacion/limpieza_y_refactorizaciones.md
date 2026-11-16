@@ -82,3 +82,23 @@ El análisis estático con Larastan / PHPStan nivel 5 identificó discrepancias 
    - *Diagnóstico*: Uso incorrecto de accesos nulosafes (`?->`) en el lado izquierdo del operador null-coalescing (`??`) para propiedades no nulas garantizadas en el modelo `Usuario` (`$user->nombre`, `$user->correo`).
    - *Diagnóstico en Fechas*: Invocación nulosafe `?->toIso8601String()` sobre instancias no-nulas de `Illuminate\Support\Carbon`.
    - *Corrección*: Sustitución de `?->` por el operador de acceso estándar `->`, resolviendo las 10 anotaciones de Larastan y blindando el código contra warnings de PHP 8.5.
+
+---
+
+## 6. Backend: Auditoría Forense, Eliminación de Usuarios y Resiliencia 500/504
+
+### Problemas Detectados en Producción:
+- **Ausencia de Registro al Eliminar Usuarios**: Al eliminar un usuario desde el panel administrativo, la operación no se persistía en `admin_auditoria_logs` debido a que el controlador no invocaba explícitamente el servicio de auditoría antes del borrado.
+- **Tiempos de Sesión Desincronizados**: Las conexiones y desconexiones no calculaban adecuadamente la duración total acumulada por falta de cierre de sesión explícito.
+- **Errores HTTP 500 y 504 Gateway Timeout**: Consultas no paginadas adecuadamente o con subconsultas pesadas bloqueaban el hilo PHP en servidores con recursos ajustados.
+
+### Soluciones Implementadas:
+1. **Hook de Auditoría en `AdminUserController`**:
+   - Captura de snapshot con el perfil completo del usuario a eliminar antes de ejecutar el borrado en base de datos.
+   - Registro en `AdminAuditService::registrarAccion()` con acción `USUARIO_ELIMINADO` e IP del administrador que ejecutó la acción.
+2. **Ciclo de Vida de Sesiones (`AdminSesion`)**:
+   - Vinculación del middleware `EnsureUserIsAdmin` como heartbeat continuo para actualizar `ultima_actividad`.
+   - Cierre automático de sesiones huérfanas mediante comandos de mantenimiento.
+3. **Optimización de Queries y Paginación**:
+   - Eager loading de relaciones para evitar problemas de N+1 queries.
+   - Paginación obligatoria por bloques (`limit=20` por defecto) en el endpoint `/api/admin/auditoria`, mitigando timeouts y errores 500.
