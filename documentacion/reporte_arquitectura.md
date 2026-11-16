@@ -108,3 +108,17 @@ La configuración de excepciones mapea de forma centralizada:
 - `ModelNotFoundException` / `NotFoundHttpException` -> HTTP 404.
 - `ThrottleRequestsException` -> HTTP 429 con cabecera `Retry-After`.
 - `ApiResponse::success()`, `ApiResponse::error()` y `ApiResponse::validationError()` aseguran consistencia de contrato con el frontend Angular.
+
+---
+
+## 7. Procesamiento Asíncrono, Reconciliación y Transporte de Correos
+
+Para evitar cuellos de botella en peticiones HTTP síncronas que afecten la experiencia del usuario, las tareas pesadas se delegan al sistema de colas (`Queue Workers`):
+
+### Componentes Asíncronos:
+- **`ReconcilePendingPaymentsJob`**: Revisa pedidos en estado `pendiente_pago` mediante consultas directas a la API de Wompi para asegurar que ninguna orden quede sin procesar por caídas de red o demoras en webhooks.
+- **`EnviarCorreoProductoNuevoJob`**: Distribuye notificaciones a clientes suscritos cuando se activa un nuevo producto en catálogo.
+- **`HostingerMailTransport`**: Driver de correo personalizado basado en el SDK oficial de Hostinger (`SendApi`), superando las limitaciones y bloqueos de puertos SMTP tradicionales en entornos compartidos.
+
+### Conclusión Arquitectónica:
+La arquitectura de Plaxtilineas balancea mantenibilidad, rendimiento y alta cohesión. Cumple con los estándares más exigentes de la industria del comercio electrónico moderno, permitiendo una evolución desacoplada de la interfaz en Angular y una sólida base de datos relacional auditable.
