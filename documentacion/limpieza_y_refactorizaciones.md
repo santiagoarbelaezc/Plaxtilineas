@@ -67,3 +67,18 @@ En el flujo de integración continua (`laravel-ci.yml`), el análisis de estilo 
 - **`tests/Feature/Admin/AdminAuditoriaTest.php`**: Salto de línea único final (`single_blank_line_at_eof`).
 
 Tras la aplicación de `vendor/bin/pint`, el pipeline de CI pasó a estado 100% verde (Pass).
+
+---
+
+## 5. Backend: Resolución de Tipado Estricto y Nullsafety con Larastan (PHP 8.5)
+
+El análisis estático con Larastan / PHPStan nivel 5 identificó discrepancias en el manejo de tipos e invocaciones de funciones redundantes en el módulo de autenticación y auditoría.
+
+### Errores Diagnosticados y Solucionados:
+1. **`app/Http/Controllers/Api/AuthController.php#L431`**:
+   - *Diagnóstico*: Llamada a `method_exists()` sobre `Laravel\Sanctum\PersonalAccessToken` para comprobar `'delete'`, la cual siempre evaluaba a `true`.
+   - *Corrección*: Invocación directa del método `$token->delete()`, eliminando comprobaciones reflejadas innecesarias.
+2. **`app/Http/Controllers/Api/AdminAuditoriaController.php` (Líneas 91, 92, 104, 147, 148, 203, 204, 207, 208)**:
+   - *Diagnóstico*: Uso incorrecto de accesos nulosafes (`?->`) en el lado izquierdo del operador null-coalescing (`??`) para propiedades no nulas garantizadas en el modelo `Usuario` (`$user->nombre`, `$user->correo`).
+   - *Diagnóstico en Fechas*: Invocación nulosafe `?->toIso8601String()` sobre instancias no-nulas de `Illuminate\Support\Carbon`.
+   - *Corrección*: Sustitución de `?->` por el operador de acceso estándar `->`, resolviendo las 10 anotaciones de Larastan y blindando el código contra warnings de PHP 8.5.
