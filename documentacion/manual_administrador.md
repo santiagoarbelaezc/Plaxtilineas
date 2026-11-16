@@ -60,3 +60,11 @@ Puedes alternar entre dos pestañas principales mediante los botones del encabez
 * **Filtro por Fecha**: Selecciona una fecha en el campo calendario para auditar eventos a partir de un día específico.
 * **Limpiar Filtros**: Al hacer clic en el botón de cerrar en la barra de búsqueda o en el chip de sesión, volverás a ver el registro completo.
 
+
+---
+
+## 5. Operatividad de Pagos y Seguridad del Sistema
+
+* **Pasarela Wompi 24/7**: La pasarela de pagos opera de forma ininterrumpida y automatizada. Los switches manuales previos fueron retirados del dashboard para garantizar consistencia en la recepción de pagos con tarjeta, Nequi y PSE.
+* **Trazabilidad de Eliminaciones**: Cualquier eliminación de cuentas o pedidos queda registrada permanentemente en el módulo de Auditoría con la IP del operador y una copia de los datos previos.
+* **Seguridad de Base de Datos**: Los comandos destructivos de migración están bloqueados por software en producción (`DB::prohibitDestructiveCommands()`) para prevenir pérdidas accidentales de datos.
