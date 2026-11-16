@@ -49,3 +49,21 @@ La sección de ubicación y sede física en la página de inicio requería una s
 - **`frontend/src/app/features/dynamic/long-map/long-map.component.css`**:
   - Implementación del contenedor `.location-cards-stack` con tarjetas estilo glassmorphism minimalista.
   - Media queries optimizados para visualización móvil (`@media (max-width: 640px)`) con apilamiento vertical y prevención de secuestro de scroll por el iframe del mapa.
+
+---
+
+## 4. Backend: Estandarización de Estilos de Código con Laravel Pint
+
+En el flujo de integración continua (`laravel-ci.yml`), el análisis de estilo ejecutado por `vendor/bin/pint --test` arrojó 8 incidencias de estilo sobre 221 archivos PHP analizados.
+
+### Correcciones Aplicadas:
+- **`app/Http/Controllers/Api/AdminAuditoriaController.php`**: Corrección de posicionamiento de llaves (`braces_position`) y formato de líneas simples.
+- **`app/Http/Controllers/Api/AdminUserController.php`**: Separación de atributos de clase y constructores (`class_attributes_separation`).
+- **`app/Http/Controllers/Api/ConfiguracionController.php`**: Separación de atributos y orden de métodos.
+- **`app/Models/AdminAuditoriaLog.php`**: Inserción de salto de línea final estándar (`single_blank_line_at_eof`).
+- **`app/Models/AdminSesion.php`**: Espaciado en operadores unarios y operadores lógicos de negación (`unary_operator_spaces`, `not_operator_with_successor_space`).
+- **`app/Services/AdminAuditService.php`**: Formateo de operadores de negación y coerción de tipos.
+- **`database/migrations/2026_11_10_000001_create_admin_auditoria_tables.php`**: Estandarización de indentación y saltos de línea.
+- **`tests/Feature/Admin/AdminAuditoriaTest.php`**: Salto de línea único final (`single_blank_line_at_eof`).
+
+Tras la aplicación de `vendor/bin/pint`, el pipeline de CI pasó a estado 100% verde (Pass).
