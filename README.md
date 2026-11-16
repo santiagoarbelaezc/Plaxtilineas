@@ -64,6 +64,14 @@
 | **Pasarela** | Wompi Bancolombia | Webhook + Checksum + Polling proactivo |
 | **Multimedia** | Cloudinary API | Almacenamiento y optimización de medios |
 
+### 🏛️ Patrones de Diseño & Arquitectura de Software
+El backend implementa una **Arquitectura en Capas orientada al Dominio (Action-Driven Layered Architecture)**:
+* **Action Pattern (Command / Caso de uso único)**: Clases atómicas `final` bajo `app/Actions/` con transacciones de base de datos (`CrearDraftPedidoAction`, `ConfirmarPedidoAction`, `ProcessWompiEventAction`, `SyncCarritoAction`).
+* **Inversión de Dependencias & Adapters (`app/Contracts/`)**: Interfaces para Wompi, Cloudinary, Groq AI y Google Auth registradas en `AppServiceProvider`.
+* **Seguridad & Middleware Pipeline**: Trazabilidad UUID (`AssignRequestId`), RBAC con heartbeat de sesión (`EnsureUserIsAdmin`) y verificación criptográfica HMAC (`VerificarFirmaCatalogo`).
+* **Active Record + Backed Enums**: Modelos Eloquent complementados con Enums tipados de PHP 8.1+ (`EstadoPedido`, `RolUsuario`, `EstadoPqr`) para prevenir errores semánticos.
+* **Excepciones de Dominio**: Jerarquía de excepciones (`DomainException`, `StockInsuficienteException`) transformadas limpiamente en JSON vía `ApiResponse`.
+
 ---
 
 ## 📂 Estructura del Repositorio
