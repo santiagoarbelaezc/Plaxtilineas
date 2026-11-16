@@ -87,3 +87,24 @@ Para evitar problemas de *race conditions* y sobreventa de existencias físicas 
 2. **Draft de Pedido & Reserva**: `CrearDraftPedidoAction` inserta un registro en `stock_reservas` con un tiempo de vida (TTL) determinado (ej. 30 minutos) asociado al pedido en estado `draft`.
 3. **Confirmación**: Al recibir la confirmación de pago por webhook de Wompi o conciliación (`ProcessWompiEventAction`), la reserva se convierte en deducción definitiva de inventario y el pedido pasa a `pagado`.
 4. **Liberación Automática**: Si el usuario abandona la compra o el tiempo expira, comandos cron (`php artisan pedidos:limpiar-expirados` y `php artisan reservas:liberar-expiradas`) liberan automáticamente las unidades bloqueadas, devolviéndolas al catálogo general.
+
+---
+
+## 6. Jerarquía de Excepciones de Dominio y Formato de Respuestas API
+
+El manejo de errores en Plaxtilineas evita que excepciones no controladas expongan trazas de la base de datos o stacktraces al cliente Angular.
+
+### Jerarquía de Excepciones:
+Toda excepción de negocio hereda de `App\Exceptions\Domain\DomainException`:
+- `StockInsuficienteException`: Provista de métodos fábrica como `paraPedido($nombre, $disponible, $solicitado)` con códigos HTTP 400.
+- `FirmaWompiInvalidaException`: Disparada ante discrepancias en el cálculo del checksum SHA256 (HTTP 403).
+- `AccesoNoPermitidoException`, `CheckoutInvalidoException`, `PedidoNoEncontradoException`, etc.
+
+### Transformación Global en `bootstrap/app.php`:
+La configuración de excepciones mapea de forma centralizada:
+- `ValidationException` -> HTTP 422 (`error`, array `errors`).
+- `AuthenticationException` -> HTTP 401 (`error: 'No autenticado.'`).
+- `AuthorizationException` / `AccessDeniedHttpException` -> HTTP 403.
+- `ModelNotFoundException` / `NotFoundHttpException` -> HTTP 404.
+- `ThrottleRequestsException` -> HTTP 429 con cabecera `Retry-After`.
+- `ApiResponse::success()`, `ApiResponse::error()` y `ApiResponse::validationError()` aseguran consistencia de contrato con el frontend Angular.
