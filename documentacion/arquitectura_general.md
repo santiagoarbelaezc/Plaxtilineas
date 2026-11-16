@@ -104,3 +104,18 @@ El backend implementa el patrón Action para desacoplar la orquestación HTTP de
   * `ProcessWompiEventAction`: Procesamiento idempotente de eventos de webhook con checksum.
 * **`app/Actions/Carrito/`**:
   * `SyncCarritoAction`: Sincronización bidireccional reactiva entre el cliente Angular y la base de datos.
+
+---
+
+## 5. Resiliencia, Verificación de Stock y Rate Limiting
+
+Para asegurar la alta disponibilidad de la plataforma en servidores en la nube:
+
+1. **Verificación de Stock Externa**:
+   * Mediante `CatalogoApiService`, se realizan validaciones en tiempo real (`/api/productos/verificar-stock`) antes de permitir la entrada a la pasarela de pagos.
+2. **Rate Limiters en AppServiceProvider**:
+   * Endpoints de API general: 120 peticiones/min.
+   * Endpoints de Autenticación (`/login`, `/register`, `/recuperar`): 10 peticiones/min para mitigar ataques de denegación de servicio (DoS) y fuerza bruta.
+   * Webhook de Wompi: 60 peticiones/min protegidas por verificación de firma criptográfica.
+3. **Manejo Centralizado de Excepciones**:
+   * Formato normalizado a través de `App\Support\ApiResponse`, garantizando compatibilidad 100% con los servicios HTTP de Angular.
