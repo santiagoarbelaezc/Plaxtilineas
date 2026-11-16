@@ -94,9 +94,11 @@ Plaxtilineas/
 │   │   ├── services/         # Servicios HTTP
 │   │   └── shared/           # Componentes y layouts compartidos
 ├── documentacion/            # Documentación técnica detallada
-│   ├── auditoria_y_trazabilidad.md
-│   ├── arquitectura_general.md
-│   └── manual_administrador.md
+│   ├── reporte_arquitectura.md       # Análisis técnico formal de la arquitectura por capas
+│   ├── limpieza_y_refactorizaciones.md # Bitácora de depuración en frontend y backend
+│   ├── auditoria_y_trazabilidad.md    # Arquitectura de sesiones y logs forenses
+│   ├── arquitectura_general.md        # Especificación global de capas, RBAC y flujos
+│   └── manual_administrador.md        # Manual operativo del panel administrativo
 └── README.md
 ```
 
@@ -173,8 +175,10 @@ php vendor/pestphp/pest/bin/pest tests/Feature/Admin/AdminAuditoriaTest.php
 
 ## 📖 Documentación Detallada
 
-En la carpeta [`documentacion/`](./documentacion/) encontrarás guías exhaustivas:
-* [`auditoria_y_trazabilidad.md`](./documentacion/auditoria_y_trazabilidad.md): Arquitectura de sesiones, modelos y logs de auditoría.
+En la carpeta [`documentacion/`](./documentacion/) encontrarás guías y reportes exhaustivos:
+* [`reporte_arquitectura.md`](./documentacion/reporte_arquitectura.md): Análisis exhaustivo del patrón Action-Domain, contratos, inversión de dependencias y concurrencia.
+* [`limpieza_y_refactorizaciones.md`](./documentacion/limpieza_y_refactorizaciones.md): Registro técnico de depuración en Angular (Wompi, Mapa) y Laravel (Pint, Larastan, Auditoría).
+* [`auditoria_y_trazabilidad.md`](./documentacion/auditoria_y_trazabilidad.md): Arquitectura de sesiones, modelos y logs forenses.
 * [`arquitectura_general.md`](./documentacion/arquitectura_general.md): Arquitectura técnica, RBAC y flujos de integración.
 * [`manual_administrador.md`](./documentacion/manual_administrador.md): Manual de uso del panel administrativo para auditoría y trazabilidad.
 
