@@ -87,3 +87,20 @@ Plaxtilineas/
 3. **Módulo de Auditoría**:
    - Registro automático e inmutable de operaciones sensibles (eliminaciones, modificaciones de pedidos, respuestas y configuraciones).
 
+
+
+---
+
+## 4. Capa de Dominio y Acciones Atómicas (*Action-Driven Design*)
+
+El backend implementa el patrón Action para desacoplar la orquestación HTTP de las reglas de negocio:
+
+* **`app/Actions/Pedidos/`**:
+  * `CrearDraftPedidoAction`: Validación de cupo de órdenes simultáneas, comprobación de stock contra API externa, cálculo de subtotales y creación de reservas transaccionales en MySQL.
+  * `ConfirmarPedidoAction`: Validación de transición de estados y despacho de correos de confirmación.
+  * `CancelarPedidoAction` y `EliminarPedidoAction`: Liberación de reservas y trazabilidad en logs.
+* **`app/Actions/Payments/`**:
+  * `CreateCheckoutAction`: Generación de firmas de integridad SHA256 para el widget y API de Wompi.
+  * `ProcessWompiEventAction`: Procesamiento idempotente de eventos de webhook con checksum.
+* **`app/Actions/Carrito/`**:
+  * `SyncCarritoAction`: Sincronización bidireccional reactiva entre el cliente Angular y la base de datos.
