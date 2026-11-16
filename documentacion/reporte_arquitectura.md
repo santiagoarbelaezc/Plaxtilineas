@@ -75,3 +75,15 @@ La seguridad perimetral y el control de accesos se gestionan mediante una cadena
   - `auth`: 10 peticiones/min para mitigación de ataques de fuerza bruta.
   - `chat`: 30 peticiones/min por Session ID/IP.
   - `wompi-webhook`: 60 peticiones/min protegidas por checksum.
+
+---
+
+## 5. Gestión de Concurrencia de Inventario y Reservas Transaccionales
+
+Para evitar problemas de *race conditions* y sobreventa de existencias físicas en bodega (especialmente en productos de alta demanda como rollos de plástico o espumas industriales), el backend implementa una estrategia de **reserva temporal con expiración automática**:
+
+### Flujo Transaccional de Reserva:
+1. **Verificación Previa**: Al agregar items al carrito o iniciar el checkout, `CatalogoApiService` consulta el stock real disponible descontando reservas vivas.
+2. **Draft de Pedido & Reserva**: `CrearDraftPedidoAction` inserta un registro en `stock_reservas` con un tiempo de vida (TTL) determinado (ej. 30 minutos) asociado al pedido en estado `draft`.
+3. **Confirmación**: Al recibir la confirmación de pago por webhook de Wompi o conciliación (`ProcessWompiEventAction`), la reserva se convierte en deducción definitiva de inventario y el pedido pasa a `pagado`.
+4. **Liberación Automática**: Si el usuario abandona la compra o el tiempo expira, comandos cron (`php artisan pedidos:limpiar-expirados` y `php artisan reservas:liberar-expiradas`) liberan automáticamente las unidades bloqueadas, devolviéndolas al catálogo general.
