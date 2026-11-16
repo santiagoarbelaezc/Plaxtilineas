@@ -58,3 +58,20 @@ Para evitar acoplamiento directo a proveedores externos de infraestructura, el s
 ```
 
 Esta arquitectura permite que las pruebas automatizadas con Pest y PHPUnit se ejecuten en milisegundos mediante *mocks* o *fakes* sin realizar llamadas reales a APIs de pago o almacenamiento.
+
+---
+
+## 4. Arquitectura de Seguridad, Middleware Pipeline y RBAC
+
+La seguridad perimetral y el control de accesos se gestionan mediante una cadena de responsabilidad (*Chain of Responsibility*) configurada a nivel de middleware en `bootstrap/app.php`:
+
+### Pipeline de Middlewares:
+- **`AssignRequestId`**: Inyecta un identificador UUID único a cada request entrante (`X-Request-ID`) tanto en el contexto de logging como en las cabeceras de respuesta HTTP, permitiendo trazabilidad forense de extremo a extremo.
+- **`auth:sanctum`**: Valida tokens personales Bearer para usuarios y administradores, usando el modelo extendido `PersonalAccessToken`.
+- **`admin` (`EnsureUserIsAdmin`)**: Aplica Control de Acceso Basado en Roles (RBAC), comprobando que el usuario autenticado posea el rol `admin` (`RolUsuario::ADMIN`). Adicionalmente, actúa como latido (*heartbeat*) actualizando `ultima_actividad` en `AdminSesion`.
+- **`catalogo.firma` (`VerificarFirmaCatalogo`)**: Valida la integridad de peticiones del catálogo externo mediante firmas criptográficas HMAC SHA256.
+- **Rate Limiters Diferenciados**:
+  - `api`: 120 peticiones/min por IP.
+  - `auth`: 10 peticiones/min para mitigación de ataques de fuerza bruta.
+  - `chat`: 30 peticiones/min por Session ID/IP.
+  - `wompi-webhook`: 60 peticiones/min protegidas por checksum.
