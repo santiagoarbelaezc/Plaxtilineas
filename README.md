@@ -102,6 +102,18 @@ Plaxtilineas/
 
 ---
 
+## 🧹 Limpieza Técnica y Refactorizaciones Recientes
+
+* **Frontend**:
+  * **Retiro de Controles Wompi en Dashboard**: Eliminación de switches redundantes en el header y vista principal (`dashboard-view`), consolidando la operatividad 24/7 de la pasarela y depurando CSS/TS huérfano.
+  * **Rediseño del Componente de Ubicación (`long-map`)**: Simplificación del bloque físico, retiro de enumeración (`01`/`02`), eliminación de tarjetas secundarias y actualización de horarios de atención en sede física (L-V: 8-12 / 2-6 | Sáb: 8-4 continua).
+* **Backend**:
+  * **Conformidad de Estilo Laravel Pint**: Normalización de llaves, separaciones de atributos y espaciado de operadores en controladores y modelos (100% verde en CI).
+  * **Resolución de Tipado Estricto Larastan**: Erradicación de operadores nullsafe innecesarios sobre tipos no nulos garantizados (`Usuario`, `Carbon`) y depuración de llamadas `method_exists()` en Sanctum.
+  * **Resiliencia de Auditoría y Sesiones**: Registro explícito de auditoría ante eliminación de usuarios, sincronización de tiempos en `AdminSesion` y paginación defensiva para prevenir errores 500/504.
+
+---
+
 ## ⚙️ Instalación y Ejecución Local
 
 ### Prerrequisitos
