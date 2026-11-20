@@ -3,7 +3,7 @@
   padding: 25px 0;
   background-color: #ffffff;
   border-bottom: 1px solid #f3f4f6;
-  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-primary);
   overflow: hidden;
 }
 
@@ -206,7 +206,7 @@
   width: 11px;
   height: 11px;
   border-radius: 50%;
-  background-color: #22c55e;
+  background-color: #379045;
   border: 2px solid #ffffff;
 }
 

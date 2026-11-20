@@ -23,7 +23,7 @@
   text-transform: uppercase;
   width: fit-content;
   letter-spacing: 0.1em;
-  box-shadow: 0 4px 15px rgba(54, 140, 68, 0.3);
+  box-shadow: 0 4px 15px rgba(55, 144, 69, 0.3);
   margin-bottom: 24px;
 }
 
@@ -117,28 +117,28 @@
 .valor-card:hover {
   transform: translateY(-8px);
   background: #ffffff;
-  border-color: rgba(54, 140, 68, 0.2);
-  box-shadow: 0 20px 40px rgba(54, 140, 68, 0.12);
+  border-color: rgba(55, 144, 69, 0.2);
+  box-shadow: 0 20px 40px rgba(55, 144, 69, 0.12);
 }
 
 .valor-icono-container {
   width: 60px;
   height: 60px;
-  background: rgba(54, 140, 68, 0.1);
+  background: rgba(55, 144, 69, 0.1);
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.4s ease;
   font-size: 1.5rem;
-  color: #368C44;
+  color: #379045;
   font-weight: bold;
 }
 
 .valor-card:hover .valor-icono-container {
   background: #16a34a;
   transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(54, 140, 68, 0.3);
+  box-shadow: 0 10px 20px rgba(55, 144, 69, 0.3);
   color: white;
 }
 

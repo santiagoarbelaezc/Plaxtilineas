@@ -1,77 +1,144 @@
-<section class="identity-showcase-section" [class.is-visible]="isVisible" aria-label="¿En qué nos especializamos? - Plaxtilineas">
-  <div class="identity-container">
-    <div class="identity-grid">
-      
-      <!-- Columna Izquierda: Imagen Showcase de Gran Formato -->
-      <div class="showcase-visual-wrapper">
-        <div class="showcase-frame">
-          <img 
-            [src]="showcaseImage.url" 
-            [alt]="showcaseImage.alt"
-            class="showcase-img"
-            loading="lazy">
-        </div>
-      </div>
+<section
+  class="nosotros-apple-container"
+  [class.is-visible]="isVisible"
+  aria-label="¿En qué nos especializamos? - Plaxtilineas">
 
-      <!-- Columna Derecha: Contenido Editorial con Efecto Typewriter -->
-      <div class="identity-content-wrapper">
-        
-        <!-- Kicker Minimalista: ¿EN QUÉ NOS ESPECIALIZAMOS? -->
-        <div class="kicker-badge-row">
-          <span class="identity-kicker">
-            <span class="kicker-line"></span>
-            ¿EN QUÉ NOS ESPECIALIZAMOS?
-          </span>
-        </div>
+  <!-- Pista de Scroll Cinemática -->
+  <div class="nosotros-scroll-track" #scrollTrack>
 
-        <!-- Gran Titular con Efecto Typewriter Preservado -->
-        <div class="headline-container">
-          <h2 class="identity-title">
-            <span class="title-lead-line">Materiales para</span>
-            <span class="title-dynamic-line">
-              <span class="typewriter-text">{{ displayedText }}</span><span class="typewriter-cursor">|</span>
+    <!-- Viewport Sticky con fondo verde degradado (estilo long-map) -->
+    <div class="nosotros-sticky-viewport">
+
+      <div class="bg-glow bg-glow-a" aria-hidden="true"></div>
+      <div class="bg-glow bg-glow-b" aria-hidden="true"></div>
+
+      <div class="nosotros-inner">
+        <div class="nosotros-grid">
+
+          <!-- ══ COLUMNA IZQUIERDA: Editorial Minimalista + Typewriter ══ -->
+          <div class="nosotros-editorial">
+            <span class="identity-kicker">
+              <span class="kicker-line"></span>
+              ¿EN QUÉ NOS ESPECIALIZAMOS?
             </span>
-          </h2>
-        </div>
 
-        <!-- Párrafo Descriptivo: Versión Desktop y Versión Móvil Simplificada -->
-        <p class="identity-lead desktop-text">
-          En <strong>Plaxtilineas</strong> somos especialistas en el suministro y distribución integral de materiales para construcción, agricultura, tapicería hogar y automotriz, espumas técnicas y plásticos industriales.
-        </p>
-        <p class="identity-lead mobile-text">
-          Suministro y distribución integral de materiales para construcción, agro, tapicería e industria.
-        </p>
+            <h2 class="identity-title">
+              <span class="title-lead-line">Materiales para</span>
+              <span class="title-dynamic-line">
+                <span class="typewriter-text">{{ displayedText }}</span><span class="typewriter-cursor">|</span>
+              </span>
+            </h2>
 
-        <!-- Ejes Principales Desktop -->
-        <div class="identity-ejes-grid desktop-ejes">
-          <div *ngFor="let eje of ejesPrincipales; let i = index" class="eje-pill-card">
-            <span class="eje-pill-index">0{{ i + 1 }}</span>
-            <span class="eje-pill-name">{{ eje }}</span>
+            <p class="identity-lead desktop-text">
+              En <strong>Plaxtilineas</strong> somos especialistas en el suministro y distribución integral de materiales para construcción, agricultura, tapicería, espumas técnicas y plásticos industriales.
+            </p>
+            <p class="identity-lead mobile-text">
+              Suministro y distribución integral de materiales para construcción, agro, tapicería e industria.
+            </p>
+
+            <!-- Selector Minimalista (solo texto con línea activa) -->
+            <div class="lines-subtle-tabs" role="tablist" aria-label="Líneas de especialidad">
+              <button
+                *ngFor="let eje of ejes; let i = index"
+                type="button"
+                role="tab"
+                class="subtle-tab"
+                [class.active]="activeStage === i"
+                [attr.aria-selected]="activeStage === i"
+                (click)="goToStage(i)">
+                {{ eje.shortLabel }}
+              </button>
+            </div>
+
+            <!-- Fila de Acción (Estilo long-map) -->
+            <div class="identity-action-row">
+              <a routerLink="/productos" (click)="limpiarFiltros()" class="identity-cta-pill">
+                <span>Ver catálogo completo</span>
+                <svg class="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+
+              <span class="identity-delivery">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="1" y="3" width="15" height="13"></rect>
+                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                  <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                  <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                </svg>
+                Despachos al Quindío y Eje Cafetero
+              </span>
+            </div>
           </div>
-        </div>
 
-        <!-- Ejes Principales Móvil Simplificado (Chips 2x2 compactos) -->
-        <div class="identity-ejes-grid mobile-ejes">
-          <div *ngFor="let eje of ejesPrincipalesMobile; let i = index" class="eje-pill-card">
-            <span class="eje-pill-index">0{{ i + 1 }}</span>
-            <span class="eje-pill-name">{{ eje }}</span>
+          <!-- ══ COLUMNA DERECHA: Marco Visual Limpio (3 Imágenes Cloudinary) ══ -->
+          <div class="visual-stage-frame">
+
+            <!-- Capas de imagen interpoladas a 60 FPS -->
+            <div
+              *ngFor="let eje of ejes; let i = index"
+              class="stage-layer"
+              [style.opacity]="layerStates[i]?.opacity ?? 0"
+              [style.transform]="'scale(' + (layerStates[i]?.scale ?? 1) + ')'"
+              [style.filter]="'blur(' + (layerStates[i]?.blur ?? 0) + 'px)'">
+              <img
+                [src]="eje.imagen"
+                [alt]="eje.nombre"
+                class="stage-img"
+                loading="lazy" />
+            </div>
+
+            <!-- Viñeta sutil inferior -->
+            <div class="stage-vignette" aria-hidden="true"></div>
+
+            <!-- Isotipo oficial Plaxtilineas -->
+            <img
+              src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1795130400/logo-solo_r6tfo7.png"
+              alt=""
+              aria-hidden="true"
+              class="stage-brand-mark"
+              loading="lazy" />
+
+            <!-- Pie minimalista: solo el nombre de la línea activa + controles sutiles -->
+            <div class="stage-bottom-bar">
+              <div class="stage-caption-wrap">
+                <div
+                  *ngFor="let eje of ejes; let i = index"
+                  class="stage-caption"
+                  [class.active]="activeStage === i">
+                  <span class="caption-line" aria-hidden="true"></span>
+                  <h3 class="caption-title">{{ eje.nombre }}</h3>
+                </div>
+              </div>
+
+              <div class="stage-subtle-controls" aria-label="Navegar entre imágenes">
+                <button
+                  type="button"
+                  class="subtle-arrow"
+                  [disabled]="activeStage === 0"
+                  (click)="prevStage()"
+                  aria-label="Línea anterior">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  class="subtle-arrow"
+                  [disabled]="activeStage === ejes.length - 1"
+                  (click)="nextStage()"
+                  aria-label="Línea siguiente">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
           </div>
-        </div>
 
-        <!-- Botón de Acción Principal -->
-        <div class="identity-action-row">
-          <a 
-            routerLink="/productos" 
-            (click)="limpiarFiltros()"
-            class="identity-cta-pill">
-            <span>VER CATÁLOGO COMPLETO</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </a>
         </div>
-
       </div>
 
     </div>

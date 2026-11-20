@@ -1,12 +1,12 @@
 /* ═══════════════════════════════════════════════════════════════════
    BANNER INTERMEDIO DE ALIADOS — CARRUSEL LOGOS BLANCOS SIN CONTENEDOR
-   Tokens: #0a0a0a, #111827, #16a34a, #22c55e, Inter Tight
+   Tokens: #0a0a0a, #111827, #379045, #379045, Inter Tight
    ═══════════════════════════════════════════════════════════════════ */
 
 :host {
   display: block;
   width: 100%;
-  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-primary);
 }
 
 .aliados-marquee-section {
@@ -93,7 +93,7 @@
 }
 
 .highlight-green {
-  color: #22c55e;
+  color: #379045;
 }
 
 .aliados-subtitle {
@@ -188,7 +188,7 @@
   /* Resplandor blanco sutil con halo esmeralda corporativo */
   filter: brightness(0) invert(1) 
           drop-shadow(0 0 8px rgba(255, 255, 255, 0.65)) 
-          drop-shadow(0 0 16px rgba(34, 197, 94, 0.5));
+          drop-shadow(0 0 16px rgba(55, 144, 69, 0.5));
 }
 
 /* ── Responsividad ── */

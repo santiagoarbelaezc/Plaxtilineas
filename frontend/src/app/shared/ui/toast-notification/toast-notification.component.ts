@@ -29,7 +29,7 @@ import { CartItem } from '../../../models/cart.model';
           <div>
             <div class="flex items-center gap-1.5 mb-0.5">
               <span class="w-2 h-2 rounded-full bg-[#25d366] shadow-[0_0_8px_rgba(37,211,102,0.8)] animate-pulse"></span>
-              <span class="text-xs font-bold text-[#368c44] uppercase tracking-wider">Agregado al carrito</span>
+              <span class="text-xs font-bold text-[#379045] uppercase tracking-wider">Agregado al carrito</span>
             </div>
             <h4 class="font-extrabold text-sm text-gray-900 leading-snug truncate">{{ item.producto.nombre }}</h4>
             <p class="text-xs text-gray-400 mt-0.5 font-medium">
@@ -38,7 +38,7 @@ import { CartItem } from '../../../models/cart.model';
           </div>
           
           <div class="flex gap-3 mt-2">
-            <button (click)="openCart()" class="text-xs font-bold text-[#368c44] hover:underline cursor-pointer border-none bg-transparent p-0">Ver Carrito</button>
+            <button (click)="openCart()" class="text-xs font-bold text-[#379045] hover:underline cursor-pointer border-none bg-transparent p-0">Ver Carrito</button>
             <span class="text-gray-200">|</span>
             <button (click)="closeToast()" class="text-xs font-bold text-gray-400 hover:text-gray-600 cursor-pointer border-none bg-transparent p-0">Cerrar</button>
           </div>

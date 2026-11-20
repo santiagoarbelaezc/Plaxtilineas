@@ -1,248 +1,243 @@
 /* ==========================================================================
-   NOSOTROS INICIO — SHOWCASE DE IDENTIDAD & SEO (MINIMALISTA, ALTO & ANCHO)
-   Fondo: #05241b (verde bosque petróleo profundo)
-   Texto: #ffffff (títulos), #cbd5e1 (subtítulos), #94a3b8 (descripción)
-   Acentos: #4ade80 / #22c55e (esmeralda), #ffffff (botón de contraste)
+   NOSOTROS INICIO — MINIMALISTA CON DEGRADADO VERDE DE MARCA (ESTILO LONG-MAP)
+   Degradado Verde #379045 → Gris oscuro #141715 | Montserrat + Mulish
    ========================================================================== */
 
 :host {
   display: block;
   width: 100%;
-}
-
-.identity-showcase-section {
-  background-color: #05241b;
-  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  padding: 85px 0 95px 0;
   position: relative;
-  overflow: hidden;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: var(--font-secondary, 'Mulish', sans-serif);
+  color: #ffffff;
 }
 
-.identity-container {
-  max-width: var(--home-max-width, 1480px);
+.nosotros-apple-container {
   width: 100%;
+  position: relative;
+  overflow: visible;
+}
+
+/* ── Pista de Scroll Ágil para 3 Imágenes ── */
+.nosotros-scroll-track {
+  position: relative;
+  width: 100%;
+  height: 205vh;
+}
+
+/* ── Viewport Sticky con Degradado Verde (idéntico a long-map) ── */
+.nosotros-sticky-viewport {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(
+    108deg,
+    #379045 0%,
+    #2c7238 26%,
+    #1f4727 56%,
+    #1a241c 82%,
+    #141715 100%
+  );
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 10;
+  box-sizing: border-box;
+}
+
+/* Destellos ambientales sutiles (idénticos a long-map) */
+.bg-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(90px);
+}
+.bg-glow-a {
+  width: 480px;
+  height: 480px;
+  left: -160px;
+  top: -180px;
+  background: rgba(110, 210, 125, 0.14);
+}
+.bg-glow-b {
+  width: 440px;
+  height: 440px;
+  right: -80px;
+  bottom: -220px;
+  background: rgba(12, 16, 13, 0.55);
+}
+
+.nosotros-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: var(--home-max-width, 1480px);
   margin: 0 auto;
   padding: 0 var(--home-side-padding, 32px);
   box-sizing: border-box;
 }
 
-.identity-grid {
+/* ── Grid Principal 2 Columnas (imagen amplia y protagonista) ── */
+.nosotros-grid {
   display: grid;
-  grid-template-columns: 1.25fr 1fr;
-  gap: 64px;
+  grid-template-columns: 0.92fr 1.32fr;
   align-items: center;
+  gap: 48px;
 }
 
-/* ── Columna Izquierda: Showcase Visual Más Ancho y Alto ── */
-.showcase-visual-wrapper {
-  width: 100%;
-}
-
-.showcase-frame {
-  position: relative;
-  width: 100%;
-  height: 530px;
-  border-radius: 20px;
-  overflow: hidden;
-  background-color: #031a13;
-  box-shadow: 0 24px 55px -12px rgba(0, 0, 0, 0.65);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.showcase-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  opacity: 0.85;
-  transform: scale(1.02);
-  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.identity-showcase-section.is-visible .showcase-img {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* ── Columna Derecha: Contenido Editorial Minimalista ── */
-.identity-content-wrapper {
+/* ==========================================================================
+   COLUMNA IZQUIERDA: EDITORIAL MINIMALISTA
+   ========================================================================== */
+.nosotros-editorial {
   display: flex;
   flex-direction: column;
-}
-
-/* Kicker Minimalista: ¿QUÉ HACEMOS? */
-.kicker-badge-row {
-  margin-bottom: 16px;
+  align-items: flex-start;
+  max-width: 580px;
 }
 
 .identity-kicker {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  font-size: 0.72rem;
+  gap: 12px;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.82rem;
   font-weight: 700;
-  color: #4ade80;
+  color: rgba(255, 255, 255, 0.92);
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  background: transparent;
-  border: none;
-  padding: 0;
-}
-
-.kicker-line {
-  width: 22px;
-  height: 1.5px;
-  background: #4ade80;
-  display: inline-block;
-  border-radius: 2px;
-}
-
-/* Titular Principal con Efecto Typewriter */
-.headline-container {
-  position: relative;
   margin-bottom: 18px;
 }
 
+.kicker-line {
+  width: 30px;
+  height: 2px;
+  background: #ffffff;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
 .identity-title {
-  position: relative;
-  z-index: 2;
-  margin: 0;
+  margin: 0 0 20px 0;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
 }
 
 .title-lead-line {
   display: block;
-  font-size: clamp(2.1rem, 2.8vw, 2.75rem);
-  font-weight: 850;
+  font-size: clamp(2.35rem, 3.3vw, 3.25rem);
+  font-weight: 800;
   color: #ffffff;
   letter-spacing: -0.025em;
-  line-height: 1.14;
+  line-height: 1.08;
   text-transform: uppercase;
 }
 
 .title-dynamic-line {
   display: block;
-  font-size: clamp(1.85rem, 2.4vw, 2.35rem);
-  font-weight: 800;
-  line-height: 1.2;
-  margin-top: 6px;
-  min-height: 1.25em;
+  font-size: clamp(1.75rem, 2.5vw, 2.45rem);
+  font-weight: 700;
+  line-height: 1.24;
+  margin-top: 8px;
+  min-height: 1.3em;
 }
 
 .typewriter-text {
-  color: #4ade80;
-  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  display: inline;
+  color: #ffffff;
+  border-bottom: 3px solid rgba(255, 255, 255, 0.55);
+  padding-bottom: 2px;
 }
 
 .typewriter-cursor {
   display: inline-block;
   font-weight: 300;
-  color: #4ade80;
+  color: #ffffff;
   margin-left: 3px;
   animation: blinkCursor 0.85s infinite;
-  vertical-align: baseline;
 }
 
-.identity-showcase-section:not(.is-visible) .typewriter-cursor {
+.nosotros-apple-container:not(.is-visible) .typewriter-cursor {
   animation-play-state: paused;
   opacity: 0;
 }
 
 @keyframes blinkCursor {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
-/* Control de versiones de texto y contenido */
-.desktop-text {
-  display: block;
-}
+.desktop-text { display: block; }
+.mobile-text { display: none !important; }
 
-.desktop-ejes {
-  display: grid;
-}
-
-.mobile-text,
-.mobile-ejes {
-  display: none !important;
-}
-
-/* Párrafo Descriptivo Lead */
 .identity-lead {
-  font-size: 0.98rem;
-  color: rgba(255, 255, 255, 0.72);
-  line-height: 1.68;
-  font-weight: 350;
+  font-size: 1.12rem;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.72;
   margin: 0 0 28px 0;
-  max-width: 640px;
+  max-width: 560px;
 }
 
 .identity-lead strong {
   color: #ffffff;
-  font-weight: 600;
+  font-weight: 800;
 }
 
-/* Ejes Principales (Diseño Minimalista sin cajas pesadas) */
-.identity-ejes-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px 28px;
-  margin: 0 0 34px 0;
-  max-width: 580px;
-}
-
-.eje-pill-card {
-  display: flex;
+/* ── Selector Editorial Minimalista (Construcción · Agricultura · Tapicería) ── */
+.lines-subtle-tabs {
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  margin-bottom: 34px;
+}
+
+.subtle-tab {
+  position: relative;
   background: transparent;
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 10px 0;
-  border-radius: 0;
-  box-sizing: border-box;
-  transition: border-color 0.25s ease, transform 0.25s ease;
-}
-
-.eje-pill-card:hover {
-  background: transparent;
-  border-color: rgba(74, 222, 128, 0.45);
-  transform: translateX(3px);
-}
-
-.eje-pill-index {
-  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 0.72rem;
+  padding: 0 0 12px 0;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.88rem;
   font-weight: 600;
-  color: #4ade80;
-  letter-spacing: 0.08em;
-  background: transparent;
-  padding: 0;
-  line-height: 1;
-  flex-shrink: 0;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.54);
+  cursor: pointer;
+  transition: color 0.25s ease;
 }
 
-.eje-pill-name {
-  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 0.92rem;
-  font-weight: 550;
-  color: rgba(255, 255, 255, 0.92);
-  letter-spacing: 0.01em;
-  line-height: 1.25;
+.subtle-tab::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: #ffffff;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Botón CTA Minimalista */
+.subtle-tab:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.subtle-tab.active {
+  color: #ffffff;
+}
+
+.subtle-tab.active::after {
+  transform: scaleX(1);
+}
+
+/* ── Fila de Acción & CTA Minimalista ── */
 .identity-action-row {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 16px 26px;
 }
 
 .identity-cta-pill {
@@ -250,111 +245,295 @@
   align-items: center;
   gap: 10px;
   background: #ffffff;
-  color: #05241b;
-  font-size: 0.82rem;
-  font-weight: 750;
-  letter-spacing: 0.08em;
+  color: #1f4727;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
-  padding: 13px 30px;
-  border-radius: 50px;
+  padding: 16px 32px;
+  border-radius: 4px;
+  border: 1px solid #ffffff;
   text-decoration: none;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
-  transition: all 0.25s ease;
+  transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
 }
 
-.identity-cta-pill svg {
+.identity-cta-pill .btn-arrow {
   transition: transform 0.25s ease;
 }
 
 .identity-cta-pill:hover {
-  background: #ffffff;
-  color: #041d15;
+  background: #eaf4ec;
+  color: #1f4727;
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
 }
 
-.identity-cta-pill:hover svg {
-  transform: translateX(3px);
+.identity-cta-pill:hover .btn-arrow {
+  transform: translateX(4px);
 }
 
-/* ── Responsividad ── */
-@media (max-width: 1024px) {
-  .identity-showcase-section {
-    padding: 65px 0 75px 0;
+.identity-delivery {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* ==========================================================================
+   COLUMNA DERECHA: MARCO VISUAL AMPLIO (ESTILO MAP-FRAME DE LONG-MAP)
+   ========================================================================== */
+.visual-stage-frame {
+  position: relative;
+  width: 100%;
+  height: clamp(540px, 78vh, 700px);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #141715;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 22px 48px -14px rgba(0, 0, 0, 0.65);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.visual-stage-frame:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 26px 56px -14px rgba(0, 0, 0, 0.76);
+}
+
+.stage-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  will-change: transform, opacity, filter;
+}
+
+.stage-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.stage-vignette {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 14, 11, 0.06) 0%,
+    rgba(10, 14, 11, 0.12) 58%,
+    rgba(10, 14, 11, 0.72) 100%
+  );
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Isotipo oficial Plaxtilineas discreto */
+.stage-brand-mark {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+  opacity: 0.85;
+  pointer-events: none;
+  user-select: none;
+  z-index: 6;
+  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.5));
+}
+
+/* Pie minimalista dentro del marco */
+.stage-bottom-bar {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 22px;
+  z-index: 8;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.stage-caption-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 34px;
+}
+
+.stage-caption {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(10px);
+  visibility: hidden;
+  transition: opacity 0.38s cubic-bezier(0.16, 1, 0.3, 1), transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.38s;
+}
+
+.stage-caption.active {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.caption-line {
+  width: 22px;
+  height: 2px;
+  background: #4ade80;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.caption-title {
+  margin: 0;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: clamp(1.08rem, 1.45vw, 1.32rem);
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* Controles sutiles de flecha */
+.stage-subtle-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.subtle-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(16, 20, 17, 0.42);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.subtle-arrow:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+}
+
+.subtle-arrow:disabled {
+  opacity: 0.28;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   RESPONSIVIDAD
+   ========================================================================== */
+@media (max-width: 1100px) {
+  .nosotros-grid {
+    grid-template-columns: 0.95fr 1.15fr;
+    gap: 36px;
   }
 
-  .identity-grid {
+  .visual-stage-frame {
+    height: 500px;
+  }
+}
+
+@media (max-width: 960px) {
+  .nosotros-scroll-track {
+    height: auto;
+  }
+
+  .nosotros-sticky-viewport {
+    position: relative;
+    height: auto;
+    overflow: visible;
+    padding: 64px 0 72px;
+  }
+
+  .nosotros-grid {
     grid-template-columns: 1fr;
-    gap: 42px;
+    gap: 36px;
   }
 
-  .showcase-frame {
-    height: 400px;
+  .nosotros-editorial {
+    max-width: 100%;
+  }
+
+  .visual-stage-frame {
+    height: 440px;
   }
 }
 
 @media (max-width: 640px) {
-  .identity-showcase-section {
-    padding: 38px 0 42px 0;
+  .nosotros-sticky-viewport {
+    padding: 46px 0 52px;
   }
 
-  .identity-container {
-    padding: 0 16px;
+  .nosotros-inner {
+    padding: 0 18px;
   }
 
-  .showcase-frame {
-    height: auto;
-    aspect-ratio: 16 / 10;
-    min-height: 220px;
-    max-height: 280px;
-    border-radius: 16px;
+  .desktop-text { display: none !important; }
+  .mobile-text { display: block !important; font-size: 0.96rem; margin: 0 0 20px 0; }
+
+  .lines-subtle-tabs {
+    gap: 18px;
+    margin-bottom: 24px;
   }
 
-  .title-lead-line {
-    font-size: clamp(1.6rem, 5.2vw, 1.95rem);
-    line-height: 1.15;
-  }
-
-  .title-dynamic-line {
-    font-size: clamp(1.35rem, 4.8vw, 1.65rem);
-    line-height: 1.2;
-  }
-
-  .desktop-text,
-  .desktop-ejes {
-    display: none !important;
-  }
-
-  .mobile-text {
-    display: block !important;
-    font-size: 0.90rem;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.78);
-    margin: 0 0 18px 0;
-  }
-
-  .mobile-ejes {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 8px 12px !important;
-    margin: 0 0 20px 0 !important;
-  }
-
-  .mobile-ejes .eje-pill-card {
-    padding: 6px 0;
-    gap: 8px;
-  }
-
-  .mobile-ejes .eje-pill-name {
-    font-size: 0.84rem;
+  .subtle-tab {
+    padding: 0 0 10px 0;
+    font-size: 0.8rem;
   }
 
   .identity-cta-pill {
     width: 100%;
     min-height: 48px;
-    display: inline-flex;
-    align-items: center;
     justify-content: center;
     box-sizing: border-box;
   }
+
+  .identity-delivery {
+    font-size: 0.84rem;
+  }
+
+  .visual-stage-frame {
+    height: 360px;
+    border-radius: 12px;
+  }
+
+  .stage-brand-mark {
+    top: 14px;
+    right: 16px;
+    height: 24px;
+  }
+
+  .stage-bottom-bar {
+    left: 16px;
+    right: 16px;
+    bottom: 14px;
+  }
+
+  .caption-title {
+    font-size: 0.94rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nosotros-scroll-track { height: auto; }
+  .nosotros-sticky-viewport { position: relative; height: auto; padding: 64px 0; }
+  .stage-layer, .stage-caption { transition: none; }
 }

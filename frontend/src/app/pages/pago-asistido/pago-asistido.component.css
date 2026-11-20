@@ -25,7 +25,7 @@
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; height: 6px;
-  background: linear-gradient(90deg, #368c44, #4ade80);
+  background: linear-gradient(90deg, #379045, #4ade80);
 }
 
 .header-logo-container {
@@ -83,7 +83,7 @@
   height: 360px;
   margin: 0 auto;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(54, 140, 68, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(55, 144, 69, 0.08) 0%, transparent 70%);
   display: flex;
   align-items: center;
   justify-content: center;

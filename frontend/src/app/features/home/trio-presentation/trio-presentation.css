@@ -85,7 +85,7 @@
 /* Efecto hover */
 .trio-card.hover-effect:hover {
   border-color: var(--primary-green);
-  box-shadow: 0 8px 24px rgba(54, 140, 68, 0.12);
+  box-shadow: 0 8px 24px rgba(55, 144, 69, 0.12);
   transform: translateY(-4px);
 }
 

@@ -22,8 +22,10 @@ interface CategoriaExtendida extends CategoriaConSubcategorias {
 })
 export class MenuCategoriasComponent implements OnInit {
   categorias: CategoriaExtendida[] = [];
-  mostrarTodosProductos: boolean = false; // Nueva variable de estado
-  cargandoCategorias: boolean = true; // Estado de carga
+  mostrarTodosProductos: boolean = false;
+  cargandoCategorias: boolean = true;
+  activeCategoryId: number | null = null;
+  activeSubcategoryId: number | null = null;
 
   constructor(
     private categoriaService: CategoriaMenuService,
@@ -44,11 +46,14 @@ export class MenuCategoriasComponent implements OnInit {
    */
   private checkIfShowingAllProducts(): void {
     this.route.queryParams.subscribe(params => {
-      const tieneSubcat = !!params['subcategoria_id'];
-      const tieneCat = !!params['categoria_id'];
-      
+      const subcatId = parseInt(params['subcategoria_id'], 10);
+      const catId = parseInt(params['categoria_id'], 10);
+
+      this.activeSubcategoryId = !isNaN(subcatId) ? subcatId : null;
+      this.activeCategoryId = !isNaN(catId) ? catId : null;
+
       // Si no hay filtros, estamos mostrando todos los productos
-      this.mostrarTodosProductos = !tieneSubcat && !tieneCat;
+      this.mostrarTodosProductos = !this.activeSubcategoryId && !this.activeCategoryId;
     });
   }
 
@@ -134,6 +139,15 @@ export class MenuCategoriasComponent implements OnInit {
         }
       }
     }
+  }
+
+  get hasExpandedCategories(): boolean {
+    return this.categorias.some(c => c.expanded);
+  }
+
+  cerrarTodasLasCategorias(): void {
+    this.categorias.forEach(c => (c.expanded = false));
+    this.menuStateService.collapseAllCategories();
   }
 
   toggle(cat: CategoriaExtendida) {

@@ -1,0 +1,281 @@
+<div class="apple-scroll-container">
+
+  <!-- Pista de Scroll Cinemática -->
+  <div class="apple-scroll-track" #scrollTrack>
+
+    <!-- Viewport Fijo / Sticky -->
+    <div class="apple-sticky-viewport">
+
+      <!-- Línea Superior de Acento Verde Corporativo -->
+      <div class="apple-accent-glow"></div>
+
+      <!-- Escenario Visual Cinemático -->
+      <div class="apple-visual-stage">
+
+        <!-- Capa 0: Panorámica (De lejos — Jardín con Lobo Siberiano) -->
+        <div
+          class="stage-layer layer-hero"
+          [style.opacity]="heroOpacity"
+          [style.transform]="'scale(' + heroScale + ')'">
+          <img
+            src="assets/images/grama/grama-hero.jpg"
+            alt="Jardín residencial con grama sintética Plaxtilineas y lobo siberiano jugando"
+            class="stage-img stage-img-cover"
+            loading="lazy">
+        </div>
+
+        <!-- Capa 1: Plano Medio (Pet-Friendly — Lobo Siberiano jugando) -->
+        <div
+          class="stage-layer layer-play"
+          [style.opacity]="playOpacity"
+          [style.transform]="'translateX(' + playTranslateX + 'px) scale(' + playScale + ')'">
+          <img
+            src="assets/images/grama/grama-play.jpg"
+            alt="Lobo siberiano jugando con pelota sobre grama sintética suave y resistente"
+            class="stage-img stage-img-cover"
+            loading="lazy">
+        </div>
+
+        <!-- Capa 2: Macro 8K (De cerca — Fibras multitono y drenaje) -->
+        <div
+          class="stage-layer layer-macro"
+          [style.opacity]="macroOpacity"
+          [style.transform]="'scale(' + macroScale + ')'"
+          [style.filter]="'blur(' + macroBlur + 'px)'">
+          <img
+            src="assets/images/grama/grama-macro.jpg"
+            alt="Detalle macro de fibras verdes duales, base rizada y drenaje microperforado"
+            class="stage-img stage-img-cover"
+            loading="lazy">
+        </div>
+
+        <!-- Capa 3: Rollo Estudio Blanco -->
+        <div
+          class="stage-layer layer-roll"
+          [style.opacity]="rollOpacity"
+          [style.transform]="'scale(' + rollScale + ')'">
+          <img
+            src="assets/images/grama/grama-roll.jpg"
+            alt="Rollo de grama sintética Plaxtilineas con base reforzada de drenaje"
+            class="stage-img stage-img-contain"
+            loading="lazy">
+        </div>
+
+      </div>
+
+      <!-- Tarjetas de Texto Cinemáticas Flotantes por Etapa -->
+      <div class="apple-text-layers">
+
+        <!-- Texto Etapa 0: Vista Panorámica -->
+        <div class="info-card stage-card-0" [class.active]="activeStage === 0">
+          <div class="kicker-badge">
+            <span class="kicker-line"></span>
+            <span>PAISAJISMO &bull; EXTERIORES &amp; TERRAZAS</span>
+          </div>
+          <h2 class="main-title">
+            <span class="title-lead">GRAMA SINTÉTICA</span>
+            <span class="title-highlight">Verde Natural Todo el Año</span>
+          </h2>
+          <p class="main-desc">
+            Césped artificial de alta densidad y aspecto 100% natural para jardines, terrazas, patios y zonas recreativas. Sin riego, sin podas y siempre impecable bajo sol o lluvia.
+          </p>
+
+          <div class="scroll-cue">
+            <div class="mouse-track">
+              <div class="mouse-wheel"></div>
+            </div>
+            <span>Desliza suavemente para explorar la textura y el producto</span>
+          </div>
+        </div>
+
+        <!-- Texto Etapa 1: Pet-Friendly en Acción -->
+        <div class="info-card stage-card-1" [class.active]="activeStage === 1">
+          <div class="kicker-badge">
+            <span class="kicker-line"></span>
+            <span>PET-FRIENDLY &bull; ALTA RESISTENCIA</span>
+          </div>
+          <h2 class="section-title">
+            <span class="title-lead">HECHA PARA DISFRUTAR</span>
+            <span class="title-highlight">Suave para Mascotas y Familia</span>
+          </h2>
+          <p class="section-lead-text">
+            Fibras suaves al tacto con memoria elástica que recuperan su forma tras carreras, juegos y tráfico constante de perros y niños.
+          </p>
+          <div class="specs-chips">
+            <div class="spec-chip">
+              <div class="chip-header">
+                <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="chip-val">100% Pet-Friendly</span>
+              </div>
+              <span class="chip-sub">Material no tóxico, fácil de lavar y resistente a manchas y olores.</span>
+            </div>
+            <div class="spec-chip">
+              <div class="chip-header">
+                <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="chip-val">Cero Barro</span>
+              </div>
+              <span class="chip-sub">Patas limpias incluso después de aguaceros fuertes gracias a su drenaje.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Texto Etapa 2: Macro Fibras & Drenaje -->
+        <div class="info-card stage-card-2" [class.active]="activeStage === 2">
+          <div class="kicker-badge">
+            <span class="kicker-line"></span>
+            <span>INGENIERÍA DE FIBRA &bull; ACABADO REALISTA</span>
+          </div>
+          <h2 class="section-title">
+            <span class="title-lead">DOBLE FIBRA &amp; DRENAJE</span>
+            <span class="title-highlight">Textura Natural al Detalle</span>
+          </h2>
+          <div class="specs-chips">
+            <div class="spec-chip">
+              <div class="chip-header">
+                <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="chip-val">Hilo Multitono + Rizo</span>
+              </div>
+              <span class="chip-sub">Briznas verdes con raíz rizada beige que imitan el césped vivo real.</span>
+            </div>
+            <div class="spec-chip">
+              <div class="chip-header">
+                <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="chip-val">Base Microperforada</span>
+              </div>
+              <span class="chip-sub">Respaldo reforzado con perforaciones para evacuación rápida de agua.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Texto Etapa 3: Rollo de Suministro -->
+        <div class="info-card stage-card-3" [class.active]="activeStage === 3">
+          <div class="kicker-badge">
+            <span class="kicker-line"></span>
+            <span>SUMINISTRO DIRECTO &bull; CORTE A MEDIDA</span>
+          </div>
+          <h2 class="section-title">
+            <span class="title-lead">LISTA PARA INSTALAR</span>
+            <span class="title-highlight">Venta por Metro o Rollo Completo</span>
+          </h2>
+          <div class="specs-chips">
+            <div class="spec-chip">
+              <div class="chip-header">
+                <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="chip-val">Filtro Anti-UV</span>
+              </div>
+              <span class="chip-sub">Conserva su color verde intenso frente a la radiación solar continua.</span>
+            </div>
+            <div class="spec-chip">
+              <div class="chip-header">
+                <svg class="check-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="chip-val">Despacho Inmediato</span>
+              </div>
+              <span class="chip-sub">Stock permanente en Armenia con envíos a todo el Eje Cafetero.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Etapa 4: Ficha Final del Catálogo (ID 66-grama-sintetica) -->
+        <div
+          class="info-card stage-card-4"
+          [class.active]="activeStage === 4"
+          [style.transform]="'translate(-50%, calc(-50% + ' + configTranslateY + 'px)) scale(' + frontScale + ')'"
+          [style.opacity]="configOpacity">
+
+          <div class="simple-catalog-card">
+
+            <!-- Imagen del Producto -->
+            <a
+              [routerLink]="['/producto', productSlug]"
+              class="simple-catalog-image-link"
+              title="Ver Grama Sintética en el catálogo">
+              <img
+                src="assets/images/grama/grama-roll.jpg"
+                alt="Grama Sintética Plaxtilineas - Catálogo Oficial"
+                class="simple-catalog-img"
+                loading="lazy">
+            </a>
+
+            <!-- Información y Redirección -->
+            <div class="simple-catalog-body">
+              <div class="kicker-badge">
+                <span class="kicker-line"></span>
+                <span>PAISAJISMO &amp; EXTERIORES</span>
+              </div>
+              <h2 class="simple-product-title">
+                <span class="title-lead">GRAMA SINTÉTICA</span>
+                <span class="title-highlight">Catálogo Oficial Plaxtilineas</span>
+              </h2>
+
+              <p class="simple-product-desc">
+                Grama sintética de fibra multitono con protección UV, base rizada realista y drenaje perforado. Ideal para jardines, terrazas, balcones y espacios pet-friendly.
+              </p>
+
+              <div class="feature-action-row">
+                <a
+                  [routerLink]="['/producto', productSlug]"
+                  class="feature-cta-pill"
+                  title="Ver descripción de Grama Sintética en el catálogo">
+                  <span>VER DESCRIPCIÓN EN EL CATÁLOGO</span>
+                  <svg class="btn-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Flechas Flotantes Laterales -->
+      <aside class="apple-side-arrows" aria-label="Navegación por etapas de Grama Sintética">
+        <div class="stage-counter-pill" *ngIf="activeStage < 4">
+          <span class="stage-current">0{{ activeStage + 1 }}</span>
+          <span class="stage-divider">/</span>
+          <span class="stage-total">05</span>
+        </div>
+        <div class="arrow-buttons-group">
+          <button
+            type="button"
+            class="arrow-btn"
+            [disabled]="activeStage === 0"
+            (click)="prevStage()"
+            aria-label="Etapa anterior">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="arrow-btn"
+            [disabled]="activeStage === 4"
+            (click)="nextStage()"
+            aria-label="Etapa siguiente">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+        </div>
+      </aside>
+
+    </div>
+
+  </div>
+
+</div>

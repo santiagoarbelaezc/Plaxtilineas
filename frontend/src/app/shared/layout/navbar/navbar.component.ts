@@ -401,7 +401,7 @@ navigateToSearch(term: string): void {
     return {
       'transform': `translate3d(${leftPos}px, 0, 0)`,
       'transition': this.isDragging ? 'none' : this.indicatorTransition,
-      'background-color': this.isChatOpen ? 'rgba(255, 255, 255, 0.15)' : 'rgba(54, 140, 68, 0.12)'
+      'background-color': this.isChatOpen ? 'rgba(255, 255, 255, 0.15)' : 'rgba(55, 144, 69, 0.12)'
     };
   }
 

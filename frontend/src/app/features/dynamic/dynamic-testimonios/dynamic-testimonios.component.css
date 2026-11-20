@@ -1,36 +1,42 @@
 .testimonios-section {
-  padding: 80px 0;
-  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
-  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 64px 0;
+  background: #f4f5f7;
+  font-family: var(--font-secondary, 'Mulish', sans-serif);
+  border-bottom: 1.5px solid #e4e4e7;
   overflow: hidden;
 }
 
 .container {
-  max-width: 1550px;
+  max-width: var(--home-max-width, 1480px);
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 var(--home-side-padding, 32px);
+  box-sizing: border-box;
 }
 
 /* Header */
 .section-header {
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 36px;
 }
 
 .section-title {
-  font-size: 2.25rem;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: clamp(1.75rem, 2.5vw, 2.25rem);
   font-weight: 800;
-  color: #1f2937;
-  margin-bottom: 12px;
-  letter-spacing: -0.02em;
+  color: #09090b;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  letter-spacing: -0.03em;
 }
 
 .section-subtitle {
-  font-size: 1.1rem;
-  color: #6b7280;
-  max-width: 600px;
+  font-family: var(--font-secondary, 'Mulish', sans-serif);
+  font-size: 0.96rem;
+  font-weight: 500;
+  color: #5e5e5e;
+  max-width: 620px;
   margin: 0 auto;
-  line-height: 1.6;
+  line-height: 1.55;
 }
 
 .title-underline {
@@ -43,17 +49,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2rem;
-  max-width: 1550px;
+  gap: 1.5rem;
+  max-width: 1120px;
   margin: 0 auto;
 }
 
 .carousel-viewport {
   flex: 1;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: 16px;
   background: #ffffff;
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.03);
+  border: 1.5px solid #e4e4e7;
+  box-shadow: 0 12px 30px -12px rgba(9, 9, 11, 0.08);
 }
 
 .testimonial-track {
@@ -118,12 +125,12 @@
 }
 
 .client-avatar-wrapper {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
   overflow: hidden;
-  border: 2px solid #111;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  border: 2px solid #379045;
+  box-shadow: 0 4px 10px rgba(9, 9, 11, 0.08);
 }
 
 .client-avatar {
@@ -137,40 +144,41 @@
 }
 
 .client-name {
-  font-size: 1.05rem;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 1rem;
   font-weight: 700;
-  color: #1f2937;
+  color: #09090b;
   margin: 0;
 }
 
 .client-puesto {
-  font-size: 0.85rem;
-  color: #9ca3af;
+  font-size: 0.84rem;
+  color: #71717a;
   font-weight: 500;
 }
 
-/* Nav Buttons */
+/* Nav Buttons (Bento Cuadrados Redondeados) */
 .nav-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
   background: #ffffff;
-  border: 1px solid #e5e7eb;
-  color: #4b5563;
+  border: 1.5px solid #e4e4e7;
+  color: #09090b;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 6px 18px rgba(9, 9, 11, 0.08);
   flex-shrink: 0;
 }
 
 .nav-btn:hover {
-  background: #111;
+  background: #0a0a0a;
   color: #ffffff;
-  border-color: #111;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  border-color: #0a0a0a;
+  box-shadow: 0 10px 24px rgba(9, 9, 11, 0.2);
   transform: scale(1.05);
 }
 
@@ -178,28 +186,28 @@
   transform: scale(0.95);
 }
 
-/* Indicators */
+/* Indicators Planos */
 .carousel-indicators {
   display: flex;
   justify-content: center;
   gap: 8px;
-  margin-top: 30px;
+  margin-top: 24px;
 }
 
 .indicator-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 4px;
-  background: #d1d5db;
+  width: 10px;
+  height: 4px;
+  border-radius: 9999px;
+  background: #d4d4d8;
   border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 0;
 }
 
 .indicator-dot.active {
-  width: 24px;
-  background: #111;
+  width: 30px;
+  background: #379045;
 }
 
 /* Responsive */

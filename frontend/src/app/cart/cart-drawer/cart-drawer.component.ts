@@ -24,7 +24,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
         }
 
         <button 
-          class="bg-white text-gray-800 shadow-[0_4px_20px_rgba(0,0,0,0.1),0_2px_8px_rgba(0,0,0,0.05)] border border-gray-100 px-5 py-3.5 rounded-[16px] font-semibold text-[15px] flex items-center gap-2.5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:text-[#368c44] hover:shadow-[0_8px_30px_rgba(0,0,0,0.15)] group/btn"
+          class="bg-white text-gray-800 shadow-[0_4px_20px_rgba(0,0,0,0.1),0_2px_8px_rgba(0,0,0,0.05)] border border-gray-100 px-5 py-3.5 rounded-[16px] font-semibold text-[15px] flex items-center gap-2.5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:text-[#379045] hover:shadow-[0_8px_30px_rgba(0,0,0,0.15)] group/btn"
           (click)="isOpen = true"
         >
           <div class="relative flex items-center justify-center group-hover/btn:scale-110 transition-transform text-current">
@@ -166,12 +166,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
           border-radius: 3px;
       }
       .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(54, 140, 68, 0.2);
+          background: rgba(55, 144, 69, 0.2);
           border-radius: 3px;
           transition: all 0.3s ease;
       }
       .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(54, 140, 68, 0.4);
+          background: rgba(55, 144, 69, 0.4);
       }
       .animate-tooltip {
           animation: tooltip-slide 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;

@@ -25,7 +25,7 @@ export class FeatureBanner implements OnInit {
   @Input() reverse: boolean = false;
   @Input() backgroundColor: string = 'rgba(255, 255, 255, 0.98)';
   @Input() textColor: string = '#1a202c';
-  @Input() buttonColor: string = '#368c44';
+  @Input() buttonColor: string = '#379045';
   @Input() buttonHoverColor: string = '#2a6b35';
   @Input() buttonTextColor: string = '#ffffff';
   

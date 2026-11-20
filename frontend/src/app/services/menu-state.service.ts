@@ -91,6 +91,16 @@ export class MenuStateService {
   }
 
   /**
+   * Contraer todas las categorías abiertas sin perder otros estados
+   */
+  collapseAllCategories(): void {
+    this.updateState(current => ({
+      ...current,
+      expandedCategories: []
+    }));
+  }
+
+  /**
    * Obtener categorías expandidas
    */
   getExpandedCategories(): number[] {

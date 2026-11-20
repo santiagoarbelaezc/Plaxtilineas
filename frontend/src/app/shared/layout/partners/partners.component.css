@@ -24,7 +24,7 @@
     padding: 20px;
     background: #ffffff;
     border-radius: 16px;
-    box-shadow: 0 10px 30px -10px rgba(54, 140, 68, 0.1), 0 0 15px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 10px 30px -10px rgba(55, 144, 69, 0.1), 0 0 15px rgba(0, 0, 0, 0.03);
     border: 1px solid rgba(243, 244, 246, 1);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
@@ -35,16 +35,16 @@
 .brand-logo:hover {
     filter: grayscale(0%) opacity(100%);
     transform: translateY(-5px) scale(1.02);
-    border-color: #368C44;
-    box-shadow: 0 15px 35px -10px rgba(54, 140, 68, 0.25);
+    border-color: #379045;
+    box-shadow: 0 15px 35px -10px rgba(55, 144, 69, 0.25);
 }
 
 /* Accesibilidad */
 .brand-logo:focus-visible {
-    outline: 3px solid #368C44;
+    outline: 3px solid #379045;
     outline-offset: 4px;
     filter: grayscale(0%) opacity(100%);
-    border-color: #368C44;
+    border-color: #379045;
 }
 
 /* Animación de entrada suave */
@@ -119,12 +119,12 @@
         transform: none;
         filter: grayscale(100%) opacity(70%);
         border-color: rgba(243, 244, 246, 1);
-        box-shadow: 0 10px 30px -10px rgba(54, 140, 68, 0.1);
+        box-shadow: 0 10px 30px -10px rgba(55, 144, 69, 0.1);
     }
     
     .brand-logo:active {
         filter: grayscale(0%) opacity(100%);
         transform: translateY(-2px);
-        border-color: #368C44;
+        border-color: #379045;
     }
 }

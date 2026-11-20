@@ -14,6 +14,12 @@
     <app-nosotros-inicio></app-nosotros-inicio>
   </section>
 
+  <!-- Banner Compacto: Conoce Nuestra Historia -->
+  <app-historia-banner></app-historia-banner>
+
+  <!-- Showcase Cinemático: Grama Sintética -->
+  <app-grama-sintetica></app-grama-sintetica>
+
   <!-- Nuevos Productos ("Explora más Productos") -->
   <section class="home-section" style="padding-top: 0; padding-bottom: 0;">
     <app-feature-new-products></app-feature-new-products>
@@ -155,10 +161,6 @@
   <!-- Ubicación y Mapa Sede Física (Diseño Dividido 2 Columnas) -->
   <app-long-map></app-long-map>
 
-  <!-- Sección Independiente: Nuestras Soluciones -->
-  <app-soluciones-banner></app-soluciones-banner>
-
-
   <!-- ════════════ ZONA DE COMPONENTES DINÁMICOS INFERIORES ════════════ -->
   <ng-container *ngFor="let comp of componentesDinamicos">
     <div class="dynamic-wrapper" *ngIf="comp.contenido?.posicion === 'inferior'">
@@ -288,8 +290,6 @@
 
   <!-- Destacados Editoriales de Materiales (Malla & Polisombra / Yumbolón) -->
   <app-product-feature-split></app-product-feature-split>
-
-
 
   <!-- Enlaces y Footer -->
   <div class="footer-stack">

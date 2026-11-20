@@ -1,49 +1,51 @@
-/* ====== MENU CATEGORÍAS - Estilo Confortable & Scroll Verde Oscuro ====== */
+/* ==========================================================================
+   MENU CATEGORÍAS — BENTO MINIMAL & JERARQUÍA CLARA (PLAXTILINEAS)
+   Colores: #379045, #2c7337, #eaf4ec, #09090b, #383838, #f4f5f7, #ffffff
+   Tipografía: Montserrat (encabezados/UI) + Mulish (elementos)
+   ========================================================================== */
+
 :host {
   display: block;
 }
 
 .menu-categorias {
   width: 100%;
-  max-width: 280px;
+  max-width: 290px;
   background-color: #ffffff;
   position: relative;
-  padding: 16px 14px;
-  border-radius: 12px;
+  padding: 20px 16px 18px;
+  border-radius: 16px;
   margin: 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 6px 16px rgba(0, 0, 0, 0.02);
-  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  border: 1px solid #e4e4e7;
+  border: 1.5px solid #e4e4e7;
+  box-shadow: 0 4px 20px rgba(9, 9, 11, 0.03);
+  font-family: var(--font-secondary, 'Mulish', sans-serif);
   height: fit-content;
-  max-height: calc(100vh - 148px);
+  max-height: calc(100vh - 140px);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  /* Scrollbar Verde para Firefox */
+  gap: 14px;
   scrollbar-width: thin;
-  scrollbar-color: #16a34a #f0fdf4;
+  scrollbar-color: #d4d4d8 transparent;
   box-sizing: border-box;
 }
 
-/* ── Scrollbar Verde Personalizado (Webkit: Chrome, Safari, Edge) ── */
+/* ── Scrollbar ultra-limpio ── */
 .menu-categorias::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .menu-categorias::-webkit-scrollbar-track {
-  background: #f0fdf4;
-  border-radius: 10px;
+  background: transparent;
 }
 
 .menu-categorias::-webkit-scrollbar-thumb {
-  background: #16a34a;
-  border-radius: 10px;
-  border: 1px solid #15803d;
+  background: #d4d4d8;
+  border-radius: 999px;
 }
 
 .menu-categorias::-webkit-scrollbar-thumb:hover {
-  background: #15803d;
+  background: #379045;
 }
 
 /* ── Header ── */
@@ -51,85 +53,116 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2px 4px 10px 4px;
-  border-bottom: 1px solid #f4f4f5;
+  padding: 2px 4px 12px 4px;
+  border-bottom: 1.5px solid #f0f1f3;
 }
 
 .menu-title-wrap {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
-.menu-dot {
-  width: 8px;
-  height: 8px;
-  background-color: #16a34a;
-  border-radius: 50%;
-  box-shadow: 0 0 0 2.5px #dcfce7;
+.menu-accent-bar {
+  width: 3.5px;
+  height: 16px;
+  background-color: #379045;
+  border-radius: 999px;
   flex-shrink: 0;
 }
 
 .menu-title {
-  font-size: 1.05rem;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.92rem;
   font-weight: 800;
   color: #09090b;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.1em;
   margin: 0;
   line-height: 1.2;
 }
 
-.categorias-total-badge {
-  font-size: 0.85rem;
+.menu-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.collapse-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid #e4e4e7;
+  background: #ffffff;
+  color: #5e5e5e;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.7rem;
   font-weight: 700;
-  color: #14532d;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  padding: 2px 8px;
-  border-radius: 12px;
-  line-height: 1.2;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.collapse-all-btn:hover {
+  background: #eaf4ec;
+  border-color: rgba(55, 144, 69, 0.35);
+  color: #2c7337;
+}
+
+.categorias-total-badge {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #2c7337;
+  background: #eaf4ec;
+  border: 1px solid rgba(55, 144, 69, 0.25);
+  padding: 2px 9px;
+  border-radius: 999px;
+  line-height: 1.3;
 }
 
 /* ── Botón "Todos los productos" ── */
-.menu-footer {
+.menu-all-wrap {
   width: 100%;
 }
 
 .ver-todos-btn {
   width: 100%;
-  background: #f4f4f5;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 9px 12px;
-  min-height: 40px;
-  color: #18181b;
-  font-size: 0.96rem;
-  font-weight: 650;
+  background: #f4f5f7;
+  border: 1.5px solid transparent;
+  border-radius: 10px;
+  padding: 11px 14px;
+  min-height: 44px;
+  color: #09090b;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 9px;
+  gap: 10px;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   box-sizing: border-box;
 }
 
 .ver-todos-btn svg {
-  color: #71717a;
-  transition: color 0.2s ease, transform 0.2s ease;
+  color: #5e5e5e;
+  transition: color 0.2s ease;
   flex-shrink: 0;
 }
 
 .ver-todos-btn:hover {
-  background: #09090b;
-  color: #ffffff;
-  border-color: #09090b;
+  background: #eaf4ec;
+  color: #2c7337;
+  border-color: rgba(55, 144, 69, 0.28);
 }
 
 .ver-todos-btn:hover svg {
-  color: #ffffff;
-  transform: scale(1.08);
+  color: #379045;
 }
 
 .ver-todos-btn.active {
@@ -142,7 +175,7 @@
   color: #4ade80;
 }
 
-/* ── Contenedor de Categorías ── */
+/* ── Lista de Categorías (Nivel 1 — Padres) ── */
 .categorias-container {
   display: flex;
   flex-direction: column;
@@ -154,21 +187,31 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-/* ── Botón de Categoría (+2px de texto) ── */
+/* Cuando una categoría está desplegada, se agrupa en un bloque Bento sutil */
+.categoria.expanded {
+  background: #f8faf9;
+  border-color: #e4e4e7;
+  padding: 3px;
+  margin: 2px 0;
+}
+
 .categoria-btn {
   width: 100%;
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 9px 12px;
-  min-height: 42px;
+  border-radius: 9px;
+  padding: 10px 11px;
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  transition: all 0.18s ease;
+  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
   box-sizing: border-box;
   text-align: left;
 }
@@ -181,18 +224,20 @@
   min-width: 0;
 }
 
-.categoria-icon {
-  color: #71717a;
-  display: flex;
-  align-items: center;
+.categoria-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #cbd5e1;
   flex-shrink: 0;
-  transition: color 0.18s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .categoria-nombre {
-  font-size: 0.985rem;
-  font-weight: 600;
-  color: #18181b;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: #09090b;
   text-transform: capitalize;
   text-align: left;
   flex: 1;
@@ -200,50 +245,57 @@
   overflow: hidden;
   text-overflow: ellipsis;
   letter-spacing: -0.01em;
-  line-height: 1.25;
+  line-height: 1.3;
+  transition: color 0.18s ease;
 }
 
 .categoria-count {
-  font-size: 0.82rem;
-  font-weight: 650;
-  color: #71717a;
-  background: #f4f4f5;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #5e5e5e;
+  background: #f0f1f3;
   padding: 2px 8px;
-  border-radius: 12px;
+  border-radius: 6px;
   min-width: 22px;
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.3;
   flex-shrink: 0;
-  transition: all 0.18s ease;
+  transition: background-color 0.18s ease, color 0.18s ease;
 }
 
 .flecha-indicadora {
-  color: #a1a1aa;
+  color: #71717a;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.22s ease, color 0.18s ease;
-  margin-left: 6px;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), color 0.18s ease;
+  margin-left: 7px;
   flex-shrink: 0;
+}
+
+.flecha-indicadora svg {
+  width: 15px;
+  height: 15px;
 }
 
 .flecha-indicadora.abierta {
   transform: rotate(180deg);
-  color: #09090b;
+  color: #379045;
 }
 
-/* Estados de Hover y Activo en Categoría */
+/* Hover categoría padre */
 .categoria-btn:hover {
-  background: #f8fafc;
-  border-color: #e4e4e7;
+  background: #f4f5f7;
 }
 
-.categoria-btn:hover .categoria-icon {
-  color: #166534;
+.categoria-btn:hover .categoria-dot {
+  background: #379045;
+  transform: scale(1.2);
 }
 
 .categoria-btn:hover .categoria-nombre {
-  color: #09090b;
+  color: #2c7337;
 }
 
 .categoria-btn:hover .categoria-count {
@@ -251,72 +303,90 @@
   color: #09090b;
 }
 
-.categoria.active > .categoria-btn {
-  background: #f4f4f5;
-  border-color: #e4e4e7;
+/* Categoría expandida / seleccionada */
+.categoria.expanded > .categoria-btn .categoria-dot,
+.categoria.selected > .categoria-btn .categoria-dot {
+  background: #379045;
+  transform: scale(1.25);
 }
 
-.categoria.active > .categoria-btn .categoria-nombre {
-  font-weight: 700;
-  color: #09090b;
+.categoria.selected > .categoria-btn {
+  background: #eaf4ec;
+  border-color: rgba(55, 144, 69, 0.28);
 }
 
-.categoria.active > .categoria-btn .categoria-icon {
-  color: #166534;
+.categoria.selected > .categoria-btn .categoria-nombre {
+  color: #2c7337;
 }
 
-.categoria.active > .categoria-btn .categoria-count {
-  background: #09090b;
+.categoria.selected > .categoria-btn .categoria-count {
+  background: #379045;
   color: #ffffff;
 }
 
-/* ── Subcategorías (+2px de texto) ── */
+/* ── Subcategorías (Nivel 2 — Árbol claramente jerarquizado) ── */
 .subcategorias-wrapper {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   margin-left: 16px;
-  padding-left: 10px;
+  padding-left: 12px;
   border-left: 2px solid #e4e4e7;
 }
 
-.subcategorias-wrapper.abierta {
-  max-height: 480px;
-  margin-top: 3px;
-  margin-bottom: 4px;
+.categoria.expanded .subcategorias-wrapper.abierta {
+  max-height: 540px;
+  margin-top: 4px;
+  margin-bottom: 6px;
+  border-left-color: rgba(55, 144, 69, 0.45);
 }
 
 .subcategorias {
   list-style: none;
   margin: 0;
-  padding: 3px 0;
+  padding: 2px 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .subcategoria-item {
+  position: relative;
   width: 100%;
+}
+
+/* Conector horizontal sutil que vincula visualmente la subcategoría con la línea del árbol */
+.subcategoria-item::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  width: 8px;
+  height: 1.5px;
+  background: rgba(55, 144, 69, 0.35);
+  transform: translateY(-50%);
+  pointer-events: none;
 }
 
 .subcategoria-btn {
   width: 100%;
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 6px;
-  padding: 6px 10px;
-  min-height: 32px;
+  border-radius: 8px;
+  padding: 7px 10px;
+  min-height: 36px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 0.16s ease, color 0.16s ease, padding-left 0.16s ease;
   box-sizing: border-box;
   text-align: left;
 }
 
 .subcategoria-nombre {
-  font-size: 0.925rem;
+  font-family: var(--font-secondary, 'Mulish', sans-serif);
+  font-size: 0.94rem;
   font-weight: 500;
   color: #52525b;
   text-align: left;
@@ -324,27 +394,29 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  letter-spacing: -0.01em;
-  line-height: 1.25;
+  line-height: 1.3;
+  transition: color 0.16s ease;
 }
 
 .subcategoria-count {
-  font-size: 0.78rem;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.74rem;
   font-weight: 600;
   color: #71717a;
-  background: #f4f4f5;
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
   padding: 1px 7px;
-  border-radius: 6px;
+  border-radius: 5px;
   min-width: 20px;
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.3;
   flex-shrink: 0;
   margin-left: 6px;
-  transition: all 0.15s ease;
+  transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
 }
 
 .subcategoria-btn:hover {
-  background: #f4f4f5;
+  background: #ffffff;
   border-color: #e4e4e7;
   padding-left: 12px;
 }
@@ -354,50 +426,60 @@
   font-weight: 600;
 }
 
-.subcategoria-btn:hover .subcategoria-count {
-  background: #e4e4e7;
-  color: #09090b;
+.subcategoria-btn.active {
+  background: #eaf4ec;
+  border-color: rgba(55, 144, 69, 0.3);
+}
+
+.subcategoria-btn.active .subcategoria-nombre {
+  color: #2c7337;
+  font-weight: 700;
+}
+
+.subcategoria-btn.active .subcategoria-count {
+  background: #379045;
+  border-color: #379045;
+  color: #ffffff;
 }
 
 /* ── Skeletons ── */
 .categoria-skeleton {
   width: 100%;
-  padding: 9px 12px;
-  min-height: 42px;
+  padding: 10px 11px;
+  min-height: 44px;
   display: flex;
   align-items: center;
   gap: 10px;
   box-sizing: border-box;
 }
 
-.skeleton-cat-icon {
-  width: 16px;
-  height: 16px;
-  background: #f4f4f5;
-  border-radius: 4px;
+.skeleton-cat-dot {
+  width: 6px;
+  height: 6px;
+  background: #e4e4e7;
+  border-radius: 50%;
   flex-shrink: 0;
   animation: menu-pulse 1.4s infinite ease-in-out;
 }
 
 .skeleton-cat-name {
-  height: 16px;
-  width: 65%;
-  background: #f4f4f5;
+  height: 15px;
+  width: 68%;
+  background: #f0f1f3;
   border-radius: 4px;
   animation: menu-pulse 1.4s infinite ease-in-out;
 }
 
 @keyframes menu-pulse {
-  0% { opacity: 0.5; }
+  0%, 100% { opacity: 0.45; }
   50% { opacity: 1; }
-  100% { opacity: 0.5; }
 }
 
-/* ── Responsive Design ── */
+/* ── Responsive ── */
 @media (max-width: 1023px) {
   .menu-categorias {
-    max-width: 260px;
-    padding: 14px 12px;
+    max-width: 270px;
+    padding: 16px 12px;
   }
 }
 
@@ -411,35 +493,31 @@
     box-shadow: none;
     border: none;
   }
-  
+
   .menu-header {
-    padding: 8px 6px 14px 6px;
+    padding: 6px 4px 14px 4px;
   }
-  
-  .menu-title {
-    font-size: 1.1rem;
-  }
-  
+
   .categoria-btn {
-    min-height: 44px;
-    padding: 10px 14px;
+    min-height: 46px;
+    padding: 10px 12px;
   }
-  
+
   .categoria-nombre {
     font-size: 1rem;
   }
-  
+
   .subcategoria-btn {
-    min-height: 36px;
+    min-height: 38px;
     padding: 8px 12px;
   }
-  
+
   .subcategoria-nombre {
-    font-size: 0.94rem;
+    font-size: 0.96rem;
   }
-  
+
   .ver-todos-btn {
-    padding: 11px 14px;
-    font-size: 0.98rem;
+    padding: 12px 14px;
+    font-size: 0.96rem;
   }
 }

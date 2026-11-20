@@ -34,10 +34,10 @@ export class PlaxtiTrioPresentationComponent {
     // Colores adaptables basados en el fondo
     const cardBg = isLightBg ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0.05)';
     const borderColor = isLightBg ? 'rgba(226, 232, 240, 0.6)' : 'rgba(255, 255, 255, 0.1)';
-    const overlayStart = isLightBg ? 'rgba(54, 140, 68, 0.8)' : 'rgba(0, 0, 0, 0.7)';
+    const overlayStart = isLightBg ? 'rgba(55, 144, 69, 0.8)' : 'rgba(0, 0, 0, 0.7)';
     const overlayMid = isLightBg ? 'rgba(37, 211, 102, 0.6)' : 'rgba(0, 0, 0, 0.4)';
     const overlayLight = isLightBg ? 'rgba(37, 211, 102, 0.2)' : 'rgba(0, 0, 0, 0.2)';
-    const hoverBorder = isLightBg ? 'rgba(54, 140, 68, 0.2)' : 'rgba(255, 255, 255, 0.2)';
+    const hoverBorder = isLightBg ? 'rgba(55, 144, 69, 0.2)' : 'rgba(255, 255, 255, 0.2)';
     const titleColor = isLightBg ? '#1a202c' : '#ffffff';
     const descriptionColor = isLightBg ? '#4a5568' : 'rgba(255, 255, 255, 0.9)';
     
@@ -52,8 +52,8 @@ export class PlaxtiTrioPresentationComponent {
       --hover-border: ${hoverBorder};
       --title-color: ${titleColor};
       --description-color: ${descriptionColor};
-      --gradient-primary: linear-gradient(90deg, #368c44, #25d366);
-      --gradient-primary-light: linear-gradient(135deg, rgba(54, 140, 68, 0.1), rgba(37, 211, 102, 0.1));
+      --gradient-primary: linear-gradient(90deg, #379045, #25d366);
+      --gradient-primary-light: linear-gradient(135deg, rgba(55, 144, 69, 0.1), rgba(37, 211, 102, 0.1));
     `);
   }
 

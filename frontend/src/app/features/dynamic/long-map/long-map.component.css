@@ -1,9 +1,7 @@
-/* ═══════════════════════════════════════════════════════════════════
-   MAP SHOWCASE — SEDE FÍSICA & UBICACIÓN (MINIMALISTA, ALTO & ANCHO)
-   Fondo: #05241b (verde bosque profundo)
-   Texto: #ffffff (títulos), #cbd5e1 (subtítulos), #94a3b8 (descripción)
-   Acentos: #4ade80 / #22c55e (esmeralda), #ffffff (botón de contraste)
-   ═══════════════════════════════════════════════════════════════════ */
+/* ==========================================================================
+   MAP SHOWCASE — SEDE FÍSICA & UBICACIÓN (Manual de Marca Plaxtilineas)
+   Degradado Verde #379045 → Gris oscuro #141715 | Montserrat + Mulish
+   ========================================================================== */
 
 :host {
   display: block;
@@ -11,16 +9,35 @@
 }
 
 .map-showcase-section {
-  background-color: #05241b;
-  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  padding: 85px 0 95px 0;
   position: relative;
   overflow: hidden;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: var(--font-secondary, 'Mulish', sans-serif);
+  color: #ffffff;
+  padding: 86px 0 92px 0;
+  background: linear-gradient(
+    108deg,
+    #379045 0%,
+    #2c7238 26%,
+    #1f4727 56%,
+    #1a241c 82%,
+    #141715 100%
+  );
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+/* Destellos ambientales sutiles */
+.bg-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(90px);
+}
+.bg-glow-a { width: 480px; height: 480px; left: -160px; top: -180px; background: rgba(110, 210, 125, 0.14); }
+.bg-glow-b { width: 440px; height: 440px; right: -80px; bottom: -220px; background: rgba(12, 16, 13, 0.55); }
+
 .map-container-inner {
+  position: relative;
+  z-index: 2;
   max-width: var(--home-max-width, 1480px);
   width: 100%;
   margin: 0 auto;
@@ -30,12 +47,12 @@
 
 .map-grid {
   display: grid;
-  grid-template-columns: 1.25fr 1fr;
-  gap: 64px;
+  grid-template-columns: 1.22fr 1fr;
+  gap: 56px;
   align-items: center;
 }
 
-/* ── Columna Izquierda: Marco del Mapa Más Ancho y Alto ── */
+/* ── Columna Izquierda: Marco del Mapa ── */
 .map-visual-wrapper {
   width: 100%;
 }
@@ -43,18 +60,18 @@
 .map-frame {
   position: relative;
   width: 100%;
-  height: 530px;
-  border-radius: 20px;
+  height: 520px;
+  border-radius: 14px;
   overflow: hidden;
-  background-color: #031a13;
-  box-shadow: 0 24px 55px -12px rgba(0, 0, 0, 0.65);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+  background-color: #141715;
+  box-shadow: 0 22px 48px -14px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
 }
 
 .map-frame:hover {
-  box-shadow: 0 28px 65px -12px rgba(0, 0, 0, 0.75);
-  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 26px 56px -14px rgba(0, 0, 0, 0.78);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .map-frame iframe {
@@ -62,16 +79,15 @@
   width: 100%;
   height: 100%;
   border: none;
-  filter: contrast(1.05) saturate(1.05);
+  filter: contrast(1.04) saturate(1.04);
 }
 
-/* ── Columna Derecha: Contenido Editorial Minimalista ── */
+/* ── Columna Derecha: Contenido Editorial ── */
 .map-content-wrapper {
   display: flex;
   flex-direction: column;
 }
 
-/* Kicker Minimalista: ¿DÓNDE ENCONTRARNOS? */
 .kicker-badge-row {
   margin-bottom: 16px;
 }
@@ -80,9 +96,10 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 0.72rem;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.74rem;
   font-weight: 700;
-  color: #4ade80;
+  color: rgba(255, 255, 255, 0.92);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   background: transparent;
@@ -91,14 +108,14 @@
 }
 
 .kicker-line {
-  width: 22px;
-  height: 1.5px;
-  background: #4ade80;
+  width: 28px;
+  height: 2px;
+  background: #ffffff;
   display: inline-block;
   border-radius: 2px;
 }
 
-/* Titular Principal Limpio */
+/* Titular Principal */
 .headline-container {
   position: relative;
   margin-bottom: 18px;
@@ -108,107 +125,121 @@
   position: relative;
   z-index: 2;
   margin: 0;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
 }
 
 .title-lead-line {
   display: block;
-  font-size: clamp(2.1rem, 2.8vw, 2.75rem);
-  font-weight: 850;
+  font-size: clamp(1.9rem, 2.7vw, 2.65rem);
+  font-weight: 800;
   color: #ffffff;
-  letter-spacing: -0.025em;
-  line-height: 1.14;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
   text-transform: uppercase;
 }
 
 .title-dynamic-line {
   display: block;
-  font-size: clamp(1.85rem, 2.4vw, 2.35rem);
-  font-weight: 800;
-  line-height: 1.2;
+  font-size: clamp(1.5rem, 2.15vw, 2.1rem);
+  font-weight: 700;
+  line-height: 1.24;
   margin-top: 6px;
 }
 
 .gradient-text {
-  color: #4ade80;
-  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #ffffff;
+  border-bottom: 3px solid rgba(255, 255, 255, 0.55);
+  padding-bottom: 2px;
   display: inline;
 }
 
 /* Control de versiones de texto descriptivo */
-.desktop-text {
-  display: block;
-}
+.desktop-text { display: block; }
+.mobile-text { display: none !important; }
 
-.mobile-text {
-  display: none !important;
-}
-
-/* Párrafo Descriptivo Lead */
 .map-lead {
-  font-size: 0.98rem;
-  color: rgba(255, 255, 255, 0.72);
-  line-height: 1.68;
-  font-weight: 350;
-  margin: 0 0 24px 0;
-  max-width: 640px;
+  font-size: 1.02rem;
+  color: rgba(255, 255, 255, 0.86);
+  line-height: 1.7;
+  font-weight: 400;
+  margin: 0 0 26px 0;
+  max-width: 560px;
 }
 
 .map-lead strong {
   color: #ffffff;
-  font-weight: 600;
+  font-weight: 800;
 }
 
-/* ── Tarjetas Modernas de Ubicación y Horario (Diseño Minimalista Refinado) ── */
+/* ── Tarjetas de Ubicación y Horario (Estilo Editorial Oscuro) ── */
 .location-cards-stack {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  margin: 0 0 30px 0;
-  max-width: 600px;
+  margin: 0 0 28px 0;
+  max-width: 580px;
 }
 
 .location-card {
+  position: relative;
   display: flex;
   align-items: flex-start;
   gap: 16px;
-  background: rgba(255, 255, 255, 0.035);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 16px;
-  padding: 16px 20px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(16, 20, 17, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  padding: 18px 20px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 12px 26px -12px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
   box-sizing: border-box;
 }
 
+.location-card::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #4ade80 0%, #379045 100%);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 .location-card:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(74, 222, 128, 0.38);
+  background: rgba(16, 20, 17, 0.62);
+  border-color: rgba(255, 255, 255, 0.32);
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 18px 34px -12px rgba(0, 0, 0, 0.6);
+}
+
+.location-card:hover::after {
+  transform: scaleX(1);
 }
 
 .location-card-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: rgba(74, 222, 128, 0.12);
-  border: 1px solid rgba(74, 222, 128, 0.28);
-  color: #4ade80;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(55, 144, 69, 0.26);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   margin-top: 2px;
-  transition: transform 0.25s ease, background 0.25s ease;
+  transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
 }
 
 .location-card:hover .location-card-icon {
-  transform: scale(1.06);
-  background: rgba(74, 222, 128, 0.18);
-  border-color: rgba(74, 222, 128, 0.45);
+  transform: scale(1.05);
+  background: #379045;
+  border-color: rgba(255, 255, 255, 0.35);
 }
 
 .location-card-body {
@@ -225,33 +256,33 @@
 }
 
 .location-card-title {
-  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 0.92rem;
-  font-weight: 650;
-  color: rgba(255, 255, 255, 0.95);
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: #ffffff;
   letter-spacing: -0.01em;
   margin: 0;
 }
 
 .location-card-value {
-  font-size: 0.92rem;
-  font-weight: 500;
-  color: #ffffff;
-  line-height: 1.4;
+  font-size: 0.96rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.96);
+  line-height: 1.45;
   margin: 2px 0 0 0;
 }
 
 .location-card-hint {
-  font-size: 0.76rem;
-  color: rgba(255, 255, 255, 0.52);
-  font-weight: 400;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.64);
+  font-weight: 500;
 }
 
 .schedule-rows {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-top: 3px;
+  gap: 7px;
+  margin-top: 4px;
 }
 
 .schedule-row {
@@ -259,19 +290,19 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  font-size: 0.86rem;
+  font-size: 0.88rem;
   line-height: 1.45;
 }
 
 .schedule-day {
   color: rgba(255, 255, 255, 0.72);
-  font-weight: 500;
-  min-width: 120px;
+  font-weight: 600;
+  min-width: 122px;
 }
 
 .schedule-time {
   color: #ffffff;
-  font-weight: 600;
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -281,18 +312,19 @@
 .badge-continua {
   display: inline-flex;
   align-items: center;
-  font-size: 0.68rem;
-  font-weight: 750;
-  color: #22c55e;
-  background: rgba(34, 197, 94, 0.12);
-  border: 1px solid rgba(34, 197, 94, 0.28);
-  padding: 1px 8px;
-  border-radius: 9999px;
-  letter-spacing: 0.02em;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: #dcfce7;
+  background: rgba(55, 144, 69, 0.34);
+  border: 1px solid rgba(74, 222, 128, 0.45);
+  padding: 2px 9px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-/* ── Botón de Acción Principal Minimalista ── */
+/* ── Botón CTA Principal (Estilo Unificado de Marca) ── */
 .map-action-row {
   display: flex;
   align-items: center;
@@ -303,23 +335,24 @@
   align-items: center;
   gap: 10px;
   background: #ffffff;
-  color: #05241b;
+  color: #2c7337;
   text-decoration: none;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
   font-size: 0.82rem;
-  font-weight: 750;
-  letter-spacing: 0.08em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 13px 30px;
-  border-radius: 50px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
-  transition: all 0.25s ease;
+  padding: 14px 28px;
+  border-radius: 4px;
+  box-shadow: 0 10px 22px -8px rgba(0, 0, 0, 0.45);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
 .map-cta-pill:hover {
-  background: #ffffff;
-  color: #041d15;
+  background: #f1f7f2;
+  color: #2c7337;
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 16px 28px -8px rgba(0, 0, 0, 0.52);
 }
 
 .map-arrow-icon {
@@ -330,17 +363,17 @@
   transform: translate(2px, -2px);
 }
 
-/* ═══════════════════════════════════════════════════════════
+/* ==========================================================================
    RESPONSIVIDAD
-   ═══════════════════════════════════════════════════════════ */
-@media (max-width: 1024px) {
+   ========================================================================== */
+@media (max-width: 1100px) {
   .map-showcase-section {
-    padding: 65px 0 75px 0;
+    padding: 64px 0 72px 0;
   }
 
   .map-grid {
     grid-template-columns: 1fr;
-    gap: 42px;
+    gap: 40px;
   }
 
   .map-frame {
@@ -350,16 +383,16 @@
 
 @media (max-width: 640px) {
   .map-showcase-section {
-    padding: 38px 0 42px 0;
+    padding: 46px 0 52px 0;
   }
 
   .map-container-inner {
-    padding: 0 16px;
+    padding: 0 18px;
   }
 
   .map-frame {
-    height: 240px;
-    border-radius: 16px;
+    height: 250px;
+    border-radius: 12px;
   }
 
   /* Evita que el iframe del mapa secuestre el scroll vertical en móviles */
@@ -383,10 +416,10 @@
 
   .mobile-text {
     display: block !important;
-    font-size: 0.90rem;
-    line-height: 1.45;
-    color: rgba(255, 255, 255, 0.78);
-    margin: 0 0 18px 0;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.84);
+    margin: 0 0 20px 0;
   }
 
   .location-cards-stack {
@@ -395,15 +428,15 @@
   }
 
   .location-card {
-    padding: 14px 16px;
+    padding: 15px 16px;
     gap: 12px;
-    border-radius: 14px;
+    border-radius: 12px;
   }
 
   .location-card-icon {
     width: 36px;
     height: 36px;
-    border-radius: 10px;
+    border-radius: 8px;
   }
 
   .location-card-icon svg {
@@ -416,7 +449,7 @@
   }
 
   .location-card-value {
-    font-size: 0.86rem;
+    font-size: 0.88rem;
   }
 
   .schedule-rows {
@@ -424,7 +457,7 @@
   }
 
   .schedule-row {
-    font-size: 0.80rem;
+    font-size: 0.82rem;
     gap: 4px;
     flex-direction: column;
     align-items: flex-start;
@@ -433,12 +466,12 @@
   .schedule-day {
     min-width: unset;
     font-size: 0.76rem;
-    color: #4ade80;
-    font-weight: 600;
+    color: #bbf7d0;
+    font-weight: 700;
   }
 
   .schedule-time {
-    font-size: 0.82rem;
+    font-size: 0.84rem;
   }
 
   .map-cta-pill {

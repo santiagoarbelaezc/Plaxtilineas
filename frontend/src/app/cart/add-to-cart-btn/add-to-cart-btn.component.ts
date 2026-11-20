@@ -58,8 +58,8 @@ export class AddToCartBtnComponent {
     const isBlack = this.theme === 'black';
     
     // Nombres completos para que Tailwind los reconozca en tiempo de compilación
-    const textColorClass = isBlack ? 'text-black' : (isIkea ? 'text-[#0058a3]' : (isWp ? 'text-[#1ba852]' : 'text-[#368c44]'));
-    const borderColorClass = isBlack ? 'border-black' : (isIkea ? 'border-[#0058a3]' : (isWp ? 'border-[#1ba852]' : 'border-[#368c44]'));
+    const textColorClass = isBlack ? 'text-black' : (isIkea ? 'text-[#0058a3]' : (isWp ? 'text-[#1ba852]' : 'text-[#379045]'));
+    const borderColorClass = isBlack ? 'border-black' : (isIkea ? 'border-[#0058a3]' : (isWp ? 'border-[#1ba852]' : 'border-[#379045]'));
     
     // Gradiente premium para hover
     const bgHoverGradient = isBlack
@@ -68,7 +68,7 @@ export class AddToCartBtnComponent {
         ? 'hover:bg-[#00427a]' 
         : (isWp 
           ? 'hover:bg-gradient-to-br hover:from-[#1ba852] hover:to-[#0d6a5d]' 
-          : 'hover:bg-[#368c44]'));
+          : 'hover:bg-[#379045]'));
 
     if (state === 'disabled') {
       return `w-full ${hClass} ${roundedClass} bg-gray-200 text-gray-400 ${textClass} font-bold flex items-center justify-center gap-2 cursor-not-allowed border-none`;
@@ -84,7 +84,7 @@ export class AddToCartBtnComponent {
         return `w-full ${hClass} ${roundedClass} bg-gray-50 ${textColorClass} ${textClass} font-semibold flex items-center justify-center gap-2 cursor-default border border-transparent transition-all`;
       }
       const borderClass = this.size === 'lg' ? 'border-2' : 'border';
-      const borderColorOpacity = isBlack ? 'border-gray-800' : (isIkea ? 'border-[#0058a3]/60' : (isWp ? 'border-[#1ba852]/60' : 'border-[#368c44]/40'));
+      const borderColorOpacity = isBlack ? 'border-gray-800' : (isIkea ? 'border-[#0058a3]/60' : (isWp ? 'border-[#1ba852]/60' : 'border-[#379045]/40'));
       return `w-full ${hClass} ${roundedClass} bg-transparent ${textColorClass} ${textClass} font-semibold flex items-center justify-center gap-2 ${borderClass} ${borderColorOpacity} ${bgHoverGradient} hover:text-white hover:border-transparent transition-all duration-300 shadow-sm hover:shadow-md group`;
     }
 
@@ -93,7 +93,7 @@ export class AddToCartBtnComponent {
       if (state === 'added') {
         return `w-full ${hClass} ${isIkea || isBlack ? 'rounded-full' : roundedClass} bg-white border-2 ${borderColorClass} ${textColorClass} ${textClass} font-bold flex items-center justify-center gap-3 cursor-default transition-all shadow-sm`;
       }
-      const bgClass = isBlack ? 'bg-black' : (isIkea ? 'bg-[#0058a3]' : (isWp ? 'bg-gradient-to-br from-[#1ba852] to-[#0d6a5d]' : 'bg-[#368c44]'));
+      const bgClass = isBlack ? 'bg-black' : (isIkea ? 'bg-[#0058a3]' : (isWp ? 'bg-gradient-to-br from-[#1ba852] to-[#0d6a5d]' : 'bg-[#379045]'));
       return `w-full ${hClass} ${isIkea || isBlack ? 'rounded-full' : roundedClass} ${bgClass} text-white ${textClass} font-bold flex items-center justify-center gap-3 hover:-translate-y-0.5 hover:shadow-xl transition-all border-none shadow-lg group`;
     }
 
@@ -108,7 +108,7 @@ export class AddToCartBtnComponent {
         ? 'bg-[#0058a3]'
         : (isWp 
           ? 'bg-gradient-to-br from-[#1ba852] to-[#0d6a5d]' 
-          : 'bg-gradient-to-br from-[#368c44] to-[#25d366]'));
+          : 'bg-gradient-to-br from-[#379045] to-[#25d366]'));
       
     return `w-full ${hClass} ${roundedClass} ${standardBg} text-white ${textClass} font-bold flex items-center justify-center gap-2 hover:-translate-y-0.5 hover:shadow-lg transition-all cursor-pointer border-none shadow-md`;
   }

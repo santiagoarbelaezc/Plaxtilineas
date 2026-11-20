@@ -14,13 +14,13 @@ import { FeatureBanner } from '../../features/home/feature-banner/feature-banner
 import { PlaxtiTrioPresentationComponent } from '../../features/home/trio-presentation/trio-presentation';
 
 import { ContentCard } from '../../models/content-card.model';
-import { SolucionesBannerComponent } from '../../features/home/soluciones-banner/soluciones-banner.component';
 import { FeatureNewProducts } from '../../features/home/feature-new-products/feature-new-products';
 import { FullBanner } from '../../features/dynamic/full-banner/full-banner';
 import { LongMap } from '../../features/dynamic/long-map/long-map.component';
 import { UtilGridProducto } from '../../features/products/grid-producto/util-grid-producto/util-grid-producto';
 import { UtilGridProductoOther } from "../../features/products/grid-producto/util-grid-producto-other/util-grid-producto-other";
 import { NosotrosInicioComponent } from '../../features/home/nosotros-inicio/nosotros-inicio.component';
+import { HistoriaBannerComponent } from '../../features/home/historia-banner/historia-banner.component';
 import { BannerAsistenteComponent } from '../../features/home/banner-asistente/banner-asistente.component';
 import { ComponentesService, ComponenteDinamico } from '../../services/componentes.service';
 import { MeshBannerComponent } from '../../features/home/mesh-banner/mesh-banner.component';
@@ -30,6 +30,7 @@ import { DynamicGaleriaComponent } from '../../features/dynamic/dynamic-galeria/
 import { DynamicProductCarouselComponent } from '../../features/dynamic/dynamic-product-carousel/dynamic-product-carousel.component';
 import { ProductFeatureSplitComponent } from '../../features/home/product-feature-split/product-feature-split.component';
 import { CarSeatComponent } from '../../components/car-seat/car-seat.component';
+import { GramaSinteticaComponent } from '../../components/grama-sintetica/grama-sintetica.component';
 
 @Component({
   selector: 'app-inicio',
@@ -45,11 +46,12 @@ import { CarSeatComponent } from '../../components/car-seat/car-seat.component';
     CategoriasDestacadasComponent,
     MeshBannerComponent,
     CarSeatComponent,
-    SolucionesBannerComponent,
+    GramaSinteticaComponent,
     FeatureNewProducts,
     FullBanner,
     UtilGridProductoOther,
     NosotrosInicioComponent,
+    HistoriaBannerComponent,
     DynamicGaleriaComponent,
     DynamicProductCarouselComponent,
     ProductFeatureSplitComponent

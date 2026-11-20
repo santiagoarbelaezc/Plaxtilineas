@@ -1,13 +1,16 @@
 /* ═══════════════════════════════════════════════════════════════════
-   CATEGORÍAS DESTACADAS — REDISEÑO CON DESIGN TOKENS
-   Paleta: #09090b (texto), #71717a (secundario), #f4f5f7 (fondo),
-   #ffffff (cards), #e4e4e7 (bordes 1.5px), #16a34a / #22c55e (acento verde)
+   CATEGORÍAS DESTACADAS — BENTO MINIMAL + MANUAL DE MARCA
+   Canvas: #f4f5f7 | Cards: #ffffff | Bordes: 1.5px #e4e4e7
+   Acentos: #379045 / #2c7337 / #eaf4ec | Oscuro: #09090b / #383838
+   Tipografía: Montserrat (titulares/labels) · Mulish (cuerpo)
    ═══════════════════════════════════════════════════════════════════ */
 
 .categories-section {
-  padding: 28px 0 20px 0;
-  background-color: #ffffff;
-  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 56px 0 48px 0;
+  background-color: #f4f5f7;
+  font-family: var(--font-secondary, 'Mulish', sans-serif);
+  border-top: 1.5px solid #e4e4e7;
+  border-bottom: 1.5px solid #e4e4e7;
   overflow-x: clip;
 }
 
@@ -19,38 +22,39 @@
   box-sizing: border-box;
 }
 
-/* ── Section Header (Espaciado más compacto hacia las imágenes) ── */
+/* ── Section Header (Bento Minimal) ── */
 .section-header {
   text-align: center;
-  margin-bottom: 12px;
+  margin-bottom: 26px;
 }
 
 .section-title {
-  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 2.25rem;
-  font-weight: 850;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+  font-weight: 800;
   color: #09090b;
   text-transform: uppercase;
-  letter-spacing: -0.025em;
-  margin: 0 0 6px 0;
+  letter-spacing: -0.03em;
+  margin: 0 0 8px 0;
   line-height: 1.15;
 }
 
 .highlight-green {
-  color: #16a34a;
-  font-weight: 850;
+  color: #379045;
+  font-weight: 800;
 }
 
 .section-subtitle {
-  font-size: 1rem;
+  font-family: var(--font-secondary, 'Mulish', sans-serif);
+  font-size: 0.96rem;
   font-weight: 500;
-  color: #71717a;
-  max-width: 650px;
+  color: #5e5e5e;
+  max-width: 620px;
   margin: 0 auto;
-  line-height: 1.45;
+  line-height: 1.55;
 }
 
-/* ── Carousel Wrapper & Layout (Padding Reducido) ── */
+/* ── Carousel Wrapper & Layout ── */
 .carousel-wrapper {
   position: relative;
   display: flex;
@@ -67,14 +71,14 @@
 .categories-grid {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: calc((100% - 5 * 1.5rem) / 6); /* 6 columnas amplias en desktop */
-  gap: 1.5rem;
+  grid-auto-columns: calc((100% - 5 * 1.25rem) / 6);
+  gap: 1.25rem;
   overflow-x: auto;
   overflow-y: hidden;
   overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding: 6px 0 20px 0;
+  padding: 6px 2px 18px 2px;
   scroll-snap-type: x proximity;
 }
 
@@ -82,7 +86,7 @@
   display: none;
 }
 
-/* ── Category Item & Card (Imágenes Más Grandes y Superficies Blancas) ── */
+/* ── Category Item & Card (Bento Card 16px + Borde 1.5px) ── */
 .category-item {
   display: flex;
   justify-content: center;
@@ -94,110 +98,126 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
-  padding: 14px 12px 18px 12px;
+  padding: 10px 10px 16px 10px;
   background: #ffffff;
   border: 1.5px solid #e4e4e7;
-  border-radius: 22px;
-  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.03);
+  border-radius: 16px;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 2px 8px rgba(9, 9, 11, 0.03);
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  box-sizing: border-box;
+}
+
+.category-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #379045;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .category-card:hover {
-  transform: translateY(-6px);
-  border-color: #22c55e;
-  box-shadow: 0 16px 36px -6px rgba(22, 163, 74, 0.16), 0 4px 12px rgba(0, 0, 0, 0.04);
+  transform: translateY(-4px);
+  border-color: #379045;
+  box-shadow: 0 14px 30px -10px rgba(9, 9, 11, 0.1), 0 4px 12px -4px rgba(55, 144, 69, 0.14);
 }
 
-/* Contenedor Visual de la Imagen (Aumentado de tamaño) */
+.category-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* Contenedor Visual de la Imagen */
 .card-visual {
   width: 100%;
-  height: 155px;
-  background: #f8fafc;
-  border-radius: 18px;
+  height: 184px;
+  background: #f4f5f7;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
-  border: 1px solid #f1f5f9;
-  transition: all 0.3s ease;
+  border: 1px solid #e4e4e7;
+  transition: background 0.25s ease, border-color 0.25s ease;
 }
 
 .category-icon {
-  width: 92%;
-  height: 92%;
+  width: 96%;
+  height: 96%;
   object-fit: contain;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
-  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.07));
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s ease;
+  filter: drop-shadow(0 6px 12px rgba(9, 9, 11, 0.06));
 }
 
 .category-card:hover .card-visual {
-  background: #ffffff;
-  border-color: rgba(34, 197, 94, 0.25);
+  background: #eaf4ec;
+  border-color: rgba(55, 144, 69, 0.28);
 }
 
 .category-card:hover .category-icon {
-  transform: scale(1.12);
-  filter: drop-shadow(0 8px 18px rgba(34, 197, 94, 0.22));
+  transform: scale(1.08);
+  filter: drop-shadow(0 8px 16px rgba(55, 144, 69, 0.18));
 }
 
-/* ── Contenido de la Tarjeta (Limpio y Centrado) ── */
+/* ── Contenido de la Tarjeta ── */
 .card-content {
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   width: 100%;
 }
 
 .category-name {
-  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 1.04rem;
-  font-weight: 750;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.92rem;
+  font-weight: 800;
   color: #09090b;
   margin: 0;
   text-transform: uppercase;
-  letter-spacing: -0.01em;
-  transition: color 0.25s ease;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  line-height: 1.22;
-  min-height: 2.2em;
+  letter-spacing: -0.015em;
+  transition: color 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  line-height: 1.22;
+  min-height: 2.2em;
 }
 
 .category-card:hover .category-name {
-  color: #16a34a;
+  color: #379045;
 }
 
-/* Botón Explorar Estilo Píldora "Ver más" */
+/* Botón Explorar Geométrico de Marca */
 .explore-pill {
-  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
   background: #f4f5f7;
   border: 1px solid #e4e4e7;
-  border-radius: 9999px;
-  padding: 5px 14px;
-  font-size: 0.74rem;
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-size: 0.68rem;
   font-weight: 700;
-  color: #52525b;
+  color: #383838;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .explore-arrow {
@@ -205,8 +225,8 @@
 }
 
 .category-card:hover .explore-pill {
-  background: #16a34a;
-  border-color: #16a34a;
+  background: #379045;
+  border-color: #379045;
   color: #ffffff;
 }
 
@@ -214,14 +234,14 @@
   transform: translateX(3px);
 }
 
-/* ── Botones de Navegación ── */
+/* ── Botones de Navegación (Cajas Cuadradas Redondeadas Bento) ── */
 .nav-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
   background: #ffffff;
   border: 1.5px solid #e4e4e7;
   color: #09090b;
@@ -229,28 +249,28 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 6px 18px rgba(9, 9, 11, 0.08);
   z-index: 10;
   flex-shrink: 0;
 }
 
 .nav-btn.prev,
 .nav-btn.prev-btn {
-  left: -18px;
+  left: -16px;
 }
 
 .nav-btn.next,
 .nav-btn.next-btn {
-  right: -18px;
+  right: -16px;
 }
 
 .nav-btn:hover:not([disabled]) {
-  background: #16a34a;
+  background: #0a0a0a;
   color: #ffffff;
-  border-color: #16a34a;
-  box-shadow: 0 8px 24px rgba(22, 163, 74, 0.35);
-  transform: translateY(-50%) scale(1.08);
+  border-color: #0a0a0a;
+  box-shadow: 0 10px 24px rgba(9, 9, 11, 0.2);
+  transform: translateY(-50%) scale(1.05);
 }
 
 .nav-btn[disabled] {
@@ -259,33 +279,32 @@
   background: #f4f5f7;
   border-color: #e4e4e7;
   color: #a1a1aa;
+  box-shadow: none;
 }
 
-/* ── Indicadores Píldora ── */
+/* ── Indicadores Planos ── */
 .carousel-indicators {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 8px;
-  margin-top: 24px;
+  margin-top: 20px;
 }
 
 .indicator-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 4px;
+  width: 10px;
+  height: 4px;
+  border-radius: 9999px;
   background: #d4d4d8;
   border: none;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 0;
 }
 
 .indicator-dot.active {
-  width: 28px;
-  background: #16a34a;
-  border-radius: 9999px;
-  box-shadow: 0 0 10px rgba(22, 163, 74, 0.35);
+  width: 30px;
+  background: #379045;
 }
 
 /* ── Empty State ── */
@@ -299,18 +318,20 @@
 
 .empty-icon {
   font-size: 2.8rem;
-  color: #16a34a;
+  color: #379045;
   margin-bottom: 1rem;
 }
 
 /* ════════════ RESPONSIVE ADAPTATIVO ════════════ */
 @media (max-width: 1400px) {
   .categories-grid {
-    grid-auto-columns: calc((100% - 4 * 1.25rem) / 5); /* 5 tarjetas */
+    grid-auto-columns: calc((100% - 4 * 1.25rem) / 5);
+    /* 5 tarjetas */
     gap: 1.25rem;
   }
+
   .card-visual {
-    height: 135px;
+    height: 168px;
   }
 }
 
@@ -405,12 +426,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.72) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.72) 50%,
+      rgba(255, 255, 255, 0) 100%);
   animation: skeleton-shimmer 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   transform: translateZ(0);
 }
@@ -419,6 +438,7 @@
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(100%);
   }
@@ -426,12 +446,15 @@
 
 @media (max-width: 1024px) {
   .categories-grid {
-    grid-auto-columns: calc((100% - 3 * 1rem) / 4); /* 4 tarjetas */
+    grid-auto-columns: calc((100% - 3 * 1rem) / 4);
+    /* 4 tarjetas */
     gap: 1rem;
   }
+
   .section-title {
     font-size: 1.95rem;
   }
+
   .nav-btn {
     width: 40px;
     height: 40px;
@@ -442,31 +465,40 @@
   .categories-section {
     padding: 32px 0 24px 0;
   }
+
   .section-title {
     font-size: 1.65rem;
   }
+
   .section-subtitle {
     font-size: 0.92rem;
   }
+
   .categories-grid {
-    grid-auto-columns: calc((100% - 2 * 0.85rem) / 3); /* 3 tarjetas completas */
+    grid-auto-columns: calc((100% - 2 * 0.85rem) / 3);
+    /* 3 tarjetas completas */
     gap: 0.85rem;
     padding: 10px 4px 18px 4px;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
   }
+
   .category-card {
     scroll-snap-align: start;
     -webkit-tap-highlight-color: transparent;
   }
+
   .card-visual {
     height: 115px;
   }
+
   .category-name {
     font-size: 0.92rem;
   }
+
   .nav-btn {
-    display: none; /* En móvil se navega con swipe táctil nativo */
+    display: none;
+    /* En móvil se navega con swipe táctil nativo */
   }
 }
 
@@ -474,29 +506,37 @@
   .categories-section {
     padding: 26px 0 20px 0;
   }
+
   .container {
     padding: 0 16px;
   }
+
   .section-title {
     font-size: 1.45rem;
   }
+
   .categories-grid {
-    grid-auto-columns: calc((100% - 0.75rem) / 2.2); /* 2.2 tarjetas grandes para visualizar el swipe */
+    grid-auto-columns: calc((100% - 0.75rem) / 2.2);
+    /* 2.2 tarjetas grandes para visualizar el swipe */
     gap: 0.75rem;
     scroll-padding: 0 16px;
   }
+
   .category-card {
     padding: 14px 10px 16px 10px;
     border-radius: 18px;
     scroll-snap-align: start;
   }
+
   .card-visual {
     height: 105px;
     border-radius: 14px;
   }
+
   .category-name {
     font-size: 0.85rem;
   }
+
   .explore-pill {
     padding: 5px 12px;
     font-size: 0.68rem;

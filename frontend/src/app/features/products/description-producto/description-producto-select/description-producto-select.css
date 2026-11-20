@@ -110,8 +110,8 @@
 }
 
 .producto-imagen-container:hover {
-  box-shadow: 0 20px 25px -5px rgba(54, 140, 68, 0.1);
-  border-color: rgba(54, 140, 68, 0.2);
+  box-shadow: 0 20px 25px -5px rgba(55, 144, 69, 0.1);
+  border-color: rgba(55, 144, 69, 0.2);
 }
 
 .producto-imagen-wrapper {
@@ -193,8 +193,8 @@
 
 .precio-fixed-container:hover {
   background: white;
-  border-color: #368C44;
-  box-shadow: 0 10px 15px -3px rgba(54, 140, 68, 0.1);
+  border-color: #379045;
+  box-shadow: 0 10px 15px -3px rgba(55, 144, 69, 0.1);
   transform: translateY(-2px);
 }
 
@@ -239,7 +239,7 @@
 .precio-simbolo-fixed {
   font-size: 1.5rem;
   font-weight: var(--font-weight-semibold);
-  color: #368c44;
+  color: #379045;
   font-family: var(--font-primary);
 }
 
@@ -315,10 +315,10 @@
 
 .btn-compartir-fixed:hover {
   background: white;
-  border-color: #368C44;
-  color: #368C44;
+  border-color: #379045;
+  color: #379045;
   transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(54, 140, 68, 0.1);
+  box-shadow: 0 10px 15px -3px rgba(55, 144, 69, 0.1);
 }
 
 .btn-icon-fixed {
@@ -395,8 +395,8 @@
 
 .producto-header-fixed:hover {
   background: white;
-  border-color: #368C44;
-  box-shadow: 0 10px 15px -3px rgba(54, 140, 68, 0.1);
+  border-color: #379045;
+  box-shadow: 0 10px 15px -3px rgba(55, 144, 69, 0.1);
 }
 
 /* Estilo para la notificación flotante sobre la imagen (¡Compra Ahora!) */
@@ -525,8 +525,8 @@
 .producto-detalles-fixed-section:hover,
 .acciones-adicionales-container:hover {
   background: white;
-  border-color: #368C44;
-  box-shadow: 0 10px 15px -3px rgba(54, 140, 68, 0.1);
+  border-color: #379045;
+  box-shadow: 0 10px 15px -3px rgba(55, 144, 69, 0.1);
 }
 
 .section-header-fixed {
@@ -579,8 +579,8 @@
 
 .cantidad-selector-elegante:hover {
   background: white;
-  border-color: #368C44;
-  box-shadow: 0 10px 15px -3px rgba(54, 140, 68, 0.1);
+  border-color: #379045;
+  box-shadow: 0 10px 15px -3px rgba(55, 144, 69, 0.1);
 }
 
 .section-header-compact {
@@ -622,11 +622,11 @@
 }
 
 .btn-cantidad-minimal:hover:not(:disabled) {
-  border-color: #368c44;
-  color: #368c44;
+  border-color: #379045;
+  color: #379045;
   background: #f0fdf4;
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px -1px rgba(54, 140, 68, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(55, 144, 69, 0.1);
 }
 
 .btn-cantidad-minimal:disabled {
@@ -678,8 +678,8 @@
   padding: 16px 20px;
   background: white;
   border-radius: 12px;
-  border: 1px solid rgba(54, 140, 68, 0.2);
-  box-shadow: 0 2px 4px rgba(54, 140, 68, 0.05);
+  border: 1px solid rgba(55, 144, 69, 0.2);
+  box-shadow: 0 2px 4px rgba(55, 144, 69, 0.05);
 }
 
 .price-label-area-main {
@@ -704,7 +704,7 @@
 .price-value-main {
   font-size: 2rem;
   font-weight: 600;
-  color: #368c44;
+  color: #379045;
   font-family: var(--font-primary);
   letter-spacing: -0.5px;
 }
@@ -779,10 +779,10 @@
 
 .btn-ver-descripcion-minimal:hover {
   background: #f8fafc;
-  border-color: #368C44;
-  color: #368C44;
+  border-color: #379045;
+  color: #379045;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(54, 140, 68, 0.1);
+  box-shadow: 0 4px 12px rgba(55, 144, 69, 0.1);
 }
 
 .icon-desc {
@@ -814,15 +814,15 @@
 
 .opcion-fixed-item:hover {
   background: white;
-  border-color: #368C44;
+  border-color: #379045;
   transform: translateY(-4px);
-  box-shadow: 0 10px 15px -3px rgba(54, 140, 68, 0.1);
+  box-shadow: 0 10px 15px -3px rgba(55, 144, 69, 0.1);
 }
 
 .opcion-fixed-seleccionada {
-  border-color: #368C44;
+  border-color: #379045;
   background: white;
-  box-shadow: 0 10px 15px -3px rgba(54, 140, 68, 0.1);
+  box-shadow: 0 10px 15px -3px rgba(55, 144, 69, 0.1);
   position: relative;
 }
 
@@ -1438,7 +1438,7 @@
 .btn-ver-descripcion-minimal:hover {
   background: #f8fafc;
   border-color: #e2e8f0;
-  color: #368c44;
+  color: #379045;
   transform: translateX(4px);
 }
 

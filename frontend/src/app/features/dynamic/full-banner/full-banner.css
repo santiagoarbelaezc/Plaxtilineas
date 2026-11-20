@@ -23,16 +23,16 @@
   width: 100%;
   height: auto;
   overflow: hidden;
-  border-radius: 12px;
-  border: 1px solid #f3f4f6;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 16px;
+  border: 1.5px solid #e4e4e7;
+  box-shadow: 0 6px 20px -8px rgba(9, 9, 11, 0.08);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
 }
 
 .banner-container:hover .banner-image {
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
-  border-color: #dfdfdf;
+  box-shadow: 0 16px 36px -10px rgba(9, 9, 11, 0.14);
+  border-color: #379045;
 }
 
 .banner-img {

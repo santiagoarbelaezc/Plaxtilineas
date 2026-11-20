@@ -40,7 +40,7 @@
   transform: translateX(-50%);
   width: 60px;
   height: 3px;
-  background: linear-gradient(90deg, #368c44, #25d366);
+  background: linear-gradient(90deg, #379045, #25d366);
   border-radius: 2px;
 }
 
@@ -132,7 +132,7 @@
   width: 100%;
   height: 100%;
   background: linear-gradient(135deg, 
-    rgba(54, 140, 68, 0.3) 0%, 
+    rgba(55, 144, 69, 0.3) 0%, 
     rgba(37, 211, 102, 0.15) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -213,7 +213,7 @@
   height: 3px;
   background: linear-gradient(90deg, 
     transparent, 
-    rgba(54, 140, 68, 0.2), 
+    rgba(55, 144, 69, 0.2), 
     transparent);
   border-radius: 0 0 2px 2px;
 }
@@ -421,7 +421,7 @@
 
 /* Accesibilidad mejorada */
 .background-image-wrapper.clickable:focus-visible {
-  outline: 2px solid #368c44;
+  outline: 2px solid #379045;
   outline-offset: 2px;
   z-index: 20;
 }

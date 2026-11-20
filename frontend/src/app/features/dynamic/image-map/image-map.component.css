@@ -19,7 +19,7 @@
   height: 3px;
   background: linear-gradient(90deg, 
     transparent, 
-    rgba(54, 140, 68, 0.2), 
+    rgba(55, 144, 69, 0.2), 
     transparent);
   border-radius: 0 0 2px 2px;
 }
@@ -46,7 +46,7 @@
   transform: translateX(-50%);
   width: 60px;
   height: 3px;
-  background: linear-gradient(90deg, #368c44, #25d366);
+  background: linear-gradient(90deg, #379045, #25d366);
   border-radius: 2px;
 }
 
@@ -66,7 +66,7 @@
 }
 
 .map-subtitle strong {
-  color: #368c44;
+  color: #379045;
   font-weight: var(--font-weight-medium);
 }
 
@@ -84,8 +84,8 @@
 
 .map-container:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(54, 140, 68, 0.12);
-  border-color: rgba(54, 140, 68, 0.2);
+  box-shadow: 0 8px 24px rgba(55, 144, 69, 0.12);
+  border-color: rgba(55, 144, 69, 0.2);
 }
 
 .map-container iframe {
@@ -112,7 +112,7 @@
   justify-content: center;
   gap: 10px;
   padding: 14px 32px;
-  background: #368c44;
+  background: #379045;
   color: white;
   text-decoration: none;
   border-radius: 8px;
@@ -125,13 +125,13 @@
   overflow: hidden;
   border: 2px solid transparent;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(54, 140, 68, 0.2);
+  box-shadow: 0 4px 12px rgba(55, 144, 69, 0.2);
 }
 
 .btn2:hover {
   transform: translateY(-3px);
   background: #2d7a3a;
-  box-shadow: 0 6px 20px rgba(54, 140, 68, 0.3);
+  box-shadow: 0 6px 20px rgba(55, 144, 69, 0.3);
 }
 
 .btn2:active {
@@ -286,7 +286,7 @@
   
   .btn2:hover {
     transform: none;
-    box-shadow: 0 4px 12px rgba(54, 140, 68, 0.2);
+    box-shadow: 0 4px 12px rgba(55, 144, 69, 0.2);
   }
   
   .btn2:active {
@@ -296,6 +296,6 @@
 
 /* Accesibilidad mejorada */
 .btn2:focus-visible {
-  outline: 2px solid #368c44;
+  outline: 2px solid #379045;
   outline-offset: 2px;
 }
