@@ -212,21 +212,29 @@
 
   .historia-bento-card {
     padding: 20px 18px;
+    gap: 14px;
     border-radius: 14px;
+    border-left: 1.5px solid #e4e4e7;
+    border-top: 3.5px solid #379045;
   }
 
   .historia-logo {
-    height: 44px;
+    height: 46px;
+  }
+
+  .historia-title {
+    font-size: 1.32rem;
   }
 
   .historia-desc {
     font-size: 0.88rem;
+    line-height: 1.55;
   }
 
   .historia-cta-btn {
     width: 100%;
     justify-content: center;
-    min-height: 46px;
+    min-height: 48px;
     box-sizing: border-box;
   }
 }

@@ -61,11 +61,11 @@
 
 @media (max-width: 768px) {
   .banner-container {
-    margin: 20px auto;
-    padding: 0 1rem;
+    margin: 18px auto;
+    padding: 0 16px;
   }
   .banner-image {
-    border-radius: 8px;
+    border-radius: 14px;
   }
 }
 

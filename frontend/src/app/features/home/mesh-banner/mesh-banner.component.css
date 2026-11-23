@@ -194,13 +194,13 @@
 /* ── Responsividad ── */
 @media (max-width: 768px) {
   .aliados-marquee-section {
-    min-height: 195px;
+    min-height: 190px;
     padding: 28px 0 32px 0;
   }
 
-  .aliados-marquee-wrapper {
-    mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+  .aliados-marquee-header {
+    padding: 0 16px;
+    margin-bottom: 20px;
   }
 
   .aliados-marquee-track:active .marquee-group {
@@ -208,7 +208,7 @@
   }
 
   .aliados-title {
-    font-size: 1.45rem;
+    font-size: clamp(1.35rem, 5.2vw, 1.6rem);
   }
 
   .aliados-subtitle {
@@ -217,18 +217,18 @@
   }
 
   .marquee-group {
-    gap: 44px;
-    padding-right: 44px;
+    gap: 40px;
+    padding-right: 40px;
     animation-duration: 22s;
   }
 
   .aliado-item {
-    width: 125px;
-    height: 52px;
+    width: 118px;
+    height: 48px;
   }
 
   .aliado-logo {
-    max-height: 36px;
+    max-height: 34px;
   }
 }
 

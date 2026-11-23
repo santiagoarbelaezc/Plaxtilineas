@@ -69,6 +69,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media (max-width: 768px) {
+    bottom: auto;
+    height: 56vh;
+    padding-top: 52px;
+    box-sizing: border-box;
+  }
 }
 
 .stage-layer {
@@ -316,11 +323,11 @@
   @media (max-width: 900px) {
     left: 16px;
     right: 16px;
-    bottom: 24px;
-    padding: 18px 16px;
+    bottom: 16px;
+    padding: 16px;
     border-radius: 16px;
-    max-height: 52vh;
-    overflow-y: auto;
+    max-height: none;
+    overflow-y: visible;
   }
 }
 
@@ -460,9 +467,11 @@
   }
 
   @media (max-width: 600px) {
-    padding: 20px 16px;
+    padding: 18px 16px;
     border-radius: 16px;
-    gap: 16px;
+    gap: 14px;
+    max-height: none;
+    overflow-y: visible;
   }
 }
 

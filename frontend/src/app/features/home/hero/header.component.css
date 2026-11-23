@@ -32,8 +32,10 @@
 
 @media (max-width: 768px) {
   .hero-fullscreen-section {
-    min-height: 78vh;
-    padding: 34px 16px 28px 16px;
+    min-height: calc(100svh - 74px);
+    max-height: 760px;
+    padding: 28px 16px 36px 16px;
+    box-sizing: border-box;
   }
 }
 
@@ -151,9 +153,12 @@
 }
 
 @media (max-width: 768px) {
+  .hero-top-bar {
+    margin-bottom: 18px;
+  }
   .hero-logo {
-    height: 82px;
-    max-width: 340px;
+    height: 76px;
+    max-width: 290px;
   }
 }
 
@@ -217,19 +222,23 @@
 }
 
 @media (max-width: 640px) {
+  .hero-main-content {
+    margin-bottom: 20px;
+    padding: 0 4px;
+  }
   .hero-headline {
-    font-size: clamp(1.65rem, 5.8vw, 1.95rem);
-    line-height: 1.18;
+    font-size: clamp(1.65rem, 6.2vw, 2.05rem);
+    line-height: 1.16;
     margin-bottom: 14px;
   }
   .hero-lead {
     font-size: 0.94rem;
-    line-height: 1.55;
+    line-height: 1.56;
     margin-bottom: 24px;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .hero-actions-row {
     flex-direction: column;
     width: 100%;
@@ -238,11 +247,12 @@
   .hero-btn-primary,
   .hero-btn-assistant {
     width: 100%;
-    max-width: 320px;
+    max-width: 340px;
+    min-height: 48px;
     justify-content: center;
     box-sizing: border-box;
-    padding: 13px 20px;
-    font-size: 0.92rem;
+    padding: 14px 20px;
+    font-size: 0.84rem;
   }
 }
 
@@ -417,23 +427,30 @@
 
 @media (max-width: 768px) {
   .hero-nav-arrow {
-    padding: 6px;
+    top: auto;
+    bottom: 12px;
+    transform: none;
+    padding: 8px;
+  }
+
+  .hero-nav-arrow:active {
+    transform: scale(0.92);
   }
 
   .hero-nav-arrow svg {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
   }
 
   .hero-nav-prev {
-    left: 6px;
+    left: 14px;
   }
 
   .hero-nav-next {
-    right: 6px;
+    right: 14px;
   }
 
   .hero-main-content {
-    padding: 0 32px;
+    padding: 0 4px;
   }
 }

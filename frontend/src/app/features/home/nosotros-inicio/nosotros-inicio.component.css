@@ -479,29 +479,49 @@
 
 @media (max-width: 640px) {
   .nosotros-sticky-viewport {
-    padding: 46px 0 52px;
+    padding: 42px 0 46px;
   }
 
   .nosotros-inner {
-    padding: 0 18px;
+    padding: 0 16px;
+  }
+
+  .identity-kicker {
+    font-size: 0.74rem;
+    margin-bottom: 12px;
+  }
+
+  .title-lead-line {
+    font-size: clamp(1.65rem, 6vw, 2rem);
+    line-height: 1.12;
+  }
+
+  .title-dynamic-line {
+    font-size: clamp(1.25rem, 4.8vw, 1.5rem);
+    min-height: 2.55em;
+    margin-top: 6px;
   }
 
   .desktop-text { display: none !important; }
-  .mobile-text { display: block !important; font-size: 0.96rem; margin: 0 0 20px 0; }
+  .mobile-text { display: block !important; font-size: 0.94rem; line-height: 1.58; margin: 0 0 20px 0; }
 
   .lines-subtle-tabs {
-    gap: 18px;
+    width: 100%;
+    justify-content: space-between;
+    gap: 12px;
     margin-bottom: 24px;
   }
 
   .subtle-tab {
-    padding: 0 0 10px 0;
-    font-size: 0.8rem;
+    padding: 6px 0 10px 0;
+    font-size: 0.82rem;
   }
 
   .identity-cta-pill {
     width: 100%;
     min-height: 48px;
+    padding: 14px 20px;
+    font-size: 0.84rem;
     justify-content: center;
     box-sizing: border-box;
   }
@@ -511,8 +531,13 @@
   }
 
   .visual-stage-frame {
-    height: 360px;
-    border-radius: 12px;
+    height: 340px;
+    border-radius: 14px;
+  }
+
+  .subtle-arrow {
+    width: 40px;
+    height: 40px;
   }
 
   .stage-brand-mark {
@@ -528,7 +553,7 @@
   }
 
   .caption-title {
-    font-size: 0.94rem;
+    font-size: 0.96rem;
   }
 }
 

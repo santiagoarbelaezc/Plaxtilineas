@@ -368,31 +368,35 @@
    ========================================================================== */
 @media (max-width: 1100px) {
   .map-showcase-section {
-    padding: 64px 0 72px 0;
+    padding: 56px 0 64px 0;
   }
 
   .map-grid {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 32px;
+  }
+
+  .map-content-wrapper {
+    order: -1;
   }
 
   .map-frame {
-    height: 400px;
+    height: 360px;
   }
 }
 
 @media (max-width: 640px) {
   .map-showcase-section {
-    padding: 46px 0 52px 0;
+    padding: 44px 0 48px 0;
   }
 
   .map-container-inner {
-    padding: 0 18px;
+    padding: 0 16px;
   }
 
   .map-frame {
-    height: 250px;
-    border-radius: 12px;
+    height: 260px;
+    border-radius: 14px;
   }
 
   /* Evita que el iframe del mapa secuestre el scroll vertical en móviles */
