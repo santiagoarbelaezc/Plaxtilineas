@@ -1,175 +1,481 @@
-/* ====== SECCIÓN LEGAL PREMIUM ====== */
-.seccion-nosotros {
+/* ==========================================================================
+   PÁGINA POLÍTICA DE COOKIES — BENTO MINIMAL + MANUAL DE MARCA PLAXTILINEAS
+   Canvas: #f4f5f7 | Cards: #ffffff | Bordes: 1.5px #e4e4e7
+   Acentos: #379045 / #2c7337 / #eaf4ec | Oscuro: #09090b / #383838
+   Tipografía: Montserrat (titulares/UI) · Mulish (cuerpo)
+   ========================================================================== */
+
+:host {
+  display: block;
   width: 100%;
-  background-color: #ffffff;
-  padding: 180px 0 80px 0;
-  font-family: 'Montserrat', sans-serif;
-  overflow: hidden;
+  background-color: #f4f5f7;
 }
 
-.nosotros-container {
-  max-width: 1500px;
+.cookies-page-shell {
+  width: 100%;
+  background-color: #f4f5f7;
+  padding: 136px 0 72px 0;
+  font-family: var(--font-secondary, 'Mulish', sans-serif);
+  color: #09090b;
+  box-sizing: border-box;
+}
+
+.cookies-container {
+  max-width: var(--home-max-width, 1480px);
+  width: 100%;
   margin: 0 auto;
-  padding: 0 40px;
-}
-
-.badge-new {
-  background: #16a34a;
-  color: white;
-  padding: 8px 20px;
-  border-radius: 50px;
-  font-size: 0.9rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  width: fit-content;
-  letter-spacing: 0.1em;
-  box-shadow: 0 4px 15px rgba(55, 144, 69, 0.3);
-  margin-bottom: 24px;
-}
-
-.title {
-  font-size: 3.5rem;
-  font-weight: 900;
-  color: #1e293b;
-  line-height: 1.1;
-  margin: 0 0 20px 0;
-}
-
-.title span {
-  color: #16a34a;
-}
-
-.description {
-  font-size: 1.15rem;
-  color: #64748b;
-  line-height: 1.6;
-  margin: 0 0 24px 0;
-}
-
-.cookie-page-actions {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  margin: 24px 0 40px 0;
-  flex-wrap: wrap;
-}
-
-.btn-page-primary {
-  background: #16a34a;
-  color: #ffffff;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-weight: 700;
-  font-family: inherit;
-  font-size: 0.92rem;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.28);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.btn-page-primary:hover {
-  background: #15803d;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.38);
-}
-
-.btn-page-secondary {
-  background: #ffffff;
-  color: #475569;
-  border: 1px solid #cbd5e1;
-  padding: 12px 20px;
-  border-radius: 12px;
-  font-weight: 600;
-  font-family: inherit;
-  font-size: 0.92rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-page-secondary:hover {
-  background: #f8fafc;
-  border-color: #94a3b8;
-  color: #0f172a;
-}
-
-/* === GRID LEGAL === */
-.layout-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 40px;
-  margin-top: 40px;
-}
-
-.valor-card {
-  background: #f8fafc;
-  border-radius: 24px;
-  padding: 40px;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 1px solid rgba(0, 0, 0, 0.03);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+  padding: 0 var(--home-side-padding, 32px);
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Tarjeta Hero Bento ── */
+.cookies-hero-card {
+  display: grid;
+  grid-template-columns: 1.35fr 0.65fr;
+  gap: 36px;
+  align-items: center;
+  background: #ffffff;
+  border: 1.5px solid #e4e4e7;
+  border-left: 4px solid #379045;
+  border-radius: 18px;
+  padding: 38px 42px;
+  box-shadow: 0 6px 24px -12px rgba(9, 9, 11, 0.06);
+  box-sizing: border-box;
+}
+
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.cookies-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #379045;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.kicker-line {
+  width: 22px;
+  height: 2px;
+  background: #379045;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.cookies-title {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: clamp(2rem, 3.2vw, 2.85rem);
+  font-weight: 900;
+  color: #09090b;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  margin: 0 0 14px 0;
+}
+
+.highlight-green {
+  color: #379045;
+}
+
+.cookies-lead {
+  font-size: 1rem;
+  color: #5e5e5e;
+  line-height: 1.68;
+  margin: 0 0 26px 0;
+  max-width: 640px;
+}
+
+.cookies-lead strong {
+  color: #09090b;
+  font-weight: 800;
+}
+
+.cookies-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.btn-brand-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: #379045;
+  color: #ffffff;
+  border: 1.5px solid #379045;
+  padding: 13px 24px;
+  border-radius: 4px;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  box-shadow: 0 10px 22px -8px rgba(55, 144, 69, 0.42);
+  transition: background-color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.btn-brand-primary:hover {
+  background: #2c7337;
+  border-color: #2c7337;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 26px -8px rgba(55, 144, 69, 0.55);
+}
+
+.btn-brand-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  color: #09090b;
+  border: 1.5px solid #e4e4e7;
+  padding: 13px 22px;
+  border-radius: 4px;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: border-color 0.22s ease, color 0.22s ease, background-color 0.22s ease;
+}
+
+.btn-brand-secondary:hover {
+  border-color: #379045;
+  background: #eaf4ec;
+  color: #2c7337;
+}
+
+/* Panel lateral de estado dentro del Hero */
+.hero-status-box {
+  background: #f4f5f7;
+  border: 1.5px solid #e4e4e7;
+  border-radius: 14px;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  padding: 4px 11px;
+  background: #eaf4ec;
+  border: 1px solid rgba(55, 144, 69, 0.25);
+  border-radius: 999px;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #2c7337;
+  letter-spacing: 0.08em;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #379045;
+  box-shadow: 0 0 8px rgba(55, 144, 69, 0.5);
+}
+
+.status-note {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.58;
+  color: #52525b;
+}
+
+.status-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #379045;
+  text-decoration: none;
+  margin-top: 2px;
+  transition: color 0.2s ease, gap 0.2s ease;
+}
+
+.status-link:hover {
+  color: #2c7337;
+  gap: 9px;
+}
+
+/* ── Grid Bento de 3 Tarjetas ── */
+.cookies-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 
-.valor-card:hover {
-  transform: translateY(-8px);
+.bento-info-card {
+  position: relative;
   background: #ffffff;
-  border-color: rgba(55, 144, 69, 0.2);
-  box-shadow: 0 20px 40px rgba(55, 144, 69, 0.12);
+  border: 1.5px solid #e4e4e7;
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 2px 8px rgba(9, 9, 11, 0.03);
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.valor-icono-container {
-  width: 60px;
-  height: 60px;
-  background: rgba(55, 144, 69, 0.1);
-  border-radius: 16px;
+.bento-info-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #379045;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bento-info-card:hover {
+  transform: translateY(-4px);
+  border-color: #379045;
+  box-shadow: 0 14px 30px -10px rgba(9, 9, 11, 0.1), 0 4px 12px -4px rgba(55, 144, 69, 0.14);
+}
+
+.bento-info-card:hover::before {
+  transform: scaleX(1);
+}
+
+.card-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #eaf4ec;
+  border: 1px solid rgba(55, 144, 69, 0.22);
+  color: #379045;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.4s ease;
-  font-size: 1.5rem;
-  color: #379045;
-  font-weight: bold;
+  transition: background-color 0.22s ease, color 0.22s ease;
 }
 
-.valor-card:hover .valor-icono-container {
-  background: #16a34a;
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(55, 144, 69, 0.3);
-  color: white;
+.bento-info-card:hover .card-icon-box {
+  background: #379045;
+  color: #ffffff;
 }
 
-.valor-titulo {
-  font-size: 1.5rem;
+.card-index {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.76rem;
   font-weight: 800;
-  color: #1e293b;
-  margin: 0;
-  line-height: 1.3;
+  color: #a1a1aa;
+  letter-spacing: 0.08em;
 }
 
-.valor-descripcion {
-  font-size: 1.05rem;
-  color: #64748b;
-  line-height: 1.6;
+.card-title {
   margin: 0;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #09090b;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.card-desc {
+  margin: 0;
+  font-size: 0.94rem;
+  line-height: 1.65;
+  color: #5e5e5e;
   font-weight: 500;
 }
 
-/* === RESPONSIVE === */
-@media (max-width: 1200px) {
-  .title { font-size: 3rem; }
+/* ── Strip Resumen de Categorías de Cookies ── */
+.cookies-types-strip {
+  background: #ffffff;
+  border: 1.5px solid #e4e4e7;
+  border-radius: 16px;
+  padding: 26px 28px;
+  box-shadow: 0 2px 8px rgba(9, 9, 11, 0.03);
 }
 
-@media (max-width: 992px) {
-  .seccion-nosotros { padding: 140px 0 50px 0; }
-  .valor-card { padding: 30px; }
+.strip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 16px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #f0f1f3;
+  flex-wrap: wrap;
 }
 
-@media (max-width: 768px) {
-  .seccion-nosotros { padding: 120px 0 40px 0; }
-  .nosotros-container { padding: 0 20px; }
-  .title { font-size: 2.5rem; }
+.strip-title {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #09090b;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.strip-action-link {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #379045;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.strip-action-link:hover {
+  color: #2c7337;
+}
+
+.types-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.type-item {
+  background: #f4f5f7;
+  border: 1px solid #e4e4e7;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.type-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.type-name {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #09090b;
+}
+
+.type-badge {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.type-badge.required {
+  background: #eaf4ec;
+  color: #2c7337;
+}
+
+.type-badge.optional {
+  background: #ffffff;
+  color: #5e5e5e;
+  border: 1px solid #e4e4e7;
+}
+
+.type-desc {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: #5e5e5e;
+}
+
+/* ── Responsividad ── */
+@media (max-width: 1100px) {
+  .cookies-hero-card {
+    grid-template-columns: 1fr;
+    padding: 30px;
+    gap: 24px;
+  }
+
+  .cookies-bento-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .types-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .cookies-page-shell {
+    padding: 96px 0 48px 0;
+  }
+
+  .cookies-container {
+    padding: 0 16px;
+    gap: 16px;
+  }
+
+  .cookies-hero-card {
+    padding: 22px 18px;
+    border-radius: 14px;
+    border-left: 1.5px solid #e4e4e7;
+    border-top: 3.5px solid #379045;
+  }
+
+  .cookies-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .btn-brand-primary,
+  .btn-brand-secondary {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .bento-info-card {
+    padding: 22px 18px;
+    border-radius: 14px;
+  }
+
+  .cookies-types-strip {
+    padding: 20px 16px;
+    border-radius: 14px;
+  }
+
+  .types-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 }

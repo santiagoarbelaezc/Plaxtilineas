@@ -257,6 +257,47 @@
   color: #15803d;
 }
 
+/* ── Botón Configuración de Cookies ── */
+.footer-cookie-action {
+  margin-top: 18px;
+}
+
+.footer-cookie-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  color: #1e293b;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.cookie-btn-icon {
+  color: #379045;
+  flex-shrink: 0;
+  transition: transform 0.22s ease;
+}
+
+.footer-cookie-btn:hover {
+  background-color: #eaf4ec;
+  border-color: #379045;
+  color: #2c7337;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(55, 144, 69, 0.14);
+}
+
+.footer-cookie-btn:hover .cookie-btn-icon {
+  transform: rotate(-12deg);
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    COLUMNA 3: CONTACTO & UBICACIÓN
    ═══════════════════════════════════════════════════════════════════ */

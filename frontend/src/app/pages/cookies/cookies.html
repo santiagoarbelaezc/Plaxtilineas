@@ -1,53 +1,163 @@
 <app-navbar></app-navbar>
 
-<div class="seccion-nosotros">
-  <div class="nosotros-container">
-    <div class="badge-new">Legal</div>
-    <h1 class="title">Política de <span>Cookies</span></h1>
-    <p class="description">Descubre cómo utilizamos las cookies para mejorar tu experiencia de navegación en PLAXTILINEAS.</p>
-    
-    <!-- Botón de apertura directa del centro de privacidad -->
-    <div class="cookie-page-actions">
-      <button (click)="openSettings()" class="btn-page-primary">
-        <span>⚙️ Configurar Preferencias de Cookies</span>
-      </button>
-      <button (click)="resetConsent()" class="btn-page-secondary">
-        <span>🔄 Mostrar aviso flotante</span>
-      </button>
-    </div>
+<main class="cookies-page-shell">
+  <div class="cookies-container">
 
-    <div class="layout-grid">
-      <div class="valor-card">
-        <div class="valor-icono-container">1</div>
-        <div class="valor-texto">
-          <h3 class="valor-titulo">¿Qué son las Cookies?</h3>
-          <p class="valor-descripcion">
-            Las cookies son pequeños archivos de texto que se guardan en tu dispositivo cuando visitas nuestro sitio web. Nos ayudan a recordar tus preferencias y brindarte un servicio más ágil.
-          </p>
+    <!-- ── Tarjeta Hero Bento ── -->
+    <section class="cookies-hero-card" aria-label="Política de Cookies de Plaxtilineas">
+      <div class="hero-copy">
+        <span class="cookies-kicker">
+          <span class="kicker-line"></span>
+          HABEAS DATA &bull; LEY 1581 DE 2012
+        </span>
+
+        <h1 class="cookies-title">
+          POLÍTICA DE <span class="highlight-green">COOKIES</span>
+        </h1>
+
+        <p class="cookies-lead">
+          En <strong>Plaxtilineas</strong> gestionamos las cookies con total transparencia para garantizar la seguridad de tu navegación, recordar tus preferencias y mantener nuestra plataforma siempre actualizada.
+        </p>
+
+        <div class="cookies-actions">
+          <button type="button" (click)="openSettings()" class="btn-brand-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            <span>Configurar preferencias</span>
+          </button>
+
+          <button type="button" (click)="resetConsent()" class="btn-brand-secondary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg>
+            <span>Mostrar aviso flotante</span>
+          </button>
         </div>
       </div>
 
-      <div class="valor-card">
-        <div class="valor-icono-container">2</div>
-        <div class="valor-texto">
-          <h3 class="valor-titulo">Uso de Cookies</h3>
-          <p class="valor-descripcion">
-            Utilizamos cookies técnicas y de personalización esenciales para el correcto funcionamiento de la tienda, así como cookies analíticas para entender cómo navegas y poder optimizar nuestro catálogo.
-          </p>
-        </div>
+      <div class="hero-status-box">
+        <span class="status-pill">
+          <span class="status-dot" aria-hidden="true"></span>
+          PROTECCIÓN ACTIVA
+        </span>
+        <p class="status-note">
+          Puedes modificar o revocar tu consentimiento en cualquier momento sin afectar tu acceso al catálogo.
+        </p>
+        <a routerLink="/privacidad" class="status-link">
+          <span>Ver Política de Privacidad</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
       </div>
+    </section>
 
-      <div class="valor-card">
-        <div class="valor-icono-container">3</div>
-        <div class="valor-texto">
-          <h3 class="valor-titulo">Control de Cookies</h3>
-          <p class="valor-descripcion">
-            Puedes configurar tu navegador para rechazar o bloquear las cookies en cualquier momento. Sin embargo, ten en cuenta que algunas funciones del sitio podrían no operar de forma correcta sin ellas.
-          </p>
+    <!-- ── Grid Bento de 3 Pilares ── -->
+    <section class="cookies-bento-grid" aria-label="Información sobre cookies">
+      <article class="bento-info-card">
+        <div class="card-top-row">
+          <div class="card-icon-box" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"></path>
+              <path d="M8.5 8.5v.01"></path>
+              <path d="M7.5 15.5v.01"></path>
+              <path d="M12 12v.01"></path>
+              <path d="M11 17v.01"></path>
+              <path d="M16 14v.01"></path>
+            </svg>
+          </div>
+          <span class="card-index">01</span>
+        </div>
+        <h2 class="card-title">¿Qué son las Cookies?</h2>
+        <p class="card-desc">
+          Son pequeños archivos que se almacenan en tu navegador al visitar nuestro sitio web. Nos permiten recordar tus filtros, conservar tu carrito de compras y ofrecerte una experiencia más ágil.
+        </p>
+      </article>
+
+      <article class="bento-info-card">
+        <div class="card-top-row">
+          <div class="card-icon-box" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <span class="card-index">02</span>
+        </div>
+        <h2 class="card-title">Uso de Cookies</h2>
+        <p class="card-desc">
+          Utilizamos cookies técnicas y esenciales para la seguridad y operatividad de la tienda, además de cookies opcionales de análisis y personalización para optimizar nuestro catálogo.
+        </p>
+      </article>
+
+      <article class="bento-info-card">
+        <div class="card-top-row">
+          <div class="card-icon-box" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="4" y1="21" x2="4" y2="14"></line>
+              <line x1="4" y1="10" x2="4" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12" y2="3"></line>
+              <line x1="20" y1="21" x2="20" y2="16"></line>
+              <line x1="20" y1="12" x2="20" y2="3"></line>
+              <line x1="1" y1="14" x2="7" y2="14"></line>
+              <line x1="9" y1="8" x2="15" y2="8"></line>
+              <line x1="17" y1="16" x2="23" y2="16"></line>
+            </svg>
+          </div>
+          <span class="card-index">03</span>
+        </div>
+        <h2 class="card-title">Control Total</h2>
+        <p class="card-desc">
+          Puedes activar o desactivar las categorías opcionales desde nuestro Centro de Privacidad o configurar tu navegador en cualquier momento para administrar el almacenamiento local.
+        </p>
+      </article>
+    </section>
+
+    <!-- ── Resumen de Categorías de Cookies ── -->
+    <section class="cookies-types-strip" aria-label="Tipos de cookies utilizadas">
+      <div class="strip-header">
+        <span class="strip-title">Categorías gestionadas en el sitio</span>
+        <button type="button" (click)="openSettings()" class="strip-action-link">
+          Gestionar ahora &rarr;
+        </button>
+      </div>
+      <div class="types-grid">
+        <div class="type-item">
+          <div class="type-top">
+            <strong class="type-name">Esenciales y Técnicas</strong>
+            <span class="type-badge required">Siempre activas</span>
+          </div>
+          <p class="type-desc">Catálogo, carrito, sesión segura y sincronización de versión.</p>
+        </div>
+        <div class="type-item">
+          <div class="type-top">
+            <strong class="type-name">Análisis y Rendimiento</strong>
+            <span class="type-badge optional">Opcional</span>
+          </div>
+          <p class="type-desc">Métricas anónimas para mejorar velocidad y navegación.</p>
+        </div>
+        <div class="type-item">
+          <div class="type-top">
+            <strong class="type-name">Personalización</strong>
+            <span class="type-badge optional">Opcional</span>
+          </div>
+          <p class="type-desc">Recuerda filtros de búsqueda y preferencias visuales.</p>
+        </div>
+        <div class="type-item">
+          <div class="type-top">
+            <strong class="type-name">Publicidad y Ofertas</strong>
+            <span class="type-badge optional">Opcional</span>
+          </div>
+          <p class="type-desc">Novedades y promociones relevantes para tus proyectos.</p>
         </div>
       </div>
-    </div>
+    </section>
+
   </div>
-</div>
+</main>
 
 <app-footer></app-footer>

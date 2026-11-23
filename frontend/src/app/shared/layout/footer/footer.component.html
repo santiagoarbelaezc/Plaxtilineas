@@ -174,6 +174,12 @@
             </a>
           </li>
           <li>
+            <a routerLink="/cookies" class="footer-nav-link">
+              <span class="nav-arrow">&rsaquo;</span>
+              <span>Política de Cookies</span>
+            </a>
+          </li>
+          <li>
             <a routerLink="/pqrs-crear" class="footer-nav-link highlight-pqr">
               <span class="nav-arrow">&rsaquo;</span>
               <span>Radicar Solicitud PQRS</span>
@@ -186,6 +192,25 @@
             </a>
           </li>
         </ul>
+
+        <!-- Botón directo a la Configuración de Cookies -->
+        <div class="footer-cookie-action">
+          <button
+            type="button"
+            class="footer-cookie-btn"
+            (click)="abrirConfiguracionCookies()"
+            title="Abrir centro de preferencias y configuración de cookies">
+            <svg class="cookie-btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"></path>
+              <path d="M8.5 8.5v.01"></path>
+              <path d="M7.5 15.5v.01"></path>
+              <path d="M12 12v.01"></path>
+              <path d="M11 17v.01"></path>
+              <path d="M16 14v.01"></path>
+            </svg>
+            <span>Configurar Cookies</span>
+          </button>
+        </div>
       </div>
 
     </div>
