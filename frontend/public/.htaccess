@@ -83,8 +83,10 @@ RewriteRule ^ /index.html [L]
   Header always set X-Frame-Options "SAMEORIGIN"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
 
-  # Cache-control para index.html (nunca cachear para recibir nuevos deploys)
-  <FilesMatch "^index\.html$">
-    Header set Cache-Control "no-store, no-cache, must-revalidate"
+  # Nunca cachear index.html, Service Worker ni manifiestos (para recibir nuevos deploys al instante)
+  <FilesMatch "^(index\.html|index\.csr\.html|ngsw\.json|ngsw-worker\.js|safety-worker\.js|worker-basic\.min\.js|manifest\.webmanifest)$">
+    Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
   </FilesMatch>
 </IfModule>
