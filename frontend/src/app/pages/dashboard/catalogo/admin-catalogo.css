@@ -171,19 +171,21 @@
 .stat-card {
   background: #ffffff;
   border: 1.5px solid #e4e4e7;
-  border-left: 4px solid #09090b;
+  border-left: 4px solid #379045;
   border-radius: 16px;
   padding: 20px 22px;
   transition: all 0.2s ease;
 }
 
 .stat-card:hover {
-  box-shadow: 0 8px 24px rgba(9, 9, 11, 0.06);
+  border-color: rgba(55, 144, 69, 0.45);
+  border-left-color: #379045;
+  box-shadow: 0 12px 26px -10px rgba(9, 9, 11, 0.08);
   transform: translateY(-2px);
 }
 
 .stat-card.stat-accent-red {
-  border-left-color: #dc2626;
+  border-left-color: #379045;
 }
 
 .stat-card-header {
@@ -197,23 +199,23 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #71717a;
+  color: #5e5e5e;
 }
 
 .stat-card-icon-box {
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: #f4f5f7;
-  color: #09090b;
+  background: #eaf4ec;
+  color: #379045;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .stat-card-icon-box.stat-icon-red {
-  background: #fef2f2;
-  color: #dc2626;
+  background: #eaf4ec;
+  color: #379045;
 }
 
 .stat-number {
@@ -226,7 +228,7 @@
 }
 
 .stat-red-number {
-  color: #dc2626;
+  color: #379045;
 }
 
 .stat-price-number {
@@ -299,9 +301,9 @@
 }
 
 .btn-clear-active {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #dc2626;
+  background: #eaf4ec;
+  border: 1px solid rgba(55, 144, 69, 0.3);
+  color: #379045;
   width: 36px;
   height: 36px;
   border-radius: 10px;
@@ -313,8 +315,8 @@
 }
 
 .btn-clear-active:hover {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: #d5ecd9;
+  color: #2c7337;
 }
 
 /* ==========================================================================
@@ -486,8 +488,8 @@
   width: 56px;
   height: 56px;
   border-radius: 16px;
-  background: #fef2f2;
-  color: #dc2626;
+  background: #eaf4ec;
+  color: #379045;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -607,7 +609,7 @@
 
 .media-variants-badge .material-symbols-rounded {
   font-size: 0.95rem;
-  color: #dc2626;
+  color: #379045;
 }
 
 .product-card-body {
@@ -654,7 +656,7 @@
 }
 
 .product-title:hover {
-  color: #dc2626;
+  color: #379045;
 }
 
 .product-variants-tags {
@@ -803,7 +805,7 @@
 }
 
 .product-table-name:hover {
-  color: #dc2626;
+  color: #379045;
 }
 
 .product-table-id {
@@ -843,9 +845,9 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: #fef2f2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
+  background: #eaf4ec;
+  color: #379045;
+  border: 1px solid rgba(55, 144, 69, 0.3);
   padding: 4px 8px;
   border-radius: 6px;
   font-size: 0.72rem;
@@ -1051,7 +1053,7 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #dc2626;
+  color: #379045;
   margin-bottom: 4px;
 }
 

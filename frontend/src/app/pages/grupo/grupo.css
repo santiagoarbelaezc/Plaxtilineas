@@ -17,6 +17,8 @@
   width: 100%;
   position: relative;
   overflow: visible;
+  padding-top: 104px;
+  background-color: #141715;
 }
 
 /* ── Pista de Scroll Cinemática (3 Marcas) ── */
@@ -29,17 +31,17 @@
 .grupo-sticky-viewport {
   position: -webkit-sticky;
   position: sticky;
-  top: 0;
+  top: 88px;
   left: 0;
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 88px);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   background: #141715;
   z-index: 5;
   box-sizing: border-box;
-  padding-top: 126px;
+  padding-top: 56px;
 }
 
 /* ── Escenario Visual Full-Bleed 100% Ancho ── */
@@ -364,15 +366,20 @@
    RESPONSIVIDAD
    ========================================================================== */
 @media (max-width: 900px) {
+  .grupo-page-wrapper {
+    padding-top: 84px;
+  }
+
   .grupo-scroll-track {
     height: auto;
   }
 
   .grupo-sticky-viewport {
     position: relative;
+    top: 0;
     height: auto;
-    min-height: 86vh;
-    padding-top: 96px;
+    min-height: 82vh;
+    padding-top: 44px;
   }
 
   .grupo-overlay-inner {

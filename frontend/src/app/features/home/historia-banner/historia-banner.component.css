@@ -11,16 +11,16 @@
 
 .historia-banner-section {
   background-color: #f4f5f7;
-  padding: 34px 0;
+  padding: 28px 0;
   font-family: var(--font-secondary, 'Mulish', sans-serif);
   border-bottom: 1.5px solid #e4e4e7;
 }
 
 .historia-container {
-  max-width: var(--home-max-width, 1480px);
+  max-width: var(--home-max-width, 1720px);
   width: 100%;
   margin: 0 auto;
-  padding: 0 var(--home-side-padding, 32px);
+  padding: 0 var(--home-side-padding, 24px);
   box-sizing: border-box;
 }
 

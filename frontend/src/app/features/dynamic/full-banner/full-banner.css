@@ -1,9 +1,9 @@
 .banner-container {
   position: relative;
   width: 100%;
-  max-width: var(--home-max-width, 1480px);
-  padding: 0 var(--home-side-padding, 32px);
-  margin: 0 auto 40px auto;
+  max-width: var(--home-max-width, 1720px);
+  padding: 0 var(--home-side-padding, 24px);
+  margin: 0 auto 28px auto;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
 }

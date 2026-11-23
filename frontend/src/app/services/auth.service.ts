@@ -188,6 +188,8 @@ export class AuthService {
   }
 
   logout(showAnimation = true): void {
+    if (showAnimation && this.isLoggingOut.value) return;
+
     const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
     if (token && showAnimation) {
       this.http.post(`${environment.apiUrl}/auth/logout`, {}, {
@@ -203,7 +205,7 @@ export class AuthService {
       this.isLoggingOut.next(true);
       setTimeout(() => {
         this.performLogout();
-      }, 2500);
+      }, 2400);
     } else {
       this.performLogout();
     }
@@ -212,6 +214,7 @@ export class AuthService {
   private performLogout(): void {
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
       localStorage.removeItem('plaxtilineas_cart');
     }
     if (typeof sessionStorage !== 'undefined') {
@@ -219,8 +222,9 @@ export class AuthService {
     }
     this.isLoggedIn.next(false);
     this.currentUser.next(null);
-    this.isLoggingOut.next(false);
-    this.router.navigate(['/']);
+    this.router.navigate(['/']).finally(() => {
+      this.isLoggingOut.next(false);
+    });
   }
 
   actualizarPerfil(userData: any): Observable<any> {

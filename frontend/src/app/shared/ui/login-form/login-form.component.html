@@ -100,7 +100,11 @@
       </div>
       
       <!-- Pestañas Segmentadas Estilo Píldora (Ingresar / Registrarse) -->
-      <div class="segmented-tab-container">
+      <div
+        class="segmented-tab-container"
+        [class.is-register]="mode === 'register'"
+        [class.is-forgot]="mode === 'forgot'">
+        <span class="segmented-tab-indicator" aria-hidden="true"></span>
         <button type="button" 
                 (click)="setMode('login')" 
                 class="segmented-tab-btn"
@@ -119,12 +123,12 @@
 
       <!-- Cabecera del Formulario -->
       <div class="form-header-section">
-        <h2 class="form-main-heading">
-          {{ mode === 'login' ? 'Bienvenido de nuevo' : (mode === 'forgot' ? 'Recuperar Contraseña' : 'Crear nueva cuenta') }}
-        </h2>
-        <p class="form-sub-heading">
-          {{ mode === 'login' ? 'Por favor introduce tus credenciales para continuar.' : (mode === 'forgot' ? 'Introduce tu correo registrado para restablecer tu clave.' : 'Diligencia el formulario para activar tu acceso comercial.') }}
-        </p>
+        <h2 class="form-main-heading" *ngIf="mode === 'login'">Bienvenido de nuevo</h2>
+        <h2 class="form-main-heading" *ngIf="mode === 'register'">Crear nueva cuenta</h2>
+        <h2 class="form-main-heading" *ngIf="mode === 'forgot'">Recuperar Contraseña</h2>
+        <p class="form-sub-heading" *ngIf="mode === 'login'">Por favor introduce tus credenciales para continuar.</p>
+        <p class="form-sub-heading" *ngIf="mode === 'register'">Diligencia el formulario para activar tu acceso comercial.</p>
+        <p class="form-sub-heading" *ngIf="mode === 'forgot'">Introduce tu correo registrado para restablecer tu clave.</p>
       </div>
 
       <!-- Banner de Sesión Expirada -->
@@ -134,7 +138,7 @@
       </div>
 
       <!-- ── FORMULARIO LOGIN ── -->
-      <form *ngIf="mode === 'login'" [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form-container">
+      <form *ngIf="mode === 'login'" [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form-container form-anim-login">
         
         <div class="form-group">
           <label class="form-field-label">Correo Electrónico</label>
@@ -194,7 +198,7 @@
       </form>
 
       <!-- ── FORMULARIO OLVIDÓ CONTRASEÑA ── -->
-      <form *ngIf="mode === 'forgot'" [formGroup]="forgotForm" (ngSubmit)="onSubmitForgot()" class="form-container">
+      <form *ngIf="mode === 'forgot'" [formGroup]="forgotForm" (ngSubmit)="onSubmitForgot()" class="form-container form-anim-fade">
         <div class="form-group">
           <label class="form-field-label">Correo Registrado</label>
           <div class="input-with-icon">
@@ -232,7 +236,7 @@
       </form>
 
       <!-- ── FORMULARIO REGISTRO COMPLETO ── -->
-      <div class="register-form-wrapper" *ngIf="mode === 'register' && !requireVerification">
+      <div class="register-form-wrapper form-anim-register" *ngIf="mode === 'register' && !requireVerification">
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-grid-form">
           
           <div class="form-group">
@@ -578,27 +582,42 @@
   </div>
 </div>
 
-<!-- Pantalla de Éxito Inmersiva -->
-<div class="success-fullscreen-overlay" *ngIf="showSuccessModal">
+<!-- Pantalla de Carga / Éxito Inmersiva (Login y Registro) -->
+<div class="success-fullscreen-overlay" *ngIf="showSuccessModal" role="status" aria-live="polite">
+  <img
+    src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1795130400/logo-solo_r6tfo7.png"
+    alt=""
+    aria-hidden="true"
+    class="success-isotipo-bg" />
+
   <div class="success-card">
     <div class="success-logo-container">
-      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1770388940/logo-invert_ghucfi.png" alt="Plaxtilineas" class="success-logo">
+      <img
+        src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1770388940/logo-invert_ghucfi.png"
+        alt="Plaxtilineas"
+        class="success-logo" />
     </div>
 
-    <div class="success-status-badge">
-      <span class="status-dot"></span>
-      <span>ACCESO AUTORIZADO</span>
+    <div class="success-check-ring" aria-hidden="true">
+      <svg class="success-check-svg" viewBox="0 0 52 52">
+        <circle class="success-check-circle" cx="26" cy="26" r="23" fill="none" />
+        <path class="success-check-path" fill="none" d="M15.5 26.8l6.8 6.9 14.4-14.8" />
+      </svg>
     </div>
 
-    <h2 class="success-title">¡Ingreso Exitoso!</h2>
-    <p class="success-subtitle">Bienvenido, {{ userToRedirect?.nombre || (userToRedirect?.rol === 'admin' ? 'Administrador' : 'cliente') }}</p>
+    <h2 class="success-title">
+      {{ mode === 'register' ? '¡Registro Exitoso!' : '¡Ingreso Exitoso!' }}
+    </h2>
+    <p class="success-subtitle">
+      Bienvenido, <strong>{{ userToRedirect?.nombre || (userToRedirect?.rol === 'admin' ? 'Administrador' : 'cliente') }}</strong>
+    </p>
 
     <div class="success-progress-track">
       <div class="success-progress-fill"></div>
     </div>
 
     <p class="success-note">
-      {{ userToRedirect?.rol === 'admin' ? 'Cargando panel de control y analíticas...' : 'Redirigiendo a tu catálogo personalizado...' }}
+      {{ userToRedirect?.rol === 'admin' ? 'Cargando panel de control y analíticas...' : 'Preparando tu experiencia en Plaxtilineas...' }}
     </p>
   </div>
 </div>

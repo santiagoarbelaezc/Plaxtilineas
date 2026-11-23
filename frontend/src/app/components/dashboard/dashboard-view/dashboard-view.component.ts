@@ -310,9 +310,8 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    this.authService.logout(false);
+    this.closeMobileSidebar();
+    this.authService.logout(true);
   }
 
   get estaEnInicio(): boolean {

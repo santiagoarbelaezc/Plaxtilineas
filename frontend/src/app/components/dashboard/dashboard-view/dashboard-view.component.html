@@ -14,16 +14,23 @@
       </span>
     </button>
 
-    <!-- Marca / Logo de la Tienda -->
+    <!-- Marca / Logo Oficial Plaxtilineas -->
     <div class="sidebar-brand">
-      <a routerLink="/admin" class="brand-link" (click)="closeMobileSidebar()">
-        <div class="brand-icon-box">
-          <span class="material-symbols-rounded">shield_moon</span>
+      <a routerLink="/admin" class="brand-link" (click)="closeMobileSidebar()" title="Plaxtilineas Admin">
+        <img
+          *ngIf="!isSidebarCollapsed"
+          src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1770388940/logo-invert_ghucfi.png"
+          alt="Plaxtilineas"
+          class="brand-logo-full"
+        />
+        <div class="brand-icon-box" *ngIf="isSidebarCollapsed">
+          <img
+            src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1795130400/logo-solo_r6tfo7.png"
+            alt="Plaxtilineas"
+            class="brand-logo-isotipo"
+          />
         </div>
-        <div class="brand-text-col" *ngIf="!isSidebarCollapsed">
-          <span class="brand-name">Plaxtilineas</span>
-          <span class="brand-role">PANEL ADMIN</span>
-        </div>
+        <span class="brand-role-pill" *ngIf="!isSidebarCollapsed">ADMIN</span>
       </a>
     </div>
 
@@ -135,10 +142,6 @@
         <div class="header-title-box">
           <div class="title-with-status">
             <h1 class="header-title">{{ tituloSeccion }}</h1>
-            <div class="status-pill">
-              <span class="status-dot"></span>
-              <span class="status-pill-text">Sistema Activo</span>
-            </div>
           </div>
           <p class="header-subtitle">{{ subtituloSeccion }}</p>
         </div>
@@ -249,18 +252,24 @@
         <!-- 2. BENTO GRID (Hero Oscuro #0a0a0a + Quick Access 360px) -->
         <section class="bento-grid">
           
-          <!-- Hero Oscuro Bento Welcome (Columna 1: 1fr) -->
+          <!-- Hero Marca Plaxtilineas (Degradado Verde → Negro + Isotipo) -->
           <div class="bento-welcome bento-welcome-compact">
+            <img
+              src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1795130400/logo-solo_r6tfo7.png"
+              alt=""
+              aria-hidden="true"
+              class="bento-isotipo-watermark"
+            />
             <div class="bento-welcome-content">
               <div class="bento-badge">
-                <span class="status-dot"></span>
+                <span class="status-dot status-dot-green"></span>
                 <span>Asistente IA · Mateo Online</span>
               </div>
               <h2 class="bento-title">
                 Gestiona tu tienda con <span class="bento-title-accent">Mateo IA</span>
               </h2>
               <p class="bento-desc">
-                Monitorea stock crítico, audita pedidos pagados y consulta métricas operativas al instante.
+                Monitorea stock crítico, audita pedidos pagados y consulta métricas operativas de Plaxtilineas al instante.
               </p>
 
               <!-- Botón Acción Mateo -->

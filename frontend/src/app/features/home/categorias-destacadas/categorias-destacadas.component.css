@@ -6,7 +6,7 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 .categories-section {
-  padding: 56px 0 48px 0;
+  padding: 44px 0 40px 0;
   background-color: #f4f5f7;
   font-family: var(--font-secondary, 'Mulish', sans-serif);
   border-top: 1.5px solid #e4e4e7;
@@ -15,10 +15,10 @@
 }
 
 .container {
-  max-width: var(--home-max-width, 1480px) !important;
+  max-width: var(--home-max-width, 1720px) !important;
   width: 100%;
   margin: 0 auto;
-  padding: 0 var(--home-side-padding, 32px);
+  padding: 0 var(--home-side-padding, 24px);
   box-sizing: border-box;
 }
 

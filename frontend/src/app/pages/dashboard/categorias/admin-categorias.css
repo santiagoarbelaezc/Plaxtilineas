@@ -92,8 +92,8 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #dc2626;
-  box-shadow: 0 0 8px rgba(220, 38, 38, 0.6);
+  background: #379045;
+  box-shadow: 0 0 8px rgba(55, 144, 69, 0.6);
   animation: pulse-dot 2s infinite ease-in-out;
 }
 
@@ -155,28 +155,30 @@
 }
 
 .btn-primary-black {
-  background: #000000;
+  background: #379045;
   color: #ffffff;
   padding: 11px 22px;
-  border-radius: 12px;
+  border-radius: 10px;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
   font-weight: 700;
   font-size: 0.82rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  border: none;
+  border: 1.5px solid #379045;
   cursor: pointer;
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   text-decoration: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 18px -6px rgba(55, 144, 69, 0.45);
 }
 
 .btn-primary-black:hover {
-  opacity: 0.88;
+  background: #2c7337;
+  border-color: #2c7337;
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 12px 24px -6px rgba(55, 144, 69, 0.58);
   color: #ffffff;
 }
 
@@ -202,7 +204,7 @@
 .stat-card {
   background: #ffffff;
   border: 1.5px solid #e4e4e7;
-  border-left: 4px solid #09090b;
+  border-left: 4px solid #379045;
   border-radius: 16px;
   padding: 20px 22px;
   transition: all 0.2s ease;
@@ -211,12 +213,14 @@
 }
 
 .stat-card:hover {
-  box-shadow: 0 8px 24px rgba(9, 9, 11, 0.06);
+  border-color: rgba(55, 144, 69, 0.45);
+  border-left-color: #379045;
+  box-shadow: 0 12px 26px -10px rgba(9, 9, 11, 0.08);
   transform: translateY(-2px);
 }
 
 .stat-card.stat-accent-red {
-  border-left: 4px solid #dc2626;
+  border-left: 4px solid #379045;
 }
 
 .stat-card-header {
@@ -250,8 +254,8 @@
 }
 
 .stat-card-icon-box.stat-icon-red {
-  background: #fef2f2;
-  color: #dc2626;
+  background: #eaf4ec;
+  color: #379045;
 }
 
 .stat-number {
@@ -264,7 +268,7 @@
 }
 
 .stat-red-number {
-  color: #dc2626;
+  color: #379045;
 }
 
 .stat-card-footer {
@@ -289,7 +293,16 @@
 }
 
 .bento-welcome {
-  background: #0a0a0a;
+  background: linear-gradient(
+    108deg,
+    #379045 0%,
+    #2b6e35 30%,
+    #1e4724 58%,
+    #152819 82%,
+    #101311 100%
+  );
+  border: 1.5px solid rgba(55, 144, 69, 0.35);
+  box-shadow: 0 18px 40px -14px rgba(15, 36, 19, 0.38);
   border-radius: 18px;
   padding: 34px 38px;
   position: relative;
@@ -303,9 +316,9 @@
 .bento-welcome::before {
   content: '';
   position: absolute;
-  width: 280px;
-  height: 280px;
-  background: rgba(255, 255, 255, 0.03);
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(74, 222, 128, 0.16) 0%, transparent 70%);
   border-radius: 50%;
   right: -80px;
   top: -80px;
@@ -324,37 +337,39 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 14, 11, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   padding: 5px 12px;
   border-radius: 9999px;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
   font-size: 0.72rem;
   font-weight: 700;
-  color: #e4e4e7;
-  letter-spacing: 0.03em;
+  color: #ffffff;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   width: fit-content;
 }
 
 .bento-title {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
   font-size: 2.2rem;
   font-weight: 800;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
   line-height: 1.15;
   color: #ffffff;
   margin: 4px 0 0 0;
 }
 
 .bento-title-accent {
-  color: #dc2626;
+  color: #bbf7d0;
 }
 
 .bento-desc {
-  font-size: 0.88rem;
-  color: #a1a1aa;
+  font-size: 0.94rem;
+  color: rgba(255, 255, 255, 0.88);
   margin: 0;
   max-width: 580px;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .bento-cta-row {
@@ -367,9 +382,10 @@
 
 .btn-primary-white {
   background: #ffffff;
-  color: #09090b;
-  padding: 10px 20px;
-  border-radius: 12px;
+  color: #1c4424;
+  padding: 11px 22px;
+  border-radius: 8px;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
   font-weight: 700;
   font-size: 0.82rem;
   text-transform: uppercase;
@@ -539,7 +555,7 @@
   gap: 6px;
   background: transparent;
   border: none;
-  color: #dc2626;
+  color: #379045;
   font-size: 0.75rem;
   font-weight: 700;
   cursor: pointer;
@@ -549,7 +565,7 @@
 }
 
 .btn-reset-brand:hover {
-  background: #fef2f2;
+  background: #eaf4ec;
 }
 
 .btn-reset-brand .material-symbols-rounded {
@@ -761,7 +777,7 @@
   gap: 6px;
   background: transparent;
   border: none;
-  color: #dc2626;
+  color: #379045;
   font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
@@ -771,7 +787,7 @@
 }
 
 .btn-reset-filters:hover {
-  background: #fef2f2;
+  background: #eaf4ec;
 }
 
 .btn-reset-filters .material-symbols-rounded {
@@ -809,7 +825,7 @@
 }
 
 .error-icon {
-  color: #dc2626;
+  color: #379045;
 }
 
 .empty-icon {
@@ -879,7 +895,7 @@
 }
 
 .clean-brand-pill.brand-espumas {
-  background: #dc2626;
+  background: #379045;
 }
 
 .clean-id-pill {
@@ -1157,7 +1173,7 @@
 }
 
 .table-cat-name:hover {
-  color: #dc2626;
+  color: #379045;
 }
 
 .table-cat-sub {

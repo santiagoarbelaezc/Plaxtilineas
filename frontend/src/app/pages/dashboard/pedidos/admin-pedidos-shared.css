@@ -8,7 +8,7 @@
      Bordes en blanco: 1.5px solid #e4e4e7
      Texto Principal: #09090b
      Texto Secundario: #71717a
-     Acento / Alertas: #dc2626 / #ef4444
+     Acento / Alertas: #379045 / #ef4444
    ========================================================================== */
 
 .admin-content-wrapper-inner {
@@ -45,7 +45,7 @@
 .stat-card {
   background: #ffffff;
   border: 1.5px solid #e4e4e7;
-  border-left: 4px solid #09090b;
+  border-left: 4px solid #379045;
   border-radius: 16px;
   padding: 20px 22px;
   transition: all 0.2s ease;
@@ -55,12 +55,14 @@
 }
 
 .stat-card:hover {
-  box-shadow: 0 8px 24px rgba(9, 9, 11, 0.06);
+  border-color: rgba(55, 144, 69, 0.45);
+  border-left-color: #379045;
+  box-shadow: 0 12px 26px -10px rgba(9, 9, 11, 0.08);
   transform: translateY(-2px);
 }
 
 .stat-card.stat-alert {
-  border-left: 4px solid #dc2626;
+  border-left: 4px solid #379045;
 }
 
 .stat-header {
@@ -70,43 +72,45 @@
 }
 
 .stat-card-label {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
   font-size: 0.68rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #71717a;
+  color: #5e5e5e;
 }
 
 .stat-icon-box {
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  background: #f4f5f7;
-  border: 1px solid #e4e4e7;
+  background: #eaf4ec;
+  border: 1px solid rgba(55, 144, 69, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #09090b;
+  color: #379045;
   font-size: 1rem;
 }
 
 .stat-icon-box.alert-icon {
-  background: #fef2f2;
-  border-color: #fecaca;
-  color: #dc2626;
+  background: #eaf4ec;
+  border-color: rgba(55, 144, 69, 0.3);
+  color: #379045;
 }
 
 .stat-number {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
   font-size: 2.2rem;
-  font-weight: 900;
+  font-weight: 800;
   color: #09090b;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.035em;
   line-height: 1;
   margin: 10px 0 8px 0;
 }
 
 .stat-number.stat-alert-number {
-  color: #dc2626;
+  color: #379045;
 }
 
 .stat-meta {
@@ -127,9 +131,9 @@
 }
 
 .stat-pill-alert {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #dc2626;
+  background: #eaf4ec;
+  border: 1px solid rgba(55, 144, 69, 0.3);
+  color: #379045;
   padding: 2px 8px;
   border-radius: 9999px;
   font-weight: 700;
@@ -166,10 +170,18 @@
   }
 }
 
-/* Tarjeta Hero Estilo Bento (Fondo Negro con Efecto de Profundidad) */
+/* Tarjeta Hero Estilo Bento (Degradado Plaxtilineas #379045 → #101311) */
 .bento-welcome {
-  background: #0a0a0a;
-  border: 1.5px solid #1a1a1a;
+  background: linear-gradient(
+    108deg,
+    #379045 0%,
+    #2b6e35 30%,
+    #1e4724 58%,
+    #152819 82%,
+    #101311 100%
+  );
+  border: 1.5px solid rgba(55, 144, 69, 0.35);
+  box-shadow: 0 18px 40px -14px rgba(15, 36, 19, 0.38);
   border-radius: 18px;
   padding: 40px 44px;
   position: relative;
@@ -184,9 +196,9 @@
 .bento-welcome::before {
   content: '';
   position: absolute;
-  width: 280px;
-  height: 280px;
-  background: rgba(255, 255, 255, 0.03);
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(74, 222, 128, 0.16) 0%, transparent 70%);
   border-radius: 50%;
   right: -80px;
   top: -80px;
@@ -198,7 +210,7 @@
   position: absolute;
   width: 180px;
   height: 180px;
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 50%;
   right: 120px;
   bottom: -60px;
@@ -209,8 +221,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 14, 11, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   padding: 5px 12px;
   border-radius: 9999px;
   width: fit-content;
@@ -221,8 +233,8 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #dc2626;
-  box-shadow: 0 0 8px rgba(220, 38, 38, 0.6);
+  background: #4ade80;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.8);
   animation: pulse-dot 2s infinite;
 }
 
@@ -232,26 +244,28 @@
 }
 
 .bento-status-text {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #e4e4e7;
+  color: #ffffff;
 }
 
 .bento-title {
-  font-size: 2.5rem;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 2.35rem;
   font-weight: 800;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
   line-height: 1.1;
   margin: 0 0 12px 0;
   color: #ffffff;
 }
 
 .bento-subtitle {
-  color: #a1a1aa;
+  color: rgba(255, 255, 255, 0.88);
   font-size: 0.98rem;
-  line-height: 1.5;
+  line-height: 1.55;
   margin: 0 0 24px 0;
   max-width: 600px;
 }
@@ -265,14 +279,15 @@
 
 .btn-primary-white {
   background: #ffffff;
-  color: #09090b;
+  color: #1c4424;
   padding: 12px 22px;
-  border-radius: 12px;
+  border-radius: 8px;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
   font-weight: 700;
   font-size: 0.82rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  border: none;
+  letter-spacing: 0.06em;
+  border: 1px solid #ffffff;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -384,9 +399,9 @@
 }
 
 .quick-item-icon.warning {
-  background: #fef2f2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
+  background: #eaf4ec;
+  color: #379045;
+  border: 1px solid rgba(55, 144, 69, 0.3);
 }
 
 .quick-item-icon.info {

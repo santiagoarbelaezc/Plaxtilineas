@@ -190,10 +190,10 @@
 
 /* ─── Contenedor Anuncio Semanal (Bloque) ────────────────────── */
 .elegant-news-container {
-  max-width: var(--home-max-width, 1480px);
+  max-width: var(--home-max-width, 1720px);
   width: 100%;
-  margin: 40px auto;
-  padding: 10px var(--home-side-padding, 32px);
+  margin: 28px auto;
+  padding: 8px var(--home-side-padding, 24px);
   box-sizing: border-box;
 }
 

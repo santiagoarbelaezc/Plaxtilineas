@@ -79,38 +79,39 @@
   </div>
 </div>
 
-<!-- Pantalla de Cierre de Sesión Completa -->
-<div class="logout-fullscreen-overlay" *ngIf="authService.isLoggingOut | async"
-  [ngClass]="(themeService.theme$ | async) === 'dark' ? 'logout-dark' : 'logout-light'">
-  <div class="logout-fullscreen-content">
+<!-- Pantalla de Cierre de Sesión Completa (Dark Minimal + Manual de Marca) -->
+<div class="logout-fullscreen-overlay" *ngIf="authService.isLoggingOut | async" role="status" aria-live="polite">
+  <img
+    src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1795130400/logo-solo_r6tfo7.png"
+    alt=""
+    aria-hidden="true"
+    class="logout-isotipo-bg" />
 
-    <!-- Logo con halo de brillo cálido -->
+  <div class="logout-fullscreen-content">
     <div class="logout-logo-container">
-      <img src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1766281904/Logo_fovu78c_djnblz.png"
-        alt="Plaxtilineas" class="logout-logo">
-      <div class="logout-logo-glow"></div>
+      <img
+        src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1770388940/logo-invert_ghucfi.png"
+        alt="Plaxtilineas"
+        class="logout-logo" />
     </div>
 
-    <!-- Checkmark SVG Animado -->
-    <div class="logout-checkmark-wrapper">
+    <div class="logout-checkmark-wrapper" aria-hidden="true">
       <svg class="logout-checkmark-svg" viewBox="0 0 52 52">
-        <circle class="logout-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
-        <path class="logout-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+        <circle class="logout-checkmark-circle" cx="26" cy="26" r="23" fill="none" />
+        <path class="logout-checkmark-check" fill="none" d="M15.5 26.8l6.8 6.9 14.4-14.8" />
       </svg>
     </div>
 
-    <!-- Mensajes de Cierre de Sesión -->
     <div class="logout-text-container">
-      <h2 class="logout-title">¡Sesión Cerrada!</h2>
-      <p class="logout-subtitle">Gracias por visitar Plaxtilineas. ¡Vuelve pronto!</p>
+      <h2 class="logout-title">¡Hasta pronto!</h2>
+      <p class="logout-subtitle">Tu sesión se cerró de forma segura. Gracias por visitar Plaxtilineas.</p>
     </div>
 
-    <!-- Barra de progreso -->
     <div class="logout-progress-bar-container">
       <div class="logout-progress-bar"></div>
     </div>
 
-    <p class="logout-status-text">Cerrando sesión de forma segura...</p>
+    <p class="logout-status-text">Redirigiendo al inicio...</p>
   </div>
 </div>
 

@@ -231,7 +231,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
     "Nariño": ["Pasto", "Ipiales", "Tumaco", "Túquerres"],
     "Norte de Santander": ["Cúcuta", "Ocaña", "Pamplona", "Villa del Rosario"],
     "Putumayo": ["Mocoa", "Puerto Asís", "Orito"],
-    "Quindío": ["Armenia", "Calarcá", "Montenegro", "La Tebaida"],
+    "Quindío": ["Armenia", "Calarcá", "Circasia", "Filandia", "La Tebaida", "Montenegro", "Pueblo Tapao", "Salento"],
     "Risaralda": ["Pereira", "Dosquebradas", "Santa Rosa de Cabal"],
     "San Andrés y Providencia": ["San Andrés", "Providencia"],
     "Santander": ["Bucaramanga", "Floridablanca", "Girón", "Piedecuesta", "Barrancabermeja"],
@@ -243,7 +243,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
     "Bogotá D.C.": ["Bogotá"]
   };
 
-  departamentosList: string[] = Object.keys(this.departamentos);
+  departamentosList: string[] = Object.keys(this.departamentos).sort((a, b) => a.localeCompare(b, 'es'));
   ciudadesDisponibles: string[] = [];
 
   // Estado para desplegables personalizados
@@ -374,9 +374,11 @@ export class LoginFormComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Escuchar cambios de departamento para actualizar ciudades
+    // Escuchar cambios de departamento para actualizar ciudades (ordenadas alfabéticamente)
     this.registerForm.get('departamento')?.valueChanges.subscribe(dept => {
-      this.ciudadesDisponibles = dept ? (this.departamentos[dept] || []) : [];
+      this.ciudadesDisponibles = dept
+        ? [...(this.departamentos[dept] || [])].sort((a, b) => a.localeCompare(b, 'es'))
+        : [];
       this.registerForm.get('ciudad')?.setValue('');
     });
 
