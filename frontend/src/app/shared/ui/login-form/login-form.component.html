@@ -5,10 +5,15 @@
   <div class="login-split-card" [class.register-mode]="mode === 'register'">
     
     <!-- ══════════════════════════════════════════════════════════════
-         COLUMNA IZQUIERDA: HERO BENTO OSCURO (PROFUNDIDAD #0a0a0a)
+         COLUMNA IZQUIERDA: IDENTIDAD DE MARCA (DEGRADADO VERDE → NEGRO)
          ══════════════════════════════════════════════════════════════ -->
     <div class="login-left-panel bento-welcome">
-      <div class="bento-circles-bg"></div>
+      <div class="bento-circles-bg" aria-hidden="true"></div>
+      <img
+        src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1795130400/logo-solo_r6tfo7.png"
+        alt=""
+        aria-hidden="true"
+        class="bento-isotipo-watermark" />
 
       <!-- Top Header con Logo y Botón para Regresar al Inicio -->
       <div class="bento-top-row">
@@ -79,9 +84,20 @@
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════
-         COLUMNA DERECHA: SUPERFICIE BLANCA (#ffffff) CON FORMULARIO
+         COLUMNA DERECHA: PANEL NEGRO DARK MINIMAL CON FORMULARIO
          ══════════════════════════════════════════════════════════════ -->
     <div class="login-form-panel">
+
+      <!-- Logo Plaxtilineas en el panel de acceso -->
+      <div class="form-brand-header">
+        <a routerLink="/" class="form-brand-link" aria-label="Plaxtilineas Inicio">
+          <img
+            src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1770388940/logo-invert_ghucfi.png"
+            alt="Plaxtilineas"
+            class="form-brand-logo"
+          />
+        </a>
+      </div>
       
       <!-- Pestañas Segmentadas Estilo Píldora (Ingresar / Registrarse) -->
       <div class="segmented-tab-container">

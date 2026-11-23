@@ -7,10 +7,11 @@ import {
   ElementRef,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  NgZone,
   inject,
-  HostListener
+  PLATFORM_ID
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../shared/layout/navbar/navbar.component';
 import { Footer } from '../../shared/layout/footer/footer.component';
@@ -24,7 +25,12 @@ export interface GrupoBrand {
   logo: string;
   description: string;
   websiteUrl: string;
-  accentColor: string;
+}
+
+export interface BrandLayerState {
+  opacity: number;
+  scale: number;
+  blur: number;
 }
 
 @Component({
@@ -42,17 +48,17 @@ export interface GrupoBrand {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Grupo implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('carouselTrack', { static: false }) carouselTrack?: ElementRef<HTMLElement>;
+  @ViewChild('scrollTrack', { static: true }) scrollTrack!: ElementRef<HTMLElement>;
 
+  private ngZone = inject(NgZone);
+  private platformId = inject(PLATFORM_ID);
   private cdr = inject(ChangeDetectorRef);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
-  public activeIndex: number = 0;
-  public isPaused: boolean = false;
-  private autoPlayTimer: any = null;
-  private touchStartX: number = 0;
-  private isWheelCooldown: boolean = false;
+  public activeStage = 0;
+  public progress = 0;
+  public layerStates: BrandLayerState[] = [];
 
-  // Las 3 marcas del Grupo con sus imágenes oficiales panorámicas y logos PNG
   public readonly brands: GrupoBrand[] = [
     {
       id: 'camascotas',
@@ -60,9 +66,9 @@ export class Grupo implements OnInit, AfterViewInit, OnDestroy {
       tag: 'LÍNEA PET CARE & DESCANSO ANIMAL',
       heroImage: 'https://res.cloudinary.com/doxdjiyvi/image/upload/v1786973369/proyecto-camascotas_qcmstp.png',
       logo: 'https://res.cloudinary.com/doxdjiyvi/image/upload/v1792796946/logo2_hrboyb.png',
-      description: 'Camas ortopédicas, colchonetas impermeables y accesorios diseñados con amor para el descanso y salud de tus mascotas.',
-      websiteUrl: 'https://camascotas.com/',
-      accentColor: '#16a34a'
+      description:
+        'Camas ortopédicas, colchonetas impermeables y accesorios diseñados con amor para el descanso y salud de tus mascotas.',
+      websiteUrl: 'https://camascotas.com/'
     },
     {
       id: 'districol',
@@ -70,9 +76,9 @@ export class Grupo implements OnInit, AfterViewInit, OnDestroy {
       tag: 'CONFORT & DESCANSO ORTOPÉDICO',
       heroImage: 'https://res.cloudinary.com/doxdjiyvi/image/upload/v1792796364/Districol_Mattress_Brand_Hero_Scene_z6577x.png',
       logo: 'https://res.cloudinary.com/doxdjiyvi/image/upload/v1792796538/logo-distri_ri8lkq.png',
-      description: 'Línea de descanso ortopédico y anatómico diseñada con espumas de alta resiliencia para una postura óptima y bienestar.',
-      websiteUrl: 'https://colchonesdistricol.com/',
-      accentColor: '#16a34a'
+      description:
+        'Línea de descanso ortopédico y anatómico diseñada con espumas de alta resiliencia para una postura óptima y bienestar.',
+      websiteUrl: 'https://colchonesdistricol.com/'
     },
     {
       id: 'espumas',
@@ -80,181 +86,191 @@ export class Grupo implements OnInit, AfterViewInit, OnDestroy {
       tag: 'MATERIA PRIMA & CORTE INDUSTRIAL',
       heroImage: 'https://res.cloudinary.com/doxdjiyvi/image/upload/v1792796374/Espumas_y_Pl%C3%A1sticos__Confort_Moderno_pu3seo.png',
       logo: 'https://res.cloudinary.com/doxdjiyvi/image/upload/v1792788733/logo-grande_qauprn.png',
-      description: 'Transformación, corte exacto y distribución de espumas industriales en densidades D20 a D30, plásticos técnicos y bobinas.',
-      websiteUrl: 'https://espumasyplasticos.com/',
-      accentColor: '#000000'
+      description:
+        'Transformación, corte exacto y distribución de espumas industriales en densidades D20 a D30, plásticos técnicos y bobinas.',
+      websiteUrl: 'https://espumasyplasticos.com/'
     }
   ];
 
+  private targetProgress = 0;
+  private smoothProgress = 0;
+  private animationFrameId: number | null = null;
+  private isDestroyed = false;
+  private isDesktopSticky = true;
+  private prefersReducedMotion = false;
+
+  private boundScroll = () => this.onNativeScroll();
+  private boundResize = () => this.onResize();
+  private boundKeyDown = (e: KeyboardEvent) => this.onKeyDown(e);
+
+  constructor() {
+    this.layerStates = this.brands.map((_, idx) => ({
+      opacity: idx === 0 ? 1 : 0,
+      scale: idx === 0 ? 1 : 1.06,
+      blur: idx === 0 ? 0 : 4
+    }));
+  }
+
   ngOnInit(): void {
-    if (typeof document !== 'undefined') {
-      document.body.style.backgroundColor = '#FFFFFF';
-      document.documentElement.style.backgroundColor = '#FFFFFF';
+    if (this.isBrowser) {
+      window.scrollTo(0, 0);
     }
-    this.startAutoPlay();
   }
 
   ngAfterViewInit(): void {
-    const track = this.carouselTrack?.nativeElement;
-    if (track) {
-      // Registrar evento de rueda de mouse con passive: false para permitir navegación horizontal
-      track.addEventListener('wheel', this.handleWheel, { passive: false });
-    }
+    if (!this.isBrowser) return;
+
+    this.prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
+    this.isDesktopSticky = window.innerWidth > 900 && !this.prefersReducedMotion;
+
+    window.addEventListener('scroll', this.boundScroll, { passive: true });
+    window.addEventListener('resize', this.boundResize, { passive: true });
+    window.addEventListener('keydown', this.boundKeyDown, { passive: false });
+
+    this.onNativeScroll();
+    this.startRenderEngine();
   }
 
   ngOnDestroy(): void {
-    this.stopAutoPlay();
-    const track = this.carouselTrack?.nativeElement;
-    if (track) {
-      track.removeEventListener('wheel', this.handleWheel);
+    this.isDestroyed = true;
+
+    if (!this.isBrowser) return;
+
+    window.removeEventListener('scroll', this.boundScroll);
+    window.removeEventListener('resize', this.boundResize);
+    window.removeEventListener('keydown', this.boundKeyDown);
+
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
     }
   }
 
-  public selectBrand(index: number): void {
-    this.activeIndex = index;
-    const track = this.carouselTrack?.nativeElement;
-    if (track) {
-      track.scrollTo({
-        left: index * track.clientWidth,
-        behavior: 'smooth'
-      });
-    }
-    this.restartAutoPlay();
-    this.cdr.markForCheck();
+  private onResize(): void {
+    this.isDesktopSticky = window.innerWidth > 900 && !this.prefersReducedMotion;
+    this.onNativeScroll();
   }
 
-  public prevSlide(): void {
-    const newIndex = (this.activeIndex - 1 + this.brands.length) % this.brands.length;
-    this.selectBrand(newIndex);
+  private onNativeScroll(): void {
+    if (!this.isDesktopSticky) return;
+
+    const el = this.scrollTrack?.nativeElement;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const maxScroll = el.offsetHeight - window.innerHeight;
+    if (maxScroll <= 0) return;
+
+    const scrolled = -rect.top;
+    const raw = scrolled / maxScroll;
+    this.targetProgress = Math.max(0, Math.min(1, raw));
   }
 
-  public nextSlide(): void {
-    const newIndex = (this.activeIndex + 1) % this.brands.length;
-    this.selectBrand(newIndex);
-  }
+  private onKeyDown(e: KeyboardEvent): void {
+    if (!this.isDesktopSticky) return;
+    const el = this.scrollTrack?.nativeElement;
+    if (!el) return;
 
-  /**
-   * Detecta el scroll horizontal nativo (cuando el usuario usa trackpad o rueda de mouse)
-   * y actualiza el índice activo en la barra minimalista superior
-   */
-  public onTrackScroll(): void {
-    const track = this.carouselTrack?.nativeElement;
-    if (!track || track.clientWidth === 0) return;
-
-    const currentIdx = Math.round(track.scrollLeft / track.clientWidth);
-    if (currentIdx !== this.activeIndex && currentIdx >= 0 && currentIdx < this.brands.length) {
-      this.activeIndex = currentIdx;
-      this.cdr.markForCheck();
-    }
-  }
-
-  /**
-   * Redirige al sitio web oficial de la marca al hacer clic en cualquier parte de la diapositiva
-   */
-  public openBrandSite(url: string, event?: MouseEvent): void {
-    if (event) {
-      // Evitar que el clic en un enlace interior dispare dos veces la navegación
-      const target = event.target as HTMLElement;
-      if (target.closest('button')) {
-        return;
+    const rect = el.getBoundingClientRect();
+    if (rect.top <= 100 && rect.bottom >= window.innerHeight - 100) {
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+        if (this.activeStage < this.brands.length - 1) {
+          e.preventDefault();
+          this.goToStage(this.activeStage + 1);
+        }
+      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        if (this.activeStage > 0) {
+          e.preventDefault();
+          this.goToStage(this.activeStage - 1);
+        }
       }
     }
-    if (typeof window !== 'undefined' && url) {
-      window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
+  private startRenderEngine(): void {
+    this.ngZone.runOutsideAngular(() => {
+      const render = () => {
+        if (this.isDestroyed) return;
+
+        if (this.isDesktopSticky) {
+          this.onNativeScroll();
+        }
+
+        const diff = this.targetProgress - this.smoothProgress;
+        if (Math.abs(diff) > 0.00015) {
+          this.smoothProgress += diff * 0.12;
+          this.calculateInterpolations(this.smoothProgress);
+          this.cdr.detectChanges();
+        } else if (this.smoothProgress !== this.targetProgress) {
+          this.smoothProgress = this.targetProgress;
+          this.calculateInterpolations(this.smoothProgress);
+          this.cdr.detectChanges();
+        }
+
+        this.animationFrameId = requestAnimationFrame(render);
+      };
+
+      this.animationFrameId = requestAnimationFrame(render);
+    });
+  }
+
+  private calculateInterpolations(p: number): void {
+    this.progress = p;
+    const count = this.brands.length;
+    const scaled = p * (count - 1);
+    this.activeStage = Math.max(0, Math.min(count - 1, Math.round(scaled)));
+
+    for (let i = 0; i < count; i++) {
+      const dist = Math.abs(scaled - i);
+      const opacity = Math.max(0, 1 - dist);
+      const scale = 1.0 + dist * 0.06;
+      const blur = dist > 0.05 ? Math.min(4.5, dist * 4) : 0;
+
+      this.layerStates[i] = {
+        opacity,
+        scale,
+        blur
+      };
     }
   }
 
-  /**
-   * Manejador de la rueda de mouse: SOLO se activa si el usuario hace scroll horizontal (hacia los lados).
-   * El scroll vertical normal del mouse NO mueve el carrusel y permite scrollear la página libremente.
-   */
-  private handleWheel = (event: WheelEvent): void => {
-    const track = this.carouselTrack?.nativeElement;
-    if (!track) return;
+  public goToStage(stageIndex: number): void {
+    const clamped = Math.max(0, Math.min(this.brands.length - 1, stageIndex));
+    const targetRatio = clamped / (this.brands.length - 1);
 
-    const absX = Math.abs(event.deltaX);
-    const absY = Math.abs(event.deltaY);
-
-    // Si el movimiento es vertical (scroll normal arriba/abajo), permitimos el scroll natural de la página
-    if (absY >= absX) {
+    if (!this.isDesktopSticky) {
+      this.targetProgress = targetRatio;
+      this.activeStage = clamped;
+      if (this.prefersReducedMotion) {
+        this.smoothProgress = targetRatio;
+        this.calculateInterpolations(targetRatio);
+      }
+      this.cdr.markForCheck();
       return;
     }
 
-    // Únicamente si el usuario se desplaza explícitamente hacia los lados (horizontal)
-    if (absX > 16) {
-      event.preventDefault();
-      if (this.isWheelCooldown) return;
-      this.isWheelCooldown = true;
+    const el = this.scrollTrack?.nativeElement;
+    if (!el) return;
 
-      if (event.deltaX > 0) {
-        // Al mover hacia la derecha: si está en la última pasa a la primera
-        this.nextSlide();
-      } else {
-        // Al mover hacia la izquierda: si está en la primera pasa a la última
-        this.prevSlide();
-      }
+    const maxScroll = el.offsetHeight - window.innerHeight;
+    const trackTop = window.scrollY + el.getBoundingClientRect().top;
+    const targetScrollY = trackTop + targetRatio * maxScroll;
 
-      setTimeout(() => {
-        this.isWheelCooldown = false;
-      }, 400);
-    }
-  };
-
-  public onMouseEnter(): void {
-    this.isPaused = true;
-    this.stopAutoPlay();
+    window.scrollTo({
+      top: targetScrollY,
+      behavior: 'smooth'
+    });
   }
 
-  public onMouseLeave(): void {
-    this.isPaused = false;
-    this.startAutoPlay();
-  }
-
-  public onTouchStart(event: TouchEvent): void {
-    this.touchStartX = event.touches[0].clientX;
-  }
-
-  public onTouchEnd(event: TouchEvent): void {
-    const touchEndX = event.changedTouches[0].clientX;
-    const deltaX = touchEndX - this.touchStartX;
-    if (Math.abs(deltaX) > 45) {
-      if (deltaX > 0) {
-        this.prevSlide();
-      } else {
-        this.nextSlide();
-      }
+  public nextStage(): void {
+    if (this.activeStage < this.brands.length - 1) {
+      this.goToStage(this.activeStage + 1);
     }
   }
 
-  @HostListener('window:keydown', ['$event'])
-  public handleKeydown(event: KeyboardEvent): void {
-    if (event.key === 'ArrowLeft') {
-      this.prevSlide();
-    } else if (event.key === 'ArrowRight') {
-      this.nextSlide();
-    }
-  }
-
-  private startAutoPlay(): void {
-    this.stopAutoPlay();
-    this.autoPlayTimer = setInterval(() => {
-      if (!this.isPaused) {
-        this.nextSlide();
-      }
-    }, 7000);
-  }
-
-  private stopAutoPlay(): void {
-    if (this.autoPlayTimer) {
-      clearInterval(this.autoPlayTimer);
-      this.autoPlayTimer = null;
-    }
-  }
-
-  private restartAutoPlay(): void {
-    this.stopAutoPlay();
-    if (!this.isPaused) {
-      this.startAutoPlay();
+  public prevStage(): void {
+    if (this.activeStage > 0) {
+      this.goToStage(this.activeStage - 1);
     }
   }
 }
