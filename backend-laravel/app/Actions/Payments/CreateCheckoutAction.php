@@ -73,9 +73,12 @@ final class CreateCheckoutAction
         $signature = $this->signatureService->buildIntegritySignature($reference, $amountCents, $currency);
 
         // ── 5. Preparar datos opcionales prellenados del cliente ───────────────
-        $emailCliente = trim((string) ($pedido->email_cliente ?: $pedido->usuario?->correo ?: ''));
-        $nombreCliente = trim((string) ($pedido->nombre_cliente ?: trim(($pedido->usuario?->nombre ?? '').' '.($pedido->usuario?->apellidos ?? ''))));
-        $telefonoLimpio = preg_replace('/\D+/', '', (string) ($pedido->telefono_contacto ?: $pedido->usuario?->telefono ?: '')) ?? '';
+        $usuario = $pedido->usuario;
+        $emailCliente = trim((string) ($pedido->email_cliente ?: ($usuario ? $usuario->correo : '')));
+        $nombreUsuario = $usuario ? trim($usuario->nombre.' '.($usuario->apellidos ?? '')) : '';
+        $nombreCliente = trim((string) ($pedido->nombre_cliente ?: $nombreUsuario));
+        $telefonoRaw = (string) ($pedido->telefono_contacto ?: ($usuario ? ($usuario->telefono ?? '') : ''));
+        $telefonoLimpio = preg_replace('/\D+/', '', $telefonoRaw) ?? '';
         if (strlen($telefonoLimpio) === 12 && str_starts_with($telefonoLimpio, '57')) {
             $telefonoLimpio = substr($telefonoLimpio, 2);
         }

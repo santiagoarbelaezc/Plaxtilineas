@@ -381,7 +381,7 @@ class AuthController extends Controller
         }
 
         if (! Hash::check($codigoIngresado, $otpData['hash'])) {
-            $intentos = (int) ($otpData['intentos'] ?? 0) + 1;
+            $intentos = $otpData['intentos'] + 1;
             if ($intentos >= 5) {
                 Cache::forget($otpKey);
 
@@ -401,7 +401,7 @@ class AuthController extends Controller
 
         Cache::put($otpKey, [
             'hash' => $otpData['hash'],
-            'intentos' => (int) ($otpData['intentos'] ?? 0),
+            'intentos' => $otpData['intentos'],
             'verificado' => true,
         ], now()->addMinutes(10));
 
@@ -436,7 +436,7 @@ class AuthController extends Controller
 
         $codigoIngresado = trim((string) $request->input('codigo'));
         if (! Hash::check($codigoIngresado, $otpData['hash'])) {
-            $intentos = (int) ($otpData['intentos'] ?? 0) + 1;
+            $intentos = $otpData['intentos'] + 1;
             if ($intentos >= 5) {
                 Cache::forget($otpKey);
 
@@ -492,7 +492,7 @@ class AuthController extends Controller
         $fechas = [];
 
         foreach ($raw as $item) {
-            if (! is_string($item) || $item === '') {
+            if ($item === '') {
                 continue;
             }
             try {
@@ -532,7 +532,7 @@ class AuthController extends Controller
         $proximoDisponibleIso = null;
         $diasRestantes = 0;
 
-        if (! $permitido && isset($recientes[0])) {
+        if (! $permitido) {
             $fechaMasAntigua = Carbon::parse($recientes[0]);
             $proximoDisponible = $fechaMasAntigua->copy()->addDays(self::VENTANA_DIAS_CAMBIO_PASSWORD);
             $proximoDisponibleIso = $proximoDisponible->toIso8601String();
