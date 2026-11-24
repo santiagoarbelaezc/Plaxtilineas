@@ -627,7 +627,17 @@ class AuthController extends Controller
     }
 
     /**
-     * @return array{id: mixed, correo: mixed, nombre: mixed, telefono: mixed, rol: mixed}
+     * @return array{
+     *     id: mixed,
+     *     correo: mixed,
+     *     nombre: mixed,
+     *     apellidos: string,
+     *     edad: int|null,
+     *     direccion: string,
+     *     ciudad: string,
+     *     telefono: string,
+     *     rol: mixed
+     * }
      */
     private function usuarioResponse(Usuario $usuario): array
     {
@@ -635,7 +645,11 @@ class AuthController extends Controller
             'id' => $usuario->id,
             'correo' => $usuario->correo,
             'nombre' => $usuario->nombre,
-            'telefono' => $usuario->telefono ?? '',
+            'apellidos' => (string) ($usuario->apellidos ?? ''),
+            'edad' => $usuario->edad !== null ? (int) $usuario->edad : null,
+            'direccion' => (string) ($usuario->direccion ?? ''),
+            'ciudad' => (string) ($usuario->ciudad ?? ''),
+            'telefono' => (string) ($usuario->telefono ?? ''),
             'rol' => $usuario->rol,
         ];
     }
