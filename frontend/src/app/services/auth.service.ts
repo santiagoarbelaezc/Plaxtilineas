@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, retry, tap } from 'rxjs';
 import { environment } from '../../enviroments/environment';
 
 @Injectable({
@@ -77,23 +77,60 @@ export class AuthService {
     return false;
   }
 
+  private saveUserToStorage(user: any): void {
+    if (!user || typeof localStorage === 'undefined') return;
+    try {
+      const prevRaw = localStorage.getItem('user');
+      const prev = prevRaw ? JSON.parse(prevRaw) : {};
+      const merged = { ...prev, ...user };
+      localStorage.setItem('user', JSON.stringify(merged));
+      this.currentUser.next(merged);
+    } catch {
+      this.currentUser.next(user);
+    }
+  }
+
+  obtenerPerfil(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/auth/perfil`).pipe(
+      retry(1),
+      tap((user) => this.saveUserToStorage(user))
+    );
+  }
+
   checkToken(): void {
     if (typeof localStorage === 'undefined') return;
     const token = localStorage.getItem('token');
     if (token && !this.isTokenExpired(token)) {
       this.isLoggedIn.next(true);
+
+      // Hidratar inmediatamente desde localStorage para evitar campos vacíos ante latencia o 504
+      try {
+        const cachedUserRaw = localStorage.getItem('user');
+        if (cachedUserRaw && !this.currentUser.value) {
+          this.currentUser.next(JSON.parse(cachedUserRaw));
+        }
+      } catch {
+        // Ignorar JSON inválido en caché local
+      }
+
       const payload = this.decodeTokenPayload(token);
       if (payload && !this.currentUser.value) {
         this.currentUser.next(payload);
       }
-      this.http.get(`${environment.apiUrl}/auth/perfil`).subscribe({
-        next: (user) => this.currentUser.next(user),
-        error: () => this.logout(false)
+
+      this.obtenerPerfil().subscribe({
+        error: (err) => {
+          // Solo cerrar sesión si el token fue rechazado (401); nunca en un 504 Gateway Timeout
+          if (err?.status === 401) {
+            this.logout(false);
+          }
+        }
       });
     } else {
       if (token) {
         localStorage.removeItem('token');
       }
+      localStorage.removeItem('user');
       localStorage.removeItem('plaxtilineas_cart');
       this.isLoggedIn.next(false);
       this.currentUser.next(null);
@@ -130,7 +167,7 @@ export class AuthService {
       tap(res => {
         if (res.token) {
           localStorage.setItem('token', res.token);
-          this.currentUser.next(res.usuario);
+          this.saveUserToStorage(res.usuario);
           this.isLoggedIn.next(true);
         }
       })
@@ -147,7 +184,7 @@ export class AuthService {
       tap(res => {
         if (res.token && !res.pendiente_verificacion) {
           localStorage.setItem('token', res.token);
-          this.currentUser.next(res.usuario);
+          this.saveUserToStorage(res.usuario);
           this.isLoggedIn.next(true);
         }
       })
@@ -167,7 +204,7 @@ export class AuthService {
       tap(res => {
         if (res.token) {
           localStorage.setItem('token', res.token);
-          this.currentUser.next(res.usuario);
+          this.saveUserToStorage(res.usuario);
           this.isLoggedIn.next(true);
         }
         localStorage.removeItem('plaxtilineas_pending_verification_email');
@@ -180,7 +217,7 @@ export class AuthService {
       tap(res => {
         if (res.token) {
           localStorage.setItem('token', res.token);
-          this.currentUser.next(res.usuario);
+          this.saveUserToStorage(res.usuario);
           this.isLoggedIn.next(true);
         }
       })
@@ -236,7 +273,7 @@ export class AuthService {
     return this.http.put<{ mensaje: string, usuario: any }>(`${environment.apiUrl}/auth/actualizar`, userData, { headers }).pipe(
       tap(res => {
         if (res.usuario) {
-          this.currentUser.next(res.usuario);
+          this.saveUserToStorage(res.usuario);
         }
       })
     );

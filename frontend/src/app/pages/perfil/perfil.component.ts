@@ -364,9 +364,18 @@ export class PerfilComponent implements OnInit, OnDestroy {
     const user = this.authService.currentUser.getValue();
     if (user) {
       this.cargarDatosUsuario(user);
-    } else {
-      this.authService.checkToken();
     }
+
+    // Siempre sincronizar con GET /api/auth/perfil al entrar a /perfil para garantizar
+    // que apellidos, edad, dirección y ciudad estén 100% completos y frescos desde la BD
+    this.authService.obtenerPerfil().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (freshUser) => {
+        if (freshUser && !this.hasChanges()) {
+          this.cargarDatosUsuario(freshUser);
+        }
+      },
+      error: () => {}
+    });
 
     this.authService.currentUser.pipe(takeUntil(this.destroy$)).subscribe(u => {
       if (u && !this.hasChanges()) {
@@ -432,21 +441,53 @@ export class PerfilComponent implements OnInit, OnDestroy {
     this.form.nombre = user.nombre || '';
     this.form.apellidos = user.apellidos || '';
     this.form.telefono = user.telefono || '';
-    this.form.edad = user.edad || 0;
+    this.form.edad = user.edad ?? 0;
     this.form.direccion = user.direccion || '';
 
     if (user.ciudad) {
       const parts = String(user.ciudad).split(',');
       if (parts.length > 1) {
-        this.form.departamento = parts[1].trim();
+        const deptRaw = parts[1].trim();
+        const matchedDept = this.findDepartmentName(deptRaw) || deptRaw;
+        this.form.departamento = matchedDept;
         this.ciudadesDisponibles = [...(this.departamentos[this.form.departamento] || [])].sort((a, b) => a.localeCompare(b, 'es'));
         this.form.ciudad = parts[0].trim();
       } else {
-        this.form.ciudad = String(user.ciudad).trim();
+        const cityOnly = String(user.ciudad).trim();
+        const inferredDept = this.inferDepartmentByCity(cityOnly);
+        if (inferredDept) {
+          this.form.departamento = inferredDept;
+          this.ciudadesDisponibles = [...(this.departamentos[inferredDept] || [])].sort((a, b) => a.localeCompare(b, 'es'));
+        }
+        this.form.ciudad = cityOnly;
       }
     }
 
     this.initialForm = { ...this.form };
+  }
+
+  private normalizeText(val: string): string {
+    return val.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  }
+
+  private findDepartmentName(deptInput: string): string | null {
+    const target = this.normalizeText(deptInput);
+    for (const dept of Object.keys(this.departamentos)) {
+      if (this.normalizeText(dept) === target) {
+        return dept;
+      }
+    }
+    return null;
+  }
+
+  private inferDepartmentByCity(cityInput: string): string | null {
+    const target = this.normalizeText(cityInput);
+    for (const [dept, cities] of Object.entries(this.departamentos)) {
+      if (cities.some((c) => this.normalizeText(c) === target)) {
+        return dept;
+      }
+    }
+    return null;
   }
 
   hasChanges(): boolean {
