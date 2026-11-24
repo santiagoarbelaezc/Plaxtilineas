@@ -66,7 +66,7 @@ return [
         'url' => env('CATALOGO_API_URL', 'https://catalogoplaxtilineas.com/api'),
         'marca' => env('CATALOGO_MARCA', 'Plaxtilineas'),
         'token' => env('INVENTORY_SYNC_TOKEN', ''),
-        'origin' => env('FRONTEND_URL', 'http://localhost:4200'),
+        'origin' => env('FRONTEND_URL', 'https://plaxtilineas.com'),
         'webhook_secret' => env('CATALOGO_WEBHOOK_SECRET', ''),
         'notificaciones_activas' => (bool) env('NOTIFICACIONES_PRODUCTOS_ACTIVAS', true),
     ],

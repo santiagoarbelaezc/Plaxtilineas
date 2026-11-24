@@ -38,7 +38,7 @@ final class CatalogoApiService
             '/'
         );
         $this->token = (string) config('services.catalogo.token', '');
-        $this->origin = (string) config('services.catalogo.origin', 'http://localhost:4200');
+        $this->origin = (string) config('services.catalogo.origin', 'https://plaxtilineas.com');
     }
 
     /**

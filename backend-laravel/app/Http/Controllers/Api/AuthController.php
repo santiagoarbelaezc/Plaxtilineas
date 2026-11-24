@@ -7,12 +7,14 @@ namespace App\Http\Controllers\Api;
 use App\Contracts\GoogleAuthClientInterface;
 use App\Enums\RolUsuario;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ActualizarPasswordConCodigoRequest;
 use App\Http\Requests\Auth\ActualizarPerfilRequest;
 use App\Http\Requests\Auth\CambiarPasswordTemporalRequest;
 use App\Http\Requests\Auth\GoogleLoginRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RecuperarPasswordRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Mail\CodigoCambioPasswordMailable;
 use App\Mail\PasswordTemporalMailable;
 use App\Mail\VerificacionEmailMailable;
 use App\Models\Usuario;
@@ -21,6 +23,8 @@ use App\Services\CaptchaService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -29,6 +33,10 @@ use Throwable;
 
 class AuthController extends Controller
 {
+    private const MAX_CAMBIOS_PASSWORD_VENTANA = 2;
+
+    private const VENTANA_DIAS_CAMBIO_PASSWORD = 15;
+
     public function __construct(
         protected CaptchaService $captchaService,
         protected GoogleAuthClientInterface $googleAuthService,
@@ -270,6 +278,300 @@ class AuthController extends Controller
         return ApiResponse::success([
             'mensaje' => 'Tu contraseña ha sido actualizada exitosamente.',
         ]);
+    }
+
+    /**
+     * GET /api/auth/password/estado
+     * Devuelve el estado del límite de cambios de contraseña (máximo 2 cada 15 días).
+     */
+    public function estadoLimitePassword(Request $request): JsonResponse
+    {
+        /** @var Usuario $usuario */
+        $usuario = $request->user();
+
+        return ApiResponse::success([
+            'limite_password' => $this->obtenerEstadoLimitePassword($usuario),
+        ]);
+    }
+
+    /**
+     * POST /api/auth/password/solicitar-codigo
+     * Genera un código OTP de 6 dígitos (TTL 10 min, cooldown 60s) y lo envía al correo del usuario autenticado.
+     */
+    public function solicitarCodigoPassword(Request $request): JsonResponse
+    {
+        /** @var Usuario $usuario */
+        $usuario = $request->user();
+
+        $estadoLimite = $this->obtenerEstadoLimitePassword($usuario);
+        if (! $estadoLimite['permitido']) {
+            return ApiResponse::error($this->mensajeLimitePasswordAlcanzado($estadoLimite), 429);
+        }
+
+        if (! $usuario->correo) {
+            return ApiResponse::error('Tu cuenta no tiene un correo electrónico registrado.', 400);
+        }
+
+        $cooldownKey = "password_otp_cooldown:{$usuario->id}";
+        if (Cache::has($cooldownKey)) {
+            $restante = max(1, (int) Cache::get($cooldownKey) - time());
+
+            return ApiResponse::error("Por favor espera {$restante} segundos antes de solicitar un nuevo código.", 429);
+        }
+
+        $codigo = (string) random_int(100000, 999999);
+        $expiraMinutos = 10;
+        $otpKey = "password_otp:{$usuario->id}";
+
+        try {
+            $nombre = trim((string) ($usuario->nombre ?? 'Cliente')) ?: 'Cliente';
+            Mail::to($usuario->correo)->send(new CodigoCambioPasswordMailable($nombre, $codigo, $expiraMinutos));
+        } catch (Throwable $e) {
+            Log::error('Error enviando código OTP de cambio de contraseña', [
+                'usuario_id' => $usuario->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return ApiResponse::error('No pudimos enviar el código a tu correo en este momento. Intenta de nuevo en unos minutos.', 500);
+        }
+
+        Cache::put($otpKey, [
+            'hash' => Hash::make($codigo),
+            'intentos' => 0,
+            'verificado' => false,
+        ], now()->addMinutes($expiraMinutos));
+
+        Cache::put($cooldownKey, time() + 60, now()->addSeconds(60));
+
+        return ApiResponse::success([
+            'mensaje' => 'Enviamos un código de 6 dígitos a tu correo electrónico.',
+            'correo_enmascarado' => $this->enmascararCorreo((string) $usuario->correo),
+            'expira_minutos' => $expiraMinutos,
+            'cooldown_segundos' => 60,
+        ]);
+    }
+
+    /**
+     * POST /api/auth/password/validar-codigo
+     * Verifica que el código OTP de 6 dígitos sea válido antes de habilitar los campos de nueva contraseña.
+     */
+    public function validarCodigoPassword(Request $request): JsonResponse
+    {
+        /** @var Usuario $usuario */
+        $usuario = $request->user();
+
+        $estadoLimite = $this->obtenerEstadoLimitePassword($usuario);
+        if (! $estadoLimite['permitido']) {
+            return ApiResponse::error($this->mensajeLimitePasswordAlcanzado($estadoLimite), 429);
+        }
+
+        $codigoIngresado = trim((string) $request->input('codigo', ''));
+
+        if (! preg_match('/^\d{6}$/', $codigoIngresado)) {
+            return ApiResponse::error('El código de verificación debe tener exactamente 6 dígitos numéricos.', 422);
+        }
+
+        $otpKey = "password_otp:{$usuario->id}";
+
+        /** @var array{hash: string, intentos: int, verificado?: bool}|null $otpData */
+        $otpData = Cache::get($otpKey);
+
+        if (! $otpData || empty($otpData['hash'])) {
+            return ApiResponse::error('El código ha expirado o no ha sido solicitado. Solicita un nuevo código.', 400);
+        }
+
+        if (! Hash::check($codigoIngresado, $otpData['hash'])) {
+            $intentos = (int) ($otpData['intentos'] ?? 0) + 1;
+            if ($intentos >= 5) {
+                Cache::forget($otpKey);
+
+                return ApiResponse::error('Superaste el máximo de intentos fallidos. Solicita un nuevo código.', 429);
+            }
+
+            Cache::put($otpKey, [
+                'hash' => $otpData['hash'],
+                'intentos' => $intentos,
+                'verificado' => false,
+            ], now()->addMinutes(10));
+
+            $restantes = 5 - $intentos;
+
+            return ApiResponse::error("Código de verificación incorrecto. Te quedan {$restantes} intentos.", 400);
+        }
+
+        Cache::put($otpKey, [
+            'hash' => $otpData['hash'],
+            'intentos' => (int) ($otpData['intentos'] ?? 0),
+            'verificado' => true,
+        ], now()->addMinutes(10));
+
+        return ApiResponse::success([
+            'valido' => true,
+            'mensaje' => 'Código verificado correctamente. Ahora puedes establecer tu nueva contraseña.',
+        ]);
+    }
+
+    /**
+     * POST /api/auth/password/actualizar
+     * Valida el código OTP (máx. 5 intentos) y actualiza la contraseña cumpliendo la política segura.
+     */
+    public function actualizarPasswordConCodigo(ActualizarPasswordConCodigoRequest $request): JsonResponse
+    {
+        /** @var Usuario $usuario */
+        $usuario = $request->user();
+
+        $estadoLimite = $this->obtenerEstadoLimitePassword($usuario);
+        if (! $estadoLimite['permitido']) {
+            return ApiResponse::error($this->mensajeLimitePasswordAlcanzado($estadoLimite), 429);
+        }
+
+        $otpKey = "password_otp:{$usuario->id}";
+
+        /** @var array{hash: string, intentos: int}|null $otpData */
+        $otpData = Cache::get($otpKey);
+
+        if (! $otpData || empty($otpData['hash'])) {
+            return ApiResponse::error('El código ha expirado o no ha sido solicitado. Solicita un nuevo código.', 400);
+        }
+
+        $codigoIngresado = trim((string) $request->input('codigo'));
+        if (! Hash::check($codigoIngresado, $otpData['hash'])) {
+            $intentos = (int) ($otpData['intentos'] ?? 0) + 1;
+            if ($intentos >= 5) {
+                Cache::forget($otpKey);
+
+                return ApiResponse::error('Superaste el máximo de intentos fallidos. Solicita un nuevo código.', 429);
+            }
+
+            Cache::put($otpKey, [
+                'hash' => $otpData['hash'],
+                'intentos' => $intentos,
+            ], now()->addMinutes(10));
+
+            $restantes = 5 - $intentos;
+
+            return ApiResponse::error("Código de verificación incorrecto. Te quedan {$restantes} intentos.", 400);
+        }
+
+        $nuevaPassword = (string) $request->input('nueva_password');
+        if ($usuario->password && Hash::check($nuevaPassword, (string) $usuario->password)) {
+            return ApiResponse::error('La nueva contraseña debe ser diferente a tu contraseña actual.', 422);
+        }
+
+        $historialReciente = $this->filtrarHistorialPasswordReciente($usuario);
+        $historialReciente[] = now()->toIso8601String();
+
+        $usuario->update([
+            'password' => Hash::make($nuevaPassword),
+            'requiere_cambio_password' => false,
+            'password_cambios_historial' => $historialReciente,
+        ]);
+
+        Cache::forget($otpKey);
+        Cache::forget("password_otp_cooldown:{$usuario->id}");
+
+        Log::info('Contraseña actualizada mediante código OTP', ['usuario_id' => $usuario->id]);
+
+        return ApiResponse::success([
+            'mensaje' => 'Tu contraseña ha sido actualizada correctamente.',
+            'limite_password' => $this->obtenerEstadoLimitePassword($usuario->fresh() ?? $usuario),
+        ]);
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function filtrarHistorialPasswordReciente(Usuario $usuario): array
+    {
+        $raw = $usuario->password_cambios_historial;
+        if (! is_array($raw)) {
+            return [];
+        }
+
+        $limiteInicio = now()->subDays(self::VENTANA_DIAS_CAMBIO_PASSWORD);
+        $fechas = [];
+
+        foreach ($raw as $item) {
+            if (! is_string($item) || $item === '') {
+                continue;
+            }
+            try {
+                $fecha = Carbon::parse($item);
+                if ($fecha->greaterThanOrEqualTo($limiteInicio)) {
+                    $fechas[] = $fecha;
+                }
+            } catch (Throwable) {
+                continue;
+            }
+        }
+
+        usort($fechas, static fn (Carbon $a, Carbon $b): int => $a->getTimestamp() <=> $b->getTimestamp());
+
+        return array_map(static fn (Carbon $f): string => $f->toIso8601String(), $fechas);
+    }
+
+    /**
+     * @return array{
+     *     usados: int,
+     *     maximo: int,
+     *     restantes: int,
+     *     ventana_dias: int,
+     *     permitido: bool,
+     *     proximo_disponible_en: string|null,
+     *     dias_restantes: int
+     * }
+     */
+    private function obtenerEstadoLimitePassword(Usuario $usuario): array
+    {
+        $recientes = $this->filtrarHistorialPasswordReciente($usuario);
+        $usados = count($recientes);
+        $maximo = self::MAX_CAMBIOS_PASSWORD_VENTANA;
+        $restantes = max(0, $maximo - $usados);
+        $permitido = $usados < $maximo;
+
+        $proximoDisponibleIso = null;
+        $diasRestantes = 0;
+
+        if (! $permitido && isset($recientes[0])) {
+            $fechaMasAntigua = Carbon::parse($recientes[0]);
+            $proximoDisponible = $fechaMasAntigua->copy()->addDays(self::VENTANA_DIAS_CAMBIO_PASSWORD);
+            $proximoDisponibleIso = $proximoDisponible->toIso8601String();
+            $segundosRestantes = max(1, $proximoDisponible->getTimestamp() - now()->getTimestamp());
+            $diasRestantes = (int) ceil($segundosRestantes / 86400);
+        }
+
+        return [
+            'usados' => $usados,
+            'maximo' => $maximo,
+            'restantes' => $restantes,
+            'ventana_dias' => self::VENTANA_DIAS_CAMBIO_PASSWORD,
+            'permitido' => $permitido,
+            'proximo_disponible_en' => $proximoDisponibleIso,
+            'dias_restantes' => $diasRestantes,
+        ];
+    }
+
+    /**
+     * @param  array{usados: int, maximo: int, restantes: int, ventana_dias: int, permitido: bool, proximo_disponible_en: string|null, dias_restantes: int}  $estado
+     */
+    private function mensajeLimitePasswordAlcanzado(array $estado): string
+    {
+        $dias = $estado['dias_restantes'];
+        $etiquetaDias = $dias === 1 ? '1 día' : "{$dias} días";
+
+        return "Has alcanzado el límite de {$estado['maximo']} cambios de contraseña cada {$estado['ventana_dias']} días. Podrás cambiarla nuevamente en {$etiquetaDias}.";
+    }
+
+    private function enmascararCorreo(string $correo): string
+    {
+        $parts = explode('@', $correo);
+        if (count($parts) !== 2) {
+            return $correo;
+        }
+        [$local, $dominio] = $parts;
+        $visible = mb_substr($local, 0, min(2, mb_strlen($local)));
+
+        return $visible.str_repeat('•', max(3, mb_strlen($local) - 2)).'@'.$dominio;
     }
 
     /**

@@ -161,6 +161,10 @@ Route::prefix('auth')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/cambiar-password-temporal', [AuthController::class, 'cambiarPasswordTemporal']);
+        Route::get('/password/estado', [AuthController::class, 'estadoLimitePassword']);
+        Route::post('/password/solicitar-codigo', [AuthController::class, 'solicitarCodigoPassword'])->middleware('throttle:auth');
+        Route::post('/password/validar-codigo', [AuthController::class, 'validarCodigoPassword'])->middleware('throttle:auth');
+        Route::post('/password/actualizar', [AuthController::class, 'actualizarPasswordConCodigo'])->middleware('throttle:auth');
         Route::get('/perfil', [AuthController::class, 'perfil']);
         Route::put('/actualizar', [AuthController::class, 'actualizar']);
         Route::delete('/cuenta', [AuthController::class, 'cuenta']);
