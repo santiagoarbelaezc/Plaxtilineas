@@ -6,8 +6,42 @@
 
   <div class="pedidos-container">
 
-    <!-- ═══ 1. CABECERA PRINCIPAL (Estilo dash-card de Editar Datos & Dirección) ═══ -->
-    <div class="dash-card orders-header-card">
+    <!-- ═══ 1A. RESUMEN ULTRA-COMPACTO (CUANDO ESTÁ EMBEBIDO EN /PERFIL) ═══ -->
+    <div class="embedded-summary-bar" *ngIf="isEmbedded && !loading()">
+      <div class="embedded-kpi-row" *ngIf="pedidos().length > 0">
+        <div class="embedded-kpi-item">
+          <span class="embedded-kpi-label">Pedidos</span>
+          <strong class="embedded-kpi-value">{{ totalPedidos() }}</strong>
+        </div>
+        <div class="embedded-kpi-divider"></div>
+        <div class="embedded-kpi-item">
+          <span class="embedded-kpi-label">Inversión total</span>
+          <strong class="embedded-kpi-value is-green">{{ formatPrice(totalInvertido()) }}</strong>
+        </div>
+        <div class="embedded-kpi-divider"></div>
+        <div class="embedded-kpi-item">
+          <span class="embedded-kpi-label">Activos</span>
+          <strong class="embedded-kpi-value">{{ pedidosActivos() }}</strong>
+        </div>
+        <div class="embedded-kpi-divider"></div>
+        <div class="embedded-kpi-item">
+          <span class="embedded-kpi-label">Entregados</span>
+          <strong class="embedded-kpi-value">{{ entregasCompletadas() }}</strong>
+        </div>
+      </div>
+
+      <button class="btn-dash-sync" (click)="cargarPedidos()" title="Actualizar pedidos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="sync-icon">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+        <span>Sincronizar</span>
+      </button>
+    </div>
+
+    <!-- ═══ 1B. CABECERA PRINCIPAL (SOLO PÁGINA INDEPENDIENTE /MIS-PEDIDOS) ═══ -->
+    <div class="dash-card orders-header-card" *ngIf="!isEmbedded">
       <div class="card-top-header">
         <div class="card-icon-badge">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="header-badge-svg">

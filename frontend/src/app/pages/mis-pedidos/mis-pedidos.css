@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    MIS PEDIDOS — DASHBOARD REDESIGN
    Armonizado con Editar Datos, Dirección y Panel Administrativo
-   Paleta: Blanco (#ffffff), Negro (#0a0a0a / #09090b), Verde (#16a34a / #22c55e)
+   Paleta: Blanco (#ffffff), Negro (#0a0a0a / #09090b), Verde (#379045 / #22c55e)
    ═══════════════════════════════════════════════════════════════════════════ */
 
 :host {
@@ -38,7 +38,7 @@
     90deg,
     transparent 0%,
     rgba(22, 163, 74, 0.25) 20%,
-    #16a34a 50%,
+    #379045 50%,
     rgba(22, 163, 74, 0.25) 80%,
     transparent 100%
   );
@@ -58,6 +58,92 @@
 .mis-pedidos-page.embedded .pedidos-container {
   padding: 0 !important;
   max-width: 100% !important;
+  gap: 16px;
+}
+
+/* ═══ Barra de Resumen Ultra-Compacta para /perfil embebido ═══ */
+.embedded-summary-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 16px 20px;
+  background: #f8f9fa;
+  border: 1.5px solid #e4e4e7;
+  border-radius: 14px;
+}
+
+.embedded-kpi-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.embedded-kpi-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.embedded-kpi-label {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #71717a;
+}
+
+.embedded-kpi-value {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 1.28rem;
+  font-weight: 800;
+  color: #09090b;
+  white-space: nowrap;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+
+.embedded-kpi-value.is-green {
+  color: #379045;
+}
+
+.embedded-kpi-divider {
+  width: 1px;
+  height: 30px;
+  background: #e4e4e7;
+}
+
+.mis-pedidos-page.embedded .toolbar-card {
+  padding: 14px 16px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+.mis-pedidos-page.embedded .dash-card {
+  padding: 20px 22px;
+  border-radius: 14px;
+  box-shadow: none;
+}
+
+@media (max-width: 640px) {
+  .embedded-summary-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .embedded-kpi-divider {
+    display: none;
+  }
+
+  .embedded-kpi-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -139,8 +225,8 @@
   align-items: center;
   padding: 3px 10px;
   border-radius: 9999px;
-  background: #ecfdf5;
-  color: #16a34a;
+  background: #eaf4ec;
+  color: #379045;
   font-size: 0.74rem;
   font-weight: 700;
   border: 1px solid rgba(22, 163, 74, 0.2);
@@ -241,18 +327,18 @@
 }
 
 .bento-icon-green {
-  background: #ecfdf5;
-  color: #16a34a;
+  background: #eaf4ec;
+  color: #379045;
 }
 
 .bento-icon-active {
-  background: #ecfdf5;
-  color: #16a34a;
+  background: #eaf4ec;
+  color: #379045;
 }
 
 .bento-icon-done {
-  background: #ecfdf5;
-  color: #16a34a;
+  background: #eaf4ec;
+  color: #379045;
 }
 
 .bento-val-row {
@@ -271,7 +357,7 @@
 }
 
 .green-highlight {
-  color: #16a34a;
+  color: #379045;
 }
 
 .bento-sublabel {
@@ -291,8 +377,8 @@
 }
 
 .green-pill {
-  background: #ecfdf5;
-  color: #16a34a;
+  background: #eaf4ec;
+  color: #379045;
   border: 1px solid rgba(22, 163, 74, 0.25);
 }
 
@@ -312,7 +398,7 @@
 
 .done-pill {
   background: #f4f4f5;
-  color: #16a34a;
+  color: #379045;
   border: 1px solid #e4e4e7;
 }
 
@@ -430,7 +516,7 @@
 }
 
 .form-input:focus, .form-select:focus {
-  border-color: #16a34a;
+  border-color: #379045;
   box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
 }
 
@@ -485,14 +571,14 @@
 }
 
 .pedido-card-item.is-expanded {
-  border-color: #16a34a;
+  border-color: #379045;
   box-shadow: 0 6px 20px rgba(22, 163, 74, 0.08);
 }
 
 .card-accent-glow {
   height: 3px;
   width: 100%;
-  background: linear-gradient(90deg, #16a34a, #22c55e);
+  background: linear-gradient(90deg, #379045, #22c55e);
 }
 
 /* Header visible del Pedido */
@@ -608,14 +694,14 @@
 }
 
 .status-pill-badge.badge-green {
-  background: #ecfdf5;
-  color: #16a34a;
+  background: #eaf4ec;
+  color: #379045;
   border-color: rgba(22, 163, 74, 0.25);
 }
 
 .status-pill-badge.badge-green .status-pulse-dot {
-  background: #16a34a;
-  box-shadow: 0 0 6px #16a34a;
+  background: #379045;
+  box-shadow: 0 0 6px #379045;
 }
 
 .status-pill-badge.badge-pending {
@@ -769,7 +855,7 @@
 }
 
 .connector-line.is-completed {
-  background: #16a34a;
+  background: #379045;
 }
 
 .step-circle-icon {
@@ -789,15 +875,15 @@
 }
 
 .stepper-step.is-completed .step-circle-icon {
-  background: #16a34a;
-  border-color: #16a34a;
+  background: #379045;
+  border-color: #379045;
   color: #ffffff;
 }
 
 .stepper-step.is-active .step-circle-icon {
   background: #ffffff;
-  border-color: #16a34a;
-  color: #16a34a;
+  border-color: #379045;
+  color: #379045;
   box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.2);
 }
 
@@ -975,16 +1061,16 @@
 .info-phone-text svg {
   width: 14px;
   height: 14px;
-  color: #16a34a;
+  color: #379045;
 }
 
 .carrier-badge {
   display: inline-flex;
   padding: 4px 10px;
-  background: #ecfdf5;
+  background: #eaf4ec;
   border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 6px;
-  color: #16a34a;
+  color: #379045;
   font-weight: 800;
   font-size: 0.78rem;
   width: fit-content;
@@ -1019,7 +1105,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #16a34a;
+  background: #379045;
 }
 
 .payment-ref-text, .payment-notes-text {
@@ -1052,8 +1138,8 @@
 .shipping-included-pill {
   padding: 2px 8px;
   border-radius: 4px;
-  background: #ecfdf5;
-  color: #16a34a;
+  background: #eaf4ec;
+  color: #379045;
   font-size: 0.72rem;
   font-weight: 700;
 }
@@ -1089,7 +1175,7 @@
 .cart-total-amount {
   font-size: 1.25rem;
   font-weight: 850;
-  color: #16a34a;
+  color: #379045;
   letter-spacing: -0.02em;
 }
 
@@ -1135,7 +1221,7 @@
 }
 
 .btn-dash-primary:hover {
-  background: #16a34a;
+  background: #379045;
   box-shadow: 0 4px 14px rgba(22, 163, 74, 0.3);
   color: #ffffff;
 }
@@ -1256,7 +1342,7 @@
   width: 42px;
   height: 42px;
   border: 3px solid #f1f5f9;
-  border-top-color: #16a34a;
+  border-top-color: #379045;
   border-radius: 50%;
   animation: ringSpin 0.8s linear infinite;
   margin-bottom: 18px;
@@ -1296,7 +1382,7 @@
 
 .modal-top-accent {
   height: 4px;
-  background: linear-gradient(90deg, #16a34a, #22c55e);
+  background: linear-gradient(90deg, #379045, #22c55e);
 }
 
 .invoice-printable-sheet {
@@ -1322,7 +1408,7 @@
 
 .brand-tagline {
   font-size: 0.78rem;
-  color: #16a34a;
+  color: #379045;
   font-weight: 700;
   margin: 2px 0 6px;
 }
@@ -1363,8 +1449,8 @@
 .sheet-status-tag {
   margin-top: 4px;
   font-size: 0.75rem;
-  color: #16a34a;
-  background: #ecfdf5;
+  color: #379045;
+  background: #eaf4ec;
   padding: 3px 8px;
   border-radius: 6px;
   border: 1px solid rgba(22, 163, 74, 0.2);
@@ -1456,7 +1542,7 @@
 
 .final-total-cell {
   font-size: 1.25rem;
-  color: #16a34a;
+  color: #379045;
 }
 
 .sheet-footer {
