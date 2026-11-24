@@ -1,49 +1,332 @@
-<div class="configuracion-container" [class.embedded]="isEmbedded" [class.pt-20]="!isEmbedded">
+<div class="configuracion-container" [class.embedded]="isEmbedded" [class.standalone]="!isEmbedded">
+
   <div class="configuracion-header" *ngIf="!isEmbedded">
-    <div class="header-icon">
-      <fa-icon [icon]="['fas', 'key']"></fa-icon>
-    </div>
-    <h1>Configuración de la Cuenta</h1>
-    <p>Administra las preferencias y la seguridad de tu cuenta.</p>
+    <span class="section-kicker">Seguridad Plaxtilineas</span>
+    <h1>Seguridad y Cuenta</h1>
+    <p>Protege tu acceso actualizando tu contraseña o administra el estado de tu cuenta.</p>
   </div>
 
-  <div class="configuracion-content">
-    <div class="danger-zone">
-      <div class="danger-zone-header">
-        <h2>Zona de Peligro</h2>
-        <p>Estas acciones son destructivas y no se pueden deshacer.</p>
+  <div class="configuracion-stack">
+
+    <!-- ══════════════════════════════════════════════════════════════
+         SECCIÓN 1: ACTUALIZAR CONTRASEÑA CON CÓDIGO AL CORREO (OTP)
+         ══════════════════════════════════════════════════════════════ -->
+    <section class="security-card">
+      <div class="security-card-head">
+        <div class="security-icon-box">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <div class="security-head-text">
+          <span class="section-kicker">Verificación en dos pasos</span>
+          <h2 class="security-title">Actualizar contraseña</h2>
+          <p class="security-subtitle">
+            Para confirmar tu identidad, enviaremos un código de 6 dígitos a tu correo registrado
+            <strong *ngIf="correoUsuario">{{ correoUsuario }}</strong>.
+          </p>
+          <div class="password-quota-pill" *ngIf="limitePassword() as lim" [class.is-exhausted]="!lim.permitido">
+            <span class="quota-dot"></span>
+            <span *ngIf="lim.permitido">
+              Te {{ lim.restantes === 1 ? 'queda' : 'quedan' }} <strong>{{ lim.restantes }} de {{ lim.maximo }}</strong>
+              {{ lim.restantes === 1 ? 'cambio disponible' : 'cambios disponibles' }} cada {{ lim.ventana_dias }} días.
+            </span>
+            <span *ngIf="!lim.permitido">
+              Límite alcanzado ({{ lim.usados }}/{{ lim.maximo }} cambios en {{ lim.ventana_dias }} días).
+            </span>
+          </div>
+        </div>
       </div>
-      
-      <div class="danger-item">
+
+      <!-- Aviso cuando alcanzó el límite de 2 cambios cada 15 días -->
+      <div class="security-alert is-warning" *ngIf="limitePassword() && !puedeCambiarPassword">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>
+          Ya realizaste los <strong>{{ limitePassword()!.maximo }} cambios de contraseña</strong> permitidos cada {{ limitePassword()!.ventana_dias }} días.
+          Podrás cambiarla nuevamente
+          <strong *ngIf="fechaProximoCambioFormateada">el {{ fechaProximoCambioFormateada }}</strong>
+          ({{ limitePassword()!.dias_restantes === 1 ? 'en 1 día' : 'en ' + limitePassword()!.dias_restantes + ' días' }}).
+        </span>
+      </div>
+
+      <!-- Alertas de error / información -->
+      <div class="security-alert is-error" *ngIf="passwordError()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>{{ passwordError() }}</span>
+      </div>
+
+      <div class="security-alert is-info" *ngIf="passwordInfo() && codigoEnviado()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span *ngIf="!codigoValidado()">
+          {{ passwordInfo() }}
+          <strong *ngIf="correoEnmascarado()">({{ correoEnmascarado() }})</strong>. Válido por 10 minutos.
+        </span>
+        <span *ngIf="codigoValidado()">
+          {{ passwordInfo() }}
+        </span>
+      </div>
+
+      <!-- Paso 1: Botón inicial para solicitar código -->
+      <div class="otp-request-box" *ngIf="!codigoEnviado()">
+        <button
+          type="button"
+          class="btn-security-primary"
+          [disabled]="enviandoCodigo() || !puedeCambiarPassword || cargandoLimite()"
+          (click)="solicitarCodigo()">
+          <span *ngIf="enviandoCodigo()" class="btn-spinner"></span>
+          <span>{{ enviandoCodigo() ? 'Enviando código...' : 'Enviar código a mi correo' }}</span>
+        </button>
+      </div>
+
+      <!-- Paso 2: Validar código OTP antes de habilitar los campos de contraseña -->
+      <form *ngIf="codigoEnviado() && !codigoValidado()" (ngSubmit)="validarCodigo()" class="otp-form">
+        <div class="otp-code-row">
+          <div class="form-group otp-input-group">
+            <label for="otp-codigo">Código de verificación (6 dígitos) <span class="required">*</span></label>
+            <input
+              id="otp-codigo"
+              type="text"
+              inputmode="numeric"
+              maxlength="6"
+              autocomplete="one-time-code"
+              [ngModel]="codigoOtp"
+              (ngModelChange)="onCodigoInput($event)"
+              name="codigoOtp"
+              placeholder="000000"
+              class="form-input otp-code-input" />
+          </div>
+
+          <button
+            type="button"
+            class="btn-resend-code"
+            [disabled]="enviandoCodigo() || validandoCodigo() || cooldownSegundos() > 0"
+            (click)="solicitarCodigo()">
+            <ng-container *ngIf="enviandoCodigo()">Enviando...</ng-container>
+            <ng-container *ngIf="!enviandoCodigo() && cooldownSegundos() > 0">
+              Reenviar en {{ cooldownSegundos() }}s
+            </ng-container>
+            <ng-container *ngIf="!enviandoCodigo() && cooldownSegundos() === 0">
+              Reenviar código
+            </ng-container>
+          </button>
+        </div>
+
+        <div class="otp-form-actions">
+          <button
+            type="submit"
+            class="btn-security-primary"
+            [disabled]="!codigoValido || validandoCodigo()">
+            <span *ngIf="validandoCodigo()" class="btn-spinner"></span>
+            <span>{{ validandoCodigo() ? 'Validando código...' : 'Validar código' }}</span>
+          </button>
+
+          <button
+            type="button"
+            class="btn-security-ghost"
+            [disabled]="validandoCodigo()"
+            (click)="cancelarCambioPassword()">
+            Cancelar
+          </button>
+        </div>
+      </form>
+
+      <!-- Paso 3: Solo tras validar el código, se habilitan los campos de nueva contraseña -->
+      <form *ngIf="codigoEnviado() && codigoValidado()" (ngSubmit)="actualizarPassword()" class="otp-form">
+
+        <div class="password-grid">
+          <div class="form-group">
+            <label for="nueva-password">Nueva contraseña <span class="required">*</span></label>
+            <div class="pwd-input-wrap">
+              <input
+                id="nueva-password"
+                [type]="mostrarNuevaPassword ? 'text' : 'password'"
+                [(ngModel)]="nuevaPassword"
+                name="nuevaPassword"
+                placeholder="Mínimo 8 caracteres"
+                class="form-input has-eye" />
+              <button
+                type="button"
+                class="pwd-eye-btn"
+                (click)="mostrarNuevaPassword = !mostrarNuevaPassword"
+                [attr.aria-label]="mostrarNuevaPassword ? 'Ocultar contraseña' : 'Ver contraseña'">
+                <svg *ngIf="!mostrarNuevaPassword" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <svg *ngIf="mostrarNuevaPassword" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmar-password">Confirmar nueva contraseña <span class="required">*</span></label>
+            <div class="pwd-input-wrap">
+              <input
+                id="confirmar-password"
+                [type]="mostrarConfirmarPassword ? 'text' : 'password'"
+                [(ngModel)]="confirmarPassword"
+                name="confirmarPassword"
+                placeholder="Repite tu contraseña"
+                class="form-input has-eye" />
+              <button
+                type="button"
+                class="pwd-eye-btn"
+                (click)="mostrarConfirmarPassword = !mostrarConfirmarPassword"
+                [attr.aria-label]="mostrarConfirmarPassword ? 'Ocultar contraseña' : 'Ver contraseña'">
+                <svg *ngIf="!mostrarConfirmarPassword" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <svg *ngIf="mostrarConfirmarPassword" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checklist en vivo de contraseña segura -->
+        <div class="password-policy-box">
+          <span class="policy-title">Requisitos mínimos de seguridad</span>
+          <div class="policy-grid">
+            <span class="policy-chip" [class.met]="reqMinLength">
+              <span class="policy-dot"></span> Mínimo 8 caracteres
+            </span>
+            <span class="policy-chip" [class.met]="reqUppercase">
+              <span class="policy-dot"></span> Una mayúscula (A–Z)
+            </span>
+            <span class="policy-chip" [class.met]="reqLowercase">
+              <span class="policy-dot"></span> Una minúscula (a–z)
+            </span>
+            <span class="policy-chip" [class.met]="reqNumber">
+              <span class="policy-dot"></span> Un número (0–9)
+            </span>
+            <span class="policy-chip" [class.met]="reqSpecial">
+              <span class="policy-dot"></span> Un carácter especial (!&#64;#$%...)
+            </span>
+            <span class="policy-chip" [class.met]="reqMatch">
+              <span class="policy-dot"></span> Las contraseñas coinciden
+            </span>
+          </div>
+        </div>
+
+        <div class="otp-form-actions">
+          <button
+            type="submit"
+            class="btn-security-primary"
+            [disabled]="!formularioPasswordValido || actualizandoPassword()">
+            <span *ngIf="actualizandoPassword()" class="btn-spinner"></span>
+            <span>{{ actualizandoPassword() ? 'Actualizando...' : 'Actualizar contraseña' }}</span>
+          </button>
+
+          <button
+            type="button"
+            class="btn-security-ghost"
+            [disabled]="actualizandoPassword()"
+            (click)="cancelarCambioPassword()">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         SECCIÓN 2: ZONA DE PELIGRO (ELIMINAR CUENTA)
+         ══════════════════════════════════════════════════════════════ -->
+    <section class="danger-card">
+      <div class="danger-card-head">
+        <div class="danger-icon-box">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </div>
+        <div class="danger-head-text">
+          <span class="danger-kicker">Acción irreversible</span>
+          <h2 class="danger-title">Zona de Peligro</h2>
+          <p class="danger-subtitle">Estas acciones son destructivas y no se pueden deshacer.</p>
+        </div>
+      </div>
+
+      <div class="danger-action-row">
         <div class="danger-info">
           <h3>Eliminar cuenta</h3>
-          <p>Una vez que elimines tu cuenta, no hay vuelta atrás. Por favor, asegúrate de estar seguro.</p>
+          <p>Una vez que elimines tu cuenta, no hay vuelta atrás. Se eliminarán tu perfil y acceso de forma permanente.</p>
         </div>
-        <button class="btn-delete" (click)="confirmarEliminacion()">Eliminar cuenta</button>
+        <button type="button" class="btn-delete-outline" (click)="confirmarEliminacion()">
+          <fa-icon [icon]="['fas', 'trash']"></fa-icon>
+          <span>Eliminar cuenta</span>
+        </button>
       </div>
-    </div>
+    </section>
+
   </div>
 
-  <!-- Modal de confirmación -->
-  <div class="modal-overlay" *ngIf="mostrarModalConfirmacion">
-    <div class="modal-content">
-      <div class="modal-warning-icon">
-        <fa-icon [icon]="['fas', 'exclamation-triangle']"></fa-icon>
+  <!-- MODAL NATIVO: CONTRASEÑA ACTUALIZADA CON ÉXITO -->
+  <div class="cfg-modal-overlay" *ngIf="mostrarModalExitoPassword()" (click)="cerrarModalExitoPassword()" role="dialog" aria-modal="true">
+    <div class="cfg-modal-card" (click)="$event.stopPropagation()">
+      <div class="cfg-modal-accent"></div>
+      <div class="cfg-modal-icon-ring">
+        <svg class="cfg-check-svg" viewBox="0 0 52 52" aria-hidden="true">
+          <circle class="cfg-check-circle" cx="26" cy="26" r="23" fill="none" />
+          <path class="cfg-check-path" fill="none" d="M15.5 26.8l6.8 6.9 14.4-14.8" />
+        </svg>
       </div>
-      <h2>¿Estás seguro?</h2>
-      <p>Esta acción eliminará de forma permanente tu cuenta, tu perfil y todo tu historial de pedidos. No podrás recuperar esta información.</p>
-      
-      <div *ngIf="errorMessage" class="error-alert">
-        {{ errorMessage }}
-      </div>
-
-      <div class="modal-actions">
-        <button class="btn-cancel" (click)="cancelarEliminacion()" [disabled]="isDeleting">Cancelar</button>
-        <button class="btn-confirm-delete" (click)="eliminarCuenta()" [disabled]="isDeleting">
-          <span *ngIf="!isDeleting">Sí, eliminar mi cuenta</span>
-          <span *ngIf="isDeleting">Eliminando...</span>
+      <h2 class="cfg-modal-title">¡Contraseña actualizada!</h2>
+      <p class="cfg-modal-desc">Tu nueva contraseña se guardó correctamente. A partir de ahora úsala para iniciar sesión.</p>
+      <div class="cfg-modal-actions">
+        <button type="button" class="btn-security-primary full-w" (click)="cerrarModalExitoPassword()">
+          Entendido
         </button>
       </div>
     </div>
   </div>
+
+  <!-- MODAL NATIVO: CONFIRMACIÓN DE ELIMINACIÓN DE CUENTA -->
+  <div class="cfg-modal-overlay" *ngIf="mostrarModalConfirmacion" (click)="cancelarEliminacion()" role="dialog" aria-modal="true">
+    <div class="cfg-modal-card" (click)="$event.stopPropagation()">
+      <div class="cfg-modal-accent is-danger"></div>
+      <div class="cfg-modal-icon-ring is-danger">
+        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+      </div>
+      <h2 class="cfg-modal-title">¿Eliminar tu cuenta?</h2>
+      <p class="cfg-modal-desc">
+        Esta acción eliminará de forma permanente tu cuenta, tu perfil y tu historial de pedidos. No podrás recuperar esta información.
+      </p>
+
+      <div *ngIf="errorMessage" class="security-alert is-error" style="margin-bottom: 18px; text-align: left;">
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <div class="cfg-modal-actions">
+        <button type="button" class="btn-security-ghost" (click)="cancelarEliminacion()" [disabled]="isDeleting">
+          Cancelar
+        </button>
+        <button type="button" class="btn-delete-solid" (click)="eliminarCuenta()" [disabled]="isDeleting">
+          <span *ngIf="isDeleting" class="btn-spinner"></span>
+          <span>{{ isDeleting ? 'Eliminando...' : 'Sí, eliminar mi cuenta' }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
 </div>

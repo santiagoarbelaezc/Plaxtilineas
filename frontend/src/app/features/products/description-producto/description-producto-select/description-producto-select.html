@@ -224,18 +224,22 @@
 <!-- Modal de descripción -->
 <div *ngIf="mostrarModalDescripcion" class="descripcion-modal-backdrop" (click)="cerrarModalDescripcion()">
   <div class="descripcion-modal-container" (click)="$event.stopPropagation()">
-    <button class="descripcion-modal-close" (click)="cerrarModalDescripcion()" title="Cerrar (Esc)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
-      </svg>
-    </button>
-    <div class="descripcion-modal-content">
+    <div class="descripcion-modal-header">
       <h2 class="descripcion-modal-title">Descripción del producto</h2>
-      <div class="descripcion-modal-text">
+      <button type="button" class="descripcion-modal-close" (click)="cerrarModalDescripcion()" title="Cerrar (Esc)" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="descripcion-modal-body">
+      <div class="descripcion-modal-text is-preline">
         {{descripcionBase || 'Descripción no disponible'}}
       </div>
-      <button class="descripcion-modal-button" (click)="cerrarModalDescripcion()">
+    </div>
+    <div class="descripcion-modal-footer">
+      <button type="button" class="descripcion-modal-button" (click)="cerrarModalDescripcion()">
         Cerrar
       </button>
     </div>
@@ -245,41 +249,53 @@
 <!-- Modal de Entrega -->
 <div *ngIf="mostrarModalEntrega" class="descripcion-modal-backdrop" (click)="cerrarModalEntrega()">
   <div class="descripcion-modal-container" (click)="$event.stopPropagation()">
-    <button class="descripcion-modal-close" (click)="cerrarModalEntrega()" title="Cerrar (Esc)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-    </button>
-    <div class="descripcion-modal-content">
-      <h2 class="descripcion-modal-title" style="display: flex; align-items: center; gap: 12px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+    <div class="descripcion-modal-header">
+      <h2 class="descripcion-modal-title">
+        <span class="modal-title-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+        </span>
         Especificaciones de Entrega
       </h2>
-      <div class="descripcion-modal-text">
-        <div style="margin-bottom: 24px;">
-          <h3 style="font-size: 1.1rem; color: #111; margin-bottom: 8px;">Envíos en Armenia, Quindío</h3>
-          <p style="margin: 0; color: #444; display: flex; align-items: center; gap: 8px;">
-            <span style="display: inline-block; width: 8px; height: 8px; background: #25d366; border-radius: 50%;"></span>
-            <strong>1 a 3 días hábiles</strong>
-          </p>
-          <p style="margin: 8px 0 0 16px; font-size: 0.95rem;">Entregas rápidas directamente a la puerta de tu domicilio u obra. Los despachos locales cuentan con prioridad.</p>
+      <button type="button" class="descripcion-modal-close" (click)="cerrarModalEntrega()" title="Cerrar (Esc)" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <div class="descripcion-modal-body">
+      <div class="modal-info-block">
+        <h3 class="modal-block-title">Envíos en Armenia, Quindío</h3>
+        <div class="modal-status-line">
+          <span class="modal-status-dot"></span>
+          <strong>1 a 3 días hábiles</strong>
         </div>
-        <div style="margin-bottom: 24px;">
-          <h3 style="font-size: 1.1rem; color: #111; margin-bottom: 8px;">Envíos Nacionales</h3>
-          <p style="margin: 0; color: #444; display: flex; align-items: center; gap: 8px;">
-            <span style="display: inline-block; width: 8px; height: 8px; background: #25d366; border-radius: 50%;"></span>
-            <strong>3 a 7 días hábiles</strong>
-          </p>
-          <p style="margin: 8px 0 0 16px; font-size: 0.95rem;">Despachamos a toda Colombia a través de nuestras transportadoras aliadas. El tiempo de tránsito depende del municipio de destino y la gestión de la transportadora.</p>
-        </div>
-        <div style="padding: 16px; background: #f9f9f9; border-radius: 8px; border-left: 4px solid #111;">
-          <h4 style="margin: 0 0 8px 0; color: #111; font-size: 0.95rem;">Información Adicional</h4>
-          <ul style="margin: 0; padding-left: 20px; font-size: 0.9rem; color: #555;">
-            <li style="margin-bottom: 4px;">Los tiempos comienzan a contar a partir de la confirmación del pago.</li>
-            <li style="margin-bottom: 4px;">Pedidos realizados en fines de semana o festivos se procesan el siguiente día hábil.</li>
-            <li>Para pedidos de gran volumen, los tiempos y costos de flete pueden variar y serán notificados.</li>
-          </ul>
-        </div>
+        <p class="modal-block-desc">
+          Entregas rápidas directamente a la puerta de tu domicilio u obra. Los despachos locales cuentan con prioridad.
+        </p>
       </div>
-      <button class="descripcion-modal-button" (click)="cerrarModalEntrega()">
+
+      <div class="modal-info-block">
+        <h3 class="modal-block-title">Envíos Nacionales</h3>
+        <div class="modal-status-line">
+          <span class="modal-status-dot"></span>
+          <strong>3 a 7 días hábiles</strong>
+        </div>
+        <p class="modal-block-desc">
+          Despachamos a toda Colombia a través de nuestras transportadoras aliadas. El tiempo de tránsito depende del municipio de destino y la gestión de la transportadora.
+        </p>
+      </div>
+
+      <div class="modal-note-box">
+        <h4>Información Adicional</h4>
+        <ul>
+          <li>Los tiempos comienzan a contar a partir de la confirmación del pago.</li>
+          <li>Pedidos realizados en fines de semana o festivos se procesan el siguiente día hábil.</li>
+          <li>Para pedidos de gran volumen, los tiempos y costos de flete pueden variar y serán notificados.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="descripcion-modal-footer">
+      <button type="button" class="descripcion-modal-button" (click)="cerrarModalEntrega()">
         Entendido
       </button>
     </div>
@@ -289,31 +305,37 @@
 <!-- Modal de Tienda / Stock -->
 <div *ngIf="mostrarModalStock" class="descripcion-modal-backdrop" (click)="cerrarModalStock()">
   <div class="descripcion-modal-container" (click)="$event.stopPropagation()">
-    <button class="descripcion-modal-close" (click)="cerrarModalStock()" title="Cerrar (Esc)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-    </button>
-    <div class="descripcion-modal-content">
-      <h2 class="descripcion-modal-title" style="display: flex; align-items: center; gap: 12px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+    <div class="descripcion-modal-header">
+      <h2 class="descripcion-modal-title">
+        <span class="modal-title-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </span>
         Disponibilidad en Tienda
       </h2>
-      <div class="descripcion-modal-text">
-        <div style="text-align: center; margin: 30px 0;">
-          <div class="ikea-stock-status" style="display: inline-flex; font-size: 1.4rem; justify-content: center; background: #f5f5f5; padding: 16px 32px; border-radius: 12px;">
-            <span class="ikea-stock-dot" style="width: 12px; height: 12px;" [ngClass]="{'green': getStockRealDisponible() > 0, 'red': getStockRealDisponible() === 0}"></span>
-            <span *ngIf="getStockRealDisponible() > 0" style="color: #111;"><strong>{{getStockRealDisponible()}}</strong> unidades disponibles</span>
-            <span *ngIf="getStockRealDisponible() === 0" style="color: #111;">Producto actualmente agotado</span>
-          </div>
-        </div>
-        
-        <div style="margin-top: 20px;">
-          <h3 style="font-size: 1.1rem; color: #111; margin-bottom: 8px;">Punto de Venta Principal</h3>
-          <p style="margin: 0; color: #444;">
-            Puedes acercarte a nuestra sede principal para compras directas o para recoger pedidos web (opción de recogida en tienda).
-          </p>
+      <button type="button" class="descripcion-modal-close" (click)="cerrarModalStock()" title="Cerrar (Esc)" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <div class="descripcion-modal-body">
+      <div class="modal-stock-highlight">
+        <div class="modal-stock-pill">
+          <span class="ikea-stock-dot" [ngClass]="{'green': getStockRealDisponible() > 0, 'red': getStockRealDisponible() === 0}"></span>
+          <span *ngIf="getStockRealDisponible() > 0"><strong>{{getStockRealDisponible()}}</strong> unidades disponibles</span>
+          <span *ngIf="getStockRealDisponible() === 0">Producto actualmente agotado</span>
         </div>
       </div>
-      <button class="descripcion-modal-button" (click)="cerrarModalStock()">
+
+      <div class="modal-info-block no-mb">
+        <h3 class="modal-block-title">Punto de Venta Principal</h3>
+        <p class="modal-block-desc">
+          Puedes acercarte a nuestra sede principal para compras directas o para recoger pedidos web (opción de recogida en tienda).
+        </p>
+      </div>
+    </div>
+
+    <div class="descripcion-modal-footer">
+      <button type="button" class="descripcion-modal-button" (click)="cerrarModalStock()">
         Cerrar
       </button>
     </div>
@@ -334,68 +356,72 @@
 <!-- Modal de Información Legal, Garantías y Retracto -->
 <div *ngIf="mostrarModalLegal" class="descripcion-modal-backdrop" (click)="cerrarModalLegal()">
   <div class="descripcion-modal-container legal-modal-container" (click)="$event.stopPropagation()">
-    <button class="descripcion-modal-close" (click)="cerrarModalLegal()" title="Cerrar (Esc)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-    </button>
-    <div class="descripcion-modal-content">
-      <h2 class="descripcion-modal-title" style="display: flex; align-items: center; gap: 12px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px; color: #16a34a;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+    <div class="descripcion-modal-header">
+      <h2 class="descripcion-modal-title">
+        <span class="modal-title-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        </span>
         Información Legal, Garantías y Retracto
       </h2>
-      
-      <div class="descripcion-modal-text">
-        <!-- Retracto -->
-        <div style="margin-bottom: 22px;">
-          <h3 style="font-size: 1.05rem; color: #111; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
-            <span style="display: inline-block; width: 8px; height: 8px; background: #16a34a; border-radius: 50%;"></span>
-            Derecho de Retracto (Ley 1480 de 2011)
-          </h3>
-          <p style="margin: 0 0 6px 16px; font-size: 0.92rem; line-height: 1.5; color: #374151;">
-            De acuerdo con el artículo 47 del Estatuto del Consumidor, cuentas con un término máximo de <strong>cinco (5) días hábiles</strong> a partir de la entrega del producto para ejercer tu derecho de retracto.
-          </p>
-          <ul style="margin: 0 0 0 16px; padding-left: 20px; font-size: 0.88rem; color: #4b5563; line-height: 1.5;">
-            <li style="margin-bottom: 4px;">El producto debe devolverse en perfecto estado, sin señales de uso ni instalación, en su empaque original sellado y con todas sus etiquetas y accesorios completos.</li>
-            <li style="margin-bottom: 4px;">Los costos de transporte y demás fletes que conlleve la devolución del bien serán asumidos por el consumidor, conforme a la ley.</li>
-            <li><strong>Exclusiones legales:</strong> Bienes confeccionados conforme a especificaciones del cliente o personalizados (como materiales cortados a medida por metro lineal) y bienes que por su naturaleza no puedan ser devueltos.</li>
-          </ul>
-        </div>
+      <button type="button" class="descripcion-modal-close" (click)="cerrarModalLegal()" title="Cerrar (Esc)" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
 
-        <!-- Garantía Legal -->
-        <div style="margin-bottom: 22px;">
-          <h3 style="font-size: 1.05rem; color: #111; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
-            <span style="display: inline-block; width: 8px; height: 8px; background: #16a34a; border-radius: 50%;"></span>
-            Garantía Legal y Cobertura
-          </h3>
-          <p style="margin: 0 0 6px 16px; font-size: 0.92rem; line-height: 1.5; color: #374151;">
-            Nuestros productos cuentan con garantía legal por defectos de fabricación, calidad o idoneidad de los materiales bajo condiciones normales de uso.
-          </p>
-          <ul style="margin: 0 0 0 16px; padding-left: 20px; font-size: 0.88rem; color: #4b5563; line-height: 1.5;">
-            <li style="margin-bottom: 4px;">Para solicitar la efectividad de la garantía, comunícate con nuestras líneas de atención aportando número de pedido, factura y evidencia fotográfica o en video del defecto.</li>
-            <li>No aplica garantía por daños atribuibles a uso indebido, almacenamiento en condiciones inapropiadas o desgaste natural por uso.</li>
-          </ul>
-        </div>
-
-        <!-- Precios e Impuestos -->
-        <div style="margin-bottom: 20px; padding: 14px 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #09090b;">
-          <h4 style="margin: 0 0 4px 0; color: #111; font-size: 0.95rem; font-weight: 700;">Precios, Impuestos y Facturación</h4>
-          <p style="margin: 0; font-size: 0.88rem; color: #4b5563; line-height: 1.5;">
-            Todos los precios mostrados están expresados en Pesos Colombianos (COP) e incluyen el Impuesto al Valor Agregado (IVA). Plaxtilineas expide Factura Electrónica legal para todas las compras.
-          </p>
-        </div>
-
-        <!-- Enlaces a políticas completas -->
-        <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; padding-top: 14px; border-top: 1px solid #e5e7eb;">
-          <a routerLink="/terminos" target="_blank" style="color: #16a34a; font-weight: 600; font-size: 0.88rem; text-decoration: underline;">Términos y Condiciones</a>
-          <span style="color: #9ca3af;">•</span>
-          <a routerLink="/aviso-legal" target="_blank" style="color: #16a34a; font-weight: 600; font-size: 0.88rem; text-decoration: underline;">Aviso Legal</a>
-          <span style="color: #9ca3af;">•</span>
-          <a routerLink="/privacidad" target="_blank" style="color: #16a34a; font-weight: 600; font-size: 0.88rem; text-decoration: underline;">Política de Privacidad</a>
-          <span style="color: #9ca3af;">•</span>
-          <a routerLink="/pqrs-crear" target="_blank" style="color: #16a34a; font-weight: 600; font-size: 0.88rem; text-decoration: underline;">Radicar PQR</a>
-        </div>
+    <div class="descripcion-modal-body">
+      <!-- Retracto -->
+      <div class="modal-info-block">
+        <h3 class="modal-block-title has-dot">
+          <span class="modal-status-dot"></span>
+          Derecho de Retracto (Ley 1480 de 2011)
+        </h3>
+        <p class="modal-block-desc">
+          De acuerdo con el artículo 47 del Estatuto del Consumidor, cuentas con un término máximo de <strong>cinco (5) días hábiles</strong> a partir de la entrega del producto para ejercer tu derecho de retracto.
+        </p>
+        <ul class="modal-bullet-list">
+          <li>El producto debe devolverse en perfecto estado, sin señales de uso ni instalación, en su empaque original sellado y con todas sus etiquetas y accesorios completos.</li>
+          <li>Los costos de transporte y demás fletes que conlleve la devolución del bien serán asumidos por el consumidor, conforme a la ley.</li>
+          <li><strong>Exclusiones legales:</strong> Bienes confeccionados conforme a especificaciones del cliente o personalizados (como materiales cortados a medida por metro lineal) y bienes que por su naturaleza no puedan ser devueltos.</li>
+        </ul>
       </div>
 
-      <button class="descripcion-modal-button" (click)="cerrarModalLegal()">
+      <!-- Garantía Legal -->
+      <div class="modal-info-block">
+        <h3 class="modal-block-title has-dot">
+          <span class="modal-status-dot"></span>
+          Garantía Legal y Cobertura
+        </h3>
+        <p class="modal-block-desc">
+          Nuestros productos cuentan con garantía legal por defectos de fabricación, calidad o idoneidad de los materiales bajo condiciones normales de uso.
+        </p>
+        <ul class="modal-bullet-list">
+          <li>Para solicitar la efectividad de la garantía, comunícate con nuestras líneas de atención aportando número de pedido, factura y evidencia fotográfica o en video del defecto.</li>
+          <li>No aplica garantía por daños atribuibles a uso indebido, almacenamiento en condiciones inapropiadas o desgaste natural por uso.</li>
+        </ul>
+      </div>
+
+      <!-- Precios e Impuestos -->
+      <div class="modal-note-box">
+        <h4>Precios, Impuestos y Facturación</h4>
+        <p>
+          Todos los precios mostrados están expresados en Pesos Colombianos (COP) e incluyen el Impuesto al Valor Agregado (IVA). Plaxtilineas expide Factura Electrónica legal para todas las compras.
+        </p>
+      </div>
+
+      <!-- Enlaces a políticas completas -->
+      <div class="modal-legal-links">
+        <a routerLink="/terminos" target="_blank">Términos y Condiciones</a>
+        <span>•</span>
+        <a routerLink="/aviso-legal" target="_blank">Aviso Legal</a>
+        <span>•</span>
+        <a routerLink="/privacidad" target="_blank">Política de Privacidad</a>
+        <span>•</span>
+        <a routerLink="/pqrs-crear" target="_blank">Radicar PQR</a>
+      </div>
+    </div>
+
+    <div class="descripcion-modal-footer">
+      <button type="button" class="descripcion-modal-button" (click)="cerrarModalLegal()">
         Entendido
       </button>
     </div>

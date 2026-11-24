@@ -250,4 +250,98 @@ export class AuthService {
     };
     return this.http.delete<{ mensaje: string }>(`${environment.apiUrl}/auth/cuenta`, { headers });
   }
+
+  obtenerEstadoLimitePassword(): Observable<{
+    limite_password: {
+      usados: number;
+      maximo: number;
+      restantes: number;
+      ventana_dias: number;
+      permitido: boolean;
+      proximo_disponible_en: string | null;
+      dias_restantes: number;
+    };
+  }> {
+    const token = localStorage.getItem('token');
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+    return this.http.get<{
+      limite_password: {
+        usados: number;
+        maximo: number;
+        restantes: number;
+        ventana_dias: number;
+        permitido: boolean;
+        proximo_disponible_en: string | null;
+        dias_restantes: number;
+      };
+    }>(`${environment.apiUrl}/auth/password/estado`, { headers });
+  }
+
+  solicitarCodigoCambioPassword(): Observable<{ mensaje: string; correo_enmascarado: string; expira_minutos: number; cooldown_segundos?: number }> {
+    const token = localStorage.getItem('token');
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+    return this.http.post<{ mensaje: string; correo_enmascarado: string; expira_minutos: number; cooldown_segundos?: number }>(
+      `${environment.apiUrl}/auth/password/solicitar-codigo`,
+      {},
+      { headers }
+    );
+  }
+
+  validarCodigoCambioPassword(codigo: string): Observable<{ valido: boolean; mensaje: string }> {
+    const token = localStorage.getItem('token');
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+    return this.http.post<{ valido: boolean; mensaje: string }>(
+      `${environment.apiUrl}/auth/password/validar-codigo`,
+      { codigo },
+      { headers }
+    );
+  }
+
+  actualizarPasswordConCodigo(payload: {
+    codigo: string;
+    nueva_password: string;
+    nueva_password_confirmation: string;
+  }): Observable<{
+    mensaje: string;
+    limite_password?: {
+      usados: number;
+      maximo: number;
+      restantes: number;
+      ventana_dias: number;
+      permitido: boolean;
+      proximo_disponible_en: string | null;
+      dias_restantes: number;
+    };
+  }> {
+    const token = localStorage.getItem('token');
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+    return this.http.post<{
+      mensaje: string;
+      limite_password?: {
+        usados: number;
+        maximo: number;
+        restantes: number;
+        ventana_dias: number;
+        permitido: boolean;
+        proximo_disponible_en: string | null;
+        dias_restantes: number;
+      };
+    }>(
+      `${environment.apiUrl}/auth/password/actualizar`,
+      payload,
+      { headers }
+    );
+  }
 }

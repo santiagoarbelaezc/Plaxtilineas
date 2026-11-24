@@ -1,247 +1,732 @@
-.configuracion-container {
-  max-width: 800px;
+/* ═══════════════════════════════════════════════════════════════════
+   SEGURIDAD Y CUENTA — MANUAL DE MARCA PLAXTILINEAS (IGUAL QUE /PAGO Y /PERFIL)
+   Superficie: #ffffff / #f8f9fa | Bordes: 1.5px #e4e4e7 | Marca: #379045
+   Tipografía: Montserrat (titulares/UI) · Mulish (cuerpo)
+   ═══════════════════════════════════════════════════════════════════ */
+
+:host {
+  display: block;
+  width: 100%;
+  font-family: var(--font-secondary, 'Mulish', sans-serif);
+  color: #383838;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.configuracion-container.standalone {
+  max-width: 820px;
   margin: 0 auto;
-  padding: 2rem 1rem;
-  padding-top: 120px;
-  min-height: calc(100vh - 300px);
+  padding: 120px 24px 72px;
 }
 
 .configuracion-container.embedded {
-  padding: 0 !important;
-  max-width: 100% !important;
-  margin: 0 !important;
-  min-height: auto !important;
-}
-
-.configuracion-container.embedded .configuracion-content {
-  margin-bottom: 0 !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  background: transparent !important;
+  width: 100%;
+  padding: 0;
 }
 
 .configuracion-header {
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.header-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: var(--primary-light, #e0f2fe);
-  color: var(--primary-color, #0284c7);
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
+  margin-bottom: 28px;
 }
 
 .configuracion-header h1 {
-  font-size: 2rem;
-  color: var(--text-dark, #1e293b);
-  margin-bottom: 0.5rem;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #383838;
+  margin: 6px 0 8px 0;
+  letter-spacing: -0.025em;
 }
 
 .configuracion-header p {
-  color: var(--text-muted, #64748b);
-  font-size: 1.1rem;
-}
-
-.configuracion-content {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  padding: 2rem;
-  margin-bottom: 2rem;
-}
-
-.danger-zone {
-  border: 1px solid #ef4444;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.danger-zone-header {
-  background: #fef2f2;
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid #fee2e2;
-}
-
-.danger-zone-header h2 {
-  color: #dc2626;
-  font-size: 1.2rem;
-  margin-bottom: 0.25rem;
-}
-
-.danger-zone-header p {
-  color: #991b1b;
-  font-size: 0.9rem;
+  font-size: 0.98rem;
+  color: #5e5e5e;
   margin: 0;
 }
 
-.danger-item {
+.configuracion-stack {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.danger-info h3 {
-  font-size: 1.1rem;
-  color: var(--text-dark, #1e293b);
-  margin-bottom: 0.25rem;
+/* ═══════════════════════════════════════════════════════════════════
+   SECCIÓN 1: TARJETA DE ACTUALIZAR CONTRASEÑA (OTP)
+   ═══════════════════════════════════════════════════════════════════ */
+.security-card {
+  background: #ffffff;
+  border: 1.5px solid #e4e4e7;
+  border-left: 4px solid #379045;
+  border-radius: 16px;
+  padding: 26px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.danger-info p {
-  color: var(--text-muted, #64748b);
-  font-size: 0.95rem;
-  margin: 0;
-  max-width: 500px;
+.security-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
 }
 
-.btn-delete {
-  background: transparent;
-  color: #dc2626;
-  border: 1px solid #dc2626;
-  border-radius: 6px;
-  padding: 0.6rem 1.2rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.btn-delete:hover {
-  background: #dc2626;
-  color: white;
-}
-
-/* Modal styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(4px);
+.security-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
+  background: #eaf4ec;
+  border: 1px solid rgba(55, 144, 69, 0.25);
+  color: #379045;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
-  padding: 1rem;
+  flex-shrink: 0;
 }
 
-.modal-content {
-  background: white;
-  border-radius: 12px;
-  padding: 2.5rem;
-  width: 100%;
-  max-width: 500px;
-  text-align: center;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  animation: slideUp 0.3s ease-out;
+.security-head-text {
+  flex: 1;
+  min-width: 0;
 }
 
-@keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+.section-kicker {
+  display: inline-block;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #379045;
+  margin-bottom: 4px;
 }
 
-.modal-warning-icon {
+.security-title {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #09090b;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px 0;
+}
+
+.security-subtitle {
+  font-size: 0.94rem;
+  color: #5e5e5e;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.security-subtitle strong {
+  color: #09090b;
+}
+
+.password-quota-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #f4f5f7;
+  border: 1px solid #e4e4e7;
+  font-size: 0.8rem;
+  color: #383838;
+}
+
+.password-quota-pill .quota-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #379045;
+  flex-shrink: 0;
+}
+
+.password-quota-pill.is-exhausted {
+  background: #fef3c7;
+  border-color: #fde68a;
+  color: #92400e;
+}
+
+.password-quota-pill.is-exhausted .quota-dot {
+  background: #d97706;
+}
+
+/* Alertas */
+.security-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.security-alert svg {
+  flex-shrink: 0;
+}
+
+.security-alert.is-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+
+.security-alert.is-info {
+  background: #eaf4ec;
+  border: 1px solid rgba(55, 144, 69, 0.3);
+  color: #1f4727;
+}
+
+.security-alert.is-warning {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+}
+
+/* Botón Principal Negro de Alto Contraste */
+.btn-security-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: #fef2f2;
-  color: #dc2626;
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
+  gap: 10px;
+  padding: 15px 26px;
+  background: #09090b;
+  border: 2px solid #09090b;
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.86rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  box-shadow: 0 12px 24px -10px rgba(9, 9, 11, 0.4);
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.modal-content h2 {
-  font-size: 1.5rem;
-  color: var(--text-dark, #1e293b);
-  margin-bottom: 1rem;
+.btn-security-primary:hover:not(:disabled) {
+  background: #141418;
+  border-color: #379045;
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px -10px rgba(9, 9, 11, 0.5), 0 0 0 3px rgba(55, 144, 69, 0.16);
 }
 
-.modal-content p {
-  color: var(--text-muted, #64748b);
-  margin-bottom: 2rem;
-  line-height: 1.5;
+.btn-security-primary:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-.modal-actions {
-  display: flex;
-  gap: 1rem;
+.btn-security-primary.full-w {
+  width: 100%;
+}
+
+.btn-security-ghost {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-}
-
-.btn-cancel {
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  border: 1px solid #cbd5e1;
-  background: white;
-  color: var(--text-dark, #1e293b);
-  font-weight: 600;
+  padding: 14px 22px;
+  background: #f4f5f7;
+  border: 1.5px solid #e4e4e7;
+  border-radius: 12px;
+  color: #383838;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.84rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-security-ghost:hover:not(:disabled) {
+  background: #e4e4e7;
+}
+
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2.5px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: cfgSpin 0.7s linear infinite;
+}
+
+@keyframes cfgSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* Formulario OTP + Nueva Contraseña */
+.otp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-top: 6px;
+}
+
+.otp-code-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.otp-input-group {
   flex: 1;
-  transition: background 0.2s;
+  min-width: 220px;
 }
 
-.btn-cancel:hover:not(:disabled) {
-  background: #f8fafc;
+.password-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
 
-.btn-confirm-delete {
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  border: none;
-  background: #dc2626;
-  color: white;
-  font-weight: 600;
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.form-group label {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5e5e5e;
+}
+
+.required {
+  color: #379045;
+}
+
+.form-input {
+  width: 100%;
+  padding: 13px 16px;
+  background: #f8f9fa;
+  border: 1.5px solid #d4d4d8;
+  border-radius: 10px;
+  font-family: var(--font-secondary, 'Mulish', sans-serif);
+  font-size: 0.98rem;
+  color: #09090b;
+  outline: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus {
+  background: #ffffff;
+  border-color: #379045;
+  box-shadow: 0 0 0 3px rgba(55, 144, 69, 0.16);
+}
+
+.otp-code-input {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.35em;
+  text-align: center;
+}
+
+.btn-resend-code {
+  padding: 14px 18px;
+  background: #eaf4ec;
+  border: 1.5px solid rgba(55, 144, 69, 0.32);
+  border-radius: 10px;
+  color: #2c7337;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   cursor: pointer;
-  flex: 1;
-  transition: background 0.2s;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.btn-confirm-delete:hover:not(:disabled) {
-  background: #b91c1c;
+.btn-resend-code:hover:not(:disabled) {
+  background: #379045;
+  color: #ffffff;
 }
 
-.btn-confirm-delete:disabled, .btn-cancel:disabled {
-  opacity: 0.6;
+.btn-resend-code:disabled {
+  opacity: 0.55;
   cursor: not-allowed;
 }
 
-.error-alert {
-  background: #fef2f2;
-  color: #dc2626;
-  padding: 0.75rem;
-  border-radius: 6px;
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
-  border: 1px solid #fee2e2;
+.pwd-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
+.form-input.has-eye {
+  padding-right: 44px;
+}
+
+.pwd-eye-btn {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: #71717a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 6px;
+  transition: color 0.2s ease;
+}
+
+.pwd-eye-btn:hover {
+  color: #09090b;
+}
+
+/* Checklist de Contraseña Segura */
+.password-policy-box {
+  background: #f8f9fa;
+  border: 1px solid #e4e4e7;
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.policy-title {
+  display: block;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5e5e5e;
+  margin-bottom: 10px;
+}
+
+.policy-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 14px;
+}
+
+.policy-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #71717a;
+  transition: color 0.2s ease;
+}
+
+.policy-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d4d4d8;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.policy-chip.met {
+  color: #2c7337;
+}
+
+.policy-chip.met .policy-dot {
+  background: #379045;
+  transform: scale(1.15);
+}
+
+.otp-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SECCIÓN 2: ZONA DE PELIGRO (ESTILO MINIMALISTA COHERENTE)
+   ═══════════════════════════════════════════════════════════════════ */
+.danger-card {
+  background: #ffffff;
+  border: 1.5px solid #e4e4e7;
+  border-left: 4px solid #dc2626;
+  border-radius: 16px;
+  padding: 26px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.danger-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.danger-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.danger-kicker {
+  display: inline-block;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #dc2626;
+  margin-bottom: 4px;
+}
+
+.danger-title {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #09090b;
+  margin: 0 0 4px 0;
+}
+
+.danger-subtitle {
+  font-size: 0.92rem;
+  color: #5e5e5e;
+  margin: 0;
+}
+
+.danger-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 20px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+}
+
+.danger-info h3 {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 1rem;
+  font-weight: 800;
+  color: #09090b;
+  margin: 0 0 4px 0;
+}
+
+.danger-info p {
+  font-size: 0.88rem;
+  color: #5e5e5e;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.btn-delete-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: #ffffff;
+  border: 1.5px solid #dc2626;
+  border-radius: 10px;
+  color: #dc2626;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-delete-outline:hover {
+  background: #dc2626;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.btn-delete-solid {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 20px;
+  background: #dc2626;
+  border: 1.5px solid #dc2626;
+  border-radius: 10px;
+  color: #ffffff;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.84rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-delete-solid:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+.btn-delete-solid:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MODALES NATIVOS LIMPIOS (ÉXITO CONTRASEÑA & ELIMINAR CUENTA)
+   ═══════════════════════════════════════════════════════════════════ */
+.cfg-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 9, 11, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 10000;
+}
+
+.cfg-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  background: #ffffff;
+  border: 1.5px solid #e4e4e7;
+  border-radius: 18px;
+  padding: 36px 32px 30px;
+  text-align: center;
+  color: #383838;
+  box-shadow: 0 32px 72px rgba(9, 9, 11, 0.3);
+  overflow: hidden;
+}
+
+.cfg-modal-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #379045 0%, #4ade80 100%);
+}
+
+.cfg-modal-accent.is-danger {
+  background: linear-gradient(90deg, #dc2626 0%, #f87171 100%);
+}
+
+.cfg-modal-icon-ring {
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: #eaf4ec;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cfg-modal-icon-ring.is-danger {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.cfg-check-svg {
+  width: 68px;
+  height: 68px;
+  display: block;
+}
+
+.cfg-check-circle {
+  stroke: #379045;
+  stroke-width: 2.5;
+  stroke-dasharray: 150;
+  stroke-dashoffset: 150;
+  animation: drawCfgCircle 0.45s cubic-bezier(0.65, 0, 0.45, 1) 0.08s forwards;
+}
+
+.cfg-check-path {
+  stroke: #379045;
+  stroke-width: 3.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: drawCfgCheck 0.35s cubic-bezier(0.65, 0, 0.45, 1) 0.35s forwards;
+}
+
+@keyframes drawCfgCircle {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes drawCfgCheck {
+  to { stroke-dashoffset: 0; }
+}
+
+.cfg-modal-title {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #09090b;
+  margin: 0 0 10px 0;
+}
+
+.cfg-modal-desc {
+  font-size: 0.96rem;
+  color: #5e5e5e;
+  line-height: 1.55;
+  margin: 0 0 26px 0;
+}
+
+.cfg-modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.cfg-modal-actions .btn-security-ghost {
+  flex: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVIDAD
+   ═══════════════════════════════════════════════════════════════════ */
 @media (max-width: 640px) {
-  .danger-item {
+  .security-card,
+  .danger-card {
+    padding: 20px 18px;
+  }
+
+  .password-grid,
+  .policy-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .danger-action-row {
     flex-direction: column;
     align-items: stretch;
-    text-align: center;
   }
-  
-  .btn-delete {
+
+  .btn-delete-outline,
+  .btn-security-primary,
+  .btn-security-ghost,
+  .btn-resend-code {
     width: 100%;
+    justify-content: center;
   }
-  
-  .modal-actions {
-    flex-direction: column-reverse;
+
+  .cfg-modal-actions {
+    flex-direction: column;
   }
 }
