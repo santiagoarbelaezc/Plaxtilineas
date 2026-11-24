@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { ProductosService } from '../../../services/productos.service';
 import { CategoriasService } from '../../../services/categorias.service';
 import { MenuStateService } from '../../../services/menu-state.service';
+import { CartService } from '../../../services/cart.service';
 import { ProductoEditable } from '../../../models/producto.model';
 import { optimizeForThumbnail } from '../../../utils/cloudinary-optimizer';
 
@@ -34,12 +35,14 @@ export class DynamicProductCarouselComponent implements OnInit {
   itemsPerPage = 5;
   pagesArray: number[] = [];
   isMobile = false;
+  addedProductIds = new Set<number>();
 
   constructor(
     private productosService: ProductosService,
     private categoriasService: CategoriasService,
     private router: Router,
-    private menuStateService: MenuStateService
+    private menuStateService: MenuStateService,
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {
@@ -170,6 +173,37 @@ export class DynamicProductCarouselComponent implements OnInit {
     const slug = nombre ? nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '') : '';
     const urlParam = slug ? `${productoId}-${slug}` : productoId;
     this.router.navigate(['/producto', urlParam]);
+  }
+
+  tieneVariantes(producto: ProductoEditable): boolean {
+    const p: any = producto;
+    const precioNum = Number(producto.precio || 0);
+    const variantes = Array.isArray(p?.variantes) ? p.variantes : [];
+    return variantes.length > 1 || precioNum <= 0;
+  }
+
+  estaAgotado(producto: ProductoEditable): boolean {
+    return !!(producto.controlar_stock && producto.stock === 0);
+  }
+
+  agregarAlCarrito(producto: ProductoEditable, event: Event): void {
+    event.stopPropagation();
+    if (this.estaAgotado(producto)) return;
+
+    if (this.tieneVariantes(producto)) {
+      this.verDetalles(producto.id, producto.nombre);
+      return;
+    }
+
+    const p: any = producto;
+    const varianteUnica = Array.isArray(p?.variantes) && p.variantes.length === 1 ? p.variantes[0] : undefined;
+    const agregado = this.cartService.addToCart(producto, 1, varianteUnica);
+    if (agregado && producto.id) {
+      this.addedProductIds.add(producto.id);
+      setTimeout(() => {
+        this.addedProductIds.delete(producto.id);
+      }, 1500);
+    }
   }
 
   formatearPrecio(precio: number): string {

@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -7,153 +7,107 @@ import { PedidoService } from '../../services/pedido.service';
 import { MisPedidos } from '../mis-pedidos/mis-pedidos';
 import { ConfiguracionComponent } from '../configuracion/configuracion.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { 
-  faUser, faMapMarkerAlt, faShoppingBag, faKey, 
+import {
+  faUser, faMapMarkerAlt, faShoppingBag, faKey,
   faSignOutAlt, faStore, faShieldAlt, faCheckCircle
 } from '@fortawesome/free-solid-svg-icons';
-import Swal from 'sweetalert2';
 import { Subject, takeUntil } from 'rxjs';
-import { Footer } from '../../shared/layout/footer/footer.component';
-import { SocialButtonsComponent } from '../../shared/layout/social-buttons/social-buttons.component';
 
 export type ProfileTab = 'datos' | 'direccion' | 'pedidos' | 'configuracion';
+
+interface PerfilModalState {
+  type: 'success' | 'error' | 'logout';
+  title: string;
+  message: string;
+}
 
 @Component({
   selector: 'app-perfil',
   standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule, 
-    RouterModule, 
+    CommonModule,
+    FormsModule,
+    RouterModule,
     MisPedidos,
     ConfiguracionComponent,
-    FontAwesomeModule,
-    Footer,
-    SocialButtonsComponent
+    FontAwesomeModule
   ],
+  styleUrls: ['./perfil.component.css'],
   template: `
-    <div class="dash-shell">
-      
-      <!-- ══════════════════════════════════════════════════════════════
-           PANEL DE CONTROL SUPERIOR (TIPO DASHBOARD TABS)
-           ══════════════════════════════════════════════════════════════ -->
-      <header class="top-dashboard-panel">
-        
-        <!-- Fila 1: Marca, Estado y Acciones Rápidas -->
-        <div class="panel-top-bar">
-          <div class="panel-brand-box">
-            <a routerLink="/" class="brand-link" title="Volver al inicio">
-              <div class="brand-icon-box">
-                <fa-icon [icon]="faShieldAlt"></fa-icon>
-              </div>
-              <div class="brand-text-col">
-                <span class="brand-name">Plaxtilineas</span>
-                <span class="brand-role">PANEL CLIENTE</span>
-              </div>
-            </a>
-            <div class="status-pill">
-              <span class="status-dot"></span>
-              <span class="status-pill-text">Cuenta Activa</span>
-            </div>
+    <div class="perfil-wrapper">
+
+      <!-- MODAL NATIVO PLAXTILINEAS (Éxito / Error / Confirmar Cierre de Sesión) -->
+      <div class="perfil-modal-overlay" *ngIf="feedbackModal() as modal" (click)="closeModal()" role="dialog" aria-modal="true">
+        <div class="perfil-modal-card" (click)="$event.stopPropagation()">
+          <div class="perfil-modal-accent" [class.is-error]="modal.type === 'error'"></div>
+
+          <!-- Ícono animado según tipo -->
+          <div class="perfil-modal-icon-ring" [class.is-error]="modal.type === 'error'" [class.is-logout]="modal.type === 'logout'">
+            <svg *ngIf="modal.type === 'success'" class="modal-check-svg" viewBox="0 0 52 52" aria-hidden="true">
+              <circle class="modal-check-circle" cx="26" cy="26" r="23" fill="none" />
+              <path class="modal-check-path" fill="none" d="M15.5 26.8l6.8 6.9 14.4-14.8" />
+            </svg>
+            <svg *ngIf="modal.type === 'error'" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="15" y1="9" x2="9" y2="15"></line>
+              <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+            <svg *ngIf="modal.type === 'logout'" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
           </div>
 
-          <div class="panel-actions-box">
-            <!-- Volver a la Tienda -->
-            <a routerLink="/" class="btn-panel-action ghost" title="Ir a la tienda">
-              <fa-icon [icon]="faStore"></fa-icon>
-              <span>Volver a la tienda</span>
-            </a>
+          <h2 class="perfil-modal-title">{{ modal.title }}</h2>
+          <p class="perfil-modal-desc">{{ modal.message }}</p>
 
-            <!-- Chip de Usuario -->
-            <div class="user-chip">
-              <div class="user-avatar-circle">
-                <span>{{ getInitials() }}</span>
-              </div>
-              <div class="user-meta-text">
-                <span class="user-name">{{ getFullName() }}</span>
-                <span class="user-sub">{{ getEmail() || 'Cliente' }}</span>
-              </div>
-            </div>
+          <div class="perfil-modal-actions" *ngIf="modal.type !== 'logout'">
+            <button type="button" class="perfil-modal-btn-primary" (click)="closeModal()">
+              Entendido
+            </button>
+          </div>
 
-            <!-- Botón Cerrar Sesión -->
-            <button type="button" class="btn-panel-action logout" (click)="logout()" title="Cerrar sesión">
-              <fa-icon [icon]="faSignOutAlt"></fa-icon>
-              <span>Salir</span>
+          <div class="perfil-modal-actions" *ngIf="modal.type === 'logout'">
+            <button type="button" class="perfil-modal-btn-secondary" (click)="closeModal()">
+              Cancelar
+            </button>
+            <button type="button" class="perfil-modal-btn-primary" (click)="confirmLogout()">
+              Sí, salir
             </button>
           </div>
         </div>
+      </div>
 
-        <!-- Fila 2: Pestañas de Navegación Horizontales -->
-        <div class="panel-tabs-bar">
-          <nav class="panel-nav-track">
-            <!-- 1. Editar datos -->
-            <button 
-              type="button" 
-              class="panel-tab-btn" 
-              [class.active]="activeTab() === 'datos'" 
-              (click)="setTab('datos')"
-              title="Editar datos personales">
-              <fa-icon [icon]="faUser" class="tab-icon"></fa-icon>
-              <span>Editar datos</span>
-            </button>
+      <!-- LAYOUT SPLIT-SCREEN (62% BLANCO IZQUIERDA · 38% VERDE PLAXTILINEAS DERECHA) -->
+      <div class="perfil-grid">
 
-            <!-- 2. Actualizar dirección -->
-            <button 
-              type="button" 
-              class="panel-tab-btn" 
-              [class.active]="activeTab() === 'direccion'" 
-              (click)="setTab('direccion')"
-              title="Actualizar dirección de envío">
-              <fa-icon [icon]="faMapMarkerAlt" class="tab-icon"></fa-icon>
-              <span>Dirección de Entrega</span>
-            </button>
+        <!-- COLUMNA IZQUIERDA (BLANCO PURO #ffffff): FORMULARIOS Y CONTENIDO -->
+        <main class="perfil-main-col">
+          <div class="perfil-flow-container">
 
-            <!-- 3. Mis Pedidos -->
-            <button 
-              type="button" 
-              class="panel-tab-btn" 
-              [class.active]="activeTab() === 'pedidos'" 
-              (click)="setTab('pedidos')"
-              title="Historial de compras y pedidos">
-              <fa-icon [icon]="faShoppingBag" class="tab-icon"></fa-icon>
-              <span>Mis Pedidos</span>
-              <span class="tab-badge-pill" *ngIf="pedidosCount() > 0">
-                {{ pedidosCount() }}
-              </span>
-            </button>
+            <!-- Top Bar: Botón Volver + Kicker -->
+            <div class="perfil-top-bar">
+              <button type="button" class="btn-volver-izq" (click)="volverAtras()">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>Volver</span>
+              </button>
+              <span class="perfil-kicker">Mi Cuenta Plaxtilineas</span>
+            </div>
 
-            <!-- 4. Configuración -->
-            <button 
-              type="button" 
-              class="panel-tab-btn" 
-              [class.active]="activeTab() === 'configuracion'" 
-              (click)="setTab('configuracion')"
-              title="Seguridad y configuración de cuenta">
-              <fa-icon [icon]="faKey" class="tab-icon"></fa-icon>
-              <span>Seguridad y Cuenta</span>
-            </button>
-          </nav>
-        </div>
+            <!-- Cabecera Editorial -->
+            <div class="perfil-header">
+              <h1 class="perfil-title">{{ getHeaderTitle() }}</h1>
+              <p class="perfil-subtitle">{{ getHeaderSubtitle() }}</p>
+            </div>
 
-      </header>
-
-      <!-- CANVAS PRINCIPAL (#f4f5f7) -->
-      <main class="dash-canvas">
-          
-          <!-- 1. Editar Datos Personales -->
-          <div *ngIf="activeTab() === 'datos'" class="pane-wrapper fade-in">
-            <div class="dash-card">
-              <div class="card-top-header">
-                <div class="card-icon-badge">
-                  <fa-icon [icon]="faUser"></fa-icon>
-                </div>
-                <div class="card-header-titles">
-                  <h2 class="card-main-title">Información Personal</h2>
-                  <p class="card-sub-title">Actualiza tus nombres, datos de contacto y número de teléfono.</p>
-                </div>
-              </div>
-
+            <!-- 1. Datos Personales y Dirección (Unificados) -->
+            <section *ngIf="activeTab() === 'datos'" class="perfil-pane">
               <form #profileForm="ngForm" (ngSubmit)="guardarCambios()" class="dash-form">
+                <div class="form-section-heading">Información personal</div>
                 <div class="form-grid">
                   <div class="form-group">
                     <label for="nombre">Nombre <span class="required">*</span></label>
@@ -177,30 +131,9 @@ export type ProfileTab = 'datos' | 'direccion' | 'pedidos' | 'configuracion';
                   </div>
                 </div>
 
-                <div class="form-actions-row">
-                  <button type="submit" class="btn-dash-primary" [disabled]="profileForm.invalid || isSaving() || !hasChanges()">
-                    <span *ngIf="isSaving()" class="spinner"></span>
-                    <span>{{ isSaving() ? 'Guardando...' : 'Guardar Cambios' }}</span>
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
+                <div class="form-section-divider"></div>
+                <div class="form-section-heading">Dirección de entrega</div>
 
-          <!-- 2. Actualizar Dirección -->
-          <div *ngIf="activeTab() === 'direccion'" class="pane-wrapper fade-in">
-            <div class="dash-card">
-              <div class="card-top-header">
-                <div class="card-icon-badge">
-                  <fa-icon [icon]="faMapMarkerAlt"></fa-icon>
-                </div>
-                <div class="card-header-titles">
-                  <h2 class="card-main-title">Dirección de Entrega</h2>
-                  <p class="card-sub-title">Configura tu domicilio principal para el despacho de tus compras.</p>
-                </div>
-              </div>
-
-              <form #addressForm="ngForm" (ngSubmit)="guardarCambios()" class="dash-form">
                 <div class="form-grid">
                   <div class="form-group full-width">
                     <label for="direccion">Dirección completa <span class="required">*</span></label>
@@ -216,617 +149,124 @@ export type ProfileTab = 'datos' | 'direccion' | 'pedidos' | 'configuracion';
                   </div>
 
                   <div class="form-group">
-                    <label for="ciudad">Ciudad <span class="required">*</span></label>
+                    <label for="ciudad">Ciudad / Municipio <span class="required">*</span></label>
                     <select id="ciudad" [(ngModel)]="form.ciudad" name="ciudad" required [disabled]="!form.departamento" class="form-select">
-                      <option value="">Selecciona ciudad</option>
+                      <option value="">Selecciona ciudad o municipio</option>
                       <option *ngFor="let ciudad of ciudadesDisponibles" [value]="ciudad">{{ ciudad }}</option>
                     </select>
                   </div>
                 </div>
 
                 <div class="form-actions-row">
-                  <button type="submit" class="btn-dash-primary" [disabled]="addressForm.invalid || isSaving() || !hasChanges()">
+                  <button type="submit" class="btn-dash-primary" [disabled]="profileForm.invalid || isSaving() || !hasChanges()">
                     <span *ngIf="isSaving()" class="spinner"></span>
-                    <span>{{ isSaving() ? 'Guardando...' : 'Guardar Dirección' }}</span>
+                    <span>{{ isSaving() ? 'Guardando...' : 'Guardar Cambios' }}</span>
                   </button>
                 </div>
               </form>
-            </div>
-          </div>
+            </section>
 
-          <!-- 3. Mis Pedidos (Historial y Tracking idéntico al Dashboard) -->
-          <div *ngIf="activeTab() === 'pedidos'" class="fade-in">
-            <app-mis-pedidos [isEmbedded]="true"></app-mis-pedidos>
-          </div>
+            <!-- 2. Mis Pedidos -->
+            <section *ngIf="activeTab() === 'pedidos'" class="perfil-pane embedded-section-box">
+              <app-mis-pedidos [isEmbedded]="true"></app-mis-pedidos>
+            </section>
 
-          <!-- 4. Configuración (Seguridad y Cuenta) -->
-          <div *ngIf="activeTab() === 'configuracion'" class="pane-wrapper fade-in">
-            <div class="dash-card">
-              <div class="card-top-header">
-                <div class="card-icon-badge">
-                  <fa-icon [icon]="faKey"></fa-icon>
-                </div>
-                <div class="card-header-titles">
-                  <h2 class="card-main-title">Seguridad y Cuenta</h2>
-                  <p class="card-sub-title">Gestiona la privacidad y opciones de tu cuenta de usuario.</p>
-                </div>
-              </div>
-
+            <!-- 4. Seguridad y Cuenta -->
+            <section *ngIf="activeTab() === 'configuracion'" class="perfil-pane embedded-section-box">
               <app-configuracion [isEmbedded]="true"></app-configuracion>
+            </section>
+
+          </div>
+        </main>
+
+        <!-- COLUMNA DERECHA (FIJA SIN SCROLL): FRANJA DEGRADADO VERDE → CARBÓN + ISOTIPO -->
+        <aside class="perfil-brand-col">
+          <img
+            src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1795130400/logo-solo_r6tfo7.png"
+            alt=""
+            aria-hidden="true"
+            class="perfil-isotipo-watermark" />
+
+          <!-- Logo + Volver a la tienda -->
+          <div class="brand-top-row">
+            <a routerLink="/" class="brand-logo-link" aria-label="Plaxtilineas Inicio">
+              <img
+                src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1770388940/logo-invert_ghucfi.png"
+                alt="Plaxtilineas"
+                class="brand-logo-img" />
+            </a>
+            <a routerLink="/" class="brand-store-btn" title="Ir a la tienda">
+              <fa-icon [icon]="faStore"></fa-icon>
+              <span>Tienda</span>
+            </a>
+          </div>
+
+          <!-- Resumen del Cliente -->
+          <div class="brand-user-hero">
+            <div class="brand-avatar-row">
+              <div class="brand-avatar-circle">{{ getInitials() }}</div>
+              <div class="brand-user-info">
+                <h2 class="brand-user-name">{{ getFullName() }}</h2>
+                <p class="brand-user-email">{{ getEmail() || 'Cliente Plaxtilineas' }}</p>
+              </div>
+            </div>
+
+            <div class="brand-user-summary-pills">
+              <span class="summary-pill" *ngIf="form.ciudad || form.departamento">
+                <fa-icon [icon]="faMapMarkerAlt"></fa-icon>
+                <span>{{ form.ciudad || 'Armenia' }}{{ form.departamento ? ', ' + form.departamento : '' }}</span>
+              </span>
+              <span class="summary-pill" *ngIf="pedidosCount() > 0">
+                <fa-icon [icon]="faShoppingBag"></fa-icon>
+                <span>{{ pedidosCount() }} {{ pedidosCount() === 1 ? 'pedido' : 'pedidos' }}</span>
+              </span>
             </div>
           </div>
 
-        </main>
+          <!-- Accesos Rápidos de Navegación -->
+          <div class="brand-quick-nav">
+            <button type="button" class="brand-nav-item" [class.active]="activeTab() === 'datos'" (click)="setTab('datos')">
+              <span class="brand-nav-left">
+                <fa-icon [icon]="faUser"></fa-icon>
+                <span>Datos personales y entrega</span>
+              </span>
+              <span>→</span>
+            </button>
+
+            <button type="button" class="brand-nav-item" [class.active]="activeTab() === 'pedidos'" (click)="setTab('pedidos')">
+              <span class="brand-nav-left">
+                <fa-icon [icon]="faShoppingBag"></fa-icon>
+                <span>Mis pedidos</span>
+              </span>
+              <span class="brand-nav-count" *ngIf="pedidosCount() > 0">{{ pedidosCount() }}</span>
+              <span *ngIf="pedidosCount() === 0">→</span>
+            </button>
+
+            <button type="button" class="brand-nav-item" [class.active]="activeTab() === 'configuracion'" (click)="setTab('configuracion')">
+              <span class="brand-nav-left">
+                <fa-icon [icon]="faKey"></fa-icon>
+                <span>Seguridad y cuenta</span>
+              </span>
+              <span>→</span>
+            </button>
+          </div>
+
+          <!-- Cerrar Sesión + Ubicación -->
+          <div class="brand-footer-block">
+            <button type="button" class="brand-logout-btn" (click)="logout()">
+              <fa-icon [icon]="faSignOutAlt"></fa-icon>
+              <span>Cerrar Sesión</span>
+            </button>
+
+            <div class="brand-location-foot">
+              <span class="location-dot"></span>
+              <span>Armenia &bull; Eje Cafetero</span>
+            </div>
+          </div>
+        </aside>
+
+      </div>
     </div>
-
-    <app-footer></app-footer>
-    <app-social-buttons></app-social-buttons>
-
-    <style>
-      /* ==========================================================================
-         SISTEMA DE DISEÑO DEL DASHBOARD DEL CLIENTE — PLAXTILINEAS
-         Fiel reproducción del Dashboard Admin (#0a0a0a, blanco y acentos verdes)
-         ========================================================================== */
-      :host {
-        --dash-dark-surface: #0a0a0a;
-        --dash-dark-surface-2: #141416;
-        --dash-dark-border: #1a1a1a;
-        --dash-dark-border-subtle: #27272a;
-        --dash-bg-canvas: #f4f5f7;
-        --dash-card-bg: #ffffff;
-        --dash-card-border: #e4e4e7;
-        --dash-text-dark: #09090b;
-        --dash-text-muted: #71717a;
-        --dash-accent-green: #16a34a;
-        --dash-accent-green-light: #22c55e;
-        --dash-accent-green-glow: rgba(22, 163, 74, 0.45);
-        
-        --header-h: 74px;
-        --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        --font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        
-        display: block;
-        min-height: 100vh;
-        background: var(--dash-bg-canvas);
-        font-family: var(--font-family);
-        color: var(--dash-text-dark);
-        -webkit-font-smoothing: antialiased;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      /* ── Layout Shell ── */
-      .dash-shell {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        background: var(--dash-bg-canvas);
-        position: relative;
-        width: 100%;
-      }
-
-      /* ══════════════════════════════════════════════════════════════
-         PANEL DE CONTROL SUPERIOR HORIZONTAL (#0a0a0a)
-         ══════════════════════════════════════════════════════════════ */
-      .top-dashboard-panel {
-        width: 100%;
-        background: var(--dash-dark-surface);
-        border-bottom: 1px solid var(--dash-dark-border);
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-      }
-
-      /* Fila 1: Marca, Estado y Acciones Rápidas */
-      .panel-top-bar {
-        max-width: 1360px;
-        margin: 0 auto;
-        padding: 14px 28px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-      }
-
-      .panel-brand-box {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-      }
-
-      .brand-link {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        text-decoration: none;
-        color: #ffffff;
-      }
-
-      .brand-icon-box {
-        width: 38px;
-        height: 38px;
-        border-radius: 10px;
-        background: #18181b;
-        border: 1px solid #27272a;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--dash-accent-green-light);
-        font-size: 17px;
-        flex-shrink: 0;
-      }
-
-      .brand-text-col {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .brand-name {
-        font-weight: 800;
-        font-size: 1.1rem;
-        letter-spacing: -0.02em;
-        color: #ffffff;
-        line-height: 1.15;
-      }
-
-      .brand-role {
-        font-size: 0.62rem;
-        font-weight: 800;
-        letter-spacing: 0.08em;
-        color: #a1a1aa;
-      }
-
-      /* Status Pill con Verde */
-      .status-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: rgba(34, 197, 94, 0.12);
-        border: 1px solid rgba(34, 197, 94, 0.3);
-        padding: 4px 10px;
-        border-radius: 9999px;
-      }
-
-      .status-dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: var(--dash-accent-green-light);
-        box-shadow: 0 0 8px var(--dash-accent-green-light);
-      }
-
-      .status-pill-text {
-        font-size: 0.68rem;
-        font-weight: 700;
-        color: var(--dash-accent-green-light);
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-      }
-
-      /* Acciones Rápidas (Derecha) */
-      .panel-actions-box {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .btn-panel-action {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 14px;
-        border-radius: 9999px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        cursor: pointer;
-        text-decoration: none;
-        transition: all 0.2s ease;
-        font-family: inherit;
-        border: 1px solid transparent;
-      }
-
-      .btn-panel-action.ghost {
-        background: #18181b;
-        border-color: #27272a;
-        color: #e4e4e7;
-      }
-
-      .btn-panel-action.ghost:hover {
-        background: #27272a;
-        color: #ffffff;
-        border-color: #3f3f46;
-      }
-
-      .btn-panel-action.logout {
-        background: rgba(239, 68, 68, 0.12);
-        border-color: rgba(239, 68, 68, 0.25);
-        color: #f87171;
-      }
-
-      .btn-panel-action.logout:hover {
-        background: rgba(239, 68, 68, 0.22);
-        border-color: rgba(239, 68, 68, 0.4);
-        color: #ffffff;
-      }
-
-      /* Chip de Usuario */
-      .user-chip {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 4px 12px 4px 6px;
-        background: #18181b;
-        border: 1px solid #27272a;
-        border-radius: 9999px;
-      }
-
-      .user-avatar-circle {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background: #09090b;
-        color: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        font-weight: 800;
-        border: 1.5px solid var(--dash-accent-green-light);
-      }
-
-      .user-meta-text {
-        display: flex;
-        flex-direction: column;
-        text-align: left;
-        line-height: 1.2;
-      }
-
-      .user-name {
-        font-size: 0.78rem;
-        font-weight: 700;
-        color: #ffffff;
-      }
-
-      .user-sub {
-        font-size: 0.65rem;
-        color: #a1a1aa;
-        max-width: 140px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      /* ══════════════════════════════════════════════════════════════
-         FILA 2: PESTAÑAS HORIZONTALES (TIPO DASHBOARD TABS)
-         ══════════════════════════════════════════════════════════════ */
-      .panel-tabs-bar {
-        background: #111113;
-        border-top: 1px solid #1f1f23;
-        padding: 0 28px;
-      }
-
-      .panel-nav-track {
-        max-width: 1360px;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        overflow-x: auto;
-        scrollbar-width: none;
-        padding: 8px 0;
-      }
-
-      .panel-nav-track::-webkit-scrollbar {
-        display: none;
-      }
-
-      .panel-tab-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 9px;
-        padding: 9px 18px;
-        border-radius: 10px;
-        font-size: 0.86rem;
-        font-weight: 600;
-        color: #9ca3af;
-        background: transparent;
-        border: 1px solid transparent;
-        cursor: pointer;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        white-space: nowrap;
-        font-family: inherit;
-      }
-
-      .panel-tab-btn:hover {
-        color: #ffffff;
-        background: #18181b;
-      }
-
-      .panel-tab-btn.active {
-        background: #222226;
-        color: #ffffff;
-        border: 1px solid #333338;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
-      }
-
-      .tab-icon {
-        font-size: 14px;
-        color: #71717a;
-        transition: color 0.2s ease;
-      }
-
-      .panel-tab-btn:hover .tab-icon {
-        color: #d1d5db;
-      }
-
-      .panel-tab-btn.active .tab-icon {
-        color: var(--dash-accent-green-light);
-      }
-
-      .tab-badge-pill {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--dash-accent-green);
-        color: #ffffff;
-        font-size: 0.68rem;
-        font-weight: 800;
-        padding: 2px 7px;
-        border-radius: 9999px;
-        margin-left: 4px;
-        box-shadow: 0 0 8px var(--dash-accent-green-glow);
-      }
-
-      /* ══════════════════════════════════════════════════════════════
-         CANVAS INTERNO (#f4f5f7) & TARJETAS
-         ══════════════════════════════════════════════════════════════ */
-      .dash-canvas {
-        width: 94%;
-        max-width: 1280px;
-        margin: 32px auto 70px;
-        flex: 1;
-        padding: 0;
-      }
-
-      .pane-wrapper {
-        width: 100%;
-        max-width: 100%;
-      }
-
-      .dash-card {
-        background: #ffffff;
-        border: 1.5px solid var(--dash-card-border);
-        border-radius: 16px;
-        padding: 32px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-      }
-
-      .card-top-header {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        padding-bottom: 22px;
-        margin-bottom: 28px;
-        border-bottom: 1px solid #f1f5f9;
-      }
-
-      .card-icon-badge {
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
-        background: #0a0a0a;
-        color: var(--dash-accent-green-light);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        flex-shrink: 0;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
-      }
-
-      .card-header-titles {
-        display: flex;
-        flex-direction: column;
-        text-align: left;
-        gap: 2px;
-      }
-
-      .card-main-title {
-        font-size: 1.25rem;
-        font-weight: 800;
-        color: var(--dash-text-dark);
-        margin: 0;
-        letter-spacing: -0.015em;
-      }
-
-      .card-sub-title {
-        font-size: 0.85rem;
-        color: var(--dash-text-muted);
-        margin: 0;
-      }
-
-      /* Formularios */
-      .dash-form {
-        width: 100%;
-      }
-
-      .form-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 22px;
-      }
-
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        text-align: left;
-      }
-
-      .full-width {
-        grid-column: 1 / -1;
-      }
-
-      label {
-        font-size: 0.78rem;
-        font-weight: 700;
-        color: #334155;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-      }
-
-      .required {
-        color: #ef4444;
-      }
-
-      .form-input, .form-select {
-        background: #ffffff;
-        border: 1.5px solid #cbd5e1;
-        border-radius: 10px;
-        padding: 12px 14px;
-        color: #0f172a;
-        font-size: 0.92rem;
-        font-family: inherit;
-        outline: none;
-        transition: all 0.2s ease;
-        width: 100%;
-      }
-
-      .form-select {
-        cursor: pointer;
-      }
-
-      .form-input:focus, .form-select:focus {
-        border-color: var(--dash-accent-green);
-        box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
-      }
-
-      .field-hint {
-        font-size: 0.76rem;
-        color: #94a3b8;
-      }
-
-      .form-actions-row {
-        margin-top: 32px;
-        padding-top: 24px;
-        border-top: 1px solid #f1f5f9;
-        display: flex;
-        justify-content: flex-end;
-      }
-
-      .btn-dash-primary {
-        background: #09090b;
-        color: #ffffff;
-        font-size: 0.88rem;
-        font-weight: 700;
-        padding: 13px 28px;
-        border-radius: 10px;
-        border: none;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        letter-spacing: -0.01em;
-      }
-
-      .btn-dash-primary:hover:not(:disabled) {
-        background: var(--dash-accent-green);
-        transform: translateY(-1px);
-        box-shadow: 0 8px 24px var(--dash-accent-green-glow);
-      }
-
-      .btn-dash-primary:disabled {
-        opacity: 0.45;
-        cursor: not-allowed;
-      }
-
-      .spinner {
-        width: 15px;
-        height: 15px;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        border-top-color: #ffffff;
-        border-radius: 50%;
-        animation: spin 0.7s linear infinite;
-      }
-
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
-
-      .fade-in {
-        animation: fadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(6px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-
-      /* Responsivo */
-      @media (max-width: 900px) {
-        .panel-top-bar {
-          flex-direction: column;
-          align-items: stretch;
-          padding: 14px 16px;
-          gap: 12px;
-        }
-
-        .panel-brand-box {
-          justify-content: space-between;
-          width: 100%;
-        }
-
-        .panel-actions-box {
-          justify-content: space-between;
-          width: 100%;
-          flex-wrap: wrap;
-          gap: 8px;
-        }
-
-        .user-chip {
-          order: -1;
-          width: 100%;
-          justify-content: flex-start;
-        }
-
-        .user-sub {
-          max-width: none;
-        }
-
-        .panel-tabs-bar {
-          padding: 0 12px;
-        }
-
-        .panel-nav-track {
-          gap: 6px;
-          padding: 6px 0;
-        }
-
-        .panel-tab-btn {
-          padding: 8px 14px;
-          font-size: 0.8rem;
-        }
-
-        .dash-canvas {
-          width: 100%;
-          padding: 16px 12px 50px;
-          margin: 16px auto 40px;
-        }
-
-        .dash-card {
-          padding: 20px 16px;
-          border-radius: 12px;
-        }
-
-        .form-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
   `
 })
 export class PerfilComponent implements OnInit, OnDestroy {
@@ -834,7 +274,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
   private pedidoService = inject(PedidoService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-
+  private location = inject(Location);
   private destroy$ = new Subject<void>();
 
   // Íconos FontAwesome
@@ -850,6 +290,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
   activeTab = signal<ProfileTab>('datos');
   isSaving = signal<boolean>(false);
   pedidosCount = signal<number>(0);
+  feedbackModal = signal<PerfilModalState | null>(null);
 
   form = {
     nombre: '',
@@ -873,47 +314,49 @@ export class PerfilComponent implements OnInit, OnDestroy {
 
   departamentos: { [key: string]: string[] } = {
     "Amazonas": ["Leticia", "Puerto Nariño"],
-    "Antioquia": ["Medellín", "Bello", "Envigado", "Itagüí", "Rionegro"],
+    "Antioquia": ["Bello", "Envigado", "Itagüí", "Medellín", "Rionegro"],
     "Arauca": ["Arauca", "Saravena", "Tame"],
-    "Atlántico": ["Barranquilla", "Soledad", "Malambo", "Puerto Colombia"],
-    "Bolívar": ["Cartagena", "Magangué", "Turbaco", "Arjona"],
-    "Boyacá": ["Tunja", "Duitama", "Sogamoso", "Chiquinquirá"],
-    "Caldas": ["Manizales", "La Dorada", "Chinchiná", "Villamaría"],
-    "Caquetá": ["Florencia", "San Vicente del Caguán", "El Doncello"],
-    "Casanare": ["Yopal", "Aguazul", "Villanueva"],
-    "Cauca": ["Popayán", "Santander de Quilichao", "Puerto Tejada"],
-    "Cesar": ["Valledupar", "Aguachica", "Bosconia"],
-    "Chocó": ["Quibdó", "Istmina", "Condoto"],
-    "Córdoba": ["Montería", "Cereté", "Lorica", "Sahagún"],
-    "Cundinamarca": ["Soacha", "Zipaquirá", "Facatativá", "Chía", "Fusagasugá"],
+    "Atlántico": ["Barranquilla", "Malambo", "Puerto Colombia", "Soledad"],
+    "Bogotá D.C.": ["Bogotá"],
+    "Bolívar": ["Arjona", "Cartagena", "Magangué", "Turbaco"],
+    "Boyacá": ["Chiquinquirá", "Duitama", "Sogamoso", "Tunja"],
+    "Caldas": ["Chinchiná", "La Dorada", "Manizales", "Villamaría"],
+    "Caquetá": ["El Doncello", "Florencia", "San Vicente del Caguán"],
+    "Casanare": ["Aguazul", "Villanueva", "Yopal"],
+    "Cauca": ["Popayán", "Puerto Tejada", "Santander de Quilichao"],
+    "Cesar": ["Aguachica", "Bosconia", "Valledupar"],
+    "Chocó": ["Condoto", "Istmina", "Quibdó"],
+    "Córdoba": ["Cereté", "Lorica", "Montería", "Sahagún"],
+    "Cundinamarca": ["Chía", "Facatativá", "Fusagasugá", "Soacha", "Zipaquirá"],
     "Guainía": ["Inírida"],
-    "Guaviare": ["San José del Guaviare", "Calamar"],
-    "Huila": ["Neiva", "Pitalito", "Garzón", "La Plata"],
-    "La Guajira": ["Riohacha", "Maicao", "Uribia", "Fonseca"],
-    "Magdalena": ["Santa Marta", "Ciénaga", "Fundación"],
-    "Meta": ["Villavicencio", "Acacías", "Granada", "Puerto López"],
-    "Nariño": ["Pasto", "Ipiales", "Tumaco", "Túquerres"],
+    "Guaviare": ["Calamar", "San José del Guaviare"],
+    "Huila": ["Garzón", "La Plata", "Neiva", "Pitalito"],
+    "La Guajira": ["Fonseca", "Maicao", "Riohacha", "Uribia"],
+    "Magdalena": ["Ciénaga", "Fundación", "Santa Marta"],
+    "Meta": ["Acacías", "Granada", "Puerto López", "Villavicencio"],
+    "Nariño": ["Ipiales", "Pasto", "Tumaco", "Túquerres"],
     "Norte de Santander": ["Cúcuta", "Ocaña", "Pamplona", "Villa del Rosario"],
-    "Putumayo": ["Mocoa", "Puerto Asís", "Orito"],
-    "Quindío": ["Armenia", "Calarcá", "Montenegro", "La Tebaida"],
-    "Risaralda": ["Pereira", "Dosquebradas", "Santa Rosa de Cabal"],
-    "San Andrés y Providencia": ["San Andrés", "Providencia"],
-    "Santander": ["Bucaramanga", "Floridablanca", "Girón", "Piedecuesta", "Barrancabermeja"],
-    "Sucre": ["Sincelejo", "Corozal", "San Marcos"],
-    "Tolima": ["Ibagué", "Espinal", "Melgar", "Honda"],
-    "Valle del Cauca": ["Cali", "Palmira", "Buenaventura", "Tuluá", "Cartago", "Buga"],
+    "Putumayo": ["Mocoa", "Orito", "Puerto Asís"],
+    "Quindío": ["Armenia", "Calarcá", "Circasia", "Filandia", "La Tebaida", "Montenegro", "Pueblo Tapao", "Salento"],
+    "Risaralda": ["Dosquebradas", "Pereira", "Santa Rosa de Cabal"],
+    "San Andrés y Providencia": ["Providencia", "San Andrés"],
+    "Santander": ["Barrancabermeja", "Bucaramanga", "Floridablanca", "Girón", "Piedecuesta"],
+    "Sucre": ["Corozal", "San Marcos", "Sincelejo"],
+    "Tolima": ["Espinal", "Honda", "Ibagué", "Melgar"],
+    "Valle del Cauca": ["Buenaventura", "Buga", "Cali", "Cartago", "Palmira", "Tuluá"],
     "Vaupés": ["Mitú"],
-    "Vichada": ["Puerto Carreño", "La Primavera"],
-    "Bogotá D.C.": ["Bogotá"]
+    "Vichada": ["La Primavera", "Puerto Carreño"]
   };
 
-  departamentosList: string[] = Object.keys(this.departamentos);
+  departamentosList: string[] = Object.keys(this.departamentos).sort((a, b) => a.localeCompare(b, 'es'));
   ciudadesDisponibles: string[] = [];
 
   ngOnInit() {
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
       const tabParam = params['tab'];
-      if (tabParam && ['datos', 'direccion', 'pedidos', 'configuracion'].includes(tabParam)) {
+      if (tabParam === 'direccion') {
+        this.activeTab.set('datos');
+      } else if (tabParam && ['datos', 'pedidos', 'configuracion'].includes(tabParam)) {
         this.activeTab.set(tabParam as ProfileTab);
       }
     });
@@ -923,20 +366,28 @@ export class PerfilComponent implements OnInit, OnDestroy {
       this.cargarDatosUsuario(user);
     } else {
       this.authService.checkToken();
-      this.authService.currentUser.pipe(takeUntil(this.destroy$)).subscribe(u => {
-        if (u) {
-          this.cargarDatosUsuario(u);
-        }
-      });
     }
 
-    // Cargar conteo de pedidos para el badge verde
+    this.authService.currentUser.pipe(takeUntil(this.destroy$)).subscribe(u => {
+      if (u && !this.hasChanges()) {
+        this.cargarDatosUsuario(u);
+      }
+    });
+
     this.cargarConteoPedidos();
   }
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  volverAtras(): void {
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 
   cargarConteoPedidos() {
@@ -946,9 +397,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
         const list = data?.pedidos || [];
         this.pedidosCount.set(list.length);
       },
-      error: () => {
-        // En caso de error silencioso
-      }
+      error: () => {}
     });
   }
 
@@ -963,20 +412,18 @@ export class PerfilComponent implements OnInit, OnDestroy {
 
   getHeaderTitle(): string {
     switch (this.activeTab()) {
-      case 'datos': return 'Editar Datos Personales';
-      case 'direccion': return 'Dirección de Entrega';
-      case 'pedidos': return 'Gestión de Pedidos';
-      case 'configuracion': return 'Configuración de Cuenta';
+      case 'datos': return 'Datos Personales y Entrega';
+      case 'pedidos': return 'Mis Pedidos';
+      case 'configuracion': return 'Seguridad y Cuenta';
       default: return 'Mi Cuenta';
     }
   }
 
   getHeaderSubtitle(): string {
     switch (this.activeTab()) {
-      case 'datos': return 'Visualiza, gestiona y actualiza tu información de contacto';
-      case 'direccion': return 'Administra tu ubicación registrada para despachos y envíos';
-      case 'pedidos': return 'Visualiza, rastrea y descarga los comprobantes de tus compras';
-      case 'configuracion': return 'Ajustes de privacidad, acceso y estado de tu cuenta';
+      case 'datos': return 'Actualiza tu información de contacto y tu dirección principal de envío.';
+      case 'pedidos': return 'Consulta, rastrea y descarga los comprobantes de tus pedidos.';
+      case 'configuracion': return 'Gestiona la seguridad, contraseña y estado de tu cuenta.';
       default: return 'Portal del Cliente Plaxtilineas';
     }
   }
@@ -989,13 +436,13 @@ export class PerfilComponent implements OnInit, OnDestroy {
     this.form.direccion = user.direccion || '';
 
     if (user.ciudad) {
-      const parts = user.ciudad.split(',');
+      const parts = String(user.ciudad).split(',');
       if (parts.length > 1) {
         this.form.departamento = parts[1].trim();
-        this.ciudadesDisponibles = this.departamentos[this.form.departamento] || [];
+        this.ciudadesDisponibles = [...(this.departamentos[this.form.departamento] || [])].sort((a, b) => a.localeCompare(b, 'es'));
         this.form.ciudad = parts[0].trim();
       } else {
-        this.form.ciudad = user.ciudad.trim();
+        this.form.ciudad = String(user.ciudad).trim();
       }
     }
 
@@ -1015,7 +462,9 @@ export class PerfilComponent implements OnInit, OnDestroy {
   }
 
   onDepartamentoChange() {
-    this.ciudadesDisponibles = this.form.departamento ? (this.departamentos[this.form.departamento] || []) : [];
+    this.ciudadesDisponibles = this.form.departamento
+      ? [...(this.departamentos[this.form.departamento] || [])].sort((a, b) => a.localeCompare(b, 'es'))
+      : [];
     this.form.ciudad = '';
   }
 
@@ -1036,21 +485,21 @@ export class PerfilComponent implements OnInit, OnDestroy {
     return this.authService.currentUser.getValue()?.correo || '';
   }
 
-  logout() {
-    Swal.fire({
-      title: '¿Cerrar Sesión?',
-      text: '¿Estás seguro de que deseas salir de tu cuenta?',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, salir',
-      cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#16a34a',
-      cancelButtonColor: '#71717a'
-    }).then(result => {
-      if (result.isConfirmed) {
-        this.authService.logout();
-      }
+  closeModal(): void {
+    this.feedbackModal.set(null);
+  }
+
+  logout(): void {
+    this.feedbackModal.set({
+      type: 'logout',
+      title: '¿Cerrar sesión?',
+      message: '¿Estás seguro de que deseas salir de tu cuenta en este dispositivo?'
     });
+  }
+
+  confirmLogout(): void {
+    this.closeModal();
+    this.authService.logout(true);
   }
 
   guardarCambios() {
@@ -1058,7 +507,10 @@ export class PerfilComponent implements OnInit, OnDestroy {
 
     this.isSaving.set(true);
 
-    const fullCiudad = `${this.form.ciudad}, ${this.form.departamento}`;
+    const fullCiudad = this.form.departamento
+      ? `${this.form.ciudad}, ${this.form.departamento}`
+      : this.form.ciudad;
+
     const payload = {
       nombre: this.form.nombre,
       apellidos: this.form.apellidos,
@@ -1072,21 +524,19 @@ export class PerfilComponent implements OnInit, OnDestroy {
       next: () => {
         this.isSaving.set(false);
         this.initialForm = { ...this.form };
-        Swal.fire({
-          icon: 'success',
-          title: '¡Actualizado!',
-          text: 'Tus datos han sido actualizados con éxito.',
-          confirmButtonColor: '#16a34a'
+        this.feedbackModal.set({
+          type: 'success',
+          title: '¡Datos actualizados!',
+          message: 'Tu información se guardó correctamente en tu cuenta de Plaxtilineas.'
         });
       },
       error: (err) => {
         this.isSaving.set(false);
         const msg = err.error?.error || 'No se pudo actualizar tu perfil. Intenta de nuevo.';
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: msg,
-          confirmButtonColor: '#ef4444'
+        this.feedbackModal.set({
+          type: 'error',
+          title: 'No se pudo guardar',
+          message: msg
         });
       }
     });

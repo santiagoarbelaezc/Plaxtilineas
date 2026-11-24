@@ -160,6 +160,33 @@
   transform: scale(1.06);
 }
 
+/* Badge Promocional / Stock (idéntico al carrusel dinámico) */
+.promo-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+.promo-badge.destacado {
+  background: #eaf4ec;
+  color: #2c7337;
+  border: 1px solid rgba(55, 144, 69, 0.25);
+}
+
+.promo-badge.agotado {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
 /* ── Información de Producto ── */
 .producto-info {
   width: 100%;
@@ -198,7 +225,6 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  min-height: 2.56em;
   letter-spacing: -0.015em;
   transition: color 0.2s ease;
   cursor: pointer;
@@ -214,8 +240,9 @@
   align-items: baseline;
   justify-content: flex-start;
   gap: 0.55rem;
-  margin-top: auto;
-  padding-top: 10px;
+  margin-top: 4px;
+  margin-bottom: 10px;
+  padding-top: 8px;
   border-top: 1px solid #f1f5f9;
   flex-wrap: wrap;
 }
@@ -255,6 +282,64 @@
 
 .producto-card:hover .producto-precio {
   color: #379045;
+}
+
+/* ── Botón Agregar al Carrito (Bento Minimal + Manual de Marca) ── */
+.btn-add-cart-carousel {
+  margin-top: auto;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  min-height: 40px;
+  background: #eaf4ec;
+  color: #2c7337;
+  border: 1.5px solid rgba(55, 144, 69, 0.3);
+  border-radius: 10px;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background-color 0.22s ease, color 0.22s ease, border-color 0.22s ease, transform 0.2s ease, box-shadow 0.22s ease;
+  box-sizing: border-box;
+}
+
+.producto-card:hover .btn-add-cart-carousel:not(:disabled),
+.btn-add-cart-carousel:hover:not(:disabled) {
+  background: #379045;
+  color: #ffffff;
+  border-color: #379045;
+  box-shadow: 0 8px 18px -6px rgba(55, 144, 69, 0.5);
+}
+
+.btn-add-cart-carousel:hover:not(:disabled) {
+  background: #2c7337;
+  border-color: #2c7337;
+  transform: translateY(-1px);
+}
+
+.btn-add-cart-carousel.is-added,
+.producto-card:hover .btn-add-cart-carousel.is-added {
+  background: #2c7337;
+  color: #ffffff;
+  border-color: #2c7337;
+}
+
+.btn-add-cart-carousel:disabled {
+  background: #f4f5f7;
+  color: #a1a1aa;
+  border-color: #e4e4e7;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.btn-add-cart-carousel svg {
+  flex-shrink: 0;
 }
 
 /* ── Navigation Buttons (Cajas Cuadradas Redondeadas Bento) ── */

@@ -2,7 +2,9 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, HostListener, Inpu
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ProductosService } from '../../../services/productos.service';
+import { CatalogoService } from '../../../services/catalogo.service';
 import { MenuStateService } from '../../../services/menu-state.service';
+import { CartService } from '../../../services/cart.service';
 import { ProductoEditable } from '../../../models/producto.model';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faChevronLeft, faChevronRight, faBoxOpen } from '@fortawesome/free-solid-svg-icons';
@@ -32,14 +34,19 @@ export class FeatureNewProducts implements OnInit, OnDestroy {
   itemsPerPage = 5;
   pagesArray: number[] = [];
   isMobile = false;
+  addedProductIds = new Set<number>();
+  categoriasMap = new Map<number, string>();
+  subcategoriasMap = new Map<number, string>();
 
   private isProgrammaticScroll = false;
   private scrollUnlockTimeout: any = null;
 
   constructor(
     private productosService: ProductosService,
+    private catalogoService: CatalogoService,
     private router: Router,
     private menuStateService: MenuStateService,
+    private cartService: CartService,
     public precioOfertaService: PrecioOfertaService,
     private cdr: ChangeDetectorRef,
     library: FaIconLibrary
@@ -49,8 +56,30 @@ export class FeatureNewProducts implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.checkIfMobile();
+    this.cargarMapaCategorias();
     this.cargarUltimosProductos();
     this.inicializarAOS();
+  }
+
+  private cargarMapaCategorias(): void {
+    this.catalogoService.getTodasLasCategorias().subscribe({
+      next: (cats) => {
+        if (!Array.isArray(cats)) return;
+        for (const cat of cats) {
+          if (cat?.id && cat?.nombre) {
+            this.categoriasMap.set(Number(cat.id), String(cat.nombre));
+          }
+          if (Array.isArray(cat?.subcategorias)) {
+            for (const sub of cat.subcategorias) {
+              if (sub?.id && sub?.nombre) {
+                this.subcategoriasMap.set(Number(sub.id), String(sub.nombre));
+              }
+            }
+          }
+        }
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -186,6 +215,57 @@ export class FeatureNewProducts implements OnInit, OnDestroy {
     const slug = nombre ? nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '') : '';
     const urlParam = slug ? `${productoId}-${slug}` : productoId;
     this.router.navigate(['/producto', urlParam]);
+  }
+
+  tieneVariantes(producto: ProductoEditable): boolean {
+    const p: any = producto;
+    const precioNum = Number(producto.precio || 0);
+    const variantes = Array.isArray(p?.variantes) ? p.variantes : [];
+    return variantes.length > 1 || precioNum <= 0;
+  }
+
+  estaAgotado(producto: ProductoEditable): boolean {
+    return !!(producto.controlar_stock && producto.stock === 0);
+  }
+
+  obtenerEtiquetaCategoria(producto: ProductoEditable): string {
+    const p: any = producto;
+    const subDirecta = (p?.subcategoria || '').toString().trim();
+    if (subDirecta) return subDirecta;
+    if (p?.subcategoria_id && this.subcategoriasMap.has(Number(p.subcategoria_id))) {
+      return this.subcategoriasMap.get(Number(p.subcategoria_id)) || '';
+    }
+    const catDirecta = (p?.categoria || p?.categoria_nombre || '').toString().trim();
+    if (catDirecta) return catDirecta;
+    if (p?.categoria_id && this.categoriasMap.has(Number(p.categoria_id))) {
+      return this.categoriasMap.get(Number(p.categoria_id)) || '';
+    }
+    if (p?.material && String(p.material).trim() && String(p.material).toLowerCase() !== 'null') {
+      return String(p.material).trim();
+    }
+    return 'Nuevo';
+  }
+
+  agregarAlCarrito(producto: ProductoEditable, event: Event): void {
+    event.stopPropagation();
+    if (this.estaAgotado(producto)) return;
+
+    if (this.tieneVariantes(producto)) {
+      this.verDetalles(producto.id, producto.nombre);
+      return;
+    }
+
+    const p: any = producto;
+    const varianteUnica = Array.isArray(p?.variantes) && p.variantes.length === 1 ? p.variantes[0] : undefined;
+    const agregado = this.cartService.addToCart(producto, 1, varianteUnica);
+    if (agregado && producto.id) {
+      this.addedProductIds.add(producto.id);
+      this.cdr.markForCheck();
+      setTimeout(() => {
+        this.addedProductIds.delete(producto.id);
+        this.cdr.markForCheck();
+      }, 1500);
+    }
   }
 
   verTodosProductos(): void {
