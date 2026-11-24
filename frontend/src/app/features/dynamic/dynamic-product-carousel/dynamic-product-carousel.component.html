@@ -100,8 +100,8 @@
                 {{ formatearNombre(prod.nombre) }}
               </h3>
               
-              <div class="producto-precio-row">
-                <span class="precio-tachado" *ngIf="prod.precio">{{ obtenerPrecioReferencia(prod.precio) }}</span>
+              <div class="producto-precio-row" *ngIf="prod.precio && prod.precio > 0">
+                <span class="precio-tachado">{{ obtenerPrecioReferencia(prod.precio) }}</span>
                 <span class="producto-precio">
                   {{ formatearPrecio(prod.precio) }}
                   <span class="precio-unidad">und</span>

@@ -143,7 +143,7 @@
             <fa-icon [icon]="['fas', 'chevron-down']" class="user-chevron-icon" [class.rotated]="userDropdownOpen"></fa-icon>
           </button>
 
-          <!-- User Dropdown (Cliente Minimalista Monocromático) -->
+          <!-- User Dropdown (Manual de Marca Plaxtilineas) -->
           <div *ngIf="userDropdownOpen" class="user-dropdown-tw" (click)="$event.stopPropagation()">
             <!-- Dropdown Header -->
             <div class="user-dropdown-header-tw">
@@ -152,6 +152,7 @@
                   <span>{{ getUserInitial((authService.currentUser | async)?.nombre) }}</span>
                 </div>
                 <div class="dropdown-user-details">
+                  <span class="dropdown-kicker">Mi cuenta Plaxtilineas</span>
                   <span class="dropdown-user-name">{{ (authService.currentUser | async)?.nombre }}</span>
                   <span class="dropdown-email" [title]="(authService.currentUser | async)?.correo">
                     {{ (authService.currentUser | async)?.correo }}
@@ -167,19 +168,8 @@
                   <fa-icon [icon]="['fas', 'user']"></fa-icon>
                 </div>
                 <div class="dropdown-item-text">
-                  <span class="item-title">Editar datos</span>
-                  <span class="item-subtitle">Información personal</span>
-                </div>
-                <fa-icon [icon]="['fas', 'chevron-right']" class="item-arrow-icon"></fa-icon>
-              </a>
-
-              <a class="dropdown-item-tw" (click)="onUserAction('actualizar-direccion')">
-                <div class="dropdown-item-icon-box">
-                  <fa-icon [icon]="['fas', 'map-marker-alt']"></fa-icon>
-                </div>
-                <div class="dropdown-item-text">
-                  <span class="item-title">Actualizar dirección</span>
-                  <span class="item-subtitle">Ubicación de entrega</span>
+                  <span class="item-title">Datos personales</span>
+                  <span class="item-subtitle">Perfil y dirección de envío</span>
                 </div>
                 <fa-icon [icon]="['fas', 'chevron-right']" class="item-arrow-icon"></fa-icon>
               </a>
@@ -190,7 +180,7 @@
                 </div>
                 <div class="dropdown-item-text">
                   <span class="item-title">Mis Pedidos</span>
-                  <span class="item-subtitle">Historial de compras</span>
+                  <span class="item-subtitle">Rastreo e historial de compras</span>
                 </div>
                 <fa-icon [icon]="['fas', 'chevron-right']" class="item-arrow-icon"></fa-icon>
               </a>
@@ -200,8 +190,8 @@
                   <fa-icon [icon]="['fas', 'key']"></fa-icon>
                 </div>
                 <div class="dropdown-item-text">
-                  <span class="item-title">Configuración</span>
-                  <span class="item-subtitle">Seguridad y acceso</span>
+                  <span class="item-title">Seguridad y cuenta</span>
+                  <span class="item-subtitle">Contraseña y privacidad</span>
                 </div>
                 <fa-icon [icon]="['fas', 'chevron-right']" class="item-arrow-icon"></fa-icon>
               </a>
@@ -319,16 +309,13 @@
     <div *ngIf="(authService.isLoggedIn | async) && !isAdmin" class="drawer-user-section-tw">
       <div class="drawer-section-title-tw">Bienvenido, {{ (authService.currentUser | async)?.nombre }}</div>
       <a class="drawer-link-tw" (click)="closeMenu(); onUserAction('editar-perfil')">
-        <fa-icon [icon]="['fas', 'user']"></fa-icon> <span>Editar datos</span>
-      </a>
-      <a class="drawer-link-tw" (click)="closeMenu(); onUserAction('actualizar-direccion')">
-        <fa-icon [icon]="['fas', 'map-marker-alt']"></fa-icon> <span>Dirección</span>
+        <fa-icon [icon]="['fas', 'user']"></fa-icon> <span>Datos personales</span>
       </a>
       <a class="drawer-link-tw" (click)="closeMenu(); onUserAction('pedidos')">
-        <fa-icon [icon]="['fas', 'shopping-bag']"></fa-icon> <span>Pedidos</span>
+        <fa-icon [icon]="['fas', 'shopping-bag']"></fa-icon> <span>Mis Pedidos</span>
       </a>
       <a class="drawer-link-tw" (click)="closeMenu(); onUserAction('configuracion')">
-        <fa-icon [icon]="['fas', 'key']"></fa-icon> <span>Configuración</span>
+        <fa-icon [icon]="['fas', 'key']"></fa-icon> <span>Seguridad y cuenta</span>
       </a>
       <a class="drawer-link-tw drawer-logout-tw" (click)="closeMenu(); logoutUser()">
         <fa-icon [icon]="['fas', 'sign-out-alt']"></fa-icon> <span>Cerrar sesión</span>

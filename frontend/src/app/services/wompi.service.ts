@@ -4,18 +4,17 @@ import { Observable } from 'rxjs';
 import { environment } from '../../enviroments/environment';
 import { WompiDatosPago } from '../models/pedido.model';
 
-// Constantes de precios — deben coincidir con config.php del backend
-// IVA_PORCENTAJE = 0.0 (IVA ya incluido en el precio del producto)
 const IVA_RATE = 0.0;
 const COSTO_ENVIO_COP = 10_000;
+export const WOMPI_LAST_ORDER_STORAGE_KEY = 'plx_ultimo_pedido_wompi';
 
 @Injectable({ providedIn: 'root' })
 export class WompiService {
   private http = inject(HttpClient);
 
   /**
-   * Obtiene la firma SHA-256 y los datos del widget desde el backend.
-   * La integrity_key NUNCA sale al frontend; el backend la usa para firmar.
+   * Obtiene los parámetros del Web Checkout y la firma SHA-256 generada en el backend.
+   * El secreto de integridad NUNCA viaja al frontend.
    */
   obtenerDatosPago(pedidoId: number): Observable<WompiDatosPago> {
     return this.http.post<WompiDatosPago>(
@@ -25,24 +24,74 @@ export class WompiService {
   }
 
   /**
-   * Redirige al usuario al Link de Pago de Wompi.
-   * El backend crea el link via la API de Wompi y devuelve la URL directa.
+   * Redirige al Web Checkout oficial de Wompi (https://checkout.wompi.co/p/)
+   * enviando los parámetros firmados con `signature:integrity` mediante un formulario GET,
+   * exactamente como especifica la documentación oficial de Wompi.
    */
   abrirWidget(datos: WompiDatosPago): void {
-    // El backend ahora devuelve checkout_url con la URL del link de pago
-    const checkoutUrl = (datos as any).checkout_url || datos.redirect_url;
-    
-    console.log('[Wompi] Redirigiendo a Link de Pago:', checkoutUrl);
+    const integritySignature = datos.firma_integridad || datos.firma;
+    const checkoutActionUrl = datos.checkout_url || 'https://checkout.wompi.co/p/';
 
-    if (!checkoutUrl || !checkoutUrl.startsWith('https://checkout.wompi.co')) {
-      console.error('[Wompi] URL de checkout inválida:', checkoutUrl);
+    if (!datos.public_key || !datos.referencia || !datos.monto_centavos || !integritySignature) {
+      console.error('[Wompi] Faltan parámetros obligatorios firmados para iniciar el Web Checkout.');
       return;
     }
 
-    window.location.href = checkoutUrl;
+    try {
+      sessionStorage.setItem(
+        WOMPI_LAST_ORDER_STORAGE_KEY,
+        JSON.stringify({
+          pedido_id: datos.pedido_id,
+          codigo_pedido: datos.codigo_pedido || '',
+          referencia: datos.referencia,
+          total: Math.round(datos.monto_centavos / 100),
+          created_at: Date.now()
+        })
+      );
+    } catch {
+      // Ignorar si sessionStorage no está disponible
+    }
+
+    // Construir y enviar formulario oculto GET hacia https://checkout.wompi.co/p/
+    const form = document.createElement('form');
+    form.method = 'GET';
+    form.action = checkoutActionUrl;
+    form.style.display = 'none';
+
+    const params: Record<string, string> = {
+      'public-key': datos.public_key,
+      'currency': datos.moneda || 'COP',
+      'amount-in-cents': String(datos.monto_centavos),
+      'reference': datos.referencia,
+      'signature:integrity': integritySignature,
+      'redirect-url': datos.redirect_url
+    };
+
+    if (datos.customer_data?.email) {
+      params['customer-data:email'] = datos.customer_data.email;
+    }
+    if (datos.customer_data?.full_name) {
+      params['customer-data:full-name'] = datos.customer_data.full_name;
+    }
+    if (datos.customer_data?.phone_number) {
+      params['customer-data:phone-number'] = datos.customer_data.phone_number;
+    }
+    if (datos.customer_data?.phone_number_prefix) {
+      params['customer-data:phone-number-prefix'] = datos.customer_data.phone_number_prefix;
+    }
+
+    Object.entries(params).forEach(([name, value]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = name;
+      input.value = value;
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
   }
 
-  /** Helpers de precio (mirror del backend, para mostrar en UI) */
   calcularIVA(subtotal: number): number {
     return Math.round(subtotal * IVA_RATE);
   }

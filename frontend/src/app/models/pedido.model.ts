@@ -89,13 +89,24 @@ export interface WompiDatosPago {
   monto_centavos: number;
   moneda: string;
   firma: string;
+  firma_integridad?: string;
   redirect_url: string;
+  checkout_url?: string;
   pedido_id: number;
+  codigo_pedido?: string;
+  customer_data?: {
+    email?: string;
+    full_name?: string;
+    phone_number?: string;
+    phone_number_prefix?: string;
+  };
 }
 
 export interface VerificarEstadoResponse {
   estado: string;
   codigo_pedido: string;
+  wompi_referencia?: string;
+  wompi_transaction_id?: string | null;
   total: number;
   wompi_pagado_at: string | null;
 }

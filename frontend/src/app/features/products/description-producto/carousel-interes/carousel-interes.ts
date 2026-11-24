@@ -7,6 +7,7 @@ import { ProductoEditable } from '../../../../models/producto.model';
 import { CarouselSignalService } from '../../../../services/carousel-signal.service';
 import { optimizeForThumbnail } from '../../../../utils/cloudinary-optimizer';
 import { PrecioOfertaService } from '../../../../services/precio-oferta.service';
+import { CartService } from '../../../../services/cart.service';
 
 @Component({
   selector: 'app-carousel-interes',
@@ -22,6 +23,7 @@ export class CarouselInteres implements OnInit, OnDestroy, OnChanges {
   private precioOfertaService = inject(PrecioOfertaService);
   private productosService = inject(ProductosService);
   private carouselSignalService = inject(CarouselSignalService);
+  private cartService = inject(CartService);
 
   @Input() titulo: string = 'Productos que podrían interesarte';
   @Input() subtitulo: string = 'Descubre productos seleccionados especialmente para ti';
@@ -32,6 +34,8 @@ export class CarouselInteres implements OnInit, OnDestroy, OnChanges {
   productos: ProductoEditable[] = [];
   isLoading: boolean = false;
   error: string | null = null;
+  addedProductIds = new Set<number>();
+  readonly skeletonItems = [1, 2, 3, 4, 5];
   
   currentPage = 0;
   itemsPerPage = 5;
@@ -331,13 +335,59 @@ export class CarouselInteres implements OnInit, OnDestroy, OnChanges {
       subcategoria_id: producto.subcategoria_id || 0,
       subcategoria: typeof producto.subcategoria === 'string' 
         ? producto.subcategoria 
-        : (producto.subcategoria?.nombre || 'Sin categoría'),
+        : (producto.subcategoria?.nombre || ''),
       categoria: typeof producto.categoria === 'string'
         ? producto.categoria
-        : (producto.categoria?.nombre || 'Sin categoría'),
+        : (producto.categoria?.nombre || ''),
+      stock: producto.stock,
+      controlar_stock: producto.controlar_stock,
+      variantes: producto.variantes,
       editando: false,
       nuevaImagen: producto.nuevaImagen
-    };
+    } as ProductoEditable;
+  }
+
+  trackByProductoId(_index: number, producto: ProductoEditable): number {
+    return producto.id;
+  }
+
+  tieneVariantes(producto: ProductoEditable): boolean {
+    const p: any = producto;
+    const precioNum = Number(producto.precio || 0);
+    const variantes = Array.isArray(p?.variantes) ? p.variantes : [];
+    return variantes.length > 1 || precioNum <= 0;
+  }
+
+  estaAgotado(producto: ProductoEditable): boolean {
+    return !!(producto.controlar_stock && producto.stock === 0);
+  }
+
+  obtenerEtiquetaCategoria(producto: ProductoEditable): string {
+    const sub = (producto.subcategoria || '').toString().trim();
+    if (sub && sub.toLowerCase() !== 'sin categoría') return sub;
+    const cat = (producto.categoria || '').toString().trim();
+    if (cat && cat.toLowerCase() !== 'sin categoría') return cat;
+    return '';
+  }
+
+  agregarAlCarrito(producto: ProductoEditable, event: Event): void {
+    event.stopPropagation();
+    if (this.estaAgotado(producto)) return;
+
+    if (this.tieneVariantes(producto)) {
+      this.verDetalles(producto.id, producto.nombre);
+      return;
+    }
+
+    const p: any = producto;
+    const varianteUnica = Array.isArray(p?.variantes) && p.variantes.length === 1 ? p.variantes[0] : undefined;
+    const agregado = this.cartService.addToCart(producto, 1, varianteUnica);
+    if (agregado) {
+      this.addedProductIds.add(producto.id);
+      setTimeout(() => {
+        this.addedProductIds.delete(producto.id);
+      }, 1500);
+    }
   }
 
   formatearPrecio(precio: number): string {

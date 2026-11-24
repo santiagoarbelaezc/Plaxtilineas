@@ -1,6 +1,6 @@
 <section class="productos-relacionados-section">
-  <!-- Header de Sección con Design Tokens -->
-  <div class="section-header" *ngIf="productos.length > 0">
+  <!-- Header de Sección con Design Tokens del Home -->
+  <div class="section-header" *ngIf="isLoading || productos.length > 0">
     <h2 class="section-title">
       {{ tituloPartes.inicio }} <span class="highlight-green">{{ tituloPartes.destacado }}</span>
     </h2>
@@ -11,11 +11,12 @@
 
   <!-- Carrusel de Productos -->
   <div class="carrusel-wrapper" *ngIf="!isLoading && productos.length > 0">
-    
+
     <!-- Botón Anterior -->
-    <button 
-      class="carrusel-btn prev-btn" 
-      (click)="scrollCarrusel('prev')" 
+    <button
+      type="button"
+      class="carrusel-btn prev-btn"
+      (click)="scrollCarrusel('prev')"
       [disabled]="currentPage === 0"
       aria-label="Anterior">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -25,26 +26,29 @@
 
     <div class="carousel-viewport">
       <div class="productos-grid" #productosGrid (scroll)="onScroll($event)">
-        
-        <!-- Tarjeta de Producto -->
-        <div *ngFor="let producto of productos; let i = index" class="producto-card">
-          
+
+        <!-- Tarjeta de Producto (idéntica al carrusel del Home) -->
+        <div *ngFor="let producto of productos; let i = index; trackBy: trackByProductoId" class="producto-card">
+
           <div class="producto-imagen-wrapper" (click)="verDetalles(producto.id, producto.nombre)">
-            <img [src]="getProductoImagen(producto)" 
-                 [alt]="producto.nombre" 
+            <img [src]="getProductoImagen(producto)"
+                 [alt]="producto.nombre"
                  class="producto-imagen"
                  loading="lazy"
                  (error)="handleImageError($event, producto)">
+
+            <span *ngIf="estaAgotado(producto)" class="promo-badge agotado">Agotado</span>
+            <span *ngIf="!estaAgotado(producto) && i % 4 === 0" class="promo-badge destacado">Destacado</span>
           </div>
 
           <div class="producto-info">
-            <span class="product-subcategory" *ngIf="producto.subcategoria || producto.categoria">
-              {{ producto.subcategoria || producto.categoria }}
+            <span class="product-subcategory" *ngIf="obtenerEtiquetaCategoria(producto)">
+              {{ obtenerEtiquetaCategoria(producto) }}
             </span>
             <h3 class="producto-titulo" (click)="verDetalles(producto.id, producto.nombre)" [title]="producto.nombre">
               {{ formatearNombre(producto.nombre) }}
             </h3>
-            
+
             <div class="producto-precio-row" *ngIf="producto.precio">
               <span class="precio-tachado">{{ obtenerPrecioReferencia(producto.precio) }}</span>
               <span class="producto-precio">
@@ -52,6 +56,26 @@
                 <span class="precio-unidad">und</span>
               </span>
             </div>
+
+            <button
+              type="button"
+              class="btn-add-cart-carousel"
+              [class.is-added]="addedProductIds.has(producto.id)"
+              [disabled]="estaAgotado(producto)"
+              (click)="agregarAlCarrito(producto, $event)"
+              [attr.aria-label]="estaAgotado(producto) ? 'Agotado' : (tieneVariantes(producto) ? 'Ver opciones de ' + producto.nombre : 'Agregar ' + producto.nombre + ' al carrito')">
+              <svg *ngIf="!addedProductIds.has(producto.id) && !estaAgotado(producto) && !tieneVariantes(producto)" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
+              <svg *ngIf="addedProductIds.has(producto.id)" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span>
+                {{ estaAgotado(producto) ? 'Agotado' : (addedProductIds.has(producto.id) ? '¡Agregado!' : (tieneVariantes(producto) ? 'Ver opciones' : 'Agregar al carrito')) }}
+              </span>
+            </button>
           </div>
 
         </div>
@@ -59,9 +83,10 @@
     </div>
 
     <!-- Botón Siguiente -->
-    <button 
-      class="carrusel-btn next-btn" 
-      (click)="scrollCarrusel('next')" 
+    <button
+      type="button"
+      class="carrusel-btn next-btn"
+      (click)="scrollCarrusel('next')"
       [disabled]="currentPage >= pagesArray.length - 1"
       aria-label="Siguiente">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -73,26 +98,39 @@
 
   <!-- Indicadores -->
   <div class="carrusel-indicators" *ngIf="!isLoading && pagesArray.length > 1">
-    <button *ngFor="let page of pagesArray" 
-            class="indicator-dot" 
+    <button *ngFor="let page of pagesArray"
+            type="button"
+            class="indicator-dot"
             [class.active]="currentPage === page"
             (click)="goToPage(page)"
             [attr.aria-label]="'Ir a página ' + (page + 1)">
     </button>
   </div>
 
-  <!-- Loading State -->
-  <div class="loading-state" *ngIf="isLoading">
-    <div class="spinner"></div>
-    <p>Cargando productos...</p>
+  <!-- Skeleton Loader State -->
+  <div class="carrusel-wrapper carrusel-skeleton-wrapper" *ngIf="isLoading" aria-busy="true" aria-label="Cargando productos">
+    <div class="carousel-viewport">
+      <div class="productos-grid skeleton-grid">
+        <div *ngFor="let item of skeletonItems" class="producto-card skeleton-card">
+          <div class="producto-imagen-wrapper skeleton-img-box">
+            <div class="skeleton-shimmer"></div>
+          </div>
+          <div class="producto-info skeleton-info-box">
+            <div class="skeleton-line skeleton-pill"><div class="skeleton-shimmer"></div></div>
+            <div class="skeleton-line skeleton-title-line"><div class="skeleton-shimmer"></div></div>
+            <div class="skeleton-line skeleton-title-line short"><div class="skeleton-shimmer"></div></div>
+            <div class="skeleton-line skeleton-price-line"><div class="skeleton-shimmer"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Error State -->
   <div class="error-state" *ngIf="error && !isLoading">
-    <div class="error-icon">⚠️</div>
     <h3>No se pudieron cargar productos</h3>
     <p>{{ error }}</p>
-    <button class="retry-btn" (click)="recargar()">Reintentar</button>
+    <button type="button" class="retry-btn" (click)="recargar()">Reintentar</button>
   </div>
 
   <!-- Empty State -->
