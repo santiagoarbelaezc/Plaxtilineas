@@ -20,11 +20,9 @@ use Throwable;
 /**
  * ReconcilePendingPaymentsJob
  *
- * Job de reconciliación: consulta a Wompi las órdenes en estado
- * pendiente_pago más antiguas que N minutos por si el webhook no llegó.
- *
- * Se debe programar cada 10–15 minutos en routes/console.php.
- * En caso de error de comunicación con Wompi, simplemente loguea y continúa.
+ * Job de reconciliación servidor-a-servidor (S2S): consulta directamente la API
+ * de Wompi para órdenes en estado pendiente_pago con antigüedad mayor a N minutos,
+ * como respaldo ante cualquier contingencia de red en la entrega de webhooks.
  */
 class ReconcilePendingPaymentsJob implements ShouldQueue
 {
@@ -32,11 +30,8 @@ class ReconcilePendingPaymentsJob implements ShouldQueue
 
     public int $tries = 3;
 
-    public int $backoff = 60; // segundos entre reintentos
+    public int $backoff = 60;
 
-    /**
-     * @param  int  $olderThanMinutes  Solo reconciliar órdenes con más de N minutos en pendiente_pago
-     */
     public function __construct(
         private readonly int $olderThanMinutes = 10,
     ) {}
@@ -50,7 +45,10 @@ class ReconcilePendingPaymentsJob implements ShouldQueue
 
         $pedidosPendientes = Pedido::where('estado', EstadoPedido::PENDIENTE_PAGO)
             ->where('fecha', '<=', $cutoff)
-            ->whereNotNull('wompi_link_id')
+            ->where(function ($query) {
+                $query->whereNotNull('wompi_referencia')
+                    ->orWhereNotNull('wompi_link_id');
+            })
             ->get();
 
         if ($pedidosPendientes->isEmpty()) {
@@ -71,7 +69,6 @@ class ReconcilePendingPaymentsJob implements ShouldQueue
                     'pedido_id' => $pedido->id,
                     'error' => $e->getMessage(),
                 ]);
-                // Continuar con el siguiente pedido; no detener el job
             }
         }
 
@@ -84,40 +81,58 @@ class ReconcilePendingPaymentsJob implements ShouldQueue
         ConfirmarPedidoAction $confirmarAction,
         LiberarStockReservaAction $liberarAction,
     ): void {
-        $linkId = (string) $pedido->wompi_link_id;
+        $linkId = trim((string) $pedido->wompi_link_id);
+        $reference = trim((string) $pedido->wompi_referencia);
 
-        // Consultar transacciones del payment link
-        $txsData = $wompiClient->getPaymentLinkTransactions($linkId);
+        $txsData = $linkId !== ''
+            ? $wompiClient->getPaymentLinkTransactions($linkId)
+            : $wompiClient->getTransactionsByReference($reference);
 
         /** @var list<array<string, mixed>> $transactions */
-        $transactions = $txsData['data'] ?? [];
+        $transactions = is_array($txsData['data'] ?? null) ? $txsData['data'] : [];
 
-        if (empty($transactions)) {
+        if ($transactions === []) {
             Log::info('ReconcilePendingPaymentsJob — Sin transacciones aún para pedido', ['pedido_id' => $pedido->id]);
 
             return;
         }
 
-        // Tomar la transacción más reciente
+        $montoEsperado = (int) round((float) $pedido->total * 100);
+
+        // Priorizar cualquier transacción APPROVED válida sobre intentos previos fallidos (Wompi §8)
+        $approvedTx = null;
+        foreach ($transactions as $tx) {
+            $txStatus = strtoupper((string) ($tx['status'] ?? ''));
+            $txAmount = (int) ($tx['amount_in_cents'] ?? 0);
+            $txCurrency = strtoupper((string) ($tx['currency'] ?? 'COP'));
+
+            if ($txStatus === 'APPROVED' && $txAmount === $montoEsperado && $txCurrency === 'COP') {
+                $approvedTx = $tx;
+                break;
+            }
+        }
+
+        if ($approvedTx !== null) {
+            $transId = (string) ($approvedTx['id'] ?? '');
+            if ($pedido->estado !== EstadoPedido::PAGADO) {
+                $confirmarAction->execute(
+                    $pedido->id,
+                    $transId,
+                    'reconcile-'.$transId,
+                    $montoEsperado
+                );
+            }
+
+            return;
+        }
+
+        // Si ya pasó la ventana de reconciliación (> N min) y todas las transacciones están en estado terminal fallido
         $lastTx = end($transactions);
-        $status = (string) ($lastTx['status'] ?? '');
+        $status = strtoupper((string) ($lastTx['status'] ?? ''));
         $transId = (string) ($lastTx['id'] ?? '');
-        $amountCents = (int) ($lastTx['amount_in_cents'] ?? 0);
 
-        Log::info('ReconcilePendingPaymentsJob — Estado encontrado en Wompi', [
-            'pedido_id' => $pedido->id,
-            'status' => $status,
-            'trans_id' => $transId,
-        ]);
-
-        if ($status === 'APPROVED' && $pedido->estado !== EstadoPedido::PAGADO) {
-            $confirmarAction->execute(
-                $pedido->id,
-                $transId,
-                'reconcile-'.$transId,
-                $amountCents
-            );
-        } elseif (in_array($status, ['DECLINED', 'VOIDED', 'ERROR'], true)
+        if (in_array($status, ['DECLINED', 'VOIDED', 'ERROR'], true)
+            && $pedido->estado !== EstadoPedido::PAGADO
             && $pedido->estado !== EstadoPedido::CANCELADO
         ) {
             $pedido->update([

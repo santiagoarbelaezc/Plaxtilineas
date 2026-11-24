@@ -42,11 +42,11 @@ class WompiController extends Controller
      */
     public function datosPago(DatosPagoRequest $request): JsonResponse
     {
-        // Verificar que las llaves están configuradas
-        $publicKey = (string) config('wompi.public_key', '');
-        $privateKey = (string) config('wompi.private_key', '');
+        // Verificar que la llave pública y el secreto de integridad estén configurados
+        $publicKey = trim((string) config('wompi.public_key', ''));
+        $integritySecret = trim((string) config('wompi.integrity_secret', ''));
 
-        if ($publicKey === '' || $privateKey === '') {
+        if ($publicKey === '' || $integritySecret === '') {
             return ApiResponse::error('Pasarela de pago no configurada. Contacta al administrador.', 503);
         }
 

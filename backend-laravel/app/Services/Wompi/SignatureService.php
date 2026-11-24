@@ -4,105 +4,147 @@ declare(strict_types=1);
 
 namespace App\Services\Wompi;
 
+use App\Exceptions\Domain\ServicioExternoException;
 use Illuminate\Support\Facades\Log;
 
 /**
  * SignatureService
  *
  * Responsabilidades:
- *   1. Generar la firma de integridad para el Widget/Checkout Web de Wompi.
- *   2. Validar el checksum X-Event-Checksum de los webhooks entrantes.
+ *   1. Generar la firma de integridad SHA-256 para el Web Checkout / Widget de Wompi.
+ *   2. Validar en tiempo constante el checksum SHA-256 (X-Event-Checksum) de los webhooks.
  *
- * Fórmula de integridad (documentación Wompi):
- *   SHA256( reference + amount_in_cents + currency + integrity_secret )
+ * Fórmula oficial de integridad (docs.wompi.co):
+ *   Sin expiración: SHA256( reference + amount_in_cents + currency + integrity_secret )
+ *   Con expiración: SHA256( reference + amount_in_cents + currency + expiration_time + integrity_secret )
  *
- * Fórmula de checksum de evento (documentación Wompi):
- *   SHA256( prop1_value + prop2_value + ... + timestamp + events_secret )
- *   donde las propiedades se toman de signature.properties en el orden del payload.
+ * Fórmula oficial de checksum de evento (docs.wompi.co):
+ *   SHA256( valor(data, prop_1) + valor(data, prop_2) + ... + timestamp + events_secret )
  */
 final class SignatureService
 {
     /**
-     * Genera la firma de integridad para el Widget/Checkout Web.
+     * Genera la firma de integridad en el servidor para el Web Checkout / Widget.
      *
      * @param  string  $reference  Referencia única del pedido (ej. PLX-17000000-ABCD)
-     * @param  int  $amountCents  Monto en centavos (entero, nunca float)
-     * @param  string  $currency  Moneda ISO-4217 (ej. "COP")
+     * @param  int  $amountCents  Monto en centavos (entero exacto desde BD)
+     * @param  string  $currency  Moneda ISO-4217 ("COP")
+     * @param  string|null  $expirationTime  Fecha ISO-8601 UTC opcional
+     *
+     * @throws ServicioExternoException
      */
     public function buildIntegritySignature(
         string $reference,
         int $amountCents,
-        string $currency = 'COP'
+        string $currency = 'COP',
+        ?string $expirationTime = null
     ): string {
-        $secret = (string) config('wompi.integrity_secret', '');
+        $secret = trim((string) config('wompi.integrity_secret', ''));
 
         if ($secret === '') {
-            Log::warning('SignatureService::buildIntegritySignature — integrity_secret no configurado');
+            Log::critical('SignatureService::buildIntegritySignature — WOMPI_INTEGRITY_SECRET no configurado');
+            throw new ServicioExternoException('Wompi', 'El secreto de integridad de Wompi no está configurado.');
         }
 
-        return hash('sha256', $reference.$amountCents.$currency.$secret);
+        $cadena = $reference
+            .(string) $amountCents
+            .$currency
+            .($expirationTime !== null && $expirationTime !== '' ? $expirationTime : '')
+            .$secret;
+
+        return hash('sha256', $cadena);
     }
 
     /**
-     * Valida el checksum HMAC-SHA256 del webhook X-Event-Checksum.
+     * Valida el checksum SHA-256 del webhook de Wompi (X-Event-Checksum o signature.checksum).
      *
-     * Wompi construye el hash concatenando los valores de las propiedades
-     * indicadas en signature.properties (en el orden que aparecen), seguido
-     * del timestamp del evento y el events_secret.
-     *
-     * @param  array<string, mixed>  $evento  Payload decodificado del webhook
+     * @param  array<string, mixed>  $evento  Payload JSON decodificado del webhook
      * @param  string|null  $receivedChecksum  Valor del header X-Event-Checksum
      */
     public function validateWebhookChecksum(array $evento, ?string $receivedChecksum): bool
     {
-        $eventsSecret = (string) config('wompi.events_secret', '');
+        $eventsSecret = trim((string) config('wompi.events_secret', ''));
 
+        // Fail-closed: jamás aceptar webhooks si el secreto de eventos no está configurado
         if ($eventsSecret === '') {
-            Log::warning('SignatureService::validateWebhookChecksum — events_secret no configurado; permitiendo webhook (modo permisivo)');
+            Log::critical('SignatureService::validateWebhookChecksum — WOMPI_EVENTS_SECRET vacío; rechazando webhook');
 
-            return true;
-        }
-
-        if (! $receivedChecksum) {
             return false;
         }
 
         /** @var array<string, mixed> $signature */
-        $signature = $evento['signature'] ?? [];
-        /** @var list<string> $properties */
-        $properties = $signature['properties'] ?? [];
-        $timestamp = (string) ($signature['checksum'] ?? $evento['timestamp'] ?? '');
+        $signature = is_array($evento['signature'] ?? null) ? $evento['signature'] : [];
 
-        // Extraer los valores de las propiedades indicadas en signature.properties
+        $checksum = trim((string) ($receivedChecksum ?: ($signature['checksum'] ?? '')));
+        if ($checksum === '') {
+            return false;
+        }
+
+        $properties = $signature['properties'] ?? null;
+        if (! is_array($properties) || $properties === []) {
+            return false;
+        }
+
+        $timestamp = $evento['timestamp'] ?? null;
+        if (! is_scalar($timestamp) || (string) $timestamp === '') {
+            return false;
+        }
+
+        /** @var array<string, mixed> $dataNode */
+        $dataNode = is_array($evento['data'] ?? null) ? $evento['data'] : [];
+
         $cadena = '';
         foreach ($properties as $prop) {
-            $cadena .= $this->extractNestedValue($evento, $prop);
-        }
-        $cadena .= $timestamp.$eventsSecret;
+            if (! is_string($prop) || $prop === '') {
+                return false;
+            }
 
+            // En Wompi oficial las rutas son relativas a `data` (ej. "transaction.id").
+            // Soportamos también prefijo "data." por compatibilidad defensiva.
+            $normalizedPath = str_starts_with($prop, 'data.')
+                ? substr($prop, 5)
+                : $prop;
+
+            $val = $this->extractNestedValue($dataNode, $normalizedPath);
+            if ($val === null) {
+                return false;
+            }
+
+            $cadena .= $val;
+        }
+
+        $cadena .= (string) $timestamp.$eventsSecret;
         $expected = hash('sha256', $cadena);
 
-        return hash_equals($expected, $receivedChecksum);
+        return hash_equals(strtolower($expected), strtolower($checksum));
     }
 
     /**
-     * Extrae un valor anidado del payload usando notación de puntos.
-     * Ejemplo: "data.transaction.status" → $evento['data']['transaction']['status']
+     * Extrae un valor escalar anidado usando notación de puntos.
+     * Retorna null si la propiedad no existe o no es escalar.
      *
      * @param  array<string, mixed>  $data
      */
-    private function extractNestedValue(array $data, string $dotPath): string
+    private function extractNestedValue(array $data, string $dotPath): ?string
     {
         $segments = explode('.', $dotPath);
         $current = $data;
 
         foreach ($segments as $segment) {
             if (! is_array($current) || ! array_key_exists($segment, $current)) {
-                return '';
+                return null;
             }
             $current = $current[$segment];
         }
 
-        return (string) ($current ?? '');
+        if ($current === null || is_array($current) || is_object($current)) {
+            return null;
+        }
+
+        if (is_bool($current)) {
+            return $current ? 'true' : 'false';
+        }
+
+        return (string) $current;
     }
 }

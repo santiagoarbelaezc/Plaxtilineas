@@ -171,88 +171,58 @@ class PedidoController extends Controller
 
     /**
      * GET /api/pedidos/estado
-     * Verifica el estado del pedido por referencia interna o ID de transacción Wompi.
+     * Consulta de SOLO LECTURA desde la base de datos propia del comercio.
+     *
+     * Regla oficial Wompi: La URL de redirección es estrictamente informativa.
+     * Este endpoint NUNCA aprueba, cancela ni muta órdenes basándose en parámetros
+     * del navegador; únicamente el Webhook (y el job S2S programado) actualizan estados.
      */
     public function verificarEstado(Request $request): JsonResponse
     {
-        $referencia = (string) $request->query('ref', '');
-        $wompiTxId = (string) $request->query('id', '');
+        /** @var Usuario $user */
+        $user = $request->user();
 
-        if ($referencia === '' && $wompiTxId === '') {
-            return ApiResponse::error('Parámetro ?ref= o ?id= requerido.', 400);
-        }
+        $referencia = trim((string) $request->query('ref', ''));
+        $wompiTxId = trim((string) $request->query('id', ''));
 
         /** @var Pedido|null $pedido */
         $pedido = null;
 
-        if ($wompiTxId !== '') {
-            try {
-                $txData = $this->wompiService->consultarTransaccion($wompiTxId);
-                /** @var array<string, mixed> $data */
-                $data = $txData['data'] ?? [];
-                $paymentLinkId = (string) ($data['payment_link_id'] ?? '');
-                $txRef = (string) ($data['reference'] ?? '');
-                $status = (string) ($data['status'] ?? '');
-
-                if ($paymentLinkId !== '') {
-                    $pedido = Pedido::where('wompi_link_id', $paymentLinkId)->first();
-                }
-                if (! $pedido && $txRef !== '') {
-                    $pedido = Pedido::where('wompi_referencia', $txRef)->first();
-                }
-
-                if ($pedido) {
-                    $referencia = (string) $pedido->wompi_referencia;
-
-                    if ($status === 'APPROVED' && $pedido->estado !== EstadoPedido::PAGADO) {
-                        $montoCentavos = (int) ($data['amount_in_cents'] ?? 0);
-                        $this->confirmarPedidoAction->execute(
-                            $pedido->id,
-                            $wompiTxId,
-                            'query-proactive-'.$wompiTxId,
-                            $montoCentavos
-                        );
-                        $pedido->refresh();
-                    } elseif (in_array($status, ['DECLINED', 'VOIDED', 'ERROR'], true) && $pedido->estado !== EstadoPedido::CANCELADO) {
-                        $pedido->update([
-                            'estado' => EstadoPedido::CANCELADO,
-                            'wompi_transaction_id' => $wompiTxId,
-                            'wompi_evento_id' => 'query-proactive-'.$wompiTxId,
-                        ]);
-                        $this->liberarStockReservaAction->execute($pedido);
-                        $pedido->refresh();
-                    }
-
-                }
-            } catch (Throwable $e) {
-                Log::error('PedidoController::verificarEstado — Error consultando Wompi API', [
-                    'wompi_tx' => $wompiTxId,
-                    'error' => $e->getMessage(),
-                ]);
-            }
+        if ($referencia !== '') {
+            $pedido = Pedido::where('usuario_id', $user->id)
+                ->where('wompi_referencia', $referencia)
+                ->first();
         }
 
-        if ($referencia === '') {
-            return ApiResponse::error('No se pudo resolver la referencia del pedido.', 404);
+        if (! $pedido && $wompiTxId !== '') {
+            $pedido = Pedido::where('usuario_id', $user->id)
+                ->where('wompi_transaction_id', $wompiTxId)
+                ->first();
         }
 
+        // Si Wompi redirigió con ?id=<tx_id> antes de que llegue el webhook,
+        // mostramos la última orden Wompi del usuario sin mutar su estado.
         if (! $pedido) {
-            $pedido = Pedido::where('wompi_referencia', $referencia)->first();
+            $pedido = Pedido::where('usuario_id', $user->id)
+                ->where('metodo_pago', 'wompi')
+                ->whereIn('estado', [
+                    EstadoPedido::PENDIENTE_PAGO,
+                    EstadoPedido::PAGADO,
+                    EstadoPedido::CANCELADO,
+                ])
+                ->orderByDesc('id')
+                ->first();
         }
 
         if (! $pedido) {
             return ApiResponse::error('Pedido no encontrado.', 404);
         }
 
-        /** @var Usuario $user */
-        $user = $request->user();
-        if ($pedido->usuario_id !== $user->id) {
-            return ApiResponse::error('No autorizado.', 403);
-        }
-
         return ApiResponse::success([
             'estado' => $pedido->estado->value,
             'codigo_pedido' => $pedido->codigo_pedido,
+            'wompi_referencia' => $pedido->wompi_referencia,
+            'wompi_transaction_id' => $pedido->wompi_transaction_id ?: ($wompiTxId !== '' ? $wompiTxId : null),
             'total' => (float) $pedido->total,
             'wompi_pagado_at' => $pedido->wompi_pagado_at?->toIso8601String(),
         ]);

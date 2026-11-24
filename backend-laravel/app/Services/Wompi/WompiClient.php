@@ -75,6 +75,18 @@ final class WompiClient
         return $this->get("/payment_links/{$linkId}/transactions");
     }
 
+    /**
+     * Consulta las transacciones asociadas a una referencia única de pago.
+     *
+     * @return array<string, mixed>
+     *
+     * @throws ServicioExternoException
+     */
+    public function getTransactionsByReference(string $reference): array
+    {
+        return $this->get('/transactions?reference='.rawurlencode($reference));
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // HTTP primitives
     // ─────────────────────────────────────────────────────────────────────────

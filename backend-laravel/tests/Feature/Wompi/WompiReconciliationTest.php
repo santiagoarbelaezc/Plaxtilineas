@@ -127,3 +127,40 @@ test('reconciliacion no altera pedidos si no hay transacciones en Wompi', functi
     expect($pedido->fresh()->estado)->toBe(EstadoPedido::PENDIENTE_PAGO)
         ->and($pedido->fresh()->wompi_transaction_id)->toBeNull();
 });
+
+test('reconciliacion soporta ordenes de Web Checkout por wompi_referencia sin wompi_link_id', function () {
+    $pedido = Pedido::factory()->create([
+        'usuario_id' => $this->usuario->id,
+        'estado' => EstadoPedido::PENDIENTE_PAGO,
+        'wompi_referencia' => 'PLX-WEB-REF-001',
+        'wompi_link_id' => null,
+        'fecha' => now()->subMinutes(20),
+        'total' => 60000.00,
+    ]);
+
+    Http::fake([
+        '*/transactions?reference=PLX-WEB-REF-001' => Http::response([
+            'data' => [
+                [
+                    'id' => 'tx_dec_prev',
+                    'status' => 'DECLINED',
+                    'reference' => 'PLX-WEB-REF-001',
+                    'currency' => 'COP',
+                    'amount_in_cents' => 6000000,
+                ],
+                [
+                    'id' => 'tx_app_retry',
+                    'status' => 'APPROVED',
+                    'reference' => 'PLX-WEB-REF-001',
+                    'currency' => 'COP',
+                    'amount_in_cents' => 6000000,
+                ],
+            ],
+        ], 200),
+    ]);
+
+    ReconcilePendingPaymentsJob::dispatchSync(10);
+
+    expect($pedido->fresh()->estado)->toBe(EstadoPedido::PAGADO)
+        ->and($pedido->fresh()->wompi_transaction_id)->toBe('tx_app_retry');
+});

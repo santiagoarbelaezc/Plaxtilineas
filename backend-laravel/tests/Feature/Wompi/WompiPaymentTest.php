@@ -17,18 +17,22 @@ use Laravel\Sanctum\Sanctum;
 beforeEach(function () {
     $this->usuario = Usuario::factory()->create([
         'correo' => 'cliente@test.com',
+        'nombre' => 'Cliente',
+        'apellidos' => 'Prueba',
+        'telefono' => '3001234567',
     ]);
 
     config([
+        'wompi.env' => 'sandbox',
         'wompi.public_key' => 'pub_test_123',
         'wompi.private_key' => 'prv_test_123',
-        'wompi.integrity_secret' => 'integrity_secret_123',
-        'wompi.events_secret' => 'events_secret_123',
-        'wompi.redirect_url' => 'http://localhost:3000/pedido-confirmado',
+        'wompi.integrity_secret' => 'test_integrity_secret_123',
+        'wompi.events_secret' => 'test_events_secret_123',
+        'wompi.redirect_url' => 'https://plaxtilineas.com/pago-exitoso',
     ]);
 });
 
-test('datos pago genera link de checkout y actualiza estado a pendiente_pago', function () {
+test('datos pago genera parametros firmados SHA-256 para Web Checkout y actualiza estado a pendiente_pago', function () {
     Sanctum::actingAs($this->usuario);
 
     $pedido = Pedido::factory()->create([
@@ -38,32 +42,42 @@ test('datos pago genera link de checkout y actualiza estado a pendiente_pago', f
         'wompi_referencia' => 'PLX-TEST-WMP',
     ]);
 
-    Http::fake([
-        '*/payment_links' => Http::response([
-            'data' => [
-                'id' => 'link_xyz_999',
-            ],
-        ], 200),
-    ]);
-
     $response = $this->postJson('/api/wompi/datos-pago', [
         'pedido_id' => $pedido->id,
     ]);
+
+    $expectedSignature = hash('sha256', 'PLX-TEST-WMP12000000COPtest_integrity_secret_123');
 
     $response->assertOk()
         ->assertJson([
             'public_key' => 'pub_test_123',
             'referencia' => 'PLX-TEST-WMP',
             'monto_centavos' => 12000000,
-            'checkout_url' => 'https://checkout.wompi.co/l/link_xyz_999',
-            'firma_integridad' => hash('sha256', 'PLX-TEST-WMP12000000COPintegrity_secret_123'),
+            'moneda' => 'COP',
+            'checkout_url' => 'https://checkout.wompi.co/p/',
+            'firma_integridad' => $expectedSignature,
+            'firma' => $expectedSignature,
         ]);
 
-    expect($pedido->fresh()->wompi_link_id)->toBe('link_xyz_999')
-        ->and($pedido->fresh()->estado)->toBe(EstadoPedido::PENDIENTE_PAGO);
+    expect($pedido->fresh()->estado)->toBe(EstadoPedido::PENDIENTE_PAGO);
 });
 
-test('webhook con firma checksum valida y evento APPROVED confirma pedido y descuenta stock', function () {
+test('datos pago retorna 503 si falta el secreto de integridad', function () {
+    Sanctum::actingAs($this->usuario);
+    config(['wompi.integrity_secret' => '']);
+
+    $pedido = Pedido::factory()->create([
+        'usuario_id' => $this->usuario->id,
+        'estado' => EstadoPedido::DRAFT,
+        'total' => 50000.00,
+        'wompi_referencia' => 'PLX-NO-SECRET',
+    ]);
+
+    $this->postJson('/api/wompi/datos-pago', ['pedido_id' => $pedido->id])
+        ->assertStatus(503);
+});
+
+test('webhook oficial de Wompi sin id raiz valida checksum real y confirma pedido APPROVED', function () {
     $producto = Producto::factory()->create([
         'stock' => 10,
         'controlar_stock' => true,
@@ -92,30 +106,32 @@ test('webhook con firma checksum valida y evento APPROVED confirma pedido y desc
         'expira_at' => now()->addMinutes(30),
     ]);
 
+    $expectedChecksum = hash('sha256', 'tx_wompi_888'.'APPROVED'.'5000000'.'1700000000'.'test_events_secret_123');
+
+    // Payload oficial exacto de Wompi (properties relativas a data, sin id en raíz, checksum real en signature.checksum)
     $payload = [
         'event' => 'transaction.updated',
-        'id' => 'evt_test_001',
+        'environment' => 'test',
         'timestamp' => 1700000000,
+        'sent_at' => '2026-11-24T15:00:00.000Z',
         'data' => [
             'transaction' => [
                 'id' => 'tx_wompi_888',
                 'status' => 'APPROVED',
                 'reference' => 'PLX-APPROVED-001',
+                'currency' => 'COP',
                 'amount_in_cents' => 5000000,
             ],
         ],
         'signature' => [
             'properties' => [
-                'data.transaction.id',
-                'data.transaction.status',
-                'data.transaction.amount_in_cents',
+                'transaction.id',
+                'transaction.status',
+                'transaction.amount_in_cents',
             ],
-            'checksum' => '1700000000',
+            'checksum' => strtoupper($expectedChecksum),
         ],
     ];
-
-    // SHA256( id + status + amount_in_cents + timestamp + events_secret )
-    $expectedChecksum = hash('sha256', 'tx_wompi_888'.'APPROVED'.'5000000'.'1700000000'.'events_secret_123');
 
     Http::fake([
         '*/transactions/tx_wompi_888' => Http::response([
@@ -123,6 +139,7 @@ test('webhook con firma checksum valida y evento APPROVED confirma pedido y desc
                 'id' => 'tx_wompi_888',
                 'status' => 'APPROVED',
                 'reference' => 'PLX-APPROVED-001',
+                'currency' => 'COP',
                 'amount_in_cents' => 5000000,
             ],
         ], 200),
@@ -133,72 +150,87 @@ test('webhook con firma checksum valida y evento APPROVED confirma pedido y desc
     ]);
 
     $response->assertOk()
-        ->assertJson([
-            'mensaje' => 'Webhook procesado',
-        ]);
+        ->assertJson(['mensaje' => 'Webhook procesado']);
 
     expect($pedido->fresh()->estado)->toBe(EstadoPedido::PAGADO)
-        ->and($pedido->fresh()->wompi_transaction_id)->toBe('tx_wompi_888')
-        ->and($pedido->fresh()->wompi_evento_id)->toBe('evt_test_001');
+        ->and($pedido->fresh()->wompi_transaction_id)->toBe('tx_wompi_888');
 
     $this->assertDatabaseMissing('stock_reservas', ['id' => $reserva->id]);
     $this->assertDatabaseHas('wompi_webhook_events', [
-        'wompi_event_id' => 'evt_test_001',
+        'wompi_event_id' => 'tx_wompi_888:APPROVED',
         'result' => 'processed',
     ]);
 });
 
-test('webhook con evento duplicado es idempotente', function () {
+test('webhook rechaza con 401 si events_secret no esta configurado (fail-closed)', function () {
+    config(['wompi.events_secret' => '']);
+
+    $payload = [
+        'event' => 'transaction.updated',
+        'timestamp' => 1700000000,
+        'data' => [
+            'transaction' => [
+                'id' => 'tx_spoof',
+                'status' => 'APPROVED',
+                'reference' => 'PLX-SPOOF',
+                'amount_in_cents' => 1000000,
+            ],
+        ],
+        'signature' => [
+            'properties' => ['transaction.id'],
+            'checksum' => 'anything',
+        ],
+    ];
+
+    $this->postJson('/api/wompi/webhook', $payload, ['X-Event-Checksum' => 'anything'])
+        ->assertStatus(401);
+});
+
+test('webhook con evento duplicado es idempotente sin requerir id raiz', function () {
     Pedido::factory()->create([
         'usuario_id' => $this->usuario->id,
         'wompi_referencia' => 'PLX-DUP-001',
-        'wompi_evento_id' => 'evt_duplicado_999',
         'estado' => EstadoPedido::PAGADO,
         'total' => 10000.00,
     ]);
 
-    // Registrarlo previamente en la tabla de idempotencia
     WompiWebhookEvent::create([
-        'wompi_event_id' => 'evt_duplicado_999',
+        'wompi_event_id' => 'tx_999:APPROVED',
         'event_type' => 'transaction.updated',
         'payload' => [],
         'result' => 'processed',
+        'processed_at' => now(),
     ]);
+
+    $checksum = hash('sha256', 'tx_999'.'APPROVED'.'1000000'.'1700000000'.'test_events_secret_123');
 
     $payload = [
         'event' => 'transaction.updated',
-        'id' => 'evt_duplicado_999',
+        'environment' => 'test',
         'timestamp' => 1700000000,
         'data' => [
             'transaction' => [
                 'id' => 'tx_999',
                 'status' => 'APPROVED',
                 'reference' => 'PLX-DUP-001',
+                'currency' => 'COP',
                 'amount_in_cents' => 1000000,
             ],
         ],
         'signature' => [
-            'properties' => ['data.transaction.id'],
-            'checksum' => '1700000000',
+            'properties' => ['transaction.id', 'transaction.status', 'transaction.amount_in_cents'],
+            'checksum' => $checksum,
         ],
     ];
 
-    $checksum = hash('sha256', 'tx_999'.'1700000000'.'events_secret_123');
-
-    $response = $this->postJson('/api/wompi/webhook', $payload, [
-        'X-Event-Checksum' => $checksum,
-    ]);
-
-    $response->assertOk()
-        ->assertJson([
-            'mensaje' => 'Evento ya procesado',
-        ]);
+    $this->postJson('/api/wompi/webhook', $payload, ['X-Event-Checksum' => $checksum])
+        ->assertOk()
+        ->assertJson(['mensaje' => 'Evento ya procesado']);
 });
 
 test('webhook con firma checksum invalida retorna 401', function () {
     $payload = [
         'event' => 'transaction.updated',
-        'id' => 'evt_fake',
         'timestamp' => 1700000000,
         'data' => [
             'transaction' => [
@@ -207,25 +239,22 @@ test('webhook con firma checksum invalida retorna 401', function () {
             ],
         ],
         'signature' => [
-            'properties' => ['data.transaction.id'],
-            'checksum' => '1700000000',
+            'properties' => ['transaction.id'],
+            'checksum' => 'bad_checksum',
         ],
     ];
 
-    $response = $this->postJson('/api/wompi/webhook', $payload, [
-        'X-Event-Checksum' => 'bad_checksum',
-    ]);
-
-    $response->assertStatus(401);
+    $this->postJson('/api/wompi/webhook', $payload, ['X-Event-Checksum' => 'bad_checksum'])
+        ->assertStatus(401);
 });
 
-test('webhook con transaccion DECLINED cancela pedido y libera stock reservado', function () {
-    $producto = Producto::factory()->create();
+test('webhook permite reintento exitoso tras un primer intento DECLINED en la misma referencia (regla Wompi seccion 8)', function () {
+    $producto = Producto::factory()->create(['stock' => 10, 'controlar_stock' => true]);
 
     $pedido = Pedido::factory()->create([
         'usuario_id' => $this->usuario->id,
-        'wompi_referencia' => 'PLX-DECLINED-001',
-        'estado' => EstadoPedido::DRAFT,
+        'wompi_referencia' => 'PLX-RETRY-001',
+        'estado' => EstadoPedido::PENDIENTE_PAGO,
         'total' => 20000.00,
     ]);
 
@@ -236,50 +265,80 @@ test('webhook con transaccion DECLINED cancela pedido y libera stock reservado',
         'expira_at' => now()->addMinutes(30),
     ]);
 
-    $payload = [
+    // 1) Primer intento DECLINED (ej. tarjeta rechazada) -> conserva pendiente_pago y reserva activa
+    $checksumDeclined = hash('sha256', 'tx_try_1'.'DECLINED'.'2000000'.'1700000000'.'test_events_secret_123');
+    $payloadDeclined = [
         'event' => 'transaction.updated',
-        'id' => 'evt_declined_123',
+        'environment' => 'test',
         'timestamp' => 1700000000,
         'data' => [
             'transaction' => [
-                'id' => 'tx_declined_456',
+                'id' => 'tx_try_1',
                 'status' => 'DECLINED',
-                'reference' => 'PLX-DECLINED-001',
+                'reference' => 'PLX-RETRY-001',
+                'currency' => 'COP',
                 'amount_in_cents' => 2000000,
             ],
         ],
         'signature' => [
-            'properties' => [
-                'data.transaction.id',
-                'data.transaction.status',
-            ],
-            'checksum' => '1700000000',
+            'properties' => ['transaction.id', 'transaction.status', 'transaction.amount_in_cents'],
+            'checksum' => $checksumDeclined,
         ],
     ];
 
-    $checksum = hash('sha256', 'tx_declined_456'.'DECLINED'.'1700000000'.'events_secret_123');
-
     Http::fake([
-        '*/transactions/tx_declined_456' => Http::response([
+        '*/transactions/tx_try_1' => Http::response([
             'data' => [
-                'id' => 'tx_declined_456',
+                'id' => 'tx_try_1',
                 'status' => 'DECLINED',
-                'reference' => 'PLX-DECLINED-001',
+                'reference' => 'PLX-RETRY-001',
+                'currency' => 'COP',
+                'amount_in_cents' => 2000000,
+            ],
+        ], 200),
+        '*/transactions/tx_try_2' => Http::response([
+            'data' => [
+                'id' => 'tx_try_2',
+                'status' => 'APPROVED',
+                'reference' => 'PLX-RETRY-001',
+                'currency' => 'COP',
                 'amount_in_cents' => 2000000,
             ],
         ], 200),
     ]);
 
-    $response = $this->postJson('/api/wompi/webhook', $payload, [
-        'X-Event-Checksum' => $checksum,
-    ]);
+    $this->postJson('/api/wompi/webhook', $payloadDeclined, ['X-Event-Checksum' => $checksumDeclined])
+        ->assertOk();
 
-    $response->assertOk()
-        ->assertJson([
-            'mensaje' => 'Webhook procesado',
-        ]);
+    expect($pedido->fresh()->estado)->toBe(EstadoPedido::PENDIENTE_PAGO);
+    $this->assertDatabaseHas('stock_reservas', ['id' => $reserva->id]);
 
-    expect($pedido->fresh()->estado)->toBe(EstadoPedido::CANCELADO);
+    // 2) Segundo intento APPROVED (ej. Nequi dentro de la ventana de 3 min) -> confirma la orden
+    $checksumApproved = hash('sha256', 'tx_try_2'.'APPROVED'.'2000000'.'1700000100'.'test_events_secret_123');
+    $payloadApproved = [
+        'event' => 'transaction.updated',
+        'environment' => 'test',
+        'timestamp' => 1700000100,
+        'data' => [
+            'transaction' => [
+                'id' => 'tx_try_2',
+                'status' => 'APPROVED',
+                'reference' => 'PLX-RETRY-001',
+                'currency' => 'COP',
+                'amount_in_cents' => 2000000,
+            ],
+        ],
+        'signature' => [
+            'properties' => ['transaction.id', 'transaction.status', 'transaction.amount_in_cents'],
+            'checksum' => $checksumApproved,
+        ],
+    ];
+
+    $this->postJson('/api/wompi/webhook', $payloadApproved, ['X-Event-Checksum' => $checksumApproved])
+        ->assertOk();
+
+    expect($pedido->fresh()->estado)->toBe(EstadoPedido::PAGADO)
+        ->and($pedido->fresh()->wompi_transaction_id)->toBe('tx_try_2');
     $this->assertDatabaseMissing('stock_reservas', ['id' => $reserva->id]);
 });
 
@@ -291,110 +350,94 @@ test('webhook con monto alterado retorna 422 y audita el rechazo', function () {
         'total' => 120000.00,
     ]);
 
+    $checksum = hash('sha256', 'tx_tampering_001'.'APPROVED'.'10000'.'1700000000'.'test_events_secret_123');
+
     $payload = [
         'event' => 'transaction.updated',
-        'id' => 'evt_tampering_001',
+        'environment' => 'test',
         'timestamp' => 1700000000,
         'data' => [
             'transaction' => [
                 'id' => 'tx_tampering_001',
                 'status' => 'APPROVED',
                 'reference' => 'PLX-TAMPERING-001',
+                'currency' => 'COP',
                 'amount_in_cents' => 10000,
             ],
         ],
         'signature' => [
-            'properties' => [
-                'data.transaction.id',
-                'data.transaction.status',
-                'data.transaction.amount_in_cents',
-            ],
-            'checksum' => '1700000000',
+            'properties' => ['transaction.id', 'transaction.status', 'transaction.amount_in_cents'],
+            'checksum' => $checksum,
         ],
     ];
 
-    $checksum = hash('sha256', 'tx_tampering_001'.'APPROVED'.'10000'.'1700000000'.'events_secret_123');
-
-    $response = $this->postJson('/api/wompi/webhook', $payload, [
-        'X-Event-Checksum' => $checksum,
-    ]);
-
-    $response->assertStatus(422)
-        ->assertJson([
-            'mensaje' => 'Monto del evento no coincide con la orden',
-        ]);
+    $this->postJson('/api/wompi/webhook', $payload, ['X-Event-Checksum' => $checksum])
+        ->assertStatus(422)
+        ->assertJson(['mensaje' => 'Monto del evento no coincide con la orden']);
 
     expect($pedido->fresh()->estado)->toBe(EstadoPedido::PENDIENTE_PAGO);
     $this->assertDatabaseHas('wompi_webhook_events', [
-        'wompi_event_id' => 'evt_tampering_001',
+        'wompi_event_id' => 'tx_tampering_001:APPROVED',
         'result' => 'rejected_amount_mismatch',
     ]);
 });
 
-test('webhook DECLINED tardio no revierte un pedido ya pagado', function () {
+test('webhook VOIDED tardio no revierte un pedido ya pagado', function () {
     $pedido = Pedido::factory()->create([
         'usuario_id' => $this->usuario->id,
-        'wompi_referencia' => 'PLX-LATE-DECLINED-001',
+        'wompi_referencia' => 'PLX-LATE-VOIDED-001',
         'estado' => EstadoPedido::PAGADO,
         'total' => 50000.00,
         'wompi_transaction_id' => 'tx_approved_001',
     ]);
 
+    $checksum = hash('sha256', 'tx_voided_late_001'.'VOIDED'.'5000000'.'1700000000'.'test_events_secret_123');
+
     $payload = [
         'event' => 'transaction.updated',
-        'id' => 'evt_late_declined_001',
+        'environment' => 'test',
         'timestamp' => 1700000000,
         'data' => [
             'transaction' => [
-                'id' => 'tx_declined_late_001',
-                'status' => 'DECLINED',
-                'reference' => 'PLX-LATE-DECLINED-001',
+                'id' => 'tx_voided_late_001',
+                'status' => 'VOIDED',
+                'reference' => 'PLX-LATE-VOIDED-001',
+                'currency' => 'COP',
                 'amount_in_cents' => 5000000,
             ],
         ],
         'signature' => [
-            'properties' => [
-                'data.transaction.id',
-                'data.transaction.status',
-                'data.transaction.amount_in_cents',
-            ],
-            'checksum' => '1700000000',
+            'properties' => ['transaction.id', 'transaction.status', 'transaction.amount_in_cents'],
+            'checksum' => $checksum,
         ],
     ];
 
-    $checksum = hash('sha256', 'tx_declined_late_001'.'DECLINED'.'5000000'.'1700000000'.'events_secret_123');
-
     Http::fake([
-        '*/transactions/tx_declined_late_001' => Http::response([
+        '*/transactions/tx_voided_late_001' => Http::response([
             'data' => [
-                'id' => 'tx_declined_late_001',
-                'status' => 'DECLINED',
-                'reference' => 'PLX-LATE-DECLINED-001',
+                'id' => 'tx_voided_late_001',
+                'status' => 'VOIDED',
+                'reference' => 'PLX-LATE-VOIDED-001',
+                'currency' => 'COP',
                 'amount_in_cents' => 5000000,
             ],
         ], 200),
     ]);
 
-    $response = $this->postJson('/api/wompi/webhook', $payload, [
-        'X-Event-Checksum' => $checksum,
-    ]);
-
-    $response->assertOk()
-        ->assertJson([
-            'mensaje' => 'Webhook procesado',
-        ]);
+    $this->postJson('/api/wompi/webhook', $payload, ['X-Event-Checksum' => $checksum])
+        ->assertOk();
 
     expect($pedido->fresh()->estado)->toBe(EstadoPedido::PAGADO)
         ->and($pedido->fresh()->wompi_transaction_id)->toBe('tx_approved_001');
 });
 
-test('webhook con transaccion VOIDED cancela pedido y libera stock reservado', function () {
+test('webhook con transaccion VOIDED cancela pedido pendiente y libera stock reservado', function () {
     $producto = Producto::factory()->create();
 
     $pedido = Pedido::factory()->create([
         'usuario_id' => $this->usuario->id,
         'wompi_referencia' => 'PLX-VOIDED-001',
-        'estado' => EstadoPedido::DRAFT,
+        'estado' => EstadoPedido::PENDIENTE_PAGO,
         'total' => 25000.00,
     ]);
 
@@ -405,28 +448,26 @@ test('webhook con transaccion VOIDED cancela pedido y libera stock reservado', f
         'expira_at' => now()->addMinutes(30),
     ]);
 
+    $checksum = hash('sha256', 'tx_voided_456'.'VOIDED'.'1700000000'.'test_events_secret_123');
+
     $payload = [
         'event' => 'transaction.updated',
-        'id' => 'evt_voided_123',
+        'environment' => 'test',
         'timestamp' => 1700000000,
         'data' => [
             'transaction' => [
                 'id' => 'tx_voided_456',
                 'status' => 'VOIDED',
                 'reference' => 'PLX-VOIDED-001',
+                'currency' => 'COP',
                 'amount_in_cents' => 2500000,
             ],
         ],
         'signature' => [
-            'properties' => [
-                'data.transaction.id',
-                'data.transaction.status',
-            ],
-            'checksum' => '1700000000',
+            'properties' => ['transaction.id', 'transaction.status'],
+            'checksum' => $checksum,
         ],
     ];
-
-    $checksum = hash('sha256', 'tx_voided_456'.'VOIDED'.'1700000000'.'events_secret_123');
 
     Http::fake([
         '*/transactions/tx_voided_456' => Http::response([
@@ -434,112 +475,20 @@ test('webhook con transaccion VOIDED cancela pedido y libera stock reservado', f
                 'id' => 'tx_voided_456',
                 'status' => 'VOIDED',
                 'reference' => 'PLX-VOIDED-001',
+                'currency' => 'COP',
                 'amount_in_cents' => 2500000,
             ],
         ], 200),
     ]);
 
-    $response = $this->postJson('/api/wompi/webhook', $payload, [
-        'X-Event-Checksum' => $checksum,
-    ]);
-
-    $response->assertOk()
-        ->assertJson([
-            'mensaje' => 'Webhook procesado',
-        ]);
+    $this->postJson('/api/wompi/webhook', $payload, ['X-Event-Checksum' => $checksum])
+        ->assertOk();
 
     expect($pedido->fresh()->estado)->toBe(EstadoPedido::CANCELADO);
     $this->assertDatabaseMissing('stock_reservas', ['id' => $reserva->id]);
 });
 
-test('webhook con transaccion ERROR cancela pedido y libera stock reservado', function () {
-    $producto = Producto::factory()->create();
-
-    $pedido = Pedido::factory()->create([
-        'usuario_id' => $this->usuario->id,
-        'wompi_referencia' => 'PLX-ERROR-001',
-        'estado' => EstadoPedido::DRAFT,
-        'total' => 15000.00,
-    ]);
-
-    $reserva = StockReserva::create([
-        'pedido_id' => $pedido->id,
-        'producto_id' => $producto->id,
-        'cantidad' => 1,
-        'expira_at' => now()->addMinutes(30),
-    ]);
-
-    $payload = [
-        'event' => 'transaction.updated',
-        'id' => 'evt_error_123',
-        'timestamp' => 1700000000,
-        'data' => [
-            'transaction' => [
-                'id' => 'tx_error_456',
-                'status' => 'ERROR',
-                'reference' => 'PLX-ERROR-001',
-                'amount_in_cents' => 1500000,
-            ],
-        ],
-        'signature' => [
-            'properties' => [
-                'data.transaction.id',
-                'data.transaction.status',
-            ],
-            'checksum' => '1700000000',
-        ],
-    ];
-
-    $checksum = hash('sha256', 'tx_error_456'.'ERROR'.'1700000000'.'events_secret_123');
-
-    Http::fake([
-        '*/transactions/tx_error_456' => Http::response([
-            'data' => [
-                'id' => 'tx_error_456',
-                'status' => 'ERROR',
-                'reference' => 'PLX-ERROR-001',
-                'amount_in_cents' => 1500000,
-            ],
-        ], 200),
-    ]);
-
-    $response = $this->postJson('/api/wompi/webhook', $payload, [
-        'X-Event-Checksum' => $checksum,
-    ]);
-
-    $response->assertOk()
-        ->assertJson([
-            'mensaje' => 'Webhook procesado',
-        ]);
-
-    expect($pedido->fresh()->estado)->toBe(EstadoPedido::CANCELADO);
-    $this->assertDatabaseMissing('stock_reservas', ['id' => $reserva->id]);
-});
-
-test('datos pago maneja error 500 de la API de Wompi retornando 502', function () {
-    Sanctum::actingAs($this->usuario);
-
-    $pedido = Pedido::factory()->create([
-        'usuario_id' => $this->usuario->id,
-        'estado' => EstadoPedido::DRAFT,
-        'total' => 100000.00,
-        'wompi_referencia' => 'PLX-API-FAIL',
-    ]);
-
-    Http::fake([
-        '*/payment_links' => Http::response([
-            'error' => ['type' => 'InternalError'],
-        ], 500),
-    ]);
-
-    $response = $this->postJson('/api/wompi/datos-pago', [
-        'pedido_id' => $pedido->id,
-    ]);
-
-    $response->assertStatus(502);
-});
-
-test('webhook maneja error de la API de Wompi al consultar transaccion y usa estado del payload como respaldo', function () {
+test('webhook retorna 503 cuando la API de Wompi falla en la doble verificacion para solicitar reintento oficial', function () {
     $pedido = Pedido::factory()->create([
         'usuario_id' => $this->usuario->id,
         'estado' => EstadoPedido::PENDIENTE_PAGO,
@@ -547,87 +496,57 @@ test('webhook maneja error de la API de Wompi al consultar transaccion y usa est
         'total' => 35000.00,
     ]);
 
+    $checksum = hash('sha256', 'tx_api_down_888'.'APPROVED'.'3500000'.'1700000000'.'test_events_secret_123');
+
     $payload = [
         'event' => 'transaction.updated',
-        'id' => 'evt_api_down_001',
+        'environment' => 'test',
         'timestamp' => 1700000000,
         'data' => [
             'transaction' => [
                 'id' => 'tx_api_down_888',
                 'status' => 'APPROVED',
                 'reference' => 'PLX-API-DOWN-001',
+                'currency' => 'COP',
                 'amount_in_cents' => 3500000,
             ],
         ],
         'signature' => [
-            'properties' => [
-                'data.transaction.id',
-                'data.transaction.status',
-                'data.transaction.amount_in_cents',
-            ],
-            'checksum' => '1700000000',
+            'properties' => ['transaction.id', 'transaction.status', 'transaction.amount_in_cents'],
+            'checksum' => $checksum,
         ],
     ];
 
-    $checksum = hash('sha256', 'tx_api_down_888'.'APPROVED'.'3500000'.'1700000000'.'events_secret_123');
-
-    // La API externa de Wompi falla con 500 al consultar el estado de la transacción
     Http::fake([
-        '*/transactions/tx_api_down_888' => Http::response([
-            'error' => ['type' => 'InternalError'],
-        ], 500),
+        '*/transactions/tx_api_down_888' => Http::response(['error' => ['type' => 'InternalError']], 500),
     ]);
 
-    $response = $this->postJson('/api/wompi/webhook', $payload, [
-        'X-Event-Checksum' => $checksum,
-    ]);
+    $this->postJson('/api/wompi/webhook', $payload, ['X-Event-Checksum' => $checksum])
+        ->assertStatus(503);
 
-    $response->assertOk()
-        ->assertJson([
-            'mensaje' => 'Webhook procesado',
-        ]);
-
-    // Debe haber usado exitosamente el estado APPROVED del webhook
-    expect($pedido->fresh()->estado)->toBe(EstadoPedido::PAGADO)
-        ->and($pedido->fresh()->wompi_transaction_id)->toBe('tx_api_down_888');
+    // El pedido NO se marca como pagado sin doble verificación exitosa
+    expect($pedido->fresh()->estado)->toBe(EstadoPedido::PENDIENTE_PAGO);
 });
 
-test('webhook con pedido no encontrado responde 200 y audita rejected_order_not_found', function () {
-    $payload = [
-        'event' => 'transaction.updated',
-        'id' => 'evt_not_found_001',
-        'timestamp' => 1700000000,
-        'data' => [
-            'transaction' => [
-                'id' => 'tx_unknown_999',
-                'status' => 'APPROVED',
-                'reference' => 'PLX-NON-EXISTENT',
-                'amount_in_cents' => 5000000,
-            ],
-        ],
-        'signature' => [
-            'properties' => [
-                'data.transaction.id',
-                'data.transaction.status',
-                'data.transaction.amount_in_cents',
-            ],
-            'checksum' => '1700000000',
-        ],
-    ];
+test('endpoint pedidos estado es estrictamente de solo lectura y nunca muta la orden ni llama a Wompi', function () {
+    Sanctum::actingAs($this->usuario);
+    Http::fake();
 
-    $checksum = hash('sha256', 'tx_unknown_999'.'APPROVED'.'5000000'.'1700000000'.'events_secret_123');
-
-    $response = $this->postJson('/api/wompi/webhook', $payload, [
-        'X-Event-Checksum' => $checksum,
+    $pedido = Pedido::factory()->create([
+        'usuario_id' => $this->usuario->id,
+        'metodo_pago' => 'wompi',
+        'estado' => EstadoPedido::PENDIENTE_PAGO,
+        'wompi_referencia' => 'PLX-READONLY-001',
+        'total' => 45000.00,
     ]);
 
-    $response->assertOk()
+    $this->getJson('/api/pedidos/estado?ref=PLX-READONLY-001&id=tx_inventado_cliente')
+        ->assertOk()
         ->assertJson([
-            'mensaje' => 'Pedido no encontrado',
+            'estado' => 'pendiente_pago',
+            'wompi_referencia' => 'PLX-READONLY-001',
         ]);
 
-    $this->assertDatabaseHas('wompi_webhook_events', [
-        'wompi_event_id' => 'evt_not_found_001',
-        'result' => 'rejected_order_not_found',
-    ]);
+    Http::assertNothingSent();
+    expect($pedido->fresh()->estado)->toBe(EstadoPedido::PENDIENTE_PAGO);
 });

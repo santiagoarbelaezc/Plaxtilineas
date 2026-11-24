@@ -8,25 +8,24 @@ use App\Enums\EstadoPedido;
 use App\Exceptions\Domain\CheckoutInvalidoException;
 use App\Models\Pedido;
 use App\Services\Wompi\SignatureService;
-use App\Services\Wompi\WompiClient;
 use Illuminate\Support\Facades\Log;
 
 /**
  * CreateCheckoutAction
  *
- * Encapsula toda la lógica de negocio para generar un checkout de Wompi:
- *   1. Recalcula el total DESDE LA BD (nunca confía en el frontend).
- *   2. Actualiza el estado del pedido a pendiente_pago.
- *   3. Genera la firma de integridad.
- *   4. Crea un Payment Link en Wompi y guarda el link_id en el pedido.
- *   5. Devuelve todos los datos que el frontend necesita para abrir el widget.
- *
- * @return array<string, mixed>
+ * Genera los parámetros firmados para el Web Checkout / Widget oficial de Wompi:
+ *   1. Verifica que el pedido esté en estado elegible (draft / pendiente_pago).
+ *   2. Recalcula el monto en centavos DESDE LA BD (nunca desde el cliente).
+ *   3. Marca el pedido como pendiente_pago.
+ *   4. Genera la firma criptográfica SHA-256:
+ *      SHA256( referencia + montoEnCentavos + moneda + secretoIntegridad )
+ *   5. Retorna exclusivamente datos públicos + firma al frontend (ningún secreto sale del servidor).
  */
 final class CreateCheckoutAction
 {
+    private const WOMPI_WEB_CHECKOUT_URL = 'https://checkout.wompi.co/p/';
+
     public function __construct(
-        private readonly WompiClient $wompiClient,
         private readonly SignatureService $signatureService,
     ) {}
 
@@ -45,69 +44,68 @@ final class CreateCheckoutAction
             );
         }
 
-        // ── 2. Recalcular monto DESDE LA BD (la fuente de verdad) ──────────────
-        $pedido->refresh(); // asegurar datos frescos
+        // ── 2. Recalcular monto DESDE LA BD (fuente de verdad) ─────────────────
+        $pedido->loadMissing('usuario');
+        $pedido->refresh();
+
         $amountCents = (int) round((float) $pedido->total * 100);
-        $currency = 'COP';
-        $reference = (string) $pedido->wompi_referencia;
-        $redirectUrl = (string) config('wompi.redirect_url');
-
-        // ── 3. Marcar como pendiente_pago ──────────────────────────────────────
-        $pedido->update(['estado' => EstadoPedido::PENDIENTE_PAGO]);
-
-        // ── 4. Generar firma de integridad ─────────────────────────────────────
-        $signature = $this->signatureService->buildIntegritySignature($reference, $amountCents, $currency);
-
-        // ── 5. Crear Payment Link en Wompi ──────────────────────────────────────
-        $linkPayload = [
-            'name' => "Pedido {$reference} — Plaxtilineas",
-            'description' => "Pago de pedido Plaxtilineas #{$pedido->id}",
-            'single_use' => true,
-            'collect_shipping' => false,
-            'currency' => $currency,
-            'amount_in_cents' => $amountCents,
-            'redirect_url' => $redirectUrl,
-            'sku' => $reference,
-        ];
-
-        $responseData = $this->wompiClient->createPaymentLink($linkPayload);
-
-        /** @var array<string, mixed> $data */
-        $data = $responseData['data'] ?? [];
-        $linkId = (string) ($data['id'] ?? '');
-
-        if ($linkId === '') {
-            Log::error('CreateCheckoutAction — Wompi no devolvió un link_id', [
-                'pedido_id' => $pedido->id,
-                'response' => $responseData,
-            ]);
-            throw new CheckoutInvalidoException('No se pudo crear el enlace de pago. Intenta de nuevo.', 502);
+        if ($amountCents <= 0) {
+            throw new CheckoutInvalidoException('El monto del pedido no es válido para procesar el pago.', 422);
         }
 
-        // ── 6. Persistir link_id en el pedido ──────────────────────────────────
-        $pedido->update(['wompi_link_id' => $linkId]);
+        $currency = 'COP';
+        $reference = trim((string) $pedido->wompi_referencia);
+        if ($reference === '') {
+            $reference = 'PLX-'.$pedido->id.'-'.strtoupper(bin2hex(random_bytes(3)));
+            $pedido->wompi_referencia = $reference;
+        }
 
-        $publicKey = (string) config('wompi.public_key', '');
-        $checkoutUrl = "https://checkout.wompi.co/l/{$linkId}";
+        $redirectUrl = (string) config('wompi.redirect_url');
+        $publicKey = trim((string) config('wompi.public_key', ''));
 
-        Log::info('CreateCheckoutAction — Checkout creado', [
+        // ── 3. Marcar pedido como pendiente_pago ───────────────────────────────
+        $pedido->update([
+            'estado' => EstadoPedido::PENDIENTE_PAGO,
+            'wompi_referencia' => $reference,
+        ]);
+
+        // ── 4. Generar firma de integridad SHA-256 en el servidor ──────────────
+        $signature = $this->signatureService->buildIntegritySignature($reference, $amountCents, $currency);
+
+        // ── 5. Preparar datos opcionales prellenados del cliente ───────────────
+        $emailCliente = trim((string) ($pedido->email_cliente ?: $pedido->usuario?->correo ?: ''));
+        $nombreCliente = trim((string) ($pedido->nombre_cliente ?: trim(($pedido->usuario?->nombre ?? '').' '.($pedido->usuario?->apellidos ?? ''))));
+        $telefonoLimpio = preg_replace('/\D+/', '', (string) ($pedido->telefono_contacto ?: $pedido->usuario?->telefono ?: '')) ?? '';
+        if (strlen($telefonoLimpio) === 12 && str_starts_with($telefonoLimpio, '57')) {
+            $telefonoLimpio = substr($telefonoLimpio, 2);
+        }
+
+        $customerData = array_filter([
+            'email' => $emailCliente !== '' ? $emailCliente : null,
+            'full_name' => $nombreCliente !== '' ? $nombreCliente : null,
+            'phone_number' => strlen($telefonoLimpio) === 10 ? $telefonoLimpio : null,
+            'phone_number_prefix' => strlen($telefonoLimpio) === 10 ? '+57' : null,
+        ], static fn ($v) => $v !== null);
+
+        Log::info('CreateCheckoutAction — Checkout firmado generado', [
             'pedido_id' => $pedido->id,
+            'codigo_pedido' => $pedido->codigo_pedido,
             'reference' => $reference,
-            'link_id' => $linkId,
             'amount_cents' => $amountCents,
         ]);
 
-        // ── 7. Devolver datos para el widget del frontend ───────────────────────
         return [
             'public_key' => $publicKey,
             'referencia' => $reference,
             'monto_centavos' => $amountCents,
             'moneda' => $currency,
             'firma_integridad' => $signature,
+            'firma' => $signature,
             'redirect_url' => $redirectUrl,
-            'checkout_url' => $checkoutUrl,
-            'link_id' => $linkId,
+            'checkout_url' => self::WOMPI_WEB_CHECKOUT_URL,
             'pedido_id' => $pedido->id,
+            'codigo_pedido' => $pedido->codigo_pedido,
+            'customer_data' => $customerData,
         ];
     }
 }

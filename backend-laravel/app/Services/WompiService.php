@@ -51,9 +51,9 @@ final class WompiService implements WompiClientInterface
         $eventsKey = (string) config('wompi.events_secret', (string) config('services.wompi.events_key', ''));
 
         if ($eventsKey === '') {
-            Log::warning('WompiService::verificarChecksum — events_secret no configurado, webhook permisivo');
+            Log::critical('WompiService::verificarChecksum — events_secret no configurado, rechazando webhook');
 
-            return true;
+            return false;
         }
 
         if (! $checksumHeader) {
