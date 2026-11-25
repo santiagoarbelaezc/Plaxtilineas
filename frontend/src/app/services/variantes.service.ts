@@ -10,16 +10,20 @@ export class VariantesService {
   constructor(private catalogo: CatalogoService) {}
 
   getVariantesPorProducto(producto_id: number): Observable<Variante[]> {
-    return this.catalogo
-      .getProductos()
-      .pipe(map(lista => lista.find(p => p.id === Number(producto_id))?.variantes ?? []));
+    return this.catalogo.getProductos().pipe(
+      map(lista =>
+        (lista.find(p => p.id === Number(producto_id))?.variantes ?? []).filter(
+          v => Number(v?.precio ?? 0) > 0
+        )
+      )
+    );
   }
 
   getVariantePorId(id: number): Observable<Variante | null> {
     return this.catalogo.getProductos().pipe(
       map(lista => {
         for (const p of lista) {
-          const v = p.variantes?.find(x => x.id === Number(id));
+          const v = p.variantes?.find(x => x.id === Number(id) && Number(x?.precio ?? 0) > 0);
           if (v) return v;
         }
         return null;

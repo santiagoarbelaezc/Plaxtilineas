@@ -21,10 +21,20 @@ export class ProductSelectService {
     this.restaurarHistorial();
   }
 
+  private tienePrecioValido(producto: ProductoMenu | null | undefined): boolean {
+    if (!producto) return false;
+    const precio = Number(producto.precio ?? 0);
+    return Number.isFinite(precio) && precio > 0;
+  }
+
   /**
-   * Navegar a la página de detalles del producto
+   * Navegar a la página de detalles del producto (solo si tiene precio > 0)
    */
   verDetallesProducto(producto: ProductoMenu): void {
+    if (!this.tienePrecioValido(producto)) {
+      return;
+    }
+
     this.productoSeleccionadoSubject.next(producto);
     this.agregarAlHistorial(producto);
     
@@ -40,6 +50,9 @@ export class ProductSelectService {
    * Seleccionar producto (para casos donde no se navega inmediatamente)
    */
   seleccionarProducto(producto: ProductoMenu): void {
+    if (!this.tienePrecioValido(producto)) {
+      return;
+    }
     this.productoSeleccionadoSubject.next(producto);
     this.agregarAlHistorial(producto);
   }
@@ -48,7 +61,11 @@ export class ProductSelectService {
    * Agregar producto al historial
    */
   private agregarAlHistorial(producto: ProductoMenu): void {
-    const historialActual = this.historialProductosSubject.value;
+    if (!this.tienePrecioValido(producto)) {
+      return;
+    }
+
+    const historialActual = this.historialProductosSubject.value.filter(p => this.tienePrecioValido(p));
     
     // Filtrar para evitar duplicados
     const nuevoHistorial = historialActual.filter(p => p.id !== producto.id);
@@ -87,13 +104,15 @@ export class ProductSelectService {
   }
 
   /**
-   * Restaurar historial desde sessionStorage
+   * Restaurar historial desde sessionStorage (descartando productos sin precio)
    */
   restaurarHistorial(): void {
     const historialGuardado = sessionStorage.getItem('historialProductos');
     if (historialGuardado) {
       try {
-        const historial = JSON.parse(historialGuardado) as ProductoMenu[];
+        const historial = (JSON.parse(historialGuardado) as ProductoMenu[]).filter(p =>
+          this.tienePrecioValido(p)
+        );
         this.historialProductosSubject.next(historial);
       } catch (error) {
         console.error('Error al restaurar historial:', error);

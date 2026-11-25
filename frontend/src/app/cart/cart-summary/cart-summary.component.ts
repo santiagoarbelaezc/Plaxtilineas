@@ -53,6 +53,7 @@ export class CartSummaryComponent implements OnInit {
   });
 
   showAuthModal = signal(false);
+  confirmModal = signal<{ type: 'item' | 'clear'; itemId?: string; itemName?: string } | null>(null);
 
   increaseQuantity(id: string, current: number) {
     this.cartService.updateQuantity(id, current + 1);
@@ -64,16 +65,31 @@ export class CartSummaryComponent implements OnInit {
     }
   }
 
-  removeItem(id: string) {
-    if (confirm('¿Deseas eliminar este producto del carrito?')) {
-      this.cartService.removeFromCart(id);
-    }
+  removeItem(id: string, nombre?: string) {
+    this.confirmModal.set({
+      type: 'item',
+      itemId: id,
+      itemName: nombre || 'este producto'
+    });
   }
 
   clearCart() {
-    if (confirm('¿Estás seguro de que deseas vaciar el carrito?')) {
+    this.confirmModal.set({ type: 'clear' });
+  }
+
+  closeConfirmModal(): void {
+    this.confirmModal.set(null);
+  }
+
+  confirmModalAction(): void {
+    const modal = this.confirmModal();
+    if (!modal) return;
+    if (modal.type === 'item' && modal.itemId) {
+      this.cartService.removeFromCart(modal.itemId);
+    } else if (modal.type === 'clear') {
       this.cartService.clearCart();
     }
+    this.confirmModal.set(null);
   }
 
   goBack(): void {

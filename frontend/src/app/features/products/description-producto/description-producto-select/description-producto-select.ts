@@ -87,7 +87,7 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.productSelectService.productoSeleccionado$.subscribe(
         (producto) => {
-          if (producto) {
+          if (producto && Number(producto.precio ?? 0) > 0) {
             this.producto = producto as any;
             this.procesarProducto();
             this.cargando = false;
@@ -171,10 +171,11 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     this.cargando = true;
     this.error = false;
     
-    // 1. Intentar obtener el producto del estado de navegación
+    // 1. Intentar obtener el producto del estado de navegación (solo si tiene precio > 0)
     const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras.state?.['producto']) {
-      this.producto = navigation.extras.state['producto'] as ProductoMenu;
+    const stateProd = navigation?.extras.state?.['producto'] as ProductoMenu | undefined;
+    if (stateProd && Number(stateProd.precio ?? 0) > 0) {
+      this.producto = stateProd;
       this.procesarProducto();
       this.cargando = false;
       
@@ -183,10 +184,10 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
       return;
     }
     
-    // 2. Usar el servicio ProductosService para obtener el producto
+    // 2. Usar el servicio ProductosService para obtener el producto (ya filtrado con precio > 0)
     this.productosService.obtenerProductoPorId(id).subscribe({
       next: (productoData) => {
-        if (productoData) {
+        if (productoData && Number(productoData.precio ?? 0) > 0) {
           // Convertir ProductoEditable a ProductoMenu
           const productoConvertido: ProductoMenu = this.convertirProductoEditableAMenu(productoData);
           
@@ -198,13 +199,13 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
           // 🚨 EMITIR SEÑAL después de seleccionar el producto
           this.carouselSignalService.notificarProductoSeleccionado(this.producto.id);
         } else {
-          console.error('Producto no encontrado');
+          this.producto = null;
           this.error = true;
         }
         this.cargando = false;
       },
-      error: (error) => {
-        console.error('Error al cargar producto:', error);
+      error: () => {
+        this.producto = null;
         this.error = true;
         this.cargando = false;
       }

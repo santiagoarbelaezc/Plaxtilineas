@@ -73,8 +73,15 @@ export class ProductosService {
     return copia;
   }
 
+  /** Flujo unificado que garantiza exclusivamente productos con precio válido (> 0). */
+  private productosConPrecio$(): Observable<ProductoEditable[]> {
+    return this.catalogo
+      .getProductos()
+      .pipe(map(lista => (lista ?? []).filter(p => this.catalogo.tienePrecioValido(p))));
+  }
+
   obtenerProductos(subcategoriaId?: number): Observable<ProductoEditable[]> {
-    return this.catalogo.getProductos().pipe(
+    return this.productosConPrecio$().pipe(
       map(lista =>
         subcategoriaId !== undefined
           ? lista.filter(p => p.subcategoria_id === subcategoriaId)
@@ -88,21 +95,19 @@ export class ProductosService {
   }
 
   obtenerProductosPorCategoriaId(categoriaId: number): Observable<ProductoEditable[]> {
-    return this.catalogo
-      .getProductos()
+    return this.productosConPrecio$()
       .pipe(map(lista => lista.filter(p => p.categoria_id === categoriaId)));
   }
 
   /** Productos de interés (selección aleatoria). */
   obtenerProductosAleatorios(limite: number = 8): Observable<ProductoEditable[]> {
-    return this.catalogo
-      .getProductos()
+    return this.productosConPrecio$()
       .pipe(map(lista => this.mezclar(lista).slice(0, limite)));
   }
 
   /** Misma subcategoría (o categoría si no hay subcategoría), excluyendo el producto actual. */
   obtenerProductosRelacionados(productoId: number, limite: number = 4): Observable<ProductoEditable[]> {
-    return this.catalogo.getProductos().pipe(
+    return this.productosConPrecio$().pipe(
       map(lista => {
         const actual = lista.find(p => p.id === productoId);
         let candidatos = lista.filter(p => p.id !== productoId);
@@ -117,14 +122,13 @@ export class ProductosService {
   }
 
   obtenerProductoPorId(id: number): Observable<ProductoEditable | null> {
-    return this.catalogo
-      .getProductos()
+    return this.productosConPrecio$()
       .pipe(map(lista => lista.find(p => p.id === Number(id)) ?? null));
   }
 
   /** Últimos productos agregados al catálogo (más recientes primero, hasta 20 por defecto). */
   obtenerUltimosProductos(limite: number = 20): Observable<ProductoEditable[]> {
-    return this.catalogo.getProductos().pipe(
+    return this.productosConPrecio$().pipe(
       map(lista =>
         [...lista]
           .sort((a, b) => {
@@ -150,7 +154,7 @@ export class ProductosService {
 
     const palabras = this.tokensBusqueda(nombre);
 
-    return this.catalogo.getProductos().pipe(
+    return this.productosConPrecio$().pipe(
       map(lista => {
         const coincide = (p: ProductoEditable, requerirTodas: boolean) => {
           const texto = this.normalizar(
@@ -197,7 +201,7 @@ export class ProductosService {
     orden?: 'relevancia' | 'precio_asc' | 'precio_desc' | 'nombre';
     limite?: number;
   }): Observable<ProductoEditable[]> {
-    return this.catalogo.getProductos().pipe(
+    return this.productosConPrecio$().pipe(
       map(lista => {
         let res = [...lista];
 

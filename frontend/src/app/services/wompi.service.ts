@@ -39,6 +39,21 @@ export class WompiService {
   }
 
   /**
+   * Solicita al backend una conciliación Servidor-a-Servidor (S2S) inmediata contra la API de Wompi.
+   * El backend valida los 5 puntos de seguridad antes de confirmar el pedido.
+   */
+  verificarTransaccion(payload: {
+    pedido_id?: number;
+    referencia?: string;
+    transaction_id?: string;
+  }): Observable<any> {
+    return this.http.post<any>(
+      `${environment.apiUrl}/wompi/verificar-transaccion`,
+      payload
+    );
+  }
+
+  /**
    * Abre el Widget oficial de Wompi (https://checkout.wompi.co/widget.js) con
    * `signature: { integrity }` y `bootstrapTransport: 'postmessage'`.
    * Evita los bloqueos 403 de CloudFront WAF en GET /p/ con parámetros codificados o http://localhost.
@@ -101,16 +116,24 @@ export class WompiService {
 
         const checkout = new window.WidgetCheckout(config);
         checkout.open((result: any) => {
-          // Solo informativo: la confirmación real ocurre vía Webhook en el backend.
+          // Solo informativo en cliente: disparamos verificación S2S inmediata en el backend
+          // y navegamos de inmediato a /perfil?tab=pedidos sin pasar por /carrito.
           const txId = result?.transaction?.id || '';
           this.ngZone.run(() => {
             this.cartService.clearCart();
+            this.verificarTransaccion({
+              pedido_id: datos.pedido_id,
+              referencia: datos.referencia,
+              ...(txId ? { transaction_id: txId } : {})
+            }).subscribe({ error: () => {} });
+
             this.router.navigate(['/perfil'], {
               queryParams: {
                 tab: 'pedidos',
                 ref: datos.referencia,
                 ...(txId ? { tx: txId } : {})
-              }
+              },
+              replaceUrl: true
             });
           });
         });

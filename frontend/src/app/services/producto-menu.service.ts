@@ -1,42 +1,67 @@
 // src/app/services/producto-menu.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ProductoMenu } from '../models/productoMenu.model';
-import { environment } from '../../enviroments/environment';
+import { ProductoEditable } from '../models/producto.model';
+import { ProductosService } from './productos.service';
 
+/**
+ * Adaptador unificado sobre ProductosService / CatalogoService.
+ * Garantiza que cualquier consumidor de ProductoMenu reciba únicamente
+ * productos del catálogo oficial de Plaxtilineas con precio válido (> 0).
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class ProductoMenuService {
-  private apiUrl = `${environment.apiUrl}/productos`;
+  constructor(private productosService: ProductosService) {}
 
-  constructor(private http: HttpClient) {}
+  private toProductoMenu(p: ProductoEditable): ProductoMenu {
+    return {
+      id: p.id,
+      nombre: p.nombre,
+      descripcion: p.descripcion,
+      cantidad: p.cantidad || 0,
+      precio: Number(p.precio) || 0,
+      imagen_url: p.imagen_url,
+      subcategoria_id: p.subcategoria_id,
+      subcategoria: p.subcategoria || '',
+      categoria: p.categoria || '',
+      unidad: p.unidad || 'unidades',
+      stock: p.stock,
+      minimo_compra: p.minimo_compra,
+      controlar_stock: p.controlar_stock
+    };
+  }
 
-  // ✅ Obtener por subcategoría usando query parameter
   obtenerPorSubcategoria(subcategoriaId: number): Observable<ProductoMenu[]> {
-    const params = new HttpParams().set('subcategoria_id', subcategoriaId.toString());
-    return this.http.get<ProductoMenu[]>(this.apiUrl, { params });
+    return this.productosService
+      .obtenerProductosPorSubcategoria(subcategoriaId)
+      .pipe(map(list => list.map(p => this.toProductoMenu(p))));
   }
 
-  // ✅ Obtener por categoría usando ruta específica
   obtenerPorCategoria(categoriaId: number): Observable<ProductoMenu[]> {
-    return this.http.get<ProductoMenu[]>(`${this.apiUrl}/categoria/${categoriaId}`);
+    return this.productosService
+      .obtenerProductosPorCategoriaId(categoriaId)
+      .pipe(map(list => list.map(p => this.toProductoMenu(p))));
   }
 
-  // ✅ Obtener TODOS los productos (sin filtros)
   obtenerTodosLosProductos(): Observable<ProductoMenu[]> {
-    return this.http.get<ProductoMenu[]>(this.apiUrl);
+    return this.productosService
+      .obtenerProductos()
+      .pipe(map(list => list.map(p => this.toProductoMenu(p))));
   }
 
-  // ✅ Opcional: Obtener productos aleatorios
   obtenerAleatorios(limite: number = 8): Observable<ProductoMenu[]> {
-    const params = new HttpParams().set('limite', limite.toString());
-    return this.http.get<ProductoMenu[]>(`${this.apiUrl}/interes/aleatorios`, { params });
+    return this.productosService
+      .obtenerProductosAleatorios(limite)
+      .pipe(map(list => list.map(p => this.toProductoMenu(p))));
   }
 
-  // ✅ Opcional: Obtener últimos productos (novedades)
   obtenerUltimosProductos(): Observable<ProductoMenu[]> {
-    return this.http.get<ProductoMenu[]>(`${this.apiUrl}/novedades/ultimos`);
+    return this.productosService
+      .obtenerUltimosProductos(20)
+      .pipe(map(list => list.map(p => this.toProductoMenu(p))));
   }
 }

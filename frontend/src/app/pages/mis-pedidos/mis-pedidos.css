@@ -1358,9 +1358,10 @@
 .invoice-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(9, 9, 11, 0.7);
-  backdrop-filter: blur(4px);
-  z-index: 1000;
+  background: rgba(9, 9, 11, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 2000000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1371,9 +1372,9 @@
 .invoice-modal-dialog {
   background: #ffffff;
   border-radius: 16px;
-  max-width: 680px;
+  max-width: 720px;
   width: 100%;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.32);
   overflow: hidden;
   position: relative;
   display: flex;
@@ -1382,13 +1383,56 @@
 
 .modal-top-accent {
   height: 4px;
-  background: linear-gradient(90deg, #379045, #22c55e);
+  background: linear-gradient(90deg, #379045, #4ade80);
 }
 
 .invoice-printable-sheet {
-  padding: 36px 40px;
+  padding: 34px 38px;
   color: #09090b;
   background: #ffffff;
+}
+
+.sheet-brand-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.sheet-trace-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding: 12px 16px;
+  margin-bottom: 22px;
+  background: #f8f9fa;
+  border: 1px solid #e4e4e7;
+  border-left: 3.5px solid #379045;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.sheet-trace-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.78rem;
+  color: #09090b;
+}
+
+.sheet-trace-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #71717a;
+}
+
+.sheet-trace-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  color: #09090b;
 }
 
 .sheet-header {
@@ -1881,4 +1925,209 @@
   font-size: 0.74rem;
   font-weight: 600;
   color: #27272a;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MODAL NATIVO DE ACCIONES DE PEDIDO (CANCELAR / ELIMINAR / ÉXITO)
+   Manual de Marca Plaxtilineas · Centrado sobre navbar
+   ═══════════════════════════════════════════════════════════════════════════ */
+.pedido-action-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(9, 9, 11, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: pedidoModalFade 0.18s ease;
+}
+
+@keyframes pedidoModalFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.pedido-action-card {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  background: #ffffff;
+  border: 1.5px solid #e4e4e7;
+  border-radius: 18px;
+  padding: 36px 28px 26px;
+  text-align: center;
+  box-shadow: 0 28px 64px -16px rgba(9, 9, 11, 0.35);
+  overflow: hidden;
+  box-sizing: border-box;
+  animation: pedidoModalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes pedidoModalPop {
+  from { opacity: 0; transform: translateY(8px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.pedido-action-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #379045 0%, #4ade80 100%);
+}
+
+.pedido-action-accent.is-danger {
+  background: linear-gradient(90deg, #dc2626 0%, #f87171 100%);
+}
+
+.pedido-action-icon-ring {
+  width: 66px;
+  height: 66px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eaf4ec;
+  border: 1.5px solid rgba(55, 144, 69, 0.28);
+  color: #379045;
+}
+
+.pedido-action-icon-ring.is-danger {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #dc2626;
+}
+
+.pedido-check-svg {
+  width: 46px;
+  height: 46px;
+  display: block;
+}
+
+.pedido-check-circle {
+  stroke: #379045;
+  stroke-width: 2.5;
+  stroke-dasharray: 150;
+  stroke-dashoffset: 150;
+  animation: pedidoDrawCircle 0.45s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.pedido-check-path {
+  stroke: #379045;
+  stroke-width: 3.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: pedidoDrawCheck 0.35s cubic-bezier(0.65, 0, 0.45, 1) 0.28s forwards;
+}
+
+@keyframes pedidoDrawCircle {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes pedidoDrawCheck {
+  to { stroke-dashoffset: 0; }
+}
+
+.pedido-action-title {
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #09090b;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px 0;
+}
+
+.pedido-action-desc {
+  font-family: var(--font-secondary, 'Mulish', sans-serif);
+  font-size: 0.94rem;
+  color: #5e5e5e;
+  line-height: 1.55;
+  margin: 0 0 24px 0;
+}
+
+.pedido-action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-pedido-modal-cancel {
+  flex: 1;
+  padding: 13px 16px;
+  border-radius: 12px;
+  background: #f4f5f7;
+  border: 1.5px solid #e4e4e7;
+  color: #383838;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-pedido-modal-cancel:hover:not(:disabled) {
+  background: #e4e4e7;
+}
+
+.btn-pedido-modal-danger {
+  flex: 1;
+  padding: 13px 16px;
+  border-radius: 12px;
+  background: #dc2626;
+  border: 1.5px solid #dc2626;
+  color: #ffffff;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-pedido-modal-danger:hover:not(:disabled) {
+  background: #b91c1c;
+  border-color: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.btn-pedido-modal-primary {
+  width: 100%;
+  padding: 13px 18px;
+  border-radius: 12px;
+  background: #09090b;
+  border: 1.5px solid #09090b;
+  color: #ffffff;
+  font-family: var(--font-primary, 'Montserrat', sans-serif);
+  font-size: 0.84rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-pedido-modal-primary:hover {
+  background: #379045;
+  border-color: #379045;
+  transform: translateY(-1px);
+}
+
+.btn-pedido-modal-cancel:disabled,
+.btn-pedido-modal-danger:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .pedido-action-buttons {
+    flex-direction: column-reverse;
+  }
 }

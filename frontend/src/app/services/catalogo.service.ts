@@ -32,6 +32,7 @@ interface CatalogoProductoApi {
   material?: string | null;
   category?: string;
   stock?: number;
+  price?: string | number;
   marca?: string | null;
   created_at?: string;
   category_id?: number | null;
@@ -43,7 +44,9 @@ interface CatalogoProductoApi {
   variants?: CatalogoVarianteApi[];
 }
 
-const STORAGE_KEY_PRODUCTOS = 'plaxti_catalogo_cache_v2';
+const STORAGE_KEY_PRODUCTOS = 'plaxti_catalogo_cache_v3';
+const STORAGE_KEY_PRODUCTOS_TS = 'plaxti_catalogo_cache_v3_ts';
+const LEGACY_STORAGE_KEYS_PRODUCTOS = ['plaxti_catalogo_cache_v2', 'plaxti_catalogo_cache_v1', 'plaxti_catalogo_cache'];
 const STORAGE_KEY_CATEGORIAS = 'plaxti_categorias_cache_v2';
 
 export interface CatalogoCategoria {
@@ -75,73 +78,42 @@ export class CatalogoService {
   private categorias$?: Observable<CatalogoCategoria[]>;
 
   private ultimoEventoId = 0;
-  private eventSource: EventSource | null = null;
-  private pollTimer: any = null;
+  private pollTimer: ReturnType<typeof setInterval> | null = null;
+  private erroresConsecutivosSync = 0;
+  private backoffHasta = 0;
+  private ultimoFocusRefresh = 0;
+  private ultimaCargaProductosMs = 0;
+  private readonly CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutos
+  private readonly POLL_INTERVAL_MS = 60_000;
+  private readonly FOCUS_COOLDOWN_MS = 60_000;
 
   constructor(private http: HttpClient) {
     this.hidratarDesdeCache();
 
     if (typeof window !== 'undefined') {
-      this.iniciarSincronizacionTiempoReal();
+      this.iniciarPollingInventario();
 
       window.addEventListener('focus', () => {
-        if (this.productosCargados) {
-          this.sincronizarCambiosInventario();
-          this.refrescar();
+        const ahora = Date.now();
+        if (
+          this.productosCargados &&
+          ahora >= this.backoffHasta &&
+          ahora - this.ultimoFocusRefresh >= this.FOCUS_COOLDOWN_MS
+        ) {
+          this.ultimoFocusRefresh = ahora;
+          if (this.estaCacheExpirada()) {
+            this.categorias$ = undefined;
+            this.cargarProductos();
+          } else {
+            this.sincronizarCambiosInventario();
+          }
         }
       });
     }
   }
 
-  /**
-   * Conecta con los endpoints de tiempo real del catálogo (/inventario/cambios y /inventario/stream)
-   * para mantener el stock 100% sincrónico sin recargar la página.
-   */
-  private iniciarSincronizacionTiempoReal(): void {
-    this.http
-      .get<CatalogoRespuesta<{ ultimo_evento_id: number; eventos: any[] }>>(
-        `${this.baseUrl}/inventario/cambios?desde=0`
-      )
-      .pipe(catchError(() => of(null)))
-      .subscribe(res => {
-        if (res?.success && res.data && typeof res.data.ultimo_evento_id === 'number') {
-          this.ultimoEventoId = res.data.ultimo_evento_id;
-        }
-        this.conectarStreamInventario();
-        this.iniciarPollingInventario();
-      });
-  }
-
-  private conectarStreamInventario(): void {
-    if (typeof window === 'undefined' || typeof EventSource === 'undefined') return;
-    if (this.eventSource) {
-      try {
-        this.eventSource.close();
-      } catch {}
-      this.eventSource = null;
-    }
-
-    try {
-      const url = `${this.baseUrl}/inventario/stream?desde=${this.ultimoEventoId}`;
-      const es = new EventSource(url);
-      this.eventSource = es;
-
-      es.addEventListener('stock', (e: MessageEvent) => {
-        try {
-          const payload = JSON.parse(e.data);
-          this.procesarEventoInventario(payload);
-        } catch {}
-      });
-
-      es.onerror = () => {
-        try {
-          es.close();
-        } catch {}
-        this.eventSource = null;
-      };
-    } catch {
-      this.eventSource = null;
-    }
+  private estaCacheExpirada(): boolean {
+    return Date.now() - this.ultimaCargaProductosMs >= this.CACHE_TTL_MS;
   }
 
   private iniciarPollingInventario(): void {
@@ -150,25 +122,45 @@ export class CatalogoService {
       if (typeof document !== 'undefined' && document.visibilityState === 'hidden') {
         return;
       }
-      this.sincronizarCambiosInventario();
-    }, 4000);
+      if (Date.now() < this.backoffHasta) {
+        return;
+      }
+      if (this.productosCargados && this.estaCacheExpirada()) {
+        this.categorias$ = undefined;
+        this.cargarProductos();
+      } else {
+        this.sincronizarCambiosInventario();
+      }
+    }, this.POLL_INTERVAL_MS);
   }
 
-  /** Consulta incrementalmente GET /inventario/cambios?desde={ultimoEventoId} */
+  /** Consulta incrementalmente GET /inventario/cambios?desde={ultimoEventoId} con circuit-breaker ante 5xx */
   public sincronizarCambiosInventario(): void {
+    if (Date.now() < this.backoffHasta) {
+      return;
+    }
+
     this.http
       .get<CatalogoRespuesta<{ ultimo_evento_id: number; eventos: any[] }>>(
         `${this.baseUrl}/inventario/cambios?desde=${this.ultimoEventoId}`
       )
-      .pipe(catchError(() => of(null)))
-      .subscribe(res => {
-        if (!res?.success || !res.data) return;
-        const eventos = res.data.eventos ?? [];
-        for (const ev of eventos) {
-          this.procesarEventoInventario(ev);
-        }
-        if (typeof res.data.ultimo_evento_id === 'number' && res.data.ultimo_evento_id > this.ultimoEventoId) {
-          this.ultimoEventoId = res.data.ultimo_evento_id;
+      .subscribe({
+        next: res => {
+          this.erroresConsecutivosSync = 0;
+          this.backoffHasta = 0;
+          if (!res?.success || !res.data) return;
+          const eventos = res.data.eventos ?? [];
+          for (const ev of eventos) {
+            this.procesarEventoInventario(ev);
+          }
+          if (typeof res.data.ultimo_evento_id === 'number' && res.data.ultimo_evento_id > this.ultimoEventoId) {
+            this.ultimoEventoId = res.data.ultimo_evento_id;
+          }
+        },
+        error: () => {
+          this.erroresConsecutivosSync++;
+          const esperaMs = Math.min(300_000, 15_000 * Math.pow(2, this.erroresConsecutivosSync - 1));
+          this.backoffHasta = Date.now() + esperaMs;
         }
       });
   }
@@ -187,12 +179,77 @@ export class CatalogoService {
     this.actualizarStockLocal(productoId, stock);
   }
 
-  private persistirCache(productos: ProductoEditable[]): void {
+  /**
+   * Verifica estrictamente si un producto tiene un precio válido (> 0)
+   * ya sea en su precio base o en al menos una variante activa.
+   */
+  public tienePrecioValido(p: Partial<ProductoEditable> | null | undefined): boolean {
+    if (!p) return false;
+    const precioDirecto = Number(p.precio ?? 0);
+    if (Number.isFinite(precioDirecto) && precioDirecto > 0) {
+      return true;
+    }
+    if (Array.isArray(p.variantes) && p.variantes.length > 0) {
+      return p.variantes.some(v => {
+        const pv = Number(v?.precio ?? 0);
+        return Number.isFinite(pv) && pv > 0;
+      });
+    }
+    return false;
+  }
+
+  /**
+   * Limpia variantes sin precio (<= 0) y recalcula el precio base del producto.
+   * Retorna null si el producto no cuenta con ningún precio válido (> 0).
+   */
+  public sanitizarProductoConPrecio(p: ProductoEditable | null | undefined): ProductoEditable | null {
+    if (!p) return null;
+    const variantesValidas = Array.isArray(p.variantes)
+      ? p.variantes.filter(v => {
+          const pv = Number(v?.precio ?? 0);
+          return Number.isFinite(pv) && pv > 0;
+        })
+      : [];
+
+    const preciosVariantes = variantesValidas.map(v => Number(v.precio));
+    const precioDirecto = Number(p.precio ?? 0);
+    const precioFinal = preciosVariantes.length > 0
+      ? Math.min(...preciosVariantes)
+      : (Number.isFinite(precioDirecto) && precioDirecto > 0 ? precioDirecto : 0);
+
+    if (precioFinal <= 0) {
+      return null;
+    }
+
+    return {
+      ...p,
+      precio: precioFinal,
+      variantes: variantesValidas
+    };
+  }
+
+  private persistirCache(productos: ProductoEditable[], actualizarTimestamp = false): void {
     try {
-      if (typeof window !== 'undefined' && productos.length > 0) {
-        const serialized = JSON.stringify(productos);
-        sessionStorage.setItem(STORAGE_KEY_PRODUCTOS, serialized);
-        localStorage.setItem(STORAGE_KEY_PRODUCTOS, serialized);
+      if (typeof window !== 'undefined') {
+        const soloConPrecio = productos
+          .map(p => this.sanitizarProductoConPrecio(p))
+          .filter((p): p is ProductoEditable => p !== null);
+
+        if (soloConPrecio.length > 0) {
+          const serialized = JSON.stringify(soloConPrecio);
+          sessionStorage.setItem(STORAGE_KEY_PRODUCTOS, serialized);
+          localStorage.setItem(STORAGE_KEY_PRODUCTOS, serialized);
+          if (actualizarTimestamp) {
+            const ts = String(this.ultimaCargaProductosMs || Date.now());
+            sessionStorage.setItem(STORAGE_KEY_PRODUCTOS_TS, ts);
+            localStorage.setItem(STORAGE_KEY_PRODUCTOS_TS, ts);
+          }
+        } else {
+          sessionStorage.removeItem(STORAGE_KEY_PRODUCTOS);
+          localStorage.removeItem(STORAGE_KEY_PRODUCTOS);
+          sessionStorage.removeItem(STORAGE_KEY_PRODUCTOS_TS);
+          localStorage.removeItem(STORAGE_KEY_PRODUCTOS_TS);
+        }
       }
     } catch {
       // Si quotaExceeded, continuar sin romper
@@ -209,17 +266,35 @@ export class CatalogoService {
   }
 
   /**
-   * Hidratación instantánea desde almacenamiento local.
+   * Hidratación instantánea desde almacenamiento local (filtrando estrictamente productos sin precio).
+   * Si la caché tiene más de 5 minutos, se muestra de inmediato y se revalida en segundo plano.
    */
   private hidratarDesdeCache(): void {
     if (typeof window === 'undefined') return;
     try {
+      for (const oldKey of LEGACY_STORAGE_KEYS_PRODUCTOS) {
+        sessionStorage.removeItem(oldKey);
+        localStorage.removeItem(oldKey);
+      }
+
+      const rawTs = sessionStorage.getItem(STORAGE_KEY_PRODUCTOS_TS) || localStorage.getItem(STORAGE_KEY_PRODUCTOS_TS);
+      const parsedTs = rawTs ? Number(rawTs) : 0;
+      if (Number.isFinite(parsedTs) && parsedTs > 0) {
+        this.ultimaCargaProductosMs = parsedTs;
+      }
+
       const raw = sessionStorage.getItem(STORAGE_KEY_PRODUCTOS) || localStorage.getItem(STORAGE_KEY_PRODUCTOS);
       if (raw) {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          this.productosSubject.next(parsed);
-          this.productosCargados = true;
+          const productosValidos = parsed
+            .map((p: ProductoEditable) => this.sanitizarProductoConPrecio(p))
+            .filter((p): p is ProductoEditable => p !== null);
+
+          if (productosValidos.length > 0) {
+            this.productosSubject.next(productosValidos);
+            this.productosCargados = true;
+          }
         }
       }
     } catch {
@@ -227,13 +302,19 @@ export class CatalogoService {
     }
   }
 
-  /** Todos los productos de la marca configurada con emisión reactiva. */
+  /**
+   * Todos los productos de la marca configurada con emisión reactiva.
+   * Garantiza que NINGÚN componente reciba productos con precio <= 0.
+   * Renueva silenciosamente si la caché local superó el TTL de 5 minutos.
+   */
   getProductos(forzar = false): Observable<ProductoEditable[]> {
-    if (!this.productosCargados || forzar) {
+    const debeRenovar = !this.productosCargados || forzar || (this.estaCacheExpirada() && Date.now() >= this.backoffHasta);
+    if (debeRenovar) {
       this.cargarProductos();
     }
     return this.productosSubject.asObservable().pipe(
-      filter(() => this.productosCargados)
+      filter(() => this.productosCargados),
+      map(lista => lista.filter(p => this.tienePrecioValido(p)))
     );
   }
 
@@ -243,17 +324,29 @@ export class CatalogoService {
 
     const url = `${this.baseUrl}/productos/categoria/${encodeURIComponent(this.marca)}`;
     this.http.get<CatalogoRespuesta<CatalogoProductoApi[]>>(url).pipe(
-      map(res => (res?.data ?? []).map(p => this.mapProducto(p))),
+      map(res => ({
+        ok: true,
+        productos: (res?.data ?? [])
+          .map(p => this.mapProducto(p))
+          .map(p => this.sanitizarProductoConPrecio(p))
+          .filter((p): p is ProductoEditable => p !== null)
+      })),
       catchError(err => {
         console.error('Error al cargar el catálogo externo:', err);
-        return of([] as ProductoEditable[]);
+        this.erroresConsecutivosSync++;
+        const esperaMs = Math.min(300_000, 15_000 * Math.pow(2, this.erroresConsecutivosSync - 1));
+        this.backoffHasta = Date.now() + esperaMs;
+        return of({ ok: false, productos: [] as ProductoEditable[] });
       })
-    ).subscribe(productos => {
+    ).subscribe(({ ok, productos }) => {
       this.cargando = false;
-      if (productos.length > 0) {
+      if (ok && productos.length > 0) {
+        this.erroresConsecutivosSync = 0;
+        this.backoffHasta = 0;
+        this.ultimaCargaProductosMs = Date.now();
         this.productosCargados = true;
         this.productosSubject.next(productos);
-        this.persistirCache(productos);
+        this.persistirCache(productos, true);
       } else if (!this.productosCargados) {
         this.productosCargados = true;
         this.productosSubject.next([]);
@@ -385,7 +478,7 @@ export class CatalogoService {
   private mapProducto(p: CatalogoProductoApi): ProductoEditable {
     const stockProducto = p.stock !== undefined && p.stock !== null ? Number(p.stock) : undefined;
     const variantes: Variante[] = (p.variants ?? [])
-      .filter(v => v.available === undefined || Number(v.available) === 1)
+      .filter(v => (v.available === undefined || Number(v.available) === 1) && (Number(v.price) || 0) > 0)
       .map(v => ({
         id: v.id,
         nombre: (v.name ?? '').trim(),
@@ -397,7 +490,10 @@ export class CatalogoService {
       }));
 
     const preciosValidos = variantes.map(v => v.precio).filter(n => n > 0);
-    const precioDesde = preciosValidos.length ? Math.min(...preciosValidos) : 0;
+    const precioDirecto = Number(p.price) || 0;
+    const precioDesde = preciosValidos.length
+      ? Math.min(...preciosValidos)
+      : (precioDirecto > 0 ? precioDirecto : 0);
 
     const imagenes = (p.images ?? []).map(i => ({
       url: i.url,

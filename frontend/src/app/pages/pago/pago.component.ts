@@ -1,7 +1,8 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Subject, takeUntil } from 'rxjs';
 import { WompiService } from '../../services/wompi.service';
 import { CartService } from '../../services/cart.service';
 import { AuthService } from '../../services/auth.service';
@@ -503,7 +504,7 @@ import Swal from 'sweetalert2';
       }
     </div>  `
 })
-export class PagoComponent implements OnInit {
+export class PagoComponent implements OnInit, OnDestroy {
   private route      = inject(ActivatedRoute);
   private router     = inject(Router);
   private location   = inject(Location);
@@ -512,6 +513,9 @@ export class PagoComponent implements OnInit {
   private authSvc    = inject(AuthService);
   private pedidoSvc  = inject(PedidoService);
   private configSvc  = inject(ConfiguracionService);
+
+  private destroy$   = new Subject<void>();
+  private pagoEnCurso = false;
 
   cargando       = signal(false);
   error          = signal<string | null>(null);
@@ -552,21 +556,21 @@ export class PagoComponent implements OnInit {
       return;
     }
 
-    // 2. Suscripción al carrito
-    this.cartSvc.items$.subscribe(items => {
+    // 2. Suscripción al carrito (evitar redirigir a /carrito cuando ya se inició un pago con Wompi)
+    this.cartSvc.items$.pipe(takeUntil(this.destroy$)).subscribe(items => {
       this.itemsCarrito.set(items);
-      if ((!items || items.length === 0) && !this.procesando()) {
+      if ((!items || items.length === 0) && !this.procesando() && !this.pagoEnCurso) {
         this.router.navigate(['/carrito']);
       }
     });
 
     // 3. Suscripción a estado de Wompi
-    this.configSvc.wompiEnabled$.subscribe(val => {
+    this.configSvc.wompiEnabled$.pipe(takeUntil(this.destroy$)).subscribe(val => {
       this.wompiEnabled.set(val);
     });
 
     // 4. Cargar datos de envío precargados del usuario (reactivo a /auth/perfil)
-    this.authSvc.currentUser.subscribe(user => {
+    this.authSvc.currentUser.pipe(takeUntil(this.destroy$)).subscribe(user => {
       if (!user || this.usuarioEditoEnvioManual) return;
 
       let ciudad = user.ciudad ? String(user.ciudad).trim() : '';
@@ -593,6 +597,11 @@ export class PagoComponent implements OnInit {
       const tieneDatosBasicos = !!(this.datosEnvioForm.direccion && this.datosEnvioForm.telefono);
       this.editandoEnvio.set(!tieneDatosBasicos);
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   totalPrice(): number {
@@ -786,6 +795,7 @@ export class PagoComponent implements OnInit {
           next: (draft) => {
             if (this.metodoSeleccionado() === 'wompi') {
               if (!this.wompiEnabled()) {
+                this.pagoEnCurso = true;
                 this.procesando.set(false);
                 this.cartSvc.clearCart();
                 this.router.navigate(['/pago-desarrollo'], { state: { pedido: draft } });
@@ -794,6 +804,7 @@ export class PagoComponent implements OnInit {
 
               this.wompiSvc.obtenerDatosPago(draft.pedido_id).subscribe({
                 next: (datos) => {
+                  this.pagoEnCurso = true;
                   this.procesando.set(false);
                   this.wompiSvc.abrirWidget(datos);
                 },
@@ -805,6 +816,7 @@ export class PagoComponent implements OnInit {
               });
             } else {
               // Transferencia o Asesor
+              this.pagoEnCurso = true;
               this.procesando.set(false);
               this.cartSvc.clearCart();
               this.router.navigate(['/pago-asistido'], {

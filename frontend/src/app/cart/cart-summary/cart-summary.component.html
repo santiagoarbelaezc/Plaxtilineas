@@ -1,43 +1,53 @@
 <app-navbar></app-navbar>
 
 <main class="cart-page-wrapper">
-  <!-- Línea Superior de Resplandor Esmeralda (Estilo Footer & Car Seat) -->
-  <div class="cart-accent-glow"></div>
-
   <div class="cart-container">
-    
-    <!-- ── Hero Header de la Página de Carrito ── -->
-    <header class="cart-hero-header">
-      <div class="kicker-badge">
-        <span class="kicker-line"></span>
-        <span>MI COMPRA &bull; PLAXTILINEAS</span>
-      </div>
-      <h1 class="cart-main-title">
-        Tu Carrito de <span>Compras</span>
-      </h1>
-      <p class="cart-lead-text">
-        Revisa tus productos plásticos, espumas y empaques antes de finalizar tu orden de forma 100% segura.
-      </p>
 
-      <!-- Stepper Visual (2 pasos directos: Carrito -> Pago Seguro) -->
-      <div class="checkout-stepper">
-        <div class="step-item active">
-          <span class="step-num">1</span>
-          <span class="step-text">Carrito de Productos</span>
+    <!-- ── Cabecera Editorial Minimalista (Armonizada con /pago) ── -->
+    <header class="cart-flow-header">
+      <div class="cart-flow-top-bar">
+        <a routerLink="/productos" class="btn-volver-izq">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>Seguir explorando</span>
+        </a>
+
+        <div class="steps-inline" aria-label="Progreso de compra">
+          <span class="step-chip active">1. Carrito</span>
+          <span class="step-arrow">&rsaquo;</span>
+          <span class="step-chip pending">2. Entrega y Pago</span>
         </div>
-        <span class="step-separator">&rsaquo;</span>
-        <div class="step-item">
-          <span class="step-num">2</span>
-          <span class="step-text">Pago Seguro</span>
+      </div>
+
+      <div class="cart-title-row">
+        <div>
+          <div class="kicker">
+            <span class="kicker-line"></span>
+            <span>MI COMPRA &bull; PLAXTILINEAS</span>
+          </div>
+          <h1 class="cart-main-title">Tu carrito de compras</h1>
         </div>
+
+        @if (items().length > 0) {
+          <div class="ssl-mini-pill">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span>Compra 100% protegida</span>
+          </div>
+        }
       </div>
     </header>
 
     <!-- ── Estado 1: Carrito Vacío o Sin Sesión ── -->
     @if (items().length === 0) {
-      <div class="cart-empty-state">
+      <section class="cart-empty-state">
+        <div class="empty-accent-bar"></div>
+
         <div class="empty-icon-circle">
-          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="9" cy="21" r="1"></circle>
             <circle cx="20" cy="21" r="1"></circle>
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
@@ -45,143 +55,163 @@
         </div>
 
         @if (!isLoggedIn()) {
+          <div class="kicker" style="justify-content: center; margin-bottom: 8px;">
+            <span class="kicker-line"></span>
+            <span>CUENTA PLAXTILINEAS</span>
+          </div>
           <h2 class="empty-title">Inicia sesión para usar tu carrito</h2>
           <p class="empty-desc">
             Para agregar productos al carrito, reservar inventario en tiempo real y gestionar tus pedidos en Plaxtilíneas, ingresa con tu cuenta o regístrate gratis.
           </p>
-          <div class="empty-actions" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;">
-            <a routerLink="/login" [queryParams]="{ returnUrl: '/productos' }" class="btn-checkout-primary" style="min-width: 190px;">
-              Iniciar Sesión
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <div class="empty-actions-row">
+            <a routerLink="/login" [queryParams]="{ returnUrl: '/productos' }" class="btn-brand-primary">
+              <span>Iniciar Sesión</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
             </a>
-            <a routerLink="/login" [queryParams]="{ mode: 'register', returnUrl: '/productos' }" class="btn-continue-shopping" style="min-width: 190px; margin: 0;">
+            <a routerLink="/login" [queryParams]="{ mode: 'register', returnUrl: '/productos' }" class="btn-brand-secondary">
               Crear una Cuenta
             </a>
           </div>
         } @else {
+          <div class="kicker" style="justify-content: center; margin-bottom: 8px;">
+            <span class="kicker-line"></span>
+            <span>CATÁLOGO INDUSTRIAL</span>
+          </div>
           <h2 class="empty-title">Tu carrito está vacío</h2>
           <p class="empty-desc">
-            Aún no has añadido productos a tu orden. Descubre nuestra amplia selección de plásticos técnicos, mallas, cuerinas, espumas y empaques industriales.
+            Aún no has añadido productos a tu orden. Descubre nuestra selección de plásticos técnicos, mallas, cuerinas, espumas y empaques industriales.
           </p>
-          <div class="empty-actions">
-            <a routerLink="/productos" class="btn-checkout-primary">
-              Explorar Catálogo
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <div class="empty-actions-row">
+            <a routerLink="/productos" class="btn-brand-primary">
+              <span>Explorar Catálogo</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
             </a>
           </div>
         }
-      </div>
+      </section>
     }
 
-    <!-- ── Estado 3: Lista de Productos y Resumen ── -->
+    <!-- ── Estado 2: Lista de Productos + Lámina Verde de Resumen ── -->
     @else {
       <div class="cart-grid-layout">
-        
-        <!-- Columna Izquierda: Productos -->
-        <div class="cart-products-col">
-          <div class="cart-col-header">
-            <h2 class="cart-col-title">
-              <span>Tus Productos Seleccionados</span>
-              <span class="cart-items-count-badge">{{ totalCount() }} {{ totalCount() === 1 ? 'ítem' : 'ítems' }}</span>
-            </h2>
-            <button (click)="clearCart()" class="btn-clear-cart" title="Vaciar todo el carrito">
-              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+
+        <!-- COLUMNA IZQUIERDA (Blanco puro): Productos + Asesoría -->
+        <section class="cart-products-col">
+          <div class="cart-section-top">
+            <div class="section-step-group">
+              <span class="section-step-label">1. Productos seleccionados</span>
+              <span class="cart-items-count-badge">
+                {{ totalCount() }} {{ totalCount() === 1 ? 'ítem' : 'ítems' }}
+              </span>
+            </div>
+
+            <button type="button" (click)="clearCart()" class="btn-clear-cart" title="Vaciar todo el carrito">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="3 6 5 6 21 6"></polyline>
                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
               </svg>
-              Vaciar carrito
+              <span>Vaciar carrito</span>
             </button>
           </div>
 
-          <!-- Items del Carrito -->
-          @for (item of items(); track item.id) {
-            <div class="cart-item-card">
-              <!-- Miniatura del Producto -->
-              <div class="item-thumb-box">
-                @if (item.producto.imagen_url) {
-                  <img [src]="item.producto.imagen_url" [alt]="item.producto.nombre" class="item-thumb-img">
-                } @else {
-                  <svg width="32" height="32" fill="none" stroke="#94a3b8" stroke-width="1.5" viewBox="0 0 24 24">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                    <polyline points="21 15 16 10 5 21"></polyline>
-                  </svg>
-                }
-              </div>
-
-              <!-- Detalles del Producto -->
-              <div class="item-details">
-                <h3 class="item-title">{{ item.producto.nombre }}</h3>
-                <div class="item-badge-pill">
-                  <span>{{ item.variante ? item.variante.nombre : (item.producto.subcategoria || 'General') }}</span>
-                  @if (item.producto.unidad) {
-                    <span>&bull; {{ item.producto.unidad }}</span>
+          <!-- Lista de ítems -->
+          <div class="cart-items-stack">
+            @for (item of items(); track item.id) {
+              <article class="cart-item-card">
+                <!-- Miniatura -->
+                <div class="item-thumb-box">
+                  @if (item.producto.imagen_url) {
+                    <img [src]="item.producto.imagen_url" [alt]="item.producto.nombre" class="item-thumb-img" loading="lazy">
+                  } @else {
+                    <svg width="30" height="30" fill="none" stroke="#a1a1aa" stroke-width="1.6" viewBox="0 0 24 24">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                      <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                      <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
                   }
                 </div>
-                
-                @if (getDisponible(item) !== null) {
-                  <div class="item-stock-warning" [class.out-of-stock]="getDisponible(item)! <= 0">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="12" y1="8" x2="12" y2="12"></line>
-                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
-                    <span>{{ getDisponible(item)! > 0 ? getDisponible(item) + ' disponibles' : 'Máximo alcanzado' }}</span>
+
+                <!-- Información -->
+                <div class="item-details">
+                  <div class="item-headline-row">
+                    <h2 class="item-title">{{ item.producto.nombre }}</h2>
                   </div>
-                }
 
-                <div class="item-unit-price">
-                  Precio unitario: <strong>{{ formatearPrecio(item.precioUnitario) }}</strong>
-                </div>
-              </div>
+                  <div class="item-meta-pills">
+                    <span class="item-badge-pill">
+                      {{ item.variante ? item.variante.nombre : (item.producto.subcategoria || 'Referencia estándar') }}
+                      @if (item.producto.unidad) {
+                        <span>&bull; {{ item.producto.unidad }}</span>
+                      }
+                    </span>
 
-              <!-- Cantidad y Subtotal -->
-              <div class="item-actions-side">
-                <div class="item-subtotal">
-                  {{ formatearPrecio(item.precioUnitario * item.cantidad) }}
-                </div>
+                    @if (getDisponible(item) !== null) {
+                      <span class="item-stock-pill" [class.low-stock]="getDisponible(item)! <= 5" [class.out-of-stock]="getDisponible(item)! <= 0">
+                        <span class="stock-dot"></span>
+                        {{ getDisponible(item)! > 0 ? getDisponible(item) + ' disponibles' : 'Máximo en stock' }}
+                      </span>
+                    }
+                  </div>
 
-                <div class="quantity-stepper">
-                  <button 
-                    (click)="decreaseQuantity(item.id, item.cantidad)"
-                    class="stepper-btn" 
-                    title="Disminuir cantidad"
-                    aria-label="Disminuir cantidad">
-                    &minus;
-                  </button>
-                  <span class="stepper-value">{{ item.cantidad }}</span>
-                  <button 
-                    (click)="increaseQuantity(item.id, item.cantidad)"
-                    [disabled]="isAtMaxStock(item)"
-                    class="stepper-btn" 
-                    title="Aumentar cantidad"
-                    aria-label="Aumentar cantidad">
-                    &plus;
-                  </button>
+                  <div class="item-unit-price">
+                    Precio unitario: <strong>{{ formatearPrecio(item.precioUnitario) }}</strong>
+                  </div>
                 </div>
 
-                <button 
-                  (click)="removeItem(item.id)" 
-                  class="btn-remove-item" 
-                  title="Eliminar producto"
-                  aria-label="Eliminar producto">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          }
+                <!-- Subtotal + Stepper + Eliminar -->
+                <div class="item-actions-side">
+                  <div class="item-subtotal">
+                    {{ formatearPrecio(item.precioUnitario * item.cantidad) }}
+                  </div>
 
-          <!-- Botón de retorno y Asesoría -->
-          <div class="cart-advisor-banner">
+                  <div class="item-controls-row">
+                    <div class="quantity-stepper">
+                      <button
+                        type="button"
+                        (click)="decreaseQuantity(item.id, item.cantidad)"
+                        [disabled]="item.cantidad <= 1"
+                        class="stepper-btn"
+                        title="Disminuir cantidad"
+                        aria-label="Disminuir cantidad">
+                        &minus;
+                      </button>
+                      <span class="stepper-value">{{ item.cantidad }}</span>
+                      <button
+                        type="button"
+                        (click)="increaseQuantity(item.id, item.cantidad)"
+                        [disabled]="isAtMaxStock(item)"
+                        class="stepper-btn"
+                        title="Aumentar cantidad"
+                        aria-label="Aumentar cantidad">
+                        &plus;
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      (click)="removeItem(item.id, item.producto.nombre)"
+                      class="btn-remove-item"
+                      title="Eliminar producto"
+                      aria-label="Eliminar producto">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </article>
+            }
+          </div>
+
+          <!-- Tarjeta de Asesoría Mayorista (Estilo Pago Secundario) -->
+          <div class="cart-advisor-card">
             <div class="advisor-info">
               <div class="advisor-icon-box">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -189,107 +219,123 @@
                 </svg>
               </div>
               <div class="advisor-text">
-                <h4>¿Requieres cotización industrial o bobinas completas?</h4>
-                <p>Nuestros asesores están listos para cotizar pedidos por volumen al por mayor.</p>
+                <h3>¿Requieres cotización industrial o bobinas completas?</h3>
+                <p>Nuestros asesores cotizan pedidos por volumen al por mayor y despachos especiales.</p>
               </div>
             </div>
-            <a [href]="contactarAsesorWhatsApp()" target="_blank" rel="noopener noreferrer" class="advisor-whatsapp-btn">
-              <span>Consultar en WhatsApp</span>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <a [href]="contactarAsesorWhatsApp()" target="_blank" rel="noopener noreferrer" class="advisor-whatsapp-tag">
+              <span>Consultar por WhatsApp</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="9 18 15 12 9 6"></polyline>
               </svg>
             </a>
           </div>
 
-          <a routerLink="/productos" class="btn-continue-shopping" style="margin-top: 6px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="19" y1="12" x2="5" y2="12"></line>
-              <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-            <span>Seguir Explorando el Catálogo</span>
-          </a>
-        </div>
-
-        <!-- Columna Derecha: Tarjeta Sticky de Resumen -->
-        <div class="cart-summary-sticky-card">
-          <h2 class="summary-title">
-            <span>Resumen del Pedido</span>
-            <span class="kicker-line"></span>
-          </h2>
-
-          <div class="summary-lines">
-            <div class="summary-line">
-              <span>Subtotal ({{ totalCount() }} ítems)</span>
-              <strong>{{ formatearPrecio(subtotal()) }}</strong>
-            </div>
-            <div class="summary-line">
-              <span>Costo de envío estimado</span>
-              <strong>{{ formatearPrecio(costoEnvio()) }}</strong>
-            </div>
-            <div class="summary-line">
-              <span>Impuestos (IVA)</span>
-              <span class="tax-badge">Incluido</span>
-            </div>
-          </div>
-
-          <div class="summary-total-box">
-            <span class="summary-total-label">Total a Pagar</span>
-            <span class="summary-total-price">{{ formatearPrecio(totalPrice()) }}</span>
-          </div>
-
-          <button 
-            (click)="iniciarCheckout()"
-            [disabled]="items().length === 0"
-            class="btn-checkout-primary"
-            id="cart-checkout-btn">
-            <span>Proceder al Checkout</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </button>
-
-          <!-- Sellos de Confianza Oficiales (Estilo Footer) -->
-          <div class="trust-badges-grid">
-            <div class="trust-badge-item">
-              <div class="trust-badge-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Pie compacto de confianza (Igual que /pago) -->
+          <div class="cart-trust-footer">
+            <div class="trust-inline-row">
+              <span class="trust-badge-inline">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                Garantía de fábrica
+              </span>
+              <span class="trust-sep">&middot;</span>
+              <span class="trust-badge-inline">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                   <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                 </svg>
-              </div>
-              <div>
-                <strong>Pago Seguro con Wompi</strong>
-                <p style="margin: 0; font-size: 0.76rem; color: #64748b;">Bancolombia, PSE, Nequi y Tarjetas</p>
-              </div>
+                Wompi by Bancolombia
+              </span>
+              <span class="trust-sep">&middot;</span>
+              <span class="trust-badge-inline">Despachos a toda Colombia</span>
             </div>
 
-            <div class="trust-badge-item">
-              <div class="trust-badge-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                </svg>
-              </div>
-              <div>
-                <strong>Garantía de Fábrica</strong>
-                <p style="margin: 0; font-size: 0.76rem; color: #64748b;">Materiales certificados de primera calidad</p>
-              </div>
-            </div>
-
-            <div class="trust-badge-item">
-              <div class="trust-badge-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <path d="M12 6v6l4 2"></path>
-                </svg>
-              </div>
-              <div>
-                <strong>Despacho Oportuno</strong>
-                <p style="margin: 0; font-size: 0.76rem; color: #64748b;">Envíos al Eje Cafetero y toda Colombia</p>
-              </div>
+            <div class="chips-row-compact">
+              <span class="chip-sm">VISA</span>
+              <span class="chip-sm">MC</span>
+              <span class="chip-sm">PSE</span>
+              <span class="chip-sm">Nequi</span>
+              <span class="chip-sm">Daviplata</span>
             </div>
           </div>
-        </div>
+        </section>
+
+        <!-- COLUMNA DERECHA (Lámina Degradado Verde → Carbón + Isotipo, igual que /pago) -->
+        <aside class="cart-summary-panel">
+          <img
+            src="https://res.cloudinary.com/dsv1gdgya/image/upload/v1795130400/logo-solo_r6tfo7.png"
+            alt=""
+            aria-hidden="true"
+            class="cart-isotipo-watermark" />
+
+          <!-- Bloque Superior: Total Hero -->
+          <div class="summary-hero-block">
+            <span class="summary-eyebrow">Resumen de tu pedido</span>
+            <div class="summary-grand-total">{{ formatearPrecio(totalPrice()) }}</div>
+            <div class="summary-hero-meta">
+              <span>{{ totalCount() }} {{ totalCount() === 1 ? 'producto' : 'productos' }}</span>
+              <span class="meta-dot">&middot;</span>
+              <span>IVA incluido</span>
+              <span class="meta-dot">&middot;</span>
+              <span>Envío estimado</span>
+            </div>
+          </div>
+
+          <!-- Desglose de Costos -->
+          <div class="summary-breakdown">
+            <div class="summary-row-dark">
+              <span>Subtotal ({{ totalCount() }} {{ totalCount() === 1 ? 'ítem' : 'ítems' }})</span>
+              <span>{{ formatearPrecio(subtotal()) }}</span>
+            </div>
+            <div class="summary-row-dark">
+              <span>Envío estimado (Armenia)</span>
+              <span class="summary-val-strong">{{ formatearPrecio(costoEnvio()) }}</span>
+            </div>
+            <div class="summary-row-dark">
+              <span>Impuestos (IVA)</span>
+              <span class="tax-pill-dark">Incluido</span>
+            </div>
+
+            <div class="summary-row-final">
+              <span>Total COP</span>
+              <strong>{{ formatearPrecio(totalPrice()) }}</strong>
+            </div>
+          </div>
+
+          <!-- Botón Principal CTA (Arquitectónico Negro + Píldora Verde como /pago) -->
+          <div class="summary-cta-block">
+            <button
+              type="button"
+              (click)="iniciarCheckout()"
+              [disabled]="items().length === 0"
+              class="btn-checkout-prominent"
+              id="cart-checkout-btn">
+              <div class="checkout-btn-labels">
+                <span class="checkout-btn-title">Proceder al pago</span>
+                <span class="checkout-btn-sub">Entrega y pasarela Wompi</span>
+              </div>
+              <span class="checkout-btn-arrow-pill">
+                <span>Continuar</span>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </span>
+            </button>
+
+            <a routerLink="/productos" class="btn-continue-panel">
+              <span>Seguir explorando el catálogo</span>
+            </a>
+          </div>
+
+          <!-- Pie de Marca (Igual que /pago) -->
+          <div class="summary-location-foot">
+            <span class="location-dot"></span>
+            <span>Armenia &bull; Eje Cafetero &bull; Pago seguro SSL</span>
+          </div>
+        </aside>
 
       </div>
     }
@@ -297,38 +343,83 @@
   </div>
 </main>
 
-<!-- ════════════ MODAL 3: ACCESO REQUERIDO ════════════ -->
-<div *ngIf="showAuthModal()" class="modal-overlay" (click)="closeAuthModal()">
-  <div class="modal-card" style="max-width: 440px;" (click)="$event.stopPropagation()">
-    
+<!-- ════════════ MODAL DE CONFIRMACIÓN: ELIMINAR PRODUCTO / VACIAR CARRITO ════════════ -->
+<div *ngIf="confirmModal() as modal" class="cart-confirm-overlay" (click)="closeConfirmModal()" role="dialog" aria-modal="true">
+  <div class="cart-confirm-card" (click)="$event.stopPropagation()">
+    <div class="cart-confirm-accent"></div>
+
+    <div class="cart-confirm-icon-ring">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="3 6 5 6 21 6"></polyline>
+        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        <line x1="10" y1="11" x2="10" y2="17"></line>
+        <line x1="14" y1="11" x2="14" y2="17"></line>
+      </svg>
+    </div>
+
+    <h2 class="cart-confirm-title">
+      {{ modal.type === 'clear' ? '¿Vaciar tu carrito?' : '¿Eliminar producto?' }}
+    </h2>
+
+    <p class="cart-confirm-desc" *ngIf="modal.type === 'item'">
+      ¿Deseas quitar <strong>{{ modal.itemName }}</strong> de tu carrito de compras?
+    </p>
+    <p class="cart-confirm-desc" *ngIf="modal.type === 'clear'">
+      Se eliminarán todos los productos seleccionados en tu carrito actual.
+    </p>
+
+    <div class="cart-confirm-actions">
+      <button type="button" class="btn-cart-confirm-cancel" (click)="closeConfirmModal()">
+        Cancelar
+      </button>
+      <button type="button" class="btn-cart-confirm-danger" (click)="confirmModalAction()">
+        {{ modal.type === 'clear' ? 'Sí, vaciar carrito' : 'Sí, eliminar' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ MODAL: ACCESO REQUERIDO (Armonizado con /pago) ════════════ -->
+<div *ngIf="showAuthModal()" class="modal-overlay" (click)="closeAuthModal()" role="dialog" aria-modal="true">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-accent"></div>
+    <button type="button" class="modal-close" (click)="closeAuthModal()" aria-label="Cerrar">&times;</button>
+
     <div class="modal-header-centered">
       <div class="modal-icon-bubble">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
           <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
           <circle cx="8.5" cy="7" r="4"></circle>
         </svg>
       </div>
-      <h2 class="modal-title">Iniciar Sesión Requerido</h2>
-      <p class="modal-subtitle">Para finalizar tu compra y guardar tus productos con respaldo en tu perfil, por favor ingresa con tu cuenta.</p>
+      <div class="kicker" style="justify-content: center; margin-bottom: 6px;">
+        <span class="kicker-line"></span>
+        <span>ACCESO REQUERIDO</span>
+      </div>
+      <h2 class="modal-title">Inicia sesión para continuar</h2>
+      <p class="modal-subtitle">Para finalizar tu compra y respaldar tu pedido en tu perfil de Plaxtilíneas, ingresa con tu cuenta.</p>
     </div>
 
-    <div style="display: flex; flex-direction: column; gap: 12px;">
-      <button (click)="navigateToLogin()" class="btn-checkout-primary">
-        Iniciar Sesión
+    <div class="auth-modal-actions">
+      <button type="button" (click)="navigateToLogin()" class="btn-brand-primary" style="width: 100%;">
+        <span>Iniciar Sesión</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
       </button>
-      <button (click)="navigateToRegister()" class="btn-continue-shopping">
+      <button type="button" (click)="navigateToRegister()" class="btn-brand-secondary" style="width: 100%;">
         Crear una Cuenta
       </button>
-      <button (click)="closeAuthModal()" class="btn-continue-shopping" style="border: none; margin-top: 4px;">
+      <button type="button" (click)="closeAuthModal()" class="btn-auth-cancel">
         Cancelar
       </button>
     </div>
-
   </div>
 </div>
 
-<!-- ── Footer y Redes Sociales Integradas ── -->
-<div class="footer-stack" style="margin-top: 3rem;">
+<!-- ── Footer y Redes Sociales ── -->
+<div class="footer-stack">
   <app-social-buttons></app-social-buttons>
   <app-footer></app-footer>
 </div>
