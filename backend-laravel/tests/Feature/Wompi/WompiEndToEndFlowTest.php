@@ -326,4 +326,125 @@ test('un usuario no puede generar checkout ni consultar el estado de un pedido a
 
     $this->getJson('/api/pedidos/estado?ref=PLX-AJENO-001')
         ->assertStatus(404);
+
+    $this->postJson('/api/wompi/verificar-transaccion', ['referencia' => 'PLX-AJENO-001'])
+        ->assertStatus(404);
+});
+
+test('verificar-transaccion S2S confirma el pedido de inmediato al cerrar el widget y es idempotente si el webhook llega despues', function () {
+    Mail::fake();
+    Sanctum::actingAs($this->cliente);
+
+    $pedido = Pedido::factory()->create([
+        'usuario_id' => $this->cliente->id,
+        'estado' => EstadoPedido::PENDIENTE_PAGO,
+        'metodo_pago' => 'wompi',
+        'subtotal' => 50000.00,
+        'iva' => 0.00,
+        'costo_envio' => 10000.00,
+        'total' => 60000.00,
+        'wompi_referencia' => 'PLX-SYNC-FAST-001',
+        'email_cliente' => $this->cliente->correo,
+        'nombre_cliente' => 'Santiago Prueba',
+    ]);
+
+    $txId = 'tx-fast-wompi-999';
+
+    Http::fake([
+        "*/transactions/{$txId}" => Http::response([
+            'data' => [
+                'id' => $txId,
+                'status' => 'APPROVED',
+                'reference' => 'PLX-SYNC-FAST-001',
+                'currency' => 'COP',
+                'amount_in_cents' => 6000000,
+            ],
+        ], 200),
+    ]);
+
+    // 1. Cliente solicita verificación S2S inmediata al cerrar el Widget
+    $this->postJson('/api/wompi/verificar-transaccion', [
+        'pedido_id' => $pedido->id,
+        'referencia' => 'PLX-SYNC-FAST-001',
+        'transaction_id' => $txId,
+    ])
+        ->assertOk()
+        ->assertJson([
+            'estado' => 'pagado',
+            'sincronizado' => true,
+            'wompi_status' => 'APPROVED',
+            'wompi_referencia' => 'PLX-SYNC-FAST-001',
+            'wompi_transaction_id' => $txId,
+        ]);
+
+    expect($pedido->fresh()->estado)->toBe(EstadoPedido::PAGADO);
+    Mail::assertSent(PagoConfirmadoMailable::class, 1);
+
+    // 2. Segundos después llega el Webhook asíncrono de Wompi para la misma transacción
+    $timestamp = 1764002000;
+    $checksum = hash('sha256', $txId.'APPROVED'.'6000000'.$timestamp.'test_events_e2e_secret');
+
+    $this->postJson('/api/wompi/webhook', [
+        'event' => 'transaction.updated',
+        'environment' => 'test',
+        'timestamp' => $timestamp,
+        'data' => [
+            'transaction' => [
+                'id' => $txId,
+                'status' => 'APPROVED',
+                'reference' => 'PLX-SYNC-FAST-001',
+                'currency' => 'COP',
+                'amount_in_cents' => 6000000,
+            ],
+        ],
+        'signature' => [
+            'properties' => ['transaction.id', 'transaction.status', 'transaction.amount_in_cents'],
+            'checksum' => $checksum,
+        ],
+    ], ['X-Event-Checksum' => $checksum])
+        ->assertOk();
+
+    // No debe duplicar el correo de confirmación
+    Mail::assertSent(PagoConfirmadoMailable::class, 1);
+});
+
+test('verificar-transaccion S2S rechaza transacciones cuya referencia o monto en Wompi no coincida con el pedido', function () {
+    Mail::fake();
+    Sanctum::actingAs($this->cliente);
+
+    $pedido = Pedido::factory()->create([
+        'usuario_id' => $this->cliente->id,
+        'estado' => EstadoPedido::PENDIENTE_PAGO,
+        'metodo_pago' => 'wompi',
+        'total' => 80000.00,
+        'wompi_referencia' => 'PLX-SYNC-SAFE-001',
+    ]);
+
+    Http::fake([
+        '*/transactions/tx-spoofed-123' => Http::response([
+            'data' => [
+                'id' => 'tx-spoofed-123',
+                'status' => 'APPROVED',
+                'reference' => 'OTRA-REFERENCIA-DISTINTA',
+                'currency' => 'COP',
+                'amount_in_cents' => 8000000,
+            ],
+        ], 200),
+        '*/transactions?reference=PLX-SYNC-SAFE-001' => Http::response([
+            'data' => [],
+        ], 200),
+    ]);
+
+    $this->postJson('/api/wompi/verificar-transaccion', [
+        'referencia' => 'PLX-SYNC-SAFE-001',
+        'transaction_id' => 'tx-spoofed-123',
+    ])
+        ->assertOk()
+        ->assertJson([
+            'estado' => 'pendiente_pago',
+            'sincronizado' => false,
+        ]);
+
+    expect($pedido->fresh()->estado)->toBe(EstadoPedido::PENDIENTE_PAGO);
+    Mail::assertNothingSent();
 });

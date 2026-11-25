@@ -6,6 +6,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Actions\Payments\CreateCheckoutAction;
 use App\Actions\Payments\ProcessWompiEventAction;
+use App\Actions\Payments\SyncWompiOrderStatusAction;
+use App\Enums\EstadoPedido;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Wompi\DatosPagoRequest;
 use App\Models\Pedido;
@@ -22,14 +24,16 @@ use Throwable;
  * Controlador delgado — toda la lógica de negocio vive en los Actions.
  *
  * Endpoints:
- *   POST /api/wompi/datos-pago  → genera el checkout (auth:sanctum)
- *   POST /api/wompi/webhook     → recibe eventos de Wompi (throttle, sin auth)
+ *   POST /api/wompi/datos-pago            → genera el checkout (auth:sanctum)
+ *   POST /api/wompi/verificar-transaccion → conciliación S2S inmediata con API Wompi (auth:sanctum)
+ *   POST /api/wompi/webhook               → recibe eventos de Wompi (throttle, sin auth)
  */
 class WompiController extends Controller
 {
     public function __construct(
         private readonly CreateCheckoutAction $createCheckoutAction,
         private readonly ProcessWompiEventAction $processEventAction,
+        private readonly SyncWompiOrderStatusAction $syncOrderStatusAction,
     ) {}
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -81,6 +85,65 @@ class WompiController extends Controller
 
             return ApiResponse::error($e->getMessage() ?: 'Error de conexión con la pasarela de pago.', $httpCode);
         }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // POST /api/wompi/verificar-transaccion
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Conciliación Servidor-a-Servidor (S2S) bajo demanda para el cliente autenticado.
+     * Consulta directamente la API de Wompi y confirma el pedido solo si pasa la
+     * validación de 5 puntos (referencia, monto exacto en centavos, moneda COP, APPROVED e idempotencia).
+     */
+    public function verificarTransaccion(Request $request): JsonResponse
+    {
+        /** @var Usuario $user */
+        $user = $request->user();
+
+        $pedidoId = (int) $request->input('pedido_id', 0);
+        $referencia = trim((string) $request->input('referencia', ''));
+        $transactionId = trim((string) $request->input('transaction_id', ''));
+
+        /** @var Pedido|null $pedido */
+        $pedido = null;
+
+        if ($pedidoId > 0) {
+            $pedido = Pedido::where('id', $pedidoId)
+                ->where('usuario_id', $user->id)
+                ->first();
+        }
+
+        if (! $pedido && $referencia !== '') {
+            $pedido = Pedido::where('wompi_referencia', $referencia)
+                ->where('usuario_id', $user->id)
+                ->first();
+        }
+
+        if (! $pedido && $transactionId !== '') {
+            $pedido = Pedido::where('wompi_transaction_id', $transactionId)
+                ->where('usuario_id', $user->id)
+                ->first();
+        }
+
+        if (! $pedido) {
+            $pedido = Pedido::where('usuario_id', $user->id)
+                ->where('metodo_pago', 'wompi')
+                ->where('estado', EstadoPedido::PENDIENTE_PAGO)
+                ->orderByDesc('id')
+                ->first();
+        }
+
+        if (! $pedido) {
+            return ApiResponse::error('Pedido no encontrado.', 404);
+        }
+
+        $result = $this->syncOrderStatusAction->execute(
+            $pedido,
+            $transactionId !== '' ? $transactionId : null
+        );
+
+        return ApiResponse::success($result);
     }
 
     // ─────────────────────────────────────────────────────────────────────────

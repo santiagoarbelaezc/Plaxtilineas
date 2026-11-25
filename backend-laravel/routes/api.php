@@ -235,8 +235,11 @@ Route::prefix('notificaciones')->group(function () {
 });
 
 Route::prefix('wompi')->group(function () {
-    // Generación de link de pago (requiere autenticación)
+    // Generación de datos firmados para checkout (requiere autenticación)
     Route::post('/datos-pago', [WompiController::class, 'datosPago'])->middleware('auth:sanctum');
+
+    // Conciliación S2S bajo demanda contra la API oficial de Wompi (requiere autenticación)
+    Route::post('/verificar-transaccion', [WompiController::class, 'verificarTransaccion'])->middleware('auth:sanctum');
 
     // Webhook público para eventos de Wompi (protegido por checksum)
     Route::post('/webhook', [WompiController::class, 'webhook'])->middleware('throttle:wompi-webhook');

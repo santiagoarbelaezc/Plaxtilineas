@@ -169,9 +169,14 @@ final class CatalogoApiService
             /** @var array{success?: bool, data?: list<array<string, mixed>>} $json */
             $json = $response->json();
 
-            return ! empty($json['success']) && is_array($json['data'] ?? null)
-                ? $json['data']
-                : [];
+            if (empty($json['success']) || ! is_array($json['data'] ?? null)) {
+                return [];
+            }
+
+            return array_values(array_filter(
+                $json['data'],
+                fn (array $prod): bool => $this->productoTienePrecioValido($prod)
+            ));
         } catch (Throwable $e) {
             Log::error('CatalogoApiService::getProductos — error de conexión', [
                 'error' => $e->getMessage(),
@@ -179,6 +184,34 @@ final class CatalogoApiService
 
             return [];
         }
+    }
+
+    /**
+     * Verifica si un producto crudo del catálogo externo cuenta con al menos
+     * una variante activa con precio > 0 (o precio directo > 0).
+     *
+     * @param  array<string, mixed>  $producto
+     */
+    private function productoTienePrecioValido(array $producto): bool
+    {
+        $precioDirecto = (float) ($producto['price'] ?? 0);
+        if ($precioDirecto > 0) {
+            return true;
+        }
+
+        $variantes = is_array($producto['variants'] ?? null) ? $producto['variants'] : [];
+        foreach ($variantes as $v) {
+            if (! is_array($v)) {
+                continue;
+            }
+            $available = ! isset($v['available']) || (int) $v['available'] === 1;
+            $precio = (float) ($v['price'] ?? 0);
+            if ($available && $precio > 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -260,7 +293,7 @@ final class CatalogoApiService
             $nombreVariante = (string) ($variante['name'] ?? '');
 
             return [
-                'disponible' => $available === 1 && $stockEfectivo >= $cantidadSolicitada,
+                'disponible' => $available === 1 && $precio > 0 && $stockEfectivo >= $cantidadSolicitada,
                 'stock' => $stockEfectivo,
                 'nombre' => trim("{$nombreProducto} - {$nombreVariante}"),
                 'precio' => $precio,
@@ -274,10 +307,10 @@ final class CatalogoApiService
             array_map(fn ($v) => (float) ($v['price'] ?? 0), $producto['variants'] ?? []),
             fn ($p) => $p > 0
         );
-        $precioMin = $precios ? min($precios) : 0.0;
+        $precioMin = $precios ? min($precios) : (float) ($producto['price'] ?? 0.0);
 
         return [
-            'disponible' => $stockGeneral >= $cantidadSolicitada,
+            'disponible' => $precioMin > 0 && $stockGeneral >= $cantidadSolicitada,
             'stock' => $stockGeneral,
             'nombre' => $nombreProducto,
             'precio' => $precioMin,

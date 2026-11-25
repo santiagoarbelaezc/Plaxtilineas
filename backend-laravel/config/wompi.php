@@ -66,7 +66,7 @@ return [
     | confiar en los parámetros de query-string que devuelve Wompi.
     */
     'redirect_url' => env('WOMPI_REDIRECT_URL',
-        rtrim((string) env('FRONTEND_URL', 'https://plaxtilineas.com'), '/').'/pago-exitoso'
+        rtrim((string) env('FRONTEND_URL', 'https://plaxtilineas.com'), '/').'/perfil?tab=pedidos'
     ),
 
 ];
