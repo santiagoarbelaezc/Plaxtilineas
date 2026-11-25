@@ -112,7 +112,6 @@ export class Inicio implements OnInit {
         // Filtrar y guardar solo componentes activos
         const datos = res.data || res;
         this.componentesDinamicos = (datos as ComponenteDinamico[]).filter(c => c.activo == 1 || c.activo === true);
-        console.log('✅ Componentes dinámicos cargados con éxito en la Landing Page:', this.componentesDinamicos);
       },
       error: (err) => {
         console.error('❌ Error al obtener componentes dinámicos para el Inicio:', err);

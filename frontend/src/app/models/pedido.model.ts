@@ -26,6 +26,7 @@ export interface Pedido {
   notas: string | null;
   fecha_actualizacion: string;
   wompi_referencia?: string;
+  wompi_transaction_id?: string | null;
   wompi_pagado_at?: string | null;
   guia_numero?: string | null;
   transportadora?: string | null;
@@ -126,7 +127,7 @@ export type EstadoPedido =
   | 'cancelado';
 
 export const ESTADOS_PEDIDO: { key: EstadoPedido; label: string; icon: string; color: string }[] = [
-  { key: 'pendiente_pago',  label: 'Pendiente de Pago', icon: 'fa-solid fa-credit-card', color: '#f59e0b' },
+  { key: 'pendiente_pago',  label: 'Validando pago',  icon: 'fa-solid fa-clock', color: '#f59e0b' },
   { key: 'pagado',          label: 'Pago Confirmado', icon: 'fa-solid fa-circle-check', color: '#10b981' },
   { key: 'pendiente',       label: 'Pendiente',       icon: 'fa-solid fa-clock', color: '#f59e0b' },
   { key: 'confirmado',      label: 'Confirmado',      icon: 'fa-solid fa-circle-check', color: '#18181b' },

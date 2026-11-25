@@ -62,14 +62,6 @@ export class CarouselInteres implements OnInit, OnDestroy, OnChanges {
   constructor() {}
 
   ngOnInit(): void {
-    console.log('🔄 Iniciando CarouselInteres...');
-    console.log('📊 Inputs recibidos:', {
-      titulo: this.titulo,
-      subtitulo: this.subtitulo,
-      limite: this.limite,
-      excluirProductoId: this.excluirProductoId,
-      forzarRecarga: this.forzarRecarga
-    });
 
     this.cargarProductosAleatorios();
     this.suscribirASeñales();
@@ -77,7 +69,6 @@ export class CarouselInteres implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['forzarRecarga'] || changes['excluirProductoId'] || changes['limite']) {
-      console.log('🔄 Cambio detectado en inputs, recargando productos...');
       this.recargarProductos();
     }
   }
@@ -94,7 +85,6 @@ export class CarouselInteres implements OnInit, OnDestroy, OnChanges {
   private suscribirASeñales(): void {
     this.signalSubscription = this.carouselSignalService.productoSeleccionado$
       .subscribe((productoId: number) => {
-        console.log(`🎯 Señal recibida: Producto ${productoId} seleccionado`);
         
         if (productoId > 0) {
           this.excluirProductoId = productoId;
@@ -108,7 +98,6 @@ export class CarouselInteres implements OnInit, OnDestroy, OnChanges {
    * Método para recargar productos cuando se recibe una señal
    */
   private recargarProductos(): void {
-    console.log('🔄 Recargando carrusel por señal...');
     
     this.recargaForzadaInterna = true;
     this.isLoading = true;
@@ -124,7 +113,6 @@ export class CarouselInteres implements OnInit, OnDestroy, OnChanges {
     const esRecargaForzada = this.forzarRecarga || this.recargaForzadaInterna;
     
     if (!esRecargaForzada && (ahora - this.ultimaCarga) < this.MIN_TIEMPO_ENTRE_CARGAS) {
-      console.log('⏱️  Carga evitada: tiempo mínimo entre cargas no alcanzado');
       if (this.productos.length > 0) {
         this.isLoading = false;
       }
@@ -135,16 +123,11 @@ export class CarouselInteres implements OnInit, OnDestroy, OnChanges {
     this.error = null;
     this.ultimaCarga = ahora;
     
-    console.log('🎲 Cargando productos aleatorios...');
-    console.log(`🔗 Límite solicitado: ${this.limite}`);
-    console.log(`🚫 Producto a excluir: ${this.excluirProductoId || 'ninguno'}`);
-    console.log(`🚀 Recarga forzada: ${esRecargaForzada ? 'SÍ' : 'NO'}`);
     
     const limiteParaSolicitud = Math.max(this.limite * 2, 16);
     
     this.productosService.obtenerProductosAleatorios(limiteParaSolicitud).subscribe({
       next: (productos) => {
-        console.log(`✅ Productos aleatorios obtenidos: ${productos.length}`);
         this.procesarProductos(productos);
         this.recargaForzadaInterna = false;
       },
@@ -157,18 +140,15 @@ export class CarouselInteres implements OnInit, OnDestroy, OnChanges {
   }
 
   private procesarProductos(productos: any[]): void {
-    console.log(`🔍 Procesando ${productos.length} productos...`);
     
     if (this.excluirProductoId && productos.length > 0) {
       const productosAntes = productos.length;
       productos = productos.filter(p => p.id !== this.excluirProductoId);
-      console.log(`🔍 Productos después de excluir ID ${this.excluirProductoId}: ${productosAntes} → ${productos.length}`);
     }
     
     const productosAleatorizados = this.mezclarArrayAleatoriamente(productos);
     const productosFinales = productosAleatorizados.slice(0, this.limite);
     
-    console.log(`🎯 Productos finales después de aleatorizar: ${productosFinales.length}`);
     
     this.productos = productosFinales.map(producto => 
       this.convertirAProductoEditable(producto)
@@ -177,7 +157,6 @@ export class CarouselInteres implements OnInit, OnDestroy, OnChanges {
     this.finalizarCarga();
     
     if (this.productos.length === 0) {
-      console.log('ℹ️ No se encontraron productos de interés');
       this.intentarCargaAlternativa();
     }
   }
@@ -189,14 +168,12 @@ export class CarouselInteres implements OnInit, OnDestroy, OnChanges {
     this.currentPage = 0;
     
     if (this.productos.length > 0) {
-      console.log(`🎉 ${this.productos.length} productos cargados exitosamente`);
       setTimeout(() => {
         if (this.productosGrid) {
           this.productosGrid.nativeElement.scrollLeft = 0;
         }
       }, 50);
     } else {
-      console.log('ℹ️ Carrusel vacío después de finalizar carga');
     }
   }
 
@@ -304,7 +281,6 @@ export class CarouselInteres implements OnInit, OnDestroy, OnChanges {
   }
 
   recargar(): void {
-    console.log('🔄 Recargando productos de interés...');
     this.recargaForzadaInterna = true;
     this.cargarProductosAleatorios();
   }
@@ -417,7 +393,6 @@ export class CarouselInteres implements OnInit, OnDestroy, OnChanges {
 
   handleImageError(event: Event, producto: ProductoEditable): void {
     const imgElement = event.target as HTMLImageElement;
-    console.warn(`⚠️ Error cargando imagen para ${producto?.nombre || 'producto'}`);
     imgElement.src = 'assets/images/default-product.png';
   }
 

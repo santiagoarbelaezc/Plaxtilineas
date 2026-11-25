@@ -24,22 +24,17 @@ export class Productos implements AfterViewInit {
 
   ngAfterViewInit() {
     // Verificar que el elemento se está capturando correctamente
-    console.log('Elemento menuCategorias:', this.menuCategorias?.nativeElement);
   }
 
   toggleMenu() {
-    console.log('toggleMenu llamado, menuVisible actual:', this.menuVisible);
     
     if (this.menuCategorias?.nativeElement) {
       this.menuVisible = !this.menuVisible;
-      console.log('Nuevo menuVisible:', this.menuVisible);
       
       if (this.menuVisible) {
         this.menuCategorias.nativeElement.classList.add('menu-visible');
-        console.log('Clase menu-visible añadida');
       } else {
         this.menuCategorias.nativeElement.classList.remove('menu-visible');
-        console.log('Clase menu-visible removida');
       }
     } else {
       console.error('Elemento menuCategorias no encontrado');
@@ -47,11 +42,9 @@ export class Productos implements AfterViewInit {
   }
 
   closeMenu() {
-    console.log('closeMenu llamado');
     if (this.menuVisible && this.menuCategorias?.nativeElement) {
       this.menuCategorias.nativeElement.classList.remove('menu-visible');
       this.menuVisible = false;
-      console.log('Menú cerrado');
     }
   }
 

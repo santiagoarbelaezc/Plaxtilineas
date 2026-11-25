@@ -86,7 +86,6 @@ export class CatalogoService {
 
       window.addEventListener('focus', () => {
         if (this.productosCargados) {
-          console.log('[CatalogoService] Ventana re-enfocada: refrescando stock silenciosamente...');
           this.sincronizarCambiosInventario();
           this.refrescar();
         }
@@ -275,7 +274,6 @@ export class CatalogoService {
       }
       this.productosSubject.next([...actuales]);
       this.persistirCache(actuales);
-      console.log(`[CatalogoService] Stock local actualizado para producto #${productoId}: ${stockSanitizado}`);
     }
   }
 
@@ -292,7 +290,6 @@ export class CatalogoService {
       }
       this.productosSubject.next([...actuales]);
       this.persistirCache(actuales);
-      console.log(`[CatalogoService] Stock local ajustado (delta ${delta}) para producto #${productoId}: ${nuevo}`);
     }
   }
 

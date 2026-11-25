@@ -274,14 +274,12 @@
               <span class="order-code-badge">PEDIDO #{{ pedido.codigo_pedido }}</span>
             </div>
             <div class="order-meta-row">
-              <span class="meta-item">
+              <span class="meta-item" [title]="formatDate(pedido.fecha)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                  <line x1="16" y1="2" x2="16" y2="6"></line>
-                  <line x1="8" y1="2" x2="8" y2="6"></line>
-                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
-                {{ formatShortDate(pedido.fecha) }}
+                {{ formatDateTimeShort(pedido.fecha) }}
               </span>
               <span class="meta-separator">&bull;</span>
               <span class="meta-item">
@@ -290,6 +288,10 @@
                 </svg>
                 {{ pedido.total_items }} {{ pedido.total_items === 1 ? 'producto' : 'productos' }}
               </span>
+              <ng-container *ngIf="pedido.wompi_referencia">
+                <span class="meta-separator">&bull;</span>
+                <span class="meta-chip-ref">{{ pedido.wompi_referencia }}</span>
+              </ng-container>
             </div>
           </div>
 
@@ -355,6 +357,19 @@
               </div>
             </div>
 
+            <!-- Banner informativo cuando el pago está en validación S2S con Wompi -->
+            <div class="validating-payment-banner" *ngIf="pedido.estado === 'pendiente_pago'">
+              <div class="validating-banner-text">
+                <strong>Validando pago con Wompi</strong>
+                <span>
+                  Tu transacción está siendo confirmada automáticamente entre Wompi y nuestro servidor. Cuando quede acreditada recibirás el correo de confirmación y el estado cambiará a <strong>Pago Confirmado</strong>.
+                </span>
+              </div>
+              <button type="button" class="btn-refresh-inline" (click)="cargarPedidos(); $event.stopPropagation()">
+                Actualizar estado
+              </button>
+            </div>
+
             <div class="cancelled-alert-banner" *ngIf="pedido.estado === 'cancelado'">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -362,6 +377,24 @@
                 <line x1="9" y1="9" x2="15" y2="15"></line>
               </svg>
               <span>Este pedido fue cancelado. Si el pago fue procesado o tienes dudas, contacta a nuestro equipo de soporte.</span>
+            </div>
+
+            <!-- Bitácora detallada de trazabilidad con fecha y hora exacta -->
+            <div class="trace-log-box">
+              <div class="trace-log-header">Bitácora de trazabilidad</div>
+              <div class="trace-log-list">
+                <div *ngFor="let hito of getTrazabilidadHitos(pedido)" class="trace-log-item" [ngClass]="'is-' + hito.estado">
+                  <span class="trace-dot"></span>
+                  <div class="trace-body">
+                    <div class="trace-top-line">
+                      <strong class="trace-title">{{ hito.titulo }}</strong>
+                      <span class="trace-time" *ngIf="hito.fecha">{{ hito.fecha }}</span>
+                    </div>
+                    <p class="trace-desc">{{ hito.detalle }}</p>
+                    <span class="trace-code-pill" *ngIf="hito.codigo">{{ hito.codigo }}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -492,10 +525,16 @@
               <div class="info-card-content">
                 <div class="payment-badge">
                   <span class="payment-brand-indicator"></span>
-                  <span class="payment-brand-text">{{ pedido.metodo_pago }}</span>
+                  <span class="payment-brand-text">{{ formatMetodoPago(pedido.metodo_pago) }}</span>
                 </div>
                 <p class="payment-ref-text" *ngIf="pedido.wompi_referencia">
-                  Ref: <span class="mono-ref">{{ pedido.wompi_referencia }}</span>
+                  Ref. Wompi: <span class="mono-ref">{{ pedido.wompi_referencia }}</span>
+                </p>
+                <p class="payment-ref-text" *ngIf="getTransaccionIdVisible(pedido)">
+                  ID Transacción: <span class="mono-ref">{{ getTransaccionIdVisible(pedido) }}</span>
+                </p>
+                <p class="payment-ref-text" *ngIf="pedido.wompi_pagado_at">
+                  Confirmado: <strong>{{ formatDateTimeShort(pedido.wompi_pagado_at) }}</strong>
                 </p>
                 <p class="payment-notes-text" *ngIf="pedido.notas">
                   <em>"{{ pedido.notas }}"</em>
@@ -512,14 +551,15 @@
                 </div>
                 <div class="summary-line muted">
                   <span class="summary-line-label">Costo de envío</span>
-                  <span class="shipping-included-pill">Incluido</span>
+                  <span *ngIf="pedido.costo_envio > 0" class="summary-line-value">{{ formatPrice(pedido.costo_envio) }}</span>
+                  <span *ngIf="!pedido.costo_envio" class="shipping-included-pill">Incluido</span>
                 </div>
               </div>
 
               <!-- Caja de Total -->
               <div class="cart-total-box">
                 <div class="total-text-col">
-                  <span class="total-kicker">TOTAL PAGADO</span>
+                  <span class="total-kicker">{{ pedido.estado === 'pendiente_pago' ? 'TOTAL EN VALIDACIÓN' : 'TOTAL PAGADO' }}</span>
                   <span class="total-iva-note">IVA Incluido</span>
                 </div>
                 <span class="cart-total-amount">{{ formatPrice(pedido.total) }}</span>

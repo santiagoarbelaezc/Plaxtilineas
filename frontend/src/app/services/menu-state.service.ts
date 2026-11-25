@@ -20,7 +20,6 @@ export class MenuStateService {
   closeDropdown$ = this.closeDropdownSubject.asObservable();
 
   constructor() {
-    console.log('✅ MenuStateService inicializado');
   }
 
   private getInitialState(): MenuState {
@@ -28,7 +27,6 @@ export class MenuStateService {
       const saved = localStorage.getItem(this.STORAGE_KEY);
       if (saved) {
         const state = JSON.parse(saved);
-        console.log('📂 Estado cargado del localStorage:', state);
         return state;
       }
     } catch (error) {
@@ -41,7 +39,6 @@ export class MenuStateService {
     try {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(state));
       this.stateSubject.next(state);
-      console.log('💾 Estado guardado:', state);
     } catch (error) {
       console.error('❌ Error al guardar estado:', error);
     }
@@ -146,7 +143,6 @@ export class MenuStateService {
       ...current,
       lastSelectedSubcategory: subcategoryId
     }));
-    console.log(`📌 Subcategoría ${subcategoryId} guardada como última seleccionada`);
   }
 
   /**

@@ -29,14 +29,11 @@ export class ScrollService {
       const newUrl = event.urlAfterRedirects || event.url;
       const oldUrl = this.previousUrl;
       
-      console.log(`🔄 Navegación: ${oldUrl || '(inicio)'} -> ${newUrl}`);
       
       // Solo hacer scroll al top si es un cambio REAL de ruta (no solo query params)
       if (this.isRealRouteChange(oldUrl, newUrl)) {
-        console.log(`✅ Scroll al top - Cambio REAL de ruta`);
         this.scrollToTopInstant();
       } else {
-        console.log(`⚠️ Sin scroll - Solo cambio de query params o fragmento`);
       }
       
       this.previousUrl = newUrl;
@@ -70,7 +67,6 @@ export class ScrollService {
   scrollToTopInstant(): void {
     if (!this.isBrowser) return;
 
-    console.log('⬆️ Ejecutando scrollToTopInstant...');
     
     // Desactivar temporalmente el scroll suave
     const html = document.documentElement;
@@ -118,7 +114,6 @@ export class ScrollService {
           behavior: behavior
         });
         
-        console.log(`📍 Scroll al elemento: #${elementId}`);
       }
     }, 100);
   }

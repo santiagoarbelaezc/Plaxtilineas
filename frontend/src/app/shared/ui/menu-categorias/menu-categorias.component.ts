@@ -158,7 +158,6 @@ export class MenuCategoriasComponent implements OnInit {
   }
 
   seleccionarSubcategoria(subcatId: number) {
-    console.log(`🎯 Subcategoría seleccionada: ${subcatId}`);
     
     // Actualizar estado
     this.mostrarTodosProductos = false;
@@ -181,7 +180,6 @@ export class MenuCategoriasComponent implements OnInit {
    * Ver todos los productos (sin filtros)
    */
   verTodosProductos() {
-    console.log('🔍 Ver todos los productos');
     this.menuStateService.clearLastSelectedSubcategory();
     this.router.navigate(['/productos']);
   }
@@ -190,7 +188,6 @@ export class MenuCategoriasComponent implements OnInit {
    * Seleccionar categoría completa (todos los productos de una categoría)
    */
   seleccionarCategoria(categoriaId: number) {
-    console.log(`🏷️ Categoría seleccionada: ${categoriaId}`);
     
     // Actualizar estado
     this.mostrarTodosProductos = false;

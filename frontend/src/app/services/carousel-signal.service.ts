@@ -14,13 +14,11 @@ export class CarouselSignalService {
   
   // Método para emitir la señal con el ID del producto seleccionado
   notificarProductoSeleccionado(productoId: number) {
-    console.log(`🚨 Señal emitida: Producto ${productoId} seleccionado`);
     this.productoSeleccionadoSubject.next(productoId);
   }
   
   // Método para forzar recarga específica del carrusel
   forzarRecargaCarousel() {
-    console.log('🚨 Señal emitida: Forzar recarga del carrusel');
     this.productoSeleccionadoSubject.next(-1); // Usar -1 como señal especial
   }
 }

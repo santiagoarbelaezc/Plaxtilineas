@@ -67,15 +67,6 @@ export class CarouselRelacionados implements OnInit, OnDestroy, OnChanges {
   constructor() {}
 
   ngOnInit(): void {
-    console.log('🔄 Iniciando CarouselRelacionados...');
-    console.log('📊 Inputs recibidos:', {
-      titulo: this.titulo,
-      subtitulo: this.subtitulo,
-      limite: this.limite,
-      subcategoriaId: this.subcategoriaId,
-      productoId: this.productoId,
-      forzarRecarga: this.forzarRecarga
-    });
 
     this.cargarProductosRelacionados();
     this.suscribirASeñales();
@@ -84,7 +75,6 @@ export class CarouselRelacionados implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     // Recargar si cambian parámetros relevantes
     if (changes['forzarRecarga'] || changes['subcategoriaId'] || changes['productoId'] || changes['limite']) {
-      console.log('🔄 Cambio detectado en inputs, recargando productos...');
       this.recargarProductos();
     }
   }
@@ -102,7 +92,6 @@ export class CarouselRelacionados implements OnInit, OnDestroy, OnChanges {
   private suscribirASeñales(): void {
     this.signalSubscription = this.carouselSignalService.productoSeleccionado$
       .subscribe((productoId: number) => {
-        console.log(`🎯 Señal recibida: Producto ${productoId} seleccionado`);
         
         // Actualizar producto actual
         this.productoId = productoId;
@@ -120,7 +109,6 @@ export class CarouselRelacionados implements OnInit, OnDestroy, OnChanges {
     const esRecargaForzada = this.forzarRecarga || this.recargaForzadaInterna;
     
     if (!esRecargaForzada && (ahora - this.ultimaCarga) < this.MIN_TIEMPO_ENTRE_CARGAS) {
-      console.log('⏱️  Carga evitada: tiempo mínimo entre cargas no alcanzado');
       if (this.productos.length > 0) {
         this.isLoading = false;
       }
@@ -133,11 +121,6 @@ export class CarouselRelacionados implements OnInit, OnDestroy, OnChanges {
     this.productosRelacionados = [];
     this.productosGenerales = [];
     
-    console.log('🔄 Cargando productos relacionados...');
-    console.log(`🔗 Subcategoría ID: ${this.subcategoriaId}`);
-    console.log(`🚫 Producto a excluir: ${this.productoId || 'ninguno'}`);
-    console.log(`🎯 Límite deseado: ${this.limite}`);
-    console.log(`🚀 Recarga forzada: ${esRecargaForzada ? 'SÍ' : 'NO'}`);
 
     // Si tenemos subcategoría, cargar productos de esa subcategoría
     if (this.subcategoriaId && this.subcategoriaId > 0) {
@@ -155,20 +138,17 @@ export class CarouselRelacionados implements OnInit, OnDestroy, OnChanges {
    * Cargar productos por subcategoría (productos relacionados)
    */
   private cargarProductosPorSubcategoria(): void {
-    console.log(`🔍 Buscando productos RELACIONADOS de subcategoría ${this.subcategoriaId}...`);
     
     // Pedir bastante productos para tener variedad de relacionados
     const limiteRelacionados = Math.max(this.limite * 2, 20);
     
     this.productosService.obtenerProductosPorSubcategoria(this.subcategoriaId!).subscribe({
       next: (productos) => {
-        console.log(`✅ ${productos.length} productos RELACIONADOS encontrados`);
         
         // 1. Excluir el producto actual si existe
         if (this.productoId && productos.length > 0) {
           const antes = productos.length;
           productos = productos.filter(p => p.id !== this.productoId);
-          console.log(`🚫 Productos relacionados después de excluir ID ${this.productoId}: ${antes} → ${productos.length}`);
         }
         
         // 2. Guardar productos relacionados
@@ -176,10 +156,8 @@ export class CarouselRelacionados implements OnInit, OnDestroy, OnChanges {
         
         // 3. Verificar si necesitamos productos generales para completar
         if (this.productosRelacionados.length >= this.limite) {
-          console.log(`✅ Tenemos suficientes productos relacionados (${this.productosRelacionados.length})`);
           this.procesarProductosFinales();
         } else {
-          console.log(`⚠️ Necesitamos ${this.limite - this.productosRelacionados.length} productos adicionales`);
           this.cargarProductosGeneralesParaCompletar();
         }
       },
@@ -195,27 +173,22 @@ export class CarouselRelacionados implements OnInit, OnDestroy, OnChanges {
    * Obtener la subcategoría de un producto específico
    */
   private obtenerSubcategoriaDelProducto(): void {
-    console.log(`🔍 Obteniendo detalles del producto ${this.productoId}...`);
     
     this.productosService.obtenerProductoPorId(this.productoId!).subscribe({
       next: (producto) => {
         if (!producto) {
-          console.log('⚠️ Producto no encontrado');
           this.cargarSoloProductosGenerales();
           return;
         }
         
-        console.log(`✅ Producto obtenido: ${producto.nombre}`);
         
         // Extraer subcategoría del producto
         if (producto.subcategoria_id && producto.subcategoria_id > 0) {
           this.subcategoriaId = producto.subcategoria_id;
-          console.log(`🎯 Subcategoría encontrada: ${this.subcategoriaId}`);
           
           // Ahora cargar productos de esa subcategoría
           this.cargarProductosPorSubcategoria();
         } else {
-          console.log('⚠️ Producto sin subcategoría, cargando productos generales');
           this.cargarSoloProductosGenerales();
         }
       },
@@ -233,17 +206,14 @@ export class CarouselRelacionados implements OnInit, OnDestroy, OnChanges {
     const cantidadNecesaria = this.limite - this.productosRelacionados.length;
     const limiteAdicional = Math.max(cantidadNecesaria * 3, 15); // Pedir extras para excluir duplicados
     
-    console.log(`🔄 Cargando ${limiteAdicional} productos generales para completar...`);
     
     this.productosService.obtenerProductosAleatorios(limiteAdicional).subscribe({
       next: (productos) => {
-        console.log(`✅ ${productos.length} productos generales obtenidos`);
         
         // Excluir productos que ya están en los relacionados
         const idsRelacionados = new Set(this.productosRelacionados.map(p => p.id));
         const productosFiltrados = productos.filter(p => p && !idsRelacionados.has(p.id));
         
-        console.log(`🔍 Productos generales únicos: ${productosFiltrados.length}`);
         
         // Guardar productos generales
         this.productosGenerales = productosFiltrados;
@@ -263,19 +233,16 @@ export class CarouselRelacionados implements OnInit, OnDestroy, OnChanges {
    * Cargar solo productos generales (cuando no hay subcategoría)
    */
   private cargarSoloProductosGenerales(): void {
-    console.log('🎲 Cargando SOLO productos generales...');
     
     const limiteAmpliado = Math.max(this.limite * 2, 20);
     
     this.productosService.obtenerProductosAleatorios(limiteAmpliado).subscribe({
       next: (productos) => {
-        console.log(`✅ ${productos.length} productos generales obtenidos`);
         
         // Excluir producto actual si existe
         if (this.productoId && productos.length > 0) {
           const antes = productos.length;
           productos = productos.filter(p => p.id !== this.productoId);
-          console.log(`🚫 Productos generales después de excluir ID ${this.productoId}: ${antes} → ${productos.length}`);
         }
         
         // Guardar como productos generales
@@ -297,8 +264,6 @@ export class CarouselRelacionados implements OnInit, OnDestroy, OnChanges {
    * Los productos relacionados van PRIMERO
    */
   private procesarProductosFinales(): void {
-    console.log('🔀 Combinando productos finales...');
-    console.log(`📊 Relacionados: ${this.productosRelacionados.length}, Generales: ${this.productosGenerales.length}`);
     
     // 1. Tomar todos los productos relacionados (vienen primero)
     let productosCombinados = [...this.productosRelacionados];
@@ -314,13 +279,11 @@ export class CarouselRelacionados implements OnInit, OnDestroy, OnChanges {
       // 4. Agregar productos generales al final
       productosCombinados = [...productosCombinados, ...productosGeneralesSeleccionados];
       
-      console.log(`➕ Agregados ${productosGeneralesSeleccionados.length} productos generales al final`);
     }
     
     // 5. Limitar al límite máximo
     const productosFinales = productosCombinados.slice(0, this.limite);
     
-    console.log(`🎯 Productos finales: ${productosFinales.length} (Relacionados: ${this.productosRelacionados.length}, Generales: ${productosFinales.length - this.productosRelacionados.length})`);
     
     // 6. Convertir a ProductoEditable
     this.productos = productosFinales.map(producto => 
@@ -340,14 +303,12 @@ export class CarouselRelacionados implements OnInit, OnDestroy, OnChanges {
     this.currentPage = 0;
     
     if (this.productos.length > 0) {
-      console.log(`🎉 ${this.productos.length} productos cargados exitosamente`);
       setTimeout(() => {
         if (this.productosGrid) {
           this.productosGrid.nativeElement.scrollLeft = 0;
         }
       }, 50);
     } else {
-      console.log('ℹ️ No se encontraron productos');
       this.error = 'No hay productos relacionados disponibles';
     }
   }
@@ -446,7 +407,6 @@ export class CarouselRelacionados implements OnInit, OnDestroy, OnChanges {
    * Recargar productos (método público)
    */
   private recargarProductos(): void {
-    console.log('🔄 Recargando productos relacionados...');
     
     this.recargaForzadaInterna = true;
     this.isLoading = true;
@@ -583,7 +543,6 @@ export class CarouselRelacionados implements OnInit, OnDestroy, OnChanges {
 
   handleImageError(event: Event, producto: ProductoEditable): void {
     const imgElement = event.target as HTMLImageElement;
-    console.warn(`⚠️ Error cargando imagen para ${producto?.nombre || 'producto desconocido'}`);
     imgElement.src = 'assets/images/default-product.png';
   }
 
