@@ -58,7 +58,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       titleHighlight: 'CONSTRUCCIÓN',
       pillLabel: 'CONSTRUCCIÓN',
       description: 'Polietilenos de alta resistencia, geomembranas y láminas de protección diseñadas para resistir las condiciones más exigentes en obra.',
-      image: 'assets/images/hero/slides/construccion.jpg',
+      image: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1795619951/hero1_kjww12.jpg',
       altText: 'Obra de construcción con materiales plásticos y polietileno'
     },
     {
@@ -68,7 +68,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       titleHighlight: 'AGRICULTURA',
       pillLabel: 'AGRICULTURA',
       description: 'Agropolietileno con filtro UV para invernaderos, acolchado plástico y sistemas de riego para maximizar el rendimiento de tus cosechas.',
-      image: 'assets/images/hero/slides/agricultura.jpg',
+      image: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1795619951/hero2_nv952s.jpg',
       altText: 'Invernadero túnel tecnificado con películas plásticas y acolchado'
     },
     {
@@ -78,7 +78,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       titleHighlight: 'TAPICERÍA',
       pillLabel: 'TAPICERÍA',
       description: 'Cuerinas microperforadas, vinilos náuticos de alta durabilidad y pisos antideslizantes para acabados elegantes y resistentes.',
-      image: 'assets/images/hero/slides/tapiceria.jpg',
+      image: 'https://res.cloudinary.com/dsv1gdgya/image/upload/v1795619951/hero3_mdd6hj.jpg',
       altText: 'Taller de tapicería automotriz con cuerinas y materiales de diseño'
     },
     {
