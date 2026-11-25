@@ -12,6 +12,7 @@ export interface ProductoMenu {
   stock?: number;
   minimo_compra?: number;
   controlar_stock?: boolean | number;
+  imagenes?: { url: string; descripcion?: string; principal?: boolean }[];
   nuevaImagen?: File;   // para carga de nueva imagen (opcional)
 }
 

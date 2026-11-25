@@ -40,6 +40,10 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
   opcionesCantidad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   precioConCantidad: number = 0;
   
+  // Propiedades para la galería de imágenes
+  galeriaImagenes: { url: string; descripcion?: string; principal?: boolean }[] = [];
+  imagenActivaIndex = 0;
+
   // Propiedades para el modal de imagen
   mostrarModalImagen = false;
   imagenModalUrl: string = '';
@@ -108,6 +112,14 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
           if (fresh) {
             this.producto.stock = fresh.stock;
             this.producto.cantidad = fresh.stock ?? 0;
+            if (Array.isArray(fresh.imagenes) && fresh.imagenes.length > 0) {
+              const nuevasUrls = fresh.imagenes.map(img => img?.url?.trim()).filter(Boolean).join('|');
+              const actualesUrls = (this.producto.imagenes ?? []).map(img => img?.url?.trim()).filter(Boolean).join('|');
+              if (nuevasUrls !== actualesUrls || this.galeriaImagenes.length <= 1) {
+                this.producto.imagenes = fresh.imagenes;
+                this.construirGaleriaImagenes(true);
+              }
+            }
             if (this.variantes) {
               this.variantes.forEach(v => {
                 v.stock = fresh.stock;
@@ -226,9 +238,104 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
 
     // Establecer cantidad seleccionada al mínimo de compra
     this.cantidadSeleccionada = this.producto.minimo_compra || 1;
+
+    // Construir galería de imágenes del producto
+    this.construirGaleriaImagenes();
     
     // Cargar variantes del producto
     this.cargarVariantesProducto(this.producto.id);
+  }
+
+  /**
+   * Construye la lista deduplicada de imágenes del producto (principal primero).
+   */
+  private construirGaleriaImagenes(preservarIndice = false): void {
+    const lista: { url: string; descripcion?: string; principal?: boolean }[] = [];
+    const vistas = new Set<string>();
+
+    const agregar = (url?: string, descripcion?: string, principal = false) => {
+      const limpia = (url ?? '').trim();
+      if (!limpia || vistas.has(limpia)) return;
+      vistas.add(limpia);
+      lista.push({ url: limpia, descripcion, principal });
+    };
+
+    const imagenesProducto = Array.isArray(this.producto?.imagenes) ? this.producto!.imagenes! : [];
+    const ordenadas = [...imagenesProducto].sort((a, b) => Number(!!b.principal) - Number(!!a.principal));
+
+    for (const img of ordenadas) {
+      agregar(img?.url, img?.descripcion, !!img?.principal);
+    }
+
+    if (this.producto?.imagen_url) {
+      agregar(this.producto.imagen_url, undefined, lista.length === 0);
+    }
+
+    if (lista.length === 0) {
+      lista.push({ url: 'assets/images/producto-default.jpg', principal: true });
+    }
+
+    const urlActual = this.galeriaImagenes[this.imagenActivaIndex]?.url;
+    this.galeriaImagenes = lista;
+
+    if (preservarIndice && urlActual) {
+      const idx = this.galeriaImagenes.findIndex(img => img.url === urlActual);
+      this.imagenActivaIndex = idx >= 0 ? idx : 0;
+    } else {
+      this.imagenActivaIndex = 0;
+    }
+
+    if (this.mostrarModalImagen) {
+      this.imagenModalUrl = this.imagenActivaUrl;
+    }
+  }
+
+  get imagenActivaUrl(): string {
+    return (
+      this.galeriaImagenes[this.imagenActivaIndex]?.url ||
+      this.producto?.imagen_url ||
+      'assets/images/producto-default.jpg'
+    );
+  }
+
+  get imagenActivaDescripcion(): string {
+    return this.galeriaImagenes[this.imagenActivaIndex]?.descripcion?.trim() || '';
+  }
+
+  seleccionarImagen(index: number): void {
+    if (index < 0 || index >= this.galeriaImagenes.length) return;
+    this.imagenActivaIndex = index;
+    if (this.mostrarModalImagen) {
+      this.imagenModalUrl = this.imagenActivaUrl;
+    }
+  }
+
+  imagenAnterior(event?: Event): void {
+    event?.stopPropagation();
+    if (this.galeriaImagenes.length <= 1) return;
+    this.imagenActivaIndex =
+      (this.imagenActivaIndex - 1 + this.galeriaImagenes.length) % this.galeriaImagenes.length;
+    if (this.mostrarModalImagen) {
+      this.imagenModalUrl = this.imagenActivaUrl;
+    }
+  }
+
+  imagenSiguiente(event?: Event): void {
+    event?.stopPropagation();
+    if (this.galeriaImagenes.length <= 1) return;
+    this.imagenActivaIndex = (this.imagenActivaIndex + 1) % this.galeriaImagenes.length;
+    if (this.mostrarModalImagen) {
+      this.imagenModalUrl = this.imagenActivaUrl;
+    }
+  }
+
+  onImagenError(index: number): void {
+    if (this.galeriaImagenes[index]) {
+      this.galeriaImagenes[index] = {
+        ...this.galeriaImagenes[index],
+        url: 'assets/images/producto-default.jpg'
+      };
+    }
   }
 
   /**
@@ -483,8 +590,8 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
 
   // Métodos para el modal de imagen
   abrirModalImagen() {
-    if (this.producto?.imagen_url) {
-      this.imagenModalUrl = this.producto.imagen_url;
+    if (this.imagenActivaUrl) {
+      this.imagenModalUrl = this.imagenActivaUrl;
       this.mostrarModalImagen = true;
       // Prevenir scroll del body
       document.body.style.overflow = 'hidden';
@@ -552,6 +659,20 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
     }
     if (this.mostrarModalLegal) {
       this.cerrarModalLegal();
+    }
+  }
+
+  @HostListener('document:keydown.arrowleft')
+  onArrowLeftKey() {
+    if (this.mostrarModalImagen && this.galeriaImagenes.length > 1) {
+      this.imagenAnterior();
+    }
+  }
+
+  @HostListener('document:keydown.arrowright')
+  onArrowRightKey() {
+    if (this.mostrarModalImagen && this.galeriaImagenes.length > 1) {
+      this.imagenSiguiente();
     }
   }
 
@@ -642,7 +763,8 @@ export class DescriptionProductoSelect implements OnInit, OnDestroy {
       unidad: productoEditable.unidad || 'unidades',
       stock: productoEditable.stock,
       minimo_compra: productoEditable.minimo_compra,
-      controlar_stock: productoEditable.controlar_stock
+      controlar_stock: productoEditable.controlar_stock,
+      imagenes: productoEditable.imagenes
     };
   }
 }

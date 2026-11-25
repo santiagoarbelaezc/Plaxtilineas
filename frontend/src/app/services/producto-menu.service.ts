@@ -31,7 +31,8 @@ export class ProductoMenuService {
       unidad: p.unidad || 'unidades',
       stock: p.stock,
       minimo_compra: p.minimo_compra,
-      controlar_stock: p.controlar_stock
+      controlar_stock: p.controlar_stock,
+      imagenes: p.imagenes
     };
   }
 
