@@ -220,11 +220,14 @@
   color: #09090b;
   text-transform: uppercase;
   line-height: 1.28;
+  min-height: 2.56em;
+  height: 2.56em;
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  text-overflow: ellipsis;
   letter-spacing: -0.015em;
   transition: color 0.2s ease;
   cursor: pointer;
@@ -240,9 +243,10 @@
   align-items: baseline;
   justify-content: flex-start;
   gap: 0.55rem;
-  margin-top: 4px;
+  margin-top: auto;
   margin-bottom: 10px;
   padding-top: 8px;
+  min-height: 36px;
   border-top: 1px solid #f1f5f9;
   flex-wrap: wrap;
 }
@@ -286,7 +290,7 @@
 
 /* ── Botón Agregar al Carrito (Bento Minimal + Manual de Marca) ── */
 .btn-add-cart-carousel {
-  margin-top: auto;
+  margin-top: 0;
   width: 100%;
   display: inline-flex;
   align-items: center;
