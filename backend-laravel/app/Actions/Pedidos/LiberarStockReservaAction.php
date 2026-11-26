@@ -17,10 +17,13 @@ final class LiberarStockReservaAction
 
     /**
      * Libera las reservas de stock asociadas a un pedido y restituye el stock en el catálogo.
+     *
+     * @param  bool  $permitirFallbackItems  Solo true cuando un administrador cancela un pedido ya PAGADO
+     *                                       (cuyas StockReservas ya fueron consumidas al confirmar el pago).
      */
-    public function execute(Pedido $pedido): int
+    public function execute(Pedido $pedido, bool $permitirFallbackItems = false): int
     {
-        $reservas = StockReserva::where('pedido_id', $pedido->id)->get();
+        $reservas = StockReserva::where('pedido_id', $pedido->id)->lockForUpdate()->get();
         $liberadas = 0;
 
         if ($reservas->isNotEmpty()) {
@@ -35,9 +38,8 @@ final class LiberarStockReservaAction
 
                 $reserva->delete();
             }
-        } else {
-            // Fallback garantizado: si no había registros en stock_reservas (ej. pedidos creados en draft/Wompi),
-            // restaurar el stock a partir de los items del pedido guardados en pedido_detalles.
+        } elseif ($permitirFallbackItems) {
+            // Solo cuando se cancela un pedido que ya estaba pagado/confirmado (donde StockReserva fue eliminada al pagar)
             $items = $pedido->items()->get();
             $itemsPorProducto = [];
 
@@ -60,6 +62,7 @@ final class LiberarStockReservaAction
             'pedido_id' => $pedido->id,
             'codigo_pedido' => $pedido->codigo_pedido,
             'items_devueltos' => $liberadas,
+            'fallback_usado' => $reservas->isEmpty() && $permitirFallbackItems,
         ]);
 
         return $liberadas;

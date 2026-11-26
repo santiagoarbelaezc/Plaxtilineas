@@ -256,6 +256,28 @@
           </div>
 
           <div class="form-group">
+            <label class="form-field-label">Tipo de Identificación</label>
+            <select formControlName="tipo_documento" class="input-minimal">
+              <option value="CC">C.C. (Cédula de Ciudadanía)</option>
+              <option value="NIT">NIT (Empresa / Persona Jurídica)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-field-label">
+              {{ registerForm.get('tipo_documento')?.value === 'NIT' ? 'Número de NIT' : 'Número de Cédula (C.C.)' }}
+            </label>
+            <input
+              formControlName="numero_documento"
+              type="text"
+              [placeholder]="registerForm.get('tipo_documento')?.value === 'NIT' ? 'Ej. 900123456-7' : 'Ej. 1094912345'"
+              class="input-minimal" />
+            <small class="error-feedback" *ngIf="registerForm.get('numero_documento')?.touched && registerForm.get('numero_documento')?.invalid">
+              Ingresa una identificación válida (5 a 15 dígitos; en NIT puedes incluir dígito de verificación con guion).
+            </small>
+          </div>
+
+          <div class="form-group">
             <label class="form-field-label">Correo Electrónico</label>
             <input formControlName="correo" type="email" placeholder="correo@ejemplo.com" class="input-minimal" />
             <small class="error-feedback" *ngIf="registerForm.get('correo')?.touched && registerForm.get('correo')?.invalid">

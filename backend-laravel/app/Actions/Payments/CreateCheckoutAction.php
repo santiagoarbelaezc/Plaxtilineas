@@ -55,9 +55,20 @@ final class CreateCheckoutAction
 
         $currency = 'COP';
         $reference = trim((string) $pedido->wompi_referencia);
-        if ($reference === '') {
-            $reference = 'PLX-'.$pedido->id.'-'.strtoupper(bin2hex(random_bytes(3)));
-            $pedido->wompi_referencia = $reference;
+
+        // Si el pedido ya estaba en pendiente_pago (ej. el usuario cerró el widget de Wompi o tuvo un DECLINED)
+        // o no tiene referencia, rotamos la referencia para que Wompi permita reintentar sin bloqueo.
+        $requiereNuevaReferencia = $reference === ''
+            || $pedido->estado === EstadoPedido::PENDIENTE_PAGO;
+
+        if ($requiereNuevaReferencia) {
+            $referenciaAnterior = $reference;
+            $reference = 'PLX-'.time().'-'.strtoupper(substr(bin2hex(random_bytes(3)), 0, 6));
+            Log::info('CreateCheckoutAction — Rotando referencia Wompi para reintento de pago', [
+                'pedido_id' => $pedido->id,
+                'referencia_anterior' => $referenciaAnterior,
+                'referencia_nueva' => $reference,
+            ]);
         }
 
         $redirectUrl = (string) config('wompi.redirect_url');

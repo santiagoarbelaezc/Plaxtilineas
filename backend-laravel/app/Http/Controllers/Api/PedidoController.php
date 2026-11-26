@@ -10,12 +10,14 @@ use App\Actions\Pedidos\ConfirmarPedidoAction;
 use App\Actions\Pedidos\CrearDraftPedidoAction;
 use App\Actions\Pedidos\EliminarPedidoAction;
 use App\Actions\Pedidos\LiberarStockReservaAction;
+use App\Contracts\MediaStorageInterface;
 use App\Contracts\WompiClientInterface;
 use App\Enums\EstadoPedido;
 use App\Exceptions\Domain\CaptchaInvalidoException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pedidos\AdminActualizarEstadoPedidoRequest;
 use App\Http\Requests\Pedidos\CrearDraftPedidoRequest;
+use App\Models\Carrito;
 use App\Models\Pedido;
 use App\Models\Usuario;
 use App\Services\AdminAuditService;
@@ -37,12 +39,14 @@ class PedidoController extends Controller
         protected WompiClientInterface $wompiService,
         protected LiberarStockReservaAction $liberarStockReservaAction,
         protected CatalogoApiService $catalogo,
-        protected AdminAuditService $auditService
+        protected AdminAuditService $auditService,
+        protected MediaStorageInterface $mediaStorage
     ) {}
 
     /**
      * POST /api/productos/verificar-stock
-     * Comprueba disponibilidad actual antes de crear el draft del pedido.
+     * Comprueba disponibilidad actual antes de crear el draft del pedido,
+     * descontando las unidades que el propio usuario ya tiene reservadas en su carrito.
      */
     public function verificarStock(Request $request): JsonResponse
     {
@@ -53,7 +57,32 @@ class PedidoController extends Controller
             ]);
         }
 
+        /** @var Usuario|null $user */
+        $user = $request->user();
+        $carritoPorProducto = [];
+        if ($user !== null) {
+            foreach (Carrito::where('usuario_id', $user->id)->get() as $carritoItem) {
+                $prodId = (int) $carritoItem->producto_id;
+                $carritoPorProducto[$prodId] = ($carritoPorProducto[$prodId] ?? 0) + (int) $carritoItem->cantidad;
+            }
+        }
+
+        // Agrupar cantidades totales solicitadas por producto_id (soporta múltiples variantes del mismo producto)
+        $cantidadTotalPorProducto = [];
+        foreach ($items as $item) {
+            if (! is_array($item)) {
+                continue;
+            }
+            $prodId = (int) ($item['producto_id'] ?? 0);
+            $cant = (int) ($item['cantidad'] ?? 0);
+            if ($prodId > 0 && $cant > 0) {
+                $cantidadTotalPorProducto[$prodId] = ($cantidadTotalPorProducto[$prodId] ?? 0) + $cant;
+            }
+        }
+
         $errores = [];
+        $productosValidados = [];
+
         foreach ($items as $item) {
             if (! is_array($item)) {
                 $errores[] = ['nombre' => 'Producto', 'error' => 'Formato de producto inválido.'];
@@ -62,7 +91,7 @@ class PedidoController extends Controller
             }
 
             $productoId = (int) ($item['producto_id'] ?? 0);
-            $varianteId = isset($item['variante_id'])
+            $varianteId = isset($item['variante_id']) && $item['variante_id'] !== ''
                 ? (int) $item['variante_id']
                 : null;
             $cantidad = (int) ($item['cantidad'] ?? 0);
@@ -73,14 +102,30 @@ class PedidoController extends Controller
                 continue;
             }
 
-            $resultado = $this->catalogo->verificarStockYPrecio($productoId, $varianteId, $cantidad);
+            // Solo exigir al catálogo las unidades adicionales sobre lo que el propio carrito ya reservó
+            $yaReservado = $carritoPorProducto[$productoId] ?? 0;
+            $cantidadTotalProducto = $cantidadTotalPorProducto[$productoId] ?? $cantidad;
+            $cantidadAdicional = max(0, $cantidadTotalProducto - $yaReservado);
+
+            $cacheKey = "{$productoId}:".($varianteId ?? 'null');
+            if (! isset($productosValidados[$cacheKey])) {
+                $productosValidados[$cacheKey] = $this->catalogo->verificarStockYPrecio(
+                    $productoId,
+                    $varianteId,
+                    $cantidadAdicional,
+                    true
+                );
+            }
+
+            $resultado = $productosValidados[$cacheKey];
             if (! $resultado['disponible']) {
+                $stockTotalDisponibleParaUsuario = $resultado['stock'] + $yaReservado;
                 $errores[] = [
                     'nombre' => $resultado['nombre'],
-                    'stock_disponible' => $resultado['stock'],
-                    'cantidad_solicitada' => $cantidad,
-                    'error' => $resultado['stock'] > 0
-                        ? "Solo hay {$resultado['stock']} unidades disponibles."
+                    'stock_disponible' => $stockTotalDisponibleParaUsuario,
+                    'cantidad_solicitada' => $cantidadTotalProducto,
+                    'error' => $stockTotalDisponibleParaUsuario > 0
+                        ? "Solo hay {$stockTotalDisponibleParaUsuario} unidades disponibles."
                         : 'Producto agotado o no disponible.',
                 ];
             }
@@ -127,7 +172,7 @@ class PedidoController extends Controller
             ->orderByDesc('fecha')
             ->get();
 
-        $pedidosData = $pedidos->map(function (Pedido $p) {
+        $pedidosData = $pedidos->map(function (Pedido $p) use ($user) {
             $detalles = $p->items->map(fn ($it) => [
                 'id' => $it->id,
                 'producto_id' => $it->producto_id,
@@ -161,8 +206,13 @@ class PedidoController extends Controller
                 'guia_numero' => $p->guia_numero,
                 'transportadora' => $p->transportadora,
                 'fecha_envio' => $p->fecha_envio?->toIso8601String(),
-                'cliente_nombre' => $p->nombre_cliente,
-                'cliente_correo' => $p->email_cliente,
+                'fecha_entrega' => $p->fecha_entrega?->toIso8601String(),
+                'evidencia_envio_url' => $p->evidencia_envio_url,
+                'evidencia_entrega_url' => $p->evidencia_entrega_url,
+                'cliente_nombre' => $p->nombre_cliente ?: $user->nombre,
+                'cliente_correo' => $p->email_cliente ?: $user->correo,
+                'cliente_tipo_documento' => $user->tipo_documento,
+                'cliente_numero_documento' => $user->numero_documento,
                 'detalles' => $detalles,
                 'total_items' => array_sum(array_column($detalles, 'cantidad')),
             ];
@@ -260,7 +310,7 @@ class PedidoController extends Controller
                 'id' => $p->id,
                 'codigo_pedido' => $p->codigo_pedido,
                 'usuario_id' => $p->usuario_id,
-                'fecha' => $p->created_at?->toIso8601String(),
+                'fecha' => ($p->fecha ?? $p->created_at)?->toIso8601String(),
                 'total' => (float) $p->total,
                 'subtotal' => (float) $p->subtotal,
                 'iva' => (float) $p->iva,
@@ -272,14 +322,20 @@ class PedidoController extends Controller
                 'telefono_contacto' => $p->telefono_cliente,
                 'metodo_pago' => $p->metodo_pago,
                 'notas' => $p->notas,
-                'fecha_actualizacion' => $p->updated_at?->toIso8601String(),
+                'fecha_actualizacion' => ($p->updated_at ?? $p->fecha ?? $p->created_at)?->toIso8601String(),
                 'wompi_referencia' => $p->wompi_referencia,
+                'wompi_transaction_id' => $p->wompi_transaction_id,
                 'wompi_pagado_at' => $p->wompi_pagado_at?->toIso8601String(),
                 'guia_numero' => $p->guia_numero,
                 'transportadora' => $p->transportadora,
                 'fecha_envio' => $p->fecha_envio?->toIso8601String(),
+                'fecha_entrega' => $p->fecha_entrega?->toIso8601String(),
+                'evidencia_envio_url' => $p->evidencia_envio_url,
+                'evidencia_entrega_url' => $p->evidencia_entrega_url,
                 'cliente_nombre' => $p->nombre_cliente ?: $p->usuario?->nombre,
                 'cliente_correo' => $p->email_cliente ?: $p->usuario?->correo,
+                'cliente_tipo_documento' => $p->usuario?->tipo_documento,
+                'cliente_numero_documento' => $p->usuario?->numero_documento,
                 'detalles' => $detalles,
                 'total_items' => array_sum(array_column($detalles, 'cantidad')),
             ];
@@ -325,6 +381,8 @@ class PedidoController extends Controller
         $nuevoEstado = (string) $request->input('estado');
         $guiaNumero = $request->input('guia_numero') ? (string) $request->input('guia_numero') : null;
         $transportadora = $request->input('transportadora') ? (string) $request->input('transportadora') : null;
+        $evidenciaEnvioUrl = $request->input('evidencia_envio_url') ? (string) $request->input('evidencia_envio_url') : null;
+        $evidenciaEntregaUrl = $request->input('evidencia_entrega_url') ? (string) $request->input('evidencia_entrega_url') : null;
         $solicitudCliente = (bool) $request->input('solicitud_cliente', false);
 
         /** @var Pedido|null $pedidoAntes */
@@ -337,7 +395,9 @@ class PedidoController extends Controller
             $nuevoEstado,
             $guiaNumero,
             $transportadora,
-            $solicitudCliente
+            $solicitudCliente,
+            $evidenciaEnvioUrl,
+            $evidenciaEntregaUrl
         );
 
         $this->auditService->registrarOperacion(
@@ -364,6 +424,98 @@ class PedidoController extends Controller
         );
 
         return ApiResponse::success($resultado);
+    }
+
+    /**
+     * POST /api/admin/pedidos/{id}/evidencia-envio
+     * Admin: sube una foto de evidencia del envío a Cloudinary y la asocia al pedido.
+     */
+    public function adminSubirEvidenciaEnvio(int $id, Request $request): JsonResponse
+    {
+        $request->validate([
+            'evidencia' => ['required', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
+        ]);
+
+        /** @var Pedido|null $pedido */
+        $pedido = Pedido::find($id);
+        if (! $pedido) {
+            return ApiResponse::error('Pedido no encontrado.', 404);
+        }
+
+        $file = $request->file('evidencia');
+        if (! $file) {
+            return ApiResponse::error('Debes adjuntar una imagen de evidencia.', 422);
+        }
+
+        $uploaded = $this->mediaStorage->upload($file, 'plaxtilineas/evidencias_envio');
+        $urlAnterior = $pedido->evidencia_envio_url;
+
+        $pedido->update([
+            'evidencia_envio_url' => $uploaded['url'],
+        ]);
+
+        $this->auditService->registrarOperacion(
+            modulo: 'PEDIDOS',
+            accion: 'SUBIR_EVIDENCIA_ENVIO',
+            descripcion: "Subió foto de evidencia de envío para el pedido {$pedido->codigo_pedido}",
+            entidadTipo: 'Pedido',
+            entidadId: $pedido->codigo_pedido,
+            datosAnteriores: ['evidencia_envio_url' => $urlAnterior],
+            datosNuevos: ['evidencia_envio_url' => $uploaded['url']],
+            admin: $request->user(),
+            request: $request
+        );
+
+        return ApiResponse::success([
+            'mensaje' => 'Evidencia de envío cargada correctamente.',
+            'evidencia_envio_url' => $uploaded['url'],
+        ]);
+    }
+
+    /**
+     * POST /api/admin/pedidos/{id}/evidencia-entrega
+     * Admin: sube una foto de evidencia de entrega a Cloudinary y la asocia al pedido.
+     */
+    public function adminSubirEvidenciaEntrega(int $id, Request $request): JsonResponse
+    {
+        $request->validate([
+            'evidencia' => ['required', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
+        ]);
+
+        /** @var Pedido|null $pedido */
+        $pedido = Pedido::find($id);
+        if (! $pedido) {
+            return ApiResponse::error('Pedido no encontrado.', 404);
+        }
+
+        $file = $request->file('evidencia');
+        if (! $file) {
+            return ApiResponse::error('Debes adjuntar una imagen de evidencia de entrega.', 422);
+        }
+
+        $uploaded = $this->mediaStorage->upload($file, 'plaxtilineas/evidencias_entrega');
+        $urlAnterior = $pedido->evidencia_entrega_url;
+
+        $pedido->update([
+            'evidencia_entrega_url' => $uploaded['url'],
+        ]);
+
+        $this->auditService->registrarOperacion(
+            modulo: 'PEDIDOS',
+            accion: 'SUBIR_EVIDENCIA_ENTREGA',
+            descripcion: "Subió foto de evidencia de entrega para el pedido {$pedido->codigo_pedido}",
+            entidadTipo: 'Pedido',
+            entidadId: $pedido->codigo_pedido,
+            datosAnteriores: ['evidencia_entrega_url' => $urlAnterior],
+            datosNuevos: ['evidencia_entrega_url' => $uploaded['url']],
+            admin: $request->user(),
+            request: $request
+        );
+
+        return ApiResponse::success([
+            'mensaje' => 'Evidencia de entrega cargada correctamente.',
+            'evidencia_entrega_url' => $uploaded['url'],
+        ]);
     }
 
     /**

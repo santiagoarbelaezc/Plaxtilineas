@@ -21,6 +21,8 @@ class ActualizarPerfilRequest extends FormRequest
         return [
             'nombre' => ['required', 'string', 'max:100'],
             'apellidos' => ['required', 'string', 'max:100'],
+            'tipo_documento' => ['nullable', 'string', 'in:CC,NIT'],
+            'numero_documento' => ['nullable', 'string', 'max:30', 'regex:/^[0-9]{5,15}(-[0-9])?$/'],
             'edad' => ['required', 'integer', 'min:0', 'max:120'],
             'direccion' => ['required', 'string', 'max:255'],
             'ciudad' => ['required', 'string', 'max:100'],

@@ -8,6 +8,7 @@ use App\Models\Producto;
 use App\Models\StockReserva;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -42,11 +43,12 @@ final class CatalogoApiService
     }
 
     /**
-     * Obtiene un producto por ID desde la API externa.
+     * Obtiene un producto por ID desde la API externa (con caché local de corta duración
+     * para proteger la cuota de consultas de BD; usar $fresh = true para validación estricta de stock).
      *
      * @return array<string, mixed>|null null si no se encuentra o hay error de red.
      */
-    public function getProducto(int $productoId): ?array
+    public function getProducto(int $productoId, bool $fresh = false): ?array
     {
         if (app()->environment('testing')) {
             $producto = Producto::query()->find($productoId);
@@ -73,8 +75,22 @@ final class CatalogoApiService
             }
         }
 
+        $cacheKey = "catalogo:producto:{$productoId}";
+        $backupKey = "catalogo:producto_backup:{$productoId}";
+
+        if (! $fresh) {
+            $cached = Cache::get($cacheKey);
+            if (is_array($cached)) {
+                /** @var array<string, mixed> $cached */
+                return $cached;
+            }
+        }
+
         try {
             $http = Http::timeout(10)->acceptJson();
+            if ($fresh) {
+                $http = $http->withHeaders(['Cache-Control' => 'no-cache']);
+            }
 
             // En desarrollo local (Windows) los certificados Let's Encrypt pueden no estar
             // en el almacén de CA del sistema. En producción siempre se verifica SSL.
@@ -90,6 +106,14 @@ final class CatalogoApiService
                     'status' => $response->status(),
                 ]);
 
+                if (! $fresh) {
+                    $fallback = Cache::get($backupKey);
+                    if (is_array($fallback)) {
+                        /** @var array<string, mixed> $fallback */
+                        return $fallback;
+                    }
+                }
+
                 return null;
             }
 
@@ -101,24 +125,39 @@ final class CatalogoApiService
             }
 
             $data = $json['data'];
+            $resolved = null;
             if (array_is_list($data)) {
                 foreach ($data as $item) {
                     if (is_array($item) && (int) ($item['id'] ?? 0) === $productoId) {
                         /** @var array<string, mixed> $item */
-                        return $item;
+                        $resolved = $item;
+                        break;
                     }
                 }
-
-                return null;
+            } else {
+                /** @var array<string, mixed> $data */
+                $resolved = $data;
             }
 
-            /** @var array<string, mixed> $data */
-            return $data;
+            if ($resolved !== null) {
+                Cache::put($cacheKey, $resolved, now()->addSeconds(90));
+                Cache::put($backupKey, $resolved, now()->addHours(12));
+            }
+
+            return $resolved;
         } catch (ConnectionException $e) {
             Log::error('CatalogoApiService::getProducto — error de conexión', [
                 'producto_id' => $productoId,
                 'error' => $e->getMessage(),
             ]);
+
+            if (! $fresh) {
+                $fallback = Cache::get($backupKey);
+                if (is_array($fallback)) {
+                    /** @var array<string, mixed> $fallback */
+                    return $fallback;
+                }
+            }
 
             return null;
         } catch (Throwable $e) {
@@ -132,11 +171,12 @@ final class CatalogoApiService
     }
 
     /**
-     * Obtiene el catálogo de la marca configurada para búsquedas y recomendaciones.
+     * Obtiene el catálogo de la marca configurada para búsquedas y recomendaciones
+     * con caché de 5 minutos y respaldo ante caídas para cuidar la cuota de BD.
      *
      * @return list<array<string, mixed>>
      */
-    public function getProductos(): array
+    public function getProductos(bool $fresh = false): array
     {
         if (app()->environment('testing')) {
             $productosLocales = Producto::query()->get();
@@ -150,20 +190,34 @@ final class CatalogoApiService
             }
         }
 
+        $marcaRaw = (string) config('services.catalogo.marca', 'Plaxtilineas');
+        $cacheKey = 'catalogo:productos:'.md5(mb_strtolower($marcaRaw));
+        $backupKey = $cacheKey.':backup';
+
+        if (! $fresh) {
+            $cached = Cache::get($cacheKey);
+            if (is_array($cached)) {
+                /** @var list<array<string, mixed>> $cached */
+                return $cached;
+            }
+        }
+
         try {
             $http = Http::timeout(10)->acceptJson();
             if (! app()->isProduction()) {
                 $http = $http->withoutVerifying();
             }
 
-            $marca = rawurlencode((string) config('services.catalogo.marca', 'Plaxtilineas'));
+            $marca = rawurlencode($marcaRaw);
             $response = $http->get("{$this->baseUrl}/productos/categoria/{$marca}");
             if (! $response->successful()) {
                 Log::warning('CatalogoApiService::getProductos — respuesta no exitosa', [
                     'status' => $response->status(),
                 ]);
 
-                return [];
+                $fallback = Cache::get($backupKey);
+
+                return is_array($fallback) ? $fallback : [];
             }
 
             /** @var array{success?: bool, data?: list<array<string, mixed>>} $json */
@@ -173,17 +227,34 @@ final class CatalogoApiService
                 return [];
             }
 
-            return array_values(array_filter(
+            $filtered = array_values(array_filter(
                 $json['data'],
                 fn (array $prod): bool => $this->productoTienePrecioValido($prod)
             ));
+
+            Cache::put($cacheKey, $filtered, now()->addMinutes(5));
+            Cache::put($backupKey, $filtered, now()->addHours(12));
+
+            return $filtered;
         } catch (Throwable $e) {
             Log::error('CatalogoApiService::getProductos — error de conexión', [
                 'error' => $e->getMessage(),
             ]);
 
-            return [];
+            $fallback = Cache::get($backupKey);
+
+            return is_array($fallback) ? $fallback : [];
         }
+    }
+
+    /**
+     * Invalida la caché local de un producto y del listado de marca tras un cambio de stock.
+     */
+    public function invalidarCacheProducto(int $productoId): void
+    {
+        Cache::forget("catalogo:producto:{$productoId}");
+        $marcaRaw = (string) config('services.catalogo.marca', 'Plaxtilineas');
+        Cache::forget('catalogo:productos:'.md5(mb_strtolower($marcaRaw)));
     }
 
     /**
@@ -249,9 +320,9 @@ final class CatalogoApiService
      *   precio: float
      * }
      */
-    public function verificarStockYPrecio(int $productoId, ?int $varianteId, int $cantidadSolicitada): array
+    public function verificarStockYPrecio(int $productoId, ?int $varianteId, int $cantidadSolicitada, bool $fresh = true): array
     {
-        $producto = $this->getProducto($productoId);
+        $producto = $this->getProducto($productoId, $fresh);
 
         if (! $producto) {
             return [
@@ -356,6 +427,7 @@ final class CatalogoApiService
 
             if ($response->successful()) {
                 $this->sincronizarVariantesEnBaseDatosCatalogo($productoId, $nuevoStock);
+                $this->invalidarCacheProducto($productoId);
 
                 Log::info('[CATALOGO_API_STOCK] <- Stock actualizado con ÉXITO en producción vía HTTP', [
                     'producto_id' => $productoId,
@@ -414,66 +486,150 @@ final class CatalogoApiService
             return $producto->update(['stock' => max(0, $nuevoStock)]);
         }
 
+        return $this->ajustarStockViaHttp($productoId, $delta);
+    }
+
+    /**
+     * Ejecuta el ajuste atómico de stock contra la API del catálogo con idempotency_key
+     * y reintento seguro ante timeout (cURL error 28) sin fallback ciego en BD.
+     */
+    public function ajustarStockViaHttp(int $productoId, int $delta): bool
+    {
         $url = "{$this->baseUrl}/integraciones/inventario/productos/{$productoId}/ajustar";
 
-        try {
-            $http = Http::timeout(10)
-                ->acceptJson()
-                ->withHeaders([
-                    'Authorization' => 'Bearer '.$this->token,
-                    'Origin' => $this->origin,
-                ]);
+        $startedAt = microtime(true);
+        $idempotencyKey = (string) \Illuminate\Support\Str::uuid();
+        $requestId = (string) (request()?->header('X-Request-Id') ?: $idempotencyKey);
+        $maxAttempts = 2;
 
-            if (! app()->isProduction()) {
-                $http = $http->withoutVerifying();
-            }
+        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+            try {
+                $http = Http::connectTimeout(5)
+                    ->timeout(25)
+                    ->acceptJson()
+                    ->withHeaders([
+                        'Authorization' => 'Bearer '.$this->token,
+                        'Origin' => $this->origin,
+                        'X-Idempotency-Key' => $idempotencyKey,
+                        'X-Request-Id' => $requestId,
+                    ]);
 
-            $response = $http->post($url, ['delta' => $delta]);
-
-            if ($response->successful()) {
-                $json = $response->json();
-                $nuevoStock = isset($json['data']['stock']) && is_numeric($json['data']['stock'])
-                    ? (int) $json['data']['stock']
-                    : null;
-
-                if ($nuevoStock !== null) {
-                    $this->sincronizarVariantesEnBaseDatosCatalogo($productoId, $nuevoStock);
+                if (! app()->isProduction()) {
+                    $http = $http->withoutVerifying();
                 }
 
-                Log::info('[CATALOGO_API_STOCK] Ajuste atómico aplicado vía HTTP', [
-                    'producto_id' => $productoId,
+                $response = $http->post($url, [
                     'delta' => $delta,
-                    'nuevo_stock' => $nuevoStock,
-                    'status' => $response->status(),
+                    'idempotency_key' => $idempotencyKey,
                 ]);
+                $elapsedMs = (int) round((microtime(true) - $startedAt) * 1000);
 
-                return true;
-            }
+                if ($response->successful()) {
+                    $json = $response->json();
+                    $nuevoStock = isset($json['data']['stock']) && is_numeric($json['data']['stock'])
+                        ? (int) $json['data']['stock']
+                        : null;
+                    $stockAntes = isset($json['data']['stock_antes']) && is_numeric($json['data']['stock_antes'])
+                        ? (int) $json['data']['stock_antes']
+                        : null;
+                    $idempotentReplay = (bool) ($json['idempotent_replay'] ?? false);
 
-            // Si el catálogo responde 404 (no existe) o 409 (stock insuficiente), respetar el rechazo de negocio
-            if (in_array($response->status(), [404, 409, 422], true)) {
-                Log::error('[CATALOGO_API_STOCK] Ajuste rechazado por regla de negocio en el catálogo', [
+                    if ($nuevoStock !== null) {
+                        $this->replicarStockEnBackupCatalogo($productoId, $nuevoStock);
+                    }
+
+                    $this->invalidarCacheProducto($productoId);
+
+                    Log::info('[CATALOGO_API_STOCK] Ajuste atómico aplicado vía HTTP', [
+                        'idempotency_key' => $idempotencyKey,
+                        'intento' => $attempt,
+                        'idempotent_replay' => $idempotentReplay,
+                        'producto_id' => $productoId,
+                        'delta' => $delta,
+                        'stock_antes' => $stockAntes,
+                        'nuevo_stock' => $nuevoStock,
+                        'status' => $response->status(),
+                        'duracion_ms' => $elapsedMs,
+                    ]);
+
+                    return true;
+                }
+
+                // Si el catálogo responde 404 (no existe) o 409 (stock insuficiente), respetar el rechazo de negocio
+                if (in_array($response->status(), [404, 409, 422], true)) {
+                    Log::error('[CATALOGO_API_STOCK] Ajuste rechazado por regla de negocio en el catálogo', [
+                        'idempotency_key' => $idempotencyKey,
+                        'intento' => $attempt,
+                        'producto_id' => $productoId,
+                        'delta' => $delta,
+                        'status' => $response->status(),
+                        'duracion_ms' => $elapsedMs,
+                        'body' => $response->body(),
+                    ]);
+
+                    return false;
+                }
+
+                Log::warning('[CATALOGO_API_STOCK] Endpoint HTTP devolvió error de servidor/configuración; aplicando ajuste atómico directo en BD del catálogo', [
+                    'idempotency_key' => $idempotencyKey,
+                    'intento' => $attempt,
                     'producto_id' => $productoId,
                     'delta' => $delta,
                     'status' => $response->status(),
+                    'duracion_ms' => $elapsedMs,
                     'body' => $response->body(),
                 ]);
 
-                return false;
-            }
+                break;
+            } catch (Throwable $e) {
+                $elapsedMs = (int) round((microtime(true) - $startedAt) * 1000);
+                $errorMsg = $e->getMessage();
 
-            Log::warning('[CATALOGO_API_STOCK] Endpoint HTTP devolvió error de servidor/configuración; aplicando ajuste atómico directo en BD del catálogo', [
-                'producto_id' => $productoId,
-                'delta' => $delta,
-                'status' => $response->status(),
-                'body' => $response->body(),
-            ]);
-        } catch (Throwable $e) {
-            Log::warning('[CATALOGO_API_STOCK] Excepción HTTP al ajustar stock; aplicando ajuste atómico directo en BD del catálogo', [
-                'producto_id' => $productoId,
-                'delta' => $delta,
-                'error' => $e->getMessage(),
-            ]);
+                // CRÍTICO: Si hubo timeout de lectura (cURL error 28) tras enviar el POST, el catálogo
+                // puede haber aplicado ya el delta en BD. Reintentamos con la MISMA idempotency_key
+                // para converger a exactamente 1 aplicación; nunca aplicamos fallback ciego en BD.
+                $esTimeoutPostEnvio = str_contains($errorMsg, 'cURL error 28')
+                    || stripos($errorMsg, 'Operation timed out') !== false
+                    || stripos($errorMsg, 'timed out') !== false;
+
+                if ($esTimeoutPostEnvio) {
+                    if ($attempt < $maxAttempts) {
+                        Log::warning('[CATALOGO_API_STOCK] Timeout HTTP tras enviar ajuste; reintentando con la MISMA idempotency_key para converger sin doble descuento', [
+                            'idempotency_key' => $idempotencyKey,
+                            'intento' => $attempt,
+                            'producto_id' => $productoId,
+                            'delta' => $delta,
+                            'duracion_ms' => $elapsedMs,
+                            'error' => $errorMsg,
+                        ]);
+
+                        continue;
+                    }
+
+                    Log::error('[CATALOGO_API_STOCK] Timeout HTTP persistente tras reintento idempotente — fallback directo BLOQUEADO para evitar doble descuento', [
+                        'idempotency_key' => $idempotencyKey,
+                        'intento' => $attempt,
+                        'producto_id' => $productoId,
+                        'delta' => $delta,
+                        'duracion_ms' => $elapsedMs,
+                        'url' => $url,
+                        'error' => $errorMsg,
+                    ]);
+
+                    return false;
+                }
+
+                Log::warning('[CATALOGO_API_STOCK] Error de conexión HTTP (sin envío completado); aplicando ajuste atómico directo en BD del catálogo', [
+                    'idempotency_key' => $idempotencyKey,
+                    'intento' => $attempt,
+                    'producto_id' => $productoId,
+                    'delta' => $delta,
+                    'duracion_ms' => $elapsedMs,
+                    'error' => $errorMsg,
+                ]);
+
+                break;
+            }
         }
 
         return $this->ajustarStockDirectoEnBaseDatos($productoId, $delta);
@@ -542,6 +698,7 @@ final class CatalogoApiService
 
             // Replicar en la base de datos de backup del catálogo (aislado)
             $this->replicarStockEnBackupCatalogo($productoId, $nuevoStock);
+            $this->invalidarCacheProducto($productoId);
 
             Log::info('[CATALOGO_DB_STOCK] Ajuste atómico aplicado en BD del catálogo y evento emitido', [
                 'producto_id' => $productoId,

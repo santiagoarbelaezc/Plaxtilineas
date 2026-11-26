@@ -56,8 +56,36 @@ export class PedidoService {
   /**
    * Admin: actualizar el estado de un pedido
    */
-  adminActualizarEstado(pedidoId: number, estado: string, extra: { guia_numero?: string; transportadora?: string; solicitud_cliente?: boolean } = {}): Observable<any> {
+  adminActualizarEstado(
+    pedidoId: number,
+    estado: string,
+    extra: {
+      guia_numero?: string;
+      transportadora?: string;
+      evidencia_envio_url?: string;
+      evidencia_entrega_url?: string;
+      solicitud_cliente?: boolean;
+    } = {}
+  ): Observable<any> {
     return this.http.put(`${this.baseUrl}/admin/actualizar-estado/${pedidoId}`, { estado, ...extra });
+  }
+
+  /**
+   * Admin: subir foto de evidencia del envío a Cloudinary
+   */
+  adminSubirEvidenciaEnvio(pedidoId: number, archivo: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('evidencia', archivo);
+    return this.http.post(`${environment.apiUrl}/admin/pedidos/${pedidoId}/evidencia-envio`, formData);
+  }
+
+  /**
+   * Admin: subir foto de evidencia de la entrega a Cloudinary
+   */
+  adminSubirEvidenciaEntrega(pedidoId: number, archivo: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('evidencia', archivo);
+    return this.http.post(`${environment.apiUrl}/admin/pedidos/${pedidoId}/evidencia-entrega`, formData);
   }
 
   adminEliminarPedido(pedidoId: number, confirmacion: string): Observable<any> {

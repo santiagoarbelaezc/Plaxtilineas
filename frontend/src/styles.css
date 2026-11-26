@@ -32,6 +32,42 @@ app-navbar {
   padding: 36px 40px !important;
 }
 
+/* Toast elegante Plaxtilineas (esquina superior derecha del Dashboard) */
+.swal2-container.swal2-top-end {
+  padding: 18px 20px !important;
+  z-index: 200000 !important;
+}
+
+.swal2-popup.plx-admin-toast {
+  background: #ffffff !important;
+  border: 1px solid #e4e4e7 !important;
+  border-left: 4px solid #16a34a !important;
+  border-radius: 14px !important;
+  padding: 14px 16px !important;
+  width: auto !important;
+  min-width: 320px !important;
+  max-width: 400px !important;
+  box-shadow: 0 18px 40px -12px rgba(9, 9, 11, 0.2), 0 4px 12px -4px rgba(9, 9, 11, 0.08) !important;
+  overflow: hidden !important;
+}
+
+.swal2-popup.plx-admin-toast .swal2-html-container {
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+  overflow: visible !important;
+}
+
+.swal2-popup.plx-admin-toast .swal2-timer-progress-bar-container {
+  height: 3px !important;
+  background: #f4f4f5 !important;
+}
+
+.swal2-popup.plx-admin-toast .swal2-timer-progress-bar {
+  background: linear-gradient(90deg, #16a34a, #22c55e) !important;
+  height: 3px !important;
+}
+
 @media (max-width: 680px) {
   .swal2-popup.swal-wide-modal {
     width: 94vw !important;

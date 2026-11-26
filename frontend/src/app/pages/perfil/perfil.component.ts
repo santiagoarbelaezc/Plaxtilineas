@@ -120,6 +120,29 @@ interface PerfilModalState {
                   </div>
 
                   <div class="form-group">
+                    <label for="tipo_documento">Tipo de identificación</label>
+                    <select id="tipo_documento" [(ngModel)]="form.tipo_documento" name="tipo_documento" class="form-select">
+                      <option value="CC">C.C. (Cédula de Ciudadanía)</option>
+                      <option value="NIT">NIT (Empresa / Persona Jurídica)</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="numero_documento">
+                      {{ form.tipo_documento === 'NIT' ? 'Número de NIT' : 'Número de Cédula (C.C.)' }}
+                    </label>
+                    <input
+                      id="numero_documento"
+                      type="text"
+                      [(ngModel)]="form.numero_documento"
+                      name="numero_documento"
+                      pattern="[0-9]{5,15}(-[0-9])?"
+                      [placeholder]="form.tipo_documento === 'NIT' ? 'Ej: 900123456-7' : 'Ej: 1094912345'"
+                      class="form-input">
+                    <span class="field-hint">5 a 15 dígitos (en NIT puedes incluir dígito de verificación, ej. 900123456-7).</span>
+                  </div>
+
+                  <div class="form-group">
                     <label for="telefono">Teléfono de contacto <span class="required">*</span></label>
                     <input id="telefono" type="tel" [(ngModel)]="form.telefono" name="telefono" required pattern="[0-9]{7,15}" placeholder="Ej: 3001234567" class="form-input">
                     <span class="field-hint">Solo números, entre 7 y 15 dígitos.</span>
@@ -295,6 +318,8 @@ export class PerfilComponent implements OnInit, OnDestroy {
   form = {
     nombre: '',
     apellidos: '',
+    tipo_documento: 'CC',
+    numero_documento: '',
     telefono: '',
     edad: 0,
     direccion: '',
@@ -305,6 +330,8 @@ export class PerfilComponent implements OnInit, OnDestroy {
   initialForm = {
     nombre: '',
     apellidos: '',
+    tipo_documento: 'CC',
+    numero_documento: '',
     telefono: '',
     edad: 0,
     direccion: '',
@@ -392,11 +419,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
   }
 
   volverAtras(): void {
-    if (window.history.length > 1) {
-      this.location.back();
-    } else {
-      this.router.navigate(['/']);
-    }
+    this.router.navigate(['/']);
   }
 
   cargarConteoPedidos() {
@@ -415,7 +438,8 @@ export class PerfilComponent implements OnInit, OnDestroy {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { tab },
-      queryParamsHandling: 'merge'
+      queryParamsHandling: 'merge',
+      replaceUrl: true
     });
   }
 
@@ -440,6 +464,8 @@ export class PerfilComponent implements OnInit, OnDestroy {
   cargarDatosUsuario(user: any) {
     this.form.nombre = user.nombre || '';
     this.form.apellidos = user.apellidos || '';
+    this.form.tipo_documento = user.tipo_documento || 'CC';
+    this.form.numero_documento = user.numero_documento || '';
     this.form.telefono = user.telefono || '';
     this.form.edad = user.edad ?? 0;
     this.form.direccion = user.direccion || '';
@@ -494,6 +520,8 @@ export class PerfilComponent implements OnInit, OnDestroy {
     return (
       this.form.nombre !== this.initialForm.nombre ||
       this.form.apellidos !== this.initialForm.apellidos ||
+      this.form.tipo_documento !== this.initialForm.tipo_documento ||
+      this.form.numero_documento !== this.initialForm.numero_documento ||
       this.form.telefono !== this.initialForm.telefono ||
       Number(this.form.edad) !== Number(this.initialForm.edad) ||
       this.form.direccion !== this.initialForm.direccion ||
@@ -555,6 +583,8 @@ export class PerfilComponent implements OnInit, OnDestroy {
     const payload = {
       nombre: this.form.nombre,
       apellidos: this.form.apellidos,
+      tipo_documento: this.form.tipo_documento || undefined,
+      numero_documento: this.form.numero_documento?.trim() || undefined,
       telefono: this.form.telefono,
       edad: this.form.edad,
       direccion: this.form.direccion,

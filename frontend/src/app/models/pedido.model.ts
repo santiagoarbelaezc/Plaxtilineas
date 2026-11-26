@@ -31,11 +31,16 @@ export interface Pedido {
   guia_numero?: string | null;
   transportadora?: string | null;
   fecha_envio?: string | null;
+  fecha_entrega?: string | null;
+  evidencia_envio_url?: string | null;
+  evidencia_entrega_url?: string | null;
   detalles: PedidoDetalle[];
   total_items: number;
-  // Admin fields
+  // Admin / Cliente fields
   cliente_nombre?: string;
   cliente_correo?: string;
+  cliente_tipo_documento?: string | null;
+  cliente_numero_documento?: string | null;
 }
 
 export interface CrearDraftRequest {

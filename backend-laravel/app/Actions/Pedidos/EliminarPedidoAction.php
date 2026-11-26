@@ -67,18 +67,24 @@ final class EliminarPedidoAction
             EstadoPedido::ENTREGADO,
         ];
 
-        if (in_array($pedido->estado, $noEliminables, true)) {
-            throw new BadRequestHttpException('No puedes eliminar un pedido que ya ha sido pagado o procesado.');
-        }
+        DB::transaction(function () use ($pedido, $noEliminables) {
+            /** @var Pedido|null $pedidoLocked */
+            $pedidoLocked = Pedido::where('id', $pedido->id)->lockForUpdate()->first();
+            if (! $pedidoLocked) {
+                return;
+            }
 
-        DB::transaction(function () use ($pedido) {
+            if (in_array($pedidoLocked->estado, $noEliminables, true)) {
+                throw new BadRequestHttpException('No puedes eliminar un pedido que ya ha sido pagado o procesado.');
+            }
+
             // Solo liberar stock si el pedido NO estaba ya cancelado
             // (si ya estaba cancelado, el stock ya fue restituido al cancelarlo)
-            if ($pedido->estado !== EstadoPedido::CANCELADO) {
-                $this->liberarStockReservaAction->execute($pedido);
+            if ($pedidoLocked->estado !== EstadoPedido::CANCELADO) {
+                $this->liberarStockReservaAction->execute($pedidoLocked);
             }
-            $pedido->items()->delete();
-            $pedido->delete();
+            $pedidoLocked->items()->delete();
+            $pedidoLocked->delete();
         });
 
         return ['mensaje' => 'Pedido eliminado correctamente.'];

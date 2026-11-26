@@ -33,6 +33,8 @@ class RegisterRequest extends FormRequest
         $rol = $this->input('rol', 'cliente');
         if ($rol === 'cliente') {
             $rules['apellidos'] = ['required', 'string', 'max:100'];
+            $rules['tipo_documento'] = ['required', 'string', 'in:CC,NIT'];
+            $rules['numero_documento'] = ['required', 'string', 'max:30', 'regex:/^[0-9]{5,15}(-[0-9])?$/'];
             $rules['edad'] = ['required', 'integer', 'min:0', 'max:120'];
             $rules['direccion'] = ['required', 'string', 'max:255'];
             $rules['ciudad'] = ['required', 'string', 'max:100'];

@@ -22,6 +22,8 @@ class AdminActualizarEstadoPedidoRequest extends FormRequest
             'estado' => ['required', 'string'],
             'guia_numero' => ['nullable', 'string', 'max:100'],
             'transportadora' => ['nullable', 'string', 'max:100'],
+            'evidencia_envio_url' => ['nullable', 'string', 'max:500'],
+            'evidencia_entrega_url' => ['nullable', 'string', 'max:500'],
             'solicitud_cliente' => ['nullable', 'boolean'],
         ];
     }

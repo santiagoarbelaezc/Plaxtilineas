@@ -46,16 +46,38 @@ export class MisPedidos implements OnInit, OnDestroy {
   retornoRef = signal<string>('');
   retornoTxId = signal<string>('');
   sincronizandoPagoId = signal<number | null>(null);
+  reintentandoPagoId = signal<number | null>(null);
 
   private pollingTimer: ReturnType<typeof setInterval> | null = null;
   private pollingAttempts = 0;
   private readonly MAX_POLLING_ATTEMPTS = 15;
 
   selectedPedido = signal<Pedido | null>(null);
+  expandedTraceIds = signal<Set<number>>(new Set());
   showInvoiceModal = signal(false);
   invoicePedido = signal<Pedido | null>(null);
   pedidoModal = signal<PedidoActionModal | null>(null);
   modalProcesando = signal(false);
+
+  isTraceExpanded(pedidoId: number): boolean {
+    return this.expandedTraceIds().has(pedidoId);
+  }
+
+  toggleTrace(pedidoId: number, event?: Event): void {
+    event?.stopPropagation();
+    const next = new Set(this.expandedTraceIds());
+    if (next.has(pedidoId)) {
+      next.delete(pedidoId);
+    } else {
+      next.add(pedidoId);
+    }
+    this.expandedTraceIds.set(next);
+  }
+
+  getUltimoHito(pedido: Pedido): TrazabilidadHito | null {
+    const hitos = this.getTrazabilidadHitos(pedido);
+    return hitos.length > 0 ? hitos[hitos.length - 1] : null;
+  }
 
   filtroEstado = signal<string>('todos');
   searchQuery = signal<string>('');
@@ -949,6 +971,32 @@ export class MisPedidos implements OnInit, OnDestroy {
     return !noCancelables.includes(pedido.estado);
   }
 
+  canRetryPayment(pedido: Pedido): boolean {
+    return pedido.estado === 'pendiente_pago' && (pedido.metodo_pago || '').toLowerCase() === 'wompi';
+  }
+
+  reintentarPago(pedido: Pedido, event: Event): void {
+    event.stopPropagation();
+    if (this.reintentandoPagoId() === pedido.id) return;
+
+    this.reintentandoPagoId.set(pedido.id);
+    this.wompiService.obtenerDatosPago(pedido.id).subscribe({
+      next: (res: any) => {
+        this.reintentandoPagoId.set(null);
+        const datos = res?.data ?? res;
+        this.wompiService.abrirWidget(datos);
+      },
+      error: (err) => {
+        this.reintentandoPagoId.set(null);
+        this.pedidoModal.set({
+          mode: 'error',
+          title: 'No se pudo iniciar el pago',
+          message: err?.error?.error || err?.error?.message || 'Ocurrió un inconveniente al conectar con Wompi. Intenta nuevamente.',
+        });
+      },
+    });
+  }
+
   isDeletable(pedido: Pedido): boolean {
     const noDeletables: EstadoPedido[] = ['pagado', 'confirmado', 'en_preparacion', 'en_camino', 'entregado'];
     return !noDeletables.includes(pedido.estado);
@@ -996,7 +1044,6 @@ export class MisPedidos implements OnInit, OnDestroy {
             message: `Tu pedido #${pedido.codigo_pedido} ha sido cancelado correctamente.`,
           });
           this.catalogoService.sincronizarCambiosInventario();
-          this.catalogoService.refrescar();
           this.cargarPedidos();
         },
         error: (err) => {
@@ -1018,7 +1065,6 @@ export class MisPedidos implements OnInit, OnDestroy {
             message: `El pedido #${pedido.codigo_pedido} ha sido eliminado de tu historial.`,
           });
           this.catalogoService.sincronizarCambiosInventario();
-          this.catalogoService.refrescar();
           this.cargarPedidos();
         },
         error: (err) => {

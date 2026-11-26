@@ -38,6 +38,9 @@ use Illuminate\Support\Carbon;
  * @property string|null $guia_numero
  * @property string|null $transportadora
  * @property Carbon|null $fecha_envio
+ * @property Carbon|null $fecha_entrega
+ * @property string|null $evidencia_envio_url
+ * @property string|null $evidencia_entrega_url
  * @property EstadoPedido $estado
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -79,6 +82,9 @@ class Pedido extends Model
         'guia_numero',
         'transportadora',
         'fecha_envio',
+        'fecha_entrega',
+        'evidencia_envio_url',
+        'evidencia_entrega_url',
         'estado',
     ];
 
@@ -97,6 +103,7 @@ class Pedido extends Model
             'wompi_monto_centavos' => 'integer',
             'wompi_pagado_at' => 'datetime',
             'fecha_envio' => 'datetime',
+            'fecha_entrega' => 'datetime',
             'estado' => EstadoPedido::class,
         ];
     }

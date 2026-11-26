@@ -5,28 +5,71 @@ declare(strict_types=1);
 use App\Mail\Transport\HostingerMailTransport;
 use Hostinger\Api\SendApi;
 use Hostinger\Model\V1SendRequest;
+use Symfony\Component\Mailer\Envelope;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 
-test('el transporte Hostinger convierte un correo Symfony en una solicitud del SDK', function () {
-    $sendApi = Mockery::mock(SendApi::class);
-    $sendApi->shouldReceive('sendEmail')
+test('HostingerMailTransport normaliza asuntos con tildes y signos no-ASCII para evitar error 500 de Hostinger', function () {
+    $capturedRequest = null;
+
+    $sendApiMock = Mockery::mock(SendApi::class);
+    $sendApiMock->shouldReceive('sendEmail')
         ->once()
-        ->withArgs(function (string $mailboxResourceId, V1SendRequest $request): bool {
-            return $mailboxResourceId === 'mailbox-test'
-                && $request->getTo() === ['cliente@example.com']
-                && $request->getSubject() === 'Prueba'
-                && $request->getHtml() === '<p>Contenido</p>'
-                && $request->getText() === 'Contenido'
-                && $request->getDisplayName() === 'Plaxtilineas';
+        ->with('mailbox-test', Mockery::on(function (V1SendRequest $req) use (&$capturedRequest) {
+            $capturedRequest = $req;
+
+            return true;
+        }));
+
+    $transport = new HostingerMailTransport($sendApiMock, 'mailbox-test', 'Plaxtilíneas');
+
+    $email = (new Email)
+        ->from(new Address('notificaciones@plaxtilineas.com', 'Plaxtilineas'))
+        ->to(new Address('cliente@test.com'))
+        ->subject('¡Actualización de tu pedido PX-2026-0018 — Niño!')
+        ->html('<p>Tu pedido fue entregado.</p>');
+
+    $envelope = new Envelope(
+        new Address('notificaciones@plaxtilineas.com'),
+        [new Address('cliente@test.com')]
+    );
+
+    $transport->send($email, $envelope);
+
+    expect($capturedRequest)->not->toBeNull()
+        ->and($capturedRequest->getSubject())->toBe('Actualizacion de tu pedido PX-2026-0018 - Nino!')
+        ->and($capturedRequest->getDisplayName())->toBe('Plaxtilineas');
+});
+
+test('HostingerMailTransport reintenta automaticamente una vez ante error temporal de Hostinger', function () {
+    $attempts = 0;
+
+    $sendApiMock = Mockery::mock(SendApi::class);
+    $sendApiMock->shouldReceive('sendEmail')
+        ->twice()
+        ->andReturnUsing(function () use (&$attempts) {
+            $attempts++;
+            if ($attempts === 1) {
+                throw new RuntimeException('500 ERR_INTERNAL');
+            }
+
+            return null;
         });
 
-    $transport = new HostingerMailTransport($sendApi, 'mailbox-test', 'Plaxtilineas');
+    $transport = new HostingerMailTransport($sendApiMock, 'mailbox-test', 'Plaxtilineas');
 
-    $transport->send(
-        (new Email)
-            ->from('info@plaxtilineas.com')
-            ->to('cliente@example.com')
-            ->subject('Prueba')
-            ->html('<p>Contenido</p>')
+    $email = (new Email)
+        ->from(new Address('notificaciones@plaxtilineas.com'))
+        ->to(new Address('cliente@test.com'))
+        ->subject('Actualizacion de pedido')
+        ->html('<p>Entregado</p>');
+
+    $envelope = new Envelope(
+        new Address('notificaciones@plaxtilineas.com'),
+        [new Address('cliente@test.com')]
     );
+
+    $transport->send($email, $envelope);
+
+    expect($attempts)->toBe(2);
 });

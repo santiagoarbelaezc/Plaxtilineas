@@ -120,7 +120,7 @@ export class WompiService {
           // y navegamos de inmediato a /perfil?tab=pedidos sin pasar por /carrito.
           const txId = result?.transaction?.id || '';
           this.ngZone.run(() => {
-            this.cartService.clearCart();
+            this.cartService.clearLocalCartAfterCheckout();
             this.verificarTransaccion({
               pedido_id: datos.pedido_id,
               referencia: datos.referencia,

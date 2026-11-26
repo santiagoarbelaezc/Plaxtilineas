@@ -65,6 +65,8 @@ class AdminUserController extends Controller
                 'id' => $u->id,
                 'nombre' => $u->nombre,
                 'apellidos' => $u->apellidos,
+                'tipo_documento' => $u->tipo_documento,
+                'numero_documento' => $u->numero_documento,
                 'correo' => $u->correo,
                 'edad' => $u->edad,
                 'direccion' => $u->direccion,

@@ -179,6 +179,11 @@ export class LoginFormComponent implements OnInit, OnDestroy {
       Validators.minLength(2), 
       Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
     ]],
+    tipo_documento: ['CC', [Validators.required]],
+    numero_documento: ['', [
+      Validators.required,
+      Validators.pattern(/^[0-9]{5,15}(-[0-9])?$/)
+    ]],
     correo: ['', [
       Validators.required, 
       Validators.email,

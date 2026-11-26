@@ -357,12 +357,18 @@
               </div>
             </div>
 
-            <!-- Banner informativo cuando el pago está en validación S2S con Wompi -->
+            <!-- Banner informativo cuando el pago está pendiente o en validación S2S con Wompi -->
             <div class="validating-payment-banner" *ngIf="pedido.estado === 'pendiente_pago'">
-              <div class="validating-banner-text">
+              <div class="validating-banner-text" *ngIf="getTransaccionIdVisible(pedido)">
                 <strong>Validando pago con Wompi</strong>
                 <span>
                   Tu transacción está siendo confirmada automáticamente entre Wompi y nuestro servidor. Cuando quede acreditada recibirás el correo de confirmación y el estado cambiará a <strong>Pago Confirmado</strong>.
+                </span>
+              </div>
+              <div class="validating-banner-text" *ngIf="!getTransaccionIdVisible(pedido)">
+                <strong>Pago pendiente en Wompi</strong>
+                <span>
+                  Aún no hemos recibido la confirmación de pago. Si cerraste la ventana de Wompi sin finalizar, puedes pulsar <strong>Reintentar Pago</strong> o <strong>Cancelar Pedido</strong> para liberar el stock.
                 </span>
               </div>
               <button
@@ -383,26 +389,57 @@
               <span>Este pedido fue cancelado. Si el pago fue procesado o tienes dudas, contacta a nuestro equipo de soporte.</span>
             </div>
 
-            <!-- Bitácora detallada de trazabilidad con fecha y hora exacta -->
-            <div class="trace-log-box">
-              <div class="trace-log-header">Bitácora de trazabilidad</div>
-              <div class="trace-log-list">
-                <div *ngFor="let hito of getTrazabilidadHitos(pedido)" class="trace-log-item" [ngClass]="'is-' + hito.estado">
-                  <span class="trace-dot"></span>
-                  <div class="trace-body">
-                    <div class="trace-top-line">
-                      <strong class="trace-title">{{ hito.titulo }}</strong>
-                      <span class="trace-time" *ngIf="hito.fecha">{{ hito.fecha }}</span>
+            <!-- Bitácora detallada de trazabilidad (colapsable para mantener el detalle limpio) -->
+            <div class="trace-collapsible-wrap" *ngIf="getTrazabilidadHitos(pedido) as hitos">
+              <button
+                type="button"
+                class="trace-toggle-bar"
+                (click)="toggleTrace(pedido.id, $event)"
+                [attr.aria-expanded]="isTraceExpanded(pedido.id)">
+                <div class="trace-toggle-summary">
+                  <span class="trace-toggle-dot"></span>
+                  <div class="trace-toggle-texts">
+                    <span class="trace-toggle-kicker">Última actualización de trazabilidad</span>
+                    <strong class="trace-toggle-latest" *ngIf="getUltimoHito(pedido) as ultimo">
+                      {{ ultimo.titulo }}
+                      <span class="trace-toggle-date" *ngIf="ultimo.fecha">&bull; {{ ultimo.fecha }}</span>
+                    </strong>
+                  </div>
+                </div>
+                <span class="trace-toggle-action">
+                  <span>{{ isTraceExpanded(pedido.id) ? 'Ocultar bitácora' : 'Ver bitácora (' + hitos.length + ')' }}</span>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    [class.is-rotated]="isTraceExpanded(pedido.id)">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </span>
+              </button>
+
+              <div class="trace-log-box" *ngIf="isTraceExpanded(pedido.id)">
+                <div class="trace-log-list">
+                  <div *ngFor="let hito of hitos" class="trace-log-item" [ngClass]="'is-' + hito.estado">
+                    <span class="trace-dot"></span>
+                    <div class="trace-body">
+                      <div class="trace-top-line">
+                        <strong class="trace-title">{{ hito.titulo }}</strong>
+                        <span class="trace-time" *ngIf="hito.fecha">{{ hito.fecha }}</span>
+                      </div>
+                      <p class="trace-desc">{{ hito.detalle }}</p>
+                      <span class="trace-code-pill" *ngIf="hito.codigo">{{ hito.codigo }}</span>
                     </div>
-                    <p class="trace-desc">{{ hito.detalle }}</p>
-                    <span class="trace-code-pill" *ngIf="hito.codigo">{{ hito.codigo }}</span>
                   </div>
                 </div>
               </div>
             </div>
           </section>
 
-          <!-- 2. PRODUCTOS COMPRADOS -->
+          <!-- 2. PRODUCTOS COMPRADOS + RESUMEN FINANCIERO INTEGRADO -->
           <section class="nested-dash-card products-card">
             <div class="nested-card-top-header">
               <div class="nested-icon-badge">
@@ -412,7 +449,7 @@
               </div>
               <div class="nested-header-titles">
                 <h4 class="nested-main-title">Artículos en este Pedido ({{ pedido.total_items }})</h4>
-                <p class="nested-sub-title">Detalle de especificaciones, cantidades y subtotales.</p>
+                <p class="nested-sub-title">Detalle de productos, cantidades y resumen de cobro.</p>
               </div>
             </div>
 
@@ -438,7 +475,7 @@
                       {{ detalle.variante_id ? 'Variante #' + detalle.variante_id : 'Estándar' }}
                     </span>
                     <span class="unit-price-text">
-                      Precio Unitario: <strong>{{ formatPrice(detalle.precio_unitario) }}</strong>
+                      Unitario: <strong>{{ formatPrice(detalle.precio_unitario) }}</strong>
                     </span>
                   </div>
                 </div>
@@ -446,7 +483,7 @@
                 <!-- Cantidad y Subtotal -->
                 <div class="product-pricing-col">
                   <span class="qty-pill">
-                    Cant: <strong>{{ detalle.cantidad }}</strong>
+                    x<strong>{{ detalle.cantidad }}</strong>
                   </span>
                   <span class="item-subtotal-text">
                     {{ formatPrice(detalle.subtotal || (detalle.precio_unitario * detalle.cantidad)) }}
@@ -454,11 +491,33 @@
                 </div>
               </div>
             </div>
+
+            <!-- Resumen Financiero Integrado (alineado a la derecha como factura) -->
+            <div class="order-totals-footer">
+              <div class="order-totals-box">
+                <div class="summary-line">
+                  <span class="summary-line-label">Subtotal de productos</span>
+                  <span class="summary-line-value">{{ formatPrice(pedido.subtotal) }}</span>
+                </div>
+                <div class="summary-line muted">
+                  <span class="summary-line-label">Costo de envío</span>
+                  <span *ngIf="pedido.costo_envio > 0" class="summary-line-value">{{ formatPrice(pedido.costo_envio) }}</span>
+                  <span *ngIf="!pedido.costo_envio" class="shipping-included-pill">Incluido</span>
+                </div>
+                <div class="cart-total-box">
+                  <div class="total-text-col">
+                    <span class="total-kicker">{{ pedido.estado === 'pendiente_pago' ? 'TOTAL EN VALIDACIÓN' : 'TOTAL PAGADO' }}</span>
+                    <span class="total-iva-note">IVA Incluido</span>
+                  </div>
+                  <span class="cart-total-amount">{{ formatPrice(pedido.total) }}</span>
+                </div>
+              </div>
+            </div>
           </section>
 
-          <!-- 3. INFO GRID: ENVÍO, PAGO Y RESUMEN FINANCIERO -->
+          <!-- 3. INFO GRID ESPACIOSO: 2 COLUMNAS (DESTINO + PAGO) Y BLOQUE AMPLIO DE LOGÍSTICA -->
           <div class="details-split-grid">
-            <!-- Bloque de Envío -->
+            <!-- Bloque 1: Dirección de Entrega -->
             <div class="nested-dash-card info-card">
               <div class="nested-card-top-header">
                 <div class="nested-icon-badge">
@@ -472,7 +531,7 @@
                   <p class="nested-sub-title">Destino asignado</p>
                 </div>
               </div>
-              <div class="info-card-content">
+              <div class="info-card-content client-kv-stack">
                 <p class="info-address-main">{{ pedido.direccion_envio }}</p>
                 <p class="info-address-sub" *ngIf="pedido.ciudad || pedido.departamento">
                   {{ pedido.ciudad }}<span *ngIf="pedido.ciudad && pedido.departamento">, </span>{{ pedido.departamento }}
@@ -486,33 +545,7 @@
               </div>
             </div>
 
-            <!-- Bloque de Transportadora y Guía (si existe) -->
-            <div class="nested-dash-card info-card" *ngIf="pedido.transportadora || pedido.guia_numero">
-              <div class="nested-card-top-header">
-                <div class="nested-icon-badge">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="1" y="3" width="15" height="13"></rect>
-                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                  </svg>
-                </div>
-                <div class="nested-header-titles">
-                  <h4 class="nested-main-title">Transportadora &amp; Guía</h4>
-                  <p class="nested-sub-title">Datos de logística</p>
-                </div>
-              </div>
-              <div class="info-card-content">
-                <div class="carrier-badge" *ngIf="pedido.transportadora">
-                  <span class="carrier-name">{{ pedido.transportadora }}</span>
-                </div>
-                <p class="guide-number-text" *ngIf="pedido.guia_numero">
-                  No. de Guía: <strong class="mono-guide">{{ pedido.guia_numero }}</strong>
-                </p>
-              </div>
-            </div>
-
-            <!-- Bloque de Método de Pago -->
+            <!-- Bloque 2: Método de Pago -->
             <div class="nested-dash-card info-card">
               <div class="nested-card-top-header">
                 <div class="nested-icon-badge">
@@ -523,50 +556,113 @@
                 </div>
                 <div class="nested-header-titles">
                   <h4 class="nested-main-title">Método de Pago</h4>
-                  <p class="nested-sub-title">Transacción</p>
+                  <p class="nested-sub-title">Detalles de transacción</p>
                 </div>
               </div>
-              <div class="info-card-content">
+              <div class="info-card-content client-kv-stack">
                 <div class="payment-badge">
                   <span class="payment-brand-indicator"></span>
                   <span class="payment-brand-text">{{ formatMetodoPago(pedido.metodo_pago) }}</span>
                 </div>
-                <p class="payment-ref-text" *ngIf="pedido.wompi_referencia">
-                  Ref. Wompi: <span class="mono-ref">{{ pedido.wompi_referencia }}</span>
-                </p>
-                <p class="payment-ref-text" *ngIf="getTransaccionIdVisible(pedido)">
-                  ID Transacción: <span class="mono-ref">{{ getTransaccionIdVisible(pedido) }}</span>
-                </p>
-                <p class="payment-ref-text" *ngIf="pedido.wompi_pagado_at">
-                  Confirmado: <strong>{{ formatDateTimeShort(pedido.wompi_pagado_at) }}</strong>
-                </p>
+                <div class="client-kv-row" *ngIf="pedido.wompi_referencia">
+                  <span class="client-kv-label">Ref. Wompi</span>
+                  <span class="mono-ref">{{ pedido.wompi_referencia }}</span>
+                </div>
+                <div class="client-kv-row" *ngIf="getTransaccionIdVisible(pedido)">
+                  <span class="client-kv-label">ID Transacción</span>
+                  <span class="mono-ref">{{ getTransaccionIdVisible(pedido) }}</span>
+                </div>
+                <div class="client-kv-row" *ngIf="pedido.wompi_pagado_at">
+                  <span class="client-kv-label">Confirmado</span>
+                  <strong>{{ formatDateTimeShort(pedido.wompi_pagado_at) }}</strong>
+                </div>
                 <p class="payment-notes-text" *ngIf="pedido.notas">
                   <em>"{{ pedido.notas }}"</em>
                 </p>
               </div>
             </div>
 
-            <!-- Bloque de Resumen Financiero -->
-            <div class="nested-dash-card summary-card">
-              <div class="cart-summary-breakdown">
-                <div class="summary-line">
-                  <span class="summary-line-label">Subtotal</span>
-                  <span class="summary-line-value">{{ formatPrice(pedido.subtotal) }}</span>
+            <!-- Bloque 3 (Ancho completo): Transportadora, Guía y Evidencia de Despacho / Entrega -->
+            <div class="nested-dash-card info-card logistics-wide-card" *ngIf="pedido.transportadora || pedido.guia_numero || pedido.evidencia_envio_url || pedido.evidencia_entrega_url">
+              <div class="nested-card-top-header">
+                <div class="nested-icon-badge">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="1" y="3" width="15" height="13"></rect>
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                  </svg>
                 </div>
-                <div class="summary-line muted">
-                  <span class="summary-line-label">Costo de envío</span>
-                  <span *ngIf="pedido.costo_envio > 0" class="summary-line-value">{{ formatPrice(pedido.costo_envio) }}</span>
-                  <span *ngIf="!pedido.costo_envio" class="shipping-included-pill">Incluido</span>
+                <div class="nested-header-titles">
+                  <h4 class="nested-main-title">Transportadora, Guía &amp; Evidencias</h4>
+                  <p class="nested-sub-title">Información verificada del despacho y entrega de tu paquete</p>
                 </div>
               </div>
 
-              <!-- Caja de Total -->
-              <div class="cart-total-box">
-                <div class="total-text-col">
-                  <span class="total-kicker">{{ pedido.estado === 'pendiente_pago' ? 'TOTAL EN VALIDACIÓN' : 'TOTAL PAGADO' }}</span>
-                  <span class="total-iva-note">IVA Incluido</span>
+              <div class="logistics-wide-grid" [class.has-evidence]="!!pedido.evidencia_envio_url || !!pedido.evidencia_entrega_url">
+                <div class="logistics-meta-col client-kv-stack">
+                  <div class="carrier-badge" *ngIf="pedido.transportadora">
+                    <span class="carrier-name">{{ pedido.transportadora }}</span>
+                  </div>
+                  <div class="client-kv-row" *ngIf="pedido.guia_numero">
+                    <span class="client-kv-label">Número de Guía</span>
+                    <strong class="mono-guide">{{ pedido.guia_numero }}</strong>
+                  </div>
                 </div>
-                <span class="cart-total-amount">{{ formatPrice(pedido.total) }}</span>
+
+                <div class="client-kv-stack" *ngIf="pedido.evidencia_envio_url || pedido.evidencia_entrega_url">
+                  <div class="client-evidence-box" *ngIf="pedido.evidencia_envio_url">
+                    <a [href]="pedido.evidencia_envio_url" target="_blank" rel="noopener noreferrer" class="client-evidence-thumb-link">
+                      <img
+                        [src]="pedido.evidencia_envio_url"
+                        alt="Evidencia del envío de tu pedido"
+                        class="client-evidence-thumb" />
+                    </a>
+                    <div class="client-evidence-info">
+                      <span class="client-evidence-title">Evidencia fotográfica del envío</span>
+                      <span class="client-evidence-sub">Foto verificada del despacho</span>
+                      <a
+                        [href]="pedido.evidencia_envio_url"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="client-evidence-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                          <polyline points="15 3 21 3 21 9"></polyline>
+                          <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        <span>Ver foto completa</span>
+                      </a>
+                    </div>
+                  </div>
+
+                  <div class="client-evidence-box" *ngIf="pedido.evidencia_entrega_url">
+                    <a [href]="pedido.evidencia_entrega_url" target="_blank" rel="noopener noreferrer" class="client-evidence-thumb-link">
+                      <img
+                        [src]="pedido.evidencia_entrega_url"
+                        alt="Evidencia de la entrega de tu pedido"
+                        class="client-evidence-thumb" />
+                    </a>
+                    <div class="client-evidence-info">
+                      <span class="client-evidence-title">Evidencia fotográfica de la entrega</span>
+                      <span class="client-evidence-sub">
+                        Confirmada{{ pedido.fecha_entrega ? ' · ' + formatDateTimeShort(pedido.fecha_entrega) : '' }}
+                      </span>
+                      <a
+                        [href]="pedido.evidencia_entrega_url"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="client-evidence-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                          <polyline points="15 3 21 3 21 9"></polyline>
+                          <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        <span>Ver foto completa</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -574,6 +670,18 @@
           <!-- 4. BARRA INFERIOR DE ACCIONES -->
           <footer class="pedido-card-footer">
             <div class="footer-actions-left">
+              <button
+                *ngIf="canRetryPayment(pedido)"
+                class="btn-dash-primary"
+                [disabled]="reintentandoPagoId() === pedido.id"
+                (click)="reintentarPago(pedido, $event)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                  <line x1="1" y1="10" x2="23" y2="10"></line>
+                </svg>
+                <span>{{ reintentandoPagoId() === pedido.id ? 'Conectando...' : 'Reintentar Pago' }}</span>
+              </button>
+
               <button class="btn-dash-primary invoice-btn" (click)="openInvoice(pedido); $event.stopPropagation()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -666,6 +774,12 @@
           <div class="customer-col">
             <span class="sheet-sec-title">Cliente</span>
             <p class="sheet-text-lead">{{ inv.cliente_nombre || (authService.currentUser | async)?.nombre }}</p>
+            <p
+              class="sheet-text-sub"
+              *ngIf="inv.cliente_numero_documento || (authService.currentUser | async)?.numero_documento">
+              <strong>{{ (inv.cliente_tipo_documento || (authService.currentUser | async)?.tipo_documento) === 'NIT' ? 'NIT' : 'C.C.' }}:</strong>
+              {{ inv.cliente_numero_documento || (authService.currentUser | async)?.numero_documento }}
+            </p>
             <p class="sheet-text-sub">{{ inv.cliente_correo || (authService.currentUser | async)?.correo }}</p>
             <p class="sheet-text-sub" *ngIf="inv.telefono_contacto">Tel: {{ inv.telefono_contacto }}</p>
           </div>

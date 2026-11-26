@@ -81,6 +81,7 @@ final class ConfirmarPedidoAction
                         'subtotal' => (float) $it->subtotal,
                     ])->toArray();
 
+                    $pedido->loadMissing('usuario');
                     $nombreCliente = $pedido->nombre_cliente ?: $pedido->usuario?->nombre ?: 'Cliente';
 
                     Mail::to($emailDestinatario)->send(
@@ -91,7 +92,9 @@ final class ConfirmarPedidoAction
                             (float) $pedido->subtotal,
                             (float) $pedido->iva,
                             (float) $pedido->costo_envio,
-                            (float) $pedido->total
+                            (float) $pedido->total,
+                            $pedido->usuario?->tipo_documento,
+                            $pedido->usuario?->numero_documento
                         )
                     );
                 }

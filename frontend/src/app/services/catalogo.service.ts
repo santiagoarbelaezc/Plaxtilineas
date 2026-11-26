@@ -134,27 +134,47 @@ export class CatalogoService {
     }, this.POLL_INTERVAL_MS);
   }
 
-  /** Consulta incrementalmente GET /inventario/cambios?desde={ultimoEventoId} con circuit-breaker ante 5xx */
+  /** Consulta incrementalmente GET /inventario/cambios?since_id={ultimoEventoId} con circuit-breaker ante 5xx */
   public sincronizarCambiosInventario(): void {
     if (Date.now() < this.backoffHasta) {
       return;
     }
 
     this.http
-      .get<CatalogoRespuesta<{ ultimo_evento_id: number; eventos: any[] }>>(
-        `${this.baseUrl}/inventario/cambios?desde=${this.ultimoEventoId}`
+      .get<CatalogoRespuesta<{
+        enabled?: boolean;
+        reset?: boolean;
+        last_id?: number;
+        events?: any[];
+        ultimo_evento_id?: number;
+        eventos?: any[];
+      }>>(
+        `${this.baseUrl}/inventario/cambios?since_id=${this.ultimoEventoId}`
       )
       .subscribe({
         next: res => {
           this.erroresConsecutivosSync = 0;
           this.backoffHasta = 0;
           if (!res?.success || !res.data) return;
-          const eventos = res.data.eventos ?? [];
+
+          const data = res.data;
+          const lastId = Number(data.last_id ?? data.ultimo_evento_id ?? 0);
+
+          if (data.reset) {
+            this.ultimoEventoId = lastId;
+            return;
+          }
+
+          const eventos = Array.isArray(data.events)
+            ? data.events
+            : (Array.isArray(data.eventos) ? data.eventos : []);
+
           for (const ev of eventos) {
             this.procesarEventoInventario(ev);
           }
-          if (typeof res.data.ultimo_evento_id === 'number' && res.data.ultimo_evento_id > this.ultimoEventoId) {
-            this.ultimoEventoId = res.data.ultimo_evento_id;
+
+          if (Number.isFinite(lastId) && lastId > this.ultimoEventoId) {
+            this.ultimoEventoId = lastId;
           }
         },
         error: () => {
@@ -169,7 +189,7 @@ export class CatalogoService {
     if (!raw || typeof raw !== 'object') return;
     const id = Number(raw.id ?? 0);
     const productoId = Number(raw.producto_id ?? 0);
-    const stock = Number(raw.stock);
+    const stock = Number(raw.stock_nuevo ?? raw.stock);
     if (!Number.isFinite(productoId) || productoId <= 0 || !Number.isFinite(stock) || stock < 0) {
       return;
     }

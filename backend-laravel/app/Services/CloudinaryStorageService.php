@@ -27,7 +27,12 @@ final class CloudinaryStorageService implements MediaStorageInterface
                 $timestamp = time();
                 $signature = sha1("folder={$folder}&timestamp={$timestamp}{$apiSecret}");
 
-                $response = Http::timeout(20)
+                $http = Http::timeout(20);
+                if (! app()->isProduction()) {
+                    $http = $http->withoutVerifying();
+                }
+
+                $response = $http
                     ->attach('file', file_get_contents($file->getRealPath()), $file->getClientOriginalName())
                     ->post("https://api.cloudinary.com/v1_1/{$cloudName}/auto/upload", [
                         'api_key' => $apiKey,

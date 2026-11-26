@@ -90,8 +90,8 @@ test('crear draft exitoso genera pedido con estado draft y crea reservas de stoc
         'cantidad' => 2,
     ]);
 
-    // En draft, el stock real aún no se deduce (Two-Phase Commit)
-    expect($producto->fresh()->stock)->toBe(10);
+    // Al crear el pedido, la reserva se transfiere atómicamente a StockReserva y se descuenta del stock libre
+    expect($producto->fresh()->stock)->toBe(8);
 });
 
 test('crear draft offline descuenta stock real y envia correo de confirmacion', function () {
@@ -172,7 +172,7 @@ test('cliente no puede tener 2 o mas pedidos pendientes simultaneos', function (
 
     Pedido::factory()->count(2)->create([
         'usuario_id' => $this->usuario->id,
-        'estado' => EstadoPedido::DRAFT,
+        'estado' => EstadoPedido::PENDIENTE_PAGO,
     ]);
 
     $producto = Producto::factory()->create();

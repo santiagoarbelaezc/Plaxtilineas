@@ -24,7 +24,9 @@ class PagoConfirmadoMailable extends Mailable
         public float $subtotal,
         public float $iva,
         public float $costoEnvio,
-        public float $total
+        public float $total,
+        public ?string $tipoDocumento = null,
+        public ?string $numeroDocumento = null
     ) {}
 
     public function envelope(): Envelope
@@ -53,6 +55,17 @@ class PagoConfirmadoMailable extends Mailable
 
         $nombreCliente = htmlspecialchars($this->nombreCliente, ENT_QUOTES, 'UTF-8');
         $codigoPedido = htmlspecialchars($this->codigoPedido, ENT_QUOTES, 'UTF-8');
+
+        $documentoHtml = '';
+        if ($this->numeroDocumento !== null && trim($this->numeroDocumento) !== '') {
+            $tipoLabel = strtoupper(trim((string) ($this->tipoDocumento ?: 'CC'))) === 'NIT' ? 'NIT' : 'C.C.';
+            $numEsc = htmlspecialchars(trim($this->numeroDocumento), ENT_QUOTES, 'UTF-8');
+            $documentoHtml = "<div style='margin:0 0 20px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;font-size:13px;color:#334155;'>
+                <div><strong>Cliente:</strong> {$nombreCliente}</div>
+                <div style='margin-top:4px;'><strong>Identificación ({$tipoLabel}):</strong> <span style='font-family:monospace;font-weight:700;color:#0f172a;'>{$numEsc}</span></div>
+              </div>";
+        }
+
         $html = "
         <div style='margin:0;background:#f8fafc;padding:32px 16px;font-family:Arial,Helvetica,sans-serif;color:#334155;'>
           <div style='max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;'>
@@ -63,7 +76,8 @@ class PagoConfirmadoMailable extends Mailable
                 <div style='color:#15803d;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;'>Pago confirmado</div>
                 <h1 style='margin:8px 0 0;color:#0f172a;font-size:26px;line-height:1.25;'>Gracias por tu compra, {$nombreCliente}</h1>
               </div>
-              <p style='margin:0 0 22px;color:#64748b;font-size:15px;line-height:1.7;'>Tu pedido <strong style='color:#0f172a;'>{$codigoPedido}</strong> fue confirmado correctamente. Este es el resumen de tu compra:</p>
+              <p style='margin:0 0 18px;color:#64748b;font-size:15px;line-height:1.7;'>Tu pedido <strong style='color:#0f172a;'>{$codigoPedido}</strong> fue confirmado correctamente. Este es el resumen de tu compra:</p>
+              {$documentoHtml}
               <table style='width:100%;border-collapse:collapse;font-size:13px;'>
                 <thead>
                   <tr style='background:#f8fafc;color:#64748b;'>

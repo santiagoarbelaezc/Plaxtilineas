@@ -34,6 +34,7 @@ test('verifica stock disponible antes de iniciar checkout', function () {
                 'id' => 501,
                 'name' => 'Producto de prueba',
                 'stock' => 13,
+                'price' => 15000,
                 'variants' => [],
             ],
         ], 200),
@@ -47,6 +48,36 @@ test('verifica stock disponible antes de iniciar checkout', function () {
     ]);
 
     $response->assertOk()->assertJson([
+        'valido' => true,
+        'items_con_error' => [],
+    ]);
+});
+
+test('verifica stock permite pagar las ultimas unidades ya reservadas en el carrito del propio usuario', function () {
+    Sanctum::actingAs($this->usuario);
+
+    $producto = Producto::factory()->create([
+        'nombre' => 'Lona Ultima Unidad',
+        'precio' => 45000,
+        'stock' => 2,
+        'controlar_stock' => true,
+    ]);
+
+    // 1. El usuario agrega las 2 últimas unidades a su carrito (stock libre pasa a 0)
+    $this->postJson('/api/carrito/sync', [
+        'items' => [
+            ['producto_id' => $producto->id, 'cantidad' => 2, 'precio_unitario' => 45000],
+        ],
+    ])->assertOk();
+
+    expect($producto->fresh()->stock)->toBe(0);
+
+    // 2. Al verificar stock para ir a pagar, debe aprobar porque las 2 unidades ya son de su carrito
+    $this->postJson('/api/productos/verificar-stock', [
+        'items' => [
+            ['producto_id' => $producto->id, 'cantidad' => 2],
+        ],
+    ])->assertOk()->assertJson([
         'valido' => true,
         'items_con_error' => [],
     ]);
@@ -327,4 +358,224 @@ test('admin no elimina pedido con pago confirmado', function () {
     ])->assertStatus(400);
 
     $this->assertDatabaseHas('pedidos', ['id' => $pedido->id]);
+});
+
+test('admin sube evidencia fotografica y al asignar transportadora y guia avanza automaticamente de pagado a en_camino', function () {
+    Mail::fake();
+    Sanctum::actingAs($this->admin);
+
+    $mediaMock = Mockery::mock(\App\Contracts\MediaStorageInterface::class);
+    $mediaMock->shouldReceive('upload')
+        ->once()
+        ->andReturn([
+            'url' => 'https://res.cloudinary.com/demo/image/upload/v1/plaxtilineas/evidencias_envio/foto_guia.jpg',
+            'public_id' => 'plaxtilineas/evidencias_envio/foto_guia',
+        ]);
+    $this->app->instance(\App\Contracts\MediaStorageInterface::class, $mediaMock);
+
+    $pedido = Pedido::factory()->create([
+        'usuario_id' => $this->usuario->id,
+        'estado' => EstadoPedido::PAGADO,
+        'subtotal' => 98000,
+        'costo_envio' => 10000,
+        'total' => 108000,
+    ]);
+
+    // 1. Subir foto de evidencia a Cloudinary (PNG válido 1x1 sin depender de la extensión GD)
+    $png1x1 = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==');
+    $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('guia.png', $png1x1);
+    $uploadRes = $this->post("/api/admin/pedidos/{$pedido->id}/evidencia-envio", [
+        'evidencia' => $file,
+    ]);
+
+    $uploadRes->assertOk()
+        ->assertJsonPath('evidencia_envio_url', 'https://res.cloudinary.com/demo/image/upload/v1/plaxtilineas/evidencias_envio/foto_guia.jpg');
+
+    // 2. Guardar transportadora + guía (aun enviando estado='pagado', debe promover automáticamente a 'en_camino')
+    $updateRes = $this->putJson("/api/admin/pedidos/{$pedido->id}/estado", [
+        'estado' => 'pagado',
+        'transportadora' => 'Domicilio Plaxtilineas (Armenia)',
+        'guia_numero' => '98393894384928492',
+        'evidencia_envio_url' => 'https://res.cloudinary.com/demo/image/upload/v1/plaxtilineas/evidencias_envio/foto_guia.jpg',
+    ]);
+
+    $updateRes->assertOk()
+        ->assertJson([
+            'estado_anterior' => 'pagado',
+            'estado_nuevo' => 'en_camino',
+        ]);
+
+    $pedidoFresh = $pedido->fresh();
+    expect($pedidoFresh->estado)->toBe(EstadoPedido::EN_CAMINO)
+        ->and($pedidoFresh->transportadora)->toBe('Domicilio Plaxtilineas (Armenia)')
+        ->and($pedidoFresh->guia_numero)->toBe('98393894384928492')
+        ->and($pedidoFresh->evidencia_envio_url)->toBe('https://res.cloudinary.com/demo/image/upload/v1/plaxtilineas/evidencias_envio/foto_guia.jpg')
+        ->and($pedidoFresh->fecha_envio)->not->toBeNull();
+
+    // 3. Verificar correo enviado con etiquetas legibles y botón de evidencia (nunca "de pagado a pagado")
+    Mail::assertSent(CambioEstadoPedidoMailable::class, function (CambioEstadoPedidoMailable $mail) {
+        $html = $mail->content()->htmlString ?? '';
+
+        return $mail->hasTo('cliente@test.com')
+            && str_contains($html, 'Pago Confirmado')
+            && str_contains($html, 'En Camino')
+            && str_contains($html, 'Ver foto de evidencia del envío')
+            && ! str_contains($html, 'De pagado a pagado');
+    });
+
+    // 4. Verificar que el cliente también recibe el estado en_camino y la foto en /api/pedidos/mis-pedidos
+    Sanctum::actingAs($this->usuario);
+    $this->getJson('/api/pedidos/mis-pedidos')
+        ->assertOk()
+        ->assertJsonPath('pedidos.0.estado', 'en_camino')
+        ->assertJsonPath('pedidos.0.transportadora', 'Domicilio Plaxtilineas (Armenia)')
+        ->assertJsonPath('pedidos.0.guia_numero', '98393894384928492')
+        ->assertJsonPath('pedidos.0.evidencia_envio_url', 'https://res.cloudinary.com/demo/image/upload/v1/plaxtilineas/evidencias_envio/foto_guia.jpg');
+});
+
+test('editar guia cuando ya esta en_camino envia correo de actualizacion de envio sin repetir estado', function () {
+    Mail::fake();
+    Sanctum::actingAs($this->admin);
+
+    $pedido = Pedido::factory()->create([
+        'usuario_id' => $this->usuario->id,
+        'estado' => EstadoPedido::EN_CAMINO,
+        'transportadora' => 'Servientrega',
+        'guia_numero' => '111111',
+    ]);
+
+    $this->putJson("/api/admin/pedidos/{$pedido->id}/estado", [
+        'estado' => 'en_camino',
+        'transportadora' => 'Servientrega',
+        'guia_numero' => '222222',
+    ])->assertOk();
+
+    Mail::assertSent(CambioEstadoPedidoMailable::class, function (CambioEstadoPedidoMailable $mail) {
+        $html = $mail->content()->htmlString ?? '';
+
+        return str_contains($html, 'Se han actualizado los datos de envío')
+            && str_contains($html, 'En Camino')
+            && ! str_contains($html, 'De En Camino a En Camino');
+    });
+});
+
+test('admin no puede marcar pedido en_camino como entregado sin evidencia fotografica de entrega', function () {
+    Sanctum::actingAs($this->admin);
+
+    $pedido = Pedido::factory()->create([
+        'usuario_id' => $this->usuario->id,
+        'estado' => EstadoPedido::EN_CAMINO,
+        'transportadora' => 'Servientrega',
+        'guia_numero' => 'SRV-123456',
+    ]);
+
+    $response = $this->putJson("/api/admin/pedidos/{$pedido->id}/estado", [
+        'estado' => 'entregado',
+    ]);
+
+    $response->assertStatus(400);
+    expect($pedido->fresh()->estado)->toBe(EstadoPedido::EN_CAMINO);
+});
+
+test('admin sube evidencia fotografica de entrega y marca pedido en_camino como entregado', function () {
+    Mail::fake();
+    Sanctum::actingAs($this->admin);
+
+    $mediaMock = Mockery::mock(\App\Contracts\MediaStorageInterface::class);
+    $mediaMock->shouldReceive('upload')
+        ->once()
+        ->andReturn([
+            'url' => 'https://res.cloudinary.com/demo/image/upload/v1/plaxtilineas/evidencias_entrega/recibido.png',
+            'public_id' => 'plaxtilineas/evidencias_entrega/recibido',
+        ]);
+    $this->app->instance(\App\Contracts\MediaStorageInterface::class, $mediaMock);
+
+    $pedido = Pedido::factory()->create([
+        'usuario_id' => $this->usuario->id,
+        'estado' => EstadoPedido::EN_CAMINO,
+        'transportadora' => 'Domicilio Plaxtilineas (Armenia)',
+        'guia_numero' => '98393894384928492',
+    ]);
+
+    $png1x1 = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==');
+    $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('recibido.png', $png1x1);
+
+    $uploadRes = $this->post("/api/admin/pedidos/{$pedido->id}/evidencia-entrega", [
+        'evidencia' => $file,
+    ]);
+
+    $uploadRes->assertOk()
+        ->assertJsonPath('evidencia_entrega_url', 'https://res.cloudinary.com/demo/image/upload/v1/plaxtilineas/evidencias_entrega/recibido.png');
+
+    $updateRes = $this->putJson("/api/admin/pedidos/{$pedido->id}/estado", [
+        'estado' => 'entregado',
+        'evidencia_entrega_url' => 'https://res.cloudinary.com/demo/image/upload/v1/plaxtilineas/evidencias_entrega/recibido.png',
+    ]);
+
+    $updateRes->assertOk()
+        ->assertJson([
+            'estado_anterior' => 'en_camino',
+            'estado_nuevo' => 'entregado',
+        ]);
+
+    $pedidoFresh = $pedido->fresh();
+    expect($pedidoFresh->estado)->toBe(EstadoPedido::ENTREGADO)
+        ->and($pedidoFresh->evidencia_entrega_url)->toBe('https://res.cloudinary.com/demo/image/upload/v1/plaxtilineas/evidencias_entrega/recibido.png')
+        ->and($pedidoFresh->fecha_entrega)->not->toBeNull();
+
+    Mail::assertSent(CambioEstadoPedidoMailable::class, function (CambioEstadoPedidoMailable $mail) {
+        $html = $mail->content()->htmlString ?? '';
+
+        return str_contains($html, 'En Camino')
+            && str_contains($html, 'Entregado')
+            && str_contains($html, 'Ver foto de evidencia de la entrega')
+            && str_contains($html, 'https://res.cloudinary.com/demo/image/upload/v1/plaxtilineas/evidencias_entrega/recibido.png');
+    });
+
+    Sanctum::actingAs($this->usuario);
+    $misPedidosRes = $this->getJson('/api/pedidos/mis-pedidos');
+    $misPedidosRes->assertOk()
+        ->assertJsonPath('pedidos.0.estado', 'entregado')
+        ->assertJsonPath('pedidos.0.evidencia_entrega_url', 'https://res.cloudinary.com/demo/image/upload/v1/plaxtilineas/evidencias_entrega/recibido.png');
+});
+
+test('factura de compra por correo incluye cedula o NIT del cliente y mis-pedidos la expone', function () {
+    $this->usuario->update([
+        'tipo_documento' => 'CC',
+        'numero_documento' => '1094912345',
+    ]);
+
+    $mailable = new \App\Mail\PagoConfirmadoMailable(
+        nombreCliente: $this->usuario->nombre,
+        codigoPedido: 'PX-2026-9999',
+        detalles: [
+            [
+                'nombre_producto' => 'Soga Marinera',
+                'cantidad' => 2,
+                'precio_unitario' => 49000,
+                'subtotal' => 98000,
+            ],
+        ],
+        subtotal: 98000,
+        iva: 0,
+        costoEnvio: 10000,
+        total: 108000,
+        tipoDocumento: $this->usuario->tipo_documento,
+        numeroDocumento: $this->usuario->numero_documento,
+    );
+
+    $html = $mailable->content()->htmlString ?? '';
+    expect($html)->toContain('Identificación (C.C.):')
+        ->and($html)->toContain('1094912345');
+
+    Pedido::factory()->create([
+        'usuario_id' => $this->usuario->id,
+        'estado' => EstadoPedido::PAGADO,
+    ]);
+
+    Sanctum::actingAs($this->usuario);
+    $this->getJson('/api/pedidos/mis-pedidos')
+        ->assertOk()
+        ->assertJsonPath('pedidos.0.cliente_tipo_documento', 'CC')
+        ->assertJsonPath('pedidos.0.cliente_numero_documento', '1094912345');
 });

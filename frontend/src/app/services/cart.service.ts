@@ -50,6 +50,11 @@ export class CartService {
   // Razón del último rechazo en addToCart ('auth_required' | 'stock_error' | null)
   lastRejectReason: 'auth_required' | 'stock_error' | null = null;
 
+  // Debounce y respaldo para rollback ante error del backend (protege cuota de BD y evita desincronización)
+  private syncDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  private pendingRollbackItems: CartItem[] | null = null;
+  private static readonly SYNC_DEBOUNCE_MS = 350;
+
   constructor() {
     this.loadCart();
 
@@ -98,11 +103,35 @@ export class CartService {
    * sin enviar un sync vacío al servidor.
    */
   private clearLocalStateOnly(): void {
+    if (this.syncDebounceTimer) {
+      clearTimeout(this.syncDebounceTimer);
+      this.syncDebounceTimer = null;
+    }
+    this.pendingRollbackItems = null;
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem(CartService.STORAGE_KEY);
     }
     this.itemsSubject.next([]);
     this.closeDrawer();
+  }
+
+  /**
+   * Limpia el carrito local después de que el pedido ya fue registrado en el backend
+   * (donde la reserva fue transferida atómicamente de Carrito -> StockReserva).
+   * NO envía POST /api/carrito/sync vacío ni suma stock falso en memoria.
+   */
+  public clearLocalCartAfterCheckout(): void {
+    this.clearLocalStateOnly();
+  }
+
+  private captureRollbackSnapshot(): void {
+    if (this.pendingRollbackItems === null) {
+      this.pendingRollbackItems = this.itemsSubject.getValue().map(item => ({
+        ...item,
+        producto: { ...item.producto },
+        variante: item.variante ? { ...item.variante } : undefined,
+      }));
+    }
   }
 
   private saveCart(items: CartItem[], syncBackend = true) {
@@ -149,6 +178,9 @@ export class CartService {
     };
   }
 
+  private syncInFlight = false;
+  private queuedSyncSnapshot: { producto_id: number; variante_id: number | null; cantidad: number; precio_unitario: number }[] | null = null;
+
   private syncCartWithBackend(items: CartItem[]) {
     if (!CartService.BACKEND_SYNC_ENABLED) {
       return;
@@ -159,30 +191,73 @@ export class CartService {
       return;
     }
 
-    const payload = {
-      items: items.map(item => ({
-        producto_id: item.producto.id,
-        variante_id: item.variante?.id || null,
-        cantidad: item.cantidad,
-        precio_unitario: item.precioUnitario
-      }))
-    };
+    if (this.syncDebounceTimer) {
+      clearTimeout(this.syncDebounceTimer);
+    }
 
+    const itemsSnapshot = items.map(item => ({
+      producto_id: item.producto.id,
+      variante_id: item.variante?.id || null,
+      cantidad: item.cantidad,
+      precio_unitario: item.precioUnitario
+    }));
+
+    this.syncDebounceTimer = setTimeout(() => {
+      this.syncDebounceTimer = null;
+      this.dispatchSerializedSync(itemsSnapshot);
+    }, CartService.SYNC_DEBOUNCE_MS);
+  }
+
+  /**
+   * Serializa los POST /api/carrito/sync en orden estricto (1 en vuelo a la vez).
+   * Si el usuario hace clic rápido mientras un sync está en curso, encola únicamente
+   * el snapshot más reciente y lo envía al completarse el anterior.
+   */
+  private dispatchSerializedSync(
+    itemsSnapshot: { producto_id: number; variante_id: number | null; cantidad: number; precio_unitario: number }[]
+  ): void {
+    const currentToken = localStorage.getItem('token');
+    if (!currentToken || !this.authService.isAuthenticated()) {
+      return;
+    }
+
+    if (this.syncInFlight) {
+      this.queuedSyncSnapshot = itemsSnapshot;
+      return;
+    }
+
+    this.syncInFlight = true;
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${currentToken}`
     };
 
-    this.http.post(`${environment.apiUrl}/carrito/sync`, payload, { headers }).subscribe({
+    this.http.post(`${environment.apiUrl}/carrito/sync`, { items: itemsSnapshot }, { headers }).subscribe({
       next: () => {
-        // Sincronizar cambios de inventario y refrescar catálogo en memoria sin recargar página
+        this.syncInFlight = false;
+        if (this.queuedSyncSnapshot !== null) {
+          const nextSnapshot = this.queuedSyncSnapshot;
+          this.queuedSyncSnapshot = null;
+          this.dispatchSerializedSync(nextSnapshot);
+          return;
+        }
+        this.pendingRollbackItems = null;
+        // Sincronización incremental liviana (sin recargar todo el catálogo para cuidar la cuota de BD)
         this.catalogoService.sincronizarCambiosInventario();
-        this.catalogoService.refrescar();
       },
       error: (err) => {
+        this.syncInFlight = false;
+        this.queuedSyncSnapshot = null;
         console.error('[Carrito] Error al sincronizar con backend:', err);
-        this.catalogoService.refrescar();
-        this.stockError$.next('Error al sincronizar el carrito con el servidor.');
+        // Revertir estado local al último estado confirmado por el servidor
+        if (this.pendingRollbackItems !== null) {
+          const rollback = this.pendingRollbackItems;
+          this.pendingRollbackItems = null;
+          this.saveCart(rollback, false);
+        }
+        this.catalogoService.sincronizarCambiosInventario();
+        const serverMsg = err?.error?.message || err?.error?.error || 'Error al sincronizar el carrito con el servidor.';
+        this.stockError$.next(serverMsg);
       }
     });
   }
@@ -399,6 +474,9 @@ export class CartService {
       }
     }
 
+    // Guardar estado previo para rollback si el backend rechaza por stock insuficiente
+    this.captureRollbackSnapshot();
+
     // Descontar inmediatamente en el catálogo local para actualización visual instantánea
     this.catalogoService.ajustarStockLocal(producto.id, -cantidad);
     const nuevoStockLibre = this.catalogoService.getStockActual(producto.id);
@@ -444,6 +522,7 @@ export class CartService {
       this.requireAuthForCart();
       return;
     }
+    this.captureRollbackSnapshot();
     const items = this.itemsSubject.getValue();
     const itemToRemove = items.find(item => item.id === id);
     if (itemToRemove) {
@@ -483,6 +562,7 @@ export class CartService {
         }
       }
 
+      this.captureRollbackSnapshot();
       this.catalogoService.ajustarStockLocal(item.producto.id, -delta);
       const nuevoStockLibre = this.catalogoService.getStockActual(item.producto.id);
       if (nuevoStockLibre !== undefined) {
@@ -504,6 +584,7 @@ export class CartService {
       this.clearLocalStateOnly();
       return;
     }
+    this.captureRollbackSnapshot();
     const items = this.itemsSubject.getValue();
     for (const item of items) {
       this.catalogoService.ajustarStockLocal(item.producto.id, item.cantidad);

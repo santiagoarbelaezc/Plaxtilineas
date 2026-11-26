@@ -217,6 +217,8 @@ Route::middleware('auth:sanctum')->post('/productos/verificar-stock', [PedidoCon
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
     Route::get('/pedidos', [PedidoController::class, 'adminObtenerTodos']);
     Route::put('/pedidos/{id}/estado', [PedidoController::class, 'adminActualizarEstado']);
+    Route::post('/pedidos/{id}/evidencia-envio', [PedidoController::class, 'adminSubirEvidenciaEnvio']);
+    Route::post('/pedidos/{id}/evidencia-entrega', [PedidoController::class, 'adminSubirEvidenciaEntrega']);
     Route::delete('/pedidos/{id}', [PedidoController::class, 'adminEliminar']);
 });
 

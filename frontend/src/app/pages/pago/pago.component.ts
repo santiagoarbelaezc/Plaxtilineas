@@ -516,6 +516,7 @@ export class PagoComponent implements OnInit, OnDestroy {
 
   private destroy$   = new Subject<void>();
   private pagoEnCurso = false;
+  private pedidoWompiPendienteId = signal<number | null>(null);
 
   cargando       = signal(false);
   error          = signal<string | null>(null);
@@ -627,6 +628,23 @@ export class PagoComponent implements OnInit, OnDestroy {
   }
 
   volverAtras(): void {
+    const pendienteId = this.pedidoWompiPendienteId();
+    if (pendienteId) {
+      // El usuario cerró Wompi sin pagar y decidió volver: cancelamos el pedido pendiente
+      // para liberar inmediatamente el stock reservado y re-sincronizamos el carrito.
+      this.pedidoWompiPendienteId.set(null);
+      this.pagoEnCurso = false;
+      this.pedidoSvc.cancelarPedido(pendienteId).subscribe({
+        next: () => this.navegarAtrasLimpio(),
+        error: () => this.navegarAtrasLimpio()
+      });
+      return;
+    }
+
+    this.navegarAtrasLimpio();
+  }
+
+  private navegarAtrasLimpio(): void {
     if (window.history.length > 1) {
       this.location.back();
     } else {
@@ -682,6 +700,14 @@ export class PagoComponent implements OnInit, OnDestroy {
         icon: 'warning',
         confirmButtonColor: '#16a34a'
       });
+      return;
+    }
+
+    // Si ya existe un pedido Wompi pendiente de este intento (ej. el usuario cerró el modal de Wompi sin pagar),
+    // reabrimos el checkout del MISMO pedido sin crear otro ni tocar el stock.
+    const pedidoExistenteId = this.pedidoWompiPendienteId();
+    if (pedidoExistenteId && this.metodoSeleccionado() === 'wompi') {
+      this.reabrirWidgetWompi(pedidoExistenteId);
       return;
     }
 
@@ -750,6 +776,14 @@ export class PagoComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Si ya existe un pedido Wompi pendiente de este intento (ej. el usuario cerró el modal de Wompi sin pagar),
+    // reabrimos el checkout del MISMO pedido sin crear otro ni tocar el stock.
+    const pedidoExistenteId = this.pedidoWompiPendienteId();
+    if (pedidoExistenteId && this.metodoSeleccionado() === 'wompi') {
+      this.reabrirWidgetWompi(pedidoExistenteId);
+      return;
+    }
+
     const items = this.itemsCarrito();
     if (!items || items.length === 0) {
       this.router.navigate(['/carrito']);
@@ -797,15 +831,19 @@ export class PagoComponent implements OnInit, OnDestroy {
               if (!this.wompiEnabled()) {
                 this.pagoEnCurso = true;
                 this.procesando.set(false);
-                this.cartSvc.clearCart();
+                this.cartSvc.clearLocalCartAfterCheckout();
                 this.router.navigate(['/pago-desarrollo'], { state: { pedido: draft } });
                 return;
               }
 
+              this.pedidoWompiPendienteId.set(draft.pedido_id);
               this.wompiSvc.obtenerDatosPago(draft.pedido_id).subscribe({
                 next: (datos) => {
                   this.pagoEnCurso = true;
                   this.procesando.set(false);
+                  // NO limpiamos el carrito local aquí: wompiSvc.abrirWidget lo limpia
+                  // solo cuando Wompi devuelve una transacción. Si el usuario cierra Wompi
+                  // sin pagar, puede volver a dar clic en "Pagar" y reabrir este mismo pedido.
                   this.wompiSvc.abrirWidget(datos);
                 },
                 error: () => {
@@ -818,7 +856,7 @@ export class PagoComponent implements OnInit, OnDestroy {
               // Transferencia o Asesor
               this.pagoEnCurso = true;
               this.procesando.set(false);
-              this.cartSvc.clearCart();
+              this.cartSvc.clearLocalCartAfterCheckout();
               this.router.navigate(['/pago-asistido'], {
                 state: {
                   pedido: { codigo_pedido: draft.codigo_pedido },
@@ -838,6 +876,30 @@ export class PagoComponent implements OnInit, OnDestroy {
       error: () => {
         this.procesando.set(false);
         this.errorEnvio.set('Error al verificar el stock. Por favor intenta de nuevo.');
+      }
+    });
+  }
+
+  private reabrirWidgetWompi(pedidoId: number): void {
+    if (this.procesando()) return;
+    this.procesando.set(true);
+    this.errorEnvio.set(null);
+
+    this.wompiSvc.obtenerDatosPago(pedidoId).subscribe({
+      next: (datos) => {
+        this.pagoEnCurso = true;
+        this.procesando.set(false);
+        this.wompiSvc.abrirWidget(datos);
+      },
+      error: (err) => {
+        this.procesando.set(false);
+        // Si el pedido ya expiró o fue cancelado/pagado, limpiamos la referencia local
+        if (err?.status === 404 || err?.status === 409) {
+          this.pedidoWompiPendienteId.set(null);
+        }
+        const msg = err?.error?.error || 'No pudimos reabrir la pasarela Wompi. Intenta nuevamente.';
+        this.errorEnvio.set(msg);
+        Swal.fire('Atención', msg, 'warning');
       }
     });
   }

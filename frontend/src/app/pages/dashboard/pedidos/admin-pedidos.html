@@ -37,18 +37,7 @@
           <fa-icon [icon]="faTimesCircle"></fa-icon> Eliminar pedido
         </button>
 
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <select
-            class="detail-status-select"
-            [ngModel]="p.estado"
-            (ngModelChange)="actualizarEstado(p.id, $event)"
-            [disabled]="updatingId() === p.id || p.estado === 'cancelado' || p.estado === 'entregado'">
-            <option *ngFor="let opt of getEstadosOptionsForPedido(p)" [value]="opt">
-              {{ getEstadoLabel(opt) }}
-            </option>
-          </select>
-          <fa-icon [icon]="faSync" class="fa-spin" *ngIf="updatingId() === p.id" style="color: #09090b; font-size: 0.9rem;"></fa-icon>
-        </div>
+        <fa-icon [icon]="faSync" class="fa-spin" *ngIf="updatingId() === p.id" style="color: #09090b; font-size: 0.9rem;"></fa-icon>
       </div>
     </div>
 
@@ -127,6 +116,10 @@
             <span class="field-label">Nombre Completo</span>
             <span class="field-value">{{ p.cliente_nombre || 'Invitado / Anónimo' }}</span>
           </div>
+          <div class="client-field" *ngIf="p.cliente_numero_documento">
+            <span class="field-label">Identificación ({{ p.cliente_tipo_documento === 'NIT' ? 'NIT' : 'C.C.' }})</span>
+            <span class="field-value">{{ p.cliente_numero_documento }}</span>
+          </div>
           <div class="client-field">
             <span class="field-label">Teléfono de Contacto</span>
             <span class="field-value">{{ p.telefono_contacto || 'No registrado' }}</span>
@@ -143,8 +136,17 @@
           <p class="address-city" *ngIf="p.ciudad">
             {{ p.ciudad }}{{ p.departamento ? ', ' + p.departamento : '' }}
           </p>
-          <div *ngIf="p.metodo_pago" style="margin-top: 10px; font-size: 0.8rem; color: #71717a;">
-            <strong>Método de Pago:</strong> {{ p.metodo_pago }}
+          <div *ngIf="p.metodo_pago" style="margin-top: 10px; font-size: 0.82rem; color: #52525b; display: flex; flex-direction: column; gap: 4px;">
+            <div><strong>Método de Pago:</strong> {{ formatMetodoPago(p.metodo_pago) }}</div>
+            <div *ngIf="p.wompi_referencia">
+              <strong>Ref. Wompi:</strong> <span style="font-family: ui-monospace, monospace; font-size: 0.78rem;">{{ p.wompi_referencia }}</span>
+            </div>
+            <div *ngIf="p.wompi_transaction_id">
+              <strong>ID Transacción:</strong> <span style="font-family: ui-monospace, monospace; font-size: 0.78rem;">{{ p.wompi_transaction_id }}</span>
+            </div>
+            <div *ngIf="p.wompi_pagado_at">
+              <strong>Pago Confirmado:</strong> {{ formatDate(p.wompi_pagado_at) }}
+            </div>
           </div>
         </div>
 
@@ -163,6 +165,26 @@
         <div class="activity-timeline">
           <div class="activity-item">
             <div class="activity-dot success"></div>
+            <div class="activity-header">
+              <span>Pedido Registrado</span>
+              <span class="activity-time">{{ formatDate(p.fecha) }}</span>
+            </div>
+            <p class="activity-desc">Orden {{ p.codigo_pedido }} creada vía {{ formatMetodoPago(p.metodo_pago) }}</p>
+          </div>
+
+          <div class="activity-item" *ngIf="p.wompi_pagado_at">
+            <div class="activity-dot success"></div>
+            <div class="activity-header">
+              <span>Pago Confirmado</span>
+              <span class="activity-time">{{ formatDate(p.wompi_pagado_at) }}</span>
+            </div>
+            <p class="activity-desc">
+              Acreditado en Wompi{{ p.wompi_transaction_id ? ' · Tx: ' + p.wompi_transaction_id : '' }}
+            </p>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-dot" [class.success]="!!p.transportadora" [class.warning]="!p.transportadora"></div>
             <div class="activity-header">
               <span>Transportadora</span>
               <span class="activity-time">{{ p.transportadora ? 'Asignada' : 'Pendiente' }}</span>
@@ -187,11 +209,60 @@
             </div>
             <p class="activity-desc">Despachado a centro logístico</p>
           </div>
+
+          <div class="activity-item" *ngIf="p.evidencia_envio_url">
+            <div class="activity-dot success"></div>
+            <div class="activity-header">
+              <span>Evidencia Fotográfica del Envío</span>
+              <a [href]="p.evidencia_envio_url" target="_blank" rel="noopener noreferrer" class="activity-time" style="color: #16a34a; text-decoration: underline;">
+                Ver foto completa
+              </a>
+            </div>
+            <a [href]="p.evidencia_envio_url" target="_blank" rel="noopener noreferrer" style="display:inline-block; margin-top: 8px;">
+              <img [src]="p.evidencia_envio_url" alt="Evidencia de envío" style="max-height: 110px; max-width: 100%; border-radius: 8px; border: 1px solid #e4e4e7; object-fit: cover;" />
+            </a>
+          </div>
+
+          <div class="activity-item" *ngIf="p.fecha_entrega">
+            <div class="activity-dot success"></div>
+            <div class="activity-header">
+              <span>Fecha de Entrega</span>
+              <span class="activity-time">{{ formatDate(p.fecha_entrega) }}</span>
+            </div>
+            <p class="activity-desc">Pedido entregado y confirmado con evidencia fotográfica</p>
+          </div>
+
+          <div class="activity-item" *ngIf="p.evidencia_entrega_url">
+            <div class="activity-dot success"></div>
+            <div class="activity-header">
+              <span>Evidencia Fotográfica de la Entrega</span>
+              <a [href]="p.evidencia_entrega_url" target="_blank" rel="noopener noreferrer" class="activity-time" style="color: #16a34a; text-decoration: underline;">
+                Ver foto completa
+              </a>
+            </div>
+            <a [href]="p.evidencia_entrega_url" target="_blank" rel="noopener noreferrer" style="display:inline-block; margin-top: 8px;">
+              <img [src]="p.evidencia_entrega_url" alt="Evidencia de entrega" style="max-height: 110px; max-width: 100%; border-radius: 8px; border: 1px solid #bbf7d0; object-fit: cover;" />
+            </a>
+          </div>
         </div>
 
         <!-- Botones de Acción de Envío -->
         <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 10px;">
-          <button class="btn-detail-action" style="width: 100%; justify-content: center; background: #f4f5f7;" (click)="editarDatosEnvio(p)">
+          <button
+            *ngIf="p.estado === 'en_camino'"
+            class="btn-detail-action"
+            style="width: 100%; justify-content: center; background: #16a34a; border-color: #16a34a; color: #ffffff; font-weight: 800;"
+            [disabled]="updatingId() === p.id"
+            (click)="marcarComoEntregado(p)">
+            <fa-icon [icon]="faCheckCircle"></fa-icon>
+            Marcar como Entregado (Adjuntar Evidencia)
+          </button>
+
+          <button
+            *ngIf="p.estado !== 'cancelado'"
+            class="btn-detail-action"
+            style="width: 100%; justify-content: center; background: #f4f5f7;"
+            (click)="editarDatosEnvio(p)">
             <fa-icon [icon]="faEdit"></fa-icon>
             {{ p.transportadora || p.guia_numero ? 'Editar Datos de Envío y Guía' : 'Asignar Transportadora y Guía' }}
           </button>
@@ -261,14 +332,27 @@
         <div class="financial-box">
           <div class="fin-row">
             <span>Subtotal de Productos</span>
-            <span style="font-weight: 700; color: #09090b;">{{ formatPrice(p.total) }}</span>
+            <span style="font-weight: 700; color: #09090b;">{{ formatPrice(getSubtotalReal(p)) }}</span>
+          </div>
+          <div class="fin-row" *ngIf="p.iva && p.iva > 0">
+            <span>IVA</span>
+            <span style="font-weight: 700; color: #09090b;">{{ formatPrice(p.iva) }}</span>
           </div>
           <div class="fin-row">
             <span>Costo de Envío</span>
-            <span style="font-weight: 700; color: #10b981;">Gratis / Incluido</span>
+            <span
+              *ngIf="getCostoEnvioReal(p) > 0"
+              style="font-weight: 700; color: #09090b;">
+              {{ formatPrice(getCostoEnvioReal(p)) }}
+            </span>
+            <span
+              *ngIf="getCostoEnvioReal(p) <= 0"
+              style="font-weight: 700; color: #10b981;">
+              Gratis / Incluido
+            </span>
           </div>
           <div class="fin-row total">
-            <span>Total Facturado</span>
+            <span>Total Facturado <small style="font-weight: 500; font-size: 0.72rem; color: #71717a;">(IVA Incluido)</small></span>
             <span>{{ formatPrice(p.total) }}</span>
           </div>
         </div>

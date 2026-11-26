@@ -22,7 +22,8 @@ use Throwable;
 final class CrearDraftPedidoAction
 {
     public function __construct(
-        private readonly CatalogoApiService $catalogo
+        private readonly CatalogoApiService $catalogo,
+        private readonly LiberarStockReservaAction $liberarStockReservaAction
     ) {}
 
     /**
@@ -31,11 +32,26 @@ final class CrearDraftPedidoAction
      */
     public function execute(Usuario $user, array $input): array
     {
-        // 1. Validación de pedidos pendientes simultáneos
+        // 0. Limpiar posibles pedidos DRAFT huérfanos del mismo usuario (evita bloqueo invisible al volver atrás)
+        $draftsPrevios = Pedido::where('usuario_id', $user->id)
+            ->where('estado', EstadoPedido::DRAFT)
+            ->get();
+
+        foreach ($draftsPrevios as $draftPrevio) {
+            DB::transaction(function () use ($draftPrevio) {
+                $locked = Pedido::where('id', $draftPrevio->id)->lockForUpdate()->first();
+                if ($locked && $locked->estado === EstadoPedido::DRAFT) {
+                    $this->liberarStockReservaAction->execute($locked);
+                    $locked->items()->delete();
+                    $locked->delete();
+                }
+            });
+        }
+
+        // 1. Validación de pedidos pendientes visibles simultáneos (solo PENDIENTE_PAGO y PENDIENTE)
         if ($user->correo !== 'arbelaezz.c11@gmail.com') {
             $pendingCount = Pedido::where('usuario_id', $user->id)
                 ->whereIn('estado', [
-                    EstadoPedido::DRAFT,
                     EstadoPedido::PENDIENTE_PAGO,
                     EstadoPedido::PENDIENTE,
                 ])
@@ -160,48 +176,46 @@ final class CrearDraftPedidoAction
                     + (int) $det['cantidad'];
             }
 
-            // El carrito ya reservó su stock. Ajustar solo diferencias y transferir
-            // la reserva al pedido cuando pasa a pendiente de pago/confirmado.
+            // Transferencia atómica de titularidad de reserva: Carrito -> StockReserva.
+            // Se realiza SIEMPRE (tanto para Wompi DRAFT como para pedidos offline) para evitar
+            // reservas duplicadas o doble devolución al limpiar el carrito en el frontend.
             $allProductIds = array_values(array_unique(array_merge(
                 array_keys($carritoPorProducto),
                 array_keys($pedidoPorProducto)
             )));
             $ajustesPedido = [];
-            // Para pedidos DRAFT el carrito conserva la reserva activa (por si el usuario vuelve al carrito).
-            // Solo transferimos la reserva de Carrito a StockReserva cuando NO es DRAFT.
-            if ($estadoInicial !== EstadoPedido::DRAFT) {
-                try {
-                    foreach ($allProductIds as $productoId) {
-                        $diff = ($pedidoPorProducto[$productoId] ?? 0) - ($carritoPorProducto[$productoId] ?? 0);
-                        if ($diff === 0) {
-                            continue;
-                        }
 
-                        $deltaCatalogo = -$diff;
-                        if (! $this->catalogo->ajustarStockProducto($productoId, $deltaCatalogo)) {
-                            throw new \RuntimeException(
-                                "No se pudo sincronizar la reserva del producto {$productoId}"
-                            );
-                        }
-
-                        $ajustesPedido[] = [
-                            'producto_id' => $productoId,
-                            'delta' => $deltaCatalogo,
-                        ];
+            try {
+                foreach ($allProductIds as $productoId) {
+                    $diff = ($pedidoPorProducto[$productoId] ?? 0) - ($carritoPorProducto[$productoId] ?? 0);
+                    if ($diff === 0) {
+                        continue;
                     }
-                } catch (Throwable $e) {
-                    foreach (array_reverse($ajustesPedido) as $ajuste) {
-                        $this->catalogo->ajustarStockProducto(
-                            $ajuste['producto_id'],
-                            -$ajuste['delta']
+
+                    $deltaCatalogo = -$diff;
+                    if (! $this->catalogo->ajustarStockProducto($productoId, $deltaCatalogo)) {
+                        throw new \RuntimeException(
+                            "No se pudo sincronizar la reserva del producto {$productoId}"
                         );
                     }
 
-                    throw $e;
+                    $ajustesPedido[] = [
+                        'producto_id' => $productoId,
+                        'delta' => $deltaCatalogo,
+                    ];
+                }
+            } catch (Throwable $e) {
+                foreach (array_reverse($ajustesPedido) as $ajuste) {
+                    $this->catalogo->ajustarStockProducto(
+                        $ajuste['producto_id'],
+                        -$ajuste['delta']
+                    );
                 }
 
-                Carrito::where('usuario_id', $user->id)->delete();
+                throw $e;
             }
+
+            Carrito::where('usuario_id', $user->id)->delete();
 
             foreach ($detallesParaInsertar as $det) {
                 StockReserva::create([
@@ -226,7 +240,9 @@ final class CrearDraftPedidoAction
                             $subtotal,
                             $iva,
                             $costoEnvio,
-                            $total
+                            $total,
+                            $user->tipo_documento,
+                            $user->numero_documento
                         )
                     );
                 } catch (Throwable $e) {

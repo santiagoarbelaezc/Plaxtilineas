@@ -28,19 +28,19 @@
   position: relative;
 }
 
-/* ── Split-Screen 100% Viewport (70% Blanco Izquierda · 30% Verde Derecha) ── */
+/* ── Split-Screen 100% Viewport (Contenido Amplio Izquierda · Barra Marca Compacta Derecha) ── */
 .perfil-grid {
   width: 100%;
   height: 100vh;
   height: 100dvh;
   display: grid;
-  grid-template-columns: 70% 30%;
+  grid-template-columns: minmax(0, 1fr) clamp(300px, 27vw, 375px);
   background: #ffffff;
   overflow: hidden;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   COLUMNA IZQUIERDA (70%, BLANCO PURO #ffffff, SCROLL INDEPENDIENTE)
+   COLUMNA IZQUIERDA (BLANCO PURO #ffffff, SCROLL INDEPENDIENTE)
    ═══════════════════════════════════════════════════════════════════ */
 .perfil-main-col {
   grid-column: 1;
@@ -52,7 +52,7 @@
   scrollbar-width: thin;
   scrollbar-color: #d4d4d8 #ffffff;
   background: #ffffff;
-  padding: clamp(24px, 3.5vh, 42px) clamp(24px, 3.5vw, 52px);
+  padding: clamp(24px, 3.5vh, 42px) clamp(24px, 3.2vw, 48px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -60,7 +60,7 @@
 
 .perfil-flow-container {
   width: 100%;
-  max-width: 960px;
+  max-width: 1040px;
   display: flex;
   flex-direction: column;
   gap: 24px;

@@ -94,6 +94,8 @@ class AuthController extends Controller
                 'id' => $usuario->id,
                 'correo' => $usuario->correo,
                 'nombre' => $usuario->nombre,
+                'tipo_documento' => $usuario->tipo_documento ?? '',
+                'numero_documento' => $usuario->numero_documento ?? '',
                 'telefono' => $usuario->telefono ?? '',
                 'rol' => $usuario->rol,
                 'requiere_cambio_password' => $usuario->requiere_cambio_password,
@@ -122,10 +124,19 @@ class AuthController extends Controller
         $tokenVerificacion = (string) random_int(100000, 999999);
         $tokenExpiraEn = now()->addHours(24);
 
+        $tipoDocumento = $request->input('tipo_documento')
+            ? strtoupper(trim((string) $request->input('tipo_documento')))
+            : null;
+        $numeroDocumento = $request->input('numero_documento')
+            ? preg_replace('/\s+/', '', (string) $request->input('numero_documento'))
+            : null;
+
         /** @var Usuario $usuario */
         $usuario = Usuario::query()->create([
             'nombre' => (string) $request->input('nombre'),
             'apellidos' => $request->input('apellidos'),
+            'tipo_documento' => $tipoDocumento,
+            'numero_documento' => $numeroDocumento,
             'edad' => $request->input('edad'),
             'direccion' => $request->input('direccion'),
             'ciudad' => $request->input('ciudad'),
@@ -153,6 +164,8 @@ class AuthController extends Controller
                 'id' => $usuario->id,
                 'correo' => $usuario->correo,
                 'nombre' => $usuario->nombre,
+                'tipo_documento' => $usuario->tipo_documento ?? '',
+                'numero_documento' => $usuario->numero_documento ?? '',
                 'telefono' => $usuario->telefono ?? '',
                 'rol' => $usuario->rol,
             ],
@@ -205,6 +218,8 @@ class AuthController extends Controller
                 'id' => $usuario->id,
                 'correo' => $usuario->correo,
                 'nombre' => $usuario->nombre,
+                'tipo_documento' => $usuario->tipo_documento ?? '',
+                'numero_documento' => $usuario->numero_documento ?? '',
                 'telefono' => $usuario->telefono ?? '',
                 'rol' => $usuario->rol,
                 'requiere_cambio_password' => $usuario->requiere_cambio_password,
@@ -632,6 +647,8 @@ class AuthController extends Controller
      *     correo: mixed,
      *     nombre: mixed,
      *     apellidos: string,
+     *     tipo_documento: string,
+     *     numero_documento: string,
      *     edad: int|null,
      *     direccion: string,
      *     ciudad: string,
@@ -646,6 +663,8 @@ class AuthController extends Controller
             'correo' => $usuario->correo,
             'nombre' => $usuario->nombre,
             'apellidos' => (string) ($usuario->apellidos ?? ''),
+            'tipo_documento' => (string) ($usuario->tipo_documento ?? ''),
+            'numero_documento' => (string) ($usuario->numero_documento ?? ''),
             'edad' => $usuario->edad !== null ? (int) $usuario->edad : null,
             'direccion' => (string) ($usuario->direccion ?? ''),
             'ciudad' => (string) ($usuario->ciudad ?? ''),
@@ -666,6 +685,8 @@ class AuthController extends Controller
             'id' => $usuario->id,
             'nombre' => $usuario->nombre,
             'apellidos' => $usuario->apellidos,
+            'tipo_documento' => $usuario->tipo_documento,
+            'numero_documento' => $usuario->numero_documento,
             'correo' => $usuario->correo,
             'edad' => $usuario->edad,
             'direccion' => $usuario->direccion,
@@ -683,14 +704,23 @@ class AuthController extends Controller
         /** @var Usuario $usuario */
         $usuario = $request->user();
 
-        $usuario->update([
+        $datos = [
             'nombre' => (string) $request->input('nombre'),
             'apellidos' => (string) $request->input('apellidos'),
             'edad' => (int) $request->input('edad'),
             'direccion' => (string) $request->input('direccion'),
             'ciudad' => (string) $request->input('ciudad'),
             'telefono' => (string) $request->input('telefono'),
-        ]);
+        ];
+
+        if ($request->filled('tipo_documento')) {
+            $datos['tipo_documento'] = strtoupper(trim((string) $request->input('tipo_documento')));
+        }
+        if ($request->filled('numero_documento')) {
+            $datos['numero_documento'] = preg_replace('/\s+/', '', (string) $request->input('numero_documento'));
+        }
+
+        $usuario->update($datos);
 
         return ApiResponse::success([
             'mensaje' => 'Perfil actualizado exitosamente',
@@ -698,6 +728,8 @@ class AuthController extends Controller
                 'id' => $usuario->id,
                 'nombre' => $usuario->nombre,
                 'apellidos' => $usuario->apellidos,
+                'tipo_documento' => $usuario->tipo_documento,
+                'numero_documento' => $usuario->numero_documento,
                 'correo' => $usuario->correo,
                 'edad' => $usuario->edad,
                 'direccion' => $usuario->direccion,

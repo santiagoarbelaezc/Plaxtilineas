@@ -23,35 +23,35 @@ final class CancelarPedidoAction
      */
     public function execute(int $pedidoId, Usuario $user): array
     {
-        /** @var Pedido|null $pedido */
-        $pedido = Pedido::find($pedidoId);
+        DB::transaction(function () use ($pedidoId, $user) {
+            /** @var Pedido|null $pedido */
+            $pedido = Pedido::where('id', $pedidoId)->lockForUpdate()->first();
 
-        if (! $pedido) {
-            throw new NotFoundHttpException('Pedido no encontrado.');
-        }
+            if (! $pedido) {
+                throw new NotFoundHttpException('Pedido no encontrado.');
+            }
 
-        if ($pedido->usuario_id !== $user->id) {
-            throw new AccesoNoPermitidoException('No autorizado.');
-        }
+            if ($pedido->usuario_id !== $user->id) {
+                throw new AccesoNoPermitidoException('No autorizado.');
+            }
 
-        $noCancelables = [
-            EstadoPedido::PAGADO,
-            EstadoPedido::CONFIRMADO,
-            EstadoPedido::EN_PREPARACION,
-            EstadoPedido::EN_CAMINO,
-            EstadoPedido::ENTREGADO,
-        ];
+            $noCancelables = [
+                EstadoPedido::PAGADO,
+                EstadoPedido::CONFIRMADO,
+                EstadoPedido::EN_PREPARACION,
+                EstadoPedido::EN_CAMINO,
+                EstadoPedido::ENTREGADO,
+            ];
 
-        if (in_array($pedido->estado, $noCancelables, true)) {
-            throw new BadRequestHttpException('No puedes cancelar un pedido que ya ha sido pagado o procesado.');
-        }
+            if (in_array($pedido->estado, $noCancelables, true)) {
+                throw new BadRequestHttpException('No puedes cancelar un pedido que ya ha sido pagado o procesado.');
+            }
 
-        if ($pedido->estado === EstadoPedido::CANCELADO) {
-            throw new BadRequestHttpException('El pedido ya está cancelado.');
-        }
+            if ($pedido->estado === EstadoPedido::CANCELADO) {
+                throw new BadRequestHttpException('El pedido ya está cancelado.');
+            }
 
-        DB::transaction(function () use ($pedido) {
-            // 1. Devolver el stock al catálogo antes de marcar como cancelado
+            // 1. Devolver el stock al catálogo antes de marcar como cancelado (idempotente bajo lockForUpdate)
             $this->liberarStockReservaAction->execute($pedido);
 
             // 2. Actualizar estado a cancelado

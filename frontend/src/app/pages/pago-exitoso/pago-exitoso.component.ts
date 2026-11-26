@@ -32,7 +32,7 @@ export class PagoExitosoComponent implements OnInit {
     }
 
     if (ref || txId) {
-      this.cartService.clearCart();
+      this.cartService.clearLocalCartAfterCheckout();
     }
 
     this.router.navigate(['/perfil'], {
