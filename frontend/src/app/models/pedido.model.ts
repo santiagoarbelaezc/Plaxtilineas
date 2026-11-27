@@ -1,3 +1,17 @@
+export type TipoEntrega = 'domicilio' | 'recogida_tienda';
+
+export interface ReglasEnvio {
+  compra_minima_domicilio: number;
+  costo_envio: number;
+  tienda: {
+    nombre: string;
+    direccion: string;
+    ciudad: string;
+    departamento: string;
+    horario: string;
+  };
+}
+
 export interface PedidoDetalle {
   id: number;
   producto_id: number;
@@ -23,6 +37,7 @@ export interface Pedido {
   departamento: string | null;
   telefono_contacto: string | null;
   metodo_pago: string;
+  tipo_entrega?: TipoEntrega;
   notas: string | null;
   fecha_actualizacion: string;
   wompi_referencia?: string;
@@ -49,7 +64,8 @@ export interface CrearDraftRequest {
     variante_id?: number;
     cantidad: number;
   }[];
-  direccion_envio: string;
+  tipo_entrega?: TipoEntrega;
+  direccion_envio?: string;
   ciudad?: string;
   departamento?: string;
   telefono_contacto?: string;
@@ -62,6 +78,7 @@ export interface CrearDraftResponse {
   pedido_id: number;
   codigo_pedido: string;
   wompi_referencia: string;
+  tipo_entrega?: TipoEntrega;
   subtotal: number;
   iva: number;
   costo_envio: number;

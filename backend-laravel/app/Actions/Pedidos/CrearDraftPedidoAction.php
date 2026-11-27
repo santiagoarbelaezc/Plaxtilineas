@@ -123,10 +123,40 @@ final class CrearDraftPedidoAction
                 ];
             }
 
+            $tipoEntrega = (string) ($input['tipo_entrega'] ?? \App\Enums\TipoEntrega::DOMICILIO->value);
+            if (! in_array($tipoEntrega, \App\Enums\TipoEntrega::values(), true)) {
+                $tipoEntrega = \App\Enums\TipoEntrega::DOMICILIO->value;
+            }
+
+            $esRecogida = $tipoEntrega === \App\Enums\TipoEntrega::RECOGIDA_TIENDA->value;
+            $minimoDomicilio = (float) config('business.envio_compra_minima_cop', 50000.0);
+
+            if (! $esRecogida && $subtotal < $minimoDomicilio) {
+                $faltante = max(0, (int) ceil($minimoDomicilio - $subtotal));
+                $minFmt = number_format($minimoDomicilio, 0, ',', '.');
+                $faltFmt = number_format($faltante, 0, ',', '.');
+
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'tipo_entrega' => [
+                        "El envío a domicilio requiere una compra mínima de \${$minFmt} COP. Agrega \${$faltFmt} más o elige recoger en tienda (envío \$0).",
+                    ],
+                ]);
+            }
+
             $ivaPorcentaje = (float) config('business.iva_porcentaje', 0.0);
             $iva = round($subtotal * $ivaPorcentaje, 2);
-            $costoEnvio = (float) config('business.costo_envio_cop', 10000.0);
+            $costoEnvio = $esRecogida ? 0.0 : (float) config('business.costo_envio_cop', 10000.0);
             $total = $subtotal + $iva + $costoEnvio;
+
+            $direccionEnvio = $esRecogida
+                ? 'Recogida en tienda — '.(string) config('business.tienda.direccion', 'Cra. 19 #19-35')
+                : (string) ($input['direccion_envio'] ?? '');
+            $ciudadEnvio = $esRecogida
+                ? (string) config('business.tienda.ciudad', 'Armenia')
+                : ($input['ciudad'] ?? null);
+            $deptoEnvio = $esRecogida
+                ? (string) config('business.tienda.departamento', 'Quindío')
+                : ($input['departamento'] ?? null);
 
             // Generar referencia única PLX-{timestamp}-{random4}
             $wompiRef = 'PLX-'.time().'-'.strtoupper(substr(bin2hex(random_bytes(2)), 0, 4));
@@ -149,15 +179,16 @@ final class CrearDraftPedidoAction
                 'usuario_id' => $user->id,
                 'codigo_pedido' => $codigoPedido,
                 'telefono_contacto' => $input['telefono_contacto'] ?? $user->telefono,
-                'direccion_envio' => (string) ($input['direccion_envio'] ?? ''),
-                'ciudad' => $input['ciudad'] ?? null,
-                'departamento' => $input['departamento'] ?? null,
+                'direccion_envio' => $direccionEnvio,
+                'ciudad' => $ciudadEnvio,
+                'departamento' => $deptoEnvio,
                 'notas' => $input['notas'] ?? null,
                 'subtotal' => $subtotal,
                 'iva' => $iva,
                 'costo_envio' => $costoEnvio,
                 'total' => $total,
                 'metodo_pago' => $metodoPago,
+                'tipo_entrega' => $tipoEntrega,
                 'wompi_referencia' => $wompiRef,
                 'estado' => $estadoInicial,
             ]);
@@ -242,7 +273,8 @@ final class CrearDraftPedidoAction
                             $costoEnvio,
                             $total,
                             $user->tipo_documento,
-                            $user->numero_documento
+                            $user->numero_documento,
+                            $tipoEntrega
                         )
                     );
                 } catch (Throwable $e) {
@@ -257,6 +289,8 @@ final class CrearDraftPedidoAction
                 'pedido_id' => $pedido->id,
                 'codigo_pedido' => $codigoPedido,
                 'estado' => $estadoInicial->value,
+                'tipo_entrega' => $tipoEntrega,
+                'costo_envio' => $costoEnvio,
                 'total' => $total,
             ]);
 
@@ -265,6 +299,7 @@ final class CrearDraftPedidoAction
                 'pedido_id' => $pedido->id,
                 'codigo_pedido' => $codigoPedido,
                 'wompi_referencia' => $wompiRef,
+                'tipo_entrega' => $tipoEntrega,
                 'subtotal' => $subtotal,
                 'iva' => $iva,
                 'costo_envio' => $costoEnvio,

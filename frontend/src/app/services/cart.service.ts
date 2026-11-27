@@ -610,14 +610,25 @@ export class CartService {
     return 0;
   }
 
-  /** Tarifa plana de envío */
-  getCostoEnvio(): number {
-    return 10_000;
+  /** Tarifa plana de envío a domicilio (cuando subtotal >= mínimo) o $0 en recogida en tienda */
+  static readonly COMPRA_MINIMA_DOMICILIO = 50_000;
+  static readonly COSTO_ENVIO_DOMICILIO = 10_000;
+
+  getCostoEnvio(tipoEntrega?: 'domicilio' | 'recogida_tienda'): number {
+    if (tipoEntrega === 'recogida_tienda') {
+      return 0;
+    }
+    if (tipoEntrega === 'domicilio') {
+      return CartService.COSTO_ENVIO_DOMICILIO;
+    }
+    return this.getSubtotal() >= CartService.COMPRA_MINIMA_DOMICILIO
+      ? CartService.COSTO_ENVIO_DOMICILIO
+      : 0;
   }
 
   /** Total final = subtotal + IVA + envío */
-  getTotalFinal(): number {
-    return this.getSubtotal() + this.getIVA() + this.getCostoEnvio();
+  getTotalFinal(tipoEntrega?: 'domicilio' | 'recogida_tienda'): number {
+    return this.getSubtotal() + this.getIVA() + this.getCostoEnvio(tipoEntrega);
   }
 
   /** @deprecated Usar getTotalFinal() */

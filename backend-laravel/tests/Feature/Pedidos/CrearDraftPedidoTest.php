@@ -294,3 +294,104 @@ test('conserva pedidos pendientes que todavía tienen menos de 30 minutos', func
         'estado' => 'pendiente_pago',
     ]);
 });
+
+test('endpoint reglas-envio devuelve compra minima de 50000, costo de envio y datos de tienda', function () {
+    $this->getJson('/api/pedidos/reglas-envio')
+        ->assertOk()
+        ->assertJson([
+            'compra_minima_domicilio' => 50000,
+            'costo_envio' => 10000,
+        ])
+        ->assertJsonStructure([
+            'compra_minima_domicilio',
+            'costo_envio',
+            'tienda' => ['nombre', 'direccion', 'ciudad', 'departamento', 'horario'],
+        ]);
+});
+
+test('envio a domicilio con subtotal menor a 50000 es rechazado con 422', function () {
+    Sanctum::actingAs($this->usuario);
+    $captcha = generarCaptchaTest('ABCD12');
+
+    $producto = Producto::factory()->create([
+        'nombre' => 'Pegante Afix',
+        'precio' => 49000.00,
+        'stock' => 10,
+        'controlar_stock' => true,
+    ]);
+
+    $this->postJson('/api/pedidos/draft', [
+        'captchaId' => $captcha->id,
+        'captchaCode' => 'ABCD12',
+        'tipo_entrega' => 'domicilio',
+        'direccion_envio' => 'Calle 37 N #20-85',
+        'ciudad' => 'Armenia',
+        'items' => [
+            ['producto_id' => $producto->id, 'cantidad' => 1],
+        ],
+    ])->assertStatus(422)
+        ->assertJsonValidationErrors(['tipo_entrega']);
+});
+
+test('envio a domicilio con subtotal igual o superior a 50000 aplica envio de 10000', function () {
+    Sanctum::actingAs($this->usuario);
+    $captcha = generarCaptchaTest('ABCD12');
+
+    $producto = Producto::factory()->create([
+        'nombre' => 'Soga Marinera',
+        'precio' => 50000.00,
+        'stock' => 10,
+        'controlar_stock' => true,
+    ]);
+
+    $this->postJson('/api/pedidos/draft', [
+        'captchaId' => $captcha->id,
+        'captchaCode' => 'ABCD12',
+        'tipo_entrega' => 'domicilio',
+        'direccion_envio' => 'Calle 37 N #20-85',
+        'ciudad' => 'Armenia',
+        'items' => [
+            ['producto_id' => $producto->id, 'cantidad' => 1],
+        ],
+    ])->assertStatus(201)
+        ->assertJson([
+            'tipo_entrega' => 'domicilio',
+            'subtotal' => 50000,
+            'costo_envio' => 10000,
+            'total' => 60000,
+        ]);
+});
+
+test('recogida en tienda permite cualquier monto con envio 0 y no exige direccion del cliente', function () {
+    Sanctum::actingAs($this->usuario);
+    $captcha = generarCaptchaTest('ABCD12');
+
+    $producto = Producto::factory()->create([
+        'nombre' => 'Pegante Afix Mini',
+        'precio' => 3900.00,
+        'stock' => 10,
+        'controlar_stock' => true,
+    ]);
+
+    $this->postJson('/api/pedidos/draft', [
+        'captchaId' => $captcha->id,
+        'captchaCode' => 'ABCD12',
+        'tipo_entrega' => 'recogida_tienda',
+        'items' => [
+            ['producto_id' => $producto->id, 'cantidad' => 1],
+        ],
+    ])->assertStatus(201)
+        ->assertJson([
+            'tipo_entrega' => 'recogida_tienda',
+            'subtotal' => 3900,
+            'costo_envio' => 0,
+            'total' => 3900,
+        ]);
+
+    $this->assertDatabaseHas('pedidos', [
+        'usuario_id' => $this->usuario->id,
+        'tipo_entrega' => 'recogida_tienda',
+        'costo_envio' => 0,
+        'total' => 3900,
+    ]);
+});

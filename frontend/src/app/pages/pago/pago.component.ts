@@ -236,7 +236,7 @@ import Swal from 'sweetalert2';
                 <span class="meta-dot">·</span>
                 <span>IVA incluido</span>
                 <span class="meta-dot">·</span>
-                <span>Envío en Armenia</span>
+                <span>{{ tipoEntrega() === 'recogida_tienda' ? 'Recogida en tienda ($ 0)' : 'Envío a domicilio' }}</span>
               </div>
             </div>
 
@@ -271,8 +271,10 @@ import Swal from 'sweetalert2';
                   <span>{{ formatPrice(totalPrice()) }}</span>
                 </div>
                 <div class="total-row-compact">
-                  <span>Envío (Armenia)</span>
-                  <span class="text-free-or-price">{{ formatPrice(10000) }}</span>
+                  <span>{{ tipoEntrega() === 'recogida_tienda' ? 'Recogida en tienda' : 'Envío a domicilio' }}</span>
+                  <span class="text-free-or-price">
+                    {{ costoEnvioActual() === 0 ? '$ 0 (Gratis)' : formatPrice(costoEnvioActual()) }}
+                  </span>
                 </div>
                 <div class="total-row-final">
                   <span>Total COP</span>
@@ -307,16 +309,90 @@ import Swal from 'sweetalert2';
                 <h1 class="pago-title-compact">Finalizar compra</h1>
               </div>
 
-              <!-- BLOQUE 1: Dirección de Entrega (Compacta y editable inline) -->
+              <!-- BLOQUE 1: Modalidad de Entrega (Domicilio >= $50.000 vs Recoger en tienda $0) -->
               <section class="checkout-section">
                 <div class="checkout-section-top">
-                  <span class="section-step-label">1. Dirección de entrega</span>
-                  <button type="button" class="btn-link-edit" (click)="toggleEditEnvio()">
-                    {{ editandoEnvio() ? 'Guardar' : 'Modificar' }}
+                  <span class="section-step-label">1. Modalidad de entrega</span>
+                  @if (tipoEntrega() === 'domicilio') {
+                    <button type="button" class="btn-link-edit" (click)="toggleEditEnvio()">
+                      {{ editandoEnvio() ? 'Guardar' : 'Modificar dirección' }}
+                    </button>
+                  }
+                </div>
+
+                <!-- Selector de modalidad -->
+                <div class="delivery-mode-grid">
+                  <button
+                    type="button"
+                    class="delivery-mode-card"
+                    [class.selected]="tipoEntrega() === 'domicilio'"
+                    [class.disabled]="!puedeElegirDomicilio()"
+                    [disabled]="!puedeElegirDomicilio()"
+                    (click)="setTipoEntrega('domicilio')">
+                    <div class="delivery-mode-header">
+                      <div class="delivery-mode-icon">
+                        <svg width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                          <rect x="1" y="3" width="15" height="13"></rect>
+                          <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                          <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                          <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                        </svg>
+                      </div>
+                      <span class="delivery-mode-price">{{ formatPrice(costoEnvioConfig()) }}</span>
+                      <span class="delivery-mode-radio"><span class="delivery-mode-dot"></span></span>
+                    </div>
+                    <div class="delivery-mode-body">
+                      <span class="delivery-mode-title">Envío a domicilio</span>
+                      <span class="delivery-mode-sub" *ngIf="puedeElegirDomicilio()">
+                        Despacho seguro a tu dirección en cualquier ciudad
+                      </span>
+                      <span class="delivery-mode-locked" *ngIf="!puedeElegirDomicilio()">
+                        Compra mínima {{ formatPrice(compraMinimaDomicilio()) }} · Te faltan {{ formatPrice(faltanteParaDomicilio()) }}
+                      </span>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="delivery-mode-card"
+                    [class.selected]="tipoEntrega() === 'recogida_tienda'"
+                    (click)="setTipoEntrega('recogida_tienda')">
+                    <div class="delivery-mode-header">
+                      <div class="delivery-mode-icon">
+                        <svg width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                      </div>
+                      <span class="delivery-mode-price is-free">$ 0 · Gratis</span>
+                      <span class="delivery-mode-radio"><span class="delivery-mode-dot"></span></span>
+                    </div>
+                    <div class="delivery-mode-body">
+                      <span class="delivery-mode-title">Recoger en tienda</span>
+                      <span class="delivery-mode-sub">
+                        Sin compra mínima · {{ tiendaInfo().direccion }}, {{ tiendaInfo().ciudad }}
+                      </span>
+                    </div>
                   </button>
                 </div>
 
-                @if (!editandoEnvio()) {
+                @if (tipoEntrega() === 'recogida_tienda') {
+                  <div class="pickup-store-card">
+                    <div class="envio-strip-icon">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                      </svg>
+                    </div>
+                    <div class="envio-strip-text">
+                      <p class="envio-dir-text">{{ tiendaInfo().nombre }}</p>
+                      <p class="envio-meta-line">
+                        {{ tiendaInfo().direccion }}, {{ tiendaInfo().ciudad }}, {{ tiendaInfo().departamento }}
+                      </p>
+                      <p class="envio-meta-line">{{ tiendaInfo().horario }}</p>
+                    </div>
+                  </div>
+                } @else if (!editandoEnvio()) {
                   <div class="envio-strip">
                     <div class="envio-strip-icon">
                       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -527,6 +603,18 @@ export class PagoComponent implements OnInit, OnDestroy {
   // Método seleccionado (por defecto 'wompi')
   metodoSeleccionado = signal<'wompi' | 'transferencia' | 'asesor'>('wompi');
 
+  // Modalidad de entrega y reglas dinámicas desde el backend
+  tipoEntrega = signal<'domicilio' | 'recogida_tienda'>('domicilio');
+  compraMinimaDomicilio = signal<number>(50000);
+  costoEnvioConfig = signal<number>(10000);
+  tiendaInfo = signal({
+    nombre: 'Plaxtilineas — Sede Principal',
+    direccion: 'Cra. 19 #19-35',
+    ciudad: 'Armenia',
+    departamento: 'Quindío',
+    horario: 'Lunes a Viernes 8:00 a.m. - 6:00 p.m. · Sábados 8:00 a.m. - 2:00 p.m.'
+  });
+
   // Datos de envío del pedido
   editandoEnvio = signal(false);
   private usuarioEditoEnvioManual = false;
@@ -562,7 +650,27 @@ export class PagoComponent implements OnInit, OnDestroy {
       this.itemsCarrito.set(items);
       if ((!items || items.length === 0) && !this.procesando() && !this.pagoEnCurso) {
         this.router.navigate(['/carrito']);
+        return;
       }
+      this.sincronizarModalidadEntregaPorMonto();
+    });
+
+    // 2b. Cargar reglas vigentes de envío y tienda desde el backend
+    this.pedidoSvc.obtenerReglasEnvio().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => {
+        const data = res?.data ?? res;
+        if (typeof data?.compra_minima_domicilio === 'number') {
+          this.compraMinimaDomicilio.set(data.compra_minima_domicilio);
+        }
+        if (typeof data?.costo_envio === 'number') {
+          this.costoEnvioConfig.set(data.costo_envio);
+        }
+        if (data?.tienda) {
+          this.tiendaInfo.set(data.tienda);
+        }
+        this.sincronizarModalidadEntregaPorMonto();
+      },
+      error: () => {}
     });
 
     // 3. Suscripción a estado de Wompi
@@ -609,8 +717,41 @@ export class PagoComponent implements OnInit, OnDestroy {
     return this.itemsCarrito().reduce((acc, item) => acc + item.precioUnitario * item.cantidad, 0);
   }
 
+  puedeElegirDomicilio(): boolean {
+    return this.totalPrice() >= this.compraMinimaDomicilio();
+  }
+
+  faltanteParaDomicilio(): number {
+    return Math.max(0, this.compraMinimaDomicilio() - this.totalPrice());
+  }
+
+  costoEnvioActual(): number {
+    return this.tipoEntrega() === 'recogida_tienda' ? 0 : this.costoEnvioConfig();
+  }
+
   totalConEnvio(): number {
-    return this.totalPrice() + 10000;
+    return this.totalPrice() + this.costoEnvioActual();
+  }
+
+  setTipoEntrega(tipo: 'domicilio' | 'recogida_tienda'): void {
+    if (tipo === 'domicilio' && !this.puedeElegirDomicilio()) {
+      return;
+    }
+    this.tipoEntrega.set(tipo);
+    this.errorEnvio.set(null);
+    // Si ya había un draft pendiente con la otra modalidad, se cancela al cambiar modalidad
+    const pendienteId = this.pedidoWompiPendienteId();
+    if (pendienteId) {
+      this.pedidoWompiPendienteId.set(null);
+      this.pagoEnCurso = false;
+      this.pedidoSvc.cancelarPedido(pendienteId).subscribe({ error: () => {} });
+    }
+  }
+
+  private sincronizarModalidadEntregaPorMonto(): void {
+    if (!this.puedeElegirDomicilio() && this.tipoEntrega() === 'domicilio') {
+      this.tipoEntrega.set('recogida_tienda');
+    }
   }
 
   formatPrice(precio: number): string {
@@ -679,28 +820,35 @@ export class PagoComponent implements OnInit, OnDestroy {
     if (this.procesando()) return;
     this.errorEnvio.set(null);
 
-    // 1. Validar datos de envío
-    if (!this.datosEnvioForm.direccion || !this.datosEnvioForm.direccion.trim()) {
-      this.editandoEnvio.set(true);
-      this.errorEnvio.set('Por favor ingresa la dirección de entrega.');
-      Swal.fire({
-        title: 'Dirección requerida',
-        text: 'Por favor ingresa tu dirección de entrega para continuar.',
-        icon: 'warning',
-        confirmButtonColor: '#16a34a'
-      });
-      return;
-    }
-    if (!this.datosEnvioForm.telefono || !this.datosEnvioForm.telefono.trim()) {
-      this.editandoEnvio.set(true);
-      this.errorEnvio.set('Por favor ingresa un teléfono de contacto.');
-      Swal.fire({
-        title: 'Teléfono requerido',
-        text: 'Por favor ingresa un teléfono de contacto para el despacho.',
-        icon: 'warning',
-        confirmButtonColor: '#16a34a'
-      });
-      return;
+    // 1. Validar datos de envío (solo obligatorios para domicilio)
+    if (this.tipoEntrega() === 'domicilio') {
+      if (!this.puedeElegirDomicilio()) {
+        this.tipoEntrega.set('recogida_tienda');
+        this.errorEnvio.set(`El envío a domicilio requiere compras desde ${this.formatPrice(this.compraMinimaDomicilio())}. Seleccionamos recogida en tienda ($ 0).`);
+        return;
+      }
+      if (!this.datosEnvioForm.direccion || !this.datosEnvioForm.direccion.trim()) {
+        this.editandoEnvio.set(true);
+        this.errorEnvio.set('Por favor ingresa la dirección de entrega.');
+        Swal.fire({
+          title: 'Dirección requerida',
+          text: 'Por favor ingresa tu dirección de entrega para continuar.',
+          icon: 'warning',
+          confirmButtonColor: '#16a34a'
+        });
+        return;
+      }
+      if (!this.datosEnvioForm.telefono || !this.datosEnvioForm.telefono.trim()) {
+        this.editandoEnvio.set(true);
+        this.errorEnvio.set('Por favor ingresa un teléfono de contacto.');
+        Swal.fire({
+          title: 'Teléfono requerido',
+          text: 'Por favor ingresa un teléfono de contacto para el despacho.',
+          icon: 'warning',
+          confirmButtonColor: '#16a34a'
+        });
+        return;
+      }
     }
 
     // Si ya existe un pedido Wompi pendiente de este intento (ej. el usuario cerró el modal de Wompi sin pagar),
@@ -764,16 +912,18 @@ export class PagoComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // 3. Validación de datos de envío
-    if (!this.datosEnvioForm.direccion || !this.datosEnvioForm.direccion.trim()) {
-      this.editandoEnvio.set(true);
-      this.errorEnvio.set('Por favor ingresa la dirección de entrega.');
-      return;
-    }
-    if (!this.datosEnvioForm.telefono || !this.datosEnvioForm.telefono.trim()) {
-      this.editandoEnvio.set(true);
-      this.errorEnvio.set('Por favor ingresa un teléfono de contacto.');
-      return;
+    // 3. Validación de datos de envío (solo obligatorios para domicilio)
+    if (this.tipoEntrega() === 'domicilio') {
+      if (!this.datosEnvioForm.direccion || !this.datosEnvioForm.direccion.trim()) {
+        this.editandoEnvio.set(true);
+        this.errorEnvio.set('Por favor ingresa la dirección de entrega.');
+        return;
+      }
+      if (!this.datosEnvioForm.telefono || !this.datosEnvioForm.telefono.trim()) {
+        this.editandoEnvio.set(true);
+        this.errorEnvio.set('Por favor ingresa un teléfono de contacto.');
+        return;
+      }
     }
 
     // Si ya existe un pedido Wompi pendiente de este intento (ej. el usuario cerró el modal de Wompi sin pagar),
@@ -814,11 +964,19 @@ export class PagoComponent implements OnInit, OnDestroy {
           return;
         }
 
+        const esRecogida = this.tipoEntrega() === 'recogida_tienda';
         const draftPayload = {
           items: itemsPayload,
-          direccion_envio: this.datosEnvioForm.direccion.trim(),
-          ciudad: this.datosEnvioForm.ciudad.trim() || 'Armenia',
-          departamento: this.datosEnvioForm.departamento.trim() || 'Quindío',
+          tipo_entrega: this.tipoEntrega(),
+          direccion_envio: esRecogida
+            ? `Recogida en tienda — ${this.tiendaInfo().direccion}`
+            : this.datosEnvioForm.direccion.trim(),
+          ciudad: esRecogida
+            ? this.tiendaInfo().ciudad
+            : (this.datosEnvioForm.ciudad.trim() || 'Armenia'),
+          departamento: esRecogida
+            ? this.tiendaInfo().departamento
+            : (this.datosEnvioForm.departamento.trim() || 'Quindío'),
           telefono_contacto: this.datosEnvioForm.telefono.trim(),
           notas: this.datosEnvioForm.notas ? this.datosEnvioForm.notas.trim() : undefined,
           metodo_pago: this.metodoSeleccionado(),
@@ -867,7 +1025,10 @@ export class PagoComponent implements OnInit, OnDestroy {
           },
           error: (err) => {
             this.procesando.set(false);
-            const msg = err.error?.error || 'Ocurrió un error al registrar tu pedido.';
+            const validationErrors = err.error?.errors
+              ? Object.values(err.error.errors).flat().find((m: unknown) => typeof m === 'string')
+              : null;
+            const msg = err.error?.error || (validationErrors as string | null) || err.error?.message || 'Ocurrió un error al registrar tu pedido.';
             this.errorEnvio.set(msg);
             Swal.fire('Atención', msg, 'error');
           }

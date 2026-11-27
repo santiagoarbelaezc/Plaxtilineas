@@ -601,7 +601,7 @@
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  width: 304px;
+  width: 332px;
   background: #ffffff;
   border: 1.5px solid #e4e4e7;
   border-radius: 16px;
@@ -625,7 +625,7 @@
 
 /* Header Verde → Carbón Corporativo */
 .user-dropdown-header-tw {
-  padding: 16px 18px;
+  padding: 18px 20px;
   background:
     radial-gradient(circle at 92% 10%, rgba(74, 222, 128, 0.22) 0%, transparent 55%),
     linear-gradient(135deg, #2c7337 0%, #173a1d 55%, #09090b 100%);
@@ -635,13 +635,13 @@
 .dropdown-user-info-row {
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 14px;
 }
 
 .dropdown-avatar-large {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
   background: rgba(255, 255, 255, 0.14);
   border: 1.5px solid rgba(74, 222, 128, 0.45);
   color: #ffffff;
@@ -649,7 +649,7 @@
   align-items: center;
   justify-content: center;
   font-family: var(--font-primary, 'Montserrat', sans-serif);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 800;
   flex-shrink: 0;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
@@ -666,18 +666,18 @@
 
 .dropdown-kicker {
   font-family: var(--font-primary, 'Montserrat', sans-serif);
-  font-size: 9.5px;
+  font-size: 10.5px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: #86efac;
   line-height: 1.2;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .dropdown-user-name {
   font-family: var(--font-primary, 'Montserrat', sans-serif);
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 800;
   color: #ffffff;
   white-space: nowrap;
@@ -687,8 +687,8 @@
 }
 
 .dropdown-email {
-  font-size: 11.5px;
-  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.78);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -697,18 +697,18 @@
 
 /* Menu Items List */
 .dropdown-menu-list {
-  padding: 8px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   background: #ffffff;
 }
 
 .dropdown-item-tw {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
+  gap: 13px;
+  padding: 12px 14px;
   border-radius: 12px;
   cursor: pointer;
   transition: background-color 0.18s ease, transform 0.18s ease;
@@ -727,15 +727,15 @@
 
 /* Icon Box */
 .dropdown-item-icon-box {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
   background: #f4f5f7;
   color: #09090b;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13.5px;
+  font-size: 15px;
   flex-shrink: 0;
   transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -757,22 +757,22 @@
 
 .item-title {
   font-family: var(--font-primary, 'Montserrat', sans-serif);
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 700;
   color: #09090b;
   line-height: 1.25;
 }
 
 .item-subtitle {
-  font-size: 11.5px;
+  font-size: 12.8px;
   color: #71717a;
-  line-height: 1.25;
+  line-height: 1.3;
   margin-top: 2px;
 }
 
 /* Chevron indicator on item */
 .item-arrow-icon {
-  font-size: 10.5px;
+  font-size: 12px;
   color: #a1a1aa;
   margin-left: auto;
   transition: transform 0.2s ease, color 0.2s ease;
@@ -785,7 +785,7 @@
 
 /* Dropdown Footer & Logout */
 .dropdown-footer-tw {
-  padding: 8px;
+  padding: 10px;
   border-top: 1px solid #ececef;
   background: #fafafa;
 }

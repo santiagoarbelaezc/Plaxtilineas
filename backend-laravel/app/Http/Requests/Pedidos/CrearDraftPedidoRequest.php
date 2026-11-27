@@ -18,12 +18,15 @@ class CrearDraftPedidoRequest extends FormRequest
      */
     public function rules(): array
     {
+        $esRecogida = $this->input('tipo_entrega') === 'recogida_tienda';
+
         return [
             'items' => ['required', 'array', 'min:1'],
             'items.*.producto_id' => ['required', 'integer'],
             'items.*.variante_id' => ['nullable', 'integer'],
             'items.*.cantidad' => ['required', 'integer', 'min:1'],
-            'direccion_envio' => ['required', 'string'],
+            'tipo_entrega' => ['nullable', 'string', 'in:domicilio,recogida_tienda'],
+            'direccion_envio' => [$esRecogida ? 'nullable' : 'required', 'string'],
             'ciudad' => ['nullable', 'string', 'max:100'],
             'departamento' => ['nullable', 'string', 'max:100'],
             'telefono_contacto' => ['nullable', 'string', 'max:50'],

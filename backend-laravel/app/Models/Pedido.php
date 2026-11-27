@@ -29,6 +29,7 @@ use Illuminate\Support\Carbon;
  * @property string $costo_envio
  * @property string $total
  * @property string $metodo_pago
+ * @property string $tipo_entrega
  * @property string|null $wompi_referencia
  * @property string|null $wompi_link_id
  * @property string|null $wompi_transaction_id
@@ -73,6 +74,7 @@ class Pedido extends Model
         'costo_envio',
         'total',
         'metodo_pago',
+        'tipo_entrega',
         'wompi_referencia',
         'wompi_link_id',
         'wompi_transaction_id',

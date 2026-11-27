@@ -290,8 +290,20 @@
               <span>{{ formatearPrecio(subtotal()) }}</span>
             </div>
             <div class="summary-row-dark">
-              <span>Envío estimado (Armenia)</span>
-              <span class="summary-val-strong">{{ formatearPrecio(costoEnvio()) }}</span>
+              <span>{{ subtotal() >= 50000 ? 'Envío a domicilio (opcional)' : 'Recogida en tienda' }}</span>
+              <span class="summary-val-strong">
+                {{ subtotal() >= 50000 ? formatearPrecio(costoEnvio()) : '$ 0 (Gratis)' }}
+              </span>
+            </div>
+            <div
+              *ngIf="subtotal() > 0 && subtotal() < 50000"
+              style="font-size: 0.74rem; color: #bbf7d0; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16); border-radius: 8px; padding: 8px 10px; line-height: 1.4;">
+              Envío a domicilio desde <strong>$ 50.000</strong> (te faltan <strong>{{ formatearPrecio(50000 - subtotal()) }}</strong>). Puedes comprar ya con <strong>recogida en tienda ($ 0)</strong>.
+            </div>
+            <div
+              *ngIf="subtotal() >= 50000"
+              style="font-size: 0.73rem; color: rgba(255,255,255,0.82); line-height: 1.35;">
+              También puedes elegir <strong>recoger en tienda ($ 0)</strong> en el siguiente paso.
             </div>
             <div class="summary-row-dark">
               <span>Impuestos (IVA)</span>

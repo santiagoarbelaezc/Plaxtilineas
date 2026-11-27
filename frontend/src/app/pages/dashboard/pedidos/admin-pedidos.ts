@@ -32,7 +32,8 @@ import {
   faReceipt,
   faPrint,
   faChevronLeft,
-  faChevronRight
+  faChevronRight,
+  faStore
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -73,6 +74,7 @@ export class AdminPedidos implements OnInit {
   faPrint = faPrint;
   faChevronLeft = faChevronLeft;
   faChevronRight = faChevronRight;
+  faStore = faStore;
 
   selectedPedido = signal<Pedido | null>(null);
 
@@ -82,6 +84,7 @@ export class AdminPedidos implements OnInit {
 
   searchTerm = signal('');
   filtroEstado = signal<string>('todos');
+  filtroEntrega = signal<'todos' | 'domicilio' | 'recogida_tienda'>('todos');
   filtroFecha = signal<string>('todos');
   fechaPersonalizada = signal<string>('');
   paginaActual = signal<number>(1);
@@ -107,6 +110,10 @@ export class AdminPedidos implements OnInit {
     const filtro = this.filtroEstado();
     if (filtro !== 'todos') {
       result = result.filter(p => p.estado === filtro);
+    }
+    const entregaFiltro = this.filtroEntrega();
+    if (entregaFiltro !== 'todos') {
+      result = result.filter(p => (p.tipo_entrega || 'domicilio') === entregaFiltro);
     }
     const fechaFiltro = this.filtroFecha();
     if (fechaFiltro !== 'todos') {
@@ -405,22 +412,84 @@ export class AdminPedidos implements OnInit {
     });
   }
 
+  private escapeHtml(value: string): string {
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   eliminarPedidoComoAdmin(pedido: Pedido): void {
     if (!['pendiente_pago', 'pendiente'].includes(pedido.estado)) {
-      Swal.fire('Acción no permitida', 'Solo puedes eliminar pedidos pendientes de confirmación de pago.', 'warning');
+      Swal.fire({
+        width: 440,
+        padding: '1.75rem 1.75rem 1.5rem',
+        html: `
+          <div style="text-align: center; font-family: inherit;">
+            <div style="width: 58px; height: 58px; margin: 0 auto 14px; border-radius: 999px; background: #fffbeb; border: 1.5px solid #fde68a; display: flex; align-items: center; justify-content: center;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            </div>
+            <h3 style="margin: 0 0 8px; font-size: 1.2rem; font-weight: 800; color: #09090b;">Acción no permitida</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: #52525b; line-height: 1.5;">
+              Solo puedes eliminar pedidos que estén pendientes de confirmación de pago.
+            </p>
+          </div>
+        `,
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#09090b',
+        buttonsStyling: true,
+      });
       return;
     }
 
+    const codigoEsc = this.escapeHtml(String(pedido.codigo_pedido || ''));
+    const clienteLabel = this.escapeHtml(pedido.cliente_nombre || 'Invitado / Anónimo');
+    const totalLabel = this.escapeHtml(this.formatPrice(pedido.total));
+
     Swal.fire({
-      title: 'Eliminar pedido',
-      html: `Escribe <strong>eliminar</strong> para borrar permanentemente el pedido <strong>${pedido.codigo_pedido}</strong>.<br><span style="font-size: 0.84rem; color: #71717a; margin-top: 8px; display: inline-block;">Esta acción es irreversible y no se puede deshacer.</span>`,
+      width: 470,
+      padding: '1.75rem 1.75rem 1.5rem',
+      html: `
+        <div style="text-align: center; font-family: inherit;">
+          <div style="width: 60px; height: 60px; margin: 0 auto 14px; border-radius: 999px; background: #fef2f2; border: 1.5px solid #fecaca; display: flex; align-items: center; justify-content: center;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+              <path d="M10 11v6"/>
+              <path d="M14 11v6"/>
+              <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+            </svg>
+          </div>
+          <h3 style="margin: 0 0 8px; font-size: 1.25rem; font-weight: 800; color: #09090b;">Eliminar pedido pendiente</h3>
+          <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: #f4f4f5; border: 1px solid #e4e4e7; font-size: 0.82rem; font-weight: 700; color: #27272a; margin-bottom: 14px;">
+            <span>${codigoEsc}</span>
+            <span style="color: #a1a1aa;">&bull;</span>
+            <span>${clienteLabel}</span>
+            <span style="color: #a1a1aa;">&bull;</span>
+            <span>${totalLabel}</span>
+          </div>
+          <p style="margin: 0 0 10px; font-size: 0.9rem; color: #3f3f46; line-height: 1.5;">
+            Escribe <strong style="color: #dc2626; background: #fef2f2; padding: 1px 7px; border-radius: 6px; border: 1px solid #fecaca;">eliminar</strong> para confirmar el borrado permanente.
+          </p>
+          <p style="margin: 0; font-size: 0.8rem; color: #71717a;">
+            Esta acción es irreversible y no se puede deshacer.
+          </p>
+        </div>
+      `,
       input: 'text',
-      inputPlaceholder: 'eliminar',
-      icon: 'warning',
+      inputPlaceholder: 'Escribe eliminar aquí...',
       showCancelButton: true,
+      reverseButtons: true,
       confirmButtonText: 'Sí, eliminar pedido',
       cancelButtonText: 'Cancelar',
       confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#f4f4f5',
       customClass: {
         popup: 'swal-danger-modal',
         confirmButton: 'swal-danger-btn',
@@ -438,12 +507,53 @@ export class AdminPedidos implements OnInit {
         next: () => {
           this.selectedPedido.set(null);
           this.updatingId.set(null);
-          Swal.fire('Pedido eliminado', 'El pedido pendiente fue eliminado correctamente.', 'success');
+          Swal.fire({
+            width: 440,
+            padding: '1.85rem 1.75rem 1.5rem',
+            html: `
+              <div style="text-align: center; font-family: inherit;">
+                <div style="width: 62px; height: 62px; margin: 0 auto 16px; border-radius: 999px; background: #f0fdf4; border: 1.5px solid #bbf7d0; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px -6px rgba(22, 163, 74, 0.35);">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </div>
+                <h3 style="margin: 0 0 8px; font-size: 1.28rem; font-weight: 800; color: #09090b; letter-spacing: -0.01em;">
+                  Pedido eliminado
+                </h3>
+                <div style="display: inline-block; padding: 4px 12px; border-radius: 999px; background: #f4f4f5; border: 1px solid #e4e4e7; font-size: 0.8rem; font-weight: 700; color: #3f3f46; margin-bottom: 12px;">
+                  ${codigoEsc}
+                </div>
+                <p style="margin: 0; font-size: 0.92rem; color: #52525b; line-height: 1.5;">
+                  El pedido pendiente fue eliminado correctamente del historial.
+                </p>
+              </div>
+            `,
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#09090b',
+          });
           this.cargarPedidos();
         },
         error: (err) => {
           this.updatingId.set(null);
-          Swal.fire('No se pudo eliminar', err.error?.error || 'El pedido no puede ser eliminado.', 'error');
+          const errorMsg = this.escapeHtml(String(err.error?.error || 'El pedido no puede ser eliminado en este momento.'));
+          Swal.fire({
+            width: 440,
+            padding: '1.75rem 1.75rem 1.5rem',
+            html: `
+              <div style="text-align: center; font-family: inherit;">
+                <div style="width: 58px; height: 58px; margin: 0 auto 14px; border-radius: 999px; background: #fef2f2; border: 1.5px solid #fecaca; display: flex; align-items: center; justify-content: center;">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                </div>
+                <h3 style="margin: 0 0 8px; font-size: 1.2rem; font-weight: 800; color: #09090b;">No se pudo eliminar</h3>
+                <p style="margin: 0; font-size: 0.9rem; color: #52525b; line-height: 1.5;">${errorMsg}</p>
+              </div>
+            `,
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#09090b',
+          });
         }
       });
     });
@@ -1086,13 +1196,20 @@ export class AdminPedidos implements OnInit {
 
   filtrarPorEstado(estado: string): void {
     this.filtroEstado.set(estado);
+    this.paginaActual.set(1);
+  }
+
+  esRecogidaTienda(pedido: Pedido): boolean {
+    return pedido.tipo_entrega === 'recogida_tienda';
   }
 
   limpiarFiltros(): void {
     this.filtroEstado.set('todos');
+    this.filtroEntrega.set('todos');
     this.filtroFecha.set('todos');
     this.fechaPersonalizada.set('');
     this.searchTerm.set('');
+    this.paginaActual.set(1);
   }
 
   verDetalle(pedido: Pedido): void {

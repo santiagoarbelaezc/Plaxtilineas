@@ -131,7 +131,14 @@
         </div>
 
         <div class="client-address-box">
-          <div class="address-label">Dirección de Entrega</div>
+          <div class="address-label" style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+            <span>{{ p.tipo_entrega === 'recogida_tienda' ? 'Modalidad: Recogida en Tienda' : 'Dirección de Entrega' }}</span>
+            <span
+              *ngIf="p.tipo_entrega === 'recogida_tienda'"
+              style="font-size:0.7rem; font-weight:800; color:#15803d; background:#dcfce7; border:1px solid #bbf7d0; padding:2px 8px; border-radius:999px; text-transform:uppercase;">
+              Envío $ 0 · Retiro en sede
+            </span>
+          </div>
           <p class="address-value">{{ p.direccion_envio || 'Retiro en punto o no especificada' }}</p>
           <p class="address-city" *ngIf="p.ciudad">
             {{ p.ciudad }}{{ p.departamento ? ', ' + p.departamento : '' }}
@@ -249,17 +256,17 @@
         <!-- Botones de Acción de Envío -->
         <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 10px;">
           <button
-            *ngIf="p.estado === 'en_camino'"
+            *ngIf="p.estado === 'en_camino' || (p.tipo_entrega === 'recogida_tienda' && ['pagado', 'confirmado', 'en_preparacion'].includes(p.estado))"
             class="btn-detail-action"
             style="width: 100%; justify-content: center; background: #16a34a; border-color: #16a34a; color: #ffffff; font-weight: 800;"
             [disabled]="updatingId() === p.id"
             (click)="marcarComoEntregado(p)">
             <fa-icon [icon]="faCheckCircle"></fa-icon>
-            Marcar como Entregado (Adjuntar Evidencia)
+            {{ p.tipo_entrega === 'recogida_tienda' ? 'Marcar como Entregado en Tienda (Adjuntar Evidencia)' : 'Marcar como Entregado (Adjuntar Evidencia)' }}
           </button>
 
           <button
-            *ngIf="p.estado !== 'cancelado'"
+            *ngIf="p.estado !== 'cancelado' && p.tipo_entrega !== 'recogida_tienda'"
             class="btn-detail-action"
             style="width: 100%; justify-content: center; background: #f4f5f7;"
             (click)="editarDatosEnvio(p)">
@@ -524,6 +531,20 @@
             />
           </div>
 
+          <!-- Combo Box para filtrar por Modalidad de Entrega -->
+          <div class="filter-select-wrapper" style="min-width: 195px;">
+            <select
+              class="input-minimal-select"
+              [ngModel]="filtroEntrega()"
+              (ngModelChange)="filtroEntrega.set($event); paginaActual.set(1)"
+              title="Filtrar por modalidad de entrega">
+              <option value="todos">Todas las Entregas</option>
+              <option value="domicilio">Envío a Domicilio</option>
+              <option value="recogida_tienda">Recoger en Tienda</option>
+            </select>
+            <fa-icon [icon]="faChevronDown" class="select-arrow-icon"></fa-icon>
+          </div>
+
           <!-- Combo Box para filtrar por Estado -->
           <div class="filter-select-wrapper">
             <select
@@ -564,12 +585,13 @@
         <p>No se encontraron pedidos con los criterios seleccionados.</p>
       </div>
 
-      <!-- Tabla de Pedidos: Solo columnas solicitadas: Cliente, Fecha, Total, Estado (+ Acción) -->
+      <!-- Tabla de Pedidos: Cliente, Entrega, Fecha, Total, Estado (+ Acción) -->
       <div class="table-responsive" *ngIf="!loading() && filteredPedidos.length > 0">
         <table class="data-table">
           <thead>
             <tr>
               <th>Cliente</th>
+              <th>Entrega</th>
               <th>Fecha</th>
               <th>Total</th>
               <th>Estado</th>
@@ -594,7 +616,18 @@
                 </div>
               </td>
 
-              <!-- 2. Fecha -->
+              <!-- 2. Modalidad de Entrega -->
+              <td>
+                <span
+                  class="table-entrega-badge"
+                  [class.recogida]="esRecogidaTienda(pedido)"
+                  [class.domicilio]="!esRecogidaTienda(pedido)">
+                  <fa-icon [icon]="esRecogidaTienda(pedido) ? faStore : faTruck"></fa-icon>
+                  {{ esRecogidaTienda(pedido) ? 'Recoger en tienda' : 'Envío a domicilio' }}
+                </span>
+              </td>
+
+              <!-- 3. Fecha -->
               <td style="font-size: 0.85rem; color: #52525b; font-weight: 600;">
                 {{ formatDate(pedido.fecha) }}
               </td>

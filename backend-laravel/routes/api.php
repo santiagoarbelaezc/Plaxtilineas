@@ -196,6 +196,8 @@ Route::middleware('auth:sanctum')->prefix('carrito')->group(function () {
 // PEDIDOS  /api/pedidos/*
 // ═════════════════════════════════════════════════════════════════════════════
 
+Route::get('/pedidos/reglas-envio', [PedidoController::class, 'reglasEnvio']);
+
 Route::middleware('auth:sanctum')->prefix('pedidos')->group(function () {
     Route::post('/draft', [PedidoController::class, 'crearDraft']);
     Route::get('/mis-pedidos', [PedidoController::class, 'obtenerMisPedidos']);

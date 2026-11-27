@@ -114,6 +114,31 @@
   box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
 }
 
+/* Indicadores de modalidad de entrega en tabla */
+.table-entrega-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 9999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.table-entrega-badge.domicilio {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+
+.table-entrega-badge.recogida {
+  background: #ecfdf5;
+  color: #047857;
+  border-color: #a7f3d0;
+}
+
 /* Indicadores de estado en tabla */
 .table-estado-badge {
   display: inline-flex;

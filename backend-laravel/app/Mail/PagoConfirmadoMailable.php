@@ -26,7 +26,8 @@ class PagoConfirmadoMailable extends Mailable
         public float $costoEnvio,
         public float $total,
         public ?string $tipoDocumento = null,
-        public ?string $numeroDocumento = null
+        public ?string $numeroDocumento = null,
+        public string $tipoEntrega = 'domicilio'
     ) {}
 
     public function envelope(): Envelope
@@ -66,6 +67,19 @@ class PagoConfirmadoMailable extends Mailable
               </div>";
         }
 
+        $esRecogida = $this->tipoEntrega === 'recogida_tienda';
+        $tiendaDir = htmlspecialchars((string) config('business.tienda.direccion', 'Cra. 19 #19-35'), ENT_QUOTES, 'UTF-8');
+        $tiendaCiudad = htmlspecialchars((string) config('business.tienda.ciudad', 'Armenia'), ENT_QUOTES, 'UTF-8');
+        $tiendaHorario = htmlspecialchars((string) config('business.tienda.horario', 'Lunes a Viernes 8:00 a.m. - 6:00 p.m.'), ENT_QUOTES, 'UTF-8');
+
+        $envioLineaHtml = $esRecogida
+            ? "<div>Envío: <strong style='color:#16a34a;'>\$0 COP (Recogida en tienda)</strong></div>"
+            : "<div>Envío: <strong style='color:#334155;'>\$".number_format($this->costoEnvio, 2).' COP</strong></div>';
+
+        $mensajeFinalHtml = $esRecogida
+            ? "<div style='margin:20px 0 0;padding:14px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;font-size:13px;color:#166534;line-height:1.6;'><strong>Recogida en tienda:</strong> Puedes reclamar tu pedido en <strong>{$tiendaDir}, {$tiendaCiudad}</strong>.<br>Horario: {$tiendaHorario}.</div>"
+            : "<p style='margin:24px 0 0;color:#64748b;font-size:13px;line-height:1.6;'>Te notificaremos tan pronto como tu paquete esté en camino.</p>";
+
         $html = "
         <div style='margin:0;background:#f8fafc;padding:32px 16px;font-family:Arial,Helvetica,sans-serif;color:#334155;'>
           <div style='max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;'>
@@ -92,10 +106,10 @@ class PagoConfirmadoMailable extends Mailable
               <div style='margin-top:22px;border-top:1px solid #e2e8f0;padding-top:16px;text-align:right;color:#64748b;font-size:13px;line-height:1.8;'>
                 <div>Subtotal: <strong style='color:#334155;'>\$".number_format($this->subtotal, 2)." COP</strong></div>
                 <div>IVA: <strong style='color:#334155;'>\$".number_format($this->iva, 2)." COP</strong></div>
-                <div>Envío: <strong style='color:#334155;'>\$".number_format($this->costoEnvio, 2)." COP</strong></div>
+                {$envioLineaHtml}
                 <div style='margin-top:6px;color:#0f172a;font-size:18px;font-weight:800;'>Total: \$".number_format($this->total, 2)." COP</div>
               </div>
-              <p style='margin:24px 0 0;color:#64748b;font-size:13px;line-height:1.6;'>Te notificaremos tan pronto como tu paquete esté en camino.</p>
+              {$mensajeFinalHtml}
             </div>
             <div style='border-top:1px solid #e2e8f0;padding:20px 36px;text-align:center;color:#94a3b8;font-size:12px;line-height:1.6;'>Plásticos técnicos, espumas industriales y soluciones para tu negocio.<br><strong style='color:#0f172a;'>Plaxtilineas SAS</strong></div>
           </div>

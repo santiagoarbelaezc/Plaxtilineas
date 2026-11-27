@@ -158,6 +158,25 @@ class PedidoController extends Controller
     }
 
     /**
+     * GET /api/pedidos/reglas-envio
+     * Devuelve las reglas vigentes de envío a domicilio y recogida en tienda.
+     */
+    public function reglasEnvio(): JsonResponse
+    {
+        return ApiResponse::success([
+            'compra_minima_domicilio' => (float) config('business.envio_compra_minima_cop', 50000),
+            'costo_envio' => (float) config('business.costo_envio_cop', 10000),
+            'tienda' => config('business.tienda', [
+                'nombre' => 'Plaxtilineas — Sede Principal',
+                'direccion' => 'Cra. 19 #19-35',
+                'ciudad' => 'Armenia',
+                'departamento' => 'Quindío',
+                'horario' => 'Lunes a Viernes 8:00 a.m. - 6:00 p.m. · Sábados 8:00 a.m. - 2:00 p.m.',
+            ]),
+        ]);
+    }
+
+    /**
      * GET /api/pedidos/mis-pedidos
      * Lista los pedidos del cliente autenticado (excluyendo drafts incompletos).
      */
@@ -198,6 +217,7 @@ class PedidoController extends Controller
                 'departamento' => $p->departamento,
                 'telefono_contacto' => $p->telefono_cliente,
                 'metodo_pago' => $p->metodo_pago,
+                'tipo_entrega' => $p->tipo_entrega ?: 'domicilio',
                 'notas' => $p->notas,
                 'fecha_actualizacion' => ($p->updated_at ?? $p->fecha ?? $p->created_at)?->toIso8601String(),
                 'wompi_referencia' => $p->wompi_referencia,
@@ -321,6 +341,7 @@ class PedidoController extends Controller
                 'departamento' => $p->departamento,
                 'telefono_contacto' => $p->telefono_cliente,
                 'metodo_pago' => $p->metodo_pago,
+                'tipo_entrega' => $p->tipo_entrega ?: 'domicilio',
                 'notas' => $p->notas,
                 'fecha_actualizacion' => ($p->updated_at ?? $p->fecha ?? $p->created_at)?->toIso8601String(),
                 'wompi_referencia' => $p->wompi_referencia,

@@ -502,7 +502,9 @@
                 <div class="summary-line muted">
                   <span class="summary-line-label">Costo de envío</span>
                   <span *ngIf="pedido.costo_envio > 0" class="summary-line-value">{{ formatPrice(pedido.costo_envio) }}</span>
-                  <span *ngIf="!pedido.costo_envio" class="shipping-included-pill">Incluido</span>
+                  <span *ngIf="!pedido.costo_envio" class="shipping-included-pill">
+                    {{ pedido.tipo_entrega === 'recogida_tienda' ? 'Recogida en tienda ($ 0)' : 'Incluido' }}
+                  </span>
                 </div>
                 <div class="cart-total-box">
                   <div class="total-text-col">
@@ -527,8 +529,12 @@
                   </svg>
                 </div>
                 <div class="nested-header-titles">
-                  <h4 class="nested-main-title">Dirección de Entrega</h4>
-                  <p class="nested-sub-title">Destino asignado</p>
+                  <h4 class="nested-main-title">
+                    {{ pedido.tipo_entrega === 'recogida_tienda' ? 'Recogida en Tienda' : 'Dirección de Entrega' }}
+                  </h4>
+                  <p class="nested-sub-title">
+                    {{ pedido.tipo_entrega === 'recogida_tienda' ? 'Retiro en sede física ($ 0 envío)' : 'Destino asignado' }}
+                  </p>
                 </div>
               </div>
               <div class="info-card-content client-kv-stack">

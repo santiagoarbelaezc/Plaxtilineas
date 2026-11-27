@@ -73,9 +73,11 @@ final class AdminActualizarEstadoPedidoAction
             $estadoAnterior = $pedidoLocked->estado->value;
             $eraPagado = in_array($estadoAnterior, $estadosPagados, true);
 
-            // Si se asigna transportadora + guía a un pedido pagado/confirmado/en_preparacion
+            // Si se asigna transportadora + guía a un pedido a domicilio pagado/confirmado/en_preparacion
             // sin pedir cancelarlo ni marcarlo entregado, avanzar automáticamente a 'en_camino'.
-            $tieneDatosDespacho = ! empty($transportadora) && ! empty($guiaNumero);
+            // En recogida en tienda NO se auto-promueve a 'en_camino'.
+            $esRecogidaTienda = ($pedidoLocked->tipo_entrega ?: 'domicilio') === 'recogida_tienda';
+            $tieneDatosDespacho = ! $esRecogidaTienda && ! empty($transportadora) && ! empty($guiaNumero);
             $estadoFinal = $nuevoEstado;
             if (
                 $tieneDatosDespacho

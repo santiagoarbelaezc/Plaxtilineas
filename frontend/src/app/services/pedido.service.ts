@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 import { environment } from '../../enviroments/environment';
 import {
   CrearDraftRequest,
@@ -8,6 +8,7 @@ import {
   MisPedidosResponse,
   AdminPedidosResponse,
   VerificarEstadoResponse,
+  ReglasEnvio,
 } from '../models/pedido.model';
 
 @Injectable({
@@ -16,6 +17,19 @@ import {
 export class PedidoService {
   private http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}/pedidos`;
+  private reglasEnvio$?: Observable<{ data?: ReglasEnvio } & Partial<ReglasEnvio>>;
+
+  /**
+   * Obtiene las reglas vigentes de envío a domicilio y recogida en tienda (con caché en memoria).
+   */
+  obtenerReglasEnvio(): Observable<{ data?: ReglasEnvio } & Partial<ReglasEnvio>> {
+    if (!this.reglasEnvio$) {
+      this.reglasEnvio$ = this.http
+        .get<{ data?: ReglasEnvio } & Partial<ReglasEnvio>>(`${this.baseUrl}/reglas-envio`)
+        .pipe(shareReplay(1));
+    }
+    return this.reglasEnvio$;
+  }
 
   /**
    * Fase 1 del Two-Phase Commit: crea el pedido como DRAFT.

@@ -94,7 +94,8 @@ final class ConfirmarPedidoAction
                             (float) $pedido->costo_envio,
                             (float) $pedido->total,
                             $pedido->usuario?->tipo_documento,
-                            $pedido->usuario?->numero_documento
+                            $pedido->usuario?->numero_documento,
+                            $pedido->tipo_entrega ?: 'domicilio'
                         )
                     );
                 }
