@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Pedidos;
 
 use App\Enums\EstadoPedido;
+use App\Enums\TipoEntrega;
 use App\Exceptions\Domain\AccesoNoPermitidoException;
 use App\Exceptions\Domain\StockInsuficienteException;
 use App\Mail\PagoConfirmadoMailable;
@@ -16,6 +17,7 @@ use App\Services\Catalogo\CatalogoApiService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -123,12 +125,12 @@ final class CrearDraftPedidoAction
                 ];
             }
 
-            $tipoEntrega = (string) ($input['tipo_entrega'] ?? \App\Enums\TipoEntrega::DOMICILIO->value);
-            if (! in_array($tipoEntrega, \App\Enums\TipoEntrega::values(), true)) {
-                $tipoEntrega = \App\Enums\TipoEntrega::DOMICILIO->value;
+            $tipoEntrega = (string) ($input['tipo_entrega'] ?? TipoEntrega::DOMICILIO->value);
+            if (! in_array($tipoEntrega, TipoEntrega::values(), true)) {
+                $tipoEntrega = TipoEntrega::DOMICILIO->value;
             }
 
-            $esRecogida = $tipoEntrega === \App\Enums\TipoEntrega::RECOGIDA_TIENDA->value;
+            $esRecogida = $tipoEntrega === TipoEntrega::RECOGIDA_TIENDA->value;
             $minimoDomicilio = (float) config('business.envio_compra_minima_cop', 50000.0);
 
             if (! $esRecogida && $subtotal < $minimoDomicilio) {
@@ -136,7 +138,7 @@ final class CrearDraftPedidoAction
                 $minFmt = number_format($minimoDomicilio, 0, ',', '.');
                 $faltFmt = number_format($faltante, 0, ',', '.');
 
-                throw \Illuminate\Validation\ValidationException::withMessages([
+                throw ValidationException::withMessages([
                     'tipo_entrega' => [
                         "El envío a domicilio requiere una compra mínima de \${$minFmt} COP. Agrega \${$faltFmt} más o elige recoger en tienda (envío \$0).",
                     ],

@@ -2,14 +2,17 @@
 
 declare(strict_types=1);
 
+use App\Contracts\MediaStorageInterface;
 use App\Enums\EstadoPedido;
 use App\Enums\RolUsuario;
 use App\Mail\CambioEstadoPedidoMailable;
+use App\Mail\PagoConfirmadoMailable;
 use App\Models\Pedido;
 use App\Models\PedidoItem;
 use App\Models\Producto;
 use App\Models\StockReserva;
 use App\Models\Usuario;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\Sanctum;
@@ -364,14 +367,14 @@ test('admin sube evidencia fotografica y al asignar transportadora y guia avanza
     Mail::fake();
     Sanctum::actingAs($this->admin);
 
-    $mediaMock = Mockery::mock(\App\Contracts\MediaStorageInterface::class);
+    $mediaMock = Mockery::mock(MediaStorageInterface::class);
     $mediaMock->shouldReceive('upload')
         ->once()
         ->andReturn([
             'url' => 'https://res.cloudinary.com/demo/image/upload/v1/plaxtilineas/evidencias_envio/foto_guia.jpg',
             'public_id' => 'plaxtilineas/evidencias_envio/foto_guia',
         ]);
-    $this->app->instance(\App\Contracts\MediaStorageInterface::class, $mediaMock);
+    $this->app->instance(MediaStorageInterface::class, $mediaMock);
 
     $pedido = Pedido::factory()->create([
         'usuario_id' => $this->usuario->id,
@@ -383,7 +386,7 @@ test('admin sube evidencia fotografica y al asignar transportadora y guia avanza
 
     // 1. Subir foto de evidencia a Cloudinary (PNG válido 1x1 sin depender de la extensión GD)
     $png1x1 = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==');
-    $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('guia.png', $png1x1);
+    $file = UploadedFile::fake()->createWithContent('guia.png', $png1x1);
     $uploadRes = $this->post("/api/admin/pedidos/{$pedido->id}/evidencia-envio", [
         'evidencia' => $file,
     ]);
@@ -481,14 +484,14 @@ test('admin sube evidencia fotografica de entrega y marca pedido en_camino como 
     Mail::fake();
     Sanctum::actingAs($this->admin);
 
-    $mediaMock = Mockery::mock(\App\Contracts\MediaStorageInterface::class);
+    $mediaMock = Mockery::mock(MediaStorageInterface::class);
     $mediaMock->shouldReceive('upload')
         ->once()
         ->andReturn([
             'url' => 'https://res.cloudinary.com/demo/image/upload/v1/plaxtilineas/evidencias_entrega/recibido.png',
             'public_id' => 'plaxtilineas/evidencias_entrega/recibido',
         ]);
-    $this->app->instance(\App\Contracts\MediaStorageInterface::class, $mediaMock);
+    $this->app->instance(MediaStorageInterface::class, $mediaMock);
 
     $pedido = Pedido::factory()->create([
         'usuario_id' => $this->usuario->id,
@@ -498,7 +501,7 @@ test('admin sube evidencia fotografica de entrega y marca pedido en_camino como 
     ]);
 
     $png1x1 = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==');
-    $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('recibido.png', $png1x1);
+    $file = UploadedFile::fake()->createWithContent('recibido.png', $png1x1);
 
     $uploadRes = $this->post("/api/admin/pedidos/{$pedido->id}/evidencia-entrega", [
         'evidencia' => $file,
@@ -545,7 +548,7 @@ test('factura de compra por correo incluye cedula o NIT del cliente y mis-pedido
         'numero_documento' => '1094912345',
     ]);
 
-    $mailable = new \App\Mail\PagoConfirmadoMailable(
+    $mailable = new PagoConfirmadoMailable(
         nombreCliente: $this->usuario->nombre,
         codigoPedido: 'PX-2026-9999',
         detalles: [

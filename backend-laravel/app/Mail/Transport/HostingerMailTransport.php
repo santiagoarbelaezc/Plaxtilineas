@@ -89,8 +89,8 @@ final class HostingerMailTransport extends AbstractTransport
         }
 
         throw new TransportException(
-            'Hostinger Mail API no pudo enviar el correo: '.($lastException?->getMessage() ?? 'Error desconocido'),
-            (int) ($lastException?->getCode() ?? 0),
+            'Hostinger Mail API no pudo enviar el correo: '.$lastException->getMessage(),
+            (int) $lastException->getCode(),
             $lastException
         );
     }

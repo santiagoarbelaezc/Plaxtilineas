@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Throwable;
 
 /**
@@ -498,11 +499,11 @@ final class CatalogoApiService
         $url = "{$this->baseUrl}/integraciones/inventario/productos/{$productoId}/ajustar";
 
         $startedAt = microtime(true);
-        $idempotencyKey = (string) \Illuminate\Support\Str::uuid();
-        $requestId = (string) (request()?->header('X-Request-Id') ?: $idempotencyKey);
+        $idempotencyKey = (string) Str::uuid();
+        $requestId = (string) (request()->header('X-Request-Id') ?: $idempotencyKey);
         $maxAttempts = 2;
 
-        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+        foreach (range(1, $maxAttempts) as $attempt) {
             try {
                 $http = Http::connectTimeout(5)
                     ->timeout(25)
